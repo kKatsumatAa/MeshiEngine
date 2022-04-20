@@ -319,9 +319,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 頂点レイアウト
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 	{
-	"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-	D3D12_APPEND_ALIGNED_ELEMENT,
-	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+	"POSITION",//セマンティック名
+	0,//同じセマンティック名が複数ある時に使うインデックス
+	DXGI_FORMAT_R32G32B32_FLOAT,//要素数とビット数を表す
+	0,//入力スロットインデックス
+	D3D12_APPEND_ALIGNED_ELEMENT,//データのオフセット値,
+	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,//一度に描画するインスタンス数
+	0
 	}, // (1行で書いたほうが見やすい)
 	};
 
