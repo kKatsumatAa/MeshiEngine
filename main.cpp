@@ -2,6 +2,7 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <cassert>
+#include "KeyboardInput.h"
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
@@ -13,6 +14,10 @@ using namespace DirectX;
 
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
+
+
+
+KeyboardInput keys;
 
 
 //ウインドウプロシージャ
@@ -211,6 +216,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	UINT64 fenceVal = 0;
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 
+
+	//キーボード入力初期化
+	keys.Initialize(result, hwnd, w);
+	
+
+	
+
+	 //描画初期化処理
 	//頂点データ
 	XMFLOAT3 vertices[] = {
 		{-0.5f, -0.5f, 0.0f},	//左下
@@ -400,6 +413,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		//毎フレーム処理　ここから//
+		//キーボード情報の取得開始
+		keys.Update();
+
+		
+
+		//数字の0キーが押されていたら
+		if (keys.keyTrigger(DIK_0))
+		{
+			OutputDebugStringA("HIT 0 \n");
+		}
 
 		// バックバッファの番号を取得(2つなので0番か1番)
 		UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
@@ -419,6 +442,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 3.画面クリア R G B A
 		FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f }; // 青っぽい色
 		commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+
+		if (keys.keyTrigger(DIK_SPACE))
+		{
+			FLOAT clearColor[] = { 0.8f,0.8f, 0.0f,0.0f };
+			commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+		}
 
 		// 4.描画コマンドここから　//
 
