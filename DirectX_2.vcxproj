@@ -157,6 +157,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DirectX.h" />
     <ClInclude Include="KeyboardInput.h" />
     <ClInclude Include="WindowsApp.h" />
   </ItemGroup>
