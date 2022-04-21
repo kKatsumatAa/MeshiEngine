@@ -36,7 +36,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	keys.Initialize(directx.result, win.hwnd, win.w);
 	
 
-	 //描画初期化処理
+	 //描画初期化処理-------------
 	//頂点データ
 	XMFLOAT3 vertices[] = {
 		{-0.5f, -0.5f, 0.0f},	//左下
@@ -239,7 +239,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			directx.commandList->ClearRenderTargetView(directx.rtvHandle, clearColor, 0, nullptr);
 		}
 
-		// 4.描画コマンドここから　//
+		// 4.描画コマンドここから　//-----------
 
 		// ビューポート設定コマンド
 		D3D12_VIEWPORT viewport{};

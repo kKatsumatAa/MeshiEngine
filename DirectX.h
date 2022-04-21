@@ -11,17 +11,6 @@
 class Directx
 {
 private:
-	
-
-public:
-	HRESULT result;
-	ID3D12Device* device = nullptr;
-	IDXGIFactory7* dxgiFactory = nullptr;
-	IDXGISwapChain4* swapChain = nullptr;
-	ID3D12CommandAllocator* commandAllocator = nullptr;
-	ID3D12GraphicsCommandList* commandList = nullptr;
-	ID3D12CommandQueue* commandQueue = nullptr;
-	ID3D12DescriptorHeap* rtvHeap = nullptr;
 	// 対応レベルの配列
 	D3D_FEATURE_LEVEL levels[5];
 	D3D_FEATURE_LEVEL featureLevel;
@@ -33,16 +22,25 @@ public:
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	// バックバッファ
 	std::vector<ID3D12Resource*> backBuffers;
+	// 1.リソースバリアで書き込み可能に変更
+	D3D12_RESOURCE_BARRIER barrierDesc{};
 	// フェンスの生成
 	ID3D12Fence* fence = nullptr;
 	UINT64 fenceVal = 0;
-	
-	// 1.リソースバリアで書き込み可能に変更
-	D3D12_RESOURCE_BARRIER barrierDesc{};
+
+public:
+	HRESULT result;
+	ID3D12Device* device = nullptr;
+	IDXGIFactory7* dxgiFactory = nullptr;
+	IDXGISwapChain4* swapChain = nullptr;
+	ID3D12CommandAllocator* commandAllocator = nullptr;
+	ID3D12GraphicsCommandList* commandList = nullptr;
+	ID3D12CommandQueue* commandQueue = nullptr;
+	ID3D12DescriptorHeap* rtvHeap = nullptr;
 	// 2.描画先の変更
 		// レンダーターゲットビューのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
-	
+
 
 
 	//関数
