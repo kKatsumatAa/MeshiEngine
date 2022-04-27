@@ -47,9 +47,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		
-		if (keys.keyTrigger(DIK_SPACE))
+		if (keys.keyPush(DIK_SPACE))
 		{
-			FLOAT clearColor[] = { 0.8f,0.8f, 0.0f,0.0f };
+			FLOAT clearColor[] = { 0.8f,0.0f, 0.8f,0.0f };
 			directx.commandList->ClearRenderTargetView(directx.rtvHandle, clearColor, 0, nullptr);
 		}
 
