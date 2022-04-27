@@ -2,9 +2,7 @@
 #include "WindowsApp.h"
 #include "DirectX.h"
 
-KeyboardInput keys;
-WindowsApp win;
-Directx directx(win);
+
 
 //windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -14,7 +12,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	MSG msg{};	//メッセージ
 
 	//初期化処理　ここから//
+	KeyboardInput keys;
+	WindowsApp win;
 
+	D3D12_VIEWPORT viewport[4] = {
+		{0,0,win.window_width * (2.0 / 3.0), win.window_height * (2.0 / 3.0), 0.0f,1.0f},
+		{ win.window_width * (2.0 / 3.0),0,win.window_width * (1.0 / 3.0), win.window_height * (2.0 / 3.0),
+		0.0f,1.0f },
+		{ 0,win.window_height * (2.0 / 3.0),win.window_width * (2.0 / 3.0), win.window_height * (1.0 / 3.0),
+		0.0f,1.0f },
+		{ win.window_width * (2.0 / 3.0),win.window_height * (2.0 / 3.0),win.window_width * (1.0 / 3.0), win.window_height * (1.0 / 3.0),
+		0.0f,1.0f }
+	};
+
+	Directx directx(win);
 
 	//キーボード入力初期化
 	keys.Initialize(directx.result, win.hwnd, win.w);
@@ -55,7 +66,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// 4.描画コマンドここから　//-----------
 
-		directx.DrawUpdate(win);
+		for (int i = 0; i < 4; i++)
+		{
+			directx.DrawUpdate(win,viewport[i]);
+		}
 
 		// 4.描画コマンドここまで //
 

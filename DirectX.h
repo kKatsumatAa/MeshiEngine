@@ -43,6 +43,9 @@ private:
 		{-0.5f, +0.5f, 0.0f},	//左上
 		{+0.5f, -0.5f, 0.0f},	//右下
 	};
+	// ビューポート設定コマンド
+	D3D12_VIEWPORT viewport{};
+	
 
 public:
 	HRESULT result;
@@ -393,16 +396,10 @@ public:
 
 	}
 
-	void DrawUpdate(const WindowsApp& win)
+	void DrawUpdate(const WindowsApp& win, const D3D12_VIEWPORT& viewPort)
 	{
 		// ビューポート設定コマンド
-		D3D12_VIEWPORT viewport{};
-		viewport.Width = win.window_width;
-		viewport.Height = win.window_height;
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
+		viewport = viewPort;
 		// ビューポート設定コマンドを、コマンドリストに積む
 		commandList->RSSetViewports(1, &viewport);
 
