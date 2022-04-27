@@ -34,10 +34,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//キーボード入力初期化
 	keys.Initialize(directx.result, win.hwnd, win.w);
-	
 
-	 //描画初期化処理-------------
-	//頂点データ
+
+	//描画初期化処理-------------
+   //頂点データ
 	XMFLOAT3 vertices[] = {
 		{-0.5f, -0.5f, 0.0f},	//左下
 		{-0.5f, +0.5f, 0.0f},	//左上
@@ -165,7 +165,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ラスタライザの設定
 	pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // カリングしない
-	pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶし
+	/*pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;*/ // ポリゴン内塗りつぶし
+	pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME; // ワイヤーフレーム
 	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
 	// ブレンドステート
@@ -232,7 +233,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			OutputDebugStringA("HIT 0 \n");
 		}
 
-		
+
 		if (keys.keyTrigger(DIK_SPACE))
 		{
 			FLOAT clearColor[] = { 0.8f,0.8f, 0.0f,0.0f };
@@ -247,14 +248,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		viewport.Height = win.window_height;
 		viewport.TopLeftX = 0;
 		viewport.TopLeftY = 0;
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
+		viewport.MinDepth = 0.0f;//最小深度
+		viewport.MaxDepth = 1.0f;//最大深度
 		// ビューポート設定コマンドを、コマンドリストに積む
 		directx.commandList->RSSetViewports(1, &viewport);
 
 		// シザー矩形
 		D3D12_RECT scissorRect{};
-		scissorRect.left = 0; // 切り抜き座標左
+		scissorRect.left = win.window_width / 2; // 切り抜き座標左
 		scissorRect.right = scissorRect.left + win.window_width; // 切り抜き座標右
 		scissorRect.top = 0; // 切り抜き座標上
 		scissorRect.bottom = scissorRect.top + win.window_height; // 切り抜き座標下
