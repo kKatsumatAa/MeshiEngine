@@ -32,20 +32,33 @@ private:
 	ID3D12Fence* fence = nullptr;
 	UINT64 fenceVal = 0;
 	// パイプランステートの生成
-	ID3D12PipelineState* pipelineState = nullptr;
+	ID3D12PipelineState* pipelineState[2] = { nullptr };
 	// ルートシグネチャ
 	ID3D12RootSignature* rootSignature;
 	// 頂点バッファビューの作成
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
 	//頂点データ
-	XMFLOAT3 vertices[3] = {
+	XMFLOAT3 vertices[4] = {
 		{-0.5f, -0.5f, 0.0f},	//左下
 		{-0.5f, +0.5f, 0.0f},	//左上
 		{+0.5f, -0.5f, 0.0f},	//右下
+		{+0.5f, +0.5f, 0.0f}	//右上
 	};
 	// ビューポート設定コマンド
 	D3D12_VIEWPORT viewport{};
-	
+	// グラフィックスパイプライン設定
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
+	ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
+	ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
+	ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
+	// 頂点レイアウト
+	D3D12_INPUT_ELEMENT_DESC inputLayout[1] = {
+	{
+	"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
+	D3D12_APPEND_ALIGNED_ELEMENT,
+	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+	}, // (1行で書いたほうが見やすい)
+	};
 
 public:
 	HRESULT result;
@@ -233,8 +246,6 @@ public:
 
 	void DrawInitialize()
 	{
-		
-
 		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
 		UINT sizeVB = static_cast<UINT>(sizeof(XMFLOAT3) * _countof(vertices));
 
@@ -281,9 +292,7 @@ public:
 		// 頂点1つ分のデータサイズ
 		vbView.StrideInBytes = sizeof(XMFLOAT3);
 
-		ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
-		ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
-		ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
+		
 		// 頂点シェーダの読み込みとコンパイル
 		result = D3DCompileFromFile(
 			L"BasicVS.hlsl", // シェーダファイル名
@@ -332,18 +341,51 @@ public:
 			assert(0);
 		}
 
-		// 頂点レイアウト
-		D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-		{
-		"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-		D3D12_APPEND_ALIGNED_ELEMENT,
-		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-		}, // (1行で書いたほうが見やすい)
-		};
+		// パイプランステートの生成
+		PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState[0]);
 
-		// グラフィックスパイプライン設定
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
+		PipeLineState(D3D12_FILL_MODE_WIREFRAME, pipelineState[1]);
+	}
 
+	void DrawUpdate(const WindowsApp& win, const D3D12_VIEWPORT& viewPort, const bool& pipelineNum,
+		const bool& primitiveMode)
+	{
+		D3D_PRIMITIVE_TOPOLOGY primitive;
+
+		if (!primitiveMode) primitive = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		else               primitive = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+
+		// ビューポート設定コマンド
+		viewport = viewPort;
+		// ビューポート設定コマンドを、コマンドリストに積む
+		commandList->RSSetViewports(1, &viewport);
+
+		// シザー矩形
+		D3D12_RECT scissorRect{};
+		scissorRect.left = 0; // 切り抜き座標左
+		scissorRect.right = scissorRect.left + win.window_width; // 切り抜き座標右
+		scissorRect.top = 0; // 切り抜き座標上
+		scissorRect.bottom = scissorRect.top + win.window_height; // 切り抜き座標下
+		// シザー矩形設定コマンドを、コマンドリストに積む
+		commandList->RSSetScissorRects(1, &scissorRect);
+
+		// パイプラインステートとルートシグネチャの設定コマンド
+		commandList->SetPipelineState(pipelineState[1]);
+		commandList->SetGraphicsRootSignature(rootSignature);
+
+		// プリミティブ形状の設定コマンド
+		commandList->IASetPrimitiveTopology(primitive); // 三角か四角
+
+		// 頂点バッファビューの設定コマンド
+		commandList->IASetVertexBuffers(0, 1, &vbView);
+
+		// 描画コマンド
+		commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
+	}
+
+
+	void PipeLineState(const D3D12_FILL_MODE& fillMode, const ID3D12PipelineState* pipelineState)
+	{
 		// シェーダーの設定
 		pipelineDesc.VS.pShaderBytecode = vsBlob->GetBufferPointer();
 		pipelineDesc.VS.BytecodeLength = vsBlob->GetBufferSize();
@@ -355,7 +397,7 @@ public:
 
 		// ラスタライザの設定
 		pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // カリングしない
-		pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶし
+		pipelineDesc.RasterizerState.FillMode = fillMode; // ポリゴン内塗りつぶし
 		pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
 		// ブレンドステート
@@ -374,7 +416,7 @@ public:
 		pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
 		pipelineDesc.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
 
-		
+
 		// ルートシグネチャの設定
 		D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 		rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -390,39 +432,7 @@ public:
 		// パイプラインにルートシグネチャをセット
 		pipelineDesc.pRootSignature = rootSignature;
 
-		// パイプランステートの生成
 		result = device->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&pipelineState));
 		assert(SUCCEEDED(result));
-
-	}
-
-	void DrawUpdate(const WindowsApp& win, const D3D12_VIEWPORT& viewPort)
-	{
-		// ビューポート設定コマンド
-		viewport = viewPort;
-		// ビューポート設定コマンドを、コマンドリストに積む
-		commandList->RSSetViewports(1, &viewport);
-
-		// シザー矩形
-		D3D12_RECT scissorRect{};
-		scissorRect.left = 0; // 切り抜き座標左
-		scissorRect.right = scissorRect.left + win.window_width; // 切り抜き座標右
-		scissorRect.top = 0; // 切り抜き座標上
-		scissorRect.bottom = scissorRect.top + win.window_height; // 切り抜き座標下
-		// シザー矩形設定コマンドを、コマンドリストに積む
-		commandList->RSSetScissorRects(1, &scissorRect);
-
-		// パイプラインステートとルートシグネチャの設定コマンド
-		commandList->SetPipelineState(pipelineState);
-		commandList->SetGraphicsRootSignature(rootSignature);
-
-		// プリミティブ形状の設定コマンド
-		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
-
-		// 頂点バッファビューの設定コマンド
-		commandList->IASetVertexBuffers(0, 1, &vbView);
-
-		// 描画コマンド
-		commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
 	}
 };

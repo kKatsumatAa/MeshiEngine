@@ -27,6 +27,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Directx directx(win);
 
+	bool pipelineNum = false;
+	bool primitiveNum = false;
+
 	//キーボード入力初期化
 	keys.Initialize(directx.result, win.hwnd, win.w);
 	
@@ -65,10 +68,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		// 4.描画コマンドここから　//-----------
-
+		if (keys.keyTrigger(DIK_1))
+		{
+			if (primitiveNum) primitiveNum = 0;
+			else              primitiveNum = 1;
+		}
+		if (keys.keyTrigger(DIK_2))
+		{
+			if (primitiveNum) pipelineNum = 0;
+			else              pipelineNum = 1;
+		}
 		for (int i = 0; i < 4; i++)
 		{
-			directx.DrawUpdate(win,viewport[i]);
+			directx.DrawUpdate(win,viewport[i],pipelineNum,primitiveNum);
 		}
 
 		// 4.描画コマンドここまで //
