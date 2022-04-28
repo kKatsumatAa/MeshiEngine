@@ -342,12 +342,16 @@ public:
 		}
 
 		// パイプランステートの生成
-		PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState[0]);
+		PipeLineState(D3D12_FILL_MODE_SOLID);
+		result = device->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&pipelineState[0]));
+		assert(SUCCEEDED(result));
 
-		PipeLineState(D3D12_FILL_MODE_WIREFRAME, pipelineState[1]);
+		PipeLineState(D3D12_FILL_MODE_WIREFRAME);
+		result = device->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&pipelineState[1]));
+		assert(SUCCEEDED(result));
 	}
 
-	void DrawUpdate(const WindowsApp& win, const D3D12_VIEWPORT& viewPort, const bool& pipelineNum,
+	void DrawUpdate(const WindowsApp& win, const D3D12_VIEWPORT& viewPort, const int& pipelineNum,
 		const bool& primitiveMode)
 	{
 		D3D_PRIMITIVE_TOPOLOGY primitive;
@@ -370,7 +374,7 @@ public:
 		commandList->RSSetScissorRects(1, &scissorRect);
 
 		// パイプラインステートとルートシグネチャの設定コマンド
-		commandList->SetPipelineState(pipelineState[1]);
+		commandList->SetPipelineState(pipelineState[pipelineNum]);
 		commandList->SetGraphicsRootSignature(rootSignature);
 
 		// プリミティブ形状の設定コマンド
@@ -384,7 +388,7 @@ public:
 	}
 
 
-	void PipeLineState(const D3D12_FILL_MODE& fillMode, const ID3D12PipelineState* pipelineState)
+	void PipeLineState(const D3D12_FILL_MODE& fillMode/*, const ID3D12PipelineState* pipelineState*/)
 	{
 		// シェーダーの設定
 		pipelineDesc.VS.pShaderBytecode = vsBlob->GetBufferPointer();
@@ -431,8 +435,5 @@ public:
 		rootSigBlob->Release();
 		// パイプラインにルートシグネチャをセット
 		pipelineDesc.pRootSignature = rootSignature;
-
-		result = device->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&pipelineState));
-		assert(SUCCEEDED(result));
 	}
 };

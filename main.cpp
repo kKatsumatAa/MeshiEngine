@@ -27,7 +27,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Directx directx(win);
 
-	bool pipelineNum = false;
+	int pipelineNum = 0;
 	bool primitiveNum = false;
 
 	//キーボード入力初期化
@@ -75,7 +75,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		if (keys.keyTrigger(DIK_2))
 		{
-			if (primitiveNum) pipelineNum = 0;
+			if (pipelineNum)  pipelineNum = 0;
 			else              pipelineNum = 1;
 		}
 		for (int i = 0; i < 4; i++)
@@ -88,6 +88,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		directx.GraphicsCommand2();
 
 		//毎フレーム処理　ここまで//
+
+		if (keys.keyPush(DIK_ESCAPE)) break;
 	}
 
 	//ウィンドウクラスを登録解除
