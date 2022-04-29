@@ -191,7 +191,7 @@ public:
 			result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 	}
 
-	void GraphicsCommand()
+	void GraphicsCommand(const XMFLOAT4& winRGBA)
 	{
 		// バックバッファの番号を取得(2つなので0番か1番)
 		UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
@@ -207,7 +207,7 @@ public:
 		commandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
 
 		// 3.画面クリア R G B A
-		FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f }; // 青っぽい色
+		FLOAT clearColor[] = { winRGBA.x,winRGBA.y,winRGBA.z,winRGBA.w };
 		commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 	}
 
@@ -404,9 +404,7 @@ public:
 		pipelineDesc.RasterizerState.FillMode = fillMode; // ポリゴン内塗りつぶし
 		pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
-		// ブレンドステート
-		pipelineDesc.BlendState.RenderTarget[0].RenderTargetWriteMask
-			= D3D12_COLOR_WRITE_ENABLE_ALL; // RBGA全てのチャンネルを描画
+		Blend(D3D12_BLEND_OP_ADD,false,true);
 
 		// 頂点レイアウトの設定
 		pipelineDesc.InputLayout.pInputElementDescs = inputLayout;
@@ -435,5 +433,34 @@ public:
 		rootSigBlob->Release();
 		// パイプラインにルートシグネチャをセット
 		pipelineDesc.pRootSignature = rootSignature;
+	}
+
+	void Blend(const D3D12_BLEND_OP& blendMode,
+		const bool& Inversion=0, const bool& Translucent=0)
+	{
+		//共通設定
+		D3D12_RENDER_TARGET_BLEND_DESC& blendDesc = pipelineDesc.BlendState.RenderTarget[0];
+		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;// RBGA全てのチャンネルを描画
+		blendDesc.BlendEnable = true;//ブレンドを有効
+		blendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;//加算
+		blendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;//ソースの値を100%使う
+		blendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;//デストの値を0%使う
+		//合成ごと
+		blendDesc.BlendOp = blendMode;
+		if (Inversion)//反転
+		{
+			blendDesc.SrcBlend = D3D12_BLEND_INV_DEST_COLOR;//1.0f-デストカラーの値
+			blendDesc.DestBlend = D3D12_BLEND_ZERO;//使わない
+		}
+		else if (Translucent)
+		{
+			blendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;//1.0f-デストカラーの値
+			blendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;//1.0f-ソースのアルファ値
+		}
+		else
+		{
+			blendDesc.SrcBlend = D3D12_BLEND_ONE;//ソースの値を100%使う
+			blendDesc.DestBlend = D3D12_BLEND_ONE;//デストの値を100%使う
+		}
 	}
 };

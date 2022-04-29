@@ -52,7 +52,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//キーボード情報の取得開始
 		keys.Update();
 
-		directx.GraphicsCommand();
+		directx.GraphicsCommand({ 0.1f,0.25f,0.5f,0.0f });
 
 		//数字の0キーが押されていたら
 		if (keys.keyTrigger(DIK_0))
