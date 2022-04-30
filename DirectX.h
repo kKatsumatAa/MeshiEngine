@@ -452,7 +452,7 @@ public:
 			blendDesc.SrcBlend = D3D12_BLEND_INV_DEST_COLOR;//1.0f-デストカラーの値
 			blendDesc.DestBlend = D3D12_BLEND_ZERO;//使わない
 		}
-		else if (Translucent)
+		else if (Translucent)//半透明
 		{
 			blendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;//1.0f-デストカラーの値
 			blendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;//1.0f-ソースのアルファ値
