@@ -52,7 +52,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//キーボード情報の取得開始
 		keys.Update();
 
-		directx.GraphicsCommand({ 0.1f,0.25f,0.5f,0.0f });
+		directx.DrawUpdate({ 0.1f,0.25f,0.5f,0.0f });
 
 		//数字の0キーが押されていたら
 		if (keys.keyTrigger(DIK_0))
@@ -80,12 +80,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		for (int i = 0; i < 4; i++)
 		{
-			directx.DrawUpdate(win,viewport[i],pipelineNum,primitiveNum);
+			directx.GraphicsCommand(win,viewport[i],pipelineNum,primitiveNum);
 		}
 
 		// 4.描画コマンドここまで //
 
-		directx.GraphicsCommand2();
+		directx.DrawUpdate2();
 
 		//毎フレーム処理　ここまで//
 

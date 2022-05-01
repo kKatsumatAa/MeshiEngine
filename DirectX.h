@@ -59,6 +59,10 @@ private:
 	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 	}, // (1行で書いたほうが見やすい)
 	};
+	//ルートパラメータの設定
+	D3D12_ROOT_PARAMETER rootParam = {};
+	//定数バッファの生成
+	ID3D12Resource* constBuffMaterial = nullptr;
 
 public:
 	HRESULT result;
@@ -266,6 +270,13 @@ public:
 		// エラーなら
 		Error(FAILED(result));
 
+		//ルートパラメータの設定
+		rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+		rootParam.Descriptor.ShaderRegister = 0;//定数バッファ番号
+		rootParam.Descriptor.RegisterSpace = 0;//デフォルト値
+		rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+
+
 		// パイプランステートの生成
 		PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState);
 
@@ -290,9 +301,24 @@ public:
 		cbResourceDesc.MipLevels = 1;
 		cbResourceDesc.SampleDesc.Count = 1;
 		cbResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		//定数バッファの生成
+		result = device->CreateCommittedResource(
+			&cbHeapProp,//ヒープ設定
+			D3D12_HEAP_FLAG_NONE,
+			&cbResourceDesc,//リソース設定
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&constBuffMaterial));
+		assert(SUCCEEDED(result));
+		//定数バッファのマッピング
+		ConstBufferDataMaterial* constMapMaterial = nullptr;
+		result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
+		assert(SUCCEEDED(result));
+		//値を書き込むと自動的に転送される
+		constMapMaterial->color = XMFLOAT4(1, 0, 0, 0.5f);//半透明の赤
 	}
 
-	void GraphicsCommand(const XMFLOAT4& winRGBA)
+	void DrawUpdate(const XMFLOAT4& winRGBA)
 	{
 		// バックバッファの番号を取得(2つなので0番か1番)
 		UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
@@ -312,7 +338,7 @@ public:
 		commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 	}
 
-	void GraphicsCommand2()
+	void DrawUpdate2()
 	{
 		// 5.リソースバリアを戻す
 		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
@@ -347,7 +373,7 @@ public:
 
 	
 
-	void DrawUpdate(const WindowsApp& win, const D3D12_VIEWPORT& viewPort, const int& pipelineNum,
+	void GraphicsCommand(const WindowsApp& win, const D3D12_VIEWPORT& viewPort, const int& pipelineNum,
 		const bool& primitiveMode)
 	{
 		D3D_PRIMITIVE_TOPOLOGY primitive;
@@ -378,6 +404,9 @@ public:
 
 		// 頂点バッファビューの設定コマンド
 		commandList->IASetVertexBuffers(0, 1, &vbView);
+
+		//定数バッファビュー(CBV)の設定コマンド
+		commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		// 描画コマンド
 		commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
@@ -418,6 +447,8 @@ public:
 		// ルートシグネチャの設定
 		D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 		rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+		rootSignatureDesc.pParameters = &rootParam;//ルートパラメータの先頭アドレス
+		rootSignatureDesc.NumParameters = 1;//ルートパラメータ数
 		// ルートシグネチャのシリアライズ
 		ID3DBlob* rootSigBlob = nullptr;
 		result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
