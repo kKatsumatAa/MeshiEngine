@@ -63,6 +63,14 @@ private:
 	D3D12_ROOT_PARAMETER rootParam = {};
 	//定数バッファの生成
 	ID3D12Resource* constBuffMaterial = nullptr;
+	//定数バッファ用データ構造体（マテリアル）
+	struct ConstBufferDataMaterial
+	{
+		XMFLOAT4 color;//色(RGBA)
+	};
+	//定数バッファのマッピング
+	ConstBufferDataMaterial* constMapMaterial = nullptr;
+	XMFLOAT4 color2 = { 0,0,0,0 };
 
 public:
 	HRESULT result;
@@ -108,91 +116,91 @@ public:
 		}
 
 		// 妥当なアダプタを選別する
-			for (size_t i = 0; i < adapters.size(); i++) {
-				DXGI_ADAPTER_DESC3 adapterDesc;
-				// アダプターの情報を取得する
-				adapters[i]->GetDesc3(&adapterDesc);
-				// ソフトウェアデバイスを回避
-				if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
-					// デバイスを採用してループを抜ける
-					tmpAdapter = adapters[i];
-					break;
-				}
+		for (size_t i = 0; i < adapters.size(); i++) {
+			DXGI_ADAPTER_DESC3 adapterDesc;
+			// アダプターの情報を取得する
+			adapters[i]->GetDesc3(&adapterDesc);
+			// ソフトウェアデバイスを回避
+			if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
+				// デバイスを採用してループを抜ける
+				tmpAdapter = adapters[i];
+				break;
 			}
-			
-			levels[0] = D3D_FEATURE_LEVEL_12_1;
-			levels[1] = D3D_FEATURE_LEVEL_12_0;
-			levels[2] = D3D_FEATURE_LEVEL_11_1;
-			levels[3] = D3D_FEATURE_LEVEL_11_0;
-			
+		}
 
-			for (size_t i = 0; i < _countof(levels); i++) {
-				// 採用したアダプターでデバイスを生成
-				result = D3D12CreateDevice(tmpAdapter, levels[i],
-					IID_PPV_ARGS(&device));
-				if (result == S_OK) {
-					// デバイスを生成できた時点でループを抜ける
-					featureLevel = levels[i];
-					break;
-				}
+		levels[0] = D3D_FEATURE_LEVEL_12_1;
+		levels[1] = D3D_FEATURE_LEVEL_12_0;
+		levels[2] = D3D_FEATURE_LEVEL_11_1;
+		levels[3] = D3D_FEATURE_LEVEL_11_0;
+
+
+		for (size_t i = 0; i < _countof(levels); i++) {
+			// 採用したアダプターでデバイスを生成
+			result = D3D12CreateDevice(tmpAdapter, levels[i],
+				IID_PPV_ARGS(&device));
+			if (result == S_OK) {
+				// デバイスを生成できた時点でループを抜ける
+				featureLevel = levels[i];
+				break;
 			}
+		}
 
-			// コマンドアロケータを生成
-			result = device->CreateCommandAllocator(
-				D3D12_COMMAND_LIST_TYPE_DIRECT,
-				IID_PPV_ARGS(&commandAllocator));
-			assert(SUCCEEDED(result));
-			// コマンドリストを生成
-			result = device->CreateCommandList(0,
-				D3D12_COMMAND_LIST_TYPE_DIRECT,
-				commandAllocator, nullptr,
-				IID_PPV_ARGS(&commandList));
-			assert(SUCCEEDED(result));
+		// コマンドアロケータを生成
+		result = device->CreateCommandAllocator(
+			D3D12_COMMAND_LIST_TYPE_DIRECT,
+			IID_PPV_ARGS(&commandAllocator));
+		assert(SUCCEEDED(result));
+		// コマンドリストを生成
+		result = device->CreateCommandList(0,
+			D3D12_COMMAND_LIST_TYPE_DIRECT,
+			commandAllocator, nullptr,
+			IID_PPV_ARGS(&commandList));
+		assert(SUCCEEDED(result));
 
-			//コマンドキューを生成
-			result = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
-			assert(SUCCEEDED(result));
+		//コマンドキューを生成
+		result = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
+		assert(SUCCEEDED(result));
 
-			swapChainDesc.Width = 1280;
-			swapChainDesc.Height = 720;
-			swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 色情報の書式
-			swapChainDesc.SampleDesc.Count = 1; // マルチサンプルしない
-			swapChainDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER; // バックバッファ用
-			swapChainDesc.BufferCount = 2; // バッファ数を2つに設定
-			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // フリップ後は破棄
-			swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-			// スワップチェーンの生成
-			result = dxgiFactory->CreateSwapChainForHwnd(
-				commandQueue, win.hwnd, &swapChainDesc, nullptr, nullptr,
-				(IDXGISwapChain1**)&swapChain);
-			assert(SUCCEEDED(result));
+		swapChainDesc.Width = 1280;
+		swapChainDesc.Height = 720;
+		swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 色情報の書式
+		swapChainDesc.SampleDesc.Count = 1; // マルチサンプルしない
+		swapChainDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER; // バックバッファ用
+		swapChainDesc.BufferCount = 2; // バッファ数を2つに設定
+		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // フリップ後は破棄
+		swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+		// スワップチェーンの生成
+		result = dxgiFactory->CreateSwapChainForHwnd(
+			commandQueue, win.hwnd, &swapChainDesc, nullptr, nullptr,
+			(IDXGISwapChain1**)&swapChain);
+		assert(SUCCEEDED(result));
 
-			rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
-			rtvHeapDesc.NumDescriptors = swapChainDesc.BufferCount; // 裏表の2つ
-			// デスクリプタヒープの生成
-			device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
+		rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
+		rtvHeapDesc.NumDescriptors = swapChainDesc.BufferCount; // 裏表の2つ
+		// デスクリプタヒープの生成
+		device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
 
-			backBuffers.resize(swapChainDesc.BufferCount);
+		backBuffers.resize(swapChainDesc.BufferCount);
 
-			// スワップチェーンの全てのバッファについて処理する
-			for (size_t i = 0; i < backBuffers.size(); i++) {
-				// スワップチェーンからバッファを取得
-				swapChain->GetBuffer((UINT)i, IID_PPV_ARGS(&backBuffers[i]));
-				// デスクリプタヒープのハンドルを取得
-				D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
-				// 裏か表かでアドレスがずれる
-				rtvHandle.ptr += i * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
-				// レンダーターゲットビューの設定
-				D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
-				// シェーダーの計算結果をSRGBに変換して書き込む
-				rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-				rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-				// レンダーターゲットビューの生成
-				device->CreateRenderTargetView(backBuffers[i], &rtvDesc, rtvHandle);
-			}
+		// スワップチェーンの全てのバッファについて処理する
+		for (size_t i = 0; i < backBuffers.size(); i++) {
+			// スワップチェーンからバッファを取得
+			swapChain->GetBuffer((UINT)i, IID_PPV_ARGS(&backBuffers[i]));
+			// デスクリプタヒープのハンドルを取得
+			D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
+			// 裏か表かでアドレスがずれる
+			rtvHandle.ptr += i * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
+			// レンダーターゲットビューの設定
+			D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
+			// シェーダーの計算結果をSRGBに変換して書き込む
+			rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+			rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+			// レンダーターゲットビューの生成
+			device->CreateRenderTargetView(backBuffers[i], &rtvDesc, rtvHandle);
+		}
 
-			//フェンス生成
-			result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+		//フェンス生成
+		result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 	}
 
 	void DrawInitialize()
@@ -280,15 +288,10 @@ public:
 		// パイプランステートの生成
 		PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState);
 
-		PipeLineState(D3D12_FILL_MODE_WIREFRAME, pipelineState+1);
+		PipeLineState(D3D12_FILL_MODE_WIREFRAME, pipelineState + 1);
 
 
 		//03_02
-		//定数バッファ用データ構造体（マテリアル）
-		struct ConstBufferDataMaterial
-		{
-			XMFLOAT4 color;//色(RGBA)
-		};
 		//ヒープ設定
 		D3D12_HEAP_PROPERTIES cbHeapProp{};
 		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
@@ -311,11 +314,9 @@ public:
 			IID_PPV_ARGS(&constBuffMaterial));
 		assert(SUCCEEDED(result));
 		//定数バッファのマッピング
-		ConstBufferDataMaterial* constMapMaterial = nullptr;
 		result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
 		assert(SUCCEEDED(result));
-		//値を書き込むと自動的に転送される
-		constMapMaterial->color = XMFLOAT4(1, 0, 0, 0.5f);//半透明の赤
+		constBuffTransfer({ 1.0f,0,0,0.5f });
 	}
 
 	void DrawUpdate(const XMFLOAT4& winRGBA)
@@ -371,11 +372,13 @@ public:
 		assert(SUCCEEDED(result));
 	}
 
-	
+
 
 	void GraphicsCommand(const WindowsApp& win, const D3D12_VIEWPORT& viewPort, const int& pipelineNum,
 		const bool& primitiveMode)
 	{
+		constBuffTransfer({ -0.001f,0.001f,0,0 });
+
 		D3D_PRIMITIVE_TOPOLOGY primitive;
 
 		if (!primitiveMode) primitive = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -429,7 +432,7 @@ public:
 		pipelineDesc.RasterizerState.FillMode = fillMode; // ポリゴン内塗りつぶし
 		pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
-		Blend(D3D12_BLEND_OP_ADD,false,true);
+		Blend(D3D12_BLEND_OP_ADD, false, true);
 
 		// 頂点レイアウトの設定
 		pipelineDesc.InputLayout.pInputElementDescs = inputLayout;
@@ -466,7 +469,7 @@ public:
 	}
 
 	void Blend(const D3D12_BLEND_OP& blendMode,
-		const bool& Inversion=0, const bool& Translucent=0)
+		const bool& Inversion = 0, const bool& Translucent = 0)
 	{
 		//共通設定
 		D3D12_RENDER_TARGET_BLEND_DESC& blendDesc = pipelineDesc.BlendState.RenderTarget[0];
@@ -492,6 +495,17 @@ public:
 			blendDesc.SrcBlend = D3D12_BLEND_ONE;//ソースの値を100%使う
 			blendDesc.DestBlend = D3D12_BLEND_ONE;//デストの値を100%使う
 		}
+	}
+
+	void constBuffTransfer(const XMFLOAT4& plusRGBA)
+	{
+		color2.x += plusRGBA.x;
+		color2.y += plusRGBA.y;
+		color2.z += plusRGBA.z;
+		color2.w += plusRGBA.w;
+
+		//値を書き込むと自動的に転送される
+		constMapMaterial->color = color2;//半透明の赤
 	}
 
 	void Error(const bool& filed)
