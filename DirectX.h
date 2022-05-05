@@ -38,12 +38,10 @@ private:
 	// 頂点バッファビューの作成
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
 	//頂点データ
-	XMFLOAT3 vertices[6] = {
+	XMFLOAT3 vertices[4] = {
 		{-0.5f, -0.5f, 0.0f},	//左下
-		{+0.5f, -0.5f, 0.0f},	//右下
-		{-0.5f, -0.f, 0.0f},	//左中
-		{+0.5f, -0.f, 0.0f},	//右中
 		{-0.5f, +0.5f, 0.0f},	//左上
+		{+0.5f, -0.5f, 0.0f},	//右下
 		{+0.5f, +0.5f, 0.0f}	//右上
 	};
 	// ビューポート設定コマンド
@@ -73,6 +71,14 @@ private:
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
 	XMFLOAT4 color2 = { 0,0,0,0 };
+	//インデックスバッファビューの作成
+	D3D12_INDEX_BUFFER_VIEW ibView{};
+	//インデックスデータ
+	uint16_t indices[6] =
+	{
+		0,1,2,//三角形1つ目
+		1,2,3,//三角形2つ目
+	};
 
 public:
 	HRESULT result;
@@ -215,24 +221,11 @@ public:
 		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 		//リソース設定
 		D3D12_RESOURCE_DESC resDesc{};
-		resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		resDesc.Width = sizeVB;						//頂点データ全体のサイズ
-		resDesc.Height = 1;
-		resDesc.DepthOrArraySize = 1;
-		resDesc.MipLevels = 1;
-		resDesc.SampleDesc.Count = 1;
-		resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		ResourceProperties(resDesc, sizeVB);
 
 		//頂点バッファの生成
 		ID3D12Resource* vertBuff = nullptr;
-		result = device->CreateCommittedResource(
-			&heapProp, // ヒープ設定
-			D3D12_HEAP_FLAG_NONE,
-			&resDesc, // リソース設定
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(&vertBuff));
-		assert(SUCCEEDED(result));
+		BuffProperties(heapProp, resDesc, &vertBuff);
 
 		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 		XMFLOAT3* vertMap = nullptr;
@@ -299,26 +292,40 @@ public:
 		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
 		//リソース設定
 		D3D12_RESOURCE_DESC cbResourceDesc{};
-		cbResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		cbResourceDesc.Width = (sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff;//256バイトアライメント
-		cbResourceDesc.Height = 1;
-		cbResourceDesc.DepthOrArraySize = 1;
-		cbResourceDesc.MipLevels = 1;
-		cbResourceDesc.SampleDesc.Count = 1;
-		cbResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		ResourceProperties(cbResourceDesc, 
+			((UINT)sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff/*256バイトアライメント*/);
 		//定数バッファの生成
-		result = device->CreateCommittedResource(
-			&cbHeapProp,//ヒープ設定
-			D3D12_HEAP_FLAG_NONE,
-			&cbResourceDesc,//リソース設定
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(&constBuffMaterial));
-		assert(SUCCEEDED(result));
+		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial);
 		//定数バッファのマッピング
 		result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
 		assert(SUCCEEDED(result));
 		constBuffTransfer({ 1.0f,0,0,0.5f });
+
+		//03_04
+		//インデックスデータ
+		//インデックスデータ全体のサイズ
+		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
+
+		//リソース設定
+		ResourceProperties(resDesc, sizeIB);
+		//インデックスバッファの作成
+		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
+		BuffProperties(heapProp, resDesc, &indexBuff);
+		//インデックスバッファをマッピング
+		uint16_t* indexMap = nullptr;
+		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		//全インデックスに対して
+		for (int i = 0; i < _countof(indices); i++)
+		{
+			indexMap[i] = indices[i];//インデックスをコピー
+		}
+		//マッピングを解除
+		indexBuff->Unmap(0, nullptr);
+
+		//インデックスバッファビューの作成
+		ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibView.Format = DXGI_FORMAT_R16_UINT;
+		ibView.SizeInBytes = sizeIB;
 	}
 
 	void DrawUpdate(const XMFLOAT4& winRGBA)
@@ -405,7 +412,7 @@ public:
 		commandList->SetGraphicsRootSignature(rootSignature);
 
 		// プリミティブ形状の設定コマンド
-		commandList->IASetPrimitiveTopology(primitive); // 三角か四角
+		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角か四角
 
 		// 頂点バッファビューの設定コマンド
 		commandList->IASetVertexBuffers(0, 1, &vbView);
@@ -413,8 +420,11 @@ public:
 		//定数バッファビュー(CBV)の設定コマンド
 		commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
+		//インデックスバッファビューの設定コマンド
+		commandList->IASetIndexBuffer(&ibView);
+
 		// 描画コマンド
-		commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
+		commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
 	}
 
 
@@ -508,6 +518,30 @@ public:
 
 		//値を書き込むと自動的に転送される
 		constMapMaterial->color = color2;//半透明の赤
+	}
+
+	void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size)
+	{
+		resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+		resDesc.Width = size;						//頂点データ全体のサイズ
+		resDesc.Height = 1;
+		resDesc.DepthOrArraySize = 1;
+		resDesc.MipLevels = 1;
+		resDesc.SampleDesc.Count = 1;
+		resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	}
+
+	void BuffProperties(D3D12_HEAP_PROPERTIES& heap,D3D12_RESOURCE_DESC& resource,
+		ID3D12Resource** buff)
+	{
+		result = device->CreateCommittedResource(
+			&heap,//ヒープ設定
+			D3D12_HEAP_FLAG_NONE,
+			&resource,//リソース設定
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(buff));
+		assert(SUCCEEDED(result));
 	}
 
 	void Error(const bool& filed)
