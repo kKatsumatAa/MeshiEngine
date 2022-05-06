@@ -38,11 +38,14 @@ private:
 	// 頂点バッファビューの作成
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
 	//頂点データ
-	XMFLOAT3 vertices[4] = {
-		{-0.5f, -0.5f, 0.0f},	//左下
+	XMFLOAT3 vertices[6] = {
 		{-0.5f, +0.5f, 0.0f},	//左上
+		{-0.5f,0,0},			//左中
+		{-0.5f, -0.5f, 0.0f},	//左下
+
+		{+0.5f, +0.5f, 0.0f},	//右上
+		{+0.5f,0,0},			//右中
 		{+0.5f, -0.5f, 0.0f},	//右下
-		{+0.5f, +0.5f, 0.0f}	//右上
 	};
 	// ビューポート設定コマンド
 	D3D12_VIEWPORT viewport{};
@@ -74,10 +77,15 @@ private:
 	//インデックスバッファビューの作成
 	D3D12_INDEX_BUFFER_VIEW ibView{};
 	//インデックスデータ
-	uint16_t indices[6] =
+	uint16_t indices[14] =
 	{
-		0,1,2,//三角形1つ目
-		1,2,3,//三角形2つ目
+		0,3,
+		0,4,
+		1,3,
+		1,4,
+		1,5,
+		2,4,
+		2,5
 	};
 
 public:
@@ -412,7 +420,7 @@ public:
 		commandList->SetGraphicsRootSignature(rootSignature);
 
 		// プリミティブ形状の設定コマンド
-		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角か四角
+		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 三角か四角
 
 		// 頂点バッファビューの設定コマンド
 		commandList->IASetVertexBuffers(0, 1, &vbView);
