@@ -15,15 +15,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	KeyboardInput keys;
 	WindowsApp win;
 
-	D3D12_VIEWPORT viewport[4] = {
-		{0,0,win.window_width * (2.0 / 3.0), win.window_height * (2.0 / 3.0), 0.0f,1.0f},
-		{ win.window_width * (2.0 / 3.0),0,win.window_width * (1.0 / 3.0), win.window_height * (2.0 / 3.0),
-		0.0f,1.0f },
-		{ 0,win.window_height * (2.0 / 3.0),win.window_width * (2.0 / 3.0), win.window_height * (1.0 / 3.0),
-		0.0f,1.0f },
-		{ win.window_width * (2.0 / 3.0),win.window_height * (2.0 / 3.0),win.window_width * (1.0 / 3.0), win.window_height * (1.0 / 3.0),
-		0.0f,1.0f }
-	};
+	D3D12_VIEWPORT viewport =
+	{ 0,0,win.window_width, win.window_height, 0.0f,1.0f };
+	
+	
 
 	Directx directx(win);
 
@@ -78,10 +73,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (pipelineNum)  pipelineNum = 0;
 			else              pipelineNum = 1;
 		}
-		for (int i = 0; i < 4; i++)
-		{
-			directx.GraphicsCommand(win,viewport[i],pipelineNum,primitiveNum);
-		}
+		directx.GraphicsCommand(win,viewport,pipelineNum,primitiveNum);
+		
 
 		// 4.描画コマンドここまで //
 
