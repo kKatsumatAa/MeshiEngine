@@ -56,13 +56,6 @@ private:
 		0,1,2,//三角形1つ目
 		1,2,3,//三角形2つ目
 	};
-	////頂点データ
-	//XMFLOAT3 vertices[4] = {
-	//	{-0.5f, -0.5f, 0.0f},	//左下
-	//	{-0.5f, +0.5f, 0.0f},	//左上
-	//	{+0.5f, -0.5f, 0.0f},	//右下
-	//	{+0.5f, +0.5f, 0.0f}	//右上
-	//};
 	// ビューポート設定コマンド
 	D3D12_VIEWPORT viewport{};
 	// グラフィックスパイプライン設定
@@ -98,12 +91,6 @@ private:
 	XMFLOAT4 color2 = { 0,0,0,0 };
 	//インデックスバッファビューの作成
 	D3D12_INDEX_BUFFER_VIEW ibView{};
-	//インデックスデータ
-	//uint16_t indices[6] =
-	//{
-	//	0,1,2,//三角形1つ目
-	//	1,2,3,//三角形2つ目
-	//};
 
 public:
 	HRESULT result;
@@ -352,6 +339,64 @@ public:
 		ibView.Format = DXGI_FORMAT_R16_UINT;
 		ibView.SizeInBytes = sizeIB;
 
+		//04_02
+		//横方向ピクセル数
+		const size_t textureWidth = 256;
+		//縦方向ピクセル数
+		const size_t textureHeight = 256;
+		//配列の要素数
+		const size_t imageDataCount = textureWidth * textureHeight;
+		//画像イメージデータ配列
+		XMFLOAT4* imageData = new XMFLOAT4[imageDataCount];//あとで必ず解放！！
+		//全ピクセルの色を初期化
+		for (size_t i = 0; i < imageDataCount; i++)
+		{
+			imageData[i].x = 1.0f;//R
+			imageData[i].x = 0.0f;//G
+			imageData[i].x = 0.0f;//B
+			imageData[i].x = 1.0f;//A
+		}
+		//ヒープ設定
+		D3D12_HEAP_PROPERTIES textureHeapProp{};
+		textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
+		textureHeapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+		textureHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+		//リソース設定
+		D3D12_RESOURCE_DESC textureResourceDesc{};
+		textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+		textureResourceDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		textureResourceDesc.Width = textureWidth;						//頂点データ全体のサイズ
+		textureResourceDesc.Height = textureHeight;
+		textureResourceDesc.DepthOrArraySize = 1;
+		textureResourceDesc.MipLevels = 1;
+		textureResourceDesc.SampleDesc.Count = 1;
+		//テクスチャバッファの生成
+		ID3D12Resource* texBuff = nullptr;
+		BuffProperties(textureHeapProp, textureResourceDesc, &texBuff);
+		//テクスチャバッファにデータ転送
+		result = texBuff->WriteToSubresource(
+			0,
+			nullptr,//全領域へコピー
+			imageData,//元データアドレス
+			sizeof(XMFLOAT4) * textureWidth,//1ラインサイズ
+			sizeof(XMFLOAT4) * imageDataCount//全サイズ
+		);
+		//元データ解放
+		delete[] imageData;
+
+		//SRVの最大個数
+		const size_t kMaxSRVCount = 2056;
+		//デスクリプタヒープの設定
+		D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+		srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+		srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダーから見えるように
+		srvHeapDesc.NumDescriptors = kMaxSRVCount;
+		//設定をもとにSRV用デスクリプタヒープを生成
+		ID3D12DescriptorHeap* srvHeap = nullptr;
+		result = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
+		assert(SUCCEEDED(result));
+		//SRVヒープの先頭ハンドルを取得
+		D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
 		
 	}
 
