@@ -1,8 +1,8 @@
 #include "Util.h"
 
-void Vec3xM4(Vec3& v, const M4& m4)
+void Vec4xM4(Vec4& v, const M4& m4)
 {
-	float v3[2][4] = {
+	float v4[2][4] = {
 		{ v.x,v.y,v.z,v.w },
 		{0,0,0,0}
 	};
@@ -11,11 +11,11 @@ void Vec3xM4(Vec3& v, const M4& m4)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			v3[1][i] += v3[0][j] * m4.m[j][i];
+			v4[1][i] += v4[0][j] * m4.m[j][i];
 		}
 	}
 
-	v = { v3[1][0],v3[1][1] ,v3[1][2] ,v3[1][3] };
+	v = { v4[1][0],v4[1][1] ,v4[1][2] ,v4[1][3] };
 }
 
 void M4xM4(M4& m4, const M4& other)
@@ -36,9 +36,9 @@ void M4xM4(M4& m4, const M4& other)
 	m4 = m;
 }
 
-void NormVec3(Vec3& v/*, const M4& m4*/)
+void NormVec4(Vec4& v/*, const M4& m4*/)
 {
-	Vec3xM4(v, normalM);
+	Vec4xM4(v, normalM);
 }
 
 void TransposeM4(M4& m4)
