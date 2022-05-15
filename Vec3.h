@@ -10,13 +10,12 @@ public:
 	float x;
 	float y;
 	float z;
-	float w;
 
 	Vec3()
-		:x(0), y(0), z(0), w(0)
+		:x(0), y(0), z(0)
 	{}
-	Vec3(const float x, const float y, const float z, const float w)
-		:x(x), y(y), z(z), w(w)
+	Vec3(const float x, const float y, const float z)
+		:x(x), y(y), z(z)
 	{}
 
 	//•Ö—˜ŠÖ”
