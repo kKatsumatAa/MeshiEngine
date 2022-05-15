@@ -140,7 +140,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="KeyboardInput.cpp" />
+    <ClCompile Include="M4.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Util.cpp" />
+    <ClCompile Include="Vec3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicPS.hlsl">
@@ -159,6 +162,9 @@
   <ItemGroup>
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="KeyboardInput.h" />
+    <ClInclude Include="M4.h" />
+    <ClInclude Include="Util.h" />
+    <ClInclude Include="Vec3.h" />
     <ClInclude Include="WindowsApp.h" />
   </ItemGroup>
   <ItemGroup>
