@@ -368,9 +368,9 @@ public:
 		for (size_t i = 0; i < imageDataCount; i++)
 		{
 			imageData[i].x = 1.0f;//R
-			imageData[i].x = 0.0f;//G
-			imageData[i].x = 0.0f;//B
-			imageData[i].x = 1.0f;//A
+			imageData[i].y = 0.0f;//G
+			imageData[i].z = 0.0f;//B
+			imageData[i].w = 1.0f;//A
 		}
 		//ƒq[ƒvÝ’è
 		D3D12_HEAP_PROPERTIES textureHeapProp{};
