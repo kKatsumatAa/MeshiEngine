@@ -6,6 +6,7 @@
 #include <string>
 #include "WindowsApp.h"
 #include <DirectXMath.h>
+#include <DirectXTex.h>
 using namespace DirectX;
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
