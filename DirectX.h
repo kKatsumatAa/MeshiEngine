@@ -78,7 +78,7 @@ private:
 	}, // (1行で書いたほうが見やすい)
 	};
 	//ルートパラメータの設定
-	D3D12_ROOT_PARAMETER rootParam = {};
+	D3D12_ROOT_PARAMETER rootParams[2] = {};
 	//定数バッファの生成
 	ID3D12Resource* constBuffMaterial = nullptr;
 	//定数バッファ用データ構造体（マテリアル）
@@ -91,6 +91,8 @@ private:
 	XMFLOAT4 color2 = { 0,0,0,0 };
 	//インデックスバッファビューの作成
 	D3D12_INDEX_BUFFER_VIEW ibView{};
+	//設定をもとにSRV用デスクリプタヒープを生成
+	ID3D12DescriptorHeap* srvHeap = nullptr;
 
 public:
 	HRESULT result;
@@ -285,18 +287,32 @@ public:
 		// エラーなら
 		Error(FAILED(result));
 
+		//04_02
+		//デスクリプタレンジの設定
+		D3D12_DESCRIPTOR_RANGE descriptorRange{};
+		descriptorRange.NumDescriptors = 1;      //一度の描画に使うテクスチャの枚数
+		descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+		descriptorRange.BaseShaderRegister = 0;  //テクスチャレジスタ0番
+		descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+
 		//ルートパラメータの設定
-		rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-		rootParam.Descriptor.ShaderRegister = 0;//定数バッファ番号
-		rootParam.Descriptor.RegisterSpace = 0;//デフォルト値
-		rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+		//定数バッファ0番
+		rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+		rootParams[0].Descriptor.ShaderRegister = 0;//定数バッファ番号
+		rootParams[0].Descriptor.RegisterSpace = 0;//デフォルト値
+		rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+		//テクスチャレジスタ0番
+		rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+		rootParams[1].DescriptorTable.pDescriptorRanges = &descriptorRange;//デスクリプタレンジ
+		rootParams[1].DescriptorTable.NumDescriptorRanges = 1;//〃数
+		rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 
 
 		// パイプランステートの生成
 		PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState);
 
 		PipeLineState(D3D12_FILL_MODE_WIREFRAME, pipelineState + 1);
-
 
 		//03_02
 		//ヒープ設定
@@ -392,12 +408,20 @@ public:
 		srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダーから見えるように
 		srvHeapDesc.NumDescriptors = kMaxSRVCount;
 		//設定をもとにSRV用デスクリプタヒープを生成
-		ID3D12DescriptorHeap* srvHeap = nullptr;
 		result = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
 		assert(SUCCEEDED(result));
 		//SRVヒープの先頭ハンドルを取得
 		D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
 		
+		//シェーダーリソースビュー設定
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
+		srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		srvDesc.Shader4ComponentMapping =
+			D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+		srvDesc.Texture2D.MipLevels = 1;
+		//ハンドルのさす位置にシェーダーリソースビュー作成
+		device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
 	}
 
 	void DrawUpdate(const XMFLOAT4& winRGBA)
@@ -491,6 +515,13 @@ public:
 
 		//定数バッファビュー(CBV)の設定コマンド
 		commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+		//04_02
+		//SRVヒープの設定コマンド
+		commandList->SetDescriptorHeaps(1, &srvHeap);
+		//SRVヒープの先頭ハンドルを取得
+		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+		//SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
+
 
 		//インデックスバッファビューの設定コマンド
 		commandList->IASetIndexBuffer(&ibView);
@@ -534,8 +565,8 @@ public:
 		// ルートシグネチャの設定
 		D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 		rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-		rootSignatureDesc.pParameters = &rootParam;//ルートパラメータの先頭アドレス
-		rootSignatureDesc.NumParameters = 1;//ルートパラメータ数
+		rootSignatureDesc.pParameters = rootParams;//ルートパラメータの先頭アドレス
+		rootSignatureDesc.NumParameters = _countof(rootParams);//ルートパラメータ数
 		// ルートシグネチャのシリアライズ
 		ID3DBlob* rootSigBlob = nullptr;
 		result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
