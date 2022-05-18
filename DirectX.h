@@ -6,11 +6,19 @@
 #include <string>
 #include "WindowsApp.h"
 #include <DirectXMath.h>
+#include<random>
 using namespace DirectX;
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
+
+//乱数シード生成器
+std::random_device seed_gen;
+//メルセンヌツイスター
+std::mt19937_64 engine(seed_gen());
+//乱数範囲
+std::uniform_real_distribution<float> colorRandom(0.f, 1.0f);
 
 class Directx
 {
@@ -368,18 +376,10 @@ public:
 		//全ピクセルの色を初期化
 		for (size_t i = 0; i < imageDataCount; i++)
 		{
-			imageData[i].x = 1.0f;//R
-			imageData[i].y = 0.0f;//G
-			imageData[i].z = 0.0f;//B
-			if (i % 10 == 0)
-			{
-				if (isW) isW = false;
-				else     isW = true;
-			}
-			if (isW)
-				imageData[i].w = 1.0f;//A
-			else
-				imageData[i].w = 0.0f;//A
+			imageData[i].x = colorRandom(engine);//R
+			imageData[i].y = colorRandom(engine);//G
+			imageData[i].z = colorRandom(engine);//B
+			imageData[i].w = 1.0f;//A
 		}
 		//ヒープ設定
 		D3D12_HEAP_PROPERTIES textureHeapProp{};
