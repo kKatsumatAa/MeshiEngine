@@ -320,7 +320,7 @@ public:
 		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
 		//リソース設定
 		D3D12_RESOURCE_DESC cbResourceDesc{};
-		ResourceProperties(cbResourceDesc, 
+		ResourceProperties(cbResourceDesc,
 			((UINT)sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff/*256バイトアライメント*/);
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial);
@@ -364,13 +364,22 @@ public:
 		const size_t imageDataCount = textureWidth * textureHeight;
 		//画像イメージデータ配列
 		XMFLOAT4* imageData = new XMFLOAT4[imageDataCount];//あとで必ず解放！！
+		bool isW = false;
 		//全ピクセルの色を初期化
 		for (size_t i = 0; i < imageDataCount; i++)
 		{
 			imageData[i].x = 1.0f;//R
 			imageData[i].y = 0.0f;//G
 			imageData[i].z = 0.0f;//B
-			imageData[i].w = 1.0f;//A
+			if (i % 10 == 0)
+			{
+				if (isW) isW = false;
+				else     isW = true;
+			}
+			if (isW)
+				imageData[i].w = 1.0f;//A
+			else
+				imageData[i].w = 0.0f;//A
 		}
 		//ヒープ設定
 		D3D12_HEAP_PROPERTIES textureHeapProp{};
@@ -412,7 +421,7 @@ public:
 		assert(SUCCEEDED(result));
 		//SRVヒープの先頭ハンドルを取得
 		D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-		
+
 		//シェーダーリソースビュー設定
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
 		srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -648,7 +657,7 @@ public:
 		resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	}
 
-	void BuffProperties(D3D12_HEAP_PROPERTIES& heap,D3D12_RESOURCE_DESC& resource,
+	void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource,
 		ID3D12Resource** buff)
 	{
 		result = device->CreateCommittedResource(
