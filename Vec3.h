@@ -26,9 +26,9 @@ public:
 	float Dot(const Vec3& other) const;
 
 	//ƒIƒoƒ‰‰Zq
-	Vec3 operator+(const Vec3& other);
+	Vec3 operator+();
 	Vec3& operator+=(const Vec3& other);
-	Vec3 operator-(const Vec3& other);
+	Vec3 operator-();
 	Vec3& operator-=(const Vec3& other);
 	Vec3 operator*(const float& other);
 	Vec3& operator*=(const float& other);

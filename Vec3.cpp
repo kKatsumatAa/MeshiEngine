@@ -36,14 +36,9 @@ float Vec3::Dot(const Vec3& other)const
 //--------------------------------------------------------------
 
 
-Vec3 Vec3::operator+(const Vec3& other)
+Vec3 Vec3::operator+()
 {
-    Vec3 v = *this;
-    v.x += other.x;
-    v.y += other.y;
-    v.z += other.z;
-
-    return Vec3(v);
+    return Vec3(*this);
 }
 
 Vec3& Vec3::operator+=(const Vec3& other)
@@ -55,14 +50,9 @@ Vec3& Vec3::operator+=(const Vec3& other)
     return *this;
 }
 
-Vec3 Vec3::operator-(const Vec3& other)
+Vec3 Vec3::operator-()
 {
-    Vec3 v = *this;
-    v.x -= other.x;
-    v.y -= other.y;
-    v.z -= other.z;
-
-    return Vec3(v);
+    return Vec3({-x,-y,-z});
 }
 
 Vec3& Vec3::operator-=(const Vec3& other)
@@ -118,29 +108,29 @@ Vec3& Vec3::operator/=(const float& other)
 const Vec3 operator+(const Vec3& v1, const Vec3& v2)
 {
     Vec3 temp(v1);
-    return temp + v2;
+    return temp += v2;
 }
 
 const Vec3 operator-(const Vec3& v1, const Vec3& v2)
 {
     Vec3 temp(v1);
-    return temp - v2;
+    return temp -= v2;
 }
 
 const Vec3 operator*(const Vec3& v, float s)
 {
     Vec3 temp(v);
-    return temp * s;
+    return temp *= s;
 }
 
 const Vec3 operator*(float s, const Vec3& v)
 {
     Vec3 temp(v);
-    return temp * s;
+    return temp *= s;
 }
 
 const Vec3 operator/(const Vec3& v, float s)
 {
     Vec3 temp(v);
-    return temp / s;
+    return temp /= s;
 }
