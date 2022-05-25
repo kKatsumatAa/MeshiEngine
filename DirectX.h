@@ -47,10 +47,10 @@ private:
 	};
 	//頂点データ
 	Vertex vertices[4] = {
-		{{0.f,100.f,0.f},{0.0f,1.0f}},//左下
-		{{0.f,0.f,0.f},{0.0f,0.0f}},//左上
-		{{100.f,100.f,0.f},{1.0f,1.0f}},//右下
-		{{100.f,0.f,0.f},{1.0f,0.0f}},//右上
+		{{-50.0f,-50.0f,50.0f},{0.0f,1.0f}},//左下
+		{{-50.0f,50.0f, 50.0f},{0.0f,0.0f}},//左上
+		{{50.0f,-50.0f, 50.0f},{1.0f,1.0f}},//右下
+		{{50.0f,50.0f,  50.0f},{1.0f,0.0f}},//右上
 	};
 	unsigned short indices[6] =
 	{
@@ -515,7 +515,19 @@ public:
 		result = constBuffTransform->Map(0, nullptr, (void**)&constMapTransform);//マッピング
 		assert(SUCCEEDED(result));
 		//単位行列を代入
-		SetNormDigitalMat(constMapTransform->mat, win);
+		//SetNormDigitalMat(constMapTransform->mat, win);
+
+		//05_03
+		constMapTransform->mat =
+			XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
+		XMMATRIX matProjection = XMMatrixPerspectiveFovLH(
+			XMConvertToRadians(45.0f),//fovY
+			(float)win.window_width / win.window_height,//アスペクト比
+			0.1f, 1000.0f//前端、奥端
+		);
+
+		//定数バッファに転送
+		constMapTransform->mat = matProjection;
 	}
 	void DrawUpdate(const XMFLOAT4& winRGBA)
 	{
@@ -759,7 +771,6 @@ public:
 
 	void SetNormDigitalMat(XMMATRIX& mat, const WindowsApp& win)
 	{
-		mat = XMMatrixIdentity();
 		mat.r[0].m128_f32[0] = 2.0f / win.window_width;
 		mat.r[1].m128_f32[1] = -2.0f / win.window_height;
 		mat.r[3].m128_f32[0] = -1.0f;
