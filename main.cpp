@@ -31,7 +31,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	 //描画初期化処理-------------
 	
-	directx.DrawInitialize();
+	directx.DrawInitialize(win);
 
 	//初期化処理　ここまで//
 
