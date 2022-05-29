@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="KeyboardInput.cpp" />
     <ClCompile Include="M4.cpp" />
     <ClCompile Include="main.cpp" />
