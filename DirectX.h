@@ -124,11 +124,11 @@ public:
 
 	void DrawInitialize(const WindowsApp& win);
 
-	void DrawUpdate(const XMFLOAT4& winRGBA);
+	void DrawUpdate(const XMFLOAT4& winRGBA = { 0.1f,0.25f,0.5f,0.0f });
 
 	void DrawUpdate2();
 
-	void GraphicsCommand(const WindowsApp& win, const D3D12_VIEWPORT& viewPort, const int& pipelineNum,
+	void GraphicsCommand(const WindowsApp& win, const int& pipelineNum,
 		const bool& primitiveMode);
 
 

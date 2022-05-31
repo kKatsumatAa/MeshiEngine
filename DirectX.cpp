@@ -463,7 +463,7 @@ void Directx::DrawUpdate2()
 	assert(SUCCEEDED(result));
 }
 
-void Directx::GraphicsCommand(const WindowsApp& win, const D3D12_VIEWPORT& viewPort, const int& pipelineNum, const bool& primitiveMode)
+void Directx::GraphicsCommand(const WindowsApp& win, const int& pipelineNum, const bool& primitiveMode=0)
 {
 	constBuffTransfer({ -0.001f,0.001f,0,0 });
 
@@ -473,7 +473,7 @@ void Directx::GraphicsCommand(const WindowsApp& win, const D3D12_VIEWPORT& viewP
 	else               primitive = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
 
 	// ビューポート設定コマンド
-	viewport = viewPort;
+	viewport = { 0, 0, win.window_width, win.window_height, 0.0f, 1.0f };
 	// ビューポート設定コマンドを、コマンドリストに積む
 	commandList->RSSetViewports(1, &viewport);
 

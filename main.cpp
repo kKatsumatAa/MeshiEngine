@@ -15,11 +15,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	KeyboardInput keys;
 	WindowsApp win;
 
-	D3D12_VIEWPORT viewport =
-	{ 0,0,win.window_width, win.window_height, 0.0f,1.0f };
-	
-	
-
 	Directx directx(win);
 
 	int pipelineNum = 0;
@@ -47,7 +42,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//キーボード情報の取得開始
 		keys.Update();
 
-		directx.DrawUpdate({ 0.1f,0.25f,0.5f,0.0f });
+		directx.DrawUpdate();
 
 		//数字の0キーが押されていたら
 		if (keys.keyTrigger(DIK_0))
@@ -73,7 +68,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (pipelineNum)  pipelineNum = 0;
 			else              pipelineNum = 1;
 		}
-		directx.GraphicsCommand(win,viewport,pipelineNum,primitiveNum);
+		directx.GraphicsCommand(win,pipelineNum,primitiveNum);
 		
 
 		// 4.描画コマンドここまで //
