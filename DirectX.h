@@ -7,6 +7,7 @@
 #include "WindowsApp.h"
 #include <DirectXMath.h>
 #include <DirectXTex.h>
+#include "KeyboardInput.h"
 using namespace DirectX;
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
@@ -47,10 +48,10 @@ private:
 	};
 	//頂点データ
 	Vertex vertices[4] = {
-		{{-50.0f,-50.0f,50.0f},{0.0f,1.0f}},//左下
-		{{-50.0f,50.0f, 50.0f},{0.0f,0.0f}},//左上
-		{{50.0f,-50.0f, 50.0f},{1.0f,1.0f}},//右下
-		{{50.0f,50.0f,  50.0f},{1.0f,0.0f}},//右上
+		{{-50.0f,-50.0f,0.0f},{0.0f,1.0f}},//左下
+		{{-50.0f,50.0f, 0.0f},{0.0f,0.0f}},//左上
+		{{50.0f,-50.0f, 0.0f},{1.0f,1.0f}},//右下
+		{{50.0f,50.0f,  0.0f},{1.0f,0.0f}},//右上
 	};
 	unsigned short indices[6] =
 	{
@@ -101,7 +102,8 @@ private:
 	};
 	//05_02
 	ID3D12Resource* constBuffTransform = nullptr;//定数バッファのGPUリソースのポインタ
-	ConstBufferDataTransform* constMapTransform = nullptr;//定数バッファのマッピング用ポインタ
+	KeyboardInput key;
+	
 
 
 public:
@@ -116,6 +118,7 @@ public:
 	// 2.描画先の変更
 		// レンダーターゲットビューのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
+	ConstBufferDataTransform* constMapTransform = nullptr;//定数バッファのマッピング用ポインタ
 
 
 

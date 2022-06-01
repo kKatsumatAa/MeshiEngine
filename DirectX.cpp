@@ -400,14 +400,15 @@ void Directx::DrawInitialize(const WindowsApp& win)
 	//05_03
 	constMapTransform->mat =
 		XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
-	XMMATRIX matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(45.0f),//fovY
-		(float)win.window_width / win.window_height,//アスペクト比
-		0.1f, 1000.0f//前端、奥端
-	);
+	
 
-	//定数バッファに転送
-	constMapTransform->mat = matProjection;
+	////05_04
+	//ViewMat view ( 0.0f, 0.0f, -100.0f
+	//	, 0.0f, 0.0f, 0.0f
+	//	, 0.f, 1.f, 0.f );
+
+	////定数バッファに転送
+	//constMapTransform->mat = view.matView * matProjection;
 }
 
 void Directx::DrawUpdate(const XMFLOAT4& winRGBA)

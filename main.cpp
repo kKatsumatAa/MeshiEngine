@@ -1,7 +1,8 @@
 ﻿#include "KeyboardInput.h"
 #include "WindowsApp.h"
 #include "DirectX.h"
-
+#include "ViewMat.h"
+#include "ProjectionMat.h"
 
 
 //windowsアプリでのエントリーポイント(main関数)
@@ -14,6 +15,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//初期化処理　ここから//
 	KeyboardInput keys;
 	WindowsApp win;
+	ViewMat viewMat(0.0f, 100.0f, -100.0f
+			, 0.0f, 0.0f, 0.0f
+			, 0.f, 1.f, 0.f );
+	ProjectionMat projectionMat(win);
 
 	Directx directx(win);
 
@@ -41,6 +46,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//毎フレーム処理　ここから//
 		//キーボード情報の取得開始
 		keys.Update();
+
+		if (keys.keyPush(DIK_D) || keys.keyPush(DIK_A))
+		{
+			if (keys.keyPush(DIK_D)) { viewMat.angle += XMConvertToRadians(1.0f); }
+			else if (keys.keyPush(DIK_A)) { viewMat.angle -= XMConvertToRadians(1.0f); }
+
+			//長さを決めてy軸周りを回す
+			viewMat.eye.x = -100 * sinf(viewMat.angle);
+			viewMat.eye.z = -100 * cosf(viewMat.angle);
+		}
+		viewMat.Update();
+		directx.constMapTransform->mat = viewMat.matView * projectionMat.matProjection;
 
 		directx.DrawUpdate();
 
