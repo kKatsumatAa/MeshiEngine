@@ -409,6 +409,12 @@ void Directx::DrawInitialize(const WindowsApp& win)
 
 	////定数バッファに転送
 	//constMapTransform->mat = view.matView * matProjection;
+
+	//05_05
+	/*XMMATRIX matWorld;
+	matWorld = XMMatrixIdentity();
+
+	constMapTransform=matWorld**/
 }
 
 void Directx::DrawUpdate(const XMFLOAT4& winRGBA)

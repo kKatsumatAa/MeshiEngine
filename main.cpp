@@ -3,6 +3,7 @@
 #include "DirectX.h"
 #include "ViewMat.h"
 #include "ProjectionMat.h"
+#include "WorldMat.h"
 
 
 //windowsアプリでのエントリーポイント(main関数)
@@ -15,10 +16,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//初期化処理　ここから//
 	KeyboardInput keys;
 	WindowsApp win;
-	ViewMat viewMat(0.0f, 100.0f, -100.0f
+	ViewMat viewMat(0.0f, 0.0f, -100.0f
 			, 0.0f, 0.0f, 0.0f
 			, 0.f, 1.f, 0.f );
 	ProjectionMat projectionMat(win);
+	WorldMat worldMat;
+	worldMat.matWorld = XMMatrixIdentity();
+	worldMat.SetScale(1.0f, 0.5f, 1.0f);
+	worldMat.SetRot(15.f, 30.0f, 0.0f);
+	worldMat.SetTrans(-50.f, 0.0f, 0.0f);
 
 	Directx directx(win);
 
@@ -46,6 +52,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//毎フレーム処理　ここから//
 		//キーボード情報の取得開始
 		keys.Update();
+		
 
 		if (keys.keyPush(DIK_D) || keys.keyPush(DIK_A))
 		{
@@ -57,7 +64,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			viewMat.eye.z = -100 * cosf(viewMat.angle);
 		}
 		viewMat.Update();
-		directx.constMapTransform->mat = viewMat.matView * projectionMat.matProjection;
+		
+		directx.constMapTransform->mat = worldMat.matWorld * viewMat.matView * projectionMat.matProjection;
 
 		directx.DrawUpdate();
 

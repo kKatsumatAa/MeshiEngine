@@ -150,6 +150,7 @@
     <ClCompile Include="Vec3.cpp" />
     <ClCompile Include="Vec4.cpp" />
     <ClCompile Include="ViewMat.cpp" />
+    <ClCompile Include="WorldMat.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicPS.hlsl">
@@ -175,6 +176,7 @@
     <ClInclude Include="Vec4.h" />
     <ClInclude Include="ViewMat.h" />
     <ClInclude Include="WindowsApp.h" />
+    <ClInclude Include="WorldMat.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Basic.hlsli" />

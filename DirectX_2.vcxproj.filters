@@ -42,6 +42,9 @@
     <ClCompile Include="ProjectionMat.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="WorldMat.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicVS.hlsl" />
@@ -73,6 +76,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="ProjectionMat.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldMat.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
   </ItemGroup>
