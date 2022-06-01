@@ -5,8 +5,8 @@
 
 //©ì
 void Vec4xM4(Vec4& v, const M4& m4);
-void M4xM4(M4& m4, const M4& other);
-void NormVec4(Vec4& v/*, const M4& m4*/);
-void TransposeM4(M4& m4);
 
-
+//ƒ‰ƒWƒAƒ“Œn
+const float pi = 3.141592f;
+float AngletoRadi(const float& angle);
+float RaditoAngle(const float& radian);
