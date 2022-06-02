@@ -2,25 +2,61 @@
 
 WorldMat::WorldMat()
 {
+	matWorld = 
+	{ 1,0,0,0,
+	  0,1,0,0,
+	  0,0,1,0,
+	  0,0,0,1 };
+
+	matScale =
+	{ 1,0,0,0,
+	  0,1,0,0,
+	  0,0,1,0,
+	  0,0,0,1 };
+
+	matRot =
+	{ 1,0,0,0,
+	  0,1,0,0,
+	  0,0,1,0,
+	  0,0,0,1 };
+
+	matTrans =
+	{ 1,0,0,0,
+	  0,1,0,0,
+	  0,0,1,0,
+	  0,0,0,1 };
 }
 
-void WorldMat::SetScale(float x, float y, float z)
+void WorldMat::SetScale()
 {
-	matScale = XMMatrixScaling(x, y, z);
+	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matWorld *= matScale;
 }
 
-void WorldMat::SetRot(float angleX, float angleY, float angleZ)
+void WorldMat::SetRot()
 {
 	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(angleZ));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(angleX));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(angleY));
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(rot.z));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(rot.x));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rot.y));
 	matWorld *= matRot;
 }
 
-void WorldMat::SetTrans(float x, float y, float z)
+void WorldMat::SetTrans()
 {
-	matTrans = XMMatrixTranslation(x, y, z);
+	matTrans = XMMatrixTranslation(trans.x, trans.y, trans.z);
 	matWorld *= matTrans;
+}
+
+void WorldMat::SetWorld()
+{
+	matWorld =
+	{ 1,0,0,0,
+	  0,1,0,0,
+	  0,0,1,0,
+	  0,0,0,1 };
+
+	SetScale();
+	SetRot();
+	SetTrans();
 }

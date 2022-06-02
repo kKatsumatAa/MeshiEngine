@@ -21,10 +21,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			, 0.f, 1.f, 0.f );
 	ProjectionMat projectionMat(win);
 	WorldMat worldMat;
-	worldMat.matWorld = XMMatrixIdentity();
-	worldMat.SetScale(1.0f, 0.5f, 1.0f);
-	worldMat.SetRot(15.f, 30.0f, 0.0f);
-	worldMat.SetTrans(-50.f, 0.0f, 0.0f);
+	worldMat.scale = { 1.0f, 0.5f, 1.0f };
+	worldMat.rot = { 15.f, 30.0f, 0.0f };
+	worldMat.trans = { -50.f, 0.0f, 0.0f };
+
+	XMFLOAT3 position;
 
 	Directx directx(win);
 
@@ -54,7 +55,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		keys.Update();
 		
 
-		if (keys.keyPush(DIK_D) || keys.keyPush(DIK_A))
+		if (keys.keyPush(DIK_D) || keys.keyPush(DIK_A))//カメラ
 		{
 			if (keys.keyPush(DIK_D)) { viewMat.angle += XMConvertToRadians(1.0f); }
 			else if (keys.keyPush(DIK_A)) { viewMat.angle -= XMConvertToRadians(1.0f); }
@@ -63,7 +64,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			viewMat.eye.x = -100 * sinf(viewMat.angle);
 			viewMat.eye.z = -100 * cosf(viewMat.angle);
 		}
-		viewMat.Update();
+		viewMat.SetMat();
+
+		if (keys.keyPush(DIK_DOWN) || keys.keyPush(DIK_UP)|| keys.keyPush(DIK_LEFT)|| keys.keyPush(DIK_RIGHT))//translasion
+		{
+			if (keys.keyPush(DIK_DOWN)) { worldMat.trans.y -= 1.0f; }
+			else if (keys.keyPush(DIK_UP)) { worldMat.trans.y += 1.0f; }
+			if (keys.keyPush(DIK_LEFT)) { worldMat.trans.x -= 1.0f; }
+			else if (keys.keyPush(DIK_RIGHT)) { worldMat.trans.x += 1.0f; }
+
+			worldMat.SetWorld();
+		}
 		
 		directx.constMapTransform->mat = worldMat.matWorld * viewMat.matView * projectionMat.matProjection;
 

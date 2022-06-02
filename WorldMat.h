@@ -5,18 +5,21 @@ using namespace DirectX;
 class WorldMat
 {
 private:
-
-
-public:
-	XMMATRIX matWorld;
+	void SetScale();
+	void SetRot();
+	void SetTrans();
 	XMMATRIX matScale;
 	XMMATRIX matRot;
 	XMMATRIX matTrans;
 
+public:
+	XMMATRIX matWorld;
+	XMFLOAT3 scale = { 0,0,0 };
+	XMFLOAT3 rot = { 0,0,0 };
+	XMFLOAT3 trans = { 0,0,0 };
+
 
 	//
 	WorldMat();
-	void SetScale(float x, float y, float z);
-	void SetRot(float angleX, float angleY, float angleZ);
-	void SetTrans(float x, float y, float z);
+	void SetWorld();
 };
