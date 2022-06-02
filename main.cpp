@@ -24,6 +24,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	worldMat.scale = { 1.0f, 0.5f, 1.0f };
 	worldMat.rot = { 15.f, 30.0f, 0.0f };
 	worldMat.trans = { -50.f, 0.0f, 0.0f };
+	worldMat.SetWorld();
 
 	XMFLOAT3 position;
 

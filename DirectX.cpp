@@ -398,6 +398,7 @@ void Directx::DrawInitialize(const WindowsApp& win)
 	//SetNormDigitalMat(constMapTransform->mat, win);
 
 	//05_03
+	//平行投影変換（スプライト描画）
 	constMapTransform->mat =
 		XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
 	
