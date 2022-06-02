@@ -4,6 +4,7 @@
 #include "ViewMat.h"
 #include "ProjectionMat.h"
 #include "WorldMat.h"
+#include "Draw.h"
 
 
 //windowsアプリでのエントリーポイント(main関数)
@@ -14,6 +15,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	MSG msg{};	//メッセージ
 
 	//初期化処理　ここから//
+	
 	KeyboardInput keys;
 	WindowsApp win;
 	ViewMat viewMat(0.0f, 0.0f, -100.0f
@@ -25,10 +27,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	worldMat.rot = { 15.f, 30.0f, 0.0f };
 	worldMat.trans = { -50.f, 0.0f, 0.0f };
 	worldMat.SetWorld();
+	WorldMat worldMat2;
+	worldMat2.scale = { 1.0f, 0.5f, 1.0f };
+	worldMat2.rot = { 15.f, 30.0f, 0.0f };
+	worldMat2.trans = { -50.f, 0.0f, 0.0f };
+	worldMat2.SetWorld();
 
 	XMFLOAT3 position;
 
 	Directx directx(win);
+	Draw draw(win, directx);
+	Draw draw2(win, directx);
 
 	int pipelineNum = 0;
 	bool primitiveNum = false;
@@ -39,7 +48,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	 //描画初期化処理-------------
 	
-	directx.DrawInitialize(win);
+	//directx.DrawInitialize(win);
 
 	//初期化処理　ここまで//
 
@@ -77,22 +86,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			worldMat.SetWorld();
 		}
 		
-		directx.constMapTransform->mat = worldMat.matWorld * viewMat.matView * projectionMat.matProjection;
+		draw.constMapTransform->mat = worldMat.matWorld * viewMat.matView * projectionMat.matProjection;
+		draw2.constMapTransform->mat = worldMat2.matWorld * viewMat.matView * projectionMat.matProjection;
 
 		directx.DrawUpdate();
-
-		//数字の0キーが押されていたら
-		if (keys.keyTrigger(DIK_0))
-		{
-			OutputDebugStringA("HIT 0 \n");
-		}
-
-		
-		if (keys.keyPush(DIK_SPACE))
-		{
-			FLOAT clearColor[] = { 0.8f,0.0f, 0.8f,0.0f };
-			directx.commandList->ClearRenderTargetView(directx.rtvHandle, clearColor, 0, nullptr);
-		}
 
 		// 4.描画コマンドここから　//-----------
 		if (keys.keyTrigger(DIK_1))
@@ -105,7 +102,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (pipelineNum)  pipelineNum = 0;
 			else              pipelineNum = 1;
 		}
-		directx.GraphicsCommand(win,pipelineNum,primitiveNum);
+		//directx.GraphicsCommand(win,pipelineNum,primitiveNum);
+		draw.Update(pipelineNum, primitiveNum);
+		draw2.Update(pipelineNum, primitiveNum);
 		
 
 		// 4.描画コマンドここまで //
