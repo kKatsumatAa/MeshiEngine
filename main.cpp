@@ -33,11 +33,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	worldMat2.trans = { -50.f, 0.0f, 0.0f };
 	worldMat2.SetWorld();
 
-	XMFLOAT3 position;
-
 	Directx directx(win);
 	Draw draw(win, directx);
 	Draw draw2(win, directx);
+	draw.LoadGraph(L"Resources/texture.jpg");
+	draw2.LoadGraph(L"Resources/texture2.jpg");
 
 	int pipelineNum = 0;
 	bool primitiveNum = false;

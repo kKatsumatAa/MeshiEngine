@@ -66,8 +66,7 @@ private:
 	XMFLOAT4 color2 = { 0,0,0,0 };
 	//インデックスバッファビューの作成
 	D3D12_INDEX_BUFFER_VIEW ibView{};
-	//設定をもとにSRV用デスクリプタヒープを生成
-	ID3D12DescriptorHeap* srvHeap = nullptr;
+
 	//定数バッファ用データ構造
 	struct ConstBufferDataTransform
 	{
@@ -83,7 +82,16 @@ private:
 
 	Directx directx;
 	WindowsApp win;
-
+	//リソース設定
+	D3D12_RESOURCE_DESC resDesc{};
+	//SRVの最大個数
+	const size_t kMaxSRVCount = 2056;
+	//デスクリプタヒープの設定
+	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {
+	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+	srvHeapDesc.NumDescriptors = kMaxSRVCount,
+	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE//シェーダーから見えるように
+	};
 public:
 	ConstBufferDataTransform* constMapTransform = nullptr;//定数バッファのマッピング用ポインタ
 
@@ -93,6 +101,7 @@ public:
 		const bool& primitiveMode);
 	void DrawCircle();
 	void DrawBox();
+	void LoadGraph(const wchar_t* name);
 
 	void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState);
 
