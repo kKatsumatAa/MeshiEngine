@@ -178,9 +178,9 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	//SetNormDigitalMat(constMapTransform->mat, win);
 
 	//05_03
-	//平行投影変換（スプライト描画）
-	constMapTransform->mat =
-		XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
+	////平行投影変換（スプライト描画?）
+	//constMapTransform->mat =
+	//	XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
 
 
 	////05_04
@@ -252,8 +252,14 @@ void Draw::Update(const int& pipelineNum,
 	directx.commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
 }
 
-void Draw::DrawCircle()
+void Draw::DrawTriangle()
 {
+
+}
+
+void Draw::DrawBox()
+{
+
 }
 
 void Draw::LoadGraph(const wchar_t* name)

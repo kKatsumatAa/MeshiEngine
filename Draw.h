@@ -99,7 +99,7 @@ public:
 	Draw(const WindowsApp& win, Directx& directx);
 	void Update(const int& pipelineNum,
 		const bool& primitiveMode);
-	void DrawCircle();
+	void DrawTriangle();
 	void DrawBox();
 	void LoadGraph(const wchar_t* name);
 
