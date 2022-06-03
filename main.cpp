@@ -39,6 +39,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	draw.LoadGraph(L"Resources/texture.jpg");
 	draw2.LoadGraph(L"Resources/texture2.jpg");
 
+	XMFLOAT3 pos[4] = {
+		{-50.0f,-50.0f,0.0f},//左下
+		{0.0f,50.0f, 0.0f},//左上
+		{50.0f,-50.0f, 0.0f},//右下
+		{50.0f,50.0f,  0.0f}//右上
+	};
+
 	int pipelineNum = 0;
 	bool primitiveNum = false;
 
@@ -103,8 +110,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			else              pipelineNum = 1;
 		}
 		//directx.GraphicsCommand(win,pipelineNum,primitiveNum);
-		draw.Update(pipelineNum, primitiveNum);
-		draw2.Update(pipelineNum, primitiveNum);
+		draw.DrawBox(pos[0], pos[1], pos[2], pos[3]);
+		draw2.DrawTriangle(pos[0], pos[1], pos[2]);
 		
 
 		// 4.描画コマンドここまで //

@@ -31,6 +31,10 @@ private:
 		0,1,2,//三角形1つ目
 		1,2,3,//三角形2つ目
 	};
+	unsigned short indices2[3] =
+	{
+		0,1,2//三角形2つ目
+	};
 	// ビューポート設定コマンド
 	D3D12_VIEWPORT viewport{};
 	// グラフィックスパイプライン設定
@@ -92,15 +96,23 @@ private:
 	srvHeapDesc.NumDescriptors = kMaxSRVCount,
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE//シェーダーから見えるように
 	};
+	//頂点バッファの設定
+	D3D12_HEAP_PROPERTIES heapProp{};
+	//頂点バッファの生成
+	ID3D12Resource* vertBuff = nullptr;
+
+
+	//--------------------
+	void Update(const int& pipelineNum,
+		const bool& primitiveMode);
 public:
 	ConstBufferDataTransform* constMapTransform = nullptr;//定数バッファのマッピング用ポインタ
 
 	//
 	Draw(const WindowsApp& win, Directx& directx);
-	void Update(const int& pipelineNum,
-		const bool& primitiveMode);
-	void DrawTriangle();
-	void DrawBox();
+
+	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const int& pipelineNum=0);
+	void DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const int& pipelineNum=0);
 	void LoadGraph(const wchar_t* name);
 
 	void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState);
