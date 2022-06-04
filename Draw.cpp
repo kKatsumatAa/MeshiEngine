@@ -164,10 +164,10 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	//単位行列を代入
 	//SetNormDigitalMat(constMapTransform->mat, win);
 
-	//05_03
-	//平行投影変換（スプライト描画?）
-	constMapTransform->mat =
-		XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
+	////05_03
+	////平行投影変換（スプライト描画?）
+	//constMapTransform->mat =
+	//	XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
 
 
 	////05_04
@@ -185,67 +185,10 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	constMapTransform=matWorld**/
 }
 
-//void Draw::Update(const int& pipelineNum,
-//	const bool& primitiveMode)
-//{
-//	//constBuffTransfer({ -0.001f,0.001f,0,0 });
-//
-//	D3D_PRIMITIVE_TOPOLOGY primitive;
-//
-//	if (!primitiveMode) primitive = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-//	else               primitive = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
-//
-//	// ビューポート設定コマンド
-//	viewport = { 0, 0, win.window_width, win.window_height, 0.0f, 1.0f };
-//	// ビューポート設定コマンドを、コマンドリストに積む
-//	directx.commandList->RSSetViewports(1, &viewport);
-//
-//	// シザー矩形
-//	D3D12_RECT scissorRect{};
-//	scissorRect.left = 0; // 切り抜き座標左
-//	scissorRect.right = scissorRect.left + win.window_width; // 切り抜き座標右
-//	scissorRect.top = 0; // 切り抜き座標上
-//	scissorRect.bottom = scissorRect.top + win.window_height; // 切り抜き座標下
-//	// シザー矩形設定コマンドを、コマンドリストに積む
-//	directx.commandList->RSSetScissorRects(1, &scissorRect);
-//
-//	// パイプラインステートとルートシグネチャの設定コマンド
-//	directx.commandList->SetPipelineState(pipelineState[pipelineNum]);
-//	directx.commandList->SetGraphicsRootSignature(rootSignature);
-//
-//	// プリミティブ形状の設定コマンド
-//	directx.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角か四角
-//
-//	// 頂点バッファビューの設定コマンド
-//	directx.commandList->IASetVertexBuffers(0, 1, &vbView);
-//
-//	//定数バッファビュー(CBV)の設定コマンド
-//	directx.commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
-//	//04_02
-//	//SRVヒープの設定コマンド
-//	directx.commandList->SetDescriptorHeaps(1, &srvHeap);
-//	//SRVヒープの先頭ハンドルを取得
-//	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-//	//SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
-//	directx.commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
-//
-//	//定数バッファビュー(CBV)の設定コマンド
-//	directx.commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform->GetGPUVirtualAddress());
-//
-//	//インデックスバッファビューの設定コマンド
-//	directx.commandList->IASetIndexBuffer(&ibView);
-//
-//	// 描画コマンド
-//	directx.commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
-//}
-
-void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const int& pipelineNum)
+void Draw::Update( unsigned short* indices, const int& pipelineNum,
+	const bool& primitiveMode)
 {
-	vertices[0] = { pos1,{0.0f,1.0f} };//左下
-	vertices[1] = { pos2,{0.5f,0.0f} };//上
-	vertices[2] = { pos3,{1.0f,1.0f} };//右下
-	vertices[3] = vertices[1];//右上
-	
+	//constBuffTransfer({ -0.001f,0.001f,0,0 });
 
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 	Vertex* vertMap = nullptr;
@@ -257,11 +200,6 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const in
 	}
 	// 繋がりを解除
 	vertBuff->Unmap(0, nullptr);
-
-
-	//constBuffTransfer({ -0.001f,0.001f,0,0 });
-
-	D3D_PRIMITIVE_TOPOLOGY primitive;
 
 	// ビューポート設定コマンド
 	viewport = { 0, 0, win.window_width, win.window_height, 0.0f, 1.0f };
@@ -304,7 +242,17 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const in
 	directx.commandList->IASetIndexBuffer(&ibView);
 
 	// 描画コマンド
-	directx.commandList->DrawIndexedInstanced(_countof(indices2), 1, 0, 0, 0); // 全ての頂点を使って描画
+	directx.commandList->DrawIndexedInstanced(sizeof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
+}
+
+void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const int& pipelineNum)
+{
+	vertices[0] = { pos1,{0.0f,1.0f} };//左下
+	vertices[1] = { pos2,{0.5f,0.0f} };//上
+	vertices[2] = { pos3,{1.0f,1.0f} };//右下
+	vertices[3] = vertices[1];//右上
+	
+	Update(indices, pipelineNum);
 }
 
 void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const int& pipelineNum)
@@ -314,63 +262,21 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 	vertices[2] = { pos3,{1.0f,1.0f} };//右下
 	vertices[3] = { pos4,{1.0f,0.0f} };//右上
 
-	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
-	Vertex* vertMap = nullptr;
-	directx.result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	assert(SUCCEEDED(directx.result));
-	// 全頂点に対して
-	for (int i = 0; i < _countof(this->vertices); i++) {
-		vertMap[i] = this->vertices[i]; // 座標をコピー
-	}
-	// 繋がりを解除
-	vertBuff->Unmap(0, nullptr);
+	Update(indices2, pipelineNum);
+}
+void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const int& pipelineNum)
+{
+	vertices[0] = { pos1,{0.0f,1.0f} };//左下
+	vertices[1] = { pos2,{0.0f,0.0f} };//左上
+	vertices[2] = { pos3,{1.0f,1.0f} };//右下
+	vertices[3] = { pos4,{1.0f,0.0f} };//右上
 
-	//constBuffTransfer({ -0.001f,0.001f,0,0 });
+	//05_03
+	//平行投影変換（スプライト描画?）
+	constMapTransform->mat =
+		XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
 
-	D3D_PRIMITIVE_TOPOLOGY primitive;
-
-	// ビューポート設定コマンド
-	viewport = { 0, 0, win.window_width, win.window_height, 0.0f, 1.0f };
-	// ビューポート設定コマンドを、コマンドリストに積む
-	directx.commandList->RSSetViewports(1, &viewport);
-
-	// シザー矩形
-	D3D12_RECT scissorRect{};
-	scissorRect.left = 0; // 切り抜き座標左
-	scissorRect.right = scissorRect.left + win.window_width; // 切り抜き座標右
-	scissorRect.top = 0; // 切り抜き座標上
-	scissorRect.bottom = scissorRect.top + win.window_height; // 切り抜き座標下
-	// シザー矩形設定コマンドを、コマンドリストに積む
-	directx.commandList->RSSetScissorRects(1, &scissorRect);
-
-	// パイプラインステートとルートシグネチャの設定コマンド
-	directx.commandList->SetPipelineState(pipelineState[pipelineNum]);
-	directx.commandList->SetGraphicsRootSignature(rootSignature);
-
-	// プリミティブ形状の設定コマンド
-	directx.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角か四角
-
-	// 頂点バッファビューの設定コマンド
-	directx.commandList->IASetVertexBuffers(0, 1, &vbView);
-
-	//定数バッファビュー(CBV)の設定コマンド
-	directx.commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
-	//04_02
-	//SRVヒープの設定コマンド
-	directx.commandList->SetDescriptorHeaps(1, &srvHeap);
-	//SRVヒープの先頭ハンドルを取得
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	//SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
-	directx.commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
-
-	//定数バッファビュー(CBV)の設定コマンド
-	directx.commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform->GetGPUVirtualAddress());
-
-	//インデックスバッファビューの設定コマンド
-	directx.commandList->IASetIndexBuffer(&ibView);
-
-	// 描画コマンド
-	directx.commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
+	Update(indices2, pipelineNum);
 }
 
 void Draw::LoadGraph(const wchar_t* name)

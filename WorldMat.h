@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include "Vec3.h"
 using namespace DirectX;
 
 class WorldMat
@@ -14,9 +15,9 @@ private:
 
 public:
 	XMMATRIX matWorld;
-	XMFLOAT3 scale = { 0,0,0 };
-	XMFLOAT3 rot = { 0,0,0 };
-	XMFLOAT3 trans = { 0,0,0 };
+	Vec3 scale = { 1.0f,1.0f,1.0f };
+	Vec3 rot = { 0,0,0 };
+	Vec3 trans = { 0,0,0 };
 
 
 	//

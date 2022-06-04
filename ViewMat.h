@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include "Vec3.h"
 using namespace DirectX;
 
 class ViewMat
@@ -10,9 +11,9 @@ public:
 	float angle = 0.0f;//ƒJƒƒ‰‚Ì‰ñ“]Šp
 
 	XMMATRIX matView;
-	XMFLOAT3 eye;
-	XMFLOAT3 target;
-	XMFLOAT3 up;
+	Vec3 eye;
+	Vec3 target;
+	Vec3 up;
 	
 
 	//

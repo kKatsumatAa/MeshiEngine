@@ -9,7 +9,7 @@ ViewMat::ViewMat(float eyeX, float eyeY, float eyeZ,
 }
 
 ViewMat::ViewMat():
-	eye({ 0,0,-10.0f }), target({ 0,0,0 }), up({ 0,1.f,0 })
+	eye({ 0,0,-100.0f }), target({ 0,0,0 }), up({ 0,1.f,0 })
 {
 	SetMat();
 }
@@ -21,5 +21,8 @@ void ViewMat::Update()
 
 void ViewMat::SetMat()
 {
-	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
+	XMFLOAT3 eye2 = { eye.x,eye.y ,eye.z };
+	XMFLOAT3 target2 = { target.x,target.y ,target.z };
+	XMFLOAT3 up2 = { up.x,up.y ,up.z };
+	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye2), XMLoadFloat3(&target2), XMLoadFloat3(&up2));
 }

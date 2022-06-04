@@ -103,8 +103,8 @@ private:
 
 
 	//--------------------
-	void Update(const int& pipelineNum,
-		const bool& primitiveMode);
+	void Update( unsigned short* indices,  const int& pipelineNum,
+		const bool& primitiveMode= D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 public:
 	ConstBufferDataTransform* constMapTransform = nullptr;//定数バッファのマッピング用ポインタ
 
@@ -113,6 +113,7 @@ public:
 
 	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const int& pipelineNum=0);
 	void DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const int& pipelineNum=0);
+	void DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const int& pipelineNum = 0);
 	void LoadGraph(const wchar_t* name);
 
 	void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState);
