@@ -100,8 +100,16 @@ private:
 	D3D12_HEAP_PROPERTIES heapProp{};
 	//頂点バッファの生成
 	ID3D12Resource* vertBuff = nullptr;
+	HRESULT result;
+	ID3D12Device* device = nullptr;
+	ID3D12GraphicsCommandList* commandList = nullptr;
+	//04_02
+		//デスクリプタレンジの設定
+	D3D12_DESCRIPTOR_RANGE descriptorRange;
+	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle2;
+	int count2=0;
 
-
+private:
 	//--------------------
 	void Update( unsigned short* indices,  const int& pipelineNum,
 		const bool& primitiveMode= D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

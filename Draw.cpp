@@ -3,6 +3,7 @@
 //設定をもとにSRV用デスクリプタヒープを生成
 ID3D12DescriptorHeap* srvHeap = nullptr;
 D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
+int count = 0;
 
 Draw::Draw(const WindowsApp& win, Directx& directx):
 	directx(directx),win(win)
@@ -53,13 +54,13 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	// エラーなら
 	Error(FAILED(directx.result));
 
-	//04_02
+	//テクスチャ
 	//デスクリプタレンジの設定
-	D3D12_DESCRIPTOR_RANGE descriptorRange{};
-	descriptorRange.NumDescriptors = 1;      //一度の描画に使うテクスチャの枚数
+	descriptorRange.NumDescriptors = 100;   //一度の描画に使うテクスチャの枚数
 	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRange.BaseShaderRegister = 0;  //テクスチャレジスタ0番
 	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	
 
 
 	//ルートパラメータの設定
@@ -185,7 +186,126 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	constMapTransform=matWorld**/
 }
 
-void Draw::Update( unsigned short* indices, const int& pipelineNum,
+void Draw::LoadGraph(const wchar_t* name)
+{
+	// 04_03
+	TexMetadata metadata{};
+	ScratchImage scratchImg{};
+	//WICのテクスチャのロード
+	directx.result = LoadFromWICFile(
+		name,
+		WIC_FLAGS_NONE,
+		&metadata, scratchImg
+	);
+
+	assert(SUCCEEDED(directx.result));
+
+	ScratchImage mipChain{};
+	//mipmap生成
+	directx.result = GenerateMipMaps(
+		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
+		TEX_FILTER_DEFAULT, 0, mipChain);
+	if (SUCCEEDED(directx.result))
+	{
+		scratchImg = std::move(mipChain);
+		metadata = scratchImg.GetMetadata();
+	}
+	//読み込んだディフューズテクスチャをSRGBとして扱う
+	metadata.format = MakeSRGB(metadata.format);
+
+	//ヒープ設定
+	D3D12_HEAP_PROPERTIES textureHeapProp{};
+	textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
+	textureHeapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	textureHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	////リソース設定
+	//D3D12_RESOURCE_DESC textureResourceDesc{};
+	//textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	//textureResourceDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	//textureResourceDesc.Width = textureWidth;						//頂点データ全体のサイズ
+	//textureResourceDesc.Height = textureHeight;
+	//textureResourceDesc.DepthOrArraySize = 1;
+	//textureResourceDesc.MipLevels = 1;
+	//textureResourceDesc.SampleDesc.Count = 1;
+	// 04_03
+
+	//リソース設定
+	D3D12_RESOURCE_DESC textureResourceDesc{};
+	textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	textureResourceDesc.Format = metadata.format;
+	textureResourceDesc.Width = metadata.width;						//頂点データ全体のサイズ
+	textureResourceDesc.Height = (UINT)metadata.height;
+	textureResourceDesc.DepthOrArraySize = (UINT16)metadata.arraySize;
+	textureResourceDesc.MipLevels = (UINT16)metadata.mipLevels;
+	textureResourceDesc.SampleDesc.Count = 1;
+	//テクスチャバッファの生成
+	ID3D12Resource* texBuff = nullptr;
+	BuffProperties(textureHeapProp, textureResourceDesc, &texBuff);
+	////テクスチャバッファにデータ転送
+	//directx.result = texBuff->WriteToSubresource(
+	//	0,
+	//	nullptr,//全領域へコピー
+	//	imageData,//元データアドレス
+	//	sizeof(XMFLOAT4) * textureWidth,//1ラインサイズ
+	//	sizeof(XMFLOAT4) * imageDataCount//全サイズ
+	//);
+
+	//04_03
+	// 全ミップマップについて
+	for (size_t i = 0; i < metadata.mipLevels; i++)
+	{
+		//ミップマップレベルを指定してイメージを取得
+		const Image* img = scratchImg.GetImage(i, 0, 0);
+		//テクスチャバッファにデータ転送
+		directx.result = texBuff->WriteToSubresource(
+			(UINT)i,
+			nullptr,//全領域へコピー
+			img->pixels,//元データアドレス
+			(UINT)img->rowPitch,//1ラインサイズ
+			(UINT)img->slicePitch//全サイズ
+		);
+		assert(SUCCEEDED(directx.result));
+	}
+	////元データ解放
+	//delete[] imageData;
+
+
+
+	//設定をもとにSRV用デスクリプタヒープを生成
+	if (count == 0)
+	{
+		directx.result = directx.device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
+		assert(SUCCEEDED(directx.result));
+	}
+	//SRVヒープの先頭ハンドルを取得
+	if (count == 0)srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
+	else srvHandle.ptr += directx.device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type);
+
+	//シェーダーリソースビュー設定
+	//D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
+	//srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	//srvDesc.Shader4ComponentMapping =
+	//	D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	//srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+	//srvDesc.Texture2D.MipLevels = 1;
+	////ハンドルのさす位置にシェーダーリソースビュー作成
+	//device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
+
+	//04_03
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
+	srvDesc.Format = resDesc.Format;
+	srvDesc.Shader4ComponentMapping =
+		D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+	srvDesc.Texture2D.MipLevels = resDesc.MipLevels;
+	//ハンドルのさす位置にシェーダーリソースビュー作成
+	directx.device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
+
+	count2 = count;
+	count++;
+}
+
+void Draw::Update(unsigned short* indices, const int& pipelineNum,
 	const bool& primitiveMode)
 {
 	//constBuffTransfer({ -0.001f,0.001f,0,0 });
@@ -232,8 +352,10 @@ void Draw::Update( unsigned short* indices, const int& pipelineNum,
 	directx.commandList->SetDescriptorHeaps(1, &srvHeap);
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	//SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
-	directx.commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle2;
+	srvGpuHandle2.ptr = srvGpuHandle.ptr + (directx.device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)*count2);
+	//(インスタンスで読み込んだテクスチャ用のSRVを指定)←改良の余地あり
+	directx.commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle2);
 
 	//定数バッファビュー(CBV)の設定コマンド
 	directx.commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform->GetGPUVirtualAddress());
@@ -264,6 +386,7 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 
 	Update(indices2, pipelineNum);
 }
+
 void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const int& pipelineNum)
 {
 	vertices[0] = { pos1,{0.0f,1.0f} };//左下
@@ -279,120 +402,7 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 	Update(indices2, pipelineNum);
 }
 
-void Draw::LoadGraph(const wchar_t* name)
-{
-	// 04_03
-	TexMetadata metadata{};
-	ScratchImage scratchImg{};
-	//WICのテクスチャのロード
-	directx.result = LoadFromWICFile(
-		name,
-		WIC_FLAGS_NONE,
-		&metadata, scratchImg
-	);
 
-	assert(SUCCEEDED(directx.result));
-
-	ScratchImage mipChain{};
-	//mipmap生成
-	directx.result = GenerateMipMaps(
-		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
-		TEX_FILTER_DEFAULT, 0, mipChain);
-	if (SUCCEEDED(directx.result))
-	{
-		scratchImg = std::move(mipChain);
-		metadata = scratchImg.GetMetadata();
-	}
-	//読み込んだディフューズテクスチャをSRGBとして扱う
-	metadata.format = MakeSRGB(metadata.format);
-
-	//ヒープ設定
-	D3D12_HEAP_PROPERTIES textureHeapProp{};
-	textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
-	textureHeapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
-	textureHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
-	////リソース設定
-	//D3D12_RESOURCE_DESC textureResourceDesc{};
-	//textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	//textureResourceDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	//textureResourceDesc.Width = textureWidth;						//頂点データ全体のサイズ
-	//textureResourceDesc.Height = textureHeight;
-	//textureResourceDesc.DepthOrArraySize = 1;
-	//textureResourceDesc.MipLevels = 1;
-	//textureResourceDesc.SampleDesc.Count = 1;
-	// 04_03
-	
-	//リソース設定
-	D3D12_RESOURCE_DESC textureResourceDesc{};
-	textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	textureResourceDesc.Format = metadata.format;
-	textureResourceDesc.Width = metadata.width;						//頂点データ全体のサイズ
-	textureResourceDesc.Height = (UINT)metadata.height;
-	textureResourceDesc.DepthOrArraySize = (UINT16)metadata.arraySize;
-	textureResourceDesc.MipLevels = (UINT16)metadata.mipLevels;
-	textureResourceDesc.SampleDesc.Count = 1;
-	//テクスチャバッファの生成
-	ID3D12Resource* texBuff = nullptr;
-	BuffProperties(textureHeapProp, textureResourceDesc, &texBuff);
-	////テクスチャバッファにデータ転送
-	//directx.result = texBuff->WriteToSubresource(
-	//	0,
-	//	nullptr,//全領域へコピー
-	//	imageData,//元データアドレス
-	//	sizeof(XMFLOAT4) * textureWidth,//1ラインサイズ
-	//	sizeof(XMFLOAT4) * imageDataCount//全サイズ
-	//);
-
-	//04_03
-	// 全ミップマップについて
-	for (size_t i = 0; i < metadata.mipLevels; i++)
-	{
-		//ミップマップレベルを指定してイメージを取得
-		const Image* img = scratchImg.GetImage(i, 0, 0);
-		//テクスチャバッファにデータ転送
-		directx.result = texBuff->WriteToSubresource(
-			(UINT)i,
-			nullptr,//全領域へコピー
-			img->pixels,//元データアドレス
-			(UINT)img->rowPitch,//1ラインサイズ
-			(UINT)img->slicePitch//全サイズ
-		);
-		assert(SUCCEEDED(directx.result));
-	}
-	////元データ解放
-	//delete[] imageData;
-
-	
-	
-	//設定をもとにSRV用デスクリプタヒープを生成
-	if(srvHandle.ptr == 0) directx.result = directx.device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
-	assert(SUCCEEDED(directx.result));
-	//SRVヒープの先頭ハンドルを取得
-	if (srvHandle.ptr == 0)srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-	else srvHandle.ptr += directx.device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type);
-
-	//シェーダーリソースビュー設定
-	//D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
-	//srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	//srvDesc.Shader4ComponentMapping =
-	//	D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	//srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-	//srvDesc.Texture2D.MipLevels = 1;
-	////ハンドルのさす位置にシェーダーリソースビュー作成
-	//device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
-
-	//04_03
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
-	srvDesc.Format = resDesc.Format;
-	srvDesc.Shader4ComponentMapping =
-		D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-	srvDesc.Texture2D.MipLevels = resDesc.MipLevels;
-	//ハンドルのさす位置にシェーダーリソースビュー作成
-	directx.device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
-
-	
-}
 
 void Draw::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState)
 {
