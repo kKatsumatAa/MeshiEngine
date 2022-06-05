@@ -5,6 +5,17 @@ ID3D12DescriptorHeap* srvHeap = nullptr;
 D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
 int count = 0;
 
+//SRVの最大個数
+const size_t kMaxSRVCount = 2056;
+//デスクリプタヒープの設定
+D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {
+srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+srvHeapDesc.NumDescriptors = kMaxSRVCount,
+srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE//シェーダーから見えるように
+};
+//リソース設定
+D3D12_RESOURCE_DESC resDesc{};
+
 Draw::Draw(const WindowsApp& win, Directx& directx):
 	directx(directx),win(win)
 {
@@ -184,9 +195,10 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	matWorld = XMMatrixIdentity();
 
 	constMapTransform=matWorld**/
+	
 }
 
-void Draw::LoadGraph(const wchar_t* name)
+void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 {
 	// 04_03
 	TexMetadata metadata{};
@@ -238,9 +250,18 @@ void Draw::LoadGraph(const wchar_t* name)
 	textureResourceDesc.DepthOrArraySize = (UINT16)metadata.arraySize;
 	textureResourceDesc.MipLevels = (UINT16)metadata.mipLevels;
 	textureResourceDesc.SampleDesc.Count = 1;
+
 	//テクスチャバッファの生成
 	ID3D12Resource* texBuff = nullptr;
-	BuffProperties(textureHeapProp, textureResourceDesc, &texBuff);
+	directx.result = directx.device->CreateCommittedResource(
+		&textureHeapProp,//ヒープ設定
+		D3D12_HEAP_FLAG_NONE,
+		&textureResourceDesc,//リソース設定
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&texBuff));
+	assert(SUCCEEDED(directx.result));
+
 	////テクスチャバッファにデータ転送
 	//directx.result = texBuff->WriteToSubresource(
 	//	0,
@@ -297,15 +318,22 @@ void Draw::LoadGraph(const wchar_t* name)
 	srvDesc.Shader4ComponentMapping =
 		D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-	srvDesc.Texture2D.MipLevels = resDesc.MipLevels;
+	srvDesc.Texture2D.MipLevels = 1;
 	//ハンドルのさす位置にシェーダーリソースビュー作成
 	directx.device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
 
-	count2 = count;
+	int count2 = count;
 	count++;
+
+	//04_02
+	//SRVヒープの設定コマンド
+	directx.commandList->SetDescriptorHeaps(1, &srvHeap);
+	//SRVヒープの先頭ハンドルを取得
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+	textureHandle = srvGpuHandle.ptr + (directx.device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type) * count2);
 }
 
-void Draw::Update(unsigned short* indices, const int& pipelineNum,
+void Draw::Update(unsigned short* indices, const int& pipelineNum, const UINT64 textureHandle,
 	const bool& primitiveMode)
 {
 	//constBuffTransfer({ -0.001f,0.001f,0,0 });
@@ -351,11 +379,10 @@ void Draw::Update(unsigned short* indices, const int& pipelineNum,
 	//SRVヒープの設定コマンド
 	directx.commandList->SetDescriptorHeaps(1, &srvHeap);
 	//SRVヒープの先頭ハンドルを取得
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle2;
-	srvGpuHandle2.ptr = srvGpuHandle.ptr + (directx.device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)*count2);
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+	srvGpuHandle.ptr = textureHandle;
 	//(インスタンスで読み込んだテクスチャ用のSRVを指定)←改良の余地あり
-	directx.commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle2);
+	directx.commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 
 	//定数バッファビュー(CBV)の設定コマンド
 	directx.commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform->GetGPUVirtualAddress());
@@ -367,27 +394,27 @@ void Draw::Update(unsigned short* indices, const int& pipelineNum,
 	directx.commandList->DrawIndexedInstanced(sizeof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
 }
 
-void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const int& pipelineNum)
+void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const UINT64 textureHandle, const int& pipelineNum)
 {
 	vertices[0] = { pos1,{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{0.5f,0.0f} };//上
 	vertices[2] = { pos3,{1.0f,1.0f} };//右下
 	vertices[3] = vertices[1];//右上
 	
-	Update(indices, pipelineNum);
+	Update(indices, pipelineNum, textureHandle);
 }
 
-void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const int& pipelineNum)
+void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum)
 {
 	vertices[0] = { pos1,{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{0.0f,0.0f} };//左上
 	vertices[2] = { pos3,{1.0f,1.0f} };//右下
 	vertices[3] = { pos4,{1.0f,0.0f} };//右上
 
-	Update(indices2, pipelineNum);
+	Update(indices2, pipelineNum, textureHandle);
 }
 
-void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const int& pipelineNum)
+void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum)
 {
 	vertices[0] = { pos1,{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{0.0f,0.0f} };//左上
@@ -399,7 +426,7 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 	constMapTransform->mat =
 		XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
 
-	Update(indices2, pipelineNum);
+	Update(indices2, pipelineNum, textureHandle);
 }
 
 

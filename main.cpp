@@ -35,11 +35,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Draw draw(win, directx);
 	Draw draw2(win, directx);
 	Draw draw3(win, directx);
-	int textureHandle[2] = {0};
+	UINT64 textureHandle[3] = {0};
 	
-	draw.LoadGraph(L"Resources/texture.jpg");
-	draw2.LoadGraph(L"Resources/back.png");//back
-	draw3.LoadGraph(L"Resources/texture2.jpg");
+	LoadGraph(L"Resources/texture.jpg", textureHandle[0], directx);
+	LoadGraph(L"Resources/texture2.jpg", textureHandle[1], directx);
+	LoadGraph(L"Resources/back.png", textureHandle[2], directx);//back
+
 	
 	//draw3.LoadGraph(L"Resources/texture2.jpg");
 
@@ -127,10 +128,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			else              pipelineNum = 1;
 		}
 		//directx.GraphicsCommand(win,pipelineNum,primitiveNum);
-		draw2.DrawBoxSprite(pos2[0], pos2[1], pos2[2], pos2[3], textureHandle[1]);//背景
+		draw2.DrawBoxSprite(pos2[0], pos2[1], pos2[2], pos2[3], textureHandle[2]);//背景
 
 		draw.DrawBox(pos[0], pos[1], pos[2], pos[3], textureHandle[0]);
-		draw3.DrawTriangle(pos[0], pos[1], pos[2], textureHandle[0]);
+		draw3.DrawTriangle(pos[0], pos[1], pos[2], textureHandle[1]);
 
 
 		// 4.描画コマンドここまで //

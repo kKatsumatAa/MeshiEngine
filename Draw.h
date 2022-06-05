@@ -86,16 +86,8 @@ private:
 
 	Directx directx;
 	WindowsApp win;
-	//リソース設定
-	D3D12_RESOURCE_DESC resDesc{};
-	//SRVの最大個数
-	const size_t kMaxSRVCount = 2056;
-	//デスクリプタヒープの設定
-	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {
-	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
-	srvHeapDesc.NumDescriptors = kMaxSRVCount,
-	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE//シェーダーから見えるように
-	};
+	
+	
 	//頂点バッファの設定
 	D3D12_HEAP_PROPERTIES heapProp{};
 	//頂点バッファの生成
@@ -111,7 +103,7 @@ private:
 
 private:
 	//--------------------
-	void Update( unsigned short* indices,  const int& pipelineNum,
+	void Update( unsigned short* indices,  const int& pipelineNum, const UINT64 textureHandle,
 		const bool& primitiveMode= D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 public:
 	ConstBufferDataTransform* constMapTransform = nullptr;//定数バッファのマッピング用ポインタ
@@ -119,10 +111,10 @@ public:
 	//
 	Draw(const WindowsApp& win, Directx& directx);
 
-	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const int& pipelineNum=0);
-	void DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const int& pipelineNum=0);
-	void DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const int& pipelineNum = 0);
-	void LoadGraph(const wchar_t* name);
+	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const UINT64 textureHandle, const int& pipelineNum=0);
+	void DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum=0);
+	void DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum = 0);
+	
 
 	void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState);
 
@@ -140,3 +132,5 @@ public:
 
 	void Error(const bool& filed);
 };
+
+void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx);
