@@ -21,7 +21,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ViewMat viewMat;
 	ProjectionMat projectionMat(win);
 	WorldMat worldMat;
-	worldMat.scale = { 1.0f, 1.0f, 1.0f };
+	worldMat.scale = { 10.0f, 1.0f, 1.0f };
 	//worldMat.rot = { 15.f, 30.0f, 0.0f };
 	worldMat.trans = { 0.f, 0.0f, 200.0f };
 	worldMat.SetWorld();
@@ -95,21 +95,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//}
 		
 
-		//if (keys.keyPush(DIK_S) || keys.keyPush(DIK_W) || keys.keyPush(DIK_A) || keys.keyPush(DIK_D))//translasion
-		//{
-		//	if (keys.keyPush(DIK_S)) { worldMat.trans.y -= 1.0f; }
-		//	else if (keys.keyPush(DIK_W)) { worldMat.trans.y += 1.0f; }
-		//	if (keys.keyPush(DIK_A)) { worldMat.trans.x -= 1.0f; }
-		//	else if (keys.keyPush(DIK_D)) { worldMat.trans.x += 1.0f; }
-		//}
-		///*worldMat.rot.z++;*/
+		if (keys.keyPush(DIK_S) || keys.keyPush(DIK_W) || keys.keyPush(DIK_A) || keys.keyPush(DIK_D))//translasion
+		{
+			if (keys.keyPush(DIK_S)) { worldMat.trans.y -= 1.0f; }
+			else if (keys.keyPush(DIK_W)) { worldMat.trans.y += 1.0f; }
+			if (keys.keyPush(DIK_A)) { worldMat.trans.x -= 1.0f; }
+			else if (keys.keyPush(DIK_D)) { worldMat.trans.x += 1.0f; }
+		}
+		if (keys.keyPush(DIK_DOWN) || keys.keyPush(DIK_UP) || keys.keyPush(DIK_LEFT) || keys.keyPush(DIK_RIGHT))//rotlasion
+		{
+			if (keys.keyPush(DIK_DOWN)) { worldMat.rot.x -= 1.0f; }
+			else if (keys.keyPush(DIK_UP)) { worldMat.rot.x += 1.0f; }
+			if (keys.keyPush(DIK_LEFT)) { worldMat.rot.z += 1.0f; }
+			else if (keys.keyPush(DIK_RIGHT)) { worldMat.rot.z -= 1.0f; }
+		}
+		/*worldMat.rot.z++;*/
 		worldMat.SetWorld();
 
 		//Vec3 v = viewMat.eye - worldMat.trans;
 
 		//viewMat.eye += v.GetNormalized();
-		viewMat.target = { worldMat.trans };
-		viewMat.SetMat();
+		//viewMat.target = { worldMat.trans };
+		//viewMat.SetMat();
 
 		//draw.constMapTransform->mat = worldMat.matWorld * viewMat.matView * projectionMat.matProjection;
 		//draw3.constMapTransform->mat = worldMat2.matWorld * viewMat.matView * projectionMat.matProjection;
