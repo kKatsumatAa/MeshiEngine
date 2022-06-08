@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConstBuffTransform.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="KeyboardInput.cpp" />
@@ -168,6 +169,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConstBuffTransform.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Draw.h" />
     <ClInclude Include="KeyboardInput.h" />

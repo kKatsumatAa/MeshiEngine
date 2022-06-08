@@ -23,7 +23,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WorldMat worldMat;
 	worldMat.scale = { 1.0f, 1.0f, 1.0f };
 	//worldMat.rot = { 15.f, 30.0f, 0.0f };
-	worldMat.trans = { 0.f, 0.0f, 100.0f };
+	worldMat.trans = { 0.f, 0.0f, 200.0f };
 	worldMat.SetWorld();
 	WorldMat worldMat2;
 	worldMat2.scale = { 1.0f, 1.0f, 1.0f };
@@ -95,24 +95,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//}
 		
 
-		if (keys.keyPush(DIK_S) || keys.keyPush(DIK_W) || keys.keyPush(DIK_A) || keys.keyPush(DIK_D))//translasion
-		{
-			if (keys.keyPush(DIK_S)) { worldMat.trans.y -= 1.0f; }
-			else if (keys.keyPush(DIK_W)) { worldMat.trans.y += 1.0f; }
-			if (keys.keyPush(DIK_A)) { worldMat.trans.x -= 1.0f; }
-			else if (keys.keyPush(DIK_D)) { worldMat.trans.x += 1.0f; }
-		}
-		worldMat.rot.z++;
+		//if (keys.keyPush(DIK_S) || keys.keyPush(DIK_W) || keys.keyPush(DIK_A) || keys.keyPush(DIK_D))//translasion
+		//{
+		//	if (keys.keyPush(DIK_S)) { worldMat.trans.y -= 1.0f; }
+		//	else if (keys.keyPush(DIK_W)) { worldMat.trans.y += 1.0f; }
+		//	if (keys.keyPush(DIK_A)) { worldMat.trans.x -= 1.0f; }
+		//	else if (keys.keyPush(DIK_D)) { worldMat.trans.x += 1.0f; }
+		//}
+		///*worldMat.rot.z++;*/
 		worldMat.SetWorld();
 
-		Vec3 v = viewMat.eye - worldMat.trans;
+		//Vec3 v = viewMat.eye - worldMat.trans;
 
-		viewMat.eye += v.GetNormalized();
+		//viewMat.eye += v.GetNormalized();
 		viewMat.target = { worldMat.trans };
 		viewMat.SetMat();
 
-		draw.constMapTransform->mat = worldMat.matWorld * viewMat.matView * projectionMat.matProjection;
-		draw3.constMapTransform->mat = worldMat2.matWorld * viewMat.matView * projectionMat.matProjection;
+		//draw.constMapTransform->mat = worldMat.matWorld * viewMat.matView * projectionMat.matProjection;
+		//draw3.constMapTransform->mat = worldMat2.matWorld * viewMat.matView * projectionMat.matProjection;
 
 		directx.DrawUpdate();
 
@@ -130,7 +130,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//directx.GraphicsCommand(win,pipelineNum,primitiveNum);
 		draw2.DrawBoxSprite(pos2[0], pos2[1], pos2[2], pos2[3], textureHandle[2]);//背景
 
-		draw.DrawBox(pos[0], pos[1], pos[2], pos[3], textureHandle[0]);
+		draw.DrawCube3D(worldMat,viewMat,projectionMat, textureHandle[0]);
 		draw3.DrawTriangle(pos[0], pos[1], pos[2], textureHandle[1]);
 
 

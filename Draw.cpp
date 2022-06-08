@@ -159,20 +159,20 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	
 
 
-	//05_02
-	{
-		//ヒープ設定
-		D3D12_HEAP_PROPERTIES cbHeapProp{};
-		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
-		//リソース設定
-		D3D12_RESOURCE_DESC cbResourceDesc{};
-		ResourceProperties(cbResourceDesc, (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff/*256バイトアライメント*/);
-		//定数バッファの生成
-		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffTransform);
-	}
-	//定数バッファのマッピング
-	directx.result = constBuffTransform->Map(0, nullptr, (void**)&constMapTransform);//マッピング
-	assert(SUCCEEDED(directx.result));
+	////05_02
+	//{
+	//	//ヒープ設定
+	//	D3D12_HEAP_PROPERTIES cbHeapProp{};
+	//	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
+	//	//リソース設定
+	//	D3D12_RESOURCE_DESC cbResourceDesc{};
+	//	ResourceProperties(cbResourceDesc, (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff/*256バイトアライメント*/);
+	//	//定数バッファの生成
+	//	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffTransform);
+	//}
+	////定数バッファのマッピング
+	//directx.result = constBuffTransform->Map(0, nullptr, (void**)&constMapTransform);//マッピング
+	//assert(SUCCEEDED(directx.result));
 	//単位行列を代入
 	//SetNormDigitalMat(constMapTransform->mat, win);
 
@@ -333,7 +333,7 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 	textureHandle = srvGpuHandle.ptr + (directx.device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type) * count2);
 }
 
-void Draw::Update(unsigned short* indices, const int& pipelineNum, const UINT64 textureHandle,
+void Draw::Update(unsigned short* indices, const int& pipelineNum, const UINT64 textureHandle, ConstBuffTransform& constBuffTransform,
 	const bool& primitiveMode)
 {
 	//constBuffTransfer({ -0.001f,0.001f,0,0 });
@@ -385,7 +385,7 @@ void Draw::Update(unsigned short* indices, const int& pipelineNum, const UINT64 
 	directx.commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 
 	//定数バッファビュー(CBV)の設定コマンド
-	directx.commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform->GetGPUVirtualAddress());
+	directx.commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
 	//インデックスバッファビューの設定コマンド
 	directx.commandList->IASetIndexBuffer(&ibView);
@@ -396,26 +396,31 @@ void Draw::Update(unsigned short* indices, const int& pipelineNum, const UINT64 
 
 void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const UINT64 textureHandle, const int& pipelineNum)
 {
+	static ConstBuffTransform cbt(/*resDesc,*/ directx);
 	vertices[0] = { pos1,{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{0.5f,0.0f} };//上
 	vertices[2] = { pos3,{1.0f,1.0f} };//右下
 	vertices[3] = vertices[1];//右上
 	
-	Update(indices, pipelineNum, textureHandle);
+	Update(indices, pipelineNum, textureHandle, cbt);
 }
 
 void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum)
 {
+	static ConstBuffTransform cbt(/*resDesc,*/ directx);
+
 	vertices[0] = { pos1,{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{0.0f,0.0f} };//左上
 	vertices[2] = { pos3,{1.0f,1.0f} };//右下
 	vertices[3] = { pos4,{1.0f,0.0f} };//右上
 
-	Update(indices2, pipelineNum, textureHandle);
+	Update(indices2, pipelineNum, textureHandle,cbt);
 }
 
 void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum)
 {
+	static ConstBuffTransform cbt(/*resDesc,*/ directx);
+
 	vertices[0] = { pos1,{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{0.0f,0.0f} };//左上
 	vertices[2] = { pos3,{1.0f,1.0f} };//右下
@@ -423,12 +428,80 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 
 	//05_03
 	//平行投影変換（スプライト描画?）
-	constMapTransform->mat =
+	cbt.constMapTransform->mat =
 		XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
 
-	Update(indices2, pipelineNum, textureHandle);
+	Update(indices2, pipelineNum, textureHandle,cbt);
 }
 
+void Draw::DrawCube3D(const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
+{
+	static ConstBuffTransform cbt(/*resDesc,*/ directx);
+	static ConstBuffTransform cbt2(/*resDesc,*/ directx);
+	static ConstBuffTransform cbt3(/*resDesc,*/ directx);
+	static ConstBuffTransform cbt4(/*resDesc,*/ directx);
+	static ConstBuffTransform cbt5(/*resDesc,*/ directx);
+	static ConstBuffTransform cbt6(/*resDesc,*/ directx);
+
+	for (int i = 0; i < 6; i++)
+	{
+		vertices[0] = { {-30.0f, -30.0f, 0.0f},{0.0f,1.0f} };//左下
+		vertices[1] = { { -30.0f,30.0f, 0.0f },{0.0f,0.0f} };//左上
+		vertices[2] = { { 30.0f,-30.0f, 0.0f },{1.0f,1.0f} };//右下
+		vertices[3] = { { 30.0f,30.0f,  0.0f },{1.0f,0.0f} };//右上
+
+		WorldMat world2; 
+		switch (i)
+		{
+		case 0://上
+			world2.rot.x =  (90.f);
+			world2.trans.y = 30.f;
+			world2.SetWorld();       //子              //親
+			cbt.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
+			Update(indices2, pipelineNum, textureHandle, cbt);
+			break;
+		case 1://下
+			world2.rot.x = (-90.f);
+			world2.trans.y = -30.f;
+			world2.SetWorld();       //子              //親
+			cbt2.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
+			Update(indices2, pipelineNum, textureHandle, cbt2);
+			break;
+		case 2://奥
+			world2.rot.x = (180.f);
+			world2.trans.z = 30.f;
+			world2.SetWorld();       //子              //親
+			cbt3.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
+			Update(indices2, pipelineNum, textureHandle, cbt3);
+			break;
+		case 3://手前
+			world2.rot.x = (0);
+			world2.trans.z = -30.f;
+			world2.SetWorld();       //子              //親
+			cbt4.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
+			Update(indices2, pipelineNum, textureHandle, cbt4);
+			break;
+		case 4://右
+			world2.rot.y = (90.f);
+			world2.trans.x = 30.f;
+			world2.SetWorld();       //子              //親
+			cbt5.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
+			Update(indices2, pipelineNum, textureHandle, cbt5);
+			break;
+		case 5://左
+			world2.rot.y = (-90.f);
+			world2.trans.x = -30.f;
+			world2.SetWorld();       //子              //親
+			cbt6.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
+			Update(indices2, pipelineNum, textureHandle, cbt6);
+			break;
+
+		/*default:
+			break;*/
+		}
+		
+	}
+}
 
 
 void Draw::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState)

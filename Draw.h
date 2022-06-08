@@ -1,6 +1,11 @@
 #pragma once
 
 #include "DirectX.h"
+#include "WorldMat.h"
+#include "ViewMat.h"
+#include "ProjectionMat.h"
+#include "Util.h"
+#include "ConstBuffTransform.h"
 
 
 class Draw
@@ -71,13 +76,7 @@ private:
 	//インデックスバッファビューの作成
 	D3D12_INDEX_BUFFER_VIEW ibView{};
 
-	//定数バッファ用データ構造
-	struct ConstBufferDataTransform
-	{
-		XMMATRIX mat;//3D変換行列
-	};
-	//05_02
-	ID3D12Resource* constBuffTransform = nullptr;//定数バッファのGPUリソースのポインタ
+	
 	KeyboardInput key;
 
 	// 2.描画先の変更
@@ -101,12 +100,13 @@ private:
 	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle2;
 	int count2=0;
 
+
 private:
 	//--------------------
-	void Update( unsigned short* indices,  const int& pipelineNum, const UINT64 textureHandle,
+	void Update( unsigned short* indices,  const int& pipelineNum, const UINT64 textureHandle, ConstBuffTransform& constBuffTransform,
 		const bool& primitiveMode= D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 public:
-	ConstBufferDataTransform* constMapTransform = nullptr;//定数バッファのマッピング用ポインタ
+	
 
 	//
 	Draw(const WindowsApp& win, Directx& directx);
@@ -114,6 +114,8 @@ public:
 	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const UINT64 textureHandle, const int& pipelineNum=0);
 	void DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum=0);
 	void DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum = 0);
+	void DrawCube3D(const WorldMat world, const ViewMat view, const ProjectionMat projection,
+		const UINT64 textureHandle, const int& pipelineNum = 0);
 	
 
 	void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState);
