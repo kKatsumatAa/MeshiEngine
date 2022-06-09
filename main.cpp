@@ -21,7 +21,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ViewMat viewMat;
 	ProjectionMat projectionMat(win);
 	WorldMat worldMat;
-	worldMat.scale = { 10.0f, 1.0f, 1.0f };
+	worldMat.scale = { 1.0f, 1.0f, 1.0f };
 	//worldMat.rot = { 15.f, 30.0f, 0.0f };
 	worldMat.trans = { 0.f, 0.0f, 200.0f };
 	worldMat.SetWorld();
@@ -105,9 +105,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (keys.keyPush(DIK_DOWN) || keys.keyPush(DIK_UP) || keys.keyPush(DIK_LEFT) || keys.keyPush(DIK_RIGHT))//rotlasion
 		{
 			if (keys.keyPush(DIK_DOWN)) { worldMat.rot.x -= 1.0f; }
-			else if (keys.keyPush(DIK_UP)) { worldMat.rot.x += 1.0f; }
-			if (keys.keyPush(DIK_LEFT)) { worldMat.rot.z += 1.0f; }
-			else if (keys.keyPush(DIK_RIGHT)) { worldMat.rot.z -= 1.0f; }
+			 if (keys.keyPush(DIK_UP)) { worldMat.rot.x += 1.0f; }
+			if (keys.keyPush(DIK_LEFT)) { worldMat.rot.y += 1.0f; }
+			 if (keys.keyPush(DIK_RIGHT)) { worldMat.rot.y -= 1.0f; }
 		}
 		/*worldMat.rot.z++;*/
 		worldMat.SetWorld();
