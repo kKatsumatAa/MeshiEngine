@@ -33,6 +33,7 @@ private:
 	// ƒtƒFƒ“ƒX‚Ì¶¬
 	ID3D12Fence* fence = nullptr;
 	UINT64 fenceVal = 0;
+	ID3D12DescriptorHeap* dsvHeap = nullptr;
 
 public:
 	HRESULT result;

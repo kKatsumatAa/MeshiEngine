@@ -566,6 +566,13 @@ void Draw::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** 
 	// パイプラインにルートシグネチャをセット
 	pipelineDesc.pRootSignature = rootSignature;
 
+	//06_01
+	//デプスステンシルステート
+	pipelineDesc.DepthStencilState.DepthEnable = true;//深度テストを行う
+	pipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+	pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
+	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
+
 	directx.result = directx.device->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(pipelineState));
 	assert(SUCCEEDED(directx.result));
 }
