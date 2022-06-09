@@ -328,7 +328,7 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 	//04_02
 	//SRVヒープの設定コマンド
 	directx.commandList->SetDescriptorHeaps(1, &srvHeap);
-	//SRVヒープの先頭ハンドルを取得
+	//SRVヒープのハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
 	textureHandle = srvGpuHandle.ptr + (directx.device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type) * count2);
 }
