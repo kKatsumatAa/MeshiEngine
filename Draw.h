@@ -21,20 +21,21 @@ private:
 		//頂点データ構造体
 	struct Vertex
 	{
-		XMFLOAT3 pos;//xyz座標
-		XMFLOAT2 uv;//uv座標
+		XMFLOAT3 pos;   //xyz座標
+		Vec3     normal;//法線ベクトル
+		XMFLOAT2 uv;    //uv座標
 	};
 	//頂点データ
 	Vertex vertices[4] = {
-		{{-50.0f,-50.0f,0.0f},{0.0f,1.0f}},//左下
-		{{-50.0f,50.0f, 0.0f},{0.0f,0.0f}},//左上
-		{{50.0f,-50.0f, 0.0f},{1.0f,1.0f}},//右下
-		{{50.0f,50.0f,  0.0f},{1.0f,0.0f}},//右上
+		{{-50.0f,-50.0f,0.0f},{},{0.0f,1.0f}},//左下
+		{{-50.0f,50.0f, 0.0f},{},{0.0f,0.0f}},//左上
+		{{50.0f,-50.0f, 0.0f},{},{1.0f,1.0f}},//右下
+		{{50.0f,50.0f,  0.0f},{},{1.0f,0.0f}},//右上
 	};
 	unsigned short indices[6] =
 	{
 		0,1,2,//三角形1つ目
-		1,2,3,//三角形2つ目
+		2,1,3,//三角形2つ目
 	};
 	unsigned short indices2[3] =
 	{
@@ -48,18 +49,24 @@ private:
 	ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
 	ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
 	// 頂点レイアウト
-	D3D12_INPUT_ELEMENT_DESC inputLayout[2] = {
+	D3D12_INPUT_ELEMENT_DESC inputLayout[3] = {
 	{//xyz座標
-	"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-	D3D12_APPEND_ALIGNED_ELEMENT,
-	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+	 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
+	 D3D12_APPEND_ALIGNED_ELEMENT,
+	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+	}, // (1行で書いたほうが見やすい)
+
+		{//法線ベクトル
+	 "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
+	 D3D12_APPEND_ALIGNED_ELEMENT,
+	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 	}, // (1行で書いたほうが見やすい)
 
 	{//uv座標
-	"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
-	D3D12_APPEND_ALIGNED_ELEMENT,
-	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	}, // (1行で書いたほうが見やすい)
+	 "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
+	 D3D12_APPEND_ALIGNED_ELEMENT,
+	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+	} // (1行で書いたほうが見やすい)
 	};
 	//ルートパラメータの設定
 	D3D12_ROOT_PARAMETER rootParams[3] = {};

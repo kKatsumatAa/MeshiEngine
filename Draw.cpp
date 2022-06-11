@@ -397,9 +397,9 @@ void Draw::Update(unsigned short* indices, const int& pipelineNum, const UINT64 
 void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const UINT64 textureHandle, const int& pipelineNum)
 {
 	static ConstBuffTransform cbt(/*resDesc,*/ directx);
-	vertices[0] = { pos1,{0.0f,1.0f} };//左下
-	vertices[1] = { pos2,{0.5f,0.0f} };//上
-	vertices[2] = { pos3,{1.0f,1.0f} };//右下
+	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
+	vertices[1] = { pos2,{},{0.5f,0.0f} };//上
+	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
 	vertices[3] = vertices[1];//右上
 	
 	Update(indices, pipelineNum, textureHandle, cbt);
@@ -409,10 +409,10 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 {
 	static ConstBuffTransform cbt(/*resDesc,*/ directx);
 
-	vertices[0] = { pos1,{0.0f,1.0f} };//左下
-	vertices[1] = { pos2,{0.0f,0.0f} };//左上
-	vertices[2] = { pos3,{1.0f,1.0f} };//右下
-	vertices[3] = { pos4,{1.0f,0.0f} };//右上
+	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
+	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
+	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
+	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
 
 	Update(indices2, pipelineNum, textureHandle,cbt);
 }
@@ -421,10 +421,10 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 {
 	static ConstBuffTransform cbt(/*resDesc,*/ directx);
 
-	vertices[0] = { pos1,{0.0f,1.0f} };//左下
-	vertices[1] = { pos2,{0.0f,0.0f} };//左上
-	vertices[2] = { pos3,{1.0f,1.0f} };//右下
-	vertices[3] = { pos4,{1.0f,0.0f} };//右上
+	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
+	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
+	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
+	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
 
 	//05_03
 	//平行投影変換（スプライト描画?）
@@ -445,10 +445,10 @@ void Draw::DrawCube3D(const WorldMat world, const ViewMat view, const Projection
 
 	for (int i = 0; i < 6; i++)
 	{
-		vertices[0] = { {-30.0f, -30.0f, 0.0f},{0.0f,1.0f} };//左下
-		vertices[1] = { { -30.0f,30.0f, 0.0f },{0.0f,0.0f} };//左上
-		vertices[2] = { { 30.0f,-30.0f, 0.0f },{1.0f,1.0f} };//右下
-		vertices[3] = { { 30.0f,30.0f,  0.0f },{1.0f,0.0f} };//右上
+		vertices[0] = { {-30.0f, -30.0f, 0.0f},{},{0.0f,1.0f} };//左下
+		vertices[1] = { { -30.0f,30.0f, 0.0f },{},{0.0f,0.0f} };//左上
+		vertices[2] = { { 30.0f,-30.0f, 0.0f },{},{1.0f,1.0f} };//右下
+		vertices[3] = { { 30.0f,30.0f,  0.0f },{},{1.0f,0.0f} };//右上
 
 		WorldMat world2; 
 		switch (i)
@@ -462,6 +462,7 @@ void Draw::DrawCube3D(const WorldMat world, const ViewMat view, const Projection
 			break;
 		case 1://下
 			world2.rot.x = (-90.f);
+			world2.rot.y = (180.f);
 			world2.trans.y = -30.f;
 			world2.SetWorld();       //子              //親
 			cbt2.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
@@ -469,6 +470,7 @@ void Draw::DrawCube3D(const WorldMat world, const ViewMat view, const Projection
 			break;
 		case 2://奥
 			world2.rot.x = (180.f);
+			world2.rot.z = (180.f);
 			world2.trans.z = 30.f;
 			world2.SetWorld();       //子              //親
 			cbt3.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
@@ -482,14 +484,14 @@ void Draw::DrawCube3D(const WorldMat world, const ViewMat view, const Projection
 			Update(indices2, pipelineNum, textureHandle, cbt4);
 			break;
 		case 4://右
-			world2.rot.y = (90.f);
+			world2.rot.y = (-90.f);
 			world2.trans.x = 30.f;
 			world2.SetWorld();       //子              //親
 			cbt5.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
 			Update(indices2, pipelineNum, textureHandle, cbt5);
 			break;
 		case 5://左
-			world2.rot.y = (-90.f);
+			world2.rot.y = (90.f);
 			world2.trans.x = -30.f;
 			world2.SetWorld();       //子              //親
 			cbt6.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
@@ -516,7 +518,7 @@ void Draw::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** 
 	pipelineDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 
 	// ラスタライザの設定
-	pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // カリングしない
+	pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // カリングしない
 	pipelineDesc.RasterizerState.FillMode = fillMode; // ポリゴン内塗りつぶし
 	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
