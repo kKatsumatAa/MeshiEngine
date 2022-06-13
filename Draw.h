@@ -7,6 +7,16 @@
 #include "Util.h"
 #include "ConstBuffTransform.h"
 
+/// <summary>
+/// 頂点インデックス用
+/// </summary>
+static enum indices
+{
+	TRIANGLE,
+	BOX,
+	CUBE
+};
+
 
 class Draw
 {
@@ -26,11 +36,37 @@ private:
 		XMFLOAT2 uv;    //uv座標
 	};
 	//頂点データ
-	Vertex vertices[4] = {
-		{{-50.0f,-50.0f,0.0f},{},{0.0f,1.0f}},//左下
-		{{-50.0f,50.0f, 0.0f},{},{0.0f,0.0f}},//左上
-		{{50.0f,-50.0f, 0.0f},{},{1.0f,1.0f}},//右下
-		{{50.0f,50.0f,  0.0f},{},{1.0f,0.0f}},//右上
+	Vertex vertices[24] = {
+		//手前
+		{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+		{{-5.0f,5.0f, -5.0f},{},{0.0f,0.0f}},//左上
+		{{5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+		{{5.0f,5.0f,  -5.0f},{},{1.0f,0.0f}},//右上
+		//奥
+		{{-5.0f,-5.0f,5.0f},{},{0.0f,1.0f}},//左下
+		{{-5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+		{{5.0f,-5.0f, 5.0f},{},{1.0f,1.0f}},//右下
+		{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
+		//上
+		{{5.0f,5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+		{{5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+		{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+		{{-5.0f,5.0f, 5.0f},{},{1.0f,0.0f}},//右上
+		//下
+		{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+		{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+		{{-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+		{{-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f}},//右上
+		//左
+		{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+		{{-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+		{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+		{{-5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
+		//右
+		{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+		{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+		{{5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+		{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
 	};
 	unsigned short indices[6] =
 	{
@@ -40,6 +76,27 @@ private:
 	unsigned short indices2[3] =
 	{
 		0,1,2//三角形2つ目
+	};
+	unsigned short indicesCube[36] =
+	{
+		//前
+		0,1,2,//三角形1つ目
+		2,1,3,//三角形2つ目
+		//奥
+		6,5,4,//三角形1つ目
+		7,5,6,//三角形2つ目
+		//上
+		10,9,8,//三角形1つ目
+		11,9,10,//三角形2つ目
+		//下
+		12,13,14,//三角形1つ目
+		14,13,15,//三角形2つ目
+		//左
+		16,17,18,//三角形1つ目
+		18,17,19,//三角形2つ目
+		//右
+		22,21,20,//三角形1つ目
+		23,21,22,//三角形2つ目
 	};
 	// ビューポート設定コマンド
 	D3D12_VIEWPORT viewport{};
@@ -110,7 +167,7 @@ private:
 
 private:
 	//--------------------
-	void Update( unsigned short* indices,  const int& pipelineNum, const UINT64 textureHandle, ConstBuffTransform& constBuffTransform,
+	void Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, ConstBuffTransform& constBuffTransform,
 		const bool& primitiveMode= D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 public:
 	
@@ -118,8 +175,10 @@ public:
 	//
 	Draw(const WindowsApp& win, Directx& directx);
 
-	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const UINT64 textureHandle, const int& pipelineNum=0);
-	void DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum=0);
+	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
+		const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum=0);
+	void DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,
+		const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum=0);
 	void DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum = 0);
 	void DrawCube3D(const WorldMat world, const ViewMat view, const ProjectionMat projection,
 		const UINT64 textureHandle, const int& pipelineNum = 0);

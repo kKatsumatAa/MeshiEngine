@@ -115,7 +115,8 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	//03_04
 	//インデックスデータ
 	//インデックスデータ全体のサイズ
-	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
+	int p= _countof(indicesCube);
+	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesCube));
 
 	//リソース設定
 	ResourceProperties(resDesc, sizeIB);
@@ -126,9 +127,9 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	uint16_t* indexMap = nullptr;
 	directx.result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 	//全インデックスに対して
-	for (int i = 0; i < _countof(indices); i++)
+	for (int i = 0; i < _countof(indicesCube); i++)
 	{
-		indexMap[i] = indices[i];//インデックスをコピー
+		indexMap[i] = indicesCube[i];//インデックスをコピー
 	}
 	//マッピングを解除
 	indexBuff->Unmap(0, nullptr);
@@ -333,7 +334,7 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 	textureHandle = srvGpuHandle.ptr + (directx.device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type) * count2);
 }
 
-void Draw::Update(unsigned short* indices, const int& pipelineNum, const UINT64 textureHandle, ConstBuffTransform& constBuffTransform,
+void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, ConstBuffTransform& constBuffTransform,
 	const bool& primitiveMode)
 {
 	//constBuffTransfer({ -0.001f,0.001f,0,0 });
@@ -343,8 +344,8 @@ void Draw::Update(unsigned short* indices, const int& pipelineNum, const UINT64 
 	directx.result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(directx.result));
 	// 全頂点に対して
-	for (int i = 0; i < _countof(this->vertices); i++) {
-		vertMap[i] = this->vertices[i]; // 座標をコピー
+	for (int i = 0; i < _countof(vertices); i++) {
+		vertMap[i] = vertices[i]; // 座標をコピー
 	}
 	// 繋がりを解除
 	vertBuff->Unmap(0, nullptr);
@@ -389,23 +390,38 @@ void Draw::Update(unsigned short* indices, const int& pipelineNum, const UINT64 
 
 	//インデックスバッファビューの設定コマンド
 	directx.commandList->IASetIndexBuffer(&ibView);
-
+	int p = sizeof(indices);
 	// 描画コマンド
-	directx.commandList->DrawIndexedInstanced(sizeof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
+	switch (indexNum)
+	{
+	case 0:
+		directx.commandList->DrawIndexedInstanced(_countof(indices2), 1, 0, 0, 0); // 全ての頂点を使って描画
+		break;
+	case 1:
+		directx.commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
+		break;
+	case 2:
+		directx.commandList->DrawIndexedInstanced(_countof(indicesCube), 1, 0, 0, 0); // 全ての頂点を使って描画
+		break;
+	}
+	
 }
 
-void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, const UINT64 textureHandle, const int& pipelineNum)
+void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
+	const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
 {
 	static ConstBuffTransform cbt(/*resDesc,*/ directx);
 	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{},{0.5f,0.0f} };//上
 	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
 	vertices[3] = vertices[1];//右上
-	
-	Update(indices, pipelineNum, textureHandle, cbt);
+
+	cbt.constMapTransform->mat = world.matWorld * view.matView * projection.matProjection;
+	Update(TRIANGLE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum)
+void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
+	const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
 {
 	static ConstBuffTransform cbt(/*resDesc,*/ directx);
 
@@ -414,7 +430,8 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
 	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
 
-	Update(indices2, pipelineNum, textureHandle,cbt);
+	cbt.constMapTransform->mat = world.matWorld * view.matView * projection.matProjection;
+	Update(BOX, pipelineNum, textureHandle,cbt);
 }
 
 void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum)
@@ -431,78 +448,15 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 	cbt.constMapTransform->mat =
 		XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
 
-	Update(indices2, pipelineNum, textureHandle,cbt);
+	Update(BOX, pipelineNum, textureHandle,cbt);
 }
 
 void Draw::DrawCube3D(const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
 {
 	static ConstBuffTransform cbt(/*resDesc,*/ directx);
-	static ConstBuffTransform cbt2(/*resDesc,*/ directx);
-	static ConstBuffTransform cbt3(/*resDesc,*/ directx);
-	static ConstBuffTransform cbt4(/*resDesc,*/ directx);
-	static ConstBuffTransform cbt5(/*resDesc,*/ directx);
-	static ConstBuffTransform cbt6(/*resDesc,*/ directx);
 
-	for (int i = 0; i < 6; i++)
-	{
-		vertices[0] = { {-30.0f, -30.0f, 0.0f},{},{0.0f,1.0f} };//左下
-		vertices[1] = { { -30.0f,30.0f, 0.0f },{},{0.0f,0.0f} };//左上
-		vertices[2] = { { 30.0f,-30.0f, 0.0f },{},{1.0f,1.0f} };//右下
-		vertices[3] = { { 30.0f,30.0f,  0.0f },{},{1.0f,0.0f} };//右上
-
-		WorldMat world2; 
-		switch (i)
-		{
-		case 0://上
-			world2.rot.x =  (90.f);
-			world2.trans.y = 30.f;
-			world2.SetWorld();       //子              //親
-			cbt.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
-			Update(indices2, pipelineNum, textureHandle, cbt);
-			break;
-		case 1://下
-			world2.rot.x = (-90.f);
-			world2.rot.y = (180.f);
-			world2.trans.y = -30.f;
-			world2.SetWorld();       //子              //親
-			cbt2.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
-			Update(indices2, pipelineNum, textureHandle, cbt2);
-			break;
-		case 2://奥
-			world2.rot.x = (180.f);
-			world2.rot.z = (180.f);
-			world2.trans.z = 30.f;
-			world2.SetWorld();       //子              //親
-			cbt3.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
-			Update(indices2, pipelineNum, textureHandle, cbt3);
-			break;
-		case 3://手前
-			world2.rot.x = (0);
-			world2.trans.z = -30.f;
-			world2.SetWorld();       //子              //親
-			cbt4.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
-			Update(indices2, pipelineNum, textureHandle, cbt4);
-			break;
-		case 4://右
-			world2.rot.y = (-90.f);
-			world2.trans.x = 30.f;
-			world2.SetWorld();       //子              //親
-			cbt5.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
-			Update(indices2, pipelineNum, textureHandle, cbt5);
-			break;
-		case 5://左
-			world2.rot.y = (90.f);
-			world2.trans.x = -30.f;
-			world2.SetWorld();       //子              //親
-			cbt6.constMapTransform->mat = world2.matWorld * world.matWorld * view.matView * projection.matProjection;
-			Update(indices2, pipelineNum, textureHandle, cbt6);
-			break;
-
-		/*default:
-			break;*/
-		}
-		
-	}
+	cbt.constMapTransform->mat = world.matWorld * view.matView * projection.matProjection;
+	Update(CUBE, pipelineNum, textureHandle, cbt);
 }
 
 
