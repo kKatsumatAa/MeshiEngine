@@ -27,7 +27,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	worldMat.SetWorld();
 	WorldMat worldMat2;
 	worldMat2.scale = { 1.0f, 1.0f, 1.0f };
-	//worldMat2.rot = { 15.f, 30.0f, 0.0f };
+	worldMat2.rot = { 15.f, 30.0f, 0.0f };
 	worldMat2.trans = { 0.f, 0.0f, 100.0f };
 	worldMat2.SetWorld();
 
@@ -138,6 +138,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//draw2.DrawBoxSprite(pos2[0], pos2[1], pos2[2], pos2[3], textureHandle[2]);//背景
 
 		draw.DrawCube3D(worldMat,viewMat,projectionMat, textureHandle[primitiveNum]);
+		draw2.DrawCube3D(worldMat2,viewMat,projectionMat, textureHandle[1-primitiveNum]);
 		//draw3.DrawBox(pos[0], pos[1], pos[2],pos[3], worldMat2, viewMat, projectionMat, textureHandle[1]);
 
 

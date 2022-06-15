@@ -19,5 +19,6 @@ public:
 	ID3D12Resource* constBuffTransform = nullptr;//定数バッファのGPUリソースのポインタ
 	ConstBufferDataTransform* constMapTransform = nullptr;//定数バッファのマッピング用ポインタ
 
-	ConstBuffTransform(/*D3D12_RESOURCE_DESC& resDesc,*/ Directx& directx);
+	ConstBuffTransform(/*D3D12_RESOURCE_DESC& resDesc,*/ /*Directx& directx*/);
+	void Initialize(Directx& directx);
 };

@@ -19,6 +19,8 @@ D3D12_RESOURCE_DESC resDesc{};
 Draw::Draw(const WindowsApp& win, Directx& directx):
 	directx(directx),win(win)
 {
+	cbt.Initialize(directx);
+
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
 
@@ -326,7 +328,7 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 	int count2 = count;
 	count++;
 
-	//04_02(画像貼る用のアドレスを引数に代入)
+	//04_02(画像貼る用のアドレスを引数に)
 	//SRVヒープの設定コマンド
 	directx.commandList->SetDescriptorHeaps(1, &srvHeap);
 	//SRVヒープのハンドルを取得
@@ -334,7 +336,7 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 	textureHandle = srvGpuHandle.ptr + (directx.device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type) * count2);
 }
 
-void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, ConstBuffTransform& constBuffTransform,
+void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
 	const bool& primitiveMode)
 {
 	//06_03
@@ -430,7 +432,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 	const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
 {
-	static ConstBuffTransform cbt(/*resDesc,*/ directx);
+	
 	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{},{0.5f,0.0f} };//上
 	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
@@ -443,7 +445,7 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
 	const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
 {
-	static ConstBuffTransform cbt(/*resDesc,*/ directx);
+	
 
 	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
@@ -456,7 +458,7 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 
 void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum)
 {
-	static ConstBuffTransform cbt(/*resDesc,*/ directx);
+	
 
 	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
@@ -473,7 +475,7 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 
 void Draw::DrawCube3D(const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
 {
-	static ConstBuffTransform cbt(/*resDesc,*/ directx);
+	
 
 	cbt.constMapTransform->mat = world.matWorld * view.matView * projection.matProjection;
 	Update(CUBE, pipelineNum, textureHandle, cbt);

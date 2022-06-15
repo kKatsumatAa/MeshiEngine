@@ -21,6 +21,7 @@ static enum indices
 class Draw
 {
 private:
+	ConstBuffTransform cbt;
 	// パイプランステートの生成
 	ID3D12PipelineState* pipelineState[2] = { nullptr };
 	// ルートシグネチャ
@@ -167,7 +168,7 @@ private:
 
 private:
 	//--------------------
-	void Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, ConstBuffTransform& constBuffTransform,
+	void Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
 		const bool& primitiveMode= D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 public:
 	

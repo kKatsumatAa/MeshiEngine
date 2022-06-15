@@ -1,6 +1,11 @@
 #include "ConstBuffTransform.h"
 
-ConstBuffTransform::ConstBuffTransform(/*D3D12_RESOURCE_DESC& resDesc,*/ Directx& directx)
+ConstBuffTransform::ConstBuffTransform(/*D3D12_RESOURCE_DESC& resDesc,*//* Directx& directx*/)
+{
+	
+}
+
+void ConstBuffTransform::Initialize(Directx& directx)
 {
 	//05_02
 	{
@@ -26,7 +31,7 @@ ConstBuffTransform::ConstBuffTransform(/*D3D12_RESOURCE_DESC& resDesc,*/ Directx
 			nullptr,
 			IID_PPV_ARGS(&constBuffTransform));
 		assert(SUCCEEDED(directx.result));
-		
+
 	}
 	//定数バッファのマッピング
 	directx.result = constBuffTransform->Map(0, nullptr, (void**)&constMapTransform);//マッピング
