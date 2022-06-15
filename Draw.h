@@ -32,7 +32,7 @@ private:
 	struct Vertex
 	{
 		XMFLOAT3 pos;   //xyz座標
-		Vec3     normal;//法線ベクトル
+		XMFLOAT3 normal;//法線ベクトル
 		XMFLOAT2 uv;    //uv座標
 	};
 	//頂点データ

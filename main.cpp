@@ -44,14 +44,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 	//draw3.LoadGraph(L"Resources/texture2.jpg");
 
-	XMFLOAT3 pos[4] = {
+	Vec3 pos[4] = {
 		{-30.0f,-30.0f,0.0f},//左下
 		{-30.0f,30.0f, 0.0f},//左上
 		{30.0f,-30.0f, 0.0f},//右下
 		{30.0f,30.0f,  0.0f}//右上
 	};
 	
-	XMFLOAT3 pos2[4] = {
+	Vec3 pos2[4] = {
 		{0,win.window_height ,0.0f},//左下
 		{0,0, 0.0f},//左上
 		{win.window_width,win.window_height, 0.0f},//右下
@@ -137,7 +137,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//directx.GraphicsCommand(win,pipelineNum,primitiveNum);
 		//draw2.DrawBoxSprite(pos2[0], pos2[1], pos2[2], pos2[3], textureHandle[2]);//背景
 
-		draw.DrawCube3D(worldMat,viewMat,projectionMat, textureHandle[0]);
+		draw.DrawCube3D(worldMat,viewMat,projectionMat, textureHandle[primitiveNum]);
 		//draw3.DrawBox(pos[0], pos[1], pos[2],pos[3], worldMat2, viewMat, projectionMat, textureHandle[1]);
 
 

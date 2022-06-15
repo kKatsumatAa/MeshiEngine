@@ -295,7 +295,7 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 
 	//設定をもとにSRV用デスクリプタヒープを生成
 	if (count == 0)
-	{
+	{                                                          //descは設定
 		directx.result = directx.device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
 		assert(SUCCEEDED(directx.result));
 	}
@@ -326,7 +326,7 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 	int count2 = count;
 	count++;
 
-	//04_02
+	//04_02(画像貼る用のアドレスを引数に代入)
 	//SRVヒープの設定コマンド
 	directx.commandList->SetDescriptorHeaps(1, &srvHeap);
 	//SRVヒープのハンドルを取得
@@ -337,7 +337,27 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, ConstBuffTransform& constBuffTransform,
 	const bool& primitiveMode)
 {
-	//constBuffTransfer({ -0.001f,0.001f,0,0 });
+	//06_03
+	for (int i = 0; i < _countof(indicesCube) / 3; i++)
+	{//三角形一つごとに計算
+		//三角形のインデックスを取り出して、一時的な変数に入れる
+		unsigned short index0 = indicesCube[i * 3 + 0];
+		unsigned short index1 = indicesCube[i * 3 + 1];
+		unsigned short index2 = indicesCube[i * 3 + 2];
+		//三角形を構成する頂点座標をベクトルに代入
+		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+		//p0->p1ベクトル、p0->p2ベクトルを計算
+		XMVECTOR v1 = XMVectorSubtract(p1, p0);
+		XMVECTOR v2 = XMVectorSubtract(p2, p0);
+		//外積（垂直なベクトル）
+		XMVECTOR normal = XMVector3Cross(v1, v2);
+		//求めた法線を頂点データに代入
+		XMStoreFloat3(&vertices[index0].normal, normal);
+		XMStoreFloat3(&vertices[index1].normal, normal);
+		XMStoreFloat3(&vertices[index2].normal, normal);
+	}
 
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 	Vertex* vertMap = nullptr;
