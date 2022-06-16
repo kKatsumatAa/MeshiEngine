@@ -35,6 +35,8 @@ private:
 	UINT64 fenceVal = 0;
 	ID3D12DescriptorHeap* dsvHeap = nullptr;
 
+	Directx();
+
 public:
 	HRESULT result;
 	ID3D12Device* device = nullptr;
@@ -51,31 +53,13 @@ public:
 
 
 	//ä÷êî
-	Directx(const WindowsApp& win);
+	static Directx& GetInstance();
 
-	void DrawInitialize(const WindowsApp& win);
+	void DrawInitialize();
 
 	void DrawUpdate(const XMFLOAT4& winRGBA = { 0.1f,0.25f,0.5f,0.0f });
 
 	void DrawUpdate2();
 
-	void GraphicsCommand(const WindowsApp& win, const int& pipelineNum,
-		const bool& primitiveMode);
-
-
-	void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState);
-
-	void Blend(const D3D12_BLEND_OP& blendMode,
-		const bool& Inversion = 0, const bool& Translucent = 0);
-
-	void constBuffTransfer(const XMFLOAT4& plusRGBA);
-
-	void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size);
-
-	void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource,
-		ID3D12Resource** buff);
-
-	void SetNormDigitalMat(XMMATRIX& mat, const WindowsApp& win);
-
-	void Error(const bool& filed);
+	
 };

@@ -16,10 +16,9 @@ srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE//ƒVƒF[ƒ_[‚©‚çŒ©‚
 //ƒŠƒ\[ƒXİ’è
 D3D12_RESOURCE_DESC resDesc{};
 
-Draw::Draw(const WindowsApp& win, Directx& directx):
-	directx(directx),win(win)
+Draw::Draw()
 {
-	cbt.Initialize(directx);
+	cbt.Initialize(Directx::GetInstance());
 
 	// ’¸“_ƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY = ’¸“_ƒf[ƒ^1‚Â•ª‚ÌƒTƒCƒY * ’¸“_ƒf[ƒ^‚Ì—v‘f”
 	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
@@ -42,7 +41,7 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 
 
 	// ’¸“_ƒVƒF[ƒ_‚Ì“Ç‚İ‚İ‚ÆƒRƒ“ƒpƒCƒ‹
-	directx.result = D3DCompileFromFile(
+	Directx::GetInstance().result = D3DCompileFromFile(
 		L"BasicVS.hlsl", // ƒVƒF[ƒ_ƒtƒ@ƒCƒ‹–¼
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // ƒCƒ“ƒNƒ‹[ƒh‰Â”\‚É‚·‚é
@@ -52,10 +51,10 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 		&vsBlob, &errorBlob);
 
 	// ƒGƒ‰[‚È‚ç
-	Error(FAILED(directx.result));
+	Error(FAILED(Directx::GetInstance().result));
 
 	// ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ì“Ç‚İ‚İ‚ÆƒRƒ“ƒpƒCƒ‹
-	directx.result = D3DCompileFromFile(
+	Directx::GetInstance().result = D3DCompileFromFile(
 		L"BasicPS.hlsl", // ƒVƒF[ƒ_ƒtƒ@ƒCƒ‹–¼
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // ƒCƒ“ƒNƒ‹[ƒh‰Â”\‚É‚·‚é
@@ -65,7 +64,7 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 		&psBlob, &errorBlob);
 
 	// ƒGƒ‰[‚È‚ç
-	Error(FAILED(directx.result));
+	Error(FAILED(Directx::GetInstance().result));
 
 	//ƒeƒNƒXƒ`ƒƒ
 	//ƒfƒXƒNƒŠƒvƒ^ƒŒƒ“ƒW‚Ìİ’è
@@ -110,8 +109,8 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	//’è”ƒoƒbƒtƒ@‚Ì¶¬
 	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial);
 	//’è”ƒoƒbƒtƒ@‚Ìƒ}ƒbƒsƒ“ƒO
-	directx.result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//ƒ}ƒbƒsƒ“ƒO
-	assert(SUCCEEDED(directx.result));
+	Directx::GetInstance().result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//ƒ}ƒbƒsƒ“ƒO
+	assert(SUCCEEDED(Directx::GetInstance().result));
 	constBuffTransfer({ 1.0f,0,0,1.0f });
 
 	//03_04
@@ -127,7 +126,7 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	BuffProperties(heapProp, resDesc, &indexBuff);
 	//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒ}ƒbƒsƒ“ƒO
 	uint16_t* indexMap = nullptr;
-	directx.result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+	Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 	//‘SƒCƒ“ƒfƒbƒNƒX‚É‘Î‚µ‚Ä
 	for (int i = 0; i < _countof(indicesCube); i++)
 	{
@@ -174,15 +173,15 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	//	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffTransform);
 	//}
 	////’è”ƒoƒbƒtƒ@‚Ìƒ}ƒbƒsƒ“ƒO
-	//directx.result = constBuffTransform->Map(0, nullptr, (void**)&constMapTransform);//ƒ}ƒbƒsƒ“ƒO
-	//assert(SUCCEEDED(directx.result));
+	//Directx::GetInstance().result = constBuffTransform->Map(0, nullptr, (void**)&constMapTransform);//ƒ}ƒbƒsƒ“ƒO
+	//assert(SUCCEEDED(Directx::GetInstance().result));
 	//’PˆÊs—ñ‚ğ‘ã“ü
 	//SetNormDigitalMat(constMapTransform->mat, win);
 
 	////05_03
 	////•½s“Š‰e•ÏŠ·iƒXƒvƒ‰ƒCƒg•`‰æ?j
 	//constMapTransform->mat =
-	//	XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
+	//	XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 
 
 	////05_04
@@ -201,26 +200,26 @@ Draw::Draw(const WindowsApp& win, Directx& directx):
 	
 }
 
-void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
+void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 {
 	// 04_03
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 	//WIC‚ÌƒeƒNƒXƒ`ƒƒ‚Ìƒ[ƒh
-	directx.result = LoadFromWICFile(
+	Directx::GetInstance().result = LoadFromWICFile(
 		name,
 		WIC_FLAGS_NONE,
 		&metadata, scratchImg
 	);
 
-	assert(SUCCEEDED(directx.result));
+	assert(SUCCEEDED(Directx::GetInstance().result));
 
 	ScratchImage mipChain{};
 	//mipmap¶¬
-	directx.result = GenerateMipMaps(
+	Directx::GetInstance().result = GenerateMipMaps(
 		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
 		TEX_FILTER_DEFAULT, 0, mipChain);
-	if (SUCCEEDED(directx.result))
+	if (SUCCEEDED(Directx::GetInstance().result))
 	{
 		scratchImg = std::move(mipChain);
 		metadata = scratchImg.GetMetadata();
@@ -256,17 +255,17 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 
 	//ƒeƒNƒXƒ`ƒƒƒoƒbƒtƒ@‚Ì¶¬
 	ID3D12Resource* texBuff = nullptr;
-	directx.result = directx.device->CreateCommittedResource(
+	Directx::GetInstance().result = Directx::GetInstance().device->CreateCommittedResource(
 		&textureHeapProp,//ƒq[ƒvİ’è
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,//ƒŠƒ\[ƒXİ’è
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&texBuff));
-	assert(SUCCEEDED(directx.result));
+	assert(SUCCEEDED(Directx::GetInstance().result));
 
 	////ƒeƒNƒXƒ`ƒƒƒoƒbƒtƒ@‚Éƒf[ƒ^“]‘—
-	//directx.result = texBuff->WriteToSubresource(
+	//Directx::GetInstance().result = texBuff->WriteToSubresource(
 	//	0,
 	//	nullptr,//‘S—Ìˆæ‚ÖƒRƒs[
 	//	imageData,//Œ³ƒf[ƒ^ƒAƒhƒŒƒX
@@ -281,14 +280,14 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 		//ƒ~ƒbƒvƒ}ƒbƒvƒŒƒxƒ‹‚ğw’è‚µ‚ÄƒCƒ[ƒW‚ğæ“¾
 		const Image* img = scratchImg.GetImage(i, 0, 0);
 		//ƒeƒNƒXƒ`ƒƒƒoƒbƒtƒ@‚Éƒf[ƒ^“]‘—
-		directx.result = texBuff->WriteToSubresource(
+		Directx::GetInstance().result = texBuff->WriteToSubresource(
 			(UINT)i,
 			nullptr,//‘S—Ìˆæ‚ÖƒRƒs[
 			img->pixels,//Œ³ƒf[ƒ^ƒAƒhƒŒƒX
 			(UINT)img->rowPitch,//1ƒ‰ƒCƒ“ƒTƒCƒY
 			(UINT)img->slicePitch//‘SƒTƒCƒY
 		);
-		assert(SUCCEEDED(directx.result));
+		assert(SUCCEEDED(Directx::GetInstance().result));
 	}
 	////Œ³ƒf[ƒ^‰ğ•ú
 	//delete[] imageData;
@@ -298,12 +297,12 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 	//İ’è‚ğ‚à‚Æ‚ÉSRV—pƒfƒXƒNƒŠƒvƒ^ƒq[ƒv‚ğ¶¬
 	if (count == 0)
 	{                                                          //desc‚Íİ’è
-		directx.result = directx.device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
-		assert(SUCCEEDED(directx.result));
+		Directx::GetInstance().result = Directx::GetInstance().device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
+		assert(SUCCEEDED(Directx::GetInstance().result));
 	}
 	//SRVƒq[ƒv‚Ìæ“ªƒnƒ“ƒhƒ‹‚ğæ“¾
 	if (count == 0)srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-	else srvHandle.ptr += directx.device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type);
+	else srvHandle.ptr += Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type);
 
 	//ƒVƒF[ƒ_[ƒŠƒ\[ƒXƒrƒ…[İ’è
 	//D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//İ’è\‘¢‘Ì
@@ -323,17 +322,17 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2DƒeƒNƒXƒ`ƒƒ
 	srvDesc.Texture2D.MipLevels = 1;
 	//ƒnƒ“ƒhƒ‹‚Ì‚³‚·ˆÊ’u‚ÉƒVƒF[ƒ_[ƒŠƒ\[ƒXƒrƒ…[ì¬
-	directx.device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
+	Directx::GetInstance().device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
 
 	int count2 = count;
 	count++;
 
 	//04_02(‰æ‘œ“\‚é—p‚ÌƒAƒhƒŒƒX‚ğˆø”‚É)
 	//SRVƒq[ƒv‚Ìİ’èƒRƒ}ƒ“ƒh
-	directx.commandList->SetDescriptorHeaps(1, &srvHeap);
+	Directx::GetInstance().commandList->SetDescriptorHeaps(1, &srvHeap);
 	//SRVƒq[ƒv‚Ìƒnƒ“ƒhƒ‹‚ğæ“¾
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	textureHandle = srvGpuHandle.ptr + (directx.device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type) * count2);
+	textureHandle = srvGpuHandle.ptr + (Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type) * count2);
 }
 
 void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
@@ -363,8 +362,8 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 	// GPUã‚Ìƒoƒbƒtƒ@‚É‘Î‰‚µ‚½‰¼‘zƒƒ‚ƒŠ(ƒƒCƒ“ƒƒ‚ƒŠã)‚ğæ“¾
 	Vertex* vertMap = nullptr;
-	directx.result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	assert(SUCCEEDED(directx.result));
+	Directx::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	assert(SUCCEEDED(Directx::GetInstance().result));
 	// ‘S’¸“_‚É‘Î‚µ‚Ä
 	for (int i = 0; i < _countof(vertices); i++) {
 		vertMap[i] = vertices[i]; // À•W‚ğƒRƒs[
@@ -373,57 +372,57 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	vertBuff->Unmap(0, nullptr);
 
 	// ƒrƒ…[ƒ|[ƒgİ’èƒRƒ}ƒ“ƒh
-	viewport = { 0, 0, win.window_width, win.window_height, 0.0f, 1.0f };
+	viewport = { 0, 0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0f, 1.0f};
 	// ƒrƒ…[ƒ|[ƒgİ’èƒRƒ}ƒ“ƒh‚ğAƒRƒ}ƒ“ƒhƒŠƒXƒg‚ÉÏ‚Ş
-	directx.commandList->RSSetViewports(1, &viewport);
+	Directx::GetInstance().commandList->RSSetViewports(1, &viewport);
 
 	// ƒVƒU[‹éŒ`
 	D3D12_RECT scissorRect{};
 	scissorRect.left = 0; // Ø‚è”²‚«À•W¶
-	scissorRect.right = scissorRect.left + win.window_width; // Ø‚è”²‚«À•W‰E
+	scissorRect.right = scissorRect.left + WindowsApp::GetInstance().window_width; // Ø‚è”²‚«À•W‰E
 	scissorRect.top = 0; // Ø‚è”²‚«À•Wã
-	scissorRect.bottom = scissorRect.top + win.window_height; // Ø‚è”²‚«À•W‰º
+	scissorRect.bottom = scissorRect.top + WindowsApp::GetInstance().window_height; // Ø‚è”²‚«À•W‰º
 	// ƒVƒU[‹éŒ`İ’èƒRƒ}ƒ“ƒh‚ğAƒRƒ}ƒ“ƒhƒŠƒXƒg‚ÉÏ‚Ş
-	directx.commandList->RSSetScissorRects(1, &scissorRect);
+	Directx::GetInstance().commandList->RSSetScissorRects(1, &scissorRect);
 
 	// ƒpƒCƒvƒ‰ƒCƒ“ƒXƒe[ƒg‚Æƒ‹[ƒgƒVƒOƒlƒ`ƒƒ‚Ìİ’èƒRƒ}ƒ“ƒh
-	directx.commandList->SetPipelineState(pipelineState[pipelineNum]);
-	directx.commandList->SetGraphicsRootSignature(rootSignature);
+	Directx::GetInstance().commandList->SetPipelineState(pipelineState[pipelineNum]);
+	Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature);
 
 	// ƒvƒŠƒ~ƒeƒBƒuŒ`ó‚Ìİ’èƒRƒ}ƒ“ƒh
-	directx.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // OŠp‚©lŠp
+	Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // OŠp‚©lŠp
 
 	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìİ’èƒRƒ}ƒ“ƒh
-	directx.commandList->IASetVertexBuffers(0, 1, &vbView);
+	Directx::GetInstance().commandList->IASetVertexBuffers(0, 1, &vbView);
 
 	//’è”ƒoƒbƒtƒ@ƒrƒ…[(CBV)‚Ìİ’èƒRƒ}ƒ“ƒh
-	directx.commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 	//04_02
 	//SRVƒq[ƒv‚Ìİ’èƒRƒ}ƒ“ƒh
-	directx.commandList->SetDescriptorHeaps(1, &srvHeap);
+	Directx::GetInstance().commandList->SetDescriptorHeaps(1, &srvHeap);
 	//SRVƒq[ƒv‚Ìæ“ªƒnƒ“ƒhƒ‹‚ğæ“¾
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 	srvGpuHandle.ptr = textureHandle;
-	//(ƒCƒ“ƒXƒ^ƒ“ƒX‚Å“Ç‚İ‚ñ‚¾ƒeƒNƒXƒ`ƒƒ—p‚ÌSRV‚ğw’è)©‰ü—Ç‚Ì—]’n‚ ‚è
-	directx.commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+	//(ƒCƒ“ƒXƒ^ƒ“ƒX‚Å“Ç‚İ‚ñ‚¾ƒeƒNƒXƒ`ƒƒ—p‚ÌSRV‚ğw’è)
+	Directx::GetInstance().commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 
 	//’è”ƒoƒbƒtƒ@ƒrƒ…[(CBV)‚Ìİ’èƒRƒ}ƒ“ƒh
-	directx.commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
 	//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìİ’èƒRƒ}ƒ“ƒh
-	directx.commandList->IASetIndexBuffer(&ibView);
+	Directx::GetInstance().commandList->IASetIndexBuffer(&ibView);
 	int p = sizeof(indices);
 	// •`‰æƒRƒ}ƒ“ƒh
 	switch (indexNum)
 	{
 	case 0:
-		directx.commandList->DrawIndexedInstanced(_countof(indices2), 1, 0, 0, 0); // ‘S‚Ä‚Ì’¸“_‚ğg‚Á‚Ä•`‰æ
+		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indices2), 1, 0, 0, 0); // ‘S‚Ä‚Ì’¸“_‚ğg‚Á‚Ä•`‰æ
 		break;
 	case 1:
-		directx.commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // ‘S‚Ä‚Ì’¸“_‚ğg‚Á‚Ä•`‰æ
+		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // ‘S‚Ä‚Ì’¸“_‚ğg‚Á‚Ä•`‰æ
 		break;
 	case 2:
-		directx.commandList->DrawIndexedInstanced(_countof(indicesCube), 1, 0, 0, 0); // ‘S‚Ä‚Ì’¸“_‚ğg‚Á‚Ä•`‰æ
+		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesCube), 1, 0, 0, 0); // ‘S‚Ä‚Ì’¸“_‚ğg‚Á‚Ä•`‰æ
 		break;
 	}
 	
@@ -468,7 +467,7 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 	//05_03
 	//•½s“Š‰e•ÏŠ·iƒXƒvƒ‰ƒCƒg•`‰æ?j
 	cbt.constMapTransform->mat =
-		XMMatrixOrthographicOffCenterLH(0.0, win.window_width, win.window_height, 0.0, 0.0f, 1.0f);
+		XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 
 	Update(BOX, pipelineNum, textureHandle,cbt);
 }
@@ -534,12 +533,12 @@ void Draw::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** 
 	rootSignatureDesc.NumStaticSamplers = 1;
 	// ƒ‹[ƒgƒVƒOƒlƒ`ƒƒ‚ÌƒVƒŠƒAƒ‰ƒCƒY
 	ID3DBlob* rootSigBlob = nullptr;
-	directx.result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
+	Directx::GetInstance().result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
 		&rootSigBlob, &errorBlob);
-	assert(SUCCEEDED(directx.result));
-	directx.result = directx.device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
+	assert(SUCCEEDED(Directx::GetInstance().result));
+	Directx::GetInstance().result = Directx::GetInstance().device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
-	assert(SUCCEEDED(directx.result));
+	assert(SUCCEEDED(Directx::GetInstance().result));
 	rootSigBlob->Release();
 	// ƒpƒCƒvƒ‰ƒCƒ“‚Éƒ‹[ƒgƒVƒOƒlƒ`ƒƒ‚ğƒZƒbƒg
 	pipelineDesc.pRootSignature = rootSignature;
@@ -551,8 +550,8 @@ void Draw::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** 
 	pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//¬‚³‚¯‚ê‚Î‡Ši
 	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;//[“x’lƒtƒH[ƒ}ƒbƒg
 
-	directx.result = directx.device->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(pipelineState));
-	assert(SUCCEEDED(directx.result));
+	Directx::GetInstance().result = Directx::GetInstance().device->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(pipelineState));
+	assert(SUCCEEDED(Directx::GetInstance().result));
 }
 
 void Draw::Blend(const D3D12_BLEND_OP& blendMode, const bool& Inversion, const bool& Translucent)
@@ -607,20 +606,20 @@ void Draw::ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size)
 
 void Draw::BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, ID3D12Resource** buff)
 {
-	directx.result = directx.device->CreateCommittedResource(
+	Directx::GetInstance().result = Directx::GetInstance().device->CreateCommittedResource(
 		&heap,//ƒq[ƒvİ’è
 		D3D12_HEAP_FLAG_NONE,
 		&resource,//ƒŠƒ\[ƒXİ’è
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(buff));
-	assert(SUCCEEDED(directx.result));
+	assert(SUCCEEDED(Directx::GetInstance().result));
 }
 
-void Draw::SetNormDigitalMat(XMMATRIX& mat, const WindowsApp& win)
+void Draw::SetNormDigitalMat(XMMATRIX& mat)
 {
-	mat.r[0].m128_f32[0] = 2.0f / win.window_width;
-	mat.r[1].m128_f32[1] = -2.0f / win.window_height;
+	mat.r[0].m128_f32[0] = 2.0f / WindowsApp::GetInstance().window_width;
+	mat.r[1].m128_f32[1] = -2.0f / WindowsApp::GetInstance().window_height;
 	mat.r[3].m128_f32[0] = -1.0f;
 	mat.r[3].m128_f32[1] = 1.0f;
 }

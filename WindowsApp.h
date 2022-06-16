@@ -22,16 +22,6 @@ private:
 		return DefWindowProc(hwnd, msg, wparam, lparam);
 	}
 
-
-public:
-	//ウィンドウサイズ
-	const float window_width = 1280;
-	const float window_height = 720;
-	WNDCLASSEX w;
-	HWND hwnd;
-
-
-
 	WindowsApp()
 	{
 		//ウインドウクラスの設定
@@ -67,6 +57,22 @@ public:
 		ShowWindow(hwnd, SW_SHOW);
 	}
 
+
+public:
+	//ウィンドウサイズ
+	const float window_width = 1280;
+	const float window_height = 720;
+	WNDCLASSEX w;
+	HWND hwnd;
+
+
+
+	static WindowsApp& GetInstance()
+	{
+		static WindowsApp inst; // private なコンストラクタを呼び出す。
+		return inst;
+	}
+
 	bool MessegeRoop(MSG msg)
 	{
 		//メッセージがあるか?
@@ -86,5 +92,10 @@ public:
 	void UnregisterClassA()
 	{
 		UnregisterClass(w.lpszClassName, w.hInstance);
+	}
+
+	void operator=(const WindowsApp& win)
+	{
+		*this = win;
 	}
 };

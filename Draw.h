@@ -141,16 +141,10 @@ private:
 	//インデックスバッファビューの作成
 	D3D12_INDEX_BUFFER_VIEW ibView{};
 
-	
-	KeyboardInput key;
 
 	// 2.描画先の変更
 	// レンダーターゲットビューのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
-
-	Directx directx;
-	WindowsApp win;
-	
 	
 	//頂点バッファの設定
 	D3D12_HEAP_PROPERTIES heapProp{};
@@ -174,7 +168,7 @@ public:
 	
 
 	//
-	Draw(const WindowsApp& win, Directx& directx);
+	Draw();
 
 	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 		const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum=0);
@@ -197,9 +191,9 @@ public:
 	void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource,
 		ID3D12Resource** buff);
 
-	void SetNormDigitalMat(XMMATRIX& mat, const WindowsApp& win);
+	void SetNormDigitalMat(XMMATRIX& mat);
 
 	void Error(const bool& filed);
 };
 
-void LoadGraph(const wchar_t* name, UINT64& textureHandle, Directx& directx);
+void LoadGraph(const wchar_t* name, UINT64& textureHandle);

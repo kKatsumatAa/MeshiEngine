@@ -2,6 +2,7 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <DirectXMath.h>
+#include "WindowsApp.h"
 
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
@@ -12,18 +13,12 @@ private:
 	//全キーの入力状態を取得する
 	BYTE key[256] = {};
 	BYTE oldkey[256] = {};
+	HRESULT result;
 
-public:
-	//DirectInputの初期化
-	IDirectInput8* directInput = nullptr;
-	//キーボードデバイスの生成
-	IDirectInputDevice8* keyboard = nullptr;
-
-
-	void Initialize(HRESULT& result, HWND hwnd, WNDCLASSEX w)
+	KeyboardInput()
 	{
 		result = DirectInput8Create(
-			w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
+			 WindowsApp::GetInstance().w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
 			(void**)&directInput, nullptr);
 		assert(SUCCEEDED(result));
 
@@ -38,14 +33,27 @@ public:
 
 		//排他制御レベルのリセット
 		result = keyboard->SetCooperativeLevel(
-			hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+			 WindowsApp::GetInstance().hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 		//画面が手前にあるとき入力受付｜デバイスをこのアプリだけで専有しない｜Windowsキーを無効
 		assert(SUCCEEDED(result));
 
 		result = DirectInput8Create(
-			w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
+			 WindowsApp::GetInstance().w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
 			(void**)&directInput, nullptr);
 		assert(SUCCEEDED(result));
+	}
+
+public:
+	//DirectInputの初期化
+	IDirectInput8* directInput = nullptr;
+	//キーボードデバイスの生成
+	IDirectInputDevice8* keyboard = nullptr;
+
+
+	static KeyboardInput& GetInstance()
+	{
+		static KeyboardInput inst; // private なコンストラクタを呼び出す。
+		return inst;
 	}
 
 	void Update()
