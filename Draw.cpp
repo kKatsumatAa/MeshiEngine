@@ -16,6 +16,76 @@ srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE//ƒVƒF[ƒ_[‚©‚çŒ©‚
 //ƒŠƒ\[ƒXÝ’è
 D3D12_RESOURCE_DESC resDesc{};
 
+struct Vertex
+{
+	XMFLOAT3 pos;   //xyzÀ•W
+	XMFLOAT3 normal;//–@üƒxƒNƒgƒ‹
+	XMFLOAT2 uv;    //uvÀ•W
+};
+//’¸“_ƒf[ƒ^
+Vertex vertices[24] = {
+	//Žè‘O
+	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//¶‰º
+	{{-5.0f,5.0f, -5.0f},{},{0.0f,0.0f}},//¶ã
+	{{5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//‰E‰º
+	{{5.0f,5.0f,  -5.0f},{},{1.0f,0.0f}},//‰Eã
+	//‰œ
+	{{-5.0f,-5.0f,5.0f},{},{0.0f,1.0f}},//¶‰º
+	{{-5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//¶ã
+	{{5.0f,-5.0f, 5.0f},{},{1.0f,1.0f}},//‰E‰º
+	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//‰Eã
+	//ã
+	{{5.0f,5.0f,-5.0f},{},{0.0f,1.0f}},//¶‰º
+	{{5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//¶ã
+	{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//‰E‰º
+	{{-5.0f,5.0f, 5.0f},{},{1.0f,0.0f}},//‰Eã
+	//‰º
+	{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//¶‰º
+	{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//¶ã
+	{{-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//‰E‰º
+	{{-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f}},//‰Eã
+	//¶
+	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//¶‰º
+	{{-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//¶ã
+	{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//‰E‰º
+	{{-5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//‰Eã
+	//‰E
+	{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//¶‰º
+	{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//¶ã
+	{{5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//‰E‰º
+	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//‰Eã
+};
+unsigned short indices[6] =
+{
+	0,1,2,//ŽOŠpŒ`1‚Â–Ú
+	2,1,3,//ŽOŠpŒ`2‚Â–Ú
+};
+unsigned short indices2[3] =
+{
+	0,1,2//ŽOŠpŒ`2‚Â–Ú
+};
+unsigned short indicesCube[36] =
+{
+	//‘O
+	0,1,2,//ŽOŠpŒ`1‚Â–Ú
+	2,1,3,//ŽOŠpŒ`2‚Â–Ú
+	//‰œ
+	6,5,4,//ŽOŠpŒ`1‚Â–Ú
+	7,5,6,//ŽOŠpŒ`2‚Â–Ú
+	//ã
+	10,9,8,//ŽOŠpŒ`1‚Â–Ú
+	11,9,10,//ŽOŠpŒ`2‚Â–Ú
+	//‰º
+	12,13,14,//ŽOŠpŒ`1‚Â–Ú
+	14,13,15,//ŽOŠpŒ`2‚Â–Ú
+	//¶
+	16,17,18,//ŽOŠpŒ`1‚Â–Ú
+	18,17,19,//ŽOŠpŒ`2‚Â–Ú
+	//‰E
+	22,21,20,//ŽOŠpŒ`1‚Â–Ú
+	23,21,22,//ŽOŠpŒ`2‚Â–Ú
+};
+
 Draw::Draw()
 {
 	cbt.Initialize(Directx::GetInstance());
@@ -70,7 +140,7 @@ Draw::Draw()
 	//ƒfƒXƒNƒŠƒvƒ^ƒŒƒ“ƒW‚ÌÝ’è
 	descriptorRange.NumDescriptors = 100;   //ˆê“x‚Ì•`‰æ‚ÉŽg‚¤ƒeƒNƒXƒ`ƒƒ‚Ì–‡”
 	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange.BaseShaderRegister = 0;  //ƒeƒNƒXƒ`ƒƒƒŒƒWƒXƒ^0”Ô
+	descriptorRange.BaseShaderRegister = 0;  //ƒeƒNƒXƒ`ƒƒƒŒƒWƒXƒ^0”Ô(t0)
 	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 	
 
@@ -551,7 +621,7 @@ void Draw::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** 
 	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;//[“x’lƒtƒH[ƒ}ƒbƒg
 
 	Directx::GetInstance().result = Directx::GetInstance().device->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(pipelineState));
-	assert(SUCCEEDED(Directx::GetInstance().result));
+	//assert(SUCCEEDED(Directx::GetInstance().result));
 }
 
 void Draw::Blend(const D3D12_BLEND_OP& blendMode, const bool& Inversion, const bool& Translucent)
