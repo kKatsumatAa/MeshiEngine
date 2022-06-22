@@ -88,8 +88,7 @@ private:
 	ID3D12Device* device = nullptr;
 	ID3D12GraphicsCommandList* commandList = nullptr;
 	//04_02
-		//デスクリプタレンジの設定
-	D3D12_DESCRIPTOR_RANGE descriptorRange;
+	
 	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle2;
 	int count2=0;
 

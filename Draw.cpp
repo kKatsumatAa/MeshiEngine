@@ -85,6 +85,10 @@ unsigned short indicesCube[36] =
 	22,21,20,//三角形1つ目
 	23,21,22,//三角形2つ目
 };
+//デスクリプタレンジの設定
+D3D12_DESCRIPTOR_RANGE descriptorRange;
+//テクスチャ
+	
 
 Draw::Draw()
 {
@@ -136,13 +140,12 @@ Draw::Draw()
 	// エラーなら
 	Error(FAILED(Directx::GetInstance().result));
 
-	//テクスチャ
+	
 	//デスクリプタレンジの設定
 	descriptorRange.NumDescriptors = 100;   //一度の描画に使うテクスチャの枚数
 	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRange.BaseShaderRegister = 0;  //テクスチャレジスタ0番(t0)
 	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-	
 
 
 	//ルートパラメータの設定

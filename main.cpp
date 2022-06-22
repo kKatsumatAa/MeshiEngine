@@ -30,7 +30,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	worldMat2.SetWorld();
 
 	//Directx directx;
-	Draw draw;
+	Draw draw[10];
 	Draw draw2;
 	Draw draw3;
 	UINT64 textureHandle[3] = {0};
@@ -135,8 +135,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//directx.GraphicsCommand(win,pipelineNum,primitiveNum);
 		//draw2.DrawBoxSprite(pos2[0], pos2[1], pos2[2], pos2[3], textureHandle[2]);//背景
 
-		draw.DrawCube3D(worldMat,viewMat,projectionMat, textureHandle[primitiveNum]);
-		draw2.DrawCube3D(worldMat2,viewMat,projectionMat, textureHandle[primitiveNum+1]);
+		draw[0].DrawCube3D(worldMat, viewMat, projectionMat, textureHandle[primitiveNum]);
+		draw[1].DrawCube3D(worldMat2, viewMat, projectionMat, textureHandle[primitiveNum + 1]);
 		//draw3.DrawBox(pos[0], pos[1], pos[2],pos[3], worldMat2, viewMat, projectionMat, textureHandle[1]);
 
 
