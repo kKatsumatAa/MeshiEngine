@@ -18,7 +18,7 @@ public:
 	Vec3 scale = { 1.0f,1.0f,1.0f };
 	Vec3 rot = { 0,0,0 };
 	Vec3 trans = { 0,0,0 };
-
+	WorldMat* parent = nullptr;
 
 	//
 	WorldMat();

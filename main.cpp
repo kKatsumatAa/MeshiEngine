@@ -27,6 +27,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	worldMat2.scale = { 1.0f, 1.0f, 1.0f };
 	worldMat2.rot = { 15.f, 30.0f, 0.0f };
 	worldMat2.trans = { -10.f, 0.0f, 0.0f };
+	worldMat2.parent = &worldMat;
 	worldMat2.SetWorld();
 
 	//Directx directx;

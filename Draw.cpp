@@ -8,7 +8,7 @@ int count = 0;
 //SRVの最大個数
 const size_t kMaxSRVCount = 2056;
 //デスクリプタヒープの設定
-D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {
+static D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {
 srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
 srvHeapDesc.NumDescriptors = kMaxSRVCount,
 srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE//シェーダーから見えるように
@@ -23,7 +23,7 @@ struct Vertex
 	XMFLOAT2 uv;    //uv座標
 };
 //頂点データ
-Vertex vertices[24] = {
+static Vertex vertices[24] = {
 	//手前
 	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
 	{{-5.0f,5.0f, -5.0f},{},{0.0f,0.0f}},//左上
@@ -55,16 +55,16 @@ Vertex vertices[24] = {
 	{{5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
 	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
 };
-unsigned short indices[6] =
+static unsigned short indices[6] =
 {
 	0,1,2,//三角形1つ目
 	2,1,3,//三角形2つ目
 };
-unsigned short indices2[3] =
+static unsigned short indices2[3] =
 {
 	0,1,2//三角形2つ目
 };
-unsigned short indicesCube[36] =
+static unsigned short indicesCube[36] =
 {
 	//前
 	0,1,2,//三角形1つ目
@@ -88,14 +88,37 @@ unsigned short indicesCube[36] =
 //デスクリプタレンジの設定
 D3D12_DESCRIPTOR_RANGE descriptorRange;
 //テクスチャ
-	
+
+// 頂点レイアウト
+D3D12_INPUT_ELEMENT_DESC inputLayout[3] = {
+{//xyz座標
+ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
+ D3D12_APPEND_ALIGNED_ELEMENT,
+ D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+}, // (1行で書いたほうが見やすい)
+
+	{//法線ベクトル
+ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
+ D3D12_APPEND_ALIGNED_ELEMENT,
+ D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+}, // (1行で書いたほうが見やすい)
+
+{//uv座標
+ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
+ D3D12_APPEND_ALIGNED_ELEMENT,
+ D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+} // (1行で書いたほうが見やすい)
+};
+//ルートパラメータの設定
+D3D12_ROOT_PARAMETER rootParams[3] = {};
+UINT sizeVB;
 
 Draw::Draw()
 {
 	cbt.Initialize(Directx::GetInstance());
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
+	sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
@@ -189,7 +212,7 @@ Draw::Draw()
 	//03_04
 	//インデックスデータ
 	//インデックスデータ全体のサイズ
-	int p= _countof(indicesCube);
+	//int p= _countof(indicesCube);
 	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesCube));
 
 	//リソース設定
@@ -411,6 +434,12 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
 	const bool& primitiveMode)
 {
+	//変換行列をGPUに送信
+	if (worldMat.parent != nullptr)//親がいる場合
+		cbt.constMapTransform->mat = worldMat.matWorld * worldMat.parent->matWorld * view.matView * projection.matProjection;
+	else//親がいない場合
+		cbt.constMapTransform->mat = worldMat.matWorld * view.matView * projection.matProjection;
+
 	//06_03
 	for (int i = 0; i < _countof(indicesCube) / 3; i++)
 	{//三角形一つごとに計算
@@ -504,34 +533,37 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 	const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
 {
-	
+	this->worldMat = world;
+	this->view = view;
+	this->projection = projection;
+
 	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{},{0.5f,0.0f} };//上
 	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
 	vertices[3] = vertices[1];//右上
 
-	cbt.constMapTransform->mat = world.matWorld * view.matView * projection.matProjection;
+	
 	Update(TRIANGLE, pipelineNum, textureHandle, cbt);
 }
 
 void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
 	const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
 {
-	
+	this->worldMat = world;
+	this->view = view;
+	this->projection = projection;
 
 	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
 	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
 	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
 
-	cbt.constMapTransform->mat = world.matWorld * view.matView * projection.matProjection;
+	
 	Update(BOX, pipelineNum, textureHandle,cbt);
 }
 
 void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum)
 {
-	
-
 	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
 	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
@@ -547,9 +579,11 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 
 void Draw::DrawCube3D(const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
 {
-	
+	this->worldMat = world;
+	this->view = view;
+	this->projection = projection;
 
-	cbt.constMapTransform->mat = world.matWorld * view.matView * projection.matProjection;
+	
 	Update(CUBE, pipelineNum, textureHandle, cbt);
 }
 

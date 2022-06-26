@@ -22,8 +22,8 @@ class Draw
 {
 private:
 	//リソース設定
-	D3D12_RESOURCE_DESC resDesc{};
-	ConstBuffTransform cbt;
+	//D3D12_RESOURCE_DESC resDesc{};
+	ConstBuffTransform cbt;//ここをどうにかすれば、インスタンス一つでも色々描画
 	// パイプランステートの生成
 	ID3D12PipelineState* pipelineState[2] = { nullptr };
 	// ルートシグネチャ
@@ -40,28 +40,7 @@ private:
 	ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
 	ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
 	ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
-	// 頂点レイアウト
-	D3D12_INPUT_ELEMENT_DESC inputLayout[3] = {
-	{//xyz座標
-	 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	}, // (1行で書いたほうが見やすい)
-
-		{//法線ベクトル
-	 "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	}, // (1行で書いたほうが見やすい)
-
-	{//uv座標
-	 "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	} // (1行で書いたほうが見やすい)
-	};
-	//ルートパラメータの設定
-	D3D12_ROOT_PARAMETER rootParams[3] = {};
+	
 	//定数バッファの生成
 	ID3D12Resource* constBuffMaterial = nullptr;
 	//定数バッファ用データ構造体（マテリアル）
@@ -89,7 +68,7 @@ private:
 	ID3D12GraphicsCommandList* commandList = nullptr;
 	//04_02
 	
-	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle2;
+	//D3D12_CPU_DESCRIPTOR_HANDLE srvHandle2;
 	int count2=0;
 
 
@@ -97,6 +76,12 @@ private:
 	//--------------------
 	void Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
 		const bool& primitiveMode= D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+public://変数
+	WorldMat worldMat;
+	ViewMat view;
+	ProjectionMat projection;
+
 public:
 	
 
