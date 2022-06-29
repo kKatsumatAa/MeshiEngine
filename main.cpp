@@ -16,27 +16,43 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	MSG msg{};	//メッセージ
 
 	//初期化処理　ここから//
-	//乱数シード生成器
-	std::random_device seed_gen;
-	//メルセンヌツイスター
-	std::mt19937_64 engine(seed_gen());
-	//乱数範囲
-	std::uniform_real_distribution<float> posDist(-50.0f, 50.0f);
-	std::uniform_real_distribution<float> rotDist(0.0f, pi * 2);
 
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
-	WorldMat worldMats[30];
-	for (WorldMat& i : worldMats)
-	{
-		//i.scale = { 1.0f, 1.0f, 1.0f };
-		i.rot = { RaditoAngle(rotDist(engine)), RaditoAngle(rotDist(engine)), RaditoAngle(rotDist(engine)) };
-		i.trans = { posDist(engine),posDist(engine),posDist(engine) };
-		i.SetWorld();
-	}
+	WorldMat worldMats[7];
+
+	//大元
+	worldMats[0].trans = { 0,0,0 };
+	worldMats[0].SetWorld();
+	//腰
+	worldMats[1].trans = { 0,-10,0 };
+	worldMats[1].parent = &worldMats[0];
+	worldMats[1].SetWorld();
+	//頭
+	worldMats[2].trans = { 0,10,0 };
+	worldMats[2].parent= &worldMats[0];
+	worldMats[2].SetWorld();
+	//右手
+	worldMats[3].trans = { -10,-10,0 };
+	worldMats[3].parent = &worldMats[2];
+	worldMats[3].SetWorld();
+	//左手
+	worldMats[4].trans = { 10,-10,0 };
+	worldMats[4].parent = &worldMats[2];
+	worldMats[4].SetWorld();
+	//右足
+	worldMats[5].trans = { -10,-10,0 };
+	worldMats[5].parent = &worldMats[1];
+	worldMats[5].SetWorld();
+	//左足
+	worldMats[6].trans = { 10,-10,0 };
+	worldMats[6].parent = &worldMats[1];
+	worldMats[6].SetWorld();
+
+	int bodyNum = 0;
 
 	//Directx directx;
-	Draw draw[30];
+	Draw draw[7];
 	/*Draw draw2;
 	Draw draw3;*/
 	UINT64 textureHandle[3] = {0};
@@ -106,12 +122,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//	if (KeyboardInput::GetInstance().keyPush(DIK_A)) { worldMat.trans.x -= 1.0f; }
 		//	else if (KeyboardInput::GetInstance().keyPush(DIK_D)) { worldMat.trans.x += 1.0f; }
 		//}
+		if (KeyboardInput::GetInstance().keyTrigger(DIK_SPACE)) bodyNum++;
+		if (bodyNum >= _countof(draw))bodyNum = 0;
+
 		if (KeyboardInput::GetInstance().keyPush(DIK_DOWN) || KeyboardInput::GetInstance().keyPush(DIK_UP) || KeyboardInput::GetInstance().keyPush(DIK_LEFT) || KeyboardInput::GetInstance().keyPush(DIK_RIGHT))//rotlasion
 		{
-			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN)) { worldMats[0].rot.x -= 1.0f; }
-			 if (KeyboardInput::GetInstance().keyPush(DIK_UP)) { worldMats[0].rot.x += 1.0f; }
-			if (KeyboardInput::GetInstance().keyPush(DIK_LEFT)) { worldMats[0].rot.y += 1.0f; }
-			 if (KeyboardInput::GetInstance().keyPush(DIK_RIGHT)) { worldMats[0].rot.y -= 1.0f; }
+			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN)) { worldMats[bodyNum].rot.x -= 1.0f; }
+			 if (KeyboardInput::GetInstance().keyPush(DIK_UP)) { worldMats[bodyNum].rot.x += 1.0f; }
+			if (KeyboardInput::GetInstance().keyPush(DIK_LEFT)) { worldMats[bodyNum].rot.y += 1.0f; }
+			 if (KeyboardInput::GetInstance().keyPush(DIK_RIGHT)) { worldMats[bodyNum].rot.y -= 1.0f; }
 		}
 		/*worldMat.rot.z++;*/
 		for (WorldMat& i : worldMats)
@@ -145,7 +164,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//draw2.DrawBoxSprite(pos2[0], pos2[1], pos2[2], pos2[3], textureHandle[2]);//背景
 		for (int i = 0; i < _countof(draw); i++)
 		{
-			draw[i].DrawCube3D(&worldMats[i], &viewMat, &projectionMat, textureHandle[primitiveNum]);
+			draw[i].DrawCube3D(&worldMats[i], &viewMat, &projectionMat, textureHandle[primitiveNum + 1]);
 			//draw[1].DrawCube3D(&worldMat2, &viewMat, &projectionMat, textureHandle[primitiveNum + 1]);
 			//draw[2].DrawBox(pos[0], pos[1], pos[2], pos[3], &worldMat3, &viewMat, &projectionMat, textureHandle[1]);
 		}
