@@ -16,45 +16,8 @@ srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE//ƒVƒF[ƒ_[‚©‚çŒ©‚
 //ƒŠƒ\[ƒXÝ’è
 D3D12_RESOURCE_DESC resDesc{};
 
-struct Vertex
-{
-	XMFLOAT3 pos;   //xyzÀ•W
-	XMFLOAT3 normal;//–@üƒxƒNƒgƒ‹
-	XMFLOAT2 uv;    //uvÀ•W
-};
-//’¸“_ƒf[ƒ^
-static Vertex vertices[24] = {
-	//Žè‘O
-	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//¶‰º
-	{{-5.0f,5.0f, -5.0f},{},{0.0f,0.0f}},//¶ã
-	{{5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//‰E‰º
-	{{5.0f,5.0f,  -5.0f},{},{1.0f,0.0f}},//‰Eã
-	//‰œ
-	{{-5.0f,-5.0f,5.0f},{},{0.0f,1.0f}},//¶‰º
-	{{-5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//¶ã
-	{{5.0f,-5.0f, 5.0f},{},{1.0f,1.0f}},//‰E‰º
-	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//‰Eã
-	//ã
-	{{5.0f,5.0f,-5.0f},{},{0.0f,1.0f}},//¶‰º
-	{{5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//¶ã
-	{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//‰E‰º
-	{{-5.0f,5.0f, 5.0f},{},{1.0f,0.0f}},//‰Eã
-	//‰º
-	{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//¶‰º
-	{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//¶ã
-	{{-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//‰E‰º
-	{{-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f}},//‰Eã
-	//¶
-	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//¶‰º
-	{{-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//¶ã
-	{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//‰E‰º
-	{{-5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//‰Eã
-	//‰E
-	{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//¶‰º
-	{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//¶ã
-	{{5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//‰E‰º
-	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//‰Eã
-};
+
+
 static unsigned short indices[6] =
 {
 	0,1,2,//ŽOŠpŒ`1‚Â–Ú
@@ -435,10 +398,15 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	const bool& primitiveMode)
 {
 	//•ÏŠ·s—ñ‚ðGPU‚É‘—M
-	if (worldMat.parent != nullptr)//e‚ª‚¢‚éê‡
-		cbt.constMapTransform->mat = worldMat.matWorld * worldMat.parent->matWorld * view.matView * projection.matProjection;
+	if (worldMat->parent != nullptr)//e‚ª‚¢‚éê‡
+	{
+		worldMat->matWorld *= worldMat->parent->matWorld;
+		cbt.constMapTransform->mat = worldMat->matWorld * view->matView * projection->matProjection;
+	}
 	else//e‚ª‚¢‚È‚¢ê‡
-		cbt.constMapTransform->mat = worldMat.matWorld * view.matView * projection.matProjection;
+	{
+		cbt.constMapTransform->mat = worldMat->matWorld * view->matView * projection->matProjection;
+	}
 
 	//06_03
 	for (int i = 0; i < _countof(indicesCube) / 3; i++)
@@ -531,7 +499,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 }
 
 void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
-	const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
+	WorldMat* world, ViewMat* view, ProjectionMat* projection, const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
 	this->view = view;
@@ -547,7 +515,7 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 }
 
 void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
-	const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
+	WorldMat* world, ViewMat* view, ProjectionMat* projection, const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
 	this->view = view;
@@ -577,7 +545,7 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 	Update(BOX, pipelineNum, textureHandle,cbt);
 }
 
-void Draw::DrawCube3D(const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum)
+void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection, const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
 	this->view = view;

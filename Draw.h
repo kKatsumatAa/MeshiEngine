@@ -16,7 +16,13 @@ static enum indices
 	BOX,
 	CUBE
 };
-
+struct Vertex
+{
+	XMFLOAT3 pos;   //xyz座標
+	XMFLOAT3 normal;//法線ベクトル
+	XMFLOAT2 uv;    //uv座標
+};
+//頂点データ
 
 class Draw
 {
@@ -70,7 +76,38 @@ private:
 	
 	//D3D12_CPU_DESCRIPTOR_HANDLE srvHandle2;
 	int count2=0;
-
+	Vertex vertices[24] = {
+		//手前
+		{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+		{{-5.0f,5.0f, -5.0f},{},{0.0f,0.0f}},//左上
+		{{5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+		{{5.0f,5.0f,  -5.0f},{},{1.0f,0.0f}},//右上
+		//奥
+		{{-5.0f,-5.0f,5.0f},{},{0.0f,1.0f}},//左下
+		{{-5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+		{{5.0f,-5.0f, 5.0f},{},{1.0f,1.0f}},//右下
+		{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
+		//上
+		{{5.0f,5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+		{{5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+		{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+		{{-5.0f,5.0f, 5.0f},{},{1.0f,0.0f}},//右上
+		//下
+		{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+		{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+		{{-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+		{{-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f}},//右上
+		//左
+		{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+		{{-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+		{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+		{{-5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
+		//右
+		{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+		{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+		{{5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+		{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
+	};
 
 private:
 	//--------------------
@@ -78,9 +115,9 @@ private:
 		const bool& primitiveMode= D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 public://変数
-	WorldMat worldMat;
-	ViewMat view;
-	ProjectionMat projection;
+	WorldMat* worldMat;
+	ViewMat* view;
+	ProjectionMat* projection;
 
 public:
 	
@@ -89,11 +126,11 @@ public:
 	Draw();
 
 	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
-		const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum=0);
+		WorldMat* world, ViewMat* view, ProjectionMat* projection, const UINT64 textureHandle, const int& pipelineNum=0);
 	void DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,
-		const WorldMat world, const ViewMat view, const ProjectionMat projection, const UINT64 textureHandle, const int& pipelineNum=0);
+		WorldMat* world, ViewMat* view, ProjectionMat* projection, const UINT64 textureHandle, const int& pipelineNum=0);
 	void DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum = 0);
-	void DrawCube3D(const WorldMat world, const ViewMat view, const ProjectionMat projection,
+	void DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		const UINT64 textureHandle, const int& pipelineNum = 0);
 	
 

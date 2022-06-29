@@ -5,6 +5,7 @@
 #include "ProjectionMat.h"
 #include "WorldMat.h"
 #include "Draw.h"
+#include <random>
 
 
 //windowsアプリでのエントリーポイント(main関数)
@@ -15,25 +16,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	MSG msg{};	//メッセージ
 
 	//初期化処理　ここから//
+	//乱数シード生成器
+	std::random_device seed_gen;
+	//メルセンヌツイスター
+	std::mt19937_64 engine(seed_gen());
+	//乱数範囲
+	std::uniform_real_distribution<float> posDist(-50.0f, 50.0f);
+	std::uniform_real_distribution<float> rotDist(0.0f, pi * 2);
 
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
-	WorldMat worldMat;
-	worldMat.scale = { 1.0f, 1.0f, 1.0f };
-	//worldMat.rot = { 15.f, 30.0f, 0.0f };
-	worldMat.trans = { 0.f, 0.0f, 0.0f };
-	worldMat.SetWorld();
-	WorldMat worldMat2;
-	worldMat2.scale = { 1.0f, 1.0f, 1.0f };
-	worldMat2.rot = { 15.f, 30.0f, 0.0f };
-	worldMat2.trans = { -10.f, 0.0f, 0.0f };
-	worldMat2.parent = &worldMat;
-	worldMat2.SetWorld();
+	WorldMat worldMats[30];
+	for (WorldMat& i : worldMats)
+	{
+		//i.scale = { 1.0f, 1.0f, 1.0f };
+		i.rot = { RaditoAngle(rotDist(engine)), RaditoAngle(rotDist(engine)), RaditoAngle(rotDist(engine)) };
+		i.trans = { posDist(engine),posDist(engine),posDist(engine) };
+		i.SetWorld();
+	}
 
 	//Directx directx;
-	Draw draw[10];
-	Draw draw2;
-	Draw draw3;
+	Draw draw[30];
+	/*Draw draw2;
+	Draw draw3;*/
 	UINT64 textureHandle[3] = {0};
 	
 	LoadGraph(L"Resources/texture.jpg", textureHandle[0]);
@@ -43,14 +48,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 	//draw3.LoadGraph(L"Resources/texture2.jpg");
 
-	Vec3 pos[4] = {
+	XMFLOAT3 pos[4] = {
 		{-30.0f,-30.0f,0.0f},//左下
 		{-30.0f,30.0f, 0.0f},//左上
 		{30.0f,-30.0f, 0.0f},//右下
 		{30.0f,30.0f,  0.0f}//右上
 	};
 	
-	Vec3 pos2[4] = {
+	XMFLOAT3 pos2[4] = {
 		{0, WindowsApp::GetInstance().window_height ,0.0f},//左下
 		{0,0, 0.0f},//左上
 		{ WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0f},//右下
@@ -103,13 +108,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//}
 		if (KeyboardInput::GetInstance().keyPush(DIK_DOWN) || KeyboardInput::GetInstance().keyPush(DIK_UP) || KeyboardInput::GetInstance().keyPush(DIK_LEFT) || KeyboardInput::GetInstance().keyPush(DIK_RIGHT))//rotlasion
 		{
-			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN)) { worldMat.rot.x -= 1.0f; }
-			 if (KeyboardInput::GetInstance().keyPush(DIK_UP)) { worldMat.rot.x += 1.0f; }
-			if (KeyboardInput::GetInstance().keyPush(DIK_LEFT)) { worldMat.rot.y += 1.0f; }
-			 if (KeyboardInput::GetInstance().keyPush(DIK_RIGHT)) { worldMat.rot.y -= 1.0f; }
+			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN)) { worldMats[0].rot.x -= 1.0f; }
+			 if (KeyboardInput::GetInstance().keyPush(DIK_UP)) { worldMats[0].rot.x += 1.0f; }
+			if (KeyboardInput::GetInstance().keyPush(DIK_LEFT)) { worldMats[0].rot.y += 1.0f; }
+			 if (KeyboardInput::GetInstance().keyPush(DIK_RIGHT)) { worldMats[0].rot.y -= 1.0f; }
 		}
 		/*worldMat.rot.z++;*/
-		worldMat.SetWorld();
+		for (WorldMat& i : worldMats)
+		{
+			i.SetWorld();
+		}
 
 		//Vec3 v = viewMat.eye - worldMat.trans;
 
@@ -135,11 +143,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		//directx.GraphicsCommand(win,pipelineNum,primitiveNum);
 		//draw2.DrawBoxSprite(pos2[0], pos2[1], pos2[2], pos2[3], textureHandle[2]);//背景
-
-		draw[0].DrawCube3D(worldMat, viewMat, projectionMat, textureHandle[primitiveNum]);
-		draw[1].DrawCube3D(worldMat2, viewMat, projectionMat, textureHandle[primitiveNum + 1]);
-		//draw3.DrawBox(pos[0], pos[1], pos[2],pos[3], worldMat2, viewMat, projectionMat, textureHandle[1]);
-
+		for (int i = 0; i < _countof(draw); i++)
+		{
+			draw[i].DrawCube3D(&worldMats[i], &viewMat, &projectionMat, textureHandle[primitiveNum]);
+			//draw[1].DrawCube3D(&worldMat2, &viewMat, &projectionMat, textureHandle[primitiveNum + 1]);
+			//draw[2].DrawBox(pos[0], pos[1], pos[2], pos[3], &worldMat3, &viewMat, &projectionMat, textureHandle[1]);
+		}
 
 		// 4.描画コマンドここまで //
 

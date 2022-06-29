@@ -1,4 +1,5 @@
 #include "WorldMat.h"
+#include "Util.h"
 
 WorldMat::WorldMat()
 {
@@ -29,7 +30,7 @@ WorldMat::WorldMat()
 
 void WorldMat::SetScale()
 {
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+	matScale = XMMatrixScaling( scale.x, scale.y, scale.z);
 	matWorld *= matScale;
 }
 
