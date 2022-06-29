@@ -49,10 +49,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//draw3.LoadGraph(L"Resources/texture2.jpg");
 
 	XMFLOAT3 pos[4] = {
-		{-30.0f,-30.0f,0.0f},//左下
-		{-30.0f,30.0f, 0.0f},//左上
-		{30.0f,-30.0f, 0.0f},//右下
-		{30.0f,30.0f,  0.0f}//右上
+		{-5.0f,-5.0f,0.0f},//左下
+		{-5.0f,5.0f, 0.0f},//左上
+		{5.0f,-5.0f, 0.0f},//右下
+		{5.0f, 5.0f,  0.0f}//右上
 	};
 	
 	XMFLOAT3 pos2[4] = {
