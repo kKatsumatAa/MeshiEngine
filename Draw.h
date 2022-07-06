@@ -14,7 +14,8 @@ static enum indices
 {
 	TRIANGLE,
 	BOX,
-	CUBE
+	CUBE,
+	LINE
 };
 struct Vertex
 {
@@ -56,7 +57,7 @@ private:
 	};
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
-	XMFLOAT4 color2 = { 0,0,0,0 };
+	
 	//インデックスバッファビューの作成
 	D3D12_INDEX_BUFFER_VIEW ibView{};
 
@@ -76,48 +77,21 @@ private:
 	
 	//D3D12_CPU_DESCRIPTOR_HANDLE srvHandle2;
 	int count2=0;
-	Vertex vertices[24] = {
-		//手前
-		{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-		{{-5.0f,5.0f, -5.0f},{},{0.0f,0.0f}},//左上
-		{{5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-		{{5.0f,5.0f,  -5.0f},{},{1.0f,0.0f}},//右上
-		//奥
-		{{-5.0f,-5.0f,5.0f},{},{0.0f,1.0f}},//左下
-		{{-5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-		{{5.0f,-5.0f, 5.0f},{},{1.0f,1.0f}},//右下
-		{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
-		//上
-		{{5.0f,5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-		{{5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-		{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-		{{-5.0f,5.0f, 5.0f},{},{1.0f,0.0f}},//右上
-		//下
-		{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-		{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-		{{-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-		{{-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f}},//右上
-		//左
-		{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-		{{-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-		{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-		{{-5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
-		//右
-		{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-		{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-		{{5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-		{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
-	};
+	
+
+	
 
 private:
 	//--------------------
 	void Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
-		const bool& primitiveMode= D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		const bool& primitiveMode= true);
 
 public://変数
 	WorldMat* worldMat;
 	ViewMat* view;
 	ProjectionMat* projection;
+	bool isWireFrame = 0;
+	XMFLOAT4 color2 = { 0,0,0,0 };
 
 public:
 	
@@ -126,14 +100,19 @@ public:
 	Draw();
 
 	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
-		WorldMat* world, ViewMat* view, ProjectionMat* projection, const UINT64 textureHandle, const int& pipelineNum=0);
+		WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color={NULL,NULL,NULL,NULL},
+		const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	void DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,
-		WorldMat* world, ViewMat* view, ProjectionMat* projection, const UINT64 textureHandle, const int& pipelineNum=0);
-	void DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum = 0);
+		WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color = { NULL,NULL,NULL,NULL },
+		const UINT64 textureHandle = NULL, const int& pipelineNum=0);
+	void DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, XMFLOAT4 color = { NULL,NULL,NULL,NULL }
+		, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	void DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
-		const UINT64 textureHandle, const int& pipelineNum = 0);
+		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+	void DrawLine(XMFLOAT3& pos1, XMFLOAT3& pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection,XMFLOAT4& color
+	, const UINT64 textureHandle=NULL, const int& pipelineNum=0);
 	
-
+private:
 	void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState);
 
 	void Blend(const D3D12_BLEND_OP& blendMode,

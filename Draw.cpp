@@ -48,6 +48,44 @@ static unsigned short indicesCube[36] =
 	22,21,20,//三角形1つ目
 	23,21,22,//三角形2つ目
 };
+
+static unsigned short indicesLine[2] =
+{
+	0,1//三角形2つ目
+};
+
+Vertex vertices[24] = {
+	//手前
+	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+	{{-5.0f,5.0f, -5.0f},{},{0.0f,0.0f}},//左上
+	{{5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+	{{5.0f,5.0f,  -5.0f},{},{1.0f,0.0f}},//右上
+	//奥
+	{{-5.0f,-5.0f,5.0f},{},{0.0f,1.0f}},//左下
+	{{-5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+	{{5.0f,-5.0f, 5.0f},{},{1.0f,1.0f}},//右下
+	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
+	//上
+	{{5.0f,5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+	{{5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+	{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+	{{-5.0f,5.0f, 5.0f},{},{1.0f,0.0f}},//右上
+	//下
+	{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+	{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+	{{-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+	{{-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f}},//右上
+	//左
+	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+	{{-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+	{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+	{{-5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
+	//右
+	{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+	{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+	{{5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
+};
 //デスクリプタレンジの設定
 D3D12_DESCRIPTOR_RANGE descriptorRange;
 //テクスチャ
@@ -397,6 +435,8 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
 	const bool& primitiveMode)
 {
+	
+
 	//変換行列をGPUに送信
 	if (worldMat->parent != nullptr)//親がいる場合
 	{
@@ -456,11 +496,14 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	Directx::GetInstance().commandList->RSSetScissorRects(1, &scissorRect);
 
 	// パイプラインステートとルートシグネチャの設定コマンド
-	Directx::GetInstance().commandList->SetPipelineState(pipelineState[pipelineNum]);
+	Directx::GetInstance().commandList->SetPipelineState(pipelineState[isWireFrame]);
 	Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature);
 
 	// プリミティブ形状の設定コマンド
-	Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角か四角
+	if(primitiveMode)
+	Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
+	else
+	Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 線
 
 	// 頂点バッファビューの設定コマンド
 	Directx::GetInstance().commandList->IASetVertexBuffers(0, 1, &vbView);
@@ -468,14 +511,16 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	//定数バッファビュー(CBV)の設定コマンド
 	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 	//04_02
-	//SRVヒープの設定コマンド
-	Directx::GetInstance().commandList->SetDescriptorHeaps(1, &srvHeap);
-	//SRVヒープの先頭ハンドルを取得
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-	srvGpuHandle.ptr = textureHandle;
-	//(インスタンスで読み込んだテクスチャ用のSRVを指定)
-	Directx::GetInstance().commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
-
+	if (textureHandle != NULL)
+	{
+		//SRVヒープの設定コマンド
+		Directx::GetInstance().commandList->SetDescriptorHeaps(1, &srvHeap);
+		//SRVヒープの先頭ハンドルを取得
+		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+		srvGpuHandle.ptr = textureHandle;
+		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+		Directx::GetInstance().commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+	}
 	//定数バッファビュー(CBV)の設定コマンド
 	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
@@ -485,22 +530,26 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	// 描画コマンド
 	switch (indexNum)
 	{
-	case 0:
+	case TRIANGLE:
 		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indices2), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
-	case 1:
+	case BOX:
 		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
-	case 2:
+	case CUBE:
 		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesCube), 1, 0, 0, 0); // 全ての頂点を使って描画
+		break;
+	case LINE:
+		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesLine), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	}
 	
 }
 
 void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
-	WorldMat* world, ViewMat* view, ProjectionMat* projection, const UINT64 textureHandle, const int& pipelineNum)
+	WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
+	constBuffTransfer({ 0,0.01f,0,0 });
 	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
@@ -510,13 +559,15 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
 	vertices[3] = vertices[1];//右上
 
+	if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL) constMapMaterial->color = color;
 	
 	Update(TRIANGLE, pipelineNum, textureHandle, cbt);
 }
 
 void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
-	WorldMat* world, ViewMat* view, ProjectionMat* projection, const UINT64 textureHandle, const int& pipelineNum)
+	WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
+	constBuffTransfer({ 0,0.01f,0,0 });
 	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
@@ -526,16 +577,20 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
 	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
 
+	if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL) constMapMaterial->color = color;
 	
 	Update(BOX, pipelineNum, textureHandle,cbt);
 }
 
-void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, const UINT64 textureHandle, const int& pipelineNum)
+void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
+	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
 	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
 	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
 	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
 	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
+
+	if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL) constMapMaterial->color = color;
 
 	//05_03
 	//平行投影変換（スプライト描画?）
@@ -545,14 +600,36 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 	Update(BOX, pipelineNum, textureHandle,cbt);
 }
 
-void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection, const UINT64 textureHandle, const int& pipelineNum)
+void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+{
+	constBuffTransfer({ 0,0.01f,0,0 });
+	this->worldMat = world;
+	this->view = view;
+	this->projection = projection;
+
+	vertices[0] = { {-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };
+	vertices[1] = { {-5.0f,5.0f, -5.0f},{},{0.0f,0.0f} };//左上
+	vertices[2] = { {5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//右下
+	vertices[3] = { {5.0f,5.0f,  -5.0f},{},{1.0f,0.0f} };//右上
+	
+	if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL) constMapMaterial->color = color;
+	
+	Update(CUBE, pipelineNum, textureHandle, cbt);
+}
+
+void Draw::DrawLine(XMFLOAT3& pos1, XMFLOAT3& pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4& color,
+	const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
 
-	
-	Update(CUBE, pipelineNum, textureHandle, cbt);
+	constMapMaterial->color = color;
+
+	vertices[0] = { {pos1},{},{0.0f,1.0f} };
+	vertices[1] = { {pos2},{},{0.0f,0.0f} };
+
+	Update(LINE, pipelineNum, textureHandle, cbt, false);
 }
 
 

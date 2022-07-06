@@ -62,8 +62,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{ WindowsApp::GetInstance().window_width,0.0f,  0.0f}//右上
 	};
 
+	XMFLOAT3 posTri[3] = {
+		{-5.0f,-5.0f,0.0f},//左下
+		{0.0f,5.0f, 0.0f},//上
+		{5.0f,-5.0f, 0.0f},//右下
+	};
+
+	XMFLOAT3 posLine[2] = {
+		{-5.0f,0,0.0f},//左下
+		{5.0f,0.0f, 0.0f}//左上
+	};
+
 	int pipelineNum = 0;
 	bool primitiveNum = false;
+	float alpha = 1;
+	bool isTrans=0;
+	int primitive = 0;
+
+	XMFLOAT4 color = { 0,1,0,1 };
+	XMFLOAT4 color2 = { NULL,NULL,NULL,NULL };
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
@@ -106,13 +123,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//	if (KeyboardInput::GetInstance().keyPush(DIK_A)) { worldMat.trans.x -= 1.0f; }
 		//	else if (KeyboardInput::GetInstance().keyPush(DIK_D)) { worldMat.trans.x += 1.0f; }
 		//}
-		if (KeyboardInput::GetInstance().keyPush(DIK_DOWN) || KeyboardInput::GetInstance().keyPush(DIK_UP) || KeyboardInput::GetInstance().keyPush(DIK_LEFT) || KeyboardInput::GetInstance().keyPush(DIK_RIGHT))//rotlasion
-		{
-			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN)) { worldMats[0].rot.x -= 1.0f; }
-			 if (KeyboardInput::GetInstance().keyPush(DIK_UP)) { worldMats[0].rot.x += 1.0f; }
-			if (KeyboardInput::GetInstance().keyPush(DIK_LEFT)) { worldMats[0].rot.y += 1.0f; }
-			 if (KeyboardInput::GetInstance().keyPush(DIK_RIGHT)) { worldMats[0].rot.y -= 1.0f; }
-		}
+		
 		/*worldMat.rot.z++;*/
 		for (WorldMat& i : worldMats)
 		{
@@ -131,21 +142,79 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Directx::GetInstance().DrawUpdate();
 
 		// 4.描画コマンドここから　//-----------
-		if (KeyboardInput::GetInstance().keyTrigger(DIK_1))
+		if (KeyboardInput::GetInstance().keyTrigger(DIK_1))//テクスチャ
 		{
 			if (primitiveNum) primitiveNum = 0;
 			else              primitiveNum = 1;
 		}
-		if (KeyboardInput::GetInstance().keyTrigger(DIK_2))
+		if (KeyboardInput::GetInstance().keyTrigger(DIK_2))//ワイヤーフレームか
 		{
 			if (pipelineNum)  pipelineNum = 0;
 			else              pipelineNum = 1;
 		}
+		if (KeyboardInput::GetInstance().keyTrigger(DIK_3))//アルファ値変える
+		{
+			if (alpha==1)  alpha = 0.5f;
+			else           alpha = 1;
+		}
+		if (KeyboardInput::GetInstance().keyTrigger(DIK_4))//図形変える
+		{
+			primitive++;
+			if (primitive >= 4)primitive = 0;
+		}
+		if (KeyboardInput::GetInstance().keyTrigger(DIK_SPACE))//図形の移動か回転かを変える
+		{
+			if (isTrans == true) isTrans = false;
+			else                 isTrans = true;
+		}
+
 		//directx.GraphicsCommand(win,pipelineNum,primitiveNum);
 		//draw2.DrawBoxSprite(pos2[0], pos2[1], pos2[2], pos2[3], textureHandle[2]);//背景
 		for (int i = 0; i < _countof(draw); i++)
 		{
-			draw[i].DrawCube3D(&worldMats[i], &viewMat, &projectionMat, textureHandle[primitiveNum]);
+			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN) || KeyboardInput::GetInstance().keyPush(DIK_UP) || KeyboardInput::GetInstance().keyPush(DIK_LEFT) || KeyboardInput::GetInstance().keyPush(DIK_RIGHT))//rotlasion
+			{
+				if (KeyboardInput::GetInstance().keyPush(DIK_DOWN)) 
+				{ 
+					if(!isTrans)worldMats[i].rot.x -= 1.0f;
+					else worldMats[i].trans.y -= 1.0f;
+				}
+				if (KeyboardInput::GetInstance().keyPush(DIK_UP)) 
+				{
+					if (!isTrans)worldMats[i].rot.x += 1.0f;
+					else worldMats[i].trans.y += 1.0f;
+				}
+				if (KeyboardInput::GetInstance().keyPush(DIK_LEFT)) 
+				{
+					if (!isTrans)worldMats[i].rot.y += 1.0f;
+					else worldMats[i].trans.x -= 1.0f;
+				}
+				if (KeyboardInput::GetInstance().keyPush(DIK_RIGHT))
+				{
+					if (!isTrans)worldMats[i].rot.y -= 1.0f;
+					else worldMats[i].trans.x += 1.0f;
+				}
+			}
+
+			draw[i].isWireFrame = pipelineNum;
+			draw[i].color2.w = alpha;
+			color.w = alpha;
+			if (primitive == 0)
+			{
+				draw[i].DrawTriangle(posTri[0], posTri[1], posTri[2], &worldMats[i], &viewMat, &projectionMat, color2, textureHandle[primitiveNum + 1]);
+			}
+			else if (primitive == 1)
+			{
+				draw[i].DrawBox(pos[0], pos[1], pos[2], pos[3], &worldMats[i], &viewMat, &projectionMat, color2, textureHandle[primitiveNum + 1]);
+			}
+			else if(primitive == 2)
+			{
+				draw[i].DrawCube3D(&worldMats[i], &viewMat, &projectionMat, color2, textureHandle[primitiveNum + 1]);
+			}
+			else
+			{
+				draw[i].DrawLine(posLine[0], posLine[1], &worldMats[i], &viewMat, &projectionMat, color);
+			}
 			//draw[1].DrawCube3D(&worldMat2, &viewMat, &projectionMat, textureHandle[primitiveNum + 1]);
 			//draw[2].DrawBox(pos[0], pos[1], pos[2], pos[3], &worldMat3, &viewMat, &projectionMat, textureHandle[1]);
 		}
