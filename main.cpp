@@ -27,6 +27,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
 	WorldMat worldMats[30];
+	WorldMat cameraWorldMat;
 	for (WorldMat& i : worldMats)
 	{
 		//i.scale = { 1.0f, 1.0f, 1.0f };
@@ -105,14 +106,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		KeyboardInput::GetInstance().Update();
 
 
-		if (KeyboardInput::GetInstance().keyPush(DIK_D) || KeyboardInput::GetInstance().keyPush(DIK_A))//カメラ
+		if (KeyboardInput::GetInstance().keyPush(DIK_D) || KeyboardInput::GetInstance().keyPush(DIK_A)||
+			KeyboardInput::GetInstance().keyPush(DIK_W)|| KeyboardInput::GetInstance().keyPush(DIK_S))//カメラ
 		{
-			if (KeyboardInput::GetInstance().keyPush(DIK_D)) { viewMat.angle += XMConvertToRadians(1.0f); }
-			else if (KeyboardInput::GetInstance().keyPush(DIK_A)) { viewMat.angle -= XMConvertToRadians(1.0f); }
+			cameraWorldMat.rot.y += AngletoRadi((KeyboardInput::GetInstance().keyPush(DIK_A) - KeyboardInput::GetInstance().keyPush(DIK_D)));
+			cameraWorldMat.rot.x += AngletoRadi((KeyboardInput::GetInstance().keyPush(DIK_W) - KeyboardInput::GetInstance().keyPush(DIK_S)));
 
-			//長さを決めてy軸周りを回す
-			viewMat.eye.x = -100 * sinf(viewMat.angle);
-			viewMat.eye.z = -100 * cosf(viewMat.angle);
+			cameraWorldMat.SetWorld();
+
+			Vec3 cameraEyeVec = { 0,0,-100.0f };
+
+			Vec3xM4(cameraEyeVec, cameraWorldMat.matWorld, false);
+
+			viewMat.eye = cameraEyeVec;
 		}
 		
 
@@ -176,22 +182,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				if (KeyboardInput::GetInstance().keyPush(DIK_DOWN)) 
 				{ 
-					if(!isTrans)worldMats[i].rot.x -= 1.0f;
+					if(!isTrans)worldMats[i].rot.x -= AngletoRadi(1.0f);
 					else worldMats[i].trans.y -= 1.0f;
 				}
 				if (KeyboardInput::GetInstance().keyPush(DIK_UP)) 
 				{
-					if (!isTrans)worldMats[i].rot.x += 1.0f;
+					if (!isTrans)worldMats[i].rot.x += AngletoRadi(1.0f);
 					else worldMats[i].trans.y += 1.0f;
 				}
 				if (KeyboardInput::GetInstance().keyPush(DIK_LEFT)) 
 				{
-					if (!isTrans)worldMats[i].rot.y += 1.0f;
+					if (!isTrans)worldMats[i].rot.y += AngletoRadi(1.0f);
 					else worldMats[i].trans.x -= 1.0f;
 				}
 				if (KeyboardInput::GetInstance().keyPush(DIK_RIGHT))
 				{
-					if (!isTrans)worldMats[i].rot.y -= 1.0f;
+					if (!isTrans)worldMats[i].rot.y -= AngletoRadi(1.0f);
 					else worldMats[i].trans.x += 1.0f;
 				}
 			}

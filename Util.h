@@ -5,6 +5,7 @@
 
 //©ì
 void Vec4xM4(Vec4& v, const M4& m4);
+void Vec3xM4(Vec3& v, const M4& m4, const bool w);
 
 //ƒ‰ƒWƒAƒ“Œn
 const float pi = 3.141592f;
