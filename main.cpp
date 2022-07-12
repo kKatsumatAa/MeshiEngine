@@ -116,7 +116,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			Vec3 cameraEyeVec = { 0,0,-100.0f };
 
-			Vec3xM4(cameraEyeVec, cameraWorldMat.matWorld, false);
+			Vec3xM4(cameraEyeVec, cameraWorldMat.matWorld, false);//ベクトルをカメラ用のworldの角度に対応
 
 			viewMat.eye = cameraEyeVec;
 		}
