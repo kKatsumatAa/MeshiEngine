@@ -166,7 +166,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (KeyboardInput::GetInstance().keyTrigger(DIK_4))//図形変える
 		{
 			primitive++;
-			if (primitive >= 4)primitive = 0;
+			if (primitive >= 5)primitive = 0;
 		}
 		if (KeyboardInput::GetInstance().keyTrigger(DIK_SPACE))//図形の移動か回転かを変える
 		{
@@ -217,7 +217,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				draw[i].DrawCube3D(&worldMats[i], &viewMat, &projectionMat, color2, textureHandle[primitiveNum + 1]);
 			}
-			else
+			else if (primitive == 3)
+			{
+				draw[i].DrawCircle(5.0f, &worldMats[i], &viewMat, &projectionMat, color);
+			}
+			else 
 			{
 				draw[i].DrawLine(posLine[0], posLine[1], &worldMats[i], &viewMat, &projectionMat, color);
 			}

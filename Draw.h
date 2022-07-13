@@ -15,7 +15,8 @@ static enum indices
 	TRIANGLE,
 	BOX,
 	CUBE,
-	LINE
+	LINE,
+	CIRCLE
 };
 struct Vertex
 {
@@ -58,8 +59,7 @@ private:
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
 	
-	//インデックスバッファビューの作成
-	D3D12_INDEX_BUFFER_VIEW ibView{};
+	
 
 
 	// 2.描画先の変更
@@ -111,6 +111,8 @@ public:
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	void DrawLine(XMFLOAT3& pos1, XMFLOAT3& pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection,XMFLOAT4& color
 	, const UINT64 textureHandle=NULL, const int& pipelineNum=0);
+	void DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
+		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	
 private:
 	void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState);

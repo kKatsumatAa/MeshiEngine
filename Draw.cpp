@@ -16,7 +16,10 @@ srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE//ƒVƒF[ƒ_[‚©‚çŒ©‚
 //ƒŠƒ\[ƒXİ’è
 D3D12_RESOURCE_DESC resDesc{};
 
-
+//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+D3D12_INDEX_BUFFER_VIEW ibView{};
+//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+D3D12_INDEX_BUFFER_VIEW ibView2{};
 
 static unsigned short indices[6] =
 {
@@ -47,6 +50,32 @@ static unsigned short indicesCube[36] =
 	//‰E
 	22,21,20,//OŠpŒ`1‚Â–Ú
 	23,21,22,//OŠpŒ`2‚Â–Ú
+};
+static unsigned short indicesCircle[] =
+{
+	0,1,2,
+	0,2,3,
+	0,3,4,
+	0,4,5,
+	0,5,6,
+	0,6,7,
+	0,7,8,
+	0,8,9,
+	0,9,10,
+	0,10,11,
+	0,11,12,
+	0,12,13,
+	0,13,14,
+	0,14,15,
+	0,15,16,
+	0,16,17,
+	0,17,18,
+	0,18,19,
+	0,19,20,
+	0,20,21,
+	0,21,22,
+	0,22,23,
+	0,23,1
 };
 
 static unsigned short indicesLine[2] =
@@ -214,28 +243,42 @@ Draw::Draw()
 	//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^
 	//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY
 	//int p= _countof(indicesCube);
-	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesCube));
+	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesCircle));
 
 	//ƒŠƒ\[ƒXİ’è
 	ResourceProperties(resDesc, sizeIB);
 	//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
-	ID3D12Resource* indexBuff = nullptr;//GPU‘¤‚Ìƒƒ‚ƒŠ
+	 ID3D12Resource* indexBuff = nullptr;//GPU‘¤‚Ìƒƒ‚ƒŠ
+	 ID3D12Resource* indexBuff2 = nullptr;//GPU‘¤‚Ìƒƒ‚ƒŠ
 	BuffProperties(heapProp, resDesc, &indexBuff);
+	BuffProperties(heapProp, resDesc, &indexBuff2);
 	//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒ}ƒbƒsƒ“ƒO
-	uint16_t* indexMap = nullptr;
+	 uint16_t* indexMap = nullptr;
+	 uint16_t* indexMap2 = nullptr;
 	Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+	Directx::GetInstance().result = indexBuff2->Map(0, nullptr, (void**)&indexMap2);
 	//‘SƒCƒ“ƒfƒbƒNƒX‚É‘Î‚µ‚Ä
 	for (int i = 0; i < _countof(indicesCube); i++)
 	{
 		indexMap[i] = indicesCube[i];//ƒCƒ“ƒfƒbƒNƒX‚ğƒRƒs[
+		
+	}
+	for (int i = 0; i < _countof(indicesCircle); i++)
+	{
+		indexMap2[i] = indicesCircle[i];//ƒCƒ“ƒfƒbƒNƒX‚ğƒRƒs[
 	}
 	//ƒ}ƒbƒsƒ“ƒO‚ğ‰ğœ
 	indexBuff->Unmap(0, nullptr);
+	indexBuff2->Unmap(0, nullptr);
 
 	//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
 	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
 	ibView.Format = DXGI_FORMAT_R16_UINT;
 	ibView.SizeInBytes = sizeIB;
+
+	ibView2.BufferLocation = indexBuff2->GetGPUVirtualAddress();
+	ibView2.Format = DXGI_FORMAT_R16_UINT;
+	ibView2.SizeInBytes = sizeIB;
 
 	//04_02
 	////‰¡•ûŒüƒsƒNƒZƒ‹”
@@ -461,7 +504,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	}
 
 	//06_03
-	for (int i = 0; i < _countof(indicesCube) / 3; i++)
+	for (int i = 0; i < _countof(vertices) / 3; i++)
 	{//OŠpŒ`ˆê‚Â‚²‚Æ‚ÉŒvZ
 		//OŠpŒ`‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ‚èo‚µ‚ÄAˆê“I‚È•Ï”‚É“ü‚ê‚é
 		unsigned short index0 = indicesCube[i * 3 + 0];
@@ -537,7 +580,9 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
 	//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìİ’èƒRƒ}ƒ“ƒh
-	Directx::GetInstance().commandList->IASetIndexBuffer(&ibView);
+	if(indexNum!=CIRCLE) Directx::GetInstance().commandList->IASetIndexBuffer(&ibView);
+	else if (indexNum == CIRCLE)Directx::GetInstance().commandList->IASetIndexBuffer(&ibView2);
+
 	int p = sizeof(indices);
 	// •`‰æƒRƒ}ƒ“ƒh
 	switch (indexNum)
@@ -553,6 +598,9 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		break;
 	case LINE:
 		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesLine), 1, 0, 0, 0); // ‘S‚Ä‚Ì’¸“_‚ğg‚Á‚Ä•`‰æ
+		break;
+	case CIRCLE:
+		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesCircle), 1, 0, 0, 0); // ‘S‚Ä‚Ì’¸“_‚ğg‚Á‚Ä•`‰æ
 		break;
 	}
 	
@@ -619,10 +667,36 @@ void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	this->view = view;
 	this->projection = projection;
 
-	vertices[0] = { {-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };
+	//è‘O
+	vertices[0] = { {-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//¶‰º
 	vertices[1] = { {-5.0f,5.0f, -5.0f},{},{0.0f,0.0f} };//¶ã
 	vertices[2] = { {5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//‰E‰º
 	vertices[3] = { {5.0f,5.0f,  -5.0f},{},{1.0f,0.0f} };//‰Eã
+
+	vertices[4] = { {-5.0f,-5.0f,5.0f},{},{0.0f,1.0f} };//¶‰º
+	vertices[5] = { {-5.0f,5.0f, 5.0f},{},{0.0f,0.0f} };//¶ã
+	vertices[6] = { {5.0f,-5.0f, 5.0f},{},{1.0f,1.0f} };//‰E‰º
+	vertices[7] = { {5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//‰Eã
+		//ã
+	vertices[8] = { {5.0f,5.0f,-5.0f},{},{0.0f,1.0f} };//¶‰º
+	vertices[9] = { {5.0f,5.0f, 5.0f},{},{0.0f,0.0f} };//¶ã
+	vertices[10] = { {-5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//‰E‰º
+	vertices[11] = { {-5.0f,5.0f, 5.0f},{},{1.0f,0.0f} };//‰Eã
+
+	vertices[12] = { {5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//¶‰º
+	vertices[13] = { {5.0f,-5.0f, 5.0f},{},{0.0f,0.0f} };//¶ã
+	vertices[14] = { {-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//‰E‰º
+	vertices[15] = { {-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f} };//‰Eã
+
+	vertices[16] = { {-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//¶‰º
+	vertices[17] = { {-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f} };//¶ã
+	vertices[18] = { {-5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//‰E‰º
+	vertices[19] = { {-5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//‰Eã
+
+	vertices[20] = { {5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//¶‰º
+	vertices[21] = { {5.0f,-5.0f, 5.0f},{},{0.0f,0.0f} };//¶ã
+	vertices[22] = { {5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//‰E‰º
+	vertices[23] = { {5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//‰Eã;//¶‰º
 	
 	if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL) constMapMaterial->color = color;
 	
@@ -642,6 +716,31 @@ void Draw::DrawLine(XMFLOAT3& pos1, XMFLOAT3& pos2, WorldMat* world, ViewMat* vi
 	vertices[1] = { {pos2},{},{0.0f,0.0f} };
 
 	Update(LINE, pipelineNum, textureHandle, cbt, false);
+}
+
+void Draw::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection, 
+	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+{
+	/*constBuffTransfer({ 0,0.01f,0,0 });*/
+	this->worldMat = world;
+	this->view = view;
+	this->projection = projection;
+
+	vertices[0].pos = {0.0f,0.0f,0.0f} ;
+
+	static float count = _countof(vertices) - 2;//’†S“_‚Æ‰Šú‚Ì“_‚ÍƒJƒEƒ“ƒg‚µ‚È‚¢
+
+	for (int i = 1; i < _countof(vertices); i++)
+	{
+		vertices[i].pos = { radius * cosf(AngletoRadi(360 / count) * (i - 1)),radius * sinf(AngletoRadi(360 / count) * (i - 1)),0 };
+	}
+	//vertices[1] = { {-5.0f,5.0f, -5.0f},{},{0.0f,0.0f} };//¶ã
+	//vertices[2] = { {5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//‰E‰º
+	//vertices[3] = { {5.0f,5.0f,  -5.0f},{},{1.0f,0.0f} };//‰Eã
+
+	constMapMaterial->color = color;
+
+	Update(CIRCLE, pipelineNum, textureHandle, cbt);
 }
 
 
