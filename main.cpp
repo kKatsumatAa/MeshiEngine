@@ -159,7 +159,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (KeyboardInput::GetInstance().keyPush(DIK_ESCAPE)) break;
 	}
 
-	//ウィンドウクラスを登録解除
+	//ウィンドウクラスを登録解除//
 	 WindowsApp::GetInstance().UnregisterClassA();
 
 	return 0;
