@@ -14,6 +14,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	OutputDebugStringA("Hello,DirectX!!\n");
 
 	MSG msg{};	//メッセージ
+	
 
 	//初期化処理　ここから//
 	//乱数シード生成器
@@ -43,6 +44,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Directx directx;
 	Draw draw[30];
 	Draw drawL[24];
+	DrawInitialize();
 	/*Draw draw2;
 	Draw draw3;*/
 	UINT64 textureHandle[3] = { 0 };
@@ -232,7 +234,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//数字で操作系
 			draw[i].isWireFrame = pipelineNum;
-			draw[i].color2.w = alpha;
+			//draw[i]color2.w = alpha;
 			color.w = alpha;
 			if (primitive == 0)
 			{

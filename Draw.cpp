@@ -143,30 +143,37 @@ D3D12_INPUT_ELEMENT_DESC inputLayout[3] = {
 D3D12_ROOT_PARAMETER rootParams[3] = {};
 UINT sizeVB;
 
-Draw::Draw()
+// ビューポート設定コマンド
+D3D12_VIEWPORT viewport{};
+
+// パイプランステートの生成
+ID3D12PipelineState* pipelineState[2] = { nullptr };
+// ルートシグネチャ
+ID3D12RootSignature* rootSignature;
+// グラフィックスパイプライン設定
+D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
+ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
+ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
+ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
+
+	//定数バッファの生成
+ID3D12Resource* constBuffMaterial = nullptr;
+//定数バッファ用データ構造体（マテリアル）
+struct ConstBufferDataMaterial
 {
-	cbt.Initialize(Directx::GetInstance());
-
-	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
-
-	//頂点バッファの設定		//ヒープ設定
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
-	
-	ResourceProperties(resDesc, sizeVB);
-
-	//頂点バッファの生成
-	BuffProperties(heapProp, resDesc, &vertBuff);
-
-	// 頂点バッファビューの作成
-	// GPU仮想アドレス
-	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
-	// 頂点バッファのサイズ
-	vbView.SizeInBytes = sizeVB;
-	// 頂点1つ分のデータサイズ
-	vbView.StrideInBytes = sizeof(vertices[0]);
+	XMFLOAT4 color;//色(RGBA)
+};
+//定数バッファのマッピング
+ConstBufferDataMaterial* constMapMaterial = nullptr;
+//頂点バッファの設定
+D3D12_HEAP_PROPERTIES heapProp{};
+// 2.描画先の変更
+	// レンダーターゲットビューのハンドルを取得
+D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 
+void DrawInitialize()
+{
 	// 頂点シェーダの読み込みとコンパイル
 	Directx::GetInstance().result = D3DCompileFromFile(
 		L"BasicVS.hlsl", // シェーダファイル名
@@ -193,7 +200,7 @@ Draw::Draw()
 	// エラーなら
 	Error(FAILED(Directx::GetInstance().result));
 
-	
+
 	//デスクリプタレンジの設定
 	descriptorRange.NumDescriptors = 100;   //一度の描画に使うテクスチャの枚数
 	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
@@ -248,20 +255,20 @@ Draw::Draw()
 	//リソース設定
 	ResourceProperties(resDesc, sizeIB);
 	//インデックスバッファの作成
-	 ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-	 ID3D12Resource* indexBuff2 = nullptr;//GPU側のメモリ
+	ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
+	ID3D12Resource* indexBuff2 = nullptr;//GPU側のメモリ
 	BuffProperties(heapProp, resDesc, &indexBuff);
 	BuffProperties(heapProp, resDesc, &indexBuff2);
 	//インデックスバッファをマッピング
-	 uint16_t* indexMap = nullptr;
-	 uint16_t* indexMap2 = nullptr;
+	uint16_t* indexMap = nullptr;
+	uint16_t* indexMap2 = nullptr;
 	Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 	Directx::GetInstance().result = indexBuff2->Map(0, nullptr, (void**)&indexMap2);
 	//全インデックスに対して
 	for (int i = 0; i < _countof(indicesCube); i++)
 	{
 		indexMap[i] = indicesCube[i];//インデックスをコピー
-		
+
 	}
 	for (int i = 0; i < _countof(indicesCircle); i++)
 	{
@@ -279,6 +286,33 @@ Draw::Draw()
 	ibView2.BufferLocation = indexBuff2->GetGPUVirtualAddress();
 	ibView2.Format = DXGI_FORMAT_R16_UINT;
 	ibView2.SizeInBytes = sizeIB;
+}
+
+Draw::Draw()
+{
+	cbt.Initialize(Directx::GetInstance());
+
+	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
+	sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
+
+	//頂点バッファの設定		//ヒープ設定
+	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
+	
+	ResourceProperties(resDesc, sizeVB);
+
+	//頂点バッファの生成
+	BuffProperties(heapProp, resDesc, &vertBuff);
+
+	// 頂点バッファビューの作成
+	// GPU仮想アドレス
+	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
+	// 頂点バッファのサイズ
+	vbView.SizeInBytes = sizeVB;
+	// 頂点1つ分のデータサイズ
+	vbView.StrideInBytes = sizeof(vertices[0]);
+
+
+	
 
 	//04_02
 	////横方向ピクセル数
@@ -744,7 +778,7 @@ void Draw::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMa
 }
 
 
-void Draw::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState)
+void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState)
 {
 	// シェーダーの設定
 	pipelineDesc.VS.pShaderBytecode = vsBlob->GetBufferPointer();
@@ -817,7 +851,7 @@ void Draw::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** 
 	//assert(SUCCEEDED(Directx::GetInstance().result));
 }
 
-void Draw::Blend(const D3D12_BLEND_OP& blendMode, const bool& Inversion, const bool& Translucent)
+void Blend(const D3D12_BLEND_OP& blendMode, const bool& Inversion, const bool& Translucent)
 {
 	//共通設定
 	D3D12_RENDER_TARGET_BLEND_DESC& blendDesc = pipelineDesc.BlendState.RenderTarget[0];
@@ -844,8 +878,8 @@ void Draw::Blend(const D3D12_BLEND_OP& blendMode, const bool& Inversion, const b
 		blendDesc.DestBlend = D3D12_BLEND_ONE;//デストの値を100%使う
 	}
 }
-
-void Draw::constBuffTransfer(const XMFLOAT4& plusRGBA)
+XMFLOAT4 color2 = { 0,0,0,0 };
+void constBuffTransfer(const XMFLOAT4& plusRGBA)
 {
 	color2.x += plusRGBA.x;
 	color2.y += plusRGBA.y;
@@ -856,7 +890,7 @@ void Draw::constBuffTransfer(const XMFLOAT4& plusRGBA)
 	constMapMaterial->color = color2;//半透明の赤
 }
 
-void Draw::ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size)
+void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size)
 {
 	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 	resDesc.Width = size;						//頂点データ全体のサイズ
@@ -867,7 +901,7 @@ void Draw::ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size)
 	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 }
 
-void Draw::BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, ID3D12Resource** buff)
+void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, ID3D12Resource** buff)
 {
 	Directx::GetInstance().result = Directx::GetInstance().device->CreateCommittedResource(
 		&heap,//ヒープ設定
@@ -879,7 +913,7 @@ void Draw::BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& reso
 	assert(SUCCEEDED(Directx::GetInstance().result));
 }
 
-void Draw::SetNormDigitalMat(XMMATRIX& mat)
+void SetNormDigitalMat(XMMATRIX& mat)
 {
 	mat.r[0].m128_f32[0] = 2.0f / WindowsApp::GetInstance().window_width;
 	mat.r[1].m128_f32[1] = -2.0f / WindowsApp::GetInstance().window_height;
@@ -887,7 +921,7 @@ void Draw::SetNormDigitalMat(XMMATRIX& mat)
 	mat.r[3].m128_f32[1] = 1.0f;
 }
 
-void Draw::Error(const bool& filed)
+void Error(const bool& filed)
 {
 	if (filed)
 	{
