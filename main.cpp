@@ -116,7 +116,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			KeyboardInput::GetInstance().keyPush(DIK_W) || KeyboardInput::GetInstance().keyPush(DIK_S))//カメラ
 		{
 			cameraWorldMat.rot.y += AngletoRadi((KeyboardInput::GetInstance().keyPush(DIK_A) - KeyboardInput::GetInstance().keyPush(DIK_D)));
-			cameraWorldMat.rot.x += AngletoRadi((KeyboardInput::GetInstance().keyPush(DIK_W) - KeyboardInput::GetInstance().keyPush(DIK_S)));
+			if (cameraWorldMat.rot.x<=pi/2.f - pi / 4.f && cameraWorldMat.rot.x >= -pi/2.f+pi/4.f)
+			{
+				cameraWorldMat.rot.x += AngletoRadi((KeyboardInput::GetInstance().keyPush(DIK_W) - KeyboardInput::GetInstance().keyPush(DIK_S)));
+			}
+			if (cameraWorldMat.rot.x >= pi / 2.f - pi / 4.f)cameraWorldMat.rot.x = pi / 2.f - pi / 4.f;
+			if (cameraWorldMat.rot.x <= -pi / 2.f + pi / 4.f)cameraWorldMat.rot.x = -pi / 2.f + pi / 4.f;
 
 			cameraWorldMat.SetWorld();
 
