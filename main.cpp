@@ -27,6 +27,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
 	WorldMat worldMats[30];
+	WorldMat worldMat;
+	worldMat.SetWorld();
+
+	//worldMat.SetWorld();
 	WorldMat cameraWorldMat;
 	for (WorldMat& i : worldMats)
 	{
@@ -38,15 +42,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//Directx directx;
 	Draw draw[30];
+	Draw drawL[24];
 	/*Draw draw2;
 	Draw draw3;*/
-	UINT64 textureHandle[3] = {0};
-	
+	UINT64 textureHandle[3] = { 0 };
+
 	LoadGraph(L"Resources/texture.jpg", textureHandle[0]);
 	LoadGraph(L"Resources/texture2.jpg", textureHandle[1]);
 	LoadGraph(L"Resources/back.png", textureHandle[2]);//back
 
-	
+
 	//draw3.LoadGraph(L"Resources/texture2.jpg");
 
 	XMFLOAT3 pos[4] = {
@@ -55,7 +60,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{5.0f,-5.0f, 0.0f},//右下
 		{5.0f, 5.0f,  0.0f}//右上
 	};
-	
+
 	XMFLOAT3 pos2[4] = {
 		{0, WindowsApp::GetInstance().window_height ,0.0f},//左下
 		{0,0, 0.0f},//左上
@@ -77,10 +82,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int pipelineNum = 0;
 	bool primitiveNum = false;
 	float alpha = 1;
-	bool isTrans=0;
+	bool isTrans = 0;
 	int primitive = 0;
 
 	XMFLOAT4 color = { 0,1,0,1 };
+	XMFLOAT4 color3 = { 0,0,1,1 };
 	XMFLOAT4 color2 = { NULL,NULL,NULL,NULL };
 
 	//キーボード入力初期化
@@ -96,7 +102,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
    //ゲームループ
 	while (true) {
 
-		if ( WindowsApp::GetInstance().MessegeRoop(msg))
+		if (WindowsApp::GetInstance().MessegeRoop(msg))
 		{
 			break;
 		}
@@ -106,8 +112,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		KeyboardInput::GetInstance().Update();
 
 
-		if (KeyboardInput::GetInstance().keyPush(DIK_D) || KeyboardInput::GetInstance().keyPush(DIK_A)||
-			KeyboardInput::GetInstance().keyPush(DIK_W)|| KeyboardInput::GetInstance().keyPush(DIK_S))//カメラ
+		if (KeyboardInput::GetInstance().keyPush(DIK_D) || KeyboardInput::GetInstance().keyPush(DIK_A) ||
+			KeyboardInput::GetInstance().keyPush(DIK_W) || KeyboardInput::GetInstance().keyPush(DIK_S))//カメラ
 		{
 			cameraWorldMat.rot.y += AngletoRadi((KeyboardInput::GetInstance().keyPush(DIK_A) - KeyboardInput::GetInstance().keyPush(DIK_D)));
 			cameraWorldMat.rot.x += AngletoRadi((KeyboardInput::GetInstance().keyPush(DIK_W) - KeyboardInput::GetInstance().keyPush(DIK_S)));
@@ -120,7 +126,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			viewMat.eye = cameraEyeVec;
 		}
-		
+
 
 		//if (KeyboardInput::GetInstance().keyPush(DIK_S) || KeyboardInput::GetInstance().keyPush(DIK_W) || KeyboardInput::GetInstance().keyPush(DIK_A) || KeyboardInput::GetInstance().keyPush(DIK_D))//translasion
 		//{
@@ -129,7 +135,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//	if (KeyboardInput::GetInstance().keyPush(DIK_A)) { worldMat.trans.x -= 1.0f; }
 		//	else if (KeyboardInput::GetInstance().keyPush(DIK_D)) { worldMat.trans.x += 1.0f; }
 		//}
-		
+
 		/*worldMat.rot.z++;*/
 		for (WorldMat& i : worldMats)
 		{
@@ -160,7 +166,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		if (KeyboardInput::GetInstance().keyTrigger(DIK_3))//アルファ値変える
 		{
-			if (alpha==1)  alpha = 0.5f;
+			if (alpha == 1)  alpha = 0.5f;
 			else           alpha = 1;
 		}
 		if (KeyboardInput::GetInstance().keyTrigger(DIK_4))//図形変える
@@ -174,23 +180,39 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			else                 isTrans = true;
 		}
 
+		{//グリッド線
+			static float r = 150;
+			for (int x = 0; x < _countof(drawL) / 2; x++)//縦線
+			{
+				drawL[x].DrawLine({ -r / 2.0f + r / (_countof(drawL) / 2 - 1) * (float)x, 0, -r / 2.0f },
+					{ -r / 2.0f + r / (_countof(drawL) / 2 - 1) * (float)x, 0, r / 2.0f }, &worldMat, &viewMat, &projectionMat, color);
+			}
+			for (int z = _countof(drawL) / 2; z < _countof(drawL); z++)//横線
+			{
+				drawL[z].DrawLine({ -r / 2.0f, 0, -r / 2.0f + r / (_countof(drawL) / 2 - 1) * (float)(z - _countof(drawL) / 2) },
+					{ r / 2.0f, 0, -r / 2.0f + r / (_countof(drawL) / 2 - 1) * (float)(z - _countof(drawL) / 2) },
+					&worldMat, &viewMat, &projectionMat, color3);
+			}
+		}
 		//directx.GraphicsCommand(win,pipelineNum,primitiveNum);
 		//draw2.DrawBoxSprite(pos2[0], pos2[1], pos2[2], pos2[3], textureHandle[2]);//背景
+
 		for (int i = 0; i < _countof(draw); i++)
 		{
-			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN) || KeyboardInput::GetInstance().keyPush(DIK_UP) || KeyboardInput::GetInstance().keyPush(DIK_LEFT) || KeyboardInput::GetInstance().keyPush(DIK_RIGHT))//rotlasion
+			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN) || KeyboardInput::GetInstance().keyPush(DIK_UP) ||//図形を操作（アフィン） 
+				KeyboardInput::GetInstance().keyPush(DIK_LEFT) || KeyboardInput::GetInstance().keyPush(DIK_RIGHT))
 			{
-				if (KeyboardInput::GetInstance().keyPush(DIK_DOWN)) 
-				{ 
-					if(!isTrans)worldMats[i].rot.x -= AngletoRadi(1.0f);
+				if (KeyboardInput::GetInstance().keyPush(DIK_DOWN))
+				{
+					if (!isTrans)worldMats[i].rot.x -= AngletoRadi(1.0f);
 					else worldMats[i].trans.y -= 1.0f;
 				}
-				if (KeyboardInput::GetInstance().keyPush(DIK_UP)) 
+				if (KeyboardInput::GetInstance().keyPush(DIK_UP))
 				{
 					if (!isTrans)worldMats[i].rot.x += AngletoRadi(1.0f);
 					else worldMats[i].trans.y += 1.0f;
 				}
-				if (KeyboardInput::GetInstance().keyPush(DIK_LEFT)) 
+				if (KeyboardInput::GetInstance().keyPush(DIK_LEFT))
 				{
 					if (!isTrans)worldMats[i].rot.y += AngletoRadi(1.0f);
 					else worldMats[i].trans.x -= 1.0f;
@@ -202,6 +224,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
+
+			//数字で操作系
 			draw[i].isWireFrame = pipelineNum;
 			draw[i].color2.w = alpha;
 			color.w = alpha;
@@ -213,7 +237,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				draw[i].DrawBox(pos[0], pos[1], pos[2], pos[3], &worldMats[i], &viewMat, &projectionMat, color2, textureHandle[primitiveNum + 1]);
 			}
-			else if(primitive == 2)
+			else if (primitive == 2)
 			{
 				draw[i].DrawCube3D(&worldMats[i], &viewMat, &projectionMat, color2, textureHandle[primitiveNum + 1]);
 			}
@@ -221,7 +245,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				draw[i].DrawCircle(5.0f, &worldMats[i], &viewMat, &projectionMat, color);
 			}
-			else 
+			else
 			{
 				draw[i].DrawLine(posLine[0], posLine[1], &worldMats[i], &viewMat, &projectionMat, color);
 			}
@@ -239,7 +263,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 	//ウィンドウクラスを登録解除
-	 WindowsApp::GetInstance().UnregisterClassA();
+	WindowsApp::GetInstance().UnregisterClassA();
 
 	return 0;
 }

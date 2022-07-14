@@ -703,7 +703,7 @@ void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	Update(CUBE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawLine(XMFLOAT3& pos1, XMFLOAT3& pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4& color,
+void Draw::DrawLine(XMFLOAT3 pos1, XMFLOAT3 pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4& color,
 	const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
