@@ -40,7 +40,15 @@ private:
 		//頂点データ構造体
 	
 	
-	
+		//定数バッファの生成
+	ID3D12Resource* constBuffMaterial = nullptr;
+	//定数バッファ用データ構造体（マテリアル）
+	struct ConstBufferDataMaterial
+	{
+		XMFLOAT4 color;//色(RGBA)
+	};
+	//定数バッファのマッピング
+	ConstBufferDataMaterial* constMapMaterial = nullptr;
 	
 
 	
@@ -69,7 +77,6 @@ public://変数
 	ViewMat* view;
 	ProjectionMat* projection;
 	bool isWireFrame = 0;
-	
 
 public:
 	
@@ -93,10 +100,8 @@ public:
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	
 private:
-	
+	void constBuffTransfer(const XMFLOAT4& plusRGBA);
 };
-//XMFLOAT4 color2 = { 0,0,0,0 };
-
 
 void LoadGraph(const wchar_t* name, UINT64& textureHandle);
 
@@ -109,7 +114,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 void Blend(const D3D12_BLEND_OP& blendMode,
 	const bool& Inversion = 0, const bool& Translucent = 0);
 
-void constBuffTransfer(const XMFLOAT4& plusRGBA);
+
 
 void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size);
 

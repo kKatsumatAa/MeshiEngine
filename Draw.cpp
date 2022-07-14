@@ -156,15 +156,7 @@ ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
 ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
 ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
 
-	//定数バッファの生成
-ID3D12Resource* constBuffMaterial = nullptr;
-//定数バッファ用データ構造体（マテリアル）
-struct ConstBufferDataMaterial
-{
-	XMFLOAT4 color;//色(RGBA)
-};
-//定数バッファのマッピング
-ConstBufferDataMaterial* constMapMaterial = nullptr;
+
 //頂点バッファの設定
 D3D12_HEAP_PROPERTIES heapProp{};
 // 2.描画先の変更
@@ -231,20 +223,7 @@ void DrawInitialize()
 
 	PipeLineState(D3D12_FILL_MODE_WIREFRAME, pipelineState + 1);
 
-	//03_02
-	//ヒープ設定
-	D3D12_HEAP_PROPERTIES cbHeapProp{};
-	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
-	//リソース設定
-	D3D12_RESOURCE_DESC cbResourceDesc{};
-	ResourceProperties(cbResourceDesc,
-		((UINT)sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff/*256バイトアライメント*/);
-	//定数バッファの生成
-	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial);
-	//定数バッファのマッピング
-	Directx::GetInstance().result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
-	assert(SUCCEEDED(Directx::GetInstance().result));
-	constBuffTransfer({ 1.0f,0,0,1.0f });
+	
 
 	//03_04
 	//インデックスデータ
@@ -291,6 +270,7 @@ void DrawInitialize()
 Draw::Draw()
 {
 	cbt.Initialize(Directx::GetInstance());
+	
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
 	sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
@@ -311,7 +291,20 @@ Draw::Draw()
 	// 頂点1つ分のデータサイズ
 	vbView.StrideInBytes = sizeof(vertices[0]);
 
-
+	//03_02
+	//ヒープ設定
+	D3D12_HEAP_PROPERTIES cbHeapProp{};
+	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+	//リソース設定
+	D3D12_RESOURCE_DESC cbResourceDesc{};
+	ResourceProperties(cbResourceDesc,
+		((UINT)sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff/*256バイトアライメント*/);
+	//定数バッファの生成
+	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial);
+	//定数バッファのマッピング
+	Directx::GetInstance().result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
+	assert(SUCCEEDED(Directx::GetInstance().result));
+	//constBuffTransfer({ 1.0f,1.0f,1.0f,1.0f });
 	
 
 	//04_02
@@ -371,7 +364,7 @@ Draw::Draw()
 	matWorld = XMMatrixIdentity();
 
 	constMapTransform=matWorld**/
-	
+	constMapMaterial->color = { 0,0,0,1 };
 }
 
 void LoadGraph(const wchar_t* name, UINT64& textureHandle)
@@ -512,8 +505,6 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
 	const bool& primitiveMode)
 {
-	
-
 	//変換行列をGPUに送信
 	if (worldMat->parent != nullptr)//親がいる場合
 	{
@@ -637,13 +628,12 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesCircle), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	}
-	
 }
 
 void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 	WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	constBuffTransfer({ 0,0.01f,0,0 });
+	//constBuffTransfer({ 0.01f,0.05f,0.1f,0 });
 	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
@@ -653,7 +643,7 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
 	vertices[3] = vertices[1];//右上
 
-	if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL) constMapMaterial->color = color;
+	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 	
 	Update(TRIANGLE, pipelineNum, textureHandle, cbt);
 }
@@ -661,7 +651,7 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
 	WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	constBuffTransfer({ 0,0.01f,0,0 });
+	//constBuffTransfer({ 0.01f,0.05f,0.1f,0 });
 	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
@@ -671,7 +661,7 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
 	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
 
-	if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL) constMapMaterial->color = color;
+	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 	
 	Update(BOX, pipelineNum, textureHandle,cbt);
 }
@@ -684,7 +674,7 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
 	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
 
-	if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL) constMapMaterial->color = color;
+	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
 
 	//05_03
 	//平行投影変換（スプライト描画?）
@@ -696,7 +686,7 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 
 void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	constBuffTransfer({ 0,0.01f,0,0 });
+	//constBuffTransfer({ 0.01f,0.05f,0.1f,0 });
 	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
@@ -732,7 +722,7 @@ void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	vertices[22] = { {5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//右下
 	vertices[23] = { {5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//右上;//左下
 	
-	if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL) constMapMaterial->color = color;
+	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 	
 	Update(CUBE, pipelineNum, textureHandle, cbt);
 }
@@ -878,16 +868,17 @@ void Blend(const D3D12_BLEND_OP& blendMode, const bool& Inversion, const bool& T
 		blendDesc.DestBlend = D3D12_BLEND_ONE;//デストの値を100%使う
 	}
 }
-XMFLOAT4 color2 = { 0,0,0,0 };
-void constBuffTransfer(const XMFLOAT4& plusRGBA)
-{
-	color2.x += plusRGBA.x;
-	color2.y += plusRGBA.y;
-	color2.z += plusRGBA.z;
-	color2.w += plusRGBA.w;
 
-	//値を書き込むと自動的に転送される
-	constMapMaterial->color = color2;//半透明の赤
+void Draw::constBuffTransfer(const XMFLOAT4& plusRGBA)
+{
+	if (constMapMaterial->color.x <= 1.0f && constMapMaterial->color.x >= 0.0f)
+		constMapMaterial->color.x += plusRGBA.x;
+	if (constMapMaterial->color.y <= 1.0f && constMapMaterial->color.y >= 0.0f)
+		constMapMaterial->color.y += plusRGBA.y;
+	if (constMapMaterial->color.z <= 1.0f && constMapMaterial->color.z >= 0.0f)
+		constMapMaterial->color.z += plusRGBA.z;
+	if (constMapMaterial->color.w <= 1.0f && constMapMaterial->color.w >= 0.0f)
+		constMapMaterial->color.w += plusRGBA.w;
 }
 
 void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size)

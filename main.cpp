@@ -15,6 +15,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	MSG msg{};	//メッセージ
 	
+	const int DrawNum = 100;
 
 	//初期化処理　ここから//
 	//乱数シード生成器
@@ -27,7 +28,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
-	WorldMat worldMats[30];
+	WorldMat worldMats[DrawNum];
 	WorldMat worldMat;
 	worldMat.SetWorld();
 
@@ -42,7 +43,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 	//Directx directx;
-	Draw draw[30];
+	Draw draw[DrawNum];
 	Draw drawL[24];
 	DrawInitialize();
 	/*Draw draw2;
@@ -89,7 +90,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	XMFLOAT4 color = { 0,1,0,1 };
 	XMFLOAT4 color3 = { 0,0,1,1 };
-	XMFLOAT4 color2 = { NULL,NULL,NULL,NULL };
+	XMFLOAT4 color2 = { 0,0,0,1 };
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
@@ -181,10 +182,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			primitive++;
 			if (primitive >= 5)primitive = 0;
 		}
+		if (KeyboardInput::GetInstance().keyTrigger(DIK_5))//図形変える
+		{
+			color2 = { 0.f,0.f,0.f,1.f };
+		}
 		if (KeyboardInput::GetInstance().keyTrigger(DIK_SPACE))//図形の移動か回転かを変える
 		{
 			if (isTrans == true) isTrans = false;
 			else                 isTrans = true;
+		}
+
+		{//色徐々に変える
+			if (color2.x <= 1.0f && color2.x >= 0.0f)
+				color2.x += 0.005f;
+			if (color2.y <= 1.0f && color2.y >= 0.0f)
+				color2.y += 0.005f;
+			if (color2.z <= 1.0f && color2.z >= 0.0f)
+				color2.z += 0.005f;
 		}
 
 		{//グリッド線
@@ -203,7 +217,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		//directx.GraphicsCommand(win,pipelineNum,primitiveNum);
 		//draw2.DrawBoxSprite(pos2[0], pos2[1], pos2[2], pos2[3], textureHandle[2]);//背景
-
+		
 		for (int i = 0; i < _countof(draw); i++)
 		{
 			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN) || KeyboardInput::GetInstance().keyPush(DIK_UP) ||//図形を操作（アフィン） 
@@ -234,8 +248,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//数字で操作系
 			draw[i].isWireFrame = pipelineNum;
-			//draw[i]color2.w = alpha;
-			color.w = alpha;
+			color2.w = alpha;
 			if (primitive == 0)
 			{
 				draw[i].DrawTriangle(posTri[0], posTri[1], posTri[2], &worldMats[i], &viewMat, &projectionMat, color2, textureHandle[primitiveNum + 1]);
@@ -250,11 +263,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			else if (primitive == 3)
 			{
-				draw[i].DrawCircle(5.0f, &worldMats[i], &viewMat, &projectionMat, color);
+				draw[i].DrawCircle(5.0f, &worldMats[i], &viewMat, &projectionMat, color2);
 			}
 			else
 			{
-				draw[i].DrawLine(posLine[0], posLine[1], &worldMats[i], &viewMat, &projectionMat, color);
+				draw[i].DrawLine(posLine[0], posLine[1], &worldMats[i], &viewMat, &projectionMat, color2);
 			}
 			//draw[1].DrawCube3D(&worldMat2, &viewMat, &projectionMat, textureHandle[primitiveNum + 1]);
 			//draw[2].DrawBox(pos[0], pos[1], pos[2], pos[3], &worldMat3, &viewMat, &projectionMat, textureHandle[1]);
