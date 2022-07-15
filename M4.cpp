@@ -170,3 +170,17 @@ M4& M4::operator*=(const M4& other)
 //void M4::Normalize()
 //{
 //}
+
+Vec3 operator*(const Vec3& v, const M4& m2)
+{
+	float w = v.x * m2.m[0][3] + v.y * m2.m[1][3] + v.z * m2.m[2][3] + m2.m[3][3];
+
+	Vec3 result
+	{
+		(v.x * m2.m[0][0] + v.y * m2.m[1][0] + v.z * m2.m[2][0] + m2.m[3][0]) / w,
+		(v.x * m2.m[0][1] + v.y * m2.m[1][1] + v.z * m2.m[2][1] + m2.m[3][1]) / w,
+		(v.x * m2.m[0][2] + v.y * m2.m[1][2] + v.z * m2.m[2][2] + m2.m[3][2]) / w
+	};
+
+	return result;
+}

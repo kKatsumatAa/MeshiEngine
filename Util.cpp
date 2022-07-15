@@ -21,7 +21,7 @@ void Vec4xM4(Vec4& v, const M4& m4)
 void Vec3xM4(Vec3& v, const M4& m4, const bool w)
 {
 	float v4[2][4] = {
-		{ v.x,v.y,v.z,0 },
+		{ v.x,v.y,v.z,w },
 		{0,0,0,0}
 	};
 

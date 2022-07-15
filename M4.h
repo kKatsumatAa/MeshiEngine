@@ -34,6 +34,9 @@ public:
 	M4& operator*=(const M4& other);
 };
 
+Vec3 operator*(const Vec3& v, const M4& m2);
+
+
 const float normalM[4][4] = {
 		{1,0,0,0},
 		{0,1,0,0},
