@@ -15,7 +15,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	MSG msg{};	//メッセージ
 	
-	const int DrawNum = 100;
+	const int DrawNum = 200;
 
 	//初期化処理　ここから//
 	//乱数シード生成器
@@ -85,7 +85,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int pipelineNum = 0;
 	bool primitiveNum = false;
 	float alpha = 1;
-	bool isTrans = 0;
+	int affin = 0;
 	int primitive = 0;
 
 	XMFLOAT4 color = { 0,1,0,1 };
@@ -188,8 +188,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		if (KeyboardInput::GetInstance().keyTrigger(DIK_SPACE))//図形の移動か回転かを変える
 		{
-			if (isTrans == true) isTrans = false;
-			else                 isTrans = true;
+			affin++;
+			if (affin >= 3)affin = 0;
 		}
 
 		{//色徐々に変える
@@ -225,23 +225,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				if (KeyboardInput::GetInstance().keyPush(DIK_DOWN))
 				{
-					if (!isTrans)worldMats[i].rot.x -= AngletoRadi(1.0f);
-					else worldMats[i].trans.y -= 1.0f;
+					if (affin==0)     worldMats[i].rot.x -= AngletoRadi(1.0f);
+					else if(affin==1) worldMats[i].trans.y -= 1.0f;
+					else              worldMats[i].scale.y -= 0.05f;
 				}
 				if (KeyboardInput::GetInstance().keyPush(DIK_UP))
 				{
-					if (!isTrans)worldMats[i].rot.x += AngletoRadi(1.0f);
-					else worldMats[i].trans.y += 1.0f;
+					if (affin == 0)	     worldMats[i].rot.x += AngletoRadi(1.0f);
+					else if (affin == 1) worldMats[i].trans.y += 1.0f;
+					else                 worldMats[i].scale.y += 0.05f;
 				}
 				if (KeyboardInput::GetInstance().keyPush(DIK_LEFT))
 				{
-					if (!isTrans)worldMats[i].rot.y += AngletoRadi(1.0f);
-					else worldMats[i].trans.x -= 1.0f;
+					if (affin == 0)      worldMats[i].rot.y += AngletoRadi(1.0f);
+					else if (affin == 1) worldMats[i].trans.x -= 1.0f;
+					else                 worldMats[i].scale.x -= 0.05f;
+						
 				}
 				if (KeyboardInput::GetInstance().keyPush(DIK_RIGHT))
 				{
-					if (!isTrans)worldMats[i].rot.y -= AngletoRadi(1.0f);
-					else worldMats[i].trans.x += 1.0f;
+					if (affin == 0)      worldMats[i].rot.y -= AngletoRadi(1.0f);
+					else if (affin == 1) worldMats[i].trans.x += 1.0f;
+					else                 worldMats[i].scale.x += 0.05f;
 				}
 			}
 
