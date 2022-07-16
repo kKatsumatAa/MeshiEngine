@@ -25,6 +25,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//乱数範囲
 	std::uniform_real_distribution<float> posDist(-50.0f, 50.0f);
 	std::uniform_real_distribution<float> rotDist(0.0f, pi * 2);
+	std::uniform_real_distribution<float> colorDist(0.0f, 1.0f);
 
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
@@ -33,13 +34,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	worldMat.SetWorld();
 
 	//worldMat.SetWorld();
+	XMFLOAT4 color4[DrawNum];
 	WorldMat cameraWorldMat;
-	for (WorldMat& i : worldMats)
+	for (int i=0;i<DrawNum;i++)
 	{
 		//i.scale = { 1.0f, 1.0f, 1.0f };
-		i.rot = { RaditoAngle(rotDist(engine)), RaditoAngle(rotDist(engine)), RaditoAngle(rotDist(engine)) };
-		i.trans = { posDist(engine),posDist(engine),posDist(engine) };
-		i.SetWorld();
+		worldMats[i].rot = {RaditoAngle(rotDist(engine)), RaditoAngle(rotDist(engine)), RaditoAngle(rotDist(engine))};
+		worldMats[i].trans = { posDist(engine),posDist(engine),posDist(engine) };
+		worldMats[i].SetWorld();
+		color4[i] = { colorDist(engine),colorDist(engine) ,colorDist(engine) ,1.0f };
 	}
 
 	//Directx directx;
@@ -254,25 +257,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//数字で操作系
 			draw[i].isWireFrame = pipelineNum;
 			color2.w = alpha;
+			color4[i].w = alpha;
 			if (primitive == 0)
 			{
 				draw[i].DrawTriangle(posTri[0], posTri[1], posTri[2], &worldMats[i], &viewMat, &projectionMat, color2, textureHandle[primitiveNum + 1]);
 			}
 			else if (primitive == 1)
 			{
-				draw[i].DrawBox(pos[0], pos[1], pos[2], pos[3], &worldMats[i], &viewMat, &projectionMat, color2, textureHandle[primitiveNum + 1]);
+				draw[i].DrawBox(pos[0], pos[1], pos[2], pos[3], &worldMats[i], &viewMat, &projectionMat, color4[i], textureHandle[primitiveNum + 1]);
 			}
 			else if (primitive == 2)
 			{
-				draw[i].DrawCube3D(&worldMats[i], &viewMat, &projectionMat, color2, textureHandle[primitiveNum + 1]);
+				draw[i].DrawCube3D(&worldMats[i], &viewMat, &projectionMat, color4[i], textureHandle[primitiveNum + 1]);
 			}
 			else if (primitive == 3)
 			{
-				draw[i].DrawCircle(5.0f, &worldMats[i], &viewMat, &projectionMat, color2);
+				draw[i].DrawCircle(5.0f, &worldMats[i], &viewMat, &projectionMat, color4[i]);
 			}
 			else
 			{
-				draw[i].DrawLine(posLine[0], posLine[1], &worldMats[i], &viewMat, &projectionMat, color2);
+				draw[i].DrawLine(posLine[0], posLine[1], &worldMats[i], &viewMat, &projectionMat, color4[i]);
 			}
 			//draw[1].DrawCube3D(&worldMat2, &viewMat, &projectionMat, textureHandle[primitiveNum + 1]);
 			//draw[2].DrawBox(pos[0], pos[1], pos[2], pos[3], &worldMat3, &viewMat, &projectionMat, textureHandle[1]);
