@@ -20,6 +20,7 @@ D3D12_RESOURCE_DESC resDesc{};
 D3D12_INDEX_BUFFER_VIEW ibView{};
 //インデックスバッファビューの作成
 D3D12_INDEX_BUFFER_VIEW ibView2{};
+D3D12_INDEX_BUFFER_VIEW ibView3{};
 
 static unsigned short indices[6] =
 {
@@ -83,6 +84,8 @@ static unsigned short indicesLine[2] =
 	0,1//三角形2つ目
 };
 
+
+
 Vertex vertices[24] = {
 	//手前
 	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
@@ -115,6 +118,15 @@ Vertex vertices[24] = {
 	{{5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
 	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
 };
+
+//球体
+Vertex verticesSphere[36 * 36];
+// 頂点バッファビューの作成
+D3D12_VERTEX_BUFFER_VIEW vbView2{};
+//頂点バッファの生成
+ID3D12Resource* vertBuff2 = nullptr;
+static unsigned short indicesSphere[210 * 36];
+
 //デスクリプタレンジの設定
 D3D12_DESCRIPTOR_RANGE descriptorRange;
 //テクスチャ
@@ -166,6 +178,108 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 void DrawInitialize()
 {
+	//球体用
+	{
+		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
+		sizeVB = static_cast<UINT>(sizeof(verticesSphere[0]) * (36 * 36));
+
+		//頂点バッファの設定		//ヒープ設定
+		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
+
+		ResourceProperties(resDesc, sizeVB);
+
+		//頂点バッファの生成
+		BuffProperties(heapProp, resDesc, &vertBuff2);
+
+		// 頂点バッファビューの作成
+		// GPU仮想アドレス
+		vbView2.BufferLocation = vertBuff2->GetGPUVirtualAddress();
+		// 頂点バッファのサイズ
+		vbView2.SizeInBytes = sizeVB;
+		// 頂点1つ分のデータサイズ
+		vbView2.StrideInBytes = sizeof(verticesSphere[0]);
+
+
+		WorldMat worldMat;
+		Vec3 vec={ 0,-5.0f,0 };
+
+		for (int i = 0; i < 36; i++)//横
+		{
+			worldMat.rot.y = i * AngletoRadi(360.f / 35.0f);
+
+
+			for (int j = 0; j < 36; j++)//縦
+			{
+				worldMat.rot.x = (j * AngletoRadi(180.f / 35.0f));
+				worldMat.SetWorld();
+				vec = { 0,-5.0f,0 };
+				Vec3xM4(vec, worldMat.matWorld, false);
+
+				verticesSphere[i * 36 + j] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };
+			}
+		}
+
+		int count = 0;
+		int count2 = 0;
+		int count3 = 0;
+		int count4 = 0;
+		//インデックス
+		for (int i = 0; i < _countof(indicesSphere); i++)
+		{
+			if (i % 210 == 0)
+			{
+				count++;
+				count2 = 0;
+				count3 = 0;
+				count4 = 0;
+			}
+			
+			if (count2 % 2 == 0)
+			{
+				indicesSphere[i] = 35 * count - (count3 + 1);
+				indicesSphere[i + 1] = 35 * (count + 1) - count3;
+				indicesSphere[i + 2] = 35 * count - (count3);
+				
+				count3++;
+				i += 2;
+			}
+			else if (count2 % 2 == 1)
+			{
+				indicesSphere[i] = 35 * (count + 1) - (count4);
+				indicesSphere[i + 1] = 35 * count - (count4 + 1);
+				indicesSphere[i + 2] =  35 * (count + 1) - (count4 + 1);
+				
+				count4++;
+				i += 2;
+			}
+
+			count2++;
+		}
+		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesSphere));
+
+		//リソース設定
+		ResourceProperties(resDesc, sizeIB);
+		//インデックスバッファの作成
+		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
+		BuffProperties(heapProp, resDesc, &indexBuff);
+		//インデックスバッファをマッピング
+		uint16_t* indexMap = nullptr;
+		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		//全インデックスに対して
+		for (int i = 0; i < _countof(indicesSphere); i++)
+		{
+			indexMap[i] = indicesSphere[i];//インデックスをコピー
+
+		}
+		//マッピングを解除
+		indexBuff->Unmap(0, nullptr);
+
+		//インデックスバッファビューの作成
+		ibView3.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibView3.Format = DXGI_FORMAT_R16_UINT;
+		ibView3.SizeInBytes = sizeIB;
+	}
+
 	// 頂点シェーダの読み込みとコンパイル
 	Directx::GetInstance().result = D3DCompileFromFile(
 		L"BasicVS.hlsl", // シェーダファイル名
@@ -550,17 +664,34 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		XMStoreFloat3(&vertices[index2].normal, normal);
 	}
 
-	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
-	Vertex* vertMap = nullptr;
-	Directx::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	assert(SUCCEEDED(Directx::GetInstance().result));
-	// 全頂点に対して
-	for (int i = 0; i < _countof(vertices); i++) {
-		vertMap[i] = vertices[i]; // 座標をコピー
+	if (indexNum != SPHERE)
+	{
+		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
+		Vertex* vertMap = nullptr;
+		Directx::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+		assert(SUCCEEDED(Directx::GetInstance().result));
+		// 全頂点に対して
+		for (int i = 0; i < _countof(vertices); i++) {
+			vertMap[i] = vertices[i]; // 座標をコピー
+		}
+		// 繋がりを解除
+		vertBuff->Unmap(0, nullptr);
 	}
-	// 繋がりを解除
-	vertBuff->Unmap(0, nullptr);
+	else//球体の時
+	{
+		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
+		Vertex* vertMap = nullptr;
+		Directx::GetInstance().result = vertBuff2->Map(0, nullptr, (void**)&vertMap);
+		assert(SUCCEEDED(Directx::GetInstance().result));
+		// 全頂点に対して
+		for (int i = 0; i < _countof(verticesSphere); i++) {
 
+			vertMap[i] = verticesSphere[i]; // 座標をコピー
+
+		}
+		// 繋がりを解除
+		vertBuff2->Unmap(0, nullptr);
+	}
 	// ビューポート設定コマンド
 	viewport = { 0, 0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0f, 1.0f};
 	// ビューポート設定コマンドを、コマンドリストに積む
@@ -579,14 +710,24 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	Directx::GetInstance().commandList->SetPipelineState(pipelineState[isWireFrame]);
 	Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature);
 
-	// プリミティブ形状の設定コマンド
-	if(primitiveMode)
-	Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
-	else
-	Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 線
+	if (indexNum != SPHERE)
+	{
+		// プリミティブ形状の設定コマンド
+		if (primitiveMode)
+			Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
+		else
+			Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 線
 
-	// 頂点バッファビューの設定コマンド
-	Directx::GetInstance().commandList->IASetVertexBuffers(0, 1, &vbView);
+		// 頂点バッファビューの設定コマンド
+		Directx::GetInstance().commandList->IASetVertexBuffers(0, 1, &vbView);
+	}
+	else//球体の時
+	{
+		Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角ストリップ
+		// 頂点バッファビューの設定コマンド
+		Directx::GetInstance().commandList->IASetVertexBuffers(0, 1, &vbView2);
+	}
+	
 
 	//定数バッファビュー(CBV)の設定コマンド
 	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
@@ -605,10 +746,15 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
 	//インデックスバッファビューの設定コマンド
-	if(indexNum!=CIRCLE) Directx::GetInstance().commandList->IASetIndexBuffer(&ibView);
-	else if (indexNum == CIRCLE)Directx::GetInstance().commandList->IASetIndexBuffer(&ibView2);
+	//if (indexNum != SPHERE)
+	{
+		if (indexNum == SPHERE)Directx::GetInstance().commandList->IASetIndexBuffer(&ibView3);
+		else if (indexNum != CIRCLE) Directx::GetInstance().commandList->IASetIndexBuffer(&ibView);
+		else if (indexNum == CIRCLE)Directx::GetInstance().commandList->IASetIndexBuffer(&ibView2);
+		
+	}
 
-	int p = sizeof(indices);
+	//int p = sizeof(indices);
 	// 描画コマンド
 	switch (indexNum)
 	{
@@ -626,6 +772,9 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		break;
 	case CIRCLE:
 		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesCircle), 1, 0, 0, 0); // 全ての頂点を使って描画
+		break;
+	case SPHERE:
+		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesSphere), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	}
 }
@@ -767,6 +916,18 @@ void Draw::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMa
 	Update(CIRCLE, pipelineNum, textureHandle, cbt);
 }
 
+void Draw::DrawSphere(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
+	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+{
+	/*constBuffTransfer({ 0,0.01f,0,0 });*/
+	this->worldMat = world;
+	this->view = view;
+	this->projection = projection;
+
+	constMapMaterial->color = color;
+
+	Update(SPHERE, pipelineNum, textureHandle, cbt);
+}
 
 void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState)
 {

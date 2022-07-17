@@ -16,7 +16,8 @@ static enum indices
 	BOX,
 	CUBE,
 	LINE,
-	CIRCLE
+	CIRCLE,
+	SPHERE
 };
 struct Vertex
 {
@@ -49,13 +50,6 @@ private:
 	};
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
-	
-
-	
-
-
-	
-	
 	
 	//頂点バッファの生成
 	ID3D12Resource* vertBuff = nullptr;
@@ -97,6 +91,8 @@ public:
 	void DrawLine(XMFLOAT3 pos1, XMFLOAT3 pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection,XMFLOAT4& color
 	, const UINT64 textureHandle=NULL, const int& pipelineNum=0);
 	void DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
+		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+	void DrawSphere(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	
 private:

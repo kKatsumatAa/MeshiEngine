@@ -126,6 +126,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				cameraWorldMat.rot.x += AngletoRadi((KeyboardInput::GetInstance().keyPush(DIK_W) - KeyboardInput::GetInstance().keyPush(DIK_S)));
 			}
+			//止める縦
 			if (cameraWorldMat.rot.x >= pi / 2.f - pi / 4.f)cameraWorldMat.rot.x = pi / 2.f - pi / 4.f;
 			if (cameraWorldMat.rot.x <= -pi / 2.f + pi / 4.f)cameraWorldMat.rot.x = -pi / 2.f + pi / 4.f;
 
@@ -183,7 +184,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (KeyboardInput::GetInstance().keyTrigger(DIK_4))//図形変える
 		{
 			primitive++;
-			if (primitive >= 5)primitive = 0;
+			if (primitive >= 6)primitive = 0;
 		}
 		if (KeyboardInput::GetInstance().keyTrigger(DIK_5))//図形変える
 		{
@@ -273,6 +274,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			else if (primitive == 3)
 			{
 				draw[i].DrawCircle(5.0f, &worldMats[i], &viewMat, &projectionMat, color4[i]);
+			}
+			else if (primitive == 4)
+			{
+				draw[i].DrawSphere(5.0f/*←飾り*/, &worldMats[i], &viewMat, &projectionMat, color4[i]);
 			}
 			else
 			{
