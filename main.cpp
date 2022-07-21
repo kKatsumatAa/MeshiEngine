@@ -15,7 +15,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	MSG msg{};	//メッセージ
 	
-	const int DrawNum = 200;
+	const int DrawNum = 1;
 
 	//初期化処理　ここから//
 	//乱数シード生成器

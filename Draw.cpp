@@ -54,29 +54,28 @@ static unsigned short indicesCube[36] =
 };
 static unsigned short indicesCircle[] =
 {
-	0,1,2,
-	0,2,3,
-	0,3,4,
-	0,4,5,
-	0,5,6,
-	0,6,7,
-	0,7,8,
-	0,8,9,
-	0,9,10,
-	0,10,11,
-	0,11,12,
-	0,12,13,
-	0,13,14,
-	0,14,15,
-	0,15,16,
-	0,16,17,
-	0,17,18,
-	0,18,19,
-	0,19,20,
-	0,20,21,
-	0,21,22,
-	0,22,23,
-	0,23,1
+	2,1,0,
+	3,2,0,
+	4,3,0,
+	5,4,0,
+	6,5,0,
+	7,6,0,
+	8,7,0,
+	9,8,0,
+	10,9,0,
+	11,10,0,
+	12,11,0,
+	13,12,0,
+	14,13,0,
+	15,14,0,
+	16,15,0,
+	17,16,0,
+	18,17,0,
+	19,18,0,
+	20,19,0,
+	21,20,0,
+	22,21,0,
+	23,22,0,
 };
 
 static unsigned short indicesLine[2] =
@@ -643,25 +642,127 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	}
 
 	//06_03
-	for (int i = 0; i < _countof(vertices) / 3; i++)
-	{//三角形一つごとに計算
-		//三角形のインデックスを取り出して、一時的な変数に入れる
-		unsigned short index0 = indicesCube[i * 3 + 0];
-		unsigned short index1 = indicesCube[i * 3 + 1];
-		unsigned short index2 = indicesCube[i * 3 + 2];
-		//三角形を構成する頂点座標をベクトルに代入
-		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-		//p0->p1ベクトル、p0->p2ベクトルを計算
-		XMVECTOR v1 = XMVectorSubtract(p1, p0);
-		XMVECTOR v2 = XMVectorSubtract(p2, p0);
-		//外積（垂直なベクトル）
-		XMVECTOR normal = XMVector3Cross(v1, v2);
+	if (indexNum == SPHERE)
+	{
+		for (int i = 0; i < _countof(indicesSphere) / 3; i++)
+		{//三角形一つごとに計算
+			//三角形のインデックスを取り出して、一時的な変数に入れる
+			unsigned short index0 = indicesSphere[i * 3 + 0];
+			unsigned short index1 = indicesSphere[i * 3 + 1];
+			unsigned short index2 = indicesSphere[i * 3 + 2];
+			//三角形を構成する頂点座標をベクトルに代入
+			XMVECTOR p0 = XMLoadFloat3(&verticesSphere[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&verticesSphere[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&verticesSphere[index2].pos);
+			//p0->p1ベクトル、p0->p2ベクトルを計算
+			XMVECTOR v1 = XMVectorSubtract(p1, p0);
+			XMVECTOR v2 = XMVectorSubtract(p2, p0);
+			//外積（垂直なベクトル）
+			XMVECTOR normal = XMVector3Cross(v1, v2);
+			//求めた法線を頂点データに代入
+			XMStoreFloat3(&verticesSphere[index0].normal, normal);
+			XMStoreFloat3(&verticesSphere[index1].normal, normal);
+			XMStoreFloat3(&verticesSphere[index2].normal, normal);
+		}
+	}
+	else if(indexNum==TRIANGLE)
+	{
+		for (int i = 0; i < _countof(indices2) / 3; i++)
+		{//三角形一つごとに計算
+			//三角形のインデックスを取り出して、一時的な変数に入れる
+			unsigned short index0 = indices2[i * 3 + 0];
+			unsigned short index1 = indices2[i * 3 + 1];
+			unsigned short index2 = indices2[i * 3 + 2];
+			//三角形を構成する頂点座標をベクトルに代入
+			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+			//p0->p1ベクトル、p0->p2ベクトルを計算
+			XMVECTOR v1 = XMVectorSubtract(p1, p0);
+			XMVECTOR v2 = XMVectorSubtract(p2, p0);
+			//外積（垂直なベクトル）
+			XMVECTOR normal = XMVector3Cross(v1, v2);
+			//求めた法線を頂点データに代入
+			XMStoreFloat3(&vertices[index0].normal, normal);
+			XMStoreFloat3(&vertices[index1].normal, normal);
+			XMStoreFloat3(&vertices[index2].normal, normal);
+		}
+	}
+	else if (indexNum == BOX)
+	{
+		for (int i = 0; i < _countof(indices) / 3; i++)
+		{//三角形一つごとに計算
+			//三角形のインデックスを取り出して、一時的な変数に入れる
+			unsigned short index0 = indices[i * 3 + 0];
+			unsigned short index1 = indices[i * 3 + 1];
+			unsigned short index2 = indices[i * 3 + 2];
+			//三角形を構成する頂点座標をベクトルに代入
+			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+			//p0->p1ベクトル、p0->p2ベクトルを計算
+			XMVECTOR v1 = XMVectorSubtract(p1, p0);
+			XMVECTOR v2 = XMVectorSubtract(p2, p0);
+			//外積（垂直なベクトル）
+			XMVECTOR normal = XMVector3Cross(v1, v2);
+			//求めた法線を頂点データに代入
+			XMStoreFloat3(&vertices[index0].normal, normal);
+			XMStoreFloat3(&vertices[index1].normal, normal);
+			XMStoreFloat3(&vertices[index2].normal, normal);
+		}
+	}
+	else if (indexNum == CUBE)
+	{
+		for (int i = 0; i < _countof(indicesCube) / 3; i++)
+		{//三角形一つごとに計算
+			//三角形のインデックスを取り出して、一時的な変数に入れる
+			unsigned short index0 = indicesCube[i * 3 + 0];
+			unsigned short index1 = indicesCube[i * 3 + 1];
+			unsigned short index2 = indicesCube[i * 3 + 2];
+			//三角形を構成する頂点座標をベクトルに代入
+			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+			//p0->p1ベクトル、p0->p2ベクトルを計算
+			XMVECTOR v1 = XMVectorSubtract(p1, p0);
+			XMVECTOR v2 = XMVectorSubtract(p2, p0);
+			//外積（垂直なベクトル）
+			XMVECTOR normal = XMVector3Cross(v1, v2);
+			//求めた法線を頂点データに代入
+			XMStoreFloat3(&vertices[index0].normal, normal);
+			XMStoreFloat3(&vertices[index1].normal, normal);
+			XMStoreFloat3(&vertices[index2].normal, normal);
+		}
+	}
+	else if (indexNum == CIRCLE)
+	{
+		for (int i = 0; i < _countof(indicesCircle) / 3; i++)
+		{//三角形一つごとに計算
+			//三角形のインデックスを取り出して、一時的な変数に入れる
+			unsigned short index0 = indicesCircle[i * 3 + 0];
+			unsigned short index1 = indicesCircle[i * 3 + 1];
+			unsigned short index2 = indicesCircle[i * 3 + 2];
+			//三角形を構成する頂点座標をベクトルに代入
+			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+			//p0->p1ベクトル、p0->p2ベクトルを計算
+			XMVECTOR v1 = XMVectorSubtract(p1, p0);
+			XMVECTOR v2 = XMVectorSubtract(p2, p0);
+			//外積（垂直なベクトル）
+			XMVECTOR normal = XMVector3Cross(v1, v2);
+			//求めた法線を頂点データに代入
+			XMStoreFloat3(&vertices[index0].normal, normal);
+			XMStoreFloat3(&vertices[index1].normal, normal);
+			XMStoreFloat3(&vertices[index2].normal, normal);
+		}
+	}
+	else if (indexNum == LINE)
+	{
 		//求めた法線を頂点データに代入
-		XMStoreFloat3(&vertices[index0].normal, normal);
-		XMStoreFloat3(&vertices[index1].normal, normal);
-		XMStoreFloat3(&vertices[index2].normal, normal);
+		vertices[0].normal= XMFLOAT3(1, 1, 1);
+		vertices[1].normal, XMFLOAT3(1, 1, 1);
+
 	}
 
 	if (indexNum != SPHERE)
@@ -787,9 +888,9 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 	this->view = view;
 	this->projection = projection;
 
-	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
-	vertices[1] = { pos2,{},{0.5f,0.0f} };//上
-	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
+	vertices[0].pos = { pos1 };//左下
+	vertices[1].pos = { pos2 };//上
+	vertices[2].pos = { pos3 };//右下
 	vertices[3] = vertices[1];//右上
 
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
@@ -805,10 +906,10 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 	this->view = view;
 	this->projection = projection;
 
-	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
-	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
-	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
-	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
+	vertices[0].pos = { pos1 };//左下
+	vertices[1].pos = { pos2 };//左上
+	vertices[2].pos = { pos3 };//右下
+	vertices[3].pos = { pos4 };//右上
 
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 	
@@ -818,10 +919,10 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
-	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
-	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
-	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
+	vertices[0].pos = { pos1 };//左下
+	vertices[1].pos = { pos2 };//左上
+	vertices[2].pos = { pos3 };//右下
+	vertices[3].pos = { pos4 };//右上
 
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
 
@@ -841,35 +942,35 @@ void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	this->projection = projection;
 
 	//手前
-	vertices[0] = { {-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//左下
-	vertices[1] = { {-5.0f,5.0f, -5.0f},{},{0.0f,0.0f} };//左上
-	vertices[2] = { {5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//右下
-	vertices[3] = { {5.0f,5.0f,  -5.0f},{},{1.0f,0.0f} };//右上
+	vertices[0].pos = {-5.0f,-5.0f,-5.0f} ;//左下
+	vertices[1].pos = {-5.0f,5.0f, -5.0f} ;//左上
+	vertices[2].pos = {5.0f,-5.0f, -5.0f} ;//右下
+	vertices[3].pos = {5.0f,5.0f,  -5.0f} ;//右上
 
-	vertices[4] = { {-5.0f,-5.0f,5.0f},{},{0.0f,1.0f} };//左下
-	vertices[5] = { {-5.0f,5.0f, 5.0f},{},{0.0f,0.0f} };//左上
-	vertices[6] = { {5.0f,-5.0f, 5.0f},{},{1.0f,1.0f} };//右下
-	vertices[7] = { {5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//右上
+	vertices[4].pos = {-5.0f,-5.0f,5.0f};//左下
+	vertices[5].pos = {-5.0f,5.0f, 5.0f};//左上
+	vertices[6].pos = {5.0f,-5.0f, 5.0f};//右下
+	vertices[7].pos = {5.0f,5.0f,  5.0f};//右上
 		//上
-	vertices[8] = { {5.0f,5.0f,-5.0f},{},{0.0f,1.0f} };//左下
-	vertices[9] = { {5.0f,5.0f, 5.0f},{},{0.0f,0.0f} };//左上
-	vertices[10] = { {-5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//右下
-	vertices[11] = { {-5.0f,5.0f, 5.0f},{},{1.0f,0.0f} };//右上
+	vertices[8] .pos = {5.0f,5.0f,-5.0f};//左下
+	vertices[9] .pos = {5.0f,5.0f, 5.0f};//左上
+	vertices[10].pos  = {-5.0f,5.0f, -5.0f};//右下
+	vertices[11].pos  = {-5.0f,5.0f, 5.0f};//右上
 
-	vertices[12] = { {5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//左下
-	vertices[13] = { {5.0f,-5.0f, 5.0f},{},{0.0f,0.0f} };//左上
-	vertices[14] = { {-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//右下
-	vertices[15] = { {-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f} };//右上
+	vertices[12].pos = {5.0f,-5.0f,-5.0f};//左下
+	vertices[13].pos = {5.0f,-5.0f, 5.0f};//左上
+	vertices[14].pos = {-5.0f,-5.0f, -5.0f};//右下
+	vertices[15].pos = {-5.0f,-5.0f, 5.0f};//右上
 
-	vertices[16] = { {-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//左下
-	vertices[17] = { {-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f} };//左上
-	vertices[18] = { {-5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//右下
-	vertices[19] = { {-5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//右上
+	vertices[16].pos = {-5.0f,-5.0f,-5.0f};//左下
+	vertices[17].pos = {-5.0f,-5.0f, 5.0f};//左上
+	vertices[18].pos = {-5.0f,5.0f, -5.0f};//右下
+	vertices[19].pos = {-5.0f,5.0f,  5.0f};//右上
 
-	vertices[20] = { {5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//左下
-	vertices[21] = { {5.0f,-5.0f, 5.0f},{},{0.0f,0.0f} };//左上
-	vertices[22] = { {5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//右下
-	vertices[23] = { {5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//右上;//左下
+	vertices[20].pos = {5.0f,-5.0f,-5.0f};//左下
+	vertices[21].pos = {5.0f,-5.0f, 5.0f};//左上
+	vertices[22].pos = {5.0f,5.0f, -5.0f};//右下
+	vertices[23].pos = {5.0f,5.0f,  5.0f};//右上;//左下
 	
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 	
@@ -885,8 +986,8 @@ void Draw::DrawLine(XMFLOAT3 pos1, XMFLOAT3 pos2, WorldMat* world, ViewMat* view
 
 	constMapMaterial->color = color;
 
-	vertices[0] = { {pos1},{},{0.0f,1.0f} };
-	vertices[1] = { {pos2},{},{0.0f,0.0f} };
+	vertices[0].pos = { {pos1} };
+	vertices[1].pos = { {pos2} };
 
 	Update(LINE, pipelineNum, textureHandle, cbt, false);
 }
