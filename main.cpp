@@ -48,7 +48,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Directx directx;
 	Draw draw[DrawNum];
 	Draw drawL[24];
-	DrawInitialize();
+	DrawInitialize();//
 	/*Draw draw2;
 	Draw draw3;*/
 	UINT64 textureHandle[3] = { 0 };
