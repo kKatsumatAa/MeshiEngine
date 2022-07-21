@@ -888,9 +888,9 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 	this->view = view;
 	this->projection = projection;
 
-	vertices[0].pos = { pos1 };//左下
-	vertices[1].pos = { pos2 };//上
-	vertices[2].pos = { pos3 };//右下
+	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
+	vertices[1] = { pos2,{},{0.5f,0.0f} };//上
+	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
 	vertices[3] = vertices[1];//右上
 
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
@@ -906,10 +906,10 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 	this->view = view;
 	this->projection = projection;
 
-	vertices[0].pos = { pos1 };//左下
-	vertices[1].pos = { pos2 };//左上
-	vertices[2].pos = { pos3 };//右下
-	vertices[3].pos = { pos4 };//右上
+	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
+	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
+	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
+	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
 
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 	
@@ -919,10 +919,10 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	vertices[0].pos = { pos1 };//左下
-	vertices[1].pos = { pos2 };//左上
-	vertices[2].pos = { pos3 };//右下
-	vertices[3].pos = { pos4 };//右上
+	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
+	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
+	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
+	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
 
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
 
@@ -942,35 +942,35 @@ void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	this->projection = projection;
 
 	//手前
-	vertices[0].pos = {-5.0f,-5.0f,-5.0f} ;//左下
-	vertices[1].pos = {-5.0f,5.0f, -5.0f} ;//左上
-	vertices[2].pos = {5.0f,-5.0f, -5.0f} ;//右下
-	vertices[3].pos = {5.0f,5.0f,  -5.0f} ;//右上
+	vertices[0] = { {-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//左下
+	vertices[1] = { {-5.0f,5.0f, -5.0f},{},{0.0f,0.0f} };//左上
+	vertices[2] = { {5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//右下
+	vertices[3] = { {5.0f,5.0f,  -5.0f},{},{1.0f,0.0f} };//右上
 
-	vertices[4].pos = {-5.0f,-5.0f,5.0f};//左下
-	vertices[5].pos = {-5.0f,5.0f, 5.0f};//左上
-	vertices[6].pos = {5.0f,-5.0f, 5.0f};//右下
-	vertices[7].pos = {5.0f,5.0f,  5.0f};//右上
+	vertices[4] = { {-5.0f,-5.0f,5.0f},{},{0.0f,1.0f} };//左下
+	vertices[5] = { {-5.0f,5.0f, 5.0f},{},{0.0f,0.0f} };//左上
+	vertices[6] = { {5.0f,-5.0f, 5.0f},{},{1.0f,1.0f} };//右下
+	vertices[7] = { {5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//右上
 		//上
-	vertices[8] .pos = {5.0f,5.0f,-5.0f};//左下
-	vertices[9] .pos = {5.0f,5.0f, 5.0f};//左上
-	vertices[10].pos  = {-5.0f,5.0f, -5.0f};//右下
-	vertices[11].pos  = {-5.0f,5.0f, 5.0f};//右上
+	vertices[8] = { {5.0f,5.0f,-5.0f},{},{0.0f,1.0f} };//左下
+	vertices[9] = { {5.0f,5.0f, 5.0f},{},{0.0f,0.0f} };//左上
+	vertices[10] = { {-5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//右下
+	vertices[11] = { {-5.0f,5.0f, 5.0f},{},{1.0f,0.0f} };//右上
 
-	vertices[12].pos = {5.0f,-5.0f,-5.0f};//左下
-	vertices[13].pos = {5.0f,-5.0f, 5.0f};//左上
-	vertices[14].pos = {-5.0f,-5.0f, -5.0f};//右下
-	vertices[15].pos = {-5.0f,-5.0f, 5.0f};//右上
+	vertices[12] = { {5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//左下
+	vertices[13] = { {5.0f,-5.0f, 5.0f},{},{0.0f,0.0f} };//左上
+	vertices[14] = { {-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//右下
+	vertices[15] = { {-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f} };//右上
 
-	vertices[16].pos = {-5.0f,-5.0f,-5.0f};//左下
-	vertices[17].pos = {-5.0f,-5.0f, 5.0f};//左上
-	vertices[18].pos = {-5.0f,5.0f, -5.0f};//右下
-	vertices[19].pos = {-5.0f,5.0f,  5.0f};//右上
+	vertices[16] = { {-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//左下
+	vertices[17] = { {-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f} };//左上
+	vertices[18] = { {-5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//右下
+	vertices[19] = { {-5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//右上
 
-	vertices[20].pos = {5.0f,-5.0f,-5.0f};//左下
-	vertices[21].pos = {5.0f,-5.0f, 5.0f};//左上
-	vertices[22].pos = {5.0f,5.0f, -5.0f};//右下
-	vertices[23].pos = {5.0f,5.0f,  5.0f};//右上;//左下
+	vertices[20] = { {5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//左下
+	vertices[21] = { {5.0f,-5.0f, 5.0f},{},{0.0f,0.0f} };//左上
+	vertices[22] = { {5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//右下
+	vertices[23] = { {5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//右上;//左下
 	
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 	
@@ -986,8 +986,8 @@ void Draw::DrawLine(XMFLOAT3 pos1, XMFLOAT3 pos2, WorldMat* world, ViewMat* view
 
 	constMapMaterial->color = color;
 
-	vertices[0].pos = { {pos1} };
-	vertices[1].pos = { {pos2} };
+	vertices[0] = { {pos1},{},{0.0f,0.0f} };
+	vertices[1] = { {pos2},{},{0.0f,0.0f} };
 
 	Update(LINE, pipelineNum, textureHandle, cbt, false);
 }
