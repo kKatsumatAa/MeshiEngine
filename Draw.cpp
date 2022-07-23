@@ -761,7 +761,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	{
 		//求めた法線を頂点データに代入
 		vertices[0].normal= XMFLOAT3(1, 1, 1);
-		vertices[1].normal, XMFLOAT3(1, 1, 1);
+		vertices[1].normal= XMFLOAT3(1, 1, 1);
 
 	}
 
