@@ -119,12 +119,13 @@ Vertex vertices[24] = {
 };
 
 //球体
-Vertex verticesSphere[36 * 36];
+Vertex verticesSphere[36 * 36 - 35 * 2];
 // 頂点バッファビューの作成
 D3D12_VERTEX_BUFFER_VIEW vbView2{};
+const int PAPA = 198 + 6;
 //頂点バッファの生成
 ID3D12Resource* vertBuff2 = nullptr;
-static unsigned short indicesSphere[210 * 36];
+static unsigned short indicesSphere[PAPA * 36];
 
 //デスクリプタレンジの設定
 D3D12_DESCRIPTOR_RANGE descriptorRange;
@@ -180,7 +181,7 @@ void DrawInitialize()
 	//球体用
 	{
 		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-		sizeVB = static_cast<UINT>(sizeof(verticesSphere[0]) * (36 * 36));
+		sizeVB = static_cast<UINT>(sizeof(verticesSphere[0]) * (_countof(verticesSphere)));
 
 		//頂点バッファの設定		//ヒープ設定
 		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
@@ -202,19 +203,24 @@ void DrawInitialize()
 		WorldMat worldMat;
 		Vec3 vec={ 0,-5.0f,0 };
 
+		//頂点二つ
+		verticesSphere[0] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };//下
+		verticesSphere[1] = { {vec.x,-vec.y,vec.z},{},{1.0f,0.0f} };//上
+
 		for (int i = 0; i < 36; i++)//横
 		{
-			worldMat.rot.y = i * AngletoRadi(360.f / 35.0f);
+			worldMat.rot.y = (float)i * AngletoRadi(360.0f / 35.0f);
 
 
-			for (int j = 0; j < 36; j++)//縦
+			for (int j = 0; j < 34; j++)//縦
 			{
-				worldMat.rot.x = (j * AngletoRadi(180.f / 35.0f));
+				worldMat.rot.x = ((float)(j+1) * (pi / 35.0f));
 				worldMat.SetWorld();
 				vec = { 0,-5.0f,0 };
 				Vec3xM4(vec, worldMat.matWorld, false);
 
-				verticesSphere[i * 36 + j] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };
+				int p = i * 34 + j;
+				verticesSphere[(2) + i * 34 + j ] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };
 			}
 		}
 
@@ -223,9 +229,63 @@ void DrawInitialize()
 		int count3 = 0;
 		int count4 = 0;
 		//インデックス
-		for (int i = 0; i < _countof(indicesSphere); i++)
+		for (int i = 0; i < _countof(indicesSphere)-PAPA; i++)
 		{
-			if (i % 210 == 0)
+			
+			if(i % PAPA == 0 || i % (PAPA * (count + 1) - 3) == 0)
+			{
+
+			}
+			else if(1)
+			{
+				if (count2 % 2 == 0)
+				{
+					indicesSphere[i] = 2 + 34 * count + (count3 + 1);
+					indicesSphere[i + 1] = 2 + 34 * (count+1) + (count3);
+					indicesSphere[i + 2] = 2 + 34 * count + (count3);
+
+					count3++;
+					i += 2;
+				}
+				else if (count2 % 2 == 1)
+				{
+					indicesSphere[i] =  2 + 34 * (count + 1) + (count4);
+					indicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
+					indicesSphere[i + 2] = 2 + 34 * (count + 1) + (count4 + 1);
+
+					count4++;
+					i += 2;
+				}
+
+
+				count2++;
+			}
+			if(i % PAPA == 0 || i % (PAPA * (count + 1) - 3) == 0)
+			{
+				if (i % PAPA == 0)//一番下の三角形
+				{
+					indicesSphere[i] = 2 + 34 * count;
+					indicesSphere[i + 1] = 2 + 34 * (count + 1);
+					indicesSphere[i + 2] = 0;
+
+					i += 2;
+				}
+				else if (i % (PAPA * (count + 1) - 3) == 0)//一番上の三角形
+				{
+					indicesSphere[i] = 1;
+					indicesSphere[i + 1] = 1 + 34 * (count + 2);
+					indicesSphere[i + 2] =  1 + 34 * (count + 1);
+
+					i += 2;
+
+					count++;
+					count2 = 0;
+					count3 = 0;
+					count4 = 0;
+				}
+			}
+
+			/*if (i % 198 == 0)
 			{
 				count++;
 				count2 = 0;
@@ -249,11 +309,11 @@ void DrawInitialize()
 				indicesSphere[i + 2] =  35 * (count + 1) - (count4 + 1);
 				
 				count4++;
-				i += 2;
-			}
-
-			count2++;
+				i += 2;*/
+			//}
+			
 		}
+
 		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesSphere));
 
 		//リソース設定

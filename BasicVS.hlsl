@@ -8,14 +8,30 @@ VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOOR
 	//output.normal = normal;
 	//output.uv = uv;
 
-	//ランバート
-	float3 lightdir = float3(1, -1, 1);
+//ランバート
+	float3 lightdir = normalize(float3(1, -1, 1));
 	lightdir = normalize(lightdir);
 	float3 lightcolor = float3(1, 1, 1);
 	VSOutput output;
 	output.svpos = mul(mat, pos);
+	 //ランバートを入れとく
+	float3 diffuse = saturate(dot(-lightdir, normal));
 
-	output.color.rgb = dot(-lightdir, normal) * 1.0f * lightcolor/*+(0.1,0.1,0.1)*/;
+//フォン
+	//環境光
+	float3 ambient = float3(0.1f, 0.1f, 0.1f);
+
+	const float3 eye = float3(0, 0, -20.0f);
+	const float shine = 4.0f;
+	float3 eyedir = normalize(eye - pos.xyz);
+	 //反射光ベクトル
+	float3 reflect = normalize( + 2.0f * dot(lightdir, normal) * normal - lightdir);
+	float3 specular = pow(saturate(dot(reflect, eyedir)), shine);
+	//if (specular.x < 0.0f) specular.x = 0.0f;
+	//if (specular.y < 0.0f) specular.y = 0.0f;
+	//if (specular.z < 0.0f) specular.z = 0.0f;
+
+	output.color.rgb = ((ambient + diffuse + specular) * lightcolor);
 	output.color.a = 1.0f;
 	output.uv = uv;
 
