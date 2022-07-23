@@ -15,7 +15,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	MSG msg{};	//メッセージ
 	
-	const int DrawNum = 1;
+	const int DrawNum = 30;
 
 	//初期化処理　ここから//
 	//乱数シード生成器
@@ -39,10 +39,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	for (int i=0;i<DrawNum;i++)
 	{
 		//i.scale = { 1.0f, 1.0f, 1.0f };
-		//worldMats[i].rot = {RaditoAngle(rotDist(engine)), RaditoAngle(rotDist(engine)), RaditoAngle(rotDist(engine))};
-		worldMats[i].rot = {0.f,0.f,0.0f};
-		//worldMats[i].trans = { posDist(engine),posDist(engine),posDist(engine) };
-		worldMats[i].trans = { 0,0,-80 };
+		worldMats[i].rot = {RaditoAngle(rotDist(engine)), RaditoAngle(rotDist(engine)), RaditoAngle(rotDist(engine))};
+		//worldMats[i].rot = {0.f,0.f,0.0f};
+		worldMats[i].trans = { posDist(engine),posDist(engine),posDist(engine) };
+		//worldMats[i].trans = { 0,0,-80 };
 		worldMats[i].SetWorld();
 		color4[i] = { colorDist(engine),colorDist(engine) ,colorDist(engine) ,1.0f };
 	}

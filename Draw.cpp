@@ -119,13 +119,13 @@ Vertex vertices[24] = {
 };
 
 //球体
-Vertex verticesSphere[36 * 36 - 35 * 2];
+Vertex verticesSphere[2 + 34 * 36];
 // 頂点バッファビューの作成
 D3D12_VERTEX_BUFFER_VIEW vbView2{};
-const int PAPA = 198 + 6;
+const int PAPA = 66 * 3 + 6;
 //頂点バッファの生成
 ID3D12Resource* vertBuff2 = nullptr;
-static unsigned short indicesSphere[PAPA * 36];
+static unsigned short indicesSphere[PAPA * 35];
 
 //デスクリプタレンジの設定
 D3D12_DESCRIPTOR_RANGE descriptorRange;
@@ -229,7 +229,7 @@ void DrawInitialize()
 		int count3 = 0;
 		int count4 = 0;
 		//インデックス
-		for (int i = 0; i < _countof(indicesSphere)-PAPA; i++)
+		for (int i = 0; i < _countof(indicesSphere); i++)
 		{
 			
 			if(i % PAPA == 0 || i % (PAPA * (count + 1) - 3) == 0)
@@ -240,18 +240,18 @@ void DrawInitialize()
 			{
 				if (count2 % 2 == 0)
 				{
-					indicesSphere[i] = 2 + 34 * count + (count3 + 1);
+					indicesSphere[i] = 2 + 34 * count + (count3);
 					indicesSphere[i + 1] = 2 + 34 * (count+1) + (count3);
-					indicesSphere[i + 2] = 2 + 34 * count + (count3);
+					indicesSphere[i + 2] =  2 + 34 * count + (count3 + 1);
 
 					count3++;
 					i += 2;
 				}
 				else if (count2 % 2 == 1)
 				{
-					indicesSphere[i] =  2 + 34 * (count + 1) + (count4);
+					indicesSphere[i] = 2 + 34 * (count + 1) + (count4 + 1);
 					indicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
-					indicesSphere[i + 2] = 2 + 34 * (count + 1) + (count4 + 1);
+					indicesSphere[i + 2] = 2 + 34 * (count + 1) + (count4);
 
 					count4++;
 					i += 2;
@@ -264,17 +264,17 @@ void DrawInitialize()
 			{
 				if (i % PAPA == 0)//一番下の三角形
 				{
-					indicesSphere[i] = 2 + 34 * count;
+					indicesSphere[i] = 0;
 					indicesSphere[i + 1] = 2 + 34 * (count + 1);
-					indicesSphere[i + 2] = 0;
+					indicesSphere[i + 2] =  2 + 34 * count;
 
 					i += 2;
 				}
 				else if (i % (PAPA * (count + 1) - 3) == 0)//一番上の三角形
 				{
-					indicesSphere[i] = 1;
+					indicesSphere[i] = 1 + 34 * (count + 1);
 					indicesSphere[i + 1] = 1 + 34 * (count + 2);
-					indicesSphere[i + 2] =  1 + 34 * (count + 1);
+					indicesSphere[i + 2] = 1;
 
 					i += 2;
 
