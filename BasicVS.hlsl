@@ -15,7 +15,7 @@ VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOOR
 	VSOutput output;
 	output.svpos = mul(mat, pos);
 
-	output.color.rgb = dot(-lightdir, normal) * 1.5f * lightcolor/*+(0.1,0.1,0.1)*/;
+	output.color.rgb = dot(-lightdir, normal) * 1.0f * lightcolor/*+(0.1,0.1,0.1)*/;
 	output.color.a = 1.0f;
 	output.uv = uv;
 
