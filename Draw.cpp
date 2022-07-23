@@ -658,7 +658,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
 			//外積（垂直なベクトル）
-			XMVECTOR normal = XMVector3Cross(v1, v2);
+			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
 			//求めた法線を頂点データに代入
 			XMStoreFloat3(&verticesSphere[index0].normal, normal);
 			XMStoreFloat3(&verticesSphere[index1].normal, normal);
@@ -681,7 +681,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
 			//外積（垂直なベクトル）
-			XMVECTOR normal = XMVector3Cross(v1, v2);
+			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
 			//求めた法線を頂点データに代入
 			XMStoreFloat3(&vertices[index0].normal, normal);
 			XMStoreFloat3(&vertices[index1].normal, normal);
@@ -704,7 +704,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
 			//外積（垂直なベクトル）
-			XMVECTOR normal = XMVector3Cross(v1, v2);
+			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
 			//求めた法線を頂点データに代入
 			XMStoreFloat3(&vertices[index0].normal, normal);
 			XMStoreFloat3(&vertices[index1].normal, normal);
@@ -727,7 +727,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
 			//外積（垂直なベクトル）
-			XMVECTOR normal = XMVector3Cross(v1, v2);
+			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
 			//求めた法線を頂点データに代入
 			XMStoreFloat3(&vertices[index0].normal, normal);
 			XMStoreFloat3(&vertices[index1].normal, normal);
@@ -750,7 +750,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
 			//外積（垂直なベクトル）
-			XMVECTOR normal = XMVector3Cross(v1, v2);
+			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
 			//求めた法線を頂点データに代入
 			XMStoreFloat3(&vertices[index0].normal, normal);
 			XMStoreFloat3(&vertices[index1].normal, normal);
@@ -760,8 +760,8 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	else if (indexNum == LINE)
 	{
 		//求めた法線を頂点データに代入
-		vertices[0].normal= XMFLOAT3(-1, 1, -1);
-		vertices[1].normal= XMFLOAT3(-1, 1, -1);
+		vertices[0].normal= XMFLOAT3(-1.0f / 3.0f, 1.0f / 3.0f, -1.0f / 3.0f);//仮の数字なので後で変更
+		vertices[1].normal= XMFLOAT3(-1.0f / 3.0f, 1.0f / 3.0f, -1.0f / 3.0f);//〃
 
 	}
 

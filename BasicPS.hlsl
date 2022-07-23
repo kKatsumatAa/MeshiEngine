@@ -13,12 +13,13 @@ float4 main(VSOutput input) : SV_TARGET
 	//テクスチャ
 	float4 texcolor = float4(tex.Sample(smp, input.uv));
 
-	if (texcolor.a == 0)
+	if (texcolor.a == 0&& texcolor.r == 0&& texcolor.g == 0&& texcolor.b == 0)
 	{
-		return color * input.color;
+		return float4(color.r * input.color.r, color.g * input.color.g, color.b * input.color.b, color.a);
 	}
 	else
 	{
-		return float4(texcolor.rgb /** brightness*/, texcolor.a) * (color * input.color);//輝度をRGBに代入して出力
+		return float4(texcolor.rgb /** brightness*/, texcolor.a) * 
+			float4(color.r * input.color.r, color.g * input.color.g, color.b * input.color.b, color.a);//輝度をRGBに代入して出力
 	}
 }
