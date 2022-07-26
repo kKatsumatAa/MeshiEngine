@@ -930,7 +930,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		break;
 	case LINE:
 		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesLine), 1, 0, 0, 0); // 全ての頂点を使って描画
-		break;
+		break;//ibview（+vbview）を図形ごとに用意する！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 	case CIRCLE:
 		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesCircle), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;

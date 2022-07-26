@@ -4,9 +4,10 @@ Directx::Directx()
 {
 #ifdef _DEBUG
 	//デバッグレイヤーをオンに
-	ID3D12Debug* debugController;
+	ID3D12Debug1* debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 		debugController->EnableDebugLayer();
+		debugController->SetEnableGPUBasedValidation(true);
 	}
 #endif
 
@@ -157,6 +158,33 @@ Directx::Directx()
 
 	//フェンス生成
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+
+
+#ifdef _DEBUG
+	ID3D12InfoQueue* infoQueue;
+	if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue))))
+	{
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);//やばいエラー時止まる
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);//エラー時止まる
+		infoQueue->Release();
+	}
+
+	//抑制するエラー
+	D3D12_MESSAGE_ID denyIds[] = {
+		//win11でのバグによるエラーメッセ
+		D3D12_MESSAGE_ID_RESOURCE_BARRIER_MISMATCHING_COMMAND_LIST_TYPE
+	};
+	//抑制する表示レベル
+	D3D12_MESSAGE_SEVERITY serverities[] = { D3D12_MESSAGE_SEVERITY_INFO };
+	D3D12_INFO_QUEUE_FILTER filter{};
+	filter.DenyList.NumIDs = _countof(denyIds);
+	filter.DenyList.pIDList = denyIds;
+	filter.DenyList.NumSeverities = _countof(serverities);
+	filter.DenyList.pSeverityList = serverities;
+	//指定したエラーの表示を抑制
+	infoQueue->PushStorageFilter(&filter);
+
+#endif 
 }
 
 Directx& Directx::GetInstance()
