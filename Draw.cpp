@@ -874,9 +874,9 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	if (indexNum != SPHERE)
 	{
 		// プリミティブ形状の設定コマンド
-		if (primitiveMode)
+		if (indexNum != LINE)
 			Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
-		else
+		else//線の時（LINE）
 			Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 線
 
 		// 頂点バッファビューの設定コマンド
