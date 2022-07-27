@@ -13,6 +13,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//コンソールへの文字入力
 	OutputDebugStringA("Hello,DirectX!!\n");
 
+	WindowsApp::GetInstance();
+	Directx::GetInstance();
+
 	MSG msg{};	//メッセージ
 	
 	const int DrawNum = 30;

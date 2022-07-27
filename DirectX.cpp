@@ -58,6 +58,32 @@ Directx::Directx()
 		}
 	}
 
+#ifdef _DEBUG
+	//ID3D12InfoQueue* infoQueue;
+	//if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue))))
+	//{
+	//	infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);//やばいエラー時止まる
+	//	infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);//エラー時止まる
+	//	infoQueue->Release();
+	//}
+
+	////抑制するエラー
+	//D3D12_MESSAGE_ID denyIds[] = {
+	//	//win11でのバグによるエラーメッセ
+	//	D3D12_MESSAGE_ID_RESOURCE_BARRIER_MISMATCHING_COMMAND_LIST_TYPE
+	//};
+	////抑制する表示レベル
+	//D3D12_MESSAGE_SEVERITY serverities[] = { D3D12_MESSAGE_SEVERITY_INFO };
+	//D3D12_INFO_QUEUE_FILTER filter{};
+	//filter.DenyList.NumIDs = _countof(denyIds);
+	//filter.DenyList.pIDList = denyIds;
+	//filter.DenyList.NumSeverities = _countof(serverities);
+	//filter.DenyList.pSeverityList = serverities;
+	////指定したエラーの表示を抑制
+	//infoQueue->PushStorageFilter(&filter);
+
+#endif 
+
 	// コマンドアロケータを生成
 	result = device->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
@@ -74,6 +100,7 @@ Directx::Directx()
 	result = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
 	assert(SUCCEEDED(result));
 
+	//スワップチェーン設定
 	swapChainDesc.Width = 1280;
 	swapChainDesc.Height = 720;
 	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 色情報の書式
@@ -88,13 +115,16 @@ Directx::Directx()
 		(IDXGISwapChain1**)&swapChain);
 	assert(SUCCEEDED(result));
 
+	//デスクリプタヒープの設定
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
 	rtvHeapDesc.NumDescriptors = swapChainDesc.BufferCount; // 裏表の2つ
 	// デスクリプタヒープの生成
 	device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
 
+	//バックバッファ
 	backBuffers.resize(swapChainDesc.BufferCount);
 
+//RTV生成
 	// スワップチェーンの全てのバッファについて処理する
 	for (size_t i = 0; i < backBuffers.size(); i++) {
 		// スワップチェーンからバッファを取得
@@ -135,14 +165,13 @@ Directx::Directx()
 		D3D12_HEAP_FLAG_NONE,
 		&depthResourceDesc,//リソース設定
 		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
+		&depthClearValue,
 		IID_PPV_ARGS(&depthBuff));
 	assert(SUCCEEDED(result));
 	//深度ビュー用デスクリプタヒープ作成
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
 	dsvHeapDesc.NumDescriptors = 1;//深度ビューは一つ
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;//デプスステンシルビュー
-	/*ID3D12DescriptorHeap* dsvHeap = nullptr;*/
 	result = device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
 	//深度ビュー作成
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
@@ -160,31 +189,7 @@ Directx::Directx()
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 
 
-#ifdef _DEBUG
-	ID3D12InfoQueue* infoQueue;
-	if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue))))
-	{
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);//やばいエラー時止まる
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);//エラー時止まる
-		infoQueue->Release();
-	}
 
-	//抑制するエラー
-	D3D12_MESSAGE_ID denyIds[] = {
-		//win11でのバグによるエラーメッセ
-		D3D12_MESSAGE_ID_RESOURCE_BARRIER_MISMATCHING_COMMAND_LIST_TYPE
-	};
-	//抑制する表示レベル
-	D3D12_MESSAGE_SEVERITY serverities[] = { D3D12_MESSAGE_SEVERITY_INFO };
-	D3D12_INFO_QUEUE_FILTER filter{};
-	filter.DenyList.NumIDs = _countof(denyIds);
-	filter.DenyList.pIDList = denyIds;
-	filter.DenyList.NumSeverities = _countof(serverities);
-	filter.DenyList.pSeverityList = serverities;
-	//指定したエラーの表示を抑制
-	infoQueue->PushStorageFilter(&filter);
-
-#endif 
 }
 
 Directx& Directx::GetInstance()

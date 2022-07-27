@@ -159,7 +159,7 @@ UINT sizeVB;
 D3D12_VIEWPORT viewport{};
 
 // パイプランステートの生成
-ID3D12PipelineState* pipelineState[2] = { nullptr };
+ID3D12PipelineState* pipelineState[3] = { nullptr };
 // ルートシグネチャ
 ID3D12RootSignature* rootSignature;
 // グラフィックスパイプライン設定
@@ -395,6 +395,8 @@ void DrawInitialize()
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState);
 
 	PipeLineState(D3D12_FILL_MODE_WIREFRAME, pipelineState + 1);
+
+	PipeLineState(D3D12_FILL_MODE_WIREFRAME, pipelineState + 2, LINE);
 
 	
 
@@ -725,7 +727,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 			XMStoreFloat3(&verticesSphere[index2].normal, normal);
 		}
 	}
-	else if(indexNum==TRIANGLE)
+	else if(indexNum == TRIANGLE)
 	{
 		for (int i = 0; i < _countof(indices2) / 3; i++)
 		{//三角形一つごとに計算
@@ -868,7 +870,15 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	Directx::GetInstance().commandList->RSSetScissorRects(1, &scissorRect);
 
 	// パイプラインステートとルートシグネチャの設定コマンド
-	Directx::GetInstance().commandList->SetPipelineState(pipelineState[isWireFrame]);
+	if (indexNum == LINE)
+	{
+		Directx::GetInstance().commandList->SetPipelineState(pipelineState[2]);
+	}
+	else
+	{
+		Directx::GetInstance().commandList->SetPipelineState(pipelineState[isWireFrame]);
+	}
+
 	Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature);
 
 	if (indexNum != SPHERE)
@@ -1090,7 +1100,7 @@ void Draw::DrawSphere(float radius, WorldMat* world, ViewMat* view, ProjectionMa
 	Update(SPHERE, pipelineNum, textureHandle, cbt);
 }
 
-void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState)
+void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, const int& indexNum)
 {
 	// シェーダーの設定
 	pipelineDesc.VS.pShaderBytecode = vsBlob->GetBufferPointer();
@@ -1113,6 +1123,10 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	pipelineDesc.InputLayout.NumElements = _countof(inputLayout);
 
 	// 図形の形状設定
+	if (indexNum == LINE)
+		pipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+
+	else
 	pipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 	// その他の設定

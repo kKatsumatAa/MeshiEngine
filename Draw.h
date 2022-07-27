@@ -105,7 +105,7 @@ void DrawInitialize();
 
 
 //
-void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState);
+void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState,const int& indexNum = NULL);
 
 void Blend(const D3D12_BLEND_OP& blendMode,
 	const bool& Inversion = 0, const bool& Translucent = 0);
