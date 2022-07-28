@@ -7,7 +7,7 @@ Directx::Directx()
 	ID3D12Debug1* debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 		debugController->EnableDebugLayer();
-		debugController->SetEnableGPUBasedValidation(true);
+		//debugController->SetEnableGPUBasedValidation(true);
 	}
 #endif
 
@@ -63,7 +63,7 @@ Directx::Directx()
 	if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue))))
 	{
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);//‚â‚Î‚¢ƒGƒ‰[ŽžŽ~‚Ü‚é
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);//ƒGƒ‰[ŽžŽ~‚Ü‚é
+		//infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);//ƒGƒ‰[ŽžŽ~‚Ü‚é
 		infoQueue->Release();
 	}
 

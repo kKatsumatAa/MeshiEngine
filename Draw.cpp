@@ -125,7 +125,7 @@ D3D12_VERTEX_BUFFER_VIEW vbView2{};
 const int PAPA = 66 * 3 + 6;
 //頂点バッファの生成
 ID3D12Resource* vertBuff2 = nullptr;
-static unsigned short indicesSphere[PAPA * 35];
+static unsigned short indicesSphere[PAPA * 36];
 
 //デスクリプタレンジの設定
 D3D12_DESCRIPTOR_RANGE descriptorRange;
@@ -228,63 +228,117 @@ void DrawInitialize()
 		int count2 = 0;
 		int count3 = 0;
 		int count4 = 0;
+		bool isLast = false;
 		//インデックス
 		for (int i = 0; i < _countof(indicesSphere); i++)
 		{
-			
-			if(i % PAPA == 0 || i % (PAPA * (count + 1) - 3) == 0)
+			if (i % (PAPA * 35) == 0 && i != 0)//最後の縦の列
+			{
+				isLast = true;
+			}
+
+			if (i % PAPA == 0 || i % (PAPA * (count + 1) - 3) == 0)
 			{
 
 			}
-			else if(1)
+			else if (1)//一番下か上じゃなければ
 			{
 				if (count2 % 2 == 0)
 				{
-					indicesSphere[i] = 2 + 34 * count + (count3);
-					indicesSphere[i + 1] = 2 + 34 * (count+1) + (count3);
-					indicesSphere[i + 2] =  2 + 34 * count + (count3 + 1);
+					if (isLast)
+					{
+						indicesSphere[i] = 2 + 34 * count + (count3);
+						indicesSphere[i + 1] = 2 + 0 + (count3);//一周してきたので一番最初の列を使う
+						indicesSphere[i + 2] = 2 + 34 * count + (count3 + 1);
 
-					count3++;
-					i += 2;
+						count3++;
+						i += 2;
+					}
+					else
+					{
+						indicesSphere[i] = 2 + 34 * count + (count3);
+						indicesSphere[i + 1] = 2 + 34 * (count + 1) + (count3);
+						indicesSphere[i + 2] = 2 + 34 * count + (count3 + 1);
+
+						count3++;
+						i += 2;
+					}
 				}
 				else if (count2 % 2 == 1)
 				{
-					indicesSphere[i] = 2 + 34 * (count + 1) + (count4 + 1);
-					indicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
-					indicesSphere[i + 2] = 2 + 34 * (count + 1) + (count4);
+					if (isLast)
+					{
+						indicesSphere[i] = 2 + 0 + (count4 + 1);//一周してきたので一番最初の列を使う
+						indicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
+						indicesSphere[i + 2] = 2 + 0 + (count4);//一周してきたので一番最初の列を使う
 
-					count4++;
-					i += 2;
+						count4++;
+						i += 2;
+					}
+					else
+					{
+						indicesSphere[i] = 2 + 34 * (count + 1) + (count4 + 1);
+						indicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
+						indicesSphere[i + 2] = 2 + 34 * (count + 1) + (count4);
+
+						count4++;
+						i += 2;
+					}
 				}
-
 
 				count2++;
 			}
-			if(i % PAPA == 0 || i % (PAPA * (count + 1) - 3) == 0)
+			if (i % PAPA == 0 || i % (PAPA * (count + 1) - 3) == 0)
 			{
 				if (i % PAPA == 0)//一番下の三角形
 				{
-					indicesSphere[i] = 0;
-					indicesSphere[i + 1] = 2 + 34 * (count + 1);
-					indicesSphere[i + 2] =  2 + 34 * count;
+					if (isLast)
+					{
+						indicesSphere[i] = 0;
+						indicesSphere[i + 1] = 2 + 0;
+						indicesSphere[i + 2] = 2 + 34 * count;
 
-					i += 2;
+						i += 2;
+					}
+					else
+					{
+						indicesSphere[i] = 2 + 34 * (count + 1);
+						indicesSphere[i + 1] = 2 + 34 * count;
+						indicesSphere[i + 2] = 0;
+
+						i += 2;
+					}
 				}
 				else if (i % (PAPA * (count + 1) - 3) == 0)//一番上の三角形
 				{
-					indicesSphere[i] = 1 + 34 * (count + 1);
-					indicesSphere[i + 1] = 1 + 34 * (count + 2);
-					indicesSphere[i + 2] = 1;
+					if (isLast)
+					{
+						indicesSphere[i] = 1 + 34 * (count + 1);
+						indicesSphere[i + 1] = 35;
+						indicesSphere[i + 2] = 1;
 
-					i += 2;
+						i += 2;
 
-					count++;
-					count2 = 0;
-					count3 = 0;
-					count4 = 0;
+						count++;
+						count2 = 0;
+						count3 = 0;
+						count4 = 0;
+					}
+					else
+					{
+						indicesSphere[i] = 1 + 34 * (count + 1);
+						indicesSphere[i + 1] = 1 + 34 * (count + 2);
+						indicesSphere[i + 2] = 1;
+
+						i += 2;
+
+						count++;
+						count2 = 0;
+						count3 = 0;
+						count4 = 0;
+					}
 				}
 			}
-
 			/*if (i % 198 == 0)
 			{
 				count++;
@@ -292,13 +346,13 @@ void DrawInitialize()
 				count3 = 0;
 				count4 = 0;
 			}
-			
+
 			if (count2 % 2 == 0)
 			{
 				indicesSphere[i] = 35 * count - (count3 + 1);
 				indicesSphere[i + 1] = 35 * (count + 1) - count3;
 				indicesSphere[i + 2] = 35 * count - (count3);
-				
+
 				count3++;
 				i += 2;
 			}
@@ -307,11 +361,11 @@ void DrawInitialize()
 				indicesSphere[i] = 35 * (count + 1) - (count4);
 				indicesSphere[i + 1] = 35 * count - (count4 + 1);
 				indicesSphere[i + 2] =  35 * (count + 1) - (count4 + 1);
-				
+
 				count4++;
 				i += 2;*/
-			//}
-			
+				//}
+
 		}
 
 		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesSphere));
