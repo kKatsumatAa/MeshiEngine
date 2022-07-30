@@ -21,7 +21,7 @@ public:
 	//•Ö—˜ŠÖ”
 	float GetLength() const;
 	void Normalized();
-	const Vec3 GetNormalized();
+	Vec3 GetNormalized() const;
 	Vec3 Cross(const Vec3& other) const;
 	float Dot(const Vec3& other) const;
 

@@ -11,3 +11,8 @@ void Vec3xM4(Vec3& v, const M4& m4, const bool w);
 const float pi = 3.141592f;
 float AngletoRadi(const float& angle);
 float RaditoAngle(const float& radian);
+float GetRadianVec3(const Vec3& v1, const Vec3& v2);
+
+//ê¸å`ï‚äÆ
+Vec3 LerpVec3(const Vec3& v1, const Vec3& v2, float t);
+Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t);

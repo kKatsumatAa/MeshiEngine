@@ -10,7 +10,7 @@ void Vec3::Normalized()
     *this /= GetLength();
 }
 
-const Vec3 Vec3::GetNormalized()
+Vec3 Vec3::GetNormalized() const
 {
     Vec3 v;
     v = *this / GetLength();
