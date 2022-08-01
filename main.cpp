@@ -16,6 +16,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WindowsApp::GetInstance();
 	Directx::GetInstance();
 
+
+
+	M4 m = papa2;
+	M4 m2 = papa2;
+	m.SetInverseMatrix();
+	m *= m2;
+
 	MSG msg{};	//メッセージ
 	
 	const int DrawNum = 30;

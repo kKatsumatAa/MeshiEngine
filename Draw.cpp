@@ -739,20 +739,20 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	{
 		worldMat->matWorld *= worldMat->parent->matWorld;
 		XMMATRIX matW;
-		matW = { worldMat->matWorld.m[0][0],worldMat->matWorld.m[0][1],worldMat->matWorld.m[0][2],worldMat->matWorld.m[0][3],
-				 worldMat->matWorld.m[1][0],worldMat->matWorld.m[1][1],worldMat->matWorld.m[1][2],worldMat->matWorld.m[1][3],
-				 worldMat->matWorld.m[2][0],worldMat->matWorld.m[2][1],worldMat->matWorld.m[2][2],worldMat->matWorld.m[2][3],
-				 worldMat->matWorld.m[3][0],worldMat->matWorld.m[3][1],worldMat->matWorld.m[3][2],worldMat->matWorld.m[3][3] };
+		matW = { (float)worldMat->matWorld.m[0][0],(float)worldMat->matWorld.m[0][1],(float)worldMat->matWorld.m[0][2],(float)worldMat->matWorld.m[0][3],
+				 (float)worldMat->matWorld.m[1][0],(float)worldMat->matWorld.m[1][1],(float)worldMat->matWorld.m[1][2],(float)worldMat->matWorld.m[1][3],
+				 (float)worldMat->matWorld.m[2][0],(float)worldMat->matWorld.m[2][1],(float)worldMat->matWorld.m[2][2],(float)worldMat->matWorld.m[2][3],
+				 (float)worldMat->matWorld.m[3][0],(float)worldMat->matWorld.m[3][1],(float)worldMat->matWorld.m[3][2],(float)worldMat->matWorld.m[3][3] };
 
 		cbt.constMapTransform->mat = matW * view->matView * projection->matProjection;
 	}
 	else//e‚ª‚¢‚È‚¢ê‡
 	{
 		XMMATRIX matW;
-		matW = { worldMat->matWorld.m[0][0],worldMat->matWorld.m[0][1],worldMat->matWorld.m[0][2],worldMat->matWorld.m[0][3],
-				 worldMat->matWorld.m[1][0],worldMat->matWorld.m[1][1],worldMat->matWorld.m[1][2],worldMat->matWorld.m[1][3],
-				 worldMat->matWorld.m[2][0],worldMat->matWorld.m[2][1],worldMat->matWorld.m[2][2],worldMat->matWorld.m[2][3],
-				 worldMat->matWorld.m[3][0],worldMat->matWorld.m[3][1],worldMat->matWorld.m[3][2],worldMat->matWorld.m[3][3] };
+		matW = { (float)worldMat->matWorld.m[0][0],(float)worldMat->matWorld.m[0][1],(float)worldMat->matWorld.m[0][2],(float)worldMat->matWorld.m[0][3],
+				 (float)worldMat->matWorld.m[1][0],(float)worldMat->matWorld.m[1][1],(float)worldMat->matWorld.m[1][2],(float)worldMat->matWorld.m[1][3],
+				 (float)worldMat->matWorld.m[2][0],(float)worldMat->matWorld.m[2][1],(float)worldMat->matWorld.m[2][2],(float)worldMat->matWorld.m[2][3],
+				 (float)worldMat->matWorld.m[3][0],(float)worldMat->matWorld.m[3][1],(float)worldMat->matWorld.m[3][2],(float)worldMat->matWorld.m[3][3] };
 
 		cbt.constMapTransform->mat = matW * view->matView * projection->matProjection;
 	}

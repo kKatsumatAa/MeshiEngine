@@ -8,7 +8,7 @@ private:
 
 public:
 	//çsóÒ
-	float m[4][4];
+	double m[4][4];
 
 	//ä÷êî
 	M4();
@@ -27,6 +27,8 @@ public:
 	void SetScaleMatrix(const Vec3& v3);
 	void SetRotationMatrix(const float& angle, const char& axis);
 	void SetTranslationMatrix(const Vec3& v3);
+
+	void SetInverseMatrix();
 
 	//
 	/*M4& operator=(const float (*other)[4]);*/
@@ -49,5 +51,12 @@ const float papa[4][4] = {
 		{2,2,2,2},
 		{3,3,3,3},
 		{4,4,4,4}
+};
+
+const float papa2[4][4] = {
+		{5,7,2,9},
+		{8,4,3,5},
+		{1,3,1,9},
+		{3,8,6,2}
 };
 
