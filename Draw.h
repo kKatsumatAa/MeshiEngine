@@ -42,7 +42,7 @@ private:
 	
 	
 		//定数バッファの生成
-	ID3D12Resource* constBuffMaterial = nullptr;
+	ComPtr < ID3D12Resource> constBuffMaterial = nullptr;
 	//定数バッファ用データ構造体（マテリアル）
 	struct ConstBufferDataMaterial
 	{
@@ -52,7 +52,7 @@ private:
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
 	
 	//頂点バッファの生成
-	ID3D12Resource* vertBuff = nullptr;
+	ComPtr < ID3D12Resource> vertBuff = nullptr;
 	//04_02
 	
 	//D3D12_CPU_DESCRIPTOR_HANDLE srvHandle2;

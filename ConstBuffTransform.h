@@ -16,7 +16,7 @@ private:
 	//D3D12_RESOURCE_DESC resDesc{};
 
 public:
-	ID3D12Resource* constBuffTransform = nullptr;//定数バッファのGPUリソースのポインタ
+	ComPtr < ID3D12Resource> constBuffTransform = nullptr;//定数バッファのGPUリソースのポインタ
 	ConstBufferDataTransform* constMapTransform = nullptr;//定数バッファのマッピング用ポインタ
 
 	ConstBuffTransform(/*D3D12_RESOURCE_DESC& resDesc,*/ /*Directx& directx*/);

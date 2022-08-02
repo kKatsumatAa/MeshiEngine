@@ -1,7 +1,7 @@
 #include "Draw.h"
 
 //設定をもとにSRV用デスクリプタヒープを生成
-ID3D12DescriptorHeap* srvHeap = nullptr;
+ComPtr < ID3D12DescriptorHeap> srvHeap = nullptr;
 D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
 int count = 0;
 
@@ -124,7 +124,7 @@ Vertex verticesSphere[2 + 34 * 36];
 D3D12_VERTEX_BUFFER_VIEW vbView2{};
 const int PAPA = 66 * 3 + 6;
 //頂点バッファの生成
-ID3D12Resource* vertBuff2 = nullptr;
+ComPtr<ID3D12Resource> vertBuff2 = nullptr;
 static unsigned short indicesSphere[PAPA * 36];
 
 //デスクリプタレンジの設定
@@ -159,9 +159,9 @@ UINT sizeVB;
 D3D12_VIEWPORT viewport{};
 
 // パイプランステートの生成
-ID3D12PipelineState* pipelineState[3] = { nullptr };
+ComPtr < ID3D12PipelineState> pipelineState[3] = { nullptr };
 // ルートシグネチャ
-ID3D12RootSignature* rootSignature;
+ComPtr<ID3D12RootSignature> rootSignature;
 // グラフィックスパイプライン設定
 D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
 ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
@@ -189,7 +189,7 @@ void DrawInitialize()
 		ResourceProperties(resDesc, sizeVB);
 
 		//頂点バッファの生成
-		BuffProperties(heapProp, resDesc, &vertBuff2);
+		BuffProperties(heapProp, resDesc, vertBuff2.GetAddressOf());
 
 		// 頂点バッファビューの作成
 		// GPU仮想アドレス
@@ -446,11 +446,11 @@ void DrawInitialize()
 
 
 	// パイプランステートの生成
-	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState);
+	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState->GetAddressOf());
 
-	PipeLineState(D3D12_FILL_MODE_WIREFRAME, pipelineState + 1);
+	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 1)->GetAddressOf());
 
-	PipeLineState(D3D12_FILL_MODE_WIREFRAME, pipelineState + 2, LINE);
+	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 2)->GetAddressOf(), LINE);
 
 	
 
@@ -693,7 +693,7 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	//設定をもとにSRV用デスクリプタヒープを生成
 	if (count == 0)
 	{                                                          //descは設定
-		Directx::GetInstance().result = Directx::GetInstance().device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
+		Directx::GetInstance().result = Directx::GetInstance().device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
 		assert(SUCCEEDED(Directx::GetInstance().result));
 	}
 	//SRVヒープの先頭ハンドルを取得
@@ -725,7 +725,7 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 
 	//04_02(画像貼る用のアドレスを引数に)
 	//SRVヒープの設定コマンド
-	Directx::GetInstance().commandList->SetDescriptorHeaps(1, &srvHeap);
+	Directx::GetInstance().commandList->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
 	//SRVヒープのハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
 	textureHandle = srvGpuHandle.ptr + (Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type) * count2);
@@ -926,14 +926,14 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	// パイプラインステートとルートシグネチャの設定コマンド
 	if (indexNum == LINE)
 	{
-		Directx::GetInstance().commandList->SetPipelineState(pipelineState[2]);
+		Directx::GetInstance().commandList->SetPipelineState(pipelineState[2].Get());
 	}
 	else
 	{
-		Directx::GetInstance().commandList->SetPipelineState(pipelineState[isWireFrame]);
+		Directx::GetInstance().commandList->SetPipelineState(pipelineState[isWireFrame].Get());
 	}
 
-	Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature);
+	Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature.Get());
 
 	if (indexNum != SPHERE)
 	{
@@ -960,7 +960,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	if (textureHandle != NULL)
 	{
 		//SRVヒープの設定コマンド
-		Directx::GetInstance().commandList->SetDescriptorHeaps(1, &srvHeap);
+		Directx::GetInstance().commandList->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
 		//SRVヒープの先頭ハンドルを取得
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 		srvGpuHandle.ptr = textureHandle;
@@ -1209,16 +1209,15 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	rootSignatureDesc.pStaticSamplers = &samplerDesc;
 	rootSignatureDesc.NumStaticSamplers = 1;
 	// ルートシグネチャのシリアライズ
-	ID3DBlob* rootSigBlob = nullptr;
+	ComPtr<ID3DBlob> rootSigBlob = nullptr;
 	Directx::GetInstance().result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
 		&rootSigBlob, &errorBlob);
 	assert(SUCCEEDED(Directx::GetInstance().result));
 	Directx::GetInstance().result = Directx::GetInstance().device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
 	assert(SUCCEEDED(Directx::GetInstance().result));
-	rootSigBlob->Release();
 	// パイプラインにルートシグネチャをセット
-	pipelineDesc.pRootSignature = rootSignature;
+	pipelineDesc.pRootSignature = rootSignature.Get();
 
 	//06_01
 	//デプスステンシルステート

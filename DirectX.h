@@ -7,8 +7,10 @@
 #include "WindowsApp.h"
 #include <DirectXMath.h>
 #include <DirectXTex.h>
+#include <wrl.h>
 #include "KeyboardInput.h"
 using namespace DirectX;
+using namespace Microsoft::WRL;
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "d3d12.lib")
@@ -27,25 +29,25 @@ private:
 	// デスクリプタヒープの設定
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	// バックバッファ
-	std::vector<ID3D12Resource*> backBuffers;
+	std::vector< ComPtr <ID3D12Resource>> backBuffers;
 	// 1.リソースバリアで書き込み可能に変更
 	D3D12_RESOURCE_BARRIER barrierDesc{};
 	// フェンスの生成
-	ID3D12Fence* fence = nullptr;
+	ComPtr < ID3D12Fence> fence = nullptr;
 	UINT64 fenceVal = 0;
-	ID3D12DescriptorHeap* dsvHeap = nullptr;
+	ComPtr < ID3D12DescriptorHeap> dsvHeap = nullptr;
 
 	Directx();
 
 public:
 	HRESULT result;
-	ID3D12Device* device = nullptr;
-	IDXGIFactory7* dxgiFactory = nullptr;
-	IDXGISwapChain4* swapChain = nullptr;
-	ID3D12CommandAllocator* commandAllocator = nullptr;
-	ID3D12GraphicsCommandList* commandList = nullptr;
-	ID3D12CommandQueue* commandQueue = nullptr;
-	ID3D12DescriptorHeap* rtvHeap = nullptr;
+	ComPtr<ID3D12Device> device = nullptr;
+	ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
+	ComPtr<IDXGISwapChain4> swapChain = nullptr;
+	ComPtr < ID3D12CommandAllocator> commandAllocator = nullptr;
+	ComPtr < ID3D12GraphicsCommandList> commandList = nullptr;
+	ComPtr < ID3D12CommandQueue> commandQueue = nullptr;
+	ComPtr < ID3D12DescriptorHeap> rtvHeap = nullptr;
 	// 2.描画先の変更
 		// レンダーターゲットビューのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
