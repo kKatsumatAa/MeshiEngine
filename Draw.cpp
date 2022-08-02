@@ -1,5 +1,8 @@
 #include "Draw.h"
 
+//sprite用
+Sprite sprite;
+
 //設定をもとにSRV用デスクリプタヒープを生成
 ComPtr < ID3D12DescriptorHeap> srvHeap = nullptr;
 D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
@@ -393,32 +396,6 @@ void DrawInitialize()
 		ibView3.SizeInBytes = sizeIB;
 	}
 
-	// 頂点シェーダの読み込みとコンパイル
-	Directx::GetInstance().result = D3DCompileFromFile(
-		L"BasicVS.hlsl", // シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-		0,
-		&vsBlob, &errorBlob);
-
-	// エラーなら
-	Error(FAILED(Directx::GetInstance().result));
-
-	// ピクセルシェーダの読み込みとコンパイル
-	Directx::GetInstance().result = D3DCompileFromFile(
-		L"BasicPS.hlsl", // シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-		0,
-		&psBlob, &errorBlob);
-
-	// エラーなら
-	Error(FAILED(Directx::GetInstance().result));
-
 
 	//デスクリプタレンジの設定
 	descriptorRange.NumDescriptors = 100;   //一度の描画に使うテクスチャの枚数
@@ -446,11 +423,15 @@ void DrawInitialize()
 
 
 	// パイプランステートの生成
-	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState->GetAddressOf());
+	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob);
 
-	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 1)->GetAddressOf());
+	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 1)->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob);
 
-	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 2)->GetAddressOf(), LINE);
+	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 2)->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob, LINE);
+
+	//sprite用
+	PipeLineState(D3D12_FILL_MODE_WIREFRAME, sprite.pipelineState.GetAddressOf(),
+		sprite.rootSignature.GetAddressOf(), sprite.vsBlob, sprite.psBlob, SPRITE);
 
 	
 
@@ -928,12 +909,17 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	{
 		Directx::GetInstance().commandList->SetPipelineState(pipelineState[2].Get());
 	}
+	else if (indexNum == SPRITE)
+		Directx::GetInstance().commandList->SetPipelineState(sprite.pipelineState.Get());
 	else
 	{
 		Directx::GetInstance().commandList->SetPipelineState(pipelineState[isWireFrame].Get());
 	}
 
-	Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature.Get());
+	if(indexNum==SPRITE)
+	Directx::GetInstance().commandList->SetGraphicsRootSignature(sprite.rootSignature.Get());
+	else
+		Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature.Get());
 
 	if (indexNum != SPHERE)
 	{
@@ -1154,8 +1140,66 @@ void Draw::DrawSphere(float radius, WorldMat* world, ViewMat* view, ProjectionMa
 	Update(SPHERE, pipelineNum, textureHandle, cbt);
 }
 
-void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, const int& indexNum)
+void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
+	ID3DBlob* vsBlob, ID3DBlob* psBlob, const int& indexNum)
 {
+	if (indexNum == SPRITE)
+	{
+		// 頂点シェーダの読み込みとコンパイル
+		Directx::GetInstance().result = D3DCompileFromFile(
+			L"SpriteVS.hlsl", // シェーダファイル名
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
+			"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
+			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
+			0,
+			&vsBlob, &errorBlob);
+
+		// エラーなら
+		Error(FAILED(Directx::GetInstance().result));
+
+		// ピクセルシェーダの読み込みとコンパイル
+		Directx::GetInstance().result = D3DCompileFromFile(
+			L"SpritePS.hlsl", // シェーダファイル名
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
+			"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
+			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
+			0,
+			&psBlob, &errorBlob);
+
+		// エラーなら
+		Error(FAILED(Directx::GetInstance().result));
+	}
+	else
+	{
+		// 頂点シェーダの読み込みとコンパイル
+		Directx::GetInstance().result = D3DCompileFromFile(
+			L"BasicVS.hlsl", // シェーダファイル名
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
+			"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
+			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
+			0,
+			&vsBlob, &errorBlob);
+
+		// エラーなら
+		Error(FAILED(Directx::GetInstance().result));
+
+		// ピクセルシェーダの読み込みとコンパイル
+		Directx::GetInstance().result = D3DCompileFromFile(
+			L"BasicPS.hlsl", // シェーダファイル名
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
+			"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
+			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
+			0,
+			&psBlob, &errorBlob);
+
+		// エラーなら
+		Error(FAILED(Directx::GetInstance().result));
+	}
+
 	// シェーダーの設定
 	pipelineDesc.VS.pShaderBytecode = vsBlob->GetBufferPointer();
 	pipelineDesc.VS.BytecodeLength = vsBlob->GetBufferSize();
@@ -1181,7 +1225,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 		pipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 
 	else
-	pipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		pipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 	// その他の設定
 	pipelineDesc.NumRenderTargets = 1; // 描画対象は1つ
@@ -1214,10 +1258,10 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 		&rootSigBlob, &errorBlob);
 	assert(SUCCEEDED(Directx::GetInstance().result));
 	Directx::GetInstance().result = Directx::GetInstance().device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
-		IID_PPV_ARGS(&rootSignature));
+		IID_PPV_ARGS(rootSig));
 	assert(SUCCEEDED(Directx::GetInstance().result));
 	// パイプラインにルートシグネチャをセット
-	pipelineDesc.pRootSignature = rootSignature.Get();
+	pipelineDesc.pRootSignature = *rootSig;
 
 	//06_01
 	//デプスステンシルステート

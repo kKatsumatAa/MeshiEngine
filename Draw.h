@@ -6,6 +6,7 @@
 #include "ProjectionMat.h"
 #include "Util.h"
 #include "ConstBuffTransform.h"
+#include "Sprite.h"
 
 /// <summary>
 /// 頂点インデックス用
@@ -17,7 +18,8 @@ enum indices
 	CUBE,
 	LINE,
 	CIRCLE,
-	SPHERE
+	SPHERE,
+	SPRITE
 };
 struct Vertex
 {
@@ -105,7 +107,8 @@ void DrawInitialize();
 
 
 //
-void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState,const int& indexNum = NULL);
+void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
+	ID3DBlob* vsBlob, ID3DBlob* psBlob, const int& indexNum = NULL);
 
 void Blend(const D3D12_BLEND_OP& blendMode,
 	const bool& Inversion = 0, const bool& Translucent = 0);

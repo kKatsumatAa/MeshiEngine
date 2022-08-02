@@ -113,8 +113,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//描画初期化処理-------------
 
-   //directx.DrawInitialize(win);
-
    //初期化処理　ここまで//
 
    //ゲームループ
@@ -151,29 +149,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			viewMat.eye = cameraEyeVec;
 		}
 
-
-		//if (KeyboardInput::GetInstance().keyPush(DIK_S) || KeyboardInput::GetInstance().keyPush(DIK_W) || KeyboardInput::GetInstance().keyPush(DIK_A) || KeyboardInput::GetInstance().keyPush(DIK_D))//translasion
-		//{
-		//	if (KeyboardInput::GetInstance().keyPush(DIK_S)) { worldMat.trans.y -= 1.0f; }
-		//	else if (KeyboardInput::GetInstance().keyPush(DIK_W)) { worldMat.trans.y += 1.0f; }
-		//	if (KeyboardInput::GetInstance().keyPush(DIK_A)) { worldMat.trans.x -= 1.0f; }
-		//	else if (KeyboardInput::GetInstance().keyPush(DIK_D)) { worldMat.trans.x += 1.0f; }
-		//}
-
-		/*worldMat.rot.z++;*/
 		for (WorldMat& i : worldMats)
 		{
 			i.SetWorld();
 		}
 
-		//Vec3 v = viewMat.eye - worldMat.trans;
-
-		//viewMat.eye += v.GetNormalized();
-		//viewMat.target = { worldMat.trans };
 		viewMat.SetMat();
-
-		//draw.constMapTransform->mat = worldMat.matWorld * viewMat.matView * projectionMat.matProjection;
-		//draw3.constMapTransform->mat = worldMat2.matWorld * viewMat.matView * projectionMat.matProjection;
 
 		Directx::GetInstance().DrawUpdate();
 
@@ -231,10 +212,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					&worldMat, &viewMat, &projectionMat, color3);
 			}
 		}
-		//directx.GraphicsCommand(win,pipelineNum,primitiveNum);
-		//draw2.DrawBoxSprite(pos2[0], pos2[1], pos2[2], pos2[3], textureHandle[2]);//背景
-		
-		for (int i = 0; i < _countof(draw); i++)
+		//draw[0].DrawBoxSprite(pos[0], pos[1], pos[2], pos[3], color);
+		for (int i = 1; i < _countof(draw); i++)
 		{
 			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN) || KeyboardInput::GetInstance().keyPush(DIK_UP) ||//図形を操作（アフィン） 
 				KeyboardInput::GetInstance().keyPush(DIK_LEFT) || KeyboardInput::GetInstance().keyPush(DIK_RIGHT))
@@ -295,8 +274,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				draw[i].DrawLine(posLine[0], posLine[1], &worldMats[i], &viewMat, &projectionMat, color4[i]);
 			}
-			//draw[1].DrawCube3D(&worldMat2, &viewMat, &projectionMat, textureHandle[primitiveNum + 1]);
-			//draw[2].DrawBox(pos[0], pos[1], pos[2], pos[3], &worldMat3, &viewMat, &projectionMat, textureHandle[1]);
 		}
 
 		// 4.描画コマンドここまで //

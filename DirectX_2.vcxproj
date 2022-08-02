@@ -149,6 +149,7 @@
     <ClCompile Include="M4.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ProjectionMat.cpp" />
+    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Vec3.cpp" />
     <ClCompile Include="Vec4.cpp" />
@@ -168,6 +169,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="SpritePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="SpriteVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConstBuffTransform.h" />
@@ -176,6 +189,7 @@
     <ClInclude Include="KeyboardInput.h" />
     <ClInclude Include="M4.h" />
     <ClInclude Include="ProjectionMat.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="Vec4.h" />
@@ -185,6 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Basic.hlsli" />
+    <None Include="Sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
