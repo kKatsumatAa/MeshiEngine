@@ -149,8 +149,8 @@ Directx::Directx()
 	//06_01
 	D3D12_RESOURCE_DESC depthResourceDesc{};
 	depthResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	depthResourceDesc.Width =  WindowsApp::GetInstance().window_width;//レンダーターゲットに合わせる
-	depthResourceDesc.Height =  WindowsApp::GetInstance().window_height;//レンダーターゲットに合わせる
+	depthResourceDesc.Width =  (UINT16)WindowsApp::GetInstance().window_width;//レンダーターゲットに合わせる
+	depthResourceDesc.Height = (UINT)WindowsApp::GetInstance().window_height;//レンダーターゲットに合わせる
 	depthResourceDesc.DepthOrArraySize = 1;
 	depthResourceDesc.Format = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 	depthResourceDesc.SampleDesc.Count = 1;

@@ -133,10 +133,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (KeyboardInput::GetInstance().keyPush(DIK_D) || KeyboardInput::GetInstance().keyPush(DIK_A) ||
 			KeyboardInput::GetInstance().keyPush(DIK_W) || KeyboardInput::GetInstance().keyPush(DIK_S))//カメラ
 		{
-			cameraWorldMat.rot.y += AngletoRadi((KeyboardInput::GetInstance().keyPush(DIK_A) - KeyboardInput::GetInstance().keyPush(DIK_D)));
+			cameraWorldMat.rot.y += AngletoRadi((float)(KeyboardInput::GetInstance().keyPush(DIK_A) - KeyboardInput::GetInstance().keyPush(DIK_D)));
 			if (cameraWorldMat.rot.x<=pi/2.f - pi / 4.f && cameraWorldMat.rot.x >= -pi/2.f+pi/4.f)
 			{
-				cameraWorldMat.rot.x += AngletoRadi((KeyboardInput::GetInstance().keyPush(DIK_W) - KeyboardInput::GetInstance().keyPush(DIK_S)));
+				cameraWorldMat.rot.x += AngletoRadi((float)(KeyboardInput::GetInstance().keyPush(DIK_W) - KeyboardInput::GetInstance().keyPush(DIK_S)));
 			}
 			//止める縦
 			if (cameraWorldMat.rot.x >= pi / 2.f - pi / 4.f)cameraWorldMat.rot.x = pi / 2.f - pi / 4.f;

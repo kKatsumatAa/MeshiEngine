@@ -10,7 +10,7 @@
 /// <summary>
 /// 頂点インデックス用
 /// </summary>
-static enum indices
+enum indices
 {
 	TRIANGLE,
 	BOX,
