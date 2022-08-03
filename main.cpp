@@ -79,6 +79,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{5.0f, 5.0f,  0.0f}//右上
 	};
 
+	XMFLOAT3 posS[4] = {
+		{0.0f,100.0f,0.0f},//左下
+		{0.0f,0.0f, 0.0f},//左上
+		{100.0f,100.0f, 0.0f},//右下
+		{100.0f, 0.0f,  0.0f}//右上
+	};
+
 	XMFLOAT3 pos2[4] = {
 		{0, WindowsApp::GetInstance().window_height ,0.0f},//左下
 		{0,0, 0.0f},//左上
@@ -212,7 +219,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					&worldMat, &viewMat, &projectionMat, color3);
 			}
 		}
-		draw[0].DrawBoxSprite(pos[0], pos[1], pos[2], pos[3], color);
+
 		for (int i = 1; i < _countof(draw); i++)
 		{
 			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN) || KeyboardInput::GetInstance().keyPush(DIK_UP) ||//図形を操作（アフィン） 
@@ -275,7 +282,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				draw[i].DrawLine(posLine[0], posLine[1], &worldMats[i], &viewMat, &projectionMat, color4[i]);
 			}
 		}
-		draw[0].DrawBoxSprite(pos[0], pos[1], pos[2], pos[3], color);
+		draw[0].DrawBoxSprite(posS[0], posS[1], posS[2], posS[3], color);
 		// 4.描画コマンドここまで //
 
 		Directx::GetInstance().DrawUpdate2();

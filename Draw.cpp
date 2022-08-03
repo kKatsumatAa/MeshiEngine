@@ -185,6 +185,9 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 void DrawInitialize()
 {
+	//sprite用
+	sprite.CreateSprite(resDesc);
+
 	//球体用
 	{
 		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
@@ -435,8 +438,8 @@ void DrawInitialize()
 
 	//sprite用
 	PipeLineState(D3D12_FILL_MODE_SOLID, sprite.pipelineSet.pipelineState.GetAddressOf(),
-		sprite.pipelineSet.rootSignature.GetAddressOf(), sprite.pipelineSet.vsBlob.Get(), 
-		sprite.pipelineSet.psBlob.Get(), SPRITE);
+		sprite.pipelineSet.rootSignature.GetAddressOf(), sprite.pipelineSet.vsBlob, 
+		sprite.pipelineSet.psBlob, SPRITE);
 
 	//03_04
 	//インデックスデータ
@@ -719,7 +722,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	const bool& primitiveMode)
 {
 	//変換行列をGPUに送信
-	if (worldMat->parent != nullptr)//親がいる場合
+	if (worldMat->parent != nullptr && indexNum != SPRITE)//親がいる場合
 	{
 		worldMat->matWorld *= worldMat->parent->matWorld;
 		XMMATRIX matW;
@@ -730,7 +733,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		cbt.constMapTransform->mat = matW * view->matView * projection->matProjection;
 	}
-	else//親がいない場合
+	else if(indexNum != SPRITE)//親がいない場合
 	{
 		XMMATRIX matW;
 		matW = { (float)worldMat->matWorld.m[0][0],(float)worldMat->matWorld.m[0][1],(float)worldMat->matWorld.m[0][2],(float)worldMat->matWorld.m[0][3],
@@ -913,27 +916,35 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		Directx::GetInstance().commandList->SetPipelineState(pipelineState[2].Get());
 	}
 	else if (indexNum == SPRITE)
-		Directx::GetInstance().commandList->SetPipelineState(sprite.pipelineSet.pipelineState.Get());
+	{ }
 	else
 	{
 		Directx::GetInstance().commandList->SetPipelineState(pipelineState[isWireFrame].Get());
 	}
 
 	if(indexNum==SPRITE)
-	Directx::GetInstance().commandList->SetGraphicsRootSignature(sprite.pipelineSet.rootSignature.Get());
+	{ }
 	else
 		Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature.Get());
 
 	if (indexNum != SPHERE)
 	{
-		// プリミティブ形状の設定コマンド
-		if (indexNum != LINE)
-			Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
-		else//線の時（LINE）
-			Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 線
+		if (indexNum == SPRITE)
+		{
+			sprite.SpriteCommonBeginDraw();
+			sprite.SpriteDraw();
+		}
+		else
+		{
+			// プリミティブ形状の設定コマンド
+			if (indexNum != LINE)
+				Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
+			else//線の時（LINE）
+				Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 線
 
-		// 頂点バッファビューの設定コマンド
-		Directx::GetInstance().commandList->IASetVertexBuffers(0, 1, &vbView);
+			// 頂点バッファビューの設定コマンド
+			Directx::GetInstance().commandList->IASetVertexBuffers(0, 1, &vbView);
+		}
 	}
 	else//球体の時
 	{
@@ -960,7 +971,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
 	//インデックスバッファビューの設定コマンド
-	//if (indexNum != SPHERE)
+	if (indexNum != SPRITE)
 	{
 		if (indexNum == SPHERE)Directx::GetInstance().commandList->IASetIndexBuffer(&ibView3);
 		else if (indexNum != CIRCLE) Directx::GetInstance().commandList->IASetIndexBuffer(&ibView);
@@ -991,7 +1002,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesSphere), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	case SPRITE:
-		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
+		Directx::GetInstance().commandList->DrawInstanced(4, 1, 0, 0); // 全ての頂点を使って描画
 	}
 }
 
@@ -1034,10 +1045,10 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
-	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
-	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
-	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
+	sprite.vertices[0] = { pos1,{0.0f,1.0f} };//左下
+	sprite.vertices[1] = { pos2,{0.0f,0.0f} };//左上
+	sprite.vertices[2] = { pos3,{1.0f,1.0f} };//右下
+	sprite.vertices[3] = { pos4,{1.0f,0.0f} };//右上
 
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
 
@@ -1046,7 +1057,7 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 	cbt.constMapTransform->mat =
 		XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 
-	Update(SPRITE, pipelineNum, textureHandle,cbt);
+	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
 
 void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
@@ -1217,7 +1228,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	// ラスタライザの設定
 	if (indexNum == SPRITE)
 	{
-		//pipelineDesc.RasterizerState = D3D12_RASTERIZER_DESC();
+		pipelineDesc.RasterizerState = D3D12_RASTERIZER_DESC();
 		pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // 背面カリング
 	}
 	else
@@ -1288,10 +1299,10 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	pipelineDesc.DepthStencilState = D3D12_DEPTH_STENCIL_DESC();
 	pipelineDesc.DepthStencilState.DepthEnable = true;//深度テストを行う
 	pipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-	//if(indexNum == SPRITE)
+	if(indexNum == SPRITE)
 		pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;//小さければ合格
-	//else
-	//	pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
+	else
+		pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
 	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 
 	Directx::GetInstance().result = Directx::GetInstance().device->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(pipelineState));
@@ -1338,28 +1349,7 @@ void Draw::constBuffTransfer(const XMFLOAT4& plusRGBA)
 		constMapMaterial->color.w += plusRGBA.w;
 }
 
-void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size)
-{
-	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	resDesc.Width = size;						//頂点データ全体のサイズ
-	resDesc.Height = 1;
-	resDesc.DepthOrArraySize = 1;
-	resDesc.MipLevels = 1;
-	resDesc.SampleDesc.Count = 1;
-	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-}
 
-void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, ID3D12Resource** buff)
-{
-	Directx::GetInstance().result = Directx::GetInstance().device->CreateCommittedResource(
-		&heap,//ヒープ設定
-		D3D12_HEAP_FLAG_NONE,
-		&resource,//リソース設定
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(buff));
-	assert(SUCCEEDED(Directx::GetInstance().result));
-}
 
 void SetNormDigitalMat(XMMATRIX& mat)
 {

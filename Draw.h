@@ -5,7 +5,6 @@
 #include "ViewMat.h"
 #include "ProjectionMat.h"
 #include "Util.h"
-#include "ConstBuffTransform.h"
 #include "Sprite.h"
 
 /// <summary>
@@ -36,7 +35,8 @@ private:
 	//D3D12_RESOURCE_DESC resDesc{};
 	ConstBuffTransform cbt;//ここをどうにかすれば、インスタンス一つでも色々描画
 	
-	
+	//頂点バッファの生成
+	ComPtr < ID3D12Resource> vertBuff = nullptr;
 	// 頂点バッファビューの作成
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
 	//04_01
@@ -46,15 +46,10 @@ private:
 		//定数バッファの生成
 	ComPtr < ID3D12Resource> constBuffMaterial = nullptr;
 	//定数バッファ用データ構造体（マテリアル）
-	struct ConstBufferDataMaterial
-	{
-		XMFLOAT4 color;//色(RGBA)
-	};
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
 	
-	//頂点バッファの生成
-	ComPtr < ID3D12Resource> vertBuff = nullptr;
+	
 	//04_02
 	
 	//D3D12_CPU_DESCRIPTOR_HANDLE srvHandle2;
@@ -115,10 +110,7 @@ void Blend(const D3D12_BLEND_OP& blendMode,
 
 
 
-void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size);
 
-void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource,
-	ID3D12Resource** buff);
 
 void SetNormDigitalMat(XMMATRIX& mat);
 
