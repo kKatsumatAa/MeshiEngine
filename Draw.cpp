@@ -3,6 +3,8 @@
 //sprite用
 Sprite sprite;
 
+PipelineSet pipelineSet;
+
 //設定をもとにSRV用デスクリプタヒープを生成
 ComPtr < ID3D12DescriptorHeap> srvHeap = nullptr;
 D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
@@ -154,6 +156,8 @@ D3D12_INPUT_ELEMENT_DESC inputLayout[3] = {
  D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 } // (1行で書いたほうが見やすい)
 };
+
+
 //ルートパラメータの設定
 D3D12_ROOT_PARAMETER rootParams[3] = {};
 UINT sizeVB;
@@ -430,10 +434,9 @@ void DrawInitialize()
 	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 2)->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob, LINE);
 
 	//sprite用
-	PipeLineState(D3D12_FILL_MODE_WIREFRAME, sprite.pipelineState.GetAddressOf(),
-		sprite.rootSignature.GetAddressOf(), sprite.vsBlob, sprite.psBlob, SPRITE);
-
-	
+	PipeLineState(D3D12_FILL_MODE_SOLID, sprite.pipelineSet.pipelineState.GetAddressOf(),
+		sprite.pipelineSet.rootSignature.GetAddressOf(), sprite.pipelineSet.vsBlob.Get(), 
+		sprite.pipelineSet.psBlob.Get(), SPRITE);
 
 	//03_04
 	//インデックスデータ
@@ -910,14 +913,14 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		Directx::GetInstance().commandList->SetPipelineState(pipelineState[2].Get());
 	}
 	else if (indexNum == SPRITE)
-		Directx::GetInstance().commandList->SetPipelineState(sprite.pipelineState.Get());
+		Directx::GetInstance().commandList->SetPipelineState(sprite.pipelineSet.pipelineState.Get());
 	else
 	{
 		Directx::GetInstance().commandList->SetPipelineState(pipelineState[isWireFrame].Get());
 	}
 
 	if(indexNum==SPRITE)
-	Directx::GetInstance().commandList->SetGraphicsRootSignature(sprite.rootSignature.Get());
+	Directx::GetInstance().commandList->SetGraphicsRootSignature(sprite.pipelineSet.rootSignature.Get());
 	else
 		Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature.Get());
 
@@ -1043,7 +1046,7 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 	cbt.constMapTransform->mat =
 		XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 
-	Update(BOX, pipelineNum, textureHandle,cbt);
+	Update(SPRITE, pipelineNum, textureHandle,cbt);
 }
 
 void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
@@ -1212,15 +1215,30 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	pipelineDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 
 	// ラスタライザの設定
-	pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // カリングしない
+	if (indexNum == SPRITE)
+	{
+		//pipelineDesc.RasterizerState = D3D12_RASTERIZER_DESC();
+		pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // 背面カリング
+	}
+	else
+		pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // 背面カリング
+	
 	pipelineDesc.RasterizerState.FillMode = fillMode; // ポリゴン内塗りつぶし
 	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
 	Blend(D3D12_BLEND_OP_ADD, false, true);
 
 	// 頂点レイアウトの設定
-	pipelineDesc.InputLayout.pInputElementDescs = inputLayout;
-	pipelineDesc.InputLayout.NumElements = _countof(inputLayout);
+	if (indexNum == SPRITE)
+	{
+		pipelineDesc.InputLayout.pInputElementDescs = sprite.inputLayoutSprite;
+		pipelineDesc.InputLayout.NumElements = _countof(sprite.inputLayoutSprite);
+	}
+	else
+	{
+		pipelineDesc.InputLayout.pInputElementDescs = inputLayout;
+		pipelineDesc.InputLayout.NumElements = _countof(inputLayout);
+	}
 
 	// 図形の形状設定
 	if (indexNum == LINE)
@@ -1267,9 +1285,13 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 
 	//06_01
 	//デプスステンシルステート
+	pipelineDesc.DepthStencilState = D3D12_DEPTH_STENCIL_DESC();
 	pipelineDesc.DepthStencilState.DepthEnable = true;//深度テストを行う
 	pipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-	pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
+	//if(indexNum == SPRITE)
+		pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;//小さければ合格
+	//else
+	//	pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
 	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 
 	Directx::GetInstance().result = Directx::GetInstance().device->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(pipelineState));

@@ -69,9 +69,9 @@ private:
 		const bool& primitiveMode= true);
 
 public://•Ï”
-	WorldMat* worldMat;
-	ViewMat* view;
-	ProjectionMat* projection;
+	WorldMat* worldMat = new WorldMat();
+	ViewMat* view = new ViewMat();
+	ProjectionMat* projection = new ProjectionMat();
 	bool isWireFrame = 0;
 
 public:
