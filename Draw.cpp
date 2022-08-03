@@ -987,6 +987,8 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	case SPHERE:
 		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesSphere), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
+	case SPRITE:
+		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
 	}
 }
 

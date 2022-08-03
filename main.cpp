@@ -212,7 +212,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					&worldMat, &viewMat, &projectionMat, color3);
 			}
 		}
-		//draw[0].DrawBoxSprite(pos[0], pos[1], pos[2], pos[3], color);
+		draw[0].DrawBoxSprite(pos[0], pos[1], pos[2], pos[3], color);
 		for (int i = 1; i < _countof(draw); i++)
 		{
 			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN) || KeyboardInput::GetInstance().keyPush(DIK_UP) ||//図形を操作（アフィン） 
