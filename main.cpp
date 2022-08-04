@@ -279,8 +279,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				draw[i].DrawLine(posLine[0], posLine[1], &worldMats[i], &viewMat, &projectionMat, color4[i]);
 			}
 		}
-		draw[0].DrawBoxSprite(posSprite, widthHight, color2, 90.0f, textureHandle[0]);
-		draw[1].DrawBoxSprite(posSprite2, widthHight, color, 0.0f,textureHandle[primitiveNum+1]);
+		draw[0].DrawBoxSprite(posSprite, {NULL,NULL}, color2, 90.0f, textureHandle[0]);
+		draw[1].DrawBoxSprite(posSprite2, { widthHight.x * 2,widthHight.y * 1 }, color, 0.0f, textureHandle[primitiveNum + 1]);
 		// 4.描画コマンドここまで //
 
 		Directx::GetInstance().DrawUpdate2();

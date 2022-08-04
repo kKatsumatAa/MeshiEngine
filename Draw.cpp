@@ -6,6 +6,8 @@ ComPtr < ID3D12DescriptorHeap> srvHeap = nullptr;
 D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
 int count = 0;
 
+ComPtr<ID3D12Resource> texBuff[512];
+
 //SRVの最大個数
 const size_t kMaxSRVCount = 2056;
 //デスクリプタヒープの設定
@@ -650,14 +652,14 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	textureResourceDesc.SampleDesc.Count = 1;
 
 	//テクスチャバッファの生成
-	ID3D12Resource* texBuff = nullptr;
+	//ID3D12Resource* texBuff = nullptr;
 	Directx::GetInstance().result = Directx::GetInstance().device->CreateCommittedResource(
 		&textureHeapProp,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,//リソース設定
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&texBuff));
+		IID_PPV_ARGS(&texBuff[count]));
 	assert(SUCCEEDED(Directx::GetInstance().result));
 
 	////テクスチャバッファにデータ転送
@@ -676,7 +678,7 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 		//ミップマップレベルを指定してイメージを取得
 		const Image* img = scratchImg.GetImage(i, 0, 0);
 		//テクスチャバッファにデータ転送
-		Directx::GetInstance().result = texBuff->WriteToSubresource(
+		Directx::GetInstance().result = texBuff[count]->WriteToSubresource(
 			(UINT)i,
 			nullptr,//全領域へコピー
 			img->pixels,//元データアドレス
@@ -718,7 +720,7 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
 	srvDesc.Texture2D.MipLevels = 1;
 	//ハンドルのさす位置にシェーダーリソースビュー作成
-	Directx::GetInstance().device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
+	Directx::GetInstance().device->CreateShaderResourceView(texBuff[count].Get(), &srvDesc, srvHandle);
 
 	int count2 = count;
 	count++;
@@ -1058,10 +1060,24 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 void Draw::DrawBoxSprite(const Vec3& centor, const XMFLOAT2& widthHeight,
 	XMFLOAT4 color ,float rotation, const UINT64 textureHandle, const int& pipelineNum)
 {
-	sprite.vertices[0] = { {- widthHeight.x,+ widthHeight.y,0.0f},{0.0f,1.0f} };//左下
-	sprite.vertices[1] = { {- widthHeight.x,- widthHeight.y,0.0f},{0.0f,0.0f} };//左上
-	sprite.vertices[2] = { {+ widthHeight.x,+ widthHeight.y,0.0f},{1.0f,1.0f} };//右下
-	sprite.vertices[3] = { {+ widthHeight.x,- widthHeight.y,0.0f},{1.0f,0.0f} };//右上
+	if (widthHeight.x != NULL && widthHeight.y != NULL)
+	{
+		sprite.vertices[0] = { {-widthHeight.x,+widthHeight.x,0.0f},{0.0f,1.0f} };//左下
+		sprite.vertices[1] = { {-widthHeight.x,-widthHeight.x,0.0f},{0.0f,0.0f} };//左上
+		sprite.vertices[2] = { {+widthHeight.x,+widthHeight.x,0.0f},{1.0f,1.0f} };//右下
+		sprite.vertices[3] = { {+widthHeight.x,-widthHeight.x,0.0f},{1.0f,0.0f} };//右上
+	}
+	else
+	{
+		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+		resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
+
+		sprite.vertices[0] = { {-(float)resDesc.Width / 10,+(float)resDesc.Height / 10,0.0f},{0.0f,1.0f} };//左下
+		sprite.vertices[1] = { {-(float)resDesc.Width / 10,-(float)resDesc.Height / 10,0.0f},{0.0f,0.0f} };//左上
+		sprite.vertices[2] = { {+(float)resDesc.Width / 10,+(float)resDesc.Height / 10,0.0f},{1.0f,1.0f} };//右下
+		sprite.vertices[3] = { {+(float)resDesc.Width / 10,-(float)resDesc.Height / 10,0.0f},{1.0f,0.0f} };//右上
+	}
+	
 
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
 	
