@@ -23,6 +23,13 @@ void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, 
 	assert(SUCCEEDED(Directx::GetInstance().result));
 }
 
+void SpriteCommonCreate(SpriteSet* spriteSet)
+{
+	
+
+
+}
+
 void Sprite::CreateSprite(D3D12_RESOURCE_DESC resDesc)
 {
 	HRESULT result = S_FALSE;
@@ -75,11 +82,11 @@ void Sprite::CreateSprite(D3D12_RESOURCE_DESC resDesc)
 	//		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 }
 
-void Sprite::SpriteCommonBeginDraw()
+void Sprite::SpriteCommonBeginDraw(SpriteSet* pipelineSet)
 {
-	Directx::GetInstance().commandList.Get()->SetPipelineState(pipelineSet.pipelineState.Get());
+	Directx::GetInstance().commandList.Get()->SetPipelineState(pipelineSet->pipelineState.Get());
 
-	Directx::GetInstance().commandList.Get()->SetGraphicsRootSignature(pipelineSet.rootSignature.Get());
+	Directx::GetInstance().commandList.Get()->SetGraphicsRootSignature(pipelineSet->rootSignature.Get());
 
 	Directx::GetInstance().commandList.Get()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 

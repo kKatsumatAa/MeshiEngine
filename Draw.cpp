@@ -1,9 +1,5 @@
 #include "Draw.h"
 
-//sprite用
-Sprite sprite;
-
-PipelineSet pipelineSet;
 
 //設定をもとにSRV用デスクリプタヒープを生成
 ComPtr < ID3D12DescriptorHeap> srvHeap = nullptr;
@@ -157,6 +153,21 @@ D3D12_INPUT_ELEMENT_DESC inputLayout[3] = {
 } // (1行で書いたほうが見やすい)
 };
 
+//sprite
+D3D12_INPUT_ELEMENT_DESC inputLayoutSprite[2] = {
+	{//xyz座標
+	 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
+	 D3D12_APPEND_ALIGNED_ELEMENT,
+	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+	}, // (1行で書いたほうが見やすい)
+
+	{//uv座標
+	 "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
+	 D3D12_APPEND_ALIGNED_ELEMENT,
+	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+	} // (1行で書いたほうが見やすい)
+};
+SpriteSet pipelineSet;
 
 //ルートパラメータの設定
 D3D12_ROOT_PARAMETER rootParams[3] = {};
@@ -185,8 +196,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 void DrawInitialize()
 {
-	//sprite用
-	sprite.CreateSprite(resDesc);
+	
 
 	//球体用
 	{
@@ -437,9 +447,9 @@ void DrawInitialize()
 	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 2)->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob, LINE);
 
 	//sprite用
-	PipeLineState(D3D12_FILL_MODE_SOLID, sprite.pipelineSet.pipelineState.GetAddressOf(),
-		sprite.pipelineSet.rootSignature.GetAddressOf(), sprite.pipelineSet.vsBlob, 
-		sprite.pipelineSet.psBlob, SPRITE);
+	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSet.pipelineState.GetAddressOf(),
+		pipelineSet.rootSignature.GetAddressOf(), pipelineSet.vsBlob, 
+		pipelineSet.psBlob, SPRITE);
 
 	//03_04
 	//インデックスデータ
@@ -485,6 +495,9 @@ void DrawInitialize()
 
 Draw::Draw()
 {
+	//sprite用
+	sprite.CreateSprite(resDesc);
+
 	cbt.Initialize(Directx::GetInstance());
 	
 
@@ -722,7 +735,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	const bool& primitiveMode)
 {
 	//変換行列をGPUに送信
-	if (worldMat->parent != nullptr && indexNum != SPRITE)//親がいる場合
+	if (worldMat->parent != nullptr /*&& indexNum != SPRITE*/)//親がいる場合
 	{
 		worldMat->matWorld *= worldMat->parent->matWorld;
 		XMMATRIX matW;
@@ -733,7 +746,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		cbt.constMapTransform->mat = matW * view->matView * projection->matProjection;
 	}
-	else if(indexNum != SPRITE)//親がいない場合
+	else /*if(indexNum != SPRITE)*///親がいない場合
 	{
 		XMMATRIX matW;
 		matW = { (float)worldMat->matWorld.m[0][0],(float)worldMat->matWorld.m[0][1],(float)worldMat->matWorld.m[0][2],(float)worldMat->matWorld.m[0][3],
@@ -931,7 +944,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	{
 		if (indexNum == SPRITE)
 		{
-			sprite.SpriteCommonBeginDraw();
+			sprite.SpriteCommonBeginDraw(&pipelineSet);
 			sprite.SpriteDraw();
 		}
 		else
@@ -1043,7 +1056,7 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 }
 
 void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
-	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+	XMFLOAT4 color ,float rotation, const UINT64 textureHandle, const int& pipelineNum)
 {
 	sprite.vertices[0] = { pos1,{0.0f,1.0f} };//左下
 	sprite.vertices[1] = { pos2,{0.0f,0.0f} };//左上
@@ -1051,11 +1064,21 @@ void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT
 	sprite.vertices[3] = { pos4,{1.0f,0.0f} };//右上
 
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
+	
+	//ワールド行列
+	worldMat->rot.z = AngletoRadi(rotation);
+	worldMat->SetWorld();
 
-	//05_03
-	//平行投影変換（スプライト描画?）
-	cbt.constMapTransform->mat =
-		XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
+	view->matView = XMMatrixIdentity();
+
+	//平行投影の射影行列生成
+	projection->matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, 
+		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
+
+	////05_03
+	////平行投影変換（スプライト描画?）
+	//cbt.constMapTransform->mat =
+	//	XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
@@ -1242,8 +1265,8 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	// 頂点レイアウトの設定
 	if (indexNum == SPRITE)
 	{
-		pipelineDesc.InputLayout.pInputElementDescs = sprite.inputLayoutSprite;
-		pipelineDesc.InputLayout.NumElements = _countof(sprite.inputLayoutSprite);
+		pipelineDesc.InputLayout.pInputElementDescs = inputLayoutSprite;
+		pipelineDesc.InputLayout.NumElements = _countof(inputLayoutSprite);
 	}
 	else
 	{

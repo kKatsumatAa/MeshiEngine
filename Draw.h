@@ -1,9 +1,5 @@
 #pragma once
 
-#include "DirectX.h"
-#include "WorldMat.h"
-#include "ViewMat.h"
-#include "ProjectionMat.h"
 #include "Util.h"
 #include "Sprite.h"
 
@@ -55,7 +51,8 @@ private:
 	//D3D12_CPU_DESCRIPTOR_HANDLE srvHandle2;
 	int count2=0;
 	
-
+	//sprite—p
+	Sprite sprite;
 	
 
 private:
@@ -82,7 +79,7 @@ public:
 		WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color = { NULL,NULL,NULL,NULL },
 		const UINT64 textureHandle = NULL, const int& pipelineNum=0);
 	void DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, XMFLOAT4 color = { NULL,NULL,NULL,NULL }
-		, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+		,float rotation = 0.0f, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	void DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	void DrawLine(XMFLOAT3 pos1, XMFLOAT3 pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection,XMFLOAT4& color
