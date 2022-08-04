@@ -79,18 +79,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{5.0f, 5.0f,  0.0f}//右上
 	};
 
-	XMFLOAT3 posS[4] = {
-		{0.0f,100.0f,0.0f},//左下
-		{0.0f,0.0f, 0.0f},//左上
-		{100.0f,100.0f, 0.0f},//右下
-		{100.0f, 0.0f,  0.0f}//右上
-	};
-	XMFLOAT3 posS2[4] = {
-		{WindowsApp::GetInstance().window_width-100.f,100.0f, 0.0f},//左下
-		{WindowsApp::GetInstance().window_width-100.f,0.0f, 0.0f},//左上
-		{WindowsApp::GetInstance().window_width,100.0f, 0.0f},//右下
-		{WindowsApp::GetInstance().window_width, 0.0f,  0.0f}//右上
-	};
+	const Vec3 posSprite = { 100,100,0 };
+	const Vec3 posSprite2 = { WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f,0 };
+	const XMFLOAT2 widthHight = { 100,100 };
 
 	XMFLOAT3 pos2[4] = {
 		{0, WindowsApp::GetInstance().window_height ,0.0f},//左下
@@ -288,8 +279,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				draw[i].DrawLine(posLine[0], posLine[1], &worldMats[i], &viewMat, &projectionMat, color4[i]);
 			}
 		}
-		draw[0].DrawBoxSprite(posS[0], posS[1], posS[2], posS[3], color2, 0.0f, textureHandle[0]);
-		draw[1].DrawBoxSprite(posS2[0], posS2[1], posS2[2], posS2[3], color,0.0f,textureHandle[primitiveNum+1]);
+		draw[0].DrawBoxSprite(posSprite, widthHight, color2, 90.0f, textureHandle[0]);
+		draw[1].DrawBoxSprite(posSprite2, widthHight, color, 0.0f,textureHandle[primitiveNum+1]);
 		// 4.描画コマンドここまで //
 
 		Directx::GetInstance().DrawUpdate2();

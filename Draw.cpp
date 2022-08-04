@@ -1055,18 +1055,19 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 	Update(BOX, pipelineNum, textureHandle,cbt);
 }
 
-void Draw::DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
+void Draw::DrawBoxSprite(const Vec3& centor, const XMFLOAT2& widthHeight,
 	XMFLOAT4 color ,float rotation, const UINT64 textureHandle, const int& pipelineNum)
 {
-	sprite.vertices[0] = { pos1,{0.0f,1.0f} };//左下
-	sprite.vertices[1] = { pos2,{0.0f,0.0f} };//左上
-	sprite.vertices[2] = { pos3,{1.0f,1.0f} };//右下
-	sprite.vertices[3] = { pos4,{1.0f,0.0f} };//右上
+	sprite.vertices[0] = { {- widthHeight.x,+ widthHeight.y,0.0f},{0.0f,1.0f} };//左下
+	sprite.vertices[1] = { {- widthHeight.x,- widthHeight.y,0.0f},{0.0f,0.0f} };//左上
+	sprite.vertices[2] = { {+ widthHeight.x,+ widthHeight.y,0.0f},{1.0f,1.0f} };//右下
+	sprite.vertices[3] = { {+ widthHeight.x,- widthHeight.y,0.0f},{1.0f,0.0f} };//右上
 
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
 	
 	//ワールド行列
 	worldMat->rot.z = AngletoRadi(rotation);
+	worldMat->trans = centor;
 	worldMat->SetWorld();
 
 	view->matView = XMMatrixIdentity();

@@ -78,7 +78,7 @@ public:
 	void DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,
 		WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color = { NULL,NULL,NULL,NULL },
 		const UINT64 textureHandle = NULL, const int& pipelineNum=0);
-	void DrawBoxSprite(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, XMFLOAT4 color = { NULL,NULL,NULL,NULL }
+	void DrawBoxSprite(const Vec3& centor, const XMFLOAT2& widthHeight, XMFLOAT4 color = { NULL,NULL,NULL,NULL }
 		,float rotation = 0.0f, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	void DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
