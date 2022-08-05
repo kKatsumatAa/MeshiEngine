@@ -1057,25 +1057,25 @@ void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos
 	Update(BOX, pipelineNum, textureHandle,cbt);
 }
 
-void Draw::DrawBoxSprite(const Vec3& centor, const XMFLOAT2& widthHeight,
+void Draw::DrawBoxSprite(const Vec3& leftTop, const float& scale,
 	XMFLOAT4 color ,float rotation, const UINT64 textureHandle, const int& pipelineNum)
 {
-	if (widthHeight.x != NULL && widthHeight.y != NULL)
-	{
-		sprite.vertices[0] = { {-widthHeight.x,+widthHeight.x,0.0f},{0.0f,1.0f} };//左下
-		sprite.vertices[1] = { {-widthHeight.x,-widthHeight.x,0.0f},{0.0f,0.0f} };//左上
-		sprite.vertices[2] = { {+widthHeight.x,+widthHeight.x,0.0f},{1.0f,1.0f} };//右下
-		sprite.vertices[3] = { {+widthHeight.x,-widthHeight.x,0.0f},{1.0f,0.0f} };//右上
-	}
-	else
+	//if (widthHeight.x != NULL && widthHeight.y != NULL)
+	//{
+	//	sprite.vertices[0] = { {-widthHeight.x / 2.0f,+widthHeight.y / 2.0f,0.0f},{0.0f,1.0f} };//左下
+	//	sprite.vertices[1] = { {-widthHeight.x / 2.0f,-widthHeight.y / 2.0f,0.0f},{0.0f,0.0f} };//左上
+	//	sprite.vertices[2] = { {+widthHeight.x / 2.0f,+widthHeight.y / 2.0f,0.0f},{1.0f,1.0f} };//右下
+	//	sprite.vertices[3] = { {+widthHeight.x / 2.0f,-widthHeight.y / 2.0f,0.0f},{1.0f,0.0f} };//右上
+	//}
+	//else
 	{
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
 		resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
 
-		sprite.vertices[0] = { {-(float)resDesc.Width / 10,+(float)resDesc.Height / 10,0.0f},{0.0f,1.0f} };//左下
-		sprite.vertices[1] = { {-(float)resDesc.Width / 10,-(float)resDesc.Height / 10,0.0f},{0.0f,0.0f} };//左上
-		sprite.vertices[2] = { {+(float)resDesc.Width / 10,+(float)resDesc.Height / 10,0.0f},{1.0f,1.0f} };//右下
-		sprite.vertices[3] = { {+(float)resDesc.Width / 10,-(float)resDesc.Height / 10,0.0f},{1.0f,0.0f} };//右上
+		sprite.vertices[0] = { {-(float)resDesc.Width * scale / 2.0f,+(float)resDesc.Height * scale / 2.0f,0.0f},{0.0f,1.0f} };//左下
+		sprite.vertices[1] = { {-(float)resDesc.Width * scale / 2.0f,-(float)resDesc.Height * scale / 2.0f,0.0f},{0.0f,0.0f} };//左上
+		sprite.vertices[2] = { {+(float)resDesc.Width * scale / 2.0f,+(float)resDesc.Height * scale / 2.0f,0.0f},{1.0f,1.0f} };//右下
+		sprite.vertices[3] = { {+(float)resDesc.Width * scale / 2.0f,-(float)resDesc.Height * scale / 2.0f,0.0f},{1.0f,0.0f} };//右上
 	}
 	
 
@@ -1083,7 +1083,45 @@ void Draw::DrawBoxSprite(const Vec3& centor, const XMFLOAT2& widthHeight,
 	
 	//ワールド行列
 	worldMat->rot.z = AngletoRadi(rotation);
-	worldMat->trans = centor;
+	worldMat->trans = { leftTop.x + resDesc.Width / 2.0f * scale,leftTop.y + resDesc.Height / 2.0f * scale,leftTop.z };
+	worldMat->SetWorld();
+
+	view->matView = XMMatrixIdentity();
+
+	//平行投影の射影行列生成
+	projection->matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, 
+		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
+
+	Update(SPRITE, pipelineNum, textureHandle, cbt);
+}
+
+void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+	XMFLOAT4 color, float rotation, const UINT64 textureHandle, const int& pipelineNum)
+{
+	
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
+
+	float texLeft = UVleftTop.x * +(float)resDesc.Width * scale;
+	float texRight = (UVleftTop.x + UVlength.x) * +(float)resDesc.Width * scale;
+	float texTop = UVleftTop.y * +(float)resDesc.Height * scale;
+	float texBottom = (UVleftTop.y + UVlength.y) * +(float)resDesc.Height * scale;
+
+	//切り抜いた後の画像の中心からの位置！！！！！！！！
+	sprite.vertices[0] = { {-UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+	sprite.vertices[1] = { {-UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
+	sprite.vertices[2] = { {UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+	sprite.vertices[3] = { {UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+
+	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
+	
+	//ワールド行列
+	worldMat->rot.z = AngletoRadi(rotation);
+
+	//切り抜いた後の画像の中心を設定！！！!!!!!!!!!!!!!!!!
+	worldMat->trans = { leftTop.x + texLeft + UVlength.x * (float)resDesc.Width * scale / 2.0f,
+		leftTop.y + texTop + UVlength.y * (float)resDesc.Height * scale / 2.0f,
+		leftTop.z };
 	worldMat->SetWorld();
 
 	view->matView = XMMatrixIdentity();

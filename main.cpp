@@ -16,7 +16,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WindowsApp::GetInstance();
 	Directx::GetInstance();
 
-
+	float angle = 0;
 
 	M4 m = papa2;
 	M4 m2 = papa2;
@@ -80,7 +80,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	};
 
 	const Vec3 posSprite = { 100,100,0 };
-	const Vec3 posSprite2 = { WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f,0 };
+	const Vec3 posSprite2 = { /*WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f*/0,0,0 };
 	const XMFLOAT2 widthHight = { 100,100 };
 
 	XMFLOAT3 pos2[4] = {
@@ -279,8 +279,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				draw[i].DrawLine(posLine[0], posLine[1], &worldMats[i], &viewMat, &projectionMat, color4[i]);
 			}
 		}
-		draw[0].DrawBoxSprite(posSprite, {NULL,NULL}, color2, 90.0f, textureHandle[0]);
-		draw[1].DrawBoxSprite(posSprite2, { widthHight.x * 2,widthHight.y * 1 }, color, 0.0f, textureHandle[primitiveNum + 1]);
+		angle+=0.5f;
+		draw[0].DrawBoxSprite(posSprite2, 1 / 3.0f, color, angle, textureHandle[primitiveNum + 1]);
+		draw[1].DrawClippingBoxSprite(posSprite2, 1 / 3.0f, { 0.2f,0.2f }, { 0.5f,0.7f }, color2, angle, textureHandle[primitiveNum + 1]);
 		// 4.描画コマンドここまで //
 
 		Directx::GetInstance().DrawUpdate2();
