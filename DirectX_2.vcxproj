@@ -149,6 +149,7 @@
     <ClCompile Include="M4.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ProjectionMat.cpp" />
+    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Vec3.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="KeyboardInput.h" />
     <ClInclude Include="M4.h" />
     <ClInclude Include="ProjectionMat.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Vec3.h" />

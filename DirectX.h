@@ -1,20 +1,18 @@
 #pragma once
 #include <d3d12.h>
 #include <dxgi1_6.h>
-#include <cassert>
 #include <vector>
 #include <string>
 #include "WindowsApp.h"
 #include <DirectXMath.h>
 #include <DirectXTex.h>
-#include <wrl.h>
 #include "KeyboardInput.h"
 using namespace DirectX;
-using namespace Microsoft::WRL;
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
+#include"Sound.h"
 
 class Directx
 {
@@ -36,10 +34,16 @@ private:
 	ComPtr < ID3D12Fence> fence = nullptr;
 	UINT64 fenceVal = 0;
 	ComPtr < ID3D12DescriptorHeap> dsvHeap = nullptr;
+	//‰¹
+	IXAudio2MasteringVoice* masterVoice;
+
 
 	Directx();
 
 public:
+	//‰¹
+	ComPtr<IXAudio2> xAudio2;
+	
 	HRESULT result;
 	ComPtr<ID3D12Device> device = nullptr;
 	ComPtr<IDXGIFactory7> dxgiFactory = nullptr;

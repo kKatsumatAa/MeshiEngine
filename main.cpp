@@ -12,9 +12,12 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//コンソールへの文字入力
 	OutputDebugStringA("Hello,DirectX!!\n");
-
+	
+	//
 	WindowsApp::GetInstance();
 	Directx::GetInstance();
+
+	
 
 	float angle = 0;
 
@@ -113,6 +116,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
+
+	//音データ
+	SoundData soundData = SoundLoadWave("Resources/Alarm01.wav");
+	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData);
 
 
 	//描画初期化処理-------------
@@ -280,7 +287,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 		}
 		angle+=0.5f;
-		draw[0].DrawBoxSprite(posSprite2, 1 / 3.0f, color, angle, textureHandle[primitiveNum + 1]);
+		draw[0].DrawBoxSprite(posSprite2, 1 / 3.0f, color2, 0.0f, textureHandle[primitiveNum + 1]);
 		draw[1].DrawClippingBoxSprite(posSprite2, 1 / 3.0f, { 0.2f,0.2f }, { 0.5f,0.7f }, color2, angle, textureHandle[primitiveNum + 1]);
 		// 4.描画コマンドここまで //
 
@@ -290,6 +297,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (KeyboardInput::GetInstance().keyPush(DIK_ESCAPE)) break;
 	}
+
+	//音データ解放
+	Directx::GetInstance().xAudio2.Reset();
+	SoundUnLoad(&soundData);
 
 	//ウィンドウクラスを登録解除
 	WindowsApp::GetInstance().UnregisterClassA();

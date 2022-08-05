@@ -192,8 +192,9 @@ Directx::Directx()
 	//フェンス生成
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 
-
-
+	//サウンド処理
+	result = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
+	result = xAudio2->CreateMasteringVoice(&masterVoice);
 }
 
 Directx& Directx::GetInstance()
