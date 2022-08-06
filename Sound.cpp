@@ -1,6 +1,6 @@
 #include "Sound.h"
 
-SoundData SoundLoadWave(const char* filename)
+SoundData SoundLoadWave(const char* filename, const bool& isConvert)
 {
     //ファイル入力ストリームのインスタンス
     std::ifstream file;
@@ -33,18 +33,32 @@ SoundData SoundLoadWave(const char* filename)
     {
         assert(0);
     }
-    //チャンク本体の読み込み
-    //assert(format.chunk.size <= sizeof(format.fmt));
-    file.read((char*)&format.fmt, format.chunk.size);
-    //16,18byteのフォーマットチャンクに対応
-    //（40byteは×⇒40読み込んだ後で、先頭18byteだけコピーするといい）
 
+    //チャンク本体の読み込み
+    if (format.chunk.size > sizeof(format.fmt))//18byteより大きかったら
+    {
+        int32_t size = format.chunk.size - sizeof(format.fmt);
+        //18byte分読み取っておく
+        file.read((char*)&format.fmt, sizeof(format.fmt));
+
+        //仮のformat
+        FormatChunk format2 = {};
+        //その差分読み取って進める
+        file.read((char*)&format2.fmt, size);
+    }
+    else
+    {
+        //assert(format.chunk.size <= sizeof(format.fmt));
+        file.read((char*)&format.fmt, format.chunk.size);
+        //16,18byteのフォーマットチャンクに対応
+        //（40byteは×⇒40読み込んだ後で、先頭18byteだけコピーするといい）
+    }
 
 //Dataチャンクの読み込み
     ChunkHeader data;
     file.read((char*)&data, sizeof(data));
     //junkチャンクを検出したら
-    if (strncmp(data.id, "JUNK", 4) == 0)
+    if (strncmp(data.id, "JUNK", 4) != isConvert)//資料は"== 0"になっていた！！！
     {
         //junkチャンクの最後まで読み飛ばす(読み取りヘッドを動かす)
         file.seekg(data.size, std::ios_base::cur);
@@ -85,7 +99,7 @@ void SoundUnLoad(SoundData* soundData)
     soundData->wfex = {};
 }
 
-void SoundPlayWave(IXAudio2* xAudio2, const SoundData& soundData)
+void SoundPlayWave(IXAudio2* xAudio2, SoundData& soundData, const float& volume, const bool& Loop)
 {
     HRESULT result;
 
@@ -99,8 +113,23 @@ void SoundPlayWave(IXAudio2* xAudio2, const SoundData& soundData)
     buf.pAudioData = soundData.pBuffer;
     buf.AudioBytes = soundData.bufferSize;
     buf.Flags = XAUDIO2_END_OF_STREAM;
+    //ループ再生
+	if (Loop == true)buf.LoopCount = XAUDIO2_LOOP_INFINITE;
 
-    //波形データの再生
+    //波形データの再生&設定
     result = pSourceVoice->SubmitSourceBuffer(&buf);
+    result = pSourceVoice->SetVolume(volume);
     result = pSourceVoice->Start();
+
+    soundData.pSourceVoice = pSourceVoice;
 }
+
+void SoundStopWave(const SoundData& soundData)
+{
+    soundData.pSourceVoice->Stop();
+}
+
+//void SetpSourceVoice(SoundData& soundData, IXAudio2SourceVoice* pSourceVoice)
+//{
+//    soundData.pSourceVoice = pSourceVoice;
+//}

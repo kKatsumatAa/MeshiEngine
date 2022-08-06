@@ -35,6 +35,8 @@ struct SoundData
 	BYTE* pBuffer;
 	//バッファのサイズ
 	unsigned int bufferSize;
+	//
+	IXAudio2SourceVoice* pSourceVoice = nullptr;
 };
 
 /// <summary>
@@ -42,7 +44,7 @@ struct SoundData
 /// </summary>
 /// <param name="filename"></param>
 /// <returns></returns>
-SoundData SoundLoadWave(const char* filename);
+SoundData SoundLoadWave(const char* filename, const bool& isConvert);
 /// <summary>
 /// 解放処理
 /// </summary>
@@ -55,6 +57,8 @@ void SoundUnLoad(SoundData* soundData);
 /// </summary>
 /// <param name="xAudio2"></param>
 /// <param name="soundData"></param>
-void SoundPlayWave(IXAudio2* xAudio2, const SoundData& soundData);
+void SoundPlayWave(IXAudio2* xAudio2, SoundData& soundData, const float& volume = 10.0f, const bool& Loop = false);
+
+void SoundStopWave(const SoundData& soundData);
 
 

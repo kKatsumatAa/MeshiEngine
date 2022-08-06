@@ -118,8 +118,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	KeyboardInput::GetInstance();
 
 	//音データ
-	SoundData soundData = SoundLoadWave("Resources/Alarm01.wav");
-	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData);
+	SoundData soundData = SoundLoadWave("Resources/Alarm01.wav",true);
+	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData, 10.0f, true);
+	
+	SoundData soundData2 = SoundLoadWave("Resources/test2.wav",false);
+	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData2, 10.0f, true);
 
 
 	//描画初期化処理-------------
@@ -196,6 +199,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		if (KeyboardInput::GetInstance().keyTrigger(DIK_SPACE))//図形の移動か回転かを変える
 		{
+			SoundStopWave(soundData);
+			SoundStopWave(soundData2);
 			affin++;
 			if (affin >= 3)affin = 0;
 		}
