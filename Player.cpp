@@ -3,7 +3,7 @@
 
 void Player::Attack()
 {
-	if (KeyboardInput::GetInstance().keyPush(DIK_SPACE) && shotTime >= shotCool)
+	if (/*KeyboardInput::GetInstance().keyPush(DIK_SPACE) && */shotTime >= shotCool && status == NORMAL)
 	{
 		shotTime = 0;
 
@@ -24,6 +24,12 @@ void Player::Attack()
 
 void Player::Update()
 {
+	if (KeyboardInput::GetInstance().keyTrigger(DIK_SPACE))
+	{
+		if (status == NORMAL) status = TARGET;
+		else if (status == TARGET) status = NORMAL;
+	}
+
 	{
 		//’e‚ğÁ‚·
 		bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet)
@@ -62,11 +68,15 @@ void Player::Update()
 	worldMat.SetWorld();
 }
 
-void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64& texHundle, const UINT64& bulletTexHundle)
+void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
-	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.0f }, texHundle);
+	
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
 	{
-		bullet->Draw(view, projection, bulletTexHundle);
+		bullet->Draw(view, projection, texHundle[0]);
 	}
+	if (status == TARGET)
+		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[4]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
+	else if (status == NORMAL)
+		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[1]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
 }

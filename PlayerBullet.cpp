@@ -22,5 +22,5 @@ void PlayerBullet::Update()
 
 void PlayerBullet::Draw(ViewMat& view, ProjectionMat& projection, const UINT64& texHundle)
 {
-	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle);
+	draw.DrawSphere(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle);
 }

@@ -1044,18 +1044,18 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 	Update(TRIANGLE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawBox(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, 
-	WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+void Draw::DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
+	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
 	//constBuffTransfer({ 0.01f,0.05f,0.1f,0 });
 	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
 
-	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
-	vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
-	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
-	vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
+	//vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
+	//vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
+	//vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
+	//vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
 
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 	
@@ -1226,7 +1226,7 @@ void Draw::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMa
 	Update(CIRCLE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawSphere(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
+void Draw::DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
 	/*constBuffTransfer({ 0,0.01f,0,0 });*/

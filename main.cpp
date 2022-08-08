@@ -31,10 +31,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//画像用ハンドル
 	UINT64 textureHandle[5] = {0};
 
-	LoadGraph(L"Resources/texture.jpg", textureHandle[0]);
-	LoadGraph(L"Resources/texture2.jpg", textureHandle[1]);
-	LoadGraph(L"Resources/back.png", textureHandle[2]);//back
-	LoadGraph(L"Resources/scope.png", textureHandle[3]);//ロックオン
+	LoadGraph(L"Resources/white.png", textureHandle[0]);//ただの白（色変える用）
+	LoadGraph(L"Resources/texture.jpg", textureHandle[1]);
+	LoadGraph(L"Resources/texture2.jpg", textureHandle[2]);
+	LoadGraph(L"Resources/back.png", textureHandle[3]);//back
+	LoadGraph(L"Resources/scope.png", textureHandle[4]);//ロックオン
+	
 
 
 	//キーボード入力初期化
@@ -72,7 +74,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		player.Update();
 
 // 4.描画コマンドここから　//-----------
-		player.Draw(viewMat, projectionMat, textureHandle[3], textureHandle[2]);
+		player.Draw(viewMat, projectionMat, textureHandle);
 
 // 4.描画コマンドここまで //
 
