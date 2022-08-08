@@ -64,7 +64,7 @@ void Player::Update()
 
 void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64& texHundle, const UINT64& bulletTexHundle)
 {
-	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle);
+	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.0f }, texHundle);
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
 	{
 		bullet->Draw(view, projection, bulletTexHundle);
