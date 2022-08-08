@@ -29,12 +29,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ProjectionMat projectionMat;
 
 	//画像用ハンドル
-	UINT64 textureHandle[4] = { 0 };
+	UINT64 textureHandle[5] = {0};
 
 	LoadGraph(L"Resources/texture.jpg", textureHandle[0]);
 	LoadGraph(L"Resources/texture2.jpg", textureHandle[1]);
 	LoadGraph(L"Resources/back.png", textureHandle[2]);//back
 	LoadGraph(L"Resources/rock.jpg", textureHandle[3]);//ロックオン
+	LoadGraph(L"Resources/scope.png", textureHandle[4]);//ロックオン
 
 
 	//キーボード入力初期化
@@ -72,7 +73,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		player.Update();
 
 // 4.描画コマンドここから　//-----------
-		player.Draw(viewMat, projectionMat, /*textureHandle[0]*/NULL, textureHandle[2]);
+		player.Draw(viewMat, projectionMat, textureHandle[4], textureHandle[2]);
 
 // 4.描画コマンドここまで //
 
