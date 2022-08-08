@@ -937,10 +937,15 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		Directx::GetInstance().commandList->SetPipelineState(pipelineState[isWireFrame].Get());
 	}
 
-	if(indexNum==SPRITE)
-	{ }
-	else
+	/*if (indexNum == SPRITE)
+	{
+
+	}
+	else*/
+	if (indexNum != SPRITE)
+	{
 		Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature.Get());
+	}
 
 	if (indexNum != SPHERE)
 	{

@@ -148,6 +148,8 @@
     <ClCompile Include="KeyboardInput.cpp" />
     <ClCompile Include="M4.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerBullet.cpp" />
     <ClCompile Include="ProjectionMat.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -189,6 +191,8 @@
     <ClInclude Include="Draw.h" />
     <ClInclude Include="KeyboardInput.h" />
     <ClInclude Include="M4.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerBullet.h" />
     <ClInclude Include="ProjectionMat.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
