@@ -1,6 +1,13 @@
 #include "Player.h"
 #include "Util.h"
 
+Player::Player()
+{
+	//Õ“Ë‘®«
+	SetCollisionAttribute(kCollisionAttributePlayer);
+	SetCollisionMask(kCollisionAttributeEnemy);
+}
+
 void Player::Attack()
 {
 	if (/*KeyboardInput::GetInstance().keyPush(DIK_SPACE) && */shotTime >= shotCool && status == NORMAL)
@@ -79,4 +86,20 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[4]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
 	else if (status == NORMAL)
 		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[1]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
+}
+
+
+Vec3 Player::GetWorldPos()
+{
+	Vec3 pos;
+	pos.x = worldMat.matWorld.m[3][0];
+	pos.y = worldMat.matWorld.m[3][1];
+	pos.z = worldMat.matWorld.m[3][2];
+
+	return Vec3(pos);
+}
+
+void Player::OnCollision()
+{
+	//‚È‚É‚à‚µ‚È‚¢
 }

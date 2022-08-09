@@ -6,6 +6,7 @@
 #include "WorldMat.h"
 #include "Draw.h"
 #include "Player.h"
+#include "Enemy.h"
 #include <random>
 
 
@@ -47,10 +48,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData, 10.0f, true);*/
 	
 	SoundData soundData2 = SoundLoadWave("Resources/test2.wav",false);
-	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData2, 1.0f, true);
+	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData2, 5.0f, true);
 
 	//player
 	Player player;
+	//enemy
+	Enemy enemy(&player);
 
 	//描画初期化処理-------------
 
@@ -72,9 +75,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 //更新処理
 		player.Update();
+		enemy.Update();
 
 // 4.描画コマンドここから　//-----------
-		player.Draw(viewMat, projectionMat, textureHandle);
+		enemy.Draw(viewMat, projectionMat, textureHandle);
+		player.Draw(viewMat, projectionMat, textureHandle);//playerを後にしないと透過されない！
 
 // 4.描画コマンドここまで //
 

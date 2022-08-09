@@ -7,7 +7,7 @@ enum
 	TARGET
 };
 
-class Player
+class Player : public Collider
 {
 private:
 	//ワールド変換データ
@@ -20,9 +20,22 @@ private:
 	int status = NORMAL;
 
 public:
+	Player();
 	void Attack();
 	void Update();
 	void Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle);
 	int  GetPlayerStatus() { return status; }
+
+	Vec3 GetWorldPos() override;
+
+	//衝突を検出したら呼び出す（コールバック関数）
+	void OnCollision() override;
+
+	//弾リストを取得
+	const std::list<std::unique_ptr<PlayerBullet>>& GetBullets()
+	{
+		return bullets_;
+	}
+
 };
 
