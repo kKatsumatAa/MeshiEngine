@@ -78,6 +78,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Directx::GetInstance().DrawUpdate();
 
 //更新処理
+		backGround.worldMat->scale += {0.03f, 0.03f, 0};
+		backGround.worldMat->SetWorld();
+
 		player->Update();
 		enemy->Update();
 

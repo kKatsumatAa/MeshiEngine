@@ -83,9 +83,9 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		bullet->Draw(view, projection, texHundle[0]);
 	}
 	if (status == TARGET)
-		draw.DrawBox(&worldMat, &view, &projection, { 0.0f,0.0f,0.0f,1.0f }, texHundle[4]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
+		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[4]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
 	else if (status == NORMAL)
-		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[1]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
+		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.7f }, texHundle[1]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
 }
 
 
