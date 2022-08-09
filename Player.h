@@ -39,3 +39,4 @@ public:
 
 };
 
+static const XMFLOAT2 playerMoveRange = { 63.0f,65.0f / 2.0f };

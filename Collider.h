@@ -9,7 +9,7 @@
 class Collider
 {
 private:
-	float radius_ = 2.0f;
+	float radius_ = 5.0f;
 
 	//Õ“Ë‘®«(©•ª)
 	uint32_t collisionAttribute_ = 0xffffffff;

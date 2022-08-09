@@ -63,10 +63,10 @@ void Player::Update()
 	worldMat.trans.y += (KeyboardInput::GetInstance().keyPush(DIK_W) || KeyboardInput::GetInstance().keyPush(DIK_UPARROW)) -
 		(KeyboardInput::GetInstance().keyPush(DIK_S) || KeyboardInput::GetInstance().keyPush(DIK_DOWNARROW));
 	//ˆÚ“®§ŒÀ
-	worldMat.trans.x = min(worldMat.trans.x, 63);
-	worldMat.trans.x = max(worldMat.trans.x, -63);
-	worldMat.trans.y = min(worldMat.trans.y, 65/2.0f);
-	worldMat.trans.y = max(worldMat.trans.y, -65/2.0f);
+	worldMat.trans.x = min(worldMat.trans.x, playerMoveRange.x);
+	worldMat.trans.x = max(worldMat.trans.x, -playerMoveRange.x);
+	worldMat.trans.y = min(worldMat.trans.y, playerMoveRange.y);
+	worldMat.trans.y = max(worldMat.trans.y, -playerMoveRange.y);
 
 	////‰ñ“]
 	//worldMat.rot.y += (KeyboardInput::GetInstance().keyPush(DIK_D) - KeyboardInput::GetInstance().keyPush(DIK_A)) * 0.05f;
@@ -83,7 +83,7 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		bullet->Draw(view, projection, texHundle[0]);
 	}
 	if (status == TARGET)
-		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[4]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
+		draw.DrawBox(&worldMat, &view, &projection, { 0.0f,0.0f,0.0f,1.0f }, texHundle[4]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
 	else if (status == NORMAL)
 		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[1]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
 }

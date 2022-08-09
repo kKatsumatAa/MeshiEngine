@@ -1,10 +1,22 @@
 #include "Enemy.h"
 
-Enemy::Enemy(Player* player)
+//Enemy::Enemy(Player* player)
+//{
+//	player_ = player;
+//
+//	worldMat.trans = { 0,5,100 };
+//
+//	state = new EnemyStateApproach;
+//	state->SetEnemy(this);
+//
+//	//接近フェーズ初期化
+//	InitializeApproach();
+//}
+
+void Enemy::Initialize(Player* player, const Vec3& pos)
 {
 	player_ = player;
-
-	worldMat.trans = { 0,5,100 };
+	this->worldMat.trans = pos;
 
 	state = new EnemyStateApproach;
 	state->SetEnemy(this);
@@ -109,7 +121,7 @@ void Enemy::ShotResetTimer()
 
 void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
-	draw.DrawBox(&worldMat, &view, &projection, { 0,0,1.0f,1.0f }, texHundle[1]);
+	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[3]);
 
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
 	{
@@ -155,7 +167,7 @@ void EnemyStateApproach::Update()
 	//移動（ベクトルを加算）
 	enemy->MoveTrans(approachSpeed);
 	//既定の位置に達したら離脱
-	if (enemy->GetTrans().z < 0.0f)
+	if (enemy->GetTrans().z < 10.0f)
 	{
 		enemy->RemoveTimeCall();
 		enemy->ChangeState(new EnemyStateLeave);

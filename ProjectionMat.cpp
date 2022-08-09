@@ -1,7 +1,7 @@
 #include "ProjectionMat.h"
 
 ProjectionMat::ProjectionMat():
-	nearPos(0.1f), farPos(1000.0f), aspect({ WindowsApp::GetInstance().window_width , WindowsApp::GetInstance().window_height }),
+	nearPos(0.1f), farPos(10000.0f), aspect({ WindowsApp::GetInstance().window_width , WindowsApp::GetInstance().window_height }),
 	fovY(XMConvertToRadians(45.0f))
 {
 	SetMat();

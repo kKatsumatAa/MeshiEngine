@@ -48,7 +48,8 @@ private:
 
 
 public:
-	Enemy(Player* player);
+	/*Enemy(Player* player);*/
+	void Initialize(Player* player,const Vec3& pos);
 	~Enemy();
 	void InitializeApproach();
 
