@@ -12,7 +12,7 @@ class Enemy;
 class EnemyState
 {
 protected:
-	Enemy* enemy;
+	Enemy* enemy = nullptr;
 
 public:
 	void SetEnemy(Enemy* enemy);

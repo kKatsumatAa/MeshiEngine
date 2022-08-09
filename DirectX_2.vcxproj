@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="ConstBuffTransform.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Draw.cpp" />
@@ -192,6 +193,7 @@
   <ItemGroup>
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionConfig.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="ConstBuffTransform.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Draw.h" />

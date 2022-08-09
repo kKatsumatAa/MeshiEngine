@@ -493,6 +493,31 @@ void DrawInitialize()
 	ibView2.BufferLocation = indexBuff2->GetGPUVirtualAddress();
 	ibView2.Format = DXGI_FORMAT_R16_UINT;
 	ibView2.SizeInBytes = sizeIB;
+
+	//06_03
+	/*if (indexNum == SPHERE)*/
+	{
+		for (int i = 0; i < _countof(indicesSphere) / 3; i++)
+		{//三角形一つごとに計算
+			//三角形のインデックスを取り出して、一時的な変数に入れる
+			unsigned short index0 = indicesSphere[i * 3 + 0];
+			unsigned short index1 = indicesSphere[i * 3 + 1];
+			unsigned short index2 = indicesSphere[i * 3 + 2];
+			//三角形を構成する頂点座標をベクトルに代入
+			XMVECTOR p0 = XMLoadFloat3(&verticesSphere[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&verticesSphere[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&verticesSphere[index2].pos);
+			//p0->p1ベクトル、p0->p2ベクトルを計算
+			XMVECTOR v1 = XMVectorSubtract(p1, p0);
+			XMVECTOR v2 = XMVectorSubtract(p2, p0);
+			//外積（垂直なベクトル）
+			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
+			//求めた法線を頂点データに代入
+			XMStoreFloat3(&verticesSphere[index0].normal, normal);
+			XMStoreFloat3(&verticesSphere[index1].normal, normal);
+			XMStoreFloat3(&verticesSphere[index2].normal, normal);
+		}
+	}
 }
 
 Draw::Draw()
@@ -596,6 +621,108 @@ Draw::Draw()
 
 	constMapTransform=matWorld**/
 	constMapMaterial->color = { 0,0,0,1 };
+
+	//06_03
+	
+	/*else if (indexNum == TRIANGLE)*/
+	{
+		for (int i = 0; i < _countof(indices2) / 3; i++)
+		{//三角形一つごとに計算
+			//三角形のインデックスを取り出して、一時的な変数に入れる
+			unsigned short index0 = indices2[i * 3 + 0];
+			unsigned short index1 = indices2[i * 3 + 1];
+			unsigned short index2 = indices2[i * 3 + 2];
+			//三角形を構成する頂点座標をベクトルに代入
+			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+			//p0->p1ベクトル、p0->p2ベクトルを計算
+			XMVECTOR v1 = XMVectorSubtract(p1, p0);
+			XMVECTOR v2 = XMVectorSubtract(p2, p0);
+			//外積（垂直なベクトル）
+			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
+			//求めた法線を頂点データに代入
+			XMStoreFloat3(&vertices[index0].normal, normal);
+			XMStoreFloat3(&vertices[index1].normal, normal);
+			XMStoreFloat3(&vertices[index2].normal, normal);
+		}
+	}
+	/*else if (indexNum == BOX)*/
+	{
+		for (int i = 0; i < _countof(indices) / 3; i++)
+		{//三角形一つごとに計算
+			//三角形のインデックスを取り出して、一時的な変数に入れる
+			unsigned short index0 = indices[i * 3 + 0];
+			unsigned short index1 = indices[i * 3 + 1];
+			unsigned short index2 = indices[i * 3 + 2];
+			//三角形を構成する頂点座標をベクトルに代入
+			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+			//p0->p1ベクトル、p0->p2ベクトルを計算
+			XMVECTOR v1 = XMVectorSubtract(p1, p0);
+			XMVECTOR v2 = XMVectorSubtract(p2, p0);
+			//外積（垂直なベクトル）
+			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
+			//求めた法線を頂点データに代入
+			XMStoreFloat3(&vertices[index0].normal, normal);
+			XMStoreFloat3(&vertices[index1].normal, normal);
+			XMStoreFloat3(&vertices[index2].normal, normal);
+		}
+	}
+	/*else if (indexNum == CUBE)*/
+	{
+		for (int i = 0; i < _countof(indicesCube) / 3; i++)
+		{//三角形一つごとに計算
+			//三角形のインデックスを取り出して、一時的な変数に入れる
+			unsigned short index0 = indicesCube[i * 3 + 0];
+			unsigned short index1 = indicesCube[i * 3 + 1];
+			unsigned short index2 = indicesCube[i * 3 + 2];
+			//三角形を構成する頂点座標をベクトルに代入
+			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+			//p0->p1ベクトル、p0->p2ベクトルを計算
+			XMVECTOR v1 = XMVectorSubtract(p1, p0);
+			XMVECTOR v2 = XMVectorSubtract(p2, p0);
+			//外積（垂直なベクトル）
+			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
+			//求めた法線を頂点データに代入
+			XMStoreFloat3(&vertices[index0].normal, normal);
+			XMStoreFloat3(&vertices[index1].normal, normal);
+			XMStoreFloat3(&vertices[index2].normal, normal);
+		}
+	}
+	/*else if (indexNum == CIRCLE)*/
+	{
+		for (int i = 0; i < _countof(indicesCircle) / 3; i++)
+		{//三角形一つごとに計算
+			//三角形のインデックスを取り出して、一時的な変数に入れる
+			unsigned short index0 = indicesCircle[i * 3 + 0];
+			unsigned short index1 = indicesCircle[i * 3 + 1];
+			unsigned short index2 = indicesCircle[i * 3 + 2];
+			//三角形を構成する頂点座標をベクトルに代入
+			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+			//p0->p1ベクトル、p0->p2ベクトルを計算
+			XMVECTOR v1 = XMVectorSubtract(p1, p0);
+			XMVECTOR v2 = XMVectorSubtract(p2, p0);
+			//外積（垂直なベクトル）
+			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
+			//求めた法線を頂点データに代入
+			XMStoreFloat3(&vertices[index0].normal, normal);
+			XMStoreFloat3(&vertices[index1].normal, normal);
+			XMStoreFloat3(&vertices[index2].normal, normal);
+		}
+	}
+	/*else if (indexNum == LINE)*/
+	{
+		//求めた法線を頂点データに代入
+		vertices[0].normal = XMFLOAT3(-1.0f / 3.0f, 1.0f / 3.0f, -1.0f / 3.0f);//仮の数字なので後で変更
+		vertices[1].normal = XMFLOAT3(-1.0f / 3.0f, 1.0f / 3.0f, -1.0f / 3.0f);//〃
+
+	}
 }
 
 void LoadGraph(const wchar_t* name, UINT64& textureHandle)
@@ -759,129 +886,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		cbt.constMapTransform->mat = matW * view->matView * projection->matProjection;
 	}
 
-	//06_03
-	if (indexNum == SPHERE)
-	{
-		for (int i = 0; i < _countof(indicesSphere) / 3; i++)
-		{//三角形一つごとに計算
-			//三角形のインデックスを取り出して、一時的な変数に入れる
-			unsigned short index0 = indicesSphere[i * 3 + 0];
-			unsigned short index1 = indicesSphere[i * 3 + 1];
-			unsigned short index2 = indicesSphere[i * 3 + 2];
-			//三角形を構成する頂点座標をベクトルに代入
-			XMVECTOR p0 = XMLoadFloat3(&verticesSphere[index0].pos);
-			XMVECTOR p1 = XMLoadFloat3(&verticesSphere[index1].pos);
-			XMVECTOR p2 = XMLoadFloat3(&verticesSphere[index2].pos);
-			//p0->p1ベクトル、p0->p2ベクトルを計算
-			XMVECTOR v1 = XMVectorSubtract(p1, p0);
-			XMVECTOR v2 = XMVectorSubtract(p2, p0);
-			//外積（垂直なベクトル）
-			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-			//求めた法線を頂点データに代入
-			XMStoreFloat3(&verticesSphere[index0].normal, normal);
-			XMStoreFloat3(&verticesSphere[index1].normal, normal);
-			XMStoreFloat3(&verticesSphere[index2].normal, normal);
-		}
-	}
-	else if(indexNum == TRIANGLE)
-	{
-		for (int i = 0; i < _countof(indices2) / 3; i++)
-		{//三角形一つごとに計算
-			//三角形のインデックスを取り出して、一時的な変数に入れる
-			unsigned short index0 = indices2[i * 3 + 0];
-			unsigned short index1 = indices2[i * 3 + 1];
-			unsigned short index2 = indices2[i * 3 + 2];
-			//三角形を構成する頂点座標をベクトルに代入
-			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-			//p0->p1ベクトル、p0->p2ベクトルを計算
-			XMVECTOR v1 = XMVectorSubtract(p1, p0);
-			XMVECTOR v2 = XMVectorSubtract(p2, p0);
-			//外積（垂直なベクトル）
-			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-			//求めた法線を頂点データに代入
-			XMStoreFloat3(&vertices[index0].normal, normal);
-			XMStoreFloat3(&vertices[index1].normal, normal);
-			XMStoreFloat3(&vertices[index2].normal, normal);
-		}
-	}
-	else if (indexNum == BOX)
-	{
-		for (int i = 0; i < _countof(indices) / 3; i++)
-		{//三角形一つごとに計算
-			//三角形のインデックスを取り出して、一時的な変数に入れる
-			unsigned short index0 = indices[i * 3 + 0];
-			unsigned short index1 = indices[i * 3 + 1];
-			unsigned short index2 = indices[i * 3 + 2];
-			//三角形を構成する頂点座標をベクトルに代入
-			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-			//p0->p1ベクトル、p0->p2ベクトルを計算
-			XMVECTOR v1 = XMVectorSubtract(p1, p0);
-			XMVECTOR v2 = XMVectorSubtract(p2, p0);
-			//外積（垂直なベクトル）
-			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-			//求めた法線を頂点データに代入
-			XMStoreFloat3(&vertices[index0].normal, normal);
-			XMStoreFloat3(&vertices[index1].normal, normal);
-			XMStoreFloat3(&vertices[index2].normal, normal);
-		}
-	}
-	else if (indexNum == CUBE)
-	{
-		for (int i = 0; i < _countof(indicesCube) / 3; i++)
-		{//三角形一つごとに計算
-			//三角形のインデックスを取り出して、一時的な変数に入れる
-			unsigned short index0 = indicesCube[i * 3 + 0];
-			unsigned short index1 = indicesCube[i * 3 + 1];
-			unsigned short index2 = indicesCube[i * 3 + 2];
-			//三角形を構成する頂点座標をベクトルに代入
-			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-			//p0->p1ベクトル、p0->p2ベクトルを計算
-			XMVECTOR v1 = XMVectorSubtract(p1, p0);
-			XMVECTOR v2 = XMVectorSubtract(p2, p0);
-			//外積（垂直なベクトル）
-			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-			//求めた法線を頂点データに代入
-			XMStoreFloat3(&vertices[index0].normal, normal);
-			XMStoreFloat3(&vertices[index1].normal, normal);
-			XMStoreFloat3(&vertices[index2].normal, normal);
-		}
-	}
-	else if (indexNum == CIRCLE)
-	{
-		for (int i = 0; i < _countof(indicesCircle) / 3; i++)
-		{//三角形一つごとに計算
-			//三角形のインデックスを取り出して、一時的な変数に入れる
-			unsigned short index0 = indicesCircle[i * 3 + 0];
-			unsigned short index1 = indicesCircle[i * 3 + 1];
-			unsigned short index2 = indicesCircle[i * 3 + 2];
-			//三角形を構成する頂点座標をベクトルに代入
-			XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-			XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-			XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-			//p0->p1ベクトル、p0->p2ベクトルを計算
-			XMVECTOR v1 = XMVectorSubtract(p1, p0);
-			XMVECTOR v2 = XMVectorSubtract(p2, p0);
-			//外積（垂直なベクトル）
-			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-			//求めた法線を頂点データに代入
-			XMStoreFloat3(&vertices[index0].normal, normal);
-			XMStoreFloat3(&vertices[index1].normal, normal);
-			XMStoreFloat3(&vertices[index2].normal, normal);
-		}
-	}
-	else if (indexNum == LINE)
-	{
-		//求めた法線を頂点データに代入
-		vertices[0].normal= XMFLOAT3(-1.0f / 3.0f, 1.0f / 3.0f, -1.0f / 3.0f);//仮の数字なので後で変更
-		vertices[1].normal= XMFLOAT3(-1.0f / 3.0f, 1.0f / 3.0f, -1.0f / 3.0f);//〃
-
-	}
+	
 
 	if (indexNum != SPHERE)
 	{
