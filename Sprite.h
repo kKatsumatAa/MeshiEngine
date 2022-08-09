@@ -53,12 +53,9 @@ public:
 	ComPtr<ID3D12Resource> vertBuff;
 	// 頂点バッファビューの作成
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
-	
-	//回転用
-	float rotation = 0.0f;
 
 public:
-	void CreateSprite(D3D12_RESOURCE_DESC resDesc);
+	void CreateSprite(D3D12_RESOURCE_DESC& resDesc, D3D12_HEAP_PROPERTIES& heapProp);
 	void SpriteCommonBeginDraw(SpriteSet* pipelineSet);
 	void SpriteDraw();
 };

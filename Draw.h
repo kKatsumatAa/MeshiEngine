@@ -52,8 +52,11 @@ private:
 	//D3D12_CPU_DESCRIPTOR_HANDLE srvHandle2;
 	int count2=0;
 	
-	//sprite用
-	Sprite sprite;
+	////sprite用
+	//頂点バッファの生成
+	ComPtr < ID3D12Resource> vertBuffS = nullptr;
+	// 頂点バッファビューの作成
+	D3D12_VERTEX_BUFFER_VIEW vbViewS{};
 	
 
 private:

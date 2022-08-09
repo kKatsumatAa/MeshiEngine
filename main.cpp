@@ -47,8 +47,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//背景
 	Draw backGround;
-	backGround.worldMat->scale = { 200.0f,100.0f,0 };
-	backGround.worldMat->trans = { 0,0,1000.0f };
+	backGround.worldMat->scale = { 180.0f,100.f,0 };
+	backGround.worldMat->trans = { 0,0,1000 };
 	backGround.worldMat->SetWorld();
 
 	//player
@@ -103,12 +103,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 // 4.描画コマンドここから　//-----------
-		backGround.DrawBox(backGround.worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[5]);//
+		backGround.DrawBox(backGround.worldMat, &viewMat, &projectionMat, { 1.0f, 1.0f, 1.0f, 1.0f }, textureHandle[5]);//
 
 		enemy->Draw(viewMat, projectionMat, textureHandle);
 		player->Draw(viewMat, projectionMat, textureHandle);//playerを後にしないと透過されない！
 
-
+		
 
 // 4.描画コマンドここまで //
 

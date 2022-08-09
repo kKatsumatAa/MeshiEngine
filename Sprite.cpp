@@ -30,30 +30,28 @@ void SpriteCommonCreate(SpriteSet* spriteSet)
 
 }
 
-void Sprite::CreateSprite(D3D12_RESOURCE_DESC resDesc)
+void Sprite::CreateSprite(D3D12_RESOURCE_DESC& resDesc, D3D12_HEAP_PROPERTIES& heapProp)
 {
 	HRESULT result = S_FALSE;
 
 	
 
 	UINT sizeVB;
-	D3D12_HEAP_PROPERTIES heapProp{};
+
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<UINT>(sizeof(vertices[0]) * (_countof(vertices)));
+	sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
 	ResourceProperties(resDesc, sizeVB);
-
+	resDesc.Format = DXGI_FORMAT_UNKNOWN;
 	//頂点バッファの生成
 	BuffProperties(heapProp, resDesc, vertBuff.GetAddressOf());
 
-	
-
 	// 頂点バッファビューの作成
 	// GPU仮想アドレス
-	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
+	vbView.BufferLocation = vertBuff.Get()->GetGPUVirtualAddress();
 	// 頂点バッファのサイズ
 	vbView.SizeInBytes = sizeVB;
 	// 頂点1つ分のデータサイズ

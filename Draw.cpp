@@ -87,7 +87,7 @@ static unsigned short indicesLine[2] =
 };
 
 
-
+//いろんな図形用
 Vertex vertices[24] = {
 	//手前
 	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
@@ -120,6 +120,9 @@ Vertex vertices[24] = {
 	{{5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
 	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
 };
+
+//スプライト用
+VertexSprite verticesS[4];
 
 //球体
 Vertex verticesSphere[2 + 34 * 36];
@@ -523,10 +526,31 @@ void DrawInitialize()
 Draw::Draw()
 {
 	//sprite用
-	sprite.CreateSprite(resDesc);
+	{
+		UINT sizeVB;
+		D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
+		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
+		sizeVB = static_cast<UINT>(sizeof(verticesS[0]) * 4.0);
+		//頂点バッファの設定		//ヒープ設定
+		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
+		ResourceProperties(resDesc, sizeVB);
+		resDesc.Format = DXGI_FORMAT_UNKNOWN;
+		//頂点バッファの生成
+		BuffProperties(heapProp, resDesc, vertBuffS.GetAddressOf());
+
+		// 頂点バッファビューの作成
+		// GPU仮想アドレス
+		vbViewS.BufferLocation = vertBuffS.Get()->GetGPUVirtualAddress();
+		// 頂点バッファのサイズ
+		vbViewS.SizeInBytes = sizeVB;
+		// 頂点1つ分のデータサイズ
+		vbViewS.StrideInBytes = sizeof(verticesS[0]);//kokogamatigatteita(vertices[0]ni!)
+	}
+
+	//行列
 	cbt.Initialize(Directx::GetInstance());
-	
+
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
 	sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
@@ -888,7 +912,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 	
 
-	if (indexNum != SPHERE)
+	if (indexNum != SPHERE && indexNum != SPRITE)
 	{
 		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 		Vertex* vertMap = nullptr;
@@ -936,18 +960,19 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		Directx::GetInstance().commandList->SetPipelineState(pipelineState[2].Get());
 	}
 	else if (indexNum == SPRITE)
-	{ }
+	{
+		Directx::GetInstance().commandList->SetPipelineState(pipelineSet.pipelineState.Get());
+	}
 	else
 	{
 		Directx::GetInstance().commandList->SetPipelineState(pipelineState[isWireFrame].Get());
 	}
 
-	/*if (indexNum == SPRITE)
+	if (indexNum == SPRITE)
 	{
-
+		Directx::GetInstance().commandList.Get()->SetGraphicsRootSignature(pipelineSet.rootSignature.Get());
 	}
-	else*/
-	if (indexNum != SPRITE)
+	else if (indexNum != SPRITE)
 	{
 		Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature.Get());
 	}
@@ -956,8 +981,21 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	{
 		if (indexNum == SPRITE)
 		{
-			sprite.SpriteCommonBeginDraw(&pipelineSet);
-			sprite.SpriteDraw();
+			// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
+			VertexSprite* vertMap = nullptr;
+			Directx::GetInstance().result = vertBuffS->Map(0, nullptr, (void**)&vertMap);
+			assert(SUCCEEDED(Directx::GetInstance().result));
+			// 全頂点に対して
+			for (int i = 0; i < 4; i++) {
+				vertMap[i] = verticesS[i]; // 座標をコピー
+			}
+			// 繋がりを解除
+			vertBuffS->Unmap(0, nullptr);
+
+			Directx::GetInstance().commandList.Get()->IASetVertexBuffers(0, 1, &vbViewS);
+
+
+			Directx::GetInstance().commandList.Get()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 		}
 		else
 		{
@@ -1004,7 +1042,6 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		
 	}
 
-	//int p = sizeof(indices);
 	// 描画コマンド
 	switch (indexNum)
 	{
@@ -1028,6 +1065,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		break;
 	case SPRITE:
 		Directx::GetInstance().commandList->DrawInstanced(4, 1, 0, 0); // 全ての頂点を使って描画
+		break;
 	}
 }
 
@@ -1078,22 +1116,23 @@ void Draw::DrawBoxSprite(const Vec3& leftTop, const float& scale,
 	//	sprite.vertices[3] = { {+widthHeight.x / 2.0f,-widthHeight.y / 2.0f,0.0f},{1.0f,0.0f} };//右上
 	//}
 	//else
-	{
-		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-		resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
+	
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+	D3D12_RESOURCE_DESC resDesc{};
+	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
 
-		sprite.vertices[0] = { {-(float)resDesc.Width * scale / 2.0f,+(float)resDesc.Height * scale / 2.0f,0.0f},{0.0f,1.0f} };//左下
-		sprite.vertices[1] = { {-(float)resDesc.Width * scale / 2.0f,-(float)resDesc.Height * scale / 2.0f,0.0f},{0.0f,0.0f} };//左上
-		sprite.vertices[2] = { {+(float)resDesc.Width * scale / 2.0f,+(float)resDesc.Height * scale / 2.0f,0.0f},{1.0f,1.0f} };//右下
-		sprite.vertices[3] = { {+(float)resDesc.Width * scale / 2.0f,-(float)resDesc.Height * scale / 2.0f,0.0f},{1.0f,0.0f} };//右上
-	}
+	verticesS[0] = { {-(float)(resDesc.Width * scale / 2.0f),+(float)(resDesc.Height * scale / 2.0f),0.0f},{0.0f,1.0f} };//左下
+	verticesS[1] = { {-(float)(resDesc.Width * scale / 2.0f),-(float)(resDesc.Height * scale / 2.0f),0.0f},{0.0f,0.0f} };//左上
+	verticesS[2] = { {+(float)(resDesc.Width * scale / 2.0f),+(float)(resDesc.Height * scale / 2.0f),0.0f},{1.0f,1.0f} };//右下
+	verticesS[3] = { {+(float)(resDesc.Width * scale / 2.0f),-(float)(resDesc.Height * scale / 2.0f),0.0f},{1.0f,0.0f} };//右上
+	
 	
 
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
 	
 	//ワールド行列
 	worldMat->rot.z = AngletoRadi(rotation);
-	worldMat->trans = { leftTop.x + resDesc.Width / 2.0f * scale,leftTop.y + resDesc.Height / 2.0f * scale,leftTop.z };
+	worldMat->trans = { leftTop.x + resDesc.Width / 2.0f * scale,leftTop.y + resDesc.Height / 2.0f * scale,0.0f };
 	worldMat->SetWorld();
 
 	view->matView = XMMatrixIdentity();
@@ -1110,6 +1149,7 @@ void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const 
 {
 	
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+	D3D12_RESOURCE_DESC resDesc{};
 	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
 
 	float texLeft = UVleftTop.x * +(float)resDesc.Width * scale;
@@ -1118,10 +1158,10 @@ void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const 
 	float texBottom = (UVleftTop.y + UVlength.y) * +(float)resDesc.Height * scale;
 
 	//切り抜いた後の画像の中心からの位置！！！！！！！！
-	sprite.vertices[0] = { {-UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-	sprite.vertices[1] = { {-UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-	sprite.vertices[2] = { {UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-	sprite.vertices[3] = { {UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+	verticesS[0] = { {-UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+	verticesS[1] = { {-UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
+	verticesS[2] = { {UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+	verticesS[3] = { {UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
 	
@@ -1317,7 +1357,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	if (indexNum == SPRITE)
 	{
 		pipelineDesc.RasterizerState = D3D12_RASTERIZER_DESC();
-		pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // 背面カリング
+		pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; 
 	}
 	else
 		pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // 背面カリング
