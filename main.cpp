@@ -103,7 +103,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 // 4.描画コマンドここから　//-----------
-		backGround.DrawBox(backGround.worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[5]);
+		backGround.DrawBox(backGround.worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[5]);//
 
 		enemy->Draw(viewMat, projectionMat, textureHandle);
 		player->Draw(viewMat, projectionMat, textureHandle);//playerを後にしないと透過されない！
