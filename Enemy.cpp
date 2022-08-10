@@ -13,9 +13,10 @@
 //	InitializeApproach();
 //}
 
-void Enemy::Initialize(Player* player, const Vec3& pos)
+void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& pos)
 {
 	player_ = player;
+	this->bulletManager = bulletManager;
 	this->worldMat.trans = pos;
 
 	state = new EnemyStateApproach;
@@ -23,6 +24,10 @@ void Enemy::Initialize(Player* player, const Vec3& pos)
 
 	//Ú‹ßƒtƒF[ƒY‰Šú‰»
 	InitializeApproach();
+
+	//Õ“Ë‘®«
+	SetCollisionAttribute(kCollisionAttributeEnemy);
+	SetCollisionMask(kCollisionAttributePlayer);
 }
 
 Enemy::~Enemy()
@@ -45,11 +50,11 @@ void Enemy::Update()
 	{
 		time->Update();
 	}
-	//’e
-	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
-	{
-		bullet->Update();
-	}
+	////’e
+	//for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
+	//{
+	//	bullet->Update();
+	//}
 
 
 	//timer‚ğÁ‚·
@@ -58,12 +63,12 @@ void Enemy::Update()
 			return time->IsFinished();
 		}
 	);
-	//’e‚ğÁ‚·
-	bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet)
-		{
-			return bullet->IsDead();
-		}
-	);
+	////’e‚ğÁ‚·
+	//bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet)
+	//	{
+	//		return bullet->IsDead();
+	//	}
+	//);
 
 	state->Update();
 
@@ -90,11 +95,8 @@ void Enemy::Fire()
 	newBullet->Initialize(worldMat.trans, velocity);
 	newBullet->SetPlayer(player_);
 	//‹…‚ğ“o˜^
-	bullets_.push_back(std::move(newBullet));
-
-	//Õ“Ë‘®«
-	SetCollisionAttribute(kCollisionAttributeEnemy);
-	SetCollisionMask(kCollisionAttributePlayer);
+	bulletManager->enemyBullets_.push_back(std::move(newBullet));
+	//¶¬‚Ì‚İEnemyƒNƒ‰ƒX‚Åˆ—
 }
 
 void Enemy::ChangeState(EnemyState* state)
@@ -123,10 +125,10 @@ void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHund
 {
 	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[3]);
 
-	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
+	/*for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
 	{
 		bullet->Draw(view, projection, texHundle[0]);
-	}
+	}*/
 }
 
 Vec3 Enemy::GetTrans()
@@ -157,7 +159,7 @@ Vec3 Enemy::GetWorldPos()
 
 void Enemy::OnCollision()
 {
-	//‚È‚É‚à‚µ‚È‚¢
+	isDead = true;
 }
 
 
@@ -179,6 +181,10 @@ void EnemyStateLeave::Update()
 {
 	//ˆÚ“®
 	enemy->MoveTrans(leaveSpeed);
+	Vec3 v = enemy->GetWorldPos();
+	if(v.x >= playerMoveRange.x + 50.0f || v.x <= -playerMoveRange.x - 50.0f||
+		v.y >= playerMoveRange.y + 50.0f || v.y <= -playerMoveRange.y - 50.0f)
+	enemy->SetIsDead(true);
 }
 
 //----------------------------------------------

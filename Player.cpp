@@ -1,6 +1,10 @@
 #include "Player.h"
 #include "Util.h"
 
+//laser
+Draw ray;
+WorldMat rayWorld;
+
 Player::Player()
 {
 	//Õ“Ë‘®«
@@ -77,7 +81,9 @@ void Player::Update()
 
 void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
-	
+	ray.DrawLine({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z }, { worldMat.trans.x,worldMat.trans.y,worldMat.trans.z + 500.0f },
+		&rayWorld, &view, &projection, { 1.0f,1.0f,0.0f,1.0f }, texHundle[0]);
+
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
 	{
 		bullet->Draw(view, projection, texHundle[0]);

@@ -1,7 +1,7 @@
 ﻿
 #include "Enemy.h"
 #include "CollisionManager.h"
-//#include <random>
+#include"EnemyManager.h"
 
 
 //windowsアプリでのエントリーポイント(main関数)
@@ -24,7 +24,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ProjectionMat projectionMat;
 
 	//画像用ハンドル
-	UINT64 textureHandle[6] = {0};
+	UINT64 textureHandle[30] = {0};
 
 	LoadGraph(L"Resources/white.png", textureHandle[0]);//ただの白（色変える用）
 	LoadGraph(L"Resources/texture.jpg", textureHandle[1]);
@@ -32,6 +32,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	LoadGraph(L"Resources/back.png", textureHandle[3]);//黄色春日
 	LoadGraph(L"Resources/scope.png", textureHandle[4]);//ロックオン
 	LoadGraph(L"Resources/back.jpg", textureHandle[5]);//背景
+	LoadGraph(L"Resources/ui.png", textureHandle[6]);//背景
 	
 
 
@@ -51,11 +52,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	backGround.worldMat->trans = { 0,0,1000 };
 	backGround.worldMat->SetWorld();
 
+	//UI
+	Draw UI;
+	float angle = 0.0f;
+
+	//BulletManager
+	BulletManager bulletManager;
+
 	//player
 	Player* player = new Player();
+
 	//enemy
-	Enemy* enemy = new Enemy();
-	enemy->Initialize(player, { playerMoveRange.x - 10.0f,playerMoveRange.y - 5.0f,100.0f });
+	EnemyManager enemyManager;
+	enemyManager.Initialize(player, &bulletManager);
+
 	//衝突
 	std::unique_ptr<CollisionManager> colliderManager = std::make_unique<CollisionManager>();
 
@@ -82,17 +92,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		backGround.worldMat->SetWorld();
 
 		player->Update();
-		enemy->Update();
+		enemyManager.Update();
+
+		bulletManager.UpdateEnemyBullet();
 
 		{//colliderManager
 
 			colliderManager->ClearList();
 			colliderManager->SetListCollider(player);
-			colliderManager->SetListCollider(enemy);
+			const std::list<std::unique_ptr<Enemy>>& enemies = enemyManager.GetEnemies();
 			//bulletはそれ自体がlistなので特別
 			const std::list<std::unique_ptr<PlayerBullet>>& playerBullets = player->GetBullets();
-			const std::list<std::unique_ptr<EnemyBullet>>& enemyBullets = enemy->GetBullets();
+			const std::list<std::unique_ptr<EnemyBullet>>& enemyBullets = bulletManager.GetEnemyBullets();
 
+			for (const std::unique_ptr<Enemy>& enemy : enemies)
+			{
+				colliderManager->SetListCollider(enemy.get());
+			}
 			for (const std::unique_ptr<PlayerBullet>& bullet : playerBullets)
 			{
 				colliderManager->SetListCollider(bullet.get());
@@ -105,11 +121,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			colliderManager->CheckAllCollisions();
 		}
 
+		angle += 2.0f;
+
 // 4.描画コマンドここから　//-----------
 		backGround.DrawBox(backGround.worldMat, &viewMat, &projectionMat, { 1.0f, 1.0f, 1.0f, 1.0f }, textureHandle[5]);//
 
-		enemy->Draw(viewMat, projectionMat, textureHandle);
+		enemyManager.Draw(viewMat, projectionMat, textureHandle);
+		bulletManager.DrawEnemyBullet(viewMat, projectionMat, textureHandle);
 		player->Draw(viewMat, projectionMat, textureHandle);//playerを後にしないと透過されない！
+
+		UI.DrawBoxSprite({ 50,150,0 }, 0.5f, { 1.0f,1.0f,1.0f,1.0f }, angle, textureHandle[6]);
 
 		
 
@@ -127,7 +148,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//SoundUnLoad(&soundData);
 	SoundUnLoad(&soundData2);
 	delete player;
-	delete enemy;
 
 	//ウィンドウクラスを登録解除
 	WindowsApp::GetInstance().UnregisterClassA();

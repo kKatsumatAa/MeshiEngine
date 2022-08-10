@@ -1095,10 +1095,15 @@ void Draw::DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection,/*X
 	this->view = view;
 	this->projection = projection;
 
-	//vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
-	//vertices[1] = { pos2,{},{0.0f,0.0f} };//左上
-	//vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
-	//vertices[3] = { pos4,{},{1.0f,0.0f} };//右上
+	vertices[0].normal = { 0.0f,0.0f,-1.0f };//左下
+	vertices[1].normal = { 0.0f,0.0f,-1.0f };//左上
+	vertices[2].normal = { 0.0f,0.0f,-1.0f };//右下
+	vertices[3].normal = { 0.0f,0.0f,-1.0f };//右上
+	
+	vertices[0].pos = {-5.0f,-5.0f,-5.0f};//左下
+	vertices[1].pos = {-5.0f,5.0f, -5.0f};//左上
+	vertices[2].pos = {5.0f,-5.0f, -5.0f};//右下
+	vertices[3].pos = {5.0f,5.0f,  -5.0f};//右上
 
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 	
@@ -1231,7 +1236,7 @@ void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	Update(CUBE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawLine(XMFLOAT3 pos1, XMFLOAT3 pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4& color,
+void Draw::DrawLine(XMFLOAT3 pos1, XMFLOAT3 pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection,const XMFLOAT4& color,
 	const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
@@ -1240,8 +1245,8 @@ void Draw::DrawLine(XMFLOAT3 pos1, XMFLOAT3 pos2, WorldMat* world, ViewMat* view
 
 	constMapMaterial->color = color;
 
-	vertices[0] = { {pos1},{},{0.0f,0.0f} };
-	vertices[1] = { {pos2},{},{0.0f,0.0f} };
+	vertices[0].pos = { {pos1} };
+	vertices[1].pos = { {pos2} };
 
 	Update(LINE, pipelineNum, textureHandle, cbt, false);
 }

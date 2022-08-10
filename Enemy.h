@@ -2,6 +2,7 @@
 #include "Assert.h"
 #include"TimedCall.h"
 #include"EnemyBullet.h"
+#include"BulletManager.h"
 
 
 //自機クラスの前方宣言(インクルードする代わりに)
@@ -32,13 +33,18 @@ private:
 	Draw draw;
 	//状態（行動）
 	EnemyState* state;
-	//弾
-	std::list< std::unique_ptr<EnemyBullet>> bullets_;
+	////弾
+	//std::list< std::unique_ptr<EnemyBullet>> bullets_;
 	static const int shotCool = 60;
 	std::list<std::unique_ptr<TimedCall>> timedCalls_;
 
 	//自キャラ
 	Player* player_ = nullptr;
+
+	//弾マネージャー
+	BulletManager* bulletManager = nullptr;
+
+	bool isDead = false;
 public:
 	//int shotTime = 0;
 
@@ -49,7 +55,7 @@ private:
 
 public:
 	/*Enemy(Player* player);*/
-	void Initialize(Player* player,const Vec3& pos);
+	void Initialize(Player* player, BulletManager* bulletManager,const Vec3& pos);
 	~Enemy();
 	void InitializeApproach();
 
@@ -72,14 +78,18 @@ public:
 
 	Vec3 GetWorldPos() override;
 
+	void SetIsDead(const bool isDead) { this->isDead = isDead; }
+
 	//衝突を検出したら呼び出す（コールバック関数）
 	void OnCollision()override;
 
 	//弾リストを取得(const参照)
-	const std::list<std::unique_ptr<EnemyBullet>>& GetBullets()
-	{
-		return bullets_;
-	}
+	//const std::list<std::unique_ptr<EnemyBullet>>& GetBullets()
+	//{
+	//	return bullets_;
+	//}
+
+	bool IsDead() { return isDead; }
 };
 
 class EnemyStateApproach :public EnemyState
