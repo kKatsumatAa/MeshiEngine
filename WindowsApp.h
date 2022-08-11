@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include <d3d12.h>
 
 
 
@@ -55,6 +56,8 @@ private:
 
 		//ウインドウを表示状態にする
 		ShowWindow(hwnd, SW_SHOW);
+
+		viewport = { 0, 0, window_width, window_height, 0.0f, 1.0f };
 	}
 
 
@@ -64,7 +67,8 @@ public:
 	const float window_height = 720;
 	WNDCLASSEX w;
 	HWND hwnd;
-
+	// ビューポート設定コマンド
+	D3D12_VIEWPORT viewport;
 
 
 	static WindowsApp& GetInstance()

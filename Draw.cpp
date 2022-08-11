@@ -178,8 +178,7 @@ SpriteSet pipelineSet;
 D3D12_ROOT_PARAMETER rootParams[3] = {};
 UINT sizeVB;
 
-// ビューポート設定コマンド
-D3D12_VIEWPORT viewport{};
+
 
 // パイプランステートの生成
 ComPtr < ID3D12PipelineState> pipelineState[3] = { nullptr };
@@ -940,10 +939,9 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		// 繋がりを解除
 		vertBuff2->Unmap(0, nullptr);
 	}
-	// ビューポート設定コマンド
-	viewport = { 0, 0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0f, 1.0f};
+	
 	// ビューポート設定コマンドを、コマンドリストに積む
-	Directx::GetInstance().commandList->RSSetViewports(1, &viewport);
+	Directx::GetInstance().commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
 
 	// シザー矩形
 	D3D12_RECT scissorRect{};

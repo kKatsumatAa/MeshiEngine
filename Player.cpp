@@ -4,6 +4,7 @@
 //laser
 Draw ray;
 WorldMat rayWorld;
+Draw d;
 
 Player::Player()
 {
@@ -101,6 +102,10 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		//ŽËü•\Ž¦
 		ray.DrawCube3D(&rayWorld, &view, &projection, { 1.0f,0.0f,0.0f,0.7f }, texHundle[0]);
 		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.7f }, texHundle[1]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
+		XMFLOAT2 pos = Vec3toXMFLOAT2(ray.worldMat->trans, view.matView, projection.matProjection);
+		//d.worldMat->trans = { pos.x,pos.y,0 };
+		//d.worldMat->SetWorld();
+		d.DrawBoxSprite({pos.x,pos.y,0},0.1f, { 1.0, 1.0, 1.0, 1.0 },0.0f, texHundle[4]);
 	}
 }
 
