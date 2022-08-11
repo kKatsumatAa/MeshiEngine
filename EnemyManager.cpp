@@ -1,6 +1,5 @@
 #include "EnemyManager.h"
-#include <random>
-
+using namespace std;
 
 void EnemyManager::Initialize(Player* player, BulletManager* bulletManager)
 {
@@ -8,19 +7,11 @@ void EnemyManager::Initialize(Player* player, BulletManager* bulletManager)
 	this->bulletManager = bulletManager;
 }
 
-void EnemyManager::EnemyGenerate()
+void EnemyManager::EnemyGenerate(const Vec3& pos)
 {
-	//乱数シード生成器
-	std::random_device seed_gen;
-	//メルセンヌツイスター
-	std::mt19937_64 engine(seed_gen());
-	//乱数範囲
-	std::uniform_real_distribution<float> posDistY(-playerMoveRange.y, playerMoveRange.y);
-	std::uniform_real_distribution<float> posDistX(-playerMoveRange.x, playerMoveRange.x);
-
 	//球を生成、初期化
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
-	enemy->Initialize(player, bulletManager,{ posDistX(engine) ,posDistY(engine) ,200.0f});
+	enemy->Initialize(player, bulletManager, { pos.x,pos.y,pos.z });
 	/*enemy->SetPlayer(player_);*/
 	//球を登録
 	enemies.push_back(std::move(enemy));
@@ -28,13 +19,8 @@ void EnemyManager::EnemyGenerate()
 
 void EnemyManager::Update()
 {
-	gTimer++;
-
-	if (gTimer >= 300.0f)
-	{
-		EnemyGenerate();
-		gTimer = 0;
-	}
+	//スクリプト発生処理
+	UpdateEnemyPopCommands();
 
 	//弾
 	for (std::unique_ptr<Enemy>& enemy : enemies)
@@ -55,5 +41,89 @@ void EnemyManager::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* 
 	for (std::unique_ptr<Enemy>& enemy : enemies)
 	{
 		enemy->Draw(view, projection, texHundle);
+	}
+}
+
+void EnemyManager::LoadEnemyPopData()
+{
+	//ファイル開く
+	std::ifstream file;
+	file.open("Resources/enemyPop.csv");
+	assert(file.is_open());
+
+	//ファイルの内容を文字列ストリームにコピー
+	enemyPopCommands << file.rdbuf();
+
+	//ファイルを閉じる
+	file.close();
+}
+
+void EnemyManager::UpdateEnemyPopCommands()
+{
+	//待機処理
+	if (isWait)
+	{
+		waitTimer--;
+		
+		if (waitTimer <= 0)
+		{
+			//待機終了
+			isWait = false;
+		}
+
+		return;//コマンドループを実行させない
+	}
+
+	//1行分の文字列を入れる変数
+	std::string line;
+
+	//コマンド実行ループ
+	while (getline(enemyPopCommands, line))
+	{
+		//1桁分の文字列をストリームに変換して解析しやすくする
+		std::istringstream line_stream(line);
+
+		std::string word;
+		//[,]区切りで行の先頭文字列を取得
+		getline(line_stream, word, ',');
+
+		//[//]から始まる行はコメント
+		if (word.find("//") == 0)
+		{
+			continue;
+		}
+
+		//POPコマンド
+		if (word.find("POP") == 0)
+		{
+			//x座標
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+			
+			//y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+			
+			//z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			EnemyGenerate({ x,y,z });
+		}
+		//WAITコマンド
+		else if(word.find("WAIT") == 0)
+		{
+			getline(line_stream, word, ',');
+
+			//待ち時間
+			int32_t waitTime = atoi(word.c_str());
+
+			//待機開始
+			isWait = true;
+			waitTimer = waitTime;
+
+			//コマンドループ抜ける
+			break;//(次の行(POP)を読み込まないように)
+		}
 	}
 }
