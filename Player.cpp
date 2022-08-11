@@ -19,7 +19,7 @@ void Player::Attack()
 		shotTime = 0;
 
 		//’e‚Ì‘¬“x
-		const float kBulletSpeed = 1.0f;
+		const float kBulletSpeed = 2.0f;
 		Vec3 velocity(0, 0, kBulletSpeed);
 
 		//‘¬“xƒxƒNƒgƒ‹‚ğ©‹@‚ÌŒü‚«‚É‡‚í‚¹‚Ä‰ñ“]‚³‚¹‚é
@@ -81,9 +81,6 @@ void Player::Update()
 
 void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
-	ray.DrawLine({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z }, { worldMat.trans.x,worldMat.trans.y,worldMat.trans.z + 500.0f },
-		&rayWorld, &view, &projection, { 1.0f,1.0f,0.0f,1.0f }, texHundle[0]);
-
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
 	{
 		bullet->Draw(view, projection, texHundle[0]);
@@ -91,9 +88,13 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 	if (status == TARGET)
 		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[4]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
 	else if (status == NORMAL)
+	{
+		//ray
+		ray.DrawLine({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z }, { worldMat.trans.x,worldMat.trans.y,worldMat.trans.z + 500.0f },
+			&rayWorld, &view, &projection, { 1.0f,1.0f,0.0f,1.0f }, texHundle[0]);
 		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.7f }, texHundle[1]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
+	}
 }
-
 
 Vec3 Player::GetWorldPos()
 {

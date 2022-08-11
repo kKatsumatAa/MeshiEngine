@@ -5,7 +5,7 @@
 class EnemyManager
 {
 private:
-	void EnemyGenerate(const Vec3& pos);
+	
 	Player* player;
 	BulletManager* bulletManager;
 
@@ -16,8 +16,16 @@ private:
 	bool isWait = false;
 	int  waitTimer = 0;
 
+
+	/// <summary>
+	/// 敵発生コマンドの更新
+	/// </summary>
+	void UpdateEnemyPopCommands();
+	void EnemyGenerate(const Vec3& pos);
+
 public:
 	std::list<std::unique_ptr<Enemy>> enemies;
+
 
 	void Initialize(Player* player, BulletManager* bulletManager);
 	void Update();
@@ -34,9 +42,6 @@ public:
 	/// </summary>
 	void LoadEnemyPopData();
 
-	/// <summary>
-	/// 敵発生コマンドの更新
-	/// </summary>
-	void UpdateEnemyPopCommands();
+	
 };
 
