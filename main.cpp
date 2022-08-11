@@ -124,6 +124,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		angle += 2.0f;
 
+		if (enemyManager.GetEnemies().size() == 0&& angle >= 4000)
+		{
+			SoundStopWave(soundData2);
+		}
+
 // 4.描画コマンドここから　//-----------
 		backGround.DrawBox(backGround.worldMat, &viewMat, &projectionMat, { 1.0f, 1.0f, 1.0f, 1.0f }, textureHandle[5]);//
 

@@ -10,6 +10,10 @@ Player::Player()
 	//Õ“Ë‘®«
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	SetCollisionMask(kCollisionAttributeEnemy);
+
+	rayWorld.scale = { 0.1f,0.1f,30.0f };
+	rayWorld.trans = { 0,0,150.0f };
+	rayWorld.SetWorld();
 }
 
 void Player::Attack()
@@ -77,6 +81,11 @@ void Player::Update()
 
 	//s—ñƒZƒbƒg
 	worldMat.SetWorld();
+
+
+	//Ëü—p
+	rayWorld.trans = { worldMat.trans.x,worldMat.trans.y,rayWorld.trans.z };
+	rayWorld.SetWorld();
 }
 
 void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
@@ -89,9 +98,8 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[4]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
 	else if (status == NORMAL)
 	{
-		//ray
-		ray.DrawLine({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z }, { worldMat.trans.x,worldMat.trans.y,worldMat.trans.z + 500.0f },
-			&rayWorld, &view, &projection, { 1.0f,1.0f,0.0f,1.0f }, texHundle[0]);
+		//Ëü•\¦
+		ray.DrawCube3D(&rayWorld, &view, &projection, { 1.0f,0.0f,0.0f,0.7f }, texHundle[0]);
 		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.7f }, texHundle[1]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
 	}
 }
