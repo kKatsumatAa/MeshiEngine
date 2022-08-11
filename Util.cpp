@@ -108,7 +108,7 @@ bool CollisionCircleCircle(const Vec3& pos1, const float& r1, const Vec3& pos2, 
 XMFLOAT2 Vec3toXMFLOAT2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 {
 	//view,projection,viewport行列を掛ける
-	XMMATRIX viewPort = {//viewPortの設定でここも変わるので注意！！！！！！！！！！！！！！！！！！！！！
+	XMMATRIX viewPort = {
 		WindowsApp::GetInstance().window_width / 2.0f,0,0,0,
 		0,-WindowsApp::GetInstance().window_height / 2.0f,0,0,
 		0,0,1,0,
