@@ -54,11 +54,17 @@ void Vec3xM4andDivisionW(Vec3& v, const M4& m4, const bool w)
 
 	v = { v4[1][0],v4[1][1] ,v4[1][2] };
 
-	float W = v.z;
+	if (w == true && v4[1][3] != 0)
+	{
+		v /= v4[1][3];
+	}
+	else if (v.z != 0)
+	{
+		float W = v.z;
 
-	v /= W;
+		v /= W;
+	}
 }
-
 
 
 //---------------------------------------------
@@ -105,7 +111,7 @@ bool CollisionCircleCircle(const Vec3& pos1, const float& r1, const Vec3& pos2, 
 	return false;
 }
 
-XMFLOAT2 Vec3toXMFLOAT2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
+Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 {
 	//view,projection,viewport行列を掛ける
 	XMMATRIX viewPort = {
@@ -122,14 +128,58 @@ XMFLOAT2 Vec3toXMFLOAT2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& pro
 
 	Vec3 vec3 = v;
 
-	M4 m4 = { 
+	/*M4 m4 = { 
 		(float)mVPVp.r[0].m128_f32[0],(float)mVPVp.r[0].m128_f32[1],(float)mVPVp.r[0].m128_f32[2],(float)mVPVp.r[0].m128_f32[3],
 		(float)mVPVp.r[1].m128_f32[0],(float)mVPVp.r[1].m128_f32[1],(float)mVPVp.r[1].m128_f32[2],(float)mVPVp.r[1].m128_f32[3],
 		(float)mVPVp.r[2].m128_f32[0],(float)mVPVp.r[2].m128_f32[1],(float)mVPVp.r[2].m128_f32[2],(float)mVPVp.r[2].m128_f32[3],
 		(float)mVPVp.r[3].m128_f32[0],(float)mVPVp.r[3].m128_f32[1],(float)mVPVp.r[3].m128_f32[2],(float)mVPVp.r[3].m128_f32[3] 
+	};*/
+	M4 m4;
+	m4.PutinXMMATRIX(mVPVp);
+
+	Vec3xM4andDivisionW(vec3, m4, 1);
+
+	return Vec2(vec3.x, vec3.y);
+}
+
+Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection, const float distance)
+{
+	XMMATRIX viewPort = {
+		WindowsApp::GetInstance().window_width / 2.0f,0,0,0,
+		0,-WindowsApp::GetInstance().window_height / 2.0f,0,0,
+		0,0,1,0,
+
+		WindowsApp::GetInstance().window_width / 2.0f + WindowsApp::GetInstance().viewport.TopLeftX
+		,WindowsApp::GetInstance().window_height / 2.0f + WindowsApp::GetInstance().viewport.TopLeftY,0,1
 	};
 
-	Vec3xM4andDivisionW(vec3, m4, 0);
+	//合成行列
+	XMMATRIX mVPVp = view * projection * viewPort;
+	M4 m4;
+	//m4.PutinXMMATRIX(mVPVp);
 
-	return XMFLOAT2(vec3.x, vec3.y);
+	//逆行列計算
+	XMMATRIX mInverseVPVp = XMMatrixInverse(nullptr, mVPVp);
+	//m4.SetInverseMatrix();
+	
+	m4.PutinXMMATRIX(mInverseVPVp);
+
+	//スクリーン座標
+	Vec3 posNear = { v.x,v.y,0 };
+	Vec3 posFar = { v.x,v.y,1 };
+
+	//スクリーン座標->ワールド座標
+	Vec3xM4andDivisionW(posNear, m4, 1);
+	Vec3xM4andDivisionW(posFar, m4, 1);
+
+	//nearからfarへの線分
+	Vec3 nearFarDirection = posFar - posNear;
+	nearFarDirection.Normalized();
+
+	//カメラから照準オブジェクトの距離
+	const float distanceTestObject = distance;//仮
+
+	Vec3 pos = posNear + nearFarDirection * distanceTestObject;
+
+	return Vec3(pos);
 }

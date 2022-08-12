@@ -309,6 +309,16 @@ M4& M4::operator*=(const M4& other)
 	return *this;
 }
 
+void M4::PutinXMMATRIX(const XMMATRIX& xM)
+{
+	*this = {
+		(float)xM.r[0].m128_f32[0],(float)xM.r[0].m128_f32[1],(float)xM.r[0].m128_f32[2],(float)xM.r[0].m128_f32[3],
+		(float)xM.r[1].m128_f32[0],(float)xM.r[1].m128_f32[1],(float)xM.r[1].m128_f32[2],(float)xM.r[1].m128_f32[3],
+		(float)xM.r[2].m128_f32[0],(float)xM.r[2].m128_f32[1],(float)xM.r[2].m128_f32[2],(float)xM.r[2].m128_f32[3],
+		(float)xM.r[3].m128_f32[0],(float)xM.r[3].m128_f32[1],(float)xM.r[3].m128_f32[2],(float)xM.r[3].m128_f32[3]
+	};
+}
+
 //void M4::Normalize()
 //{
 //}

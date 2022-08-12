@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vec3.h"
+#include "Vec2.h"
 #include "Vec4.h"
 #include "M4.h"
 #include"DirectX.h"
@@ -25,6 +26,14 @@ bool CollisionCircleCircle(const Vec3& pos1, const float& r1,
 	const Vec3& pos2, const float& r2);
 
 //ïœä∑
-XMFLOAT2 Vec3toXMFLOAT2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection);
-
+Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection);
+/// <summary>
+/// distanceÇÕÅAprojectionÇÃnearPosÇ©ÇÁÇÃà íu!!
+/// </summary>
+/// <param name="v"></param>
+/// <param name="view"></param>
+/// <param name="projection"></param>
+/// <param name="distance"></param>
+/// <returns></returns>
+Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection, const float distance);
 

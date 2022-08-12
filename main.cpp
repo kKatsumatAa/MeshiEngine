@@ -136,7 +136,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		bulletManager.DrawEnemyBullet(viewMat, projectionMat, textureHandle);
 		player->Draw(viewMat, projectionMat, textureHandle);//playerを後にしないと透過されない！
 
-		UI.DrawBoxSprite({ 50,150,0 }, 0.5f, { 1.0f,1.0f,1.0f,1.0f }, angle, textureHandle[6]);
+		UI.DrawBoxSprite({ 180,200,0 }, 0.5f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[6], {0.5f,0.5f},angle);
 
 		
 

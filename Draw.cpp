@@ -1108,8 +1108,8 @@ void Draw::DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection,/*X
 	Update(BOX, pipelineNum, textureHandle,cbt);
 }
 
-void Draw::DrawBoxSprite(const Vec3& leftTop, const float& scale,
-	XMFLOAT4 color ,float rotation, const UINT64 textureHandle, const int& pipelineNum)
+void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
+	XMFLOAT4 color , const UINT64 textureHandle, const Vec2& ancorUV, float rotation, const int& pipelineNum)
 {
 	//if (widthHeight.x != NULL && widthHeight.y != NULL)
 	//{
@@ -1124,10 +1124,10 @@ void Draw::DrawBoxSprite(const Vec3& leftTop, const float& scale,
 	D3D12_RESOURCE_DESC resDesc{};
 	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
 
-	verticesS[0] = { {-(float)(resDesc.Width * scale / 2.0f),+(float)(resDesc.Height * scale / 2.0f),0.0f},{0.0f,1.0f} };//左下
-	verticesS[1] = { {-(float)(resDesc.Width * scale / 2.0f),-(float)(resDesc.Height * scale / 2.0f),0.0f},{0.0f,0.0f} };//左上
-	verticesS[2] = { {+(float)(resDesc.Width * scale / 2.0f),+(float)(resDesc.Height * scale / 2.0f),0.0f},{1.0f,1.0f} };//右下
-	verticesS[3] = { {+(float)(resDesc.Width * scale / 2.0f),-(float)(resDesc.Height * scale / 2.0f),0.0f},{1.0f,0.0f} };//右上
+	verticesS[0] = { {-(float)(resDesc.Width * scale * ancorUV.x),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//左下
+	verticesS[1] = { {-(float)(resDesc.Width * scale * ancorUV.x),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
+	verticesS[2] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
+	verticesS[3] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
 	
 	
 
@@ -1135,7 +1135,7 @@ void Draw::DrawBoxSprite(const Vec3& leftTop, const float& scale,
 	
 	//ワールド行列
 	worldMat->rot.z = AngletoRadi(rotation);
-	worldMat->trans = { leftTop.x + resDesc.Width / 2.0f * scale,leftTop.y + resDesc.Height / 2.0f * scale,0.0f };
+	worldMat->trans = { pos.x /*+ resDesc.Width * ancorUV.x * scale*/,pos.y/* + resDesc.Height * ancorUV.y * scale*/,0.0f };
 	worldMat->SetWorld();
 
 	view->matView = XMMatrixIdentity();

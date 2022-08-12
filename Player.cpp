@@ -96,15 +96,26 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		bullet->Draw(view, projection, texHundle[0]);
 	}
 	if (status == TARGET)
-		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[4]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
+	{
+		//3d->2d
+		Vec2 pos = Vec3toVec2({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z /*- view.eye.z*/ }, view.matView, projection.matProjection);
+		d.DrawBoxSprite({ pos.x,pos.y,0 }, 0.2f, { 1.0, 1.0, 1.0, 1.0 }, texHundle[4], { 0.5f,0.5f });
+		//2d->3d
+		//Vec2 pos = Vec3toVec2({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z - view.eye.z }, view.matView, projection.matProjection);
+		//d.worldMat->trans = Vec2toVec3(pos, view.matView, projection.matProjection, worldMat.trans.z - view.eye.z * 2);
+		//////*2‚È‚Ì‚ÍA*1‚¾‚Ænear+-view.eye.z‚Åplayer‚Æ“¯‚¶ˆÊ’u‚É‚È‚Á‚¿‚á‚¤‚©‚ç
+		//d.worldMat->SetWorld();
+		//d.DrawBox(d.worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[4]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
+	}
 	else if (status == NORMAL)
 	{
 		//ŽËü•\Ž¦
 		ray.DrawCube3D(&rayWorld, &view, &projection, { 1.0f,1.0f,1.0f,0.7f }, texHundle[0]);
+		//player
 		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.7f }, texHundle[1]);//’e‚ÌŒã‚Å•`‰æ‚µ‚È‚¢‚Æ“§‰ß‚Å‚«‚È‚­‚Ä’e‚ªŒ©‚¦‚È‚¢I
 		//3d->2d
-		XMFLOAT2 pos = Vec3toXMFLOAT2(ray.worldMat->trans, view.matView, projection.matProjection);
-		d.DrawBoxSprite({pos.x,pos.y,0},0.1f, { 1.0, 1.0, 1.0, 1.0 },0.0f, texHundle[4]);
+		//Vec2 pos = Vec3toVec2(ray.worldMat->trans, view.matView, projection.matProjection);
+		//d.DrawBoxSprite({pos.x,pos.y,0},0.1f, { 1.0, 1.0, 1.0, 1.0 }, texHundle[4], 0.0f);
 	}
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include"Vec3.h"
+using namespace DirectX;
 
 class M4
 {
@@ -34,6 +35,8 @@ public:
 	/*M4& operator=(const float (*other)[4]);*/
 	M4 operator*(const M4& other);
 	M4& operator*=(const M4& other);
+
+	void PutinXMMATRIX(const XMMATRIX& xM);
 };
 
 Vec3 operator*(const Vec3& v, const M4& m2);

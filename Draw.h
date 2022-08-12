@@ -82,8 +82,8 @@ public:
 	void DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection, /*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,*/
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL },
 		const UINT64 textureHandle = NULL, const int& pipelineNum=0);
-	void DrawBoxSprite(const Vec3& leftTop, const float& scale, XMFLOAT4 color = {NULL,NULL,NULL,NULL}
-		,float rotation = 0.0f, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+	void DrawBoxSprite(const Vec3& pos, const float& scale, XMFLOAT4 color = {NULL,NULL,NULL,NULL}
+		, const UINT64 textureHandle = NULL,const Vec2& ancorUV={0,0}, float rotation = 0.0f, const int& pipelineNum = 0);
 	void DrawClippingBoxSprite(const Vec3& leftTop, const float& scale,const XMFLOAT2& UVleftTop,const XMFLOAT2& UVlength,
 		XMFLOAT4 color = {NULL,NULL,NULL,NULL}, float rotation = 0.0f, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	void DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
