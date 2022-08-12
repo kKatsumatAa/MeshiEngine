@@ -111,6 +111,33 @@ bool CollisionCircleCircle(const Vec3& pos1, const float& r1, const Vec3& pos2, 
 	return false;
 }
 
+bool CollisionRayCircle(const Vec3& sv,const Vec3& ev, const float r, const Vec3& pos, const float r2)
+{
+	//ƒŒƒC‚Æ‚Ì“–‚½‚è”»’è
+	Vec3 rayLength = ev - sv;
+	/*Vec3 ev = { worldTransform2_.translation_.x + rayLength.x,
+		worldTransform2_.translation_.y + rayLength.y,
+		worldTransform2_.translation_.z + rayLength.z / 2 };
+	Vec3 sv = { worldTransform2_.translation_.x,
+		worldTransform2_.translation_.y - rayLength.y,
+		worldTransform2_.translation_.z - rayLength.z / 2 };*/
+	rayLength.Normalized();
+	Vec3 objLength = pos - sv;
+	Vec3 dotPos = sv + rayLength * rayLength.Dot(objLength);
+	Vec3 dotVec = pos - dotPos;
+	float dotLength = dotVec.GetLength();
+	if (dotLength <= r + r2
+		/*&& (worldTransform_.translation_.z + worldTransform_.scale_.z > sv.z
+			&& worldTransform_.translation_.z - worldTransform_.scale_.z < ev.z)*/)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 {
 	//view,projection,viewports—ñ‚ðŠ|‚¯‚é

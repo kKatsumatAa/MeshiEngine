@@ -25,6 +25,8 @@ Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t);
 bool CollisionCircleCircle(const Vec3& pos1, const float& r1,
 	const Vec3& pos2, const float& r2);
 
+bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, const float r, const Vec3& pos, const float r2);
+
 //•ÏŠ·
 Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection);
 /// <summary>
