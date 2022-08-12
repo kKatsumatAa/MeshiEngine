@@ -161,6 +161,7 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="TimedCall.cpp" />
     <ClCompile Include="Util.cpp" />
+    <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vec3.cpp" />
     <ClCompile Include="Vec4.cpp" />
     <ClCompile Include="ViewMat.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TimedCall.h" />
     <ClInclude Include="Util.h" />
+    <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="Vec4.h" />
     <ClInclude Include="ViewMat.h" />
