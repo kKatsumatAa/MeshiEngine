@@ -70,8 +70,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//衝突
 	std::unique_ptr<CollisionManager> colliderManager = std::make_unique<CollisionManager>(&viewMat, &projectionMat);
 
-	Draw ray;
-
 	//描画初期化処理-------------
 
    //初期化処理　ここまで//
@@ -147,8 +145,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//}
 
 // 4.描画コマンドここから　//-----------
-		
-
 		backGround.DrawBox(backGround.worldMat, &viewMat, &projectionMat, { 1.0f, 1.0f, 1.0f, 1.0f }, textureHandle[5]);//
 
 		enemyManager.Draw(viewMat, projectionMat, textureHandle);
@@ -156,11 +152,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		player->Draw(viewMat, projectionMat, textureHandle);//playerを後にしないと透過されない！
 
 		UI.DrawBoxSprite({ 180,200,0 }, 0.5f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[6], {0.5f,0.5f},angle);
-
-		if (CollisionRayCircle({ 0,50,0 }, { 0,-50,0 }, 0, player->GetWorldPos(), 5.0f))
-			ray.DrawLine({ 0,50,0 }, { 0,-50,0 }, ray.worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[0]);
-		else
-			ray.DrawLine({ 0,50,0 }, { 0,-50,0 }, ray.worldMat, &viewMat, &projectionMat, { 1.0f,0.0f,0.0f,1.0f }, textureHandle[0]);
 
 // 4.描画コマンドここまで //
 
