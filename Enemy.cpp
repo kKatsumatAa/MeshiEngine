@@ -128,6 +128,8 @@ void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHund
 	{
 		Vec2 v = Vec3toVec2(worldMat.trans, view.matView, projection.matProjection);
 		lockOn.DrawBoxSprite({ v.x,v.y,0 }, 0.1f, { 1.0f,1.0f,1.0f,1.0f }, texHundle[4], { 0.5f,0.5f });
+		
+		if (KeyboardInput::GetInstance().keyReleaseTrigger(DIK_Z)) isDead = true;//‰¼
 	}
 	/*for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
 	{
