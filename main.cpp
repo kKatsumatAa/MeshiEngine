@@ -125,6 +125,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 			//rayの当たり判定(敵とプレイヤーのみ)
+			if(KeyboardInput::GetInstance().keyPush(DIK_Z))
 			{
 				colliderManager->ClearList();
 				colliderManager->SetListCollider(player);
@@ -145,12 +146,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//}
 
 // 4.描画コマンドここから　//-----------
+		//back
 		backGround.DrawBox(backGround.worldMat, &viewMat, &projectionMat, { 1.0f, 1.0f, 1.0f, 1.0f }, textureHandle[5]);//
-
-		enemyManager.Draw(viewMat, projectionMat, textureHandle);
+		//Enemy
 		bulletManager.DrawEnemyBullet(viewMat, projectionMat, textureHandle);
+		enemyManager.Draw(viewMat, projectionMat, textureHandle);
+		//player
 		player->Draw(viewMat, projectionMat, textureHandle);//playerを後にしないと透過されない！
-
+		//ui
 		UI.DrawBoxSprite({ 180,200,0 }, 0.5f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[6], {0.5f,0.5f},angle);
 
 // 4.描画コマンドここまで //

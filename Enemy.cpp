@@ -124,7 +124,11 @@ void Enemy::ShotResetTimer()
 void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
 	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[3]);
-
+	if (isLockOn)
+	{
+		Vec2 v = Vec3toVec2(worldMat.trans, view.matView, projection.matProjection);
+		lockOn.DrawBoxSprite({ v.x,v.y,0 }, 0.1f, { 1.0f,1.0f,1.0f,1.0f }, texHundle[4], { 0.5f,0.5f });
+	}
 	/*for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
 	{
 		bullet->Draw(view, projection, texHundle[0]);
@@ -162,6 +166,10 @@ void Enemy::OnCollision()
 	isDead = true;
 }
 
+void Enemy::OnCollision2()
+{
+	isLockOn = true;
+}
 
 //----------------------------------------------
 void EnemyStateApproach::Update()

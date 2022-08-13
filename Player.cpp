@@ -19,7 +19,7 @@ Player::Player()
 
 void Player::Attack()
 {
-	if (/*KeyboardInput::GetInstance().keyPush(DIK_SPACE) && */shotTime >= shotCool && status == NORMAL)
+	if (KeyboardInput::GetInstance().keyPush(DIK_Z) && shotTime >= shotCool && status == NORMAL)
 	{
 		shotTime = 0;
 
@@ -40,7 +40,7 @@ void Player::Attack()
 
 void Player::Update()
 {
-	if (KeyboardInput::GetInstance().keyTrigger(DIK_SPACE))
+	if (KeyboardInput::GetInstance().keyTrigger(DIK_X))
 	{
 		if (status == NORMAL) status = TARGET;
 		else if (status == TARGET) status = NORMAL;
@@ -129,4 +129,8 @@ Vec3 Player::GetWorldPos()
 void Player::OnCollision()
 {
 	//‚È‚É‚à‚µ‚È‚¢
+}
+
+void Player::OnCollision2()
+{
 }

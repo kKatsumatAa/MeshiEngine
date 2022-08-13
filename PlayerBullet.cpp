@@ -39,3 +39,7 @@ void PlayerBullet::OnCollision()
 {
 	isDead_ = true;
 }
+
+void PlayerBullet::OnCollision2()
+{
+}

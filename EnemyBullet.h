@@ -27,5 +27,6 @@ public:
 
 	//衝突を検出したら呼び出す（コールバック関数）
 	void OnCollision() override;
+	void OnCollision2()override;
 };
 

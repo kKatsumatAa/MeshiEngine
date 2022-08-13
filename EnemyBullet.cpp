@@ -79,3 +79,7 @@ void EnemyBullet::OnCollision()
 {
 	isDead_ = true;
 }
+
+void EnemyBullet::OnCollision2()
+{
+}

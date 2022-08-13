@@ -23,6 +23,7 @@ public:
 
 	//Õ“Ë‚ÉŒÄ‚Î‚ê‚é
 	virtual void OnCollision() = 0;
+	virtual void OnCollision2() = 0;
 	//worldÀ•W‚ğƒQƒbƒg
 	virtual Vec3 GetWorldPos() = 0;
 

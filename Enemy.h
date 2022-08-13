@@ -31,6 +31,7 @@ private:
 	WorldMat worldMat;
 	//モデル
 	Draw draw;
+	Draw lockOn;
 	//状態（行動）
 	EnemyState* state;
 	////弾
@@ -45,6 +46,8 @@ private:
 	BulletManager* bulletManager = nullptr;
 
 	bool isDead = false;
+	bool isLockOn = false;
+
 public:
 	//int shotTime = 0;
 
@@ -82,6 +85,10 @@ public:
 
 	//衝突を検出したら呼び出す（コールバック関数）
 	void OnCollision()override;
+	/// <summary>
+	/// playerにロックオンされたとき用
+	/// </summary>
+	void OnCollision2()override;
 
 	//弾リストを取得(const参照)
 	//const std::list<std::unique_ptr<EnemyBullet>>& GetBullets()
