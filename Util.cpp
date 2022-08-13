@@ -210,3 +210,37 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 
 	return Vec3(pos);
 }
+
+void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, const XMMATRIX& view, const XMMATRIX& projection)
+{
+	XMMATRIX viewPort = {
+		WindowsApp::GetInstance().window_width / 2.0f,0,0,0,
+		0,-WindowsApp::GetInstance().window_height / 2.0f,0,0,
+		0,0,1,0,
+
+		WindowsApp::GetInstance().window_width / 2.0f + WindowsApp::GetInstance().viewport.TopLeftX
+		,WindowsApp::GetInstance().window_height / 2.0f + WindowsApp::GetInstance().viewport.TopLeftY,0,1
+	};
+
+	//合成行列
+	XMMATRIX mVPVp = view * projection * viewPort;
+	M4 m4;
+	//m4.PutinXMMATRIX(mVPVp);
+
+	//逆行列計算
+	XMMATRIX mInverseVPVp = XMMatrixInverse(nullptr, mVPVp);
+	//m4.SetInverseMatrix();
+
+	m4.PutinXMMATRIX(mInverseVPVp);
+
+	//スクリーン座標
+	Vec3 posNear = { pos.x,pos.y,0 };
+	Vec3 posFar = { pos.x,pos.y,1 };
+
+	//スクリーン座標->ワールド座標
+	Vec3xM4andDivisionW(posNear, m4, 1);
+	Vec3xM4andDivisionW(posFar, m4, 1);
+
+	returnNearPos = posNear;
+	returnFarPos = posFar;
+}

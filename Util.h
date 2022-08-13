@@ -39,3 +39,13 @@ Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 /// <returns></returns>
 Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection, const float distance);
 
+/// <summary>
+/// スクリーン座標をprojectionのnear,farの位置に変換してreturn...Posに代入
+/// </summary>
+/// <param name="v"></param>
+/// <param name="returnNearPos"></param>
+/// <param name="returnFarPos"></param>
+/// <param name="view"></param>
+/// <param name="projection"></param>
+void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, const XMMATRIX& view, const XMMATRIX& projection);
+

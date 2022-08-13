@@ -68,7 +68,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	enemyManager.LoadEnemyPopData();
 
 	//衝突
-	std::unique_ptr<CollisionManager> colliderManager = std::make_unique<CollisionManager>();
+	std::unique_ptr<CollisionManager> colliderManager = std::make_unique<CollisionManager>(&viewMat, &projectionMat);
 
 	Draw ray;
 
@@ -124,8 +124,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			colliderManager->CheckAllCollisions();
-		}
 
+
+			//rayの当たり判定(敵とプレイヤーのみ)
+			{
+				colliderManager->ClearList();
+				colliderManager->SetListCollider(player);
+				const std::list<std::unique_ptr<Enemy>>& enemies = enemyManager.GetEnemies();
+				for (const std::unique_ptr<Enemy>& enemy : enemies)
+				{
+					colliderManager->SetListCollider(enemy.get());
+				}
+
+				colliderManager->CheckAllCollisions2();
+			}
+		}
 		angle += 2.0f;
 
 		//if (enemyManager.GetEnemies().size() == 0&& angle >= 4000)
