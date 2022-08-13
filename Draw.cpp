@@ -1245,6 +1245,8 @@ void Draw::DrawLine(XMFLOAT3 pos1, XMFLOAT3 pos2, WorldMat* world, ViewMat* view
 
 	vertices[0].pos = { {pos1} };
 	vertices[1].pos = { {pos2} };
+	vertices[0].normal = { 0,0,-1.0f };//normalの処理（ここ以外も）どうにかする！！！！！！！！！！！！！！！！！！！
+	vertices[1].normal = { 0,0,-1.0f };
 
 	Update(LINE, pipelineNum, textureHandle, cbt, false);
 }
