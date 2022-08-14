@@ -32,6 +32,13 @@ private:
 	//モデル
 	Draw draw;
 	Draw lockOn;
+	Draw lockOnLine;
+
+	float lockOnLength = 0;
+	Vec3 lockOnVec;
+	bool isLockOnDead = false;
+	float isLockOnScale = 0.8f;
+
 	//状態（行動）
 	EnemyState* state;
 	////弾

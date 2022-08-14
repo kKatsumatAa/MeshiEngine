@@ -43,7 +43,7 @@ void Player::Update()
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_X))
 	{
 		if (status == NORMAL) status = TARGET;
-		else if (status == TARGET) status = NORMAL;
+		else if (status == TARGET && !KeyboardInput::GetInstance().keyPush(DIK_X)) status = NORMAL;//‰¼
 	}
 
 	{

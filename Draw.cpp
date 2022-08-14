@@ -1234,7 +1234,7 @@ void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	Update(CUBE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawLine(XMFLOAT3 pos1, XMFLOAT3 pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection,const XMFLOAT4& color,
+void Draw::DrawLine(const Vec3& pos1, const Vec3& pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection,const XMFLOAT4& color,
 	const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
@@ -1243,8 +1243,8 @@ void Draw::DrawLine(XMFLOAT3 pos1, XMFLOAT3 pos2, WorldMat* world, ViewMat* view
 
 	constMapMaterial->color = color;
 
-	vertices[0].pos = { {pos1} };
-	vertices[1].pos = { {pos2} };
+	vertices[0].pos = { pos1.x,pos1.y,pos1.z };
+	vertices[1].pos = { pos2.x,pos2.y,pos2.z };
 	vertices[0].normal = { 0,0,-1.0f };//normalの処理（ここ以外も）どうにかする！！！！！！！！！！！！！！！！！！！
 	vertices[1].normal = { 0,0,-1.0f };
 

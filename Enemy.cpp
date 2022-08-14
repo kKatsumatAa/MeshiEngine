@@ -23,7 +23,7 @@ void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& 
 	state->SetEnemy(this);
 
 	//接近フェーズ初期化
-	InitializeApproach();
+	//InitializeApproach();
 
 	//衝突属性
 	SetCollisionAttribute(kCollisionAttributeEnemy);
@@ -45,6 +45,22 @@ void Enemy::InitializeApproach()
 
 void Enemy::Update()
 {
+	if (KeyboardInput::GetInstance().keyReleaseTrigger(DIK_Z) && isLockOn)
+	{
+		isLockOnDead = true;//仮
+	}
+	if (isLockOnDead)
+	{
+		lockOnLength -= 10;
+		if (lockOnLength <= 0) isDead = true;
+	}
+	else if(isLockOn)
+	{
+		lockOnVec = player_->GetWorldPos() - worldMat.trans;
+		lockOnLength = lockOnVec.GetLength();
+		lockOnVec.Normalized();
+	}
+
 	//timer
 	for (std::unique_ptr<TimedCall>& time : timedCalls_)
 	{
@@ -126,10 +142,14 @@ void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHund
 	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[3]);
 	if (isLockOn)
 	{
+		if (isLockOnScale >= 0.1f) isLockOnScale -= 0.06f;
+		//lockonの線
+		lockOnLine.DrawLine(worldMat.trans, worldMat.trans + lockOnVec * lockOnLength, lockOnLine.worldMat,
+			&view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[0]);
+
+		//lockonのマーク
 		Vec2 v = Vec3toVec2(worldMat.trans, view.matView, projection.matProjection);
-		lockOn.DrawBoxSprite({ v.x,v.y,0 }, 0.1f, { 1.0f,1.0f,1.0f,1.0f }, texHundle[4], { 0.5f,0.5f });
-		
-		if (KeyboardInput::GetInstance().keyReleaseTrigger(DIK_Z)) isDead = true;//仮
+		lockOn.DrawBoxSprite({ v.x,v.y,0 }, isLockOnScale, { 1.0f,0.0f,0.0f,1.0f }, texHundle[4], { 0.5f,0.5f });
 	}
 	/*for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
 	{
