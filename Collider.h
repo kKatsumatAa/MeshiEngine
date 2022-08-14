@@ -18,6 +18,7 @@ private:
 	uint32_t collisionMask_ = 0xffffffff;
 
 public:
+	//ロックオンモードかどうか(player用→当たり判定の時に使用)
 	bool isLockOn = false;
 
 

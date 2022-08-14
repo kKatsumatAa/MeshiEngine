@@ -142,14 +142,20 @@ void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHund
 	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[3]);
 	if (isLockOn)
 	{
-		if (isLockOnScale >= 0.1f) isLockOnScale -= 0.06f;
+		if (isLockOnScale >= 0.1f)
+		{
+			isLockOnScale -= 0.06f;
+			lockOnAngle += 5.0f;
+		}
+		else if(lockOnAngle != 0.0f) lockOnAngle = 0.0f;
+
 		//lockonÇÃê¸
 		lockOnLine.DrawLine(worldMat.trans, worldMat.trans + lockOnVec * lockOnLength, lockOnLine.worldMat,
 			&view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[0]);
 
 		//lockonÇÃÉ}Å[ÉN
 		Vec2 v = Vec3toVec2(worldMat.trans, view.matView, projection.matProjection);
-		lockOn.DrawBoxSprite({ v.x,v.y,0 }, isLockOnScale, { 1.0f,0.0f,0.0f,1.0f }, texHundle[4], { 0.5f,0.5f });
+		lockOn.DrawBoxSprite({ v.x,v.y,0 }, isLockOnScale, { 1.0f,0.0f,0.0f,1.0f }, texHundle[4], { 0.5f,0.5f }, lockOnAngle);
 	}
 	/*for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
 	{

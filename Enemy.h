@@ -37,7 +37,9 @@ private:
 	float lockOnLength = 0;
 	Vec3 lockOnVec;
 	bool isLockOnDead = false;
+
 	float isLockOnScale = 0.8f;
+	float lockOnAngle = 0.0f;
 
 	//ó‘Ôis“®j
 	EnemyState* state;
