@@ -18,6 +18,9 @@ private:
 	uint32_t collisionMask_ = 0xffffffff;
 
 public:
+	bool isLockOn = false;
+
+
 	float GetRadius();
 	void SetRadius(const float& radius);
 

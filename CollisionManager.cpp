@@ -25,28 +25,32 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 
 void CollisionManager::CheckCollisionPair2(Collider* colliderA, Collider* colliderB)
 {
-	if (!(colliderA->GetCollisionAttribute() == kCollisionAttributePlayer
-		&& colliderB->GetCollisionAttribute() == kCollisionAttributeEnemy))//Aがplayerで、Bが敵の時のみ処理
+	if (colliderA->isLockOn)//playerがロックオンモードの時のみ
 	{
-		return;//判定、衝突処理せず抜ける
-	}
 
-	Vec3 posA = colliderA->GetWorldPos();
-	Vec2 pos = Vec3toVec2(posA, view->matView, projection->matProjection);
+		if (!(colliderA->GetCollisionAttribute() == kCollisionAttributePlayer
+			&& colliderB->GetCollisionAttribute() == kCollisionAttributeEnemy))//Aがplayerで、Bが敵の時のみ処理
+		{
+			return;//判定、衝突処理せず抜ける
+		}
 
-	Vec3 nearFarPos[2];
+		Vec3 posA = colliderA->GetWorldPos();
+		Vec2 pos = Vec3toVec2(posA, view->matView, projection->matProjection);
 
-	Vec2toNearFarPos(pos, nearFarPos[0], nearFarPos[1], view->matView, projection->matProjection);
+		Vec3 nearFarPos[2];
 
-	Vec3 posB = colliderB->GetWorldPos();
+		Vec2toNearFarPos(pos, nearFarPos[0], nearFarPos[1], view->matView, projection->matProjection);
 
-	float rA = colliderA->GetRadius();
-	float rB = colliderB->GetRadius() * posB.GetLength() / 80;//仮
+		Vec3 posB = colliderB->GetWorldPos();
 
-	if (CollisionRayCircle(nearFarPos[0],nearFarPos[1], rA, posB, rB))
-	{
-		//colliderA->OnCollision();
-		colliderB->OnCollision2();//敵のみ処理
+		float rA = colliderA->GetRadius();
+		float rB = colliderB->GetRadius() * posB.GetLength() / 80;//仮
+
+		if (CollisionRayCircle(nearFarPos[0], nearFarPos[1], rA, posB, rB))
+		{
+			//colliderA->OnCollision();
+			colliderB->OnCollision2();//敵のみ処理
+		}
 	}
 }
 

@@ -42,10 +42,17 @@ void Player::Update()
 {
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_X))
 	{
-		if (status == NORMAL) status = TARGET;
-		else if (status == TARGET && !KeyboardInput::GetInstance().keyPush(DIK_X)) status = NORMAL;//âº
+		if (status == NORMAL)
+		{
+			status = TARGET;
+			isLockOn = true;
+		}
+		else if (status == TARGET && !KeyboardInput::GetInstance().keyPush(DIK_Z))
+		{
+			status = NORMAL;//âº
+			isLockOn = false;
+		}
 	}
-
 	{
 		//íeÇè¡Ç∑
 		bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet)

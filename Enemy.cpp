@@ -23,7 +23,7 @@ void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& 
 	state->SetEnemy(this);
 
 	//接近フェーズ初期化
-	//InitializeApproach();
+	InitializeApproach();
 
 	//衝突属性
 	SetCollisionAttribute(kCollisionAttributeEnemy);
