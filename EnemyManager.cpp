@@ -33,7 +33,7 @@ void EnemyManager::Update()
 	//’e‚ğÁ‚·
 	enemies.remove_if([](std::unique_ptr<Enemy>& enemy)
 		{
-			return enemy->IsDead();
+			return (enemy->IsDead() || enemy->IsAnnihilation());
 		}
 	);
 }

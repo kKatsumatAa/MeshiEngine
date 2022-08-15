@@ -219,9 +219,8 @@ void EnemyStateLeave::Update()
 	//ˆÚ“®
 	enemy->MoveTrans(leaveSpeed);
 	Vec3 v = enemy->GetWorldPos();
-	if(v.x >= playerMoveRange.x + 50.0f || v.x <= -playerMoveRange.x - 50.0f||
-		v.y >= playerMoveRange.y + 50.0f || v.y <= -playerMoveRange.y - 50.0f)
-	enemy->SetIsDead(true);
+	if (v.y >= playerMoveRange.y + 50.0f || v.y <= -playerMoveRange.y - 50.0f)
+		enemy->SetIsAnnihilation(true);
 }
 
 //----------------------------------------------

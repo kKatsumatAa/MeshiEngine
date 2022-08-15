@@ -41,6 +41,9 @@ private:
 	float isLockOnScale = 0.8f;
 	float lockOnAngle = 0.0f;
 
+	//自然消滅フラグ
+	bool isAnnihilation = false;
+
 	//状態（行動）
 	EnemyState* state;
 	////弾
@@ -90,6 +93,7 @@ public:
 	Vec3 GetWorldPos() override;
 
 	void SetIsDead(const bool isDead) { this->isDead = isDead; }
+	void SetIsAnnihilation(const bool isAnnihilation) { this->isAnnihilation = isAnnihilation; }
 
 	//衝突を検出したら呼び出す（コールバック関数）
 	void OnCollision()override;
@@ -105,6 +109,10 @@ public:
 	//}
 
 	bool IsDead() { return isDead; }
+	/// <summary>
+	/// 自然消滅したかどうかを返す
+	/// </summary>
+	bool IsAnnihilation() { return isAnnihilation; }
 };
 
 class EnemyStateApproach :public EnemyState
