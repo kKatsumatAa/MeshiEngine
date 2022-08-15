@@ -4,9 +4,13 @@
 //laser
 Draw ray;
 WorldMat rayWorld;
+//ロックオンのスプライト
 Draw d;
+//実験用
+Draw num;
 
-Player::Player()
+Player::Player(SoundData* shotSE):
+	shotSE(shotSE)
 {
 	//衝突属性
 	SetCollisionAttribute(kCollisionAttributePlayer);
@@ -21,6 +25,8 @@ void Player::Attack()
 {
 	if (KeyboardInput::GetInstance().keyPush(DIK_Z) && shotTime >= shotCool && status == NORMAL)
 	{
+		SoundPlayWave(Directx::GetInstance().xAudio2.Get(), shotSE[0], 1.0f);
+
 		shotTime = 0;
 
 		//弾の速度
@@ -121,14 +127,15 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		//player
 		draw.DrawBox(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.7f }, texHundle[1]);//弾の後で描画しないと透過できなくて弾が見えない！
 	}
+	num.DrawClippingBoxSprite({ 0,0,0 }, 1.0f, { 0,0 }, { 0.1f * isLockNum,1.0f }, { 1.0f,1.0f,1.0f,1.0f }, 0.0f, texHundle[0]);
 }
 
 Vec3 Player::GetWorldPos()
 {
 	Vec3 pos;
-	pos.x = worldMat.matWorld.m[3][0];
-	pos.y = worldMat.matWorld.m[3][1];
-	pos.z = worldMat.matWorld.m[3][2];
+	pos.x = (float)worldMat.matWorld.m[3][0];
+	pos.y = (float)worldMat.matWorld.m[3][1];
+	pos.z = (float)worldMat.matWorld.m[3][2];
 
 	return Vec3(pos);
 }
@@ -140,4 +147,5 @@ void Player::OnCollision()
 
 void Player::OnCollision2()
 {
+	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), shotSE[1], 1.0f);
 }

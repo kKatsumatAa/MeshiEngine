@@ -54,8 +54,7 @@ private:
 	//弾マネージャー
 	BulletManager* bulletManager = nullptr;
 
-	bool isDead = false;
-	bool isLockOn = false;
+	
 
 public:
 	//int shotTime = 0;
@@ -121,5 +120,5 @@ public:
 };
 
 
-const Vec3 approachSpeed = { 0,0,-0.2 };
-const Vec3 leaveSpeed = { -0.2,0.2,0 };
+const Vec3 approachSpeed = { 0,0,-0.2f };
+const Vec3 leaveSpeed = { 0.0f,0.8f,0 };

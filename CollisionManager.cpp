@@ -48,7 +48,7 @@ void CollisionManager::CheckCollisionPair2(Collider* colliderA, Collider* collid
 
 		if (CollisionRayCircle(nearFarPos[0], nearFarPos[1], rA, posB, rB))
 		{
-			//colliderA->OnCollision();
+			colliderA->OnCollision2();//‰¹–Â‚ç‚·—p
 			colliderB->OnCollision2();//“G‚Ì‚İˆ—
 		}
 	}

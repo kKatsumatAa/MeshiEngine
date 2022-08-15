@@ -20,7 +20,7 @@ void PlayerBullet::Update()
 
 	if (--deathTimer_ <= 0)
 	{
-		isDead_ = true;
+		isDead = true;
 	}
 }
 
@@ -37,7 +37,7 @@ Vec3 PlayerBullet::GetWorldPos()
 
 void PlayerBullet::OnCollision()
 {
-	isDead_ = true;
+	isDead = true;
 }
 
 void PlayerBullet::OnCollision2()

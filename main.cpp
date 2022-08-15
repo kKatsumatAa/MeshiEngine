@@ -40,11 +40,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	KeyboardInput::GetInstance();
 
 	//音データ
-	/*SoundData soundData = SoundLoadWave("Resources/SE.wav",false);
-	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData, 10.0f, true);*/
-	
-	SoundData soundData2 = SoundLoadWave("Resources/test2.wav",false);
-	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData2, 5.0f, true);
+	SoundData soundData[10];
+	soundData[0] = SoundLoadWave("Resources/SE.wav", true);
+	soundData[1] = SoundLoadWave("Resources/SE2.wav", true);
+	soundData[2] = SoundLoadWave("Resources/test2.wav", false);
+
+	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 5.0f, true);
 
 	//背景
 	Draw backGround;
@@ -54,13 +55,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//UI
 	Draw UI;
-	float angle = 0.0f;
 
 	//BulletManager
 	BulletManager bulletManager;
 
 	//player
-	Player* player = new Player();
+	Player* player = new Player(soundData);
 
 	//enemy
 	EnemyManager enemyManager;
@@ -125,20 +125,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 			//rayの当たり判定(敵とプレイヤーのみ)
-			if(KeyboardInput::GetInstance().keyPush(DIK_Z))
 			{
 				colliderManager->ClearList();
 				colliderManager->SetListCollider(player);
 				const std::list<std::unique_ptr<Enemy>>& enemies = enemyManager.GetEnemies();
+
+				int lockOnNum = 0;
 				for (const std::unique_ptr<Enemy>& enemy : enemies)
 				{
 					colliderManager->SetListCollider(enemy.get());
+					lockOnNum += enemy.get()->isLockOned;//ロックオンされてる数をカウント
 				}
+				player->isLockNum = lockOnNum;//代入
 
 				colliderManager->CheckAllCollisions2();
 			}
 		}
-		angle += 2.0f;
 
 		//if (enemyManager.GetEnemies().size() == 0&& angle >= 4000)
 		//{
@@ -167,8 +169,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//音データ解放
 	Directx::GetInstance().xAudio2.Reset();
-	//SoundUnLoad(&soundData);
-	SoundUnLoad(&soundData2);
+	SoundUnLoad(&soundData[0]);
+	SoundUnLoad(&soundData[1]);
+	SoundUnLoad(&soundData[2]);
 	delete player;
 
 	//ウィンドウクラスを登録解除

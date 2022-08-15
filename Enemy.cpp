@@ -45,7 +45,7 @@ void Enemy::InitializeApproach()
 
 void Enemy::Update()
 {
-	if (KeyboardInput::GetInstance().keyReleaseTrigger(DIK_Z) && isLockOn)
+	if (KeyboardInput::GetInstance().keyReleaseTrigger(DIK_Z) && isLockOned)
 	{
 		isLockOnDead = true;//仮
 	}
@@ -54,7 +54,7 @@ void Enemy::Update()
 		lockOnLength -= 10;
 		if (lockOnLength <= 0) isDead = true;
 	}
-	else if(isLockOn)
+	else if(isLockOned)
 	{
 		lockOnVec = player_->GetWorldPos() - worldMat.trans;
 		lockOnLength = lockOnVec.GetLength();
@@ -140,7 +140,8 @@ void Enemy::ShotResetTimer()
 void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
 	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[3]);
-	if (isLockOn)
+
+	if (isLockOned)
 	{
 		if (isLockOnScale >= 0.1f)
 		{
@@ -182,9 +183,9 @@ void Enemy::RemoveTimeCall()
 Vec3 Enemy::GetWorldPos()
 {
 	Vec3 pos;
-	pos.x = worldMat.matWorld.m[3][0];
-	pos.y = worldMat.matWorld.m[3][1];
-	pos.z = worldMat.matWorld.m[3][2];
+	pos.x = (float)worldMat.matWorld.m[3][0];
+	pos.y = (float)worldMat.matWorld.m[3][1];
+	pos.z = (float)worldMat.matWorld.m[3][2];
 
 	return Vec3(pos);
 }
@@ -196,7 +197,7 @@ void Enemy::OnCollision()
 
 void Enemy::OnCollision2()
 {
-	isLockOn = true;
+	isLockOned = true;
 }
 
 //----------------------------------------------
@@ -205,7 +206,7 @@ void EnemyStateApproach::Update()
 	//移動（ベクトルを加算）
 	enemy->MoveTrans(approachSpeed);
 	//既定の位置に達したら離脱
-	if (enemy->GetTrans().z < 10.0f)
+	if (enemy->GetTrans().z <= 11.0f)
 	{
 		enemy->RemoveTimeCall();
 		enemy->ChangeState(new EnemyStateLeave);

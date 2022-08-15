@@ -12,7 +12,7 @@ void Vec4xM4(Vec4& v, const M4& m4)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			v4[1][i] += v4[0][j] * m4.m[j][i];
+			v4[1][i] += v4[0][j] * (float)m4.m[j][i];
 		}
 	}
 
@@ -22,7 +22,7 @@ void Vec4xM4(Vec4& v, const M4& m4)
 void Vec3xM4(Vec3& v, const M4& m4, const bool w)
 {
 	float v4[2][4] = {
-		{ v.x,v.y,v.z,w },
+		{ v.x,v.y,v.z,(float)w },
 		{0,0,0,0}
 	};
 
@@ -30,7 +30,7 @@ void Vec3xM4(Vec3& v, const M4& m4, const bool w)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			v4[1][i] += v4[0][j] * m4.m[j][i];
+			v4[1][i] += v4[0][j] * (float)m4.m[j][i];
 		}
 	}
 
@@ -40,7 +40,7 @@ void Vec3xM4(Vec3& v, const M4& m4, const bool w)
 void Vec3xM4andDivisionW(Vec3& v, const M4& m4, const bool w)
 {
 	float v4[2][4] = {
-		{ v.x,v.y,v.z,w },
+		{ v.x,v.y,v.z,(float)w },
 		{0,0,0,0}
 	};
 
@@ -48,7 +48,7 @@ void Vec3xM4andDivisionW(Vec3& v, const M4& m4, const bool w)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			v4[1][i] += v4[0][j] * m4.m[j][i];
+			v4[1][i] += v4[0][j] * (float)m4.m[j][i];
 		}
 	}
 

@@ -1,5 +1,6 @@
 #pragma once
 #include"PlayerBullet.h"
+#include"Sound.h"
 
 enum
 {
@@ -18,9 +19,10 @@ private:
 	static const int shotCool = 10;
 	int shotTime = 0;
 	int status = NORMAL;
+	SoundData* shotSE = nullptr;
 
 public:
-	Player();
+	Player(SoundData* shotSE);
 	void Attack();
 	void Update();
 	void Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle);

@@ -61,7 +61,7 @@ void EnemyBullet::Update()
 
 	if (--deathTimer_ <= 0)
 	{
-		isDead_ = true;
+		isDead = true;
 	}
 }
 
@@ -77,7 +77,7 @@ Vec3 EnemyBullet::GetWorldPos()
 
 void EnemyBullet::OnCollision()
 {
-	isDead_ = true;
+	isDead = true;
 }
 
 void EnemyBullet::OnCollision2()
