@@ -44,6 +44,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	soundData[0] = SoundLoadWave("Resources/SE.wav", true);
 	soundData[1] = SoundLoadWave("Resources/SE2.wav", true);
 	soundData[2] = SoundLoadWave("Resources/test2.wav", false);
+	soundData[3] = SoundLoadWave("Resources/SE3.wav", true);
 
 	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 5.0f, true);
 
@@ -64,7 +65,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//enemy
 	EnemyManager enemyManager;
-	enemyManager.Initialize(player, &bulletManager);
+	enemyManager.Initialize(player, &bulletManager,soundData);
 	enemyManager.LoadEnemyPopData();
 
 	//衝突
@@ -172,6 +173,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	SoundUnLoad(&soundData[0]);
 	SoundUnLoad(&soundData[1]);
 	SoundUnLoad(&soundData[2]);
+	SoundUnLoad(&soundData[3]);
 	delete player;
 
 	//ウィンドウクラスを登録解除

@@ -29,7 +29,8 @@ void CollisionManager::CheckCollisionPair2(Collider* colliderA, Collider* collid
 	{
 
 		if (!(colliderA->GetCollisionAttribute() == kCollisionAttributePlayer
-			&& colliderB->GetCollisionAttribute() == kCollisionAttributeEnemy))//A‚ªplayer‚ÅAB‚ª“G‚Ì‚Ì‚İˆ—
+			&& colliderB->GetCollisionAttribute() == kCollisionAttributeEnemy)
+			|| colliderB->isLockOned == true)//A‚ªplayer‚ÅAB‚ª“G‚Ì‚Ì‚İˆ—
 		{
 			return;//”»’èAÕ“Ëˆ—‚¹‚¸”²‚¯‚é
 		}

@@ -46,19 +46,25 @@ void Player::Attack()
 
 void Player::Update()
 {
+	//playerクラス内での処理に使うフラグ
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_X))
 	{
 		if (status == NORMAL)
 		{
 			status = TARGET;
-			isLockOn = true;
+			//isLockOn = true;
 		}
 		else if (status == TARGET && !KeyboardInput::GetInstance().keyPush(DIK_Z))
 		{
 			status = NORMAL;//仮
-			isLockOn = false;
+			//isLockOn = false;
 		}
 	}
+
+	//当たり判定の時に使うロックオン状態かどうかのフラグ処理
+	if (status == TARGET && KeyboardInput::GetInstance().keyPush(DIK_Z)) isLockOn = true;
+	else isLockOn = false;
+
 	{
 		//弾を消す
 		bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet)
@@ -147,5 +153,5 @@ void Player::OnCollision()
 
 void Player::OnCollision2()
 {
-	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), shotSE[1], 1.0f);
+	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), shotSE[1], 5.0f);
 }

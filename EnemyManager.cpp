@@ -1,8 +1,9 @@
 #include "EnemyManager.h"
 using namespace std;
 
-void EnemyManager::Initialize(Player* player, BulletManager* bulletManager)
+void EnemyManager::Initialize(Player* player, BulletManager* bulletManager, SoundData* soundData)
 {
+	this->soundData = soundData;
 	this->player = player;
 	this->bulletManager = bulletManager;
 }
@@ -26,8 +27,9 @@ void EnemyManager::Update()
 	for (std::unique_ptr<Enemy>& enemy : enemies)
 	{
 		enemy->Update();
+		if(enemy->IsDead()) SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[3], 5.0f);
 	}
-
+	
 	//’e‚ğÁ‚·
 	enemies.remove_if([](std::unique_ptr<Enemy>& enemy)
 		{

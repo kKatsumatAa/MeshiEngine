@@ -5,7 +5,7 @@
 class EnemyManager
 {
 private:
-	
+	SoundData* soundData;
 	Player* player;
 	BulletManager* bulletManager;
 
@@ -27,7 +27,7 @@ public:
 	std::list<std::unique_ptr<Enemy>> enemies;
 
 
-	void Initialize(Player* player, BulletManager* bulletManager);
+	void Initialize(Player* player, BulletManager* bulletManager,SoundData* soundData);
 	void Update();
 	void Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle);
 
