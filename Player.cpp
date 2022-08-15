@@ -25,7 +25,7 @@ void Player::Attack()
 {
 	if (KeyboardInput::GetInstance().keyPush(DIK_Z) && shotTime >= shotCool && status == NORMAL)
 	{
-		SoundPlayWave(Directx::GetInstance().xAudio2.Get(), shotSE[0], 1.0f);
+		SoundPlayWave(Directx::GetInstance().xAudio2.Get(), shotSE[0], 0.5f);
 
 		shotTime = 0;
 
@@ -153,5 +153,5 @@ void Player::OnCollision()
 
 void Player::OnCollision2()
 {
-	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), shotSE[1], 5.0f);
+	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), shotSE[1], 2.5f);
 }

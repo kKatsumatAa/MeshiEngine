@@ -51,7 +51,7 @@ void Enemy::Update()
 	}
 	if (isLockOnDead)
 	{
-		lockOnLength -= 10;
+		lockOnLength -= 5;
 		if (lockOnLength <= 0) isDead = true;
 	}
 	else if(isLockOned)

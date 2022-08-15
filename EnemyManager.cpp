@@ -27,7 +27,7 @@ void EnemyManager::Update()
 	for (std::unique_ptr<Enemy>& enemy : enemies)
 	{
 		enemy->Update();
-		if(enemy->IsDead()) SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[3], 10.0f);
+		if(enemy->IsDead()) SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[3], 5.0f);
 	}
 	
 	//’e‚ğÁ‚·

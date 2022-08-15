@@ -46,7 +46,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	soundData[2] = SoundLoadWave("Resources/test2.wav", false);
 	soundData[3] = SoundLoadWave("Resources/SE3.wav", false);
 
-	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 5.0f, true);
+	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 2.0f, true);
 
 	//背景
 	Draw backGround;
