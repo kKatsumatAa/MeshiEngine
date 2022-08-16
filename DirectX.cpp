@@ -7,7 +7,7 @@ Directx::Directx()
 	ComPtr < ID3D12Debug1> debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(debugController.GetAddressOf())))) {
 		debugController->EnableDebugLayer();
-		//debugController->SetEnableGPUBasedValidation(true);
+		//debugController->SetEnableGPUBasedValidation(true);//重いので描画が変になった時のみ
 	}
 #endif
 
@@ -63,7 +63,7 @@ Directx::Directx()
 	if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(infoQueue.GetAddressOf()))))
 	{
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);//やばいエラー時止まる
-		//infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);//エラー時止まる
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);//エラー時止まる
 		infoQueue->Release();
 	}
 
@@ -168,7 +168,7 @@ Directx::Directx()
 		&depthHeapProp,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&depthResourceDesc,//リソース設定
-		D3D12_RESOURCE_STATE_GENERIC_READ,
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,//<-ここが、_GENERIC_READになってた！！
 		&depthClearValue,
 		IID_PPV_ARGS(&depthBuff));
 	assert(SUCCEEDED(result));
