@@ -38,7 +38,9 @@ private:
 	Vec3 lockOnVec;
 	bool isLockOnDead = false;
 
-	float isLockOnScale = 0.8f;
+	const float lockOnScaleTmp = 0.8f;
+	float isLockOnScale = lockOnScaleTmp;
+
 	float lockOnAngle = 0.0f;
 
 	//自然消滅フラグ
@@ -61,6 +63,7 @@ private:
 
 public:
 	//int shotTime = 0;
+	
 
 
 	//関数
@@ -94,6 +97,8 @@ public:
 
 	void SetIsDead(const bool isDead) { this->isDead = isDead; }
 	void SetIsAnnihilation(const bool isAnnihilation) { this->isAnnihilation = isAnnihilation; }
+
+	void LockOnedReset();
 
 	//衝突を検出したら呼び出す（コールバック関数）
 	void OnCollision()override;

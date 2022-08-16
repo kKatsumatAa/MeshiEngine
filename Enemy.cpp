@@ -200,6 +200,14 @@ void Enemy::OnCollision2()
 	isLockOned = true;
 }
 
+void Enemy::LockOnedReset()
+{
+	isLockOned = false;
+	isLockOnScale = lockOnScaleTmp;
+	lockOnVec = { 0.0f,0.0f,0.0f };
+	lockOnLength = 0.0f;
+}
+
 //----------------------------------------------
 void EnemyStateApproach::Update()
 {

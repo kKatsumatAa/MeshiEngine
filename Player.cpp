@@ -54,7 +54,7 @@ void Player::Update()
 			status = TARGET;
 			//isLockOn = true;
 		}
-		else if (status == TARGET && !KeyboardInput::GetInstance().keyPush(DIK_Z))
+		else if (status == TARGET)
 		{
 			status = NORMAL;//‰¼
 			//isLockOn = false;

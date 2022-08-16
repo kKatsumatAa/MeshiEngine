@@ -135,6 +135,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				for (const std::unique_ptr<Enemy>& enemy : enemies)
 				{
 					colliderManager->SetListCollider(enemy.get());
+					//playerがロックオンモードじゃなければロックオン状態を解除
+					if (player->GetPlayerStatus() != TARGET && enemy->isLockOned)
+					{
+						enemy->LockOnedReset();
+					}
 					lockOnNum += enemy.get()->isLockOned;//ロックオンされてる数をカウント
 				}
 				player->isLockNum = lockOnNum;//代入
