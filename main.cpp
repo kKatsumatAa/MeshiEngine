@@ -2,6 +2,7 @@
 #include "Enemy.h"
 #include "CollisionManager.h"
 #include"EnemyManager.h"
+#include"Background.h"
 
 
 //windowsアプリでのエントリーポイント(main関数)
@@ -32,7 +33,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	LoadGraph(L"Resources/back.png", textureHandle[3]);//黄色春日
 	LoadGraph(L"Resources/scope.png", textureHandle[4]);//ロックオン
 	LoadGraph(L"Resources/back.jpg", textureHandle[5]);//背景
-	LoadGraph(L"Resources/ui.png", textureHandle[6]);//背景
+	LoadGraph(L"Resources/ui.png", textureHandle[6]);//ui
 	
 
 
@@ -71,6 +72,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//衝突
 	std::unique_ptr<CollisionManager> colliderManager = std::make_unique<CollisionManager>(&viewMat, &projectionMat);
 
+	//背景
+	Background back;
+
+
 	//描画初期化処理-------------
 
    //初期化処理　ここまで//
@@ -98,6 +103,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		bulletManager.UpdateEnemyBullet();
 
+		back.Update();
 		
 
 		{//colliderManager
@@ -155,7 +161,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 // 4.描画コマンドここから　//-----------
 		//back
-		backGround.DrawBox(backGround.worldMat, &viewMat, &projectionMat, { 1.0f, 1.0f, 1.0f, 1.0f }, textureHandle[5]);//
+		backGround.DrawBox(backGround.worldMat, &viewMat, &projectionMat, { 0.0f, 0.0f, 0.0f, 1.0f }, textureHandle[5]);//
+		//背景
+		back.Draw(viewMat, projectionMat, textureHandle);
 		//Enemy
 		bulletManager.DrawEnemyBullet(viewMat, projectionMat, textureHandle);
 		enemyManager.Draw(viewMat, projectionMat, textureHandle);
@@ -163,6 +171,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		player->Draw(viewMat, projectionMat, textureHandle);//playerを後にしないと透過されない！
 		//ui
 		//UI.DrawBoxSprite({ 180,200,0 }, 0.5f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[6], {0.5f,0.5f},angle);
+		
 
 // 4.描画コマンドここまで //
 

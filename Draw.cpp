@@ -448,6 +448,7 @@ void DrawInitialize()
 
 	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 1)->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob);
 
+	//line
 	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 2)->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob, LINE);
 
 	//sprite—p
@@ -963,7 +964,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	}
 	else
 	{
-		Directx::GetInstance().commandList->SetPipelineState(pipelineState[isWireFrame].Get());
+		Directx::GetInstance().commandList->SetPipelineState(pipelineState[pipelineNum].Get());
 	}
 
 	if (indexNum == SPRITE)
