@@ -20,7 +20,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	MSG msg{};	//メッセージ
 	
-
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
 
@@ -34,8 +33,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	LoadGraph(L"Resources/scope.png", textureHandle[4]);//ロックオン
 	LoadGraph(L"Resources/back.jpg", textureHandle[5]);//背景
 	LoadGraph(L"Resources/ui.png", textureHandle[6]);//ui
-	
-
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
@@ -51,8 +48,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//背景
 	Draw backGround;
-	backGround.worldMat->scale = { 180.0f,100.f,0 };
-	backGround.worldMat->trans = { 0,0,1000 };
+	backGround.worldMat->scale = { 400.0f,300.f,0 };
+	backGround.worldMat->trans = { 0,0,2000 };
 	backGround.worldMat->SetWorld();
 
 	//UI
@@ -95,8 +92,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Directx::GetInstance().DrawUpdate();
 
 //更新処理
-		backGround.worldMat->scale += {0.03f, 0.03f, 0};
-		backGround.worldMat->SetWorld();
 
 		player->Update();
 		enemyManager.Update();
@@ -105,8 +100,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		back.Update();
 		
-
-		{//colliderManager
+		//colliderManager
+		{
 
 			colliderManager->ClearList();
 			colliderManager->SetListCollider(player);
