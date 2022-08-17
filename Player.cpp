@@ -137,7 +137,7 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		{
 			//3d->2d
 			Vec2 pos = Vec3toVec2({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z /*- view.eye.z*/ }, view.matView, projection.matProjection);
-			d.DrawBoxSprite({ pos.x,pos.y,0 }, 0.2f, { 1.0, 1.0, 1.0, 1.0 }, texHundle[4], { 0.5f,0.5f });
+			d.DrawBoxSprite({ pos.x,pos.y,0 }, 0.2f, { 0.6f, 0.6f, 0.6f, 0.7f }, texHundle[4], { 0.5f,0.5f });
 			//2d->3d
 			//Vec2 pos = Vec3toVec2({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z - view.eye.z }, view.matView, projection.matProjection);
 			//d.worldMat->trans = Vec2toVec3(pos, view.matView, projection.matProjection, worldMat.trans.z - view.eye.z * 2);

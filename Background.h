@@ -4,18 +4,18 @@
 class Background
 {
 private:
-	static const int backNum = 5;
+	static const int backNum = 7;
 
 	Draw back[backNum * 4];
 	const Vec3 pos[4] =
 	{
-		{-100.0f,50.0f,0},//ç∂è„
-		{-100.0f,-50.0f,0},//ç∂â∫
-		{100.0f,-50.0f,0},//â∫
-		{100.0f,50.0f,0},//è„
+		{-128.0f,72.0f,0},//ç∂è„
+		{-128.0f,-72.0f,0},//ç∂â∫
+		{128.0f,-72.0f,0},//â∫
+		{128.0f,72.0f,0},//è„
 	};
 
-	const float distance = 200.0f;
+	const float distance = 300.0f;
 
 public:
 	Background();

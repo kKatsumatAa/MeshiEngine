@@ -141,7 +141,7 @@ void Enemy::ShotResetTimer()
 
 void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
-	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,0.0f,0.0f,1.0f }, texHundle[0]);
+	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,0.0f,0.0f,0.7f }, texHundle[0]);
 
 	if (isLockOned)
 	{

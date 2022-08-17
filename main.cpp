@@ -30,7 +30,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	LoadGraph(L"Resources/texture.jpg", textureHandle[1]);
 	LoadGraph(L"Resources/texture2.jpg", textureHandle[2]);
 	LoadGraph(L"Resources/back.png", textureHandle[3]);//黄色春日
-	LoadGraph(L"Resources/scope.png", textureHandle[4]);//ロックオン
+	LoadGraph(L"Resources/scope2.png", textureHandle[4]);//ロックオン
 	LoadGraph(L"Resources/back.jpg", textureHandle[5]);//背景
 	LoadGraph(L"Resources/lockOn.png", textureHandle[6]);//敵のロックオン
 
@@ -45,12 +45,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	soundData[3] = SoundLoadWave("Resources/SE3.wav", false);
 
 	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 0.5f, true);
-
-	//背景
-	Draw backGround;
-	backGround.worldMat->scale = { 400.0f,300.f,0 };
-	backGround.worldMat->trans = { 0,0,2000 };
-	backGround.worldMat->SetWorld();
 
 	//UI
 	Draw UI;
@@ -89,7 +83,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//キーボード情報の取得開始
 		KeyboardInput::GetInstance().Update();
 
-		Directx::GetInstance().DrawUpdate();
+		Directx::GetInstance().DrawUpdate({ 0.0f,0.0f,0.0f,0.0f });
 
 //更新処理
 
@@ -155,8 +149,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//}
 
 // 4.描画コマンドここから　//-----------
-		//back
-		backGround.DrawBox(backGround.worldMat, &viewMat, &projectionMat, { 0.0f, 0.0f, 0.0f, 1.0f }, textureHandle[5]);//
 		//背景
 		back.Draw(viewMat, projectionMat, textureHandle);
 		//Enemy
