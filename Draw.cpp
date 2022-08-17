@@ -1076,9 +1076,9 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 	this->view = view;
 	this->projection = projection;
 
-	vertices[0] = { pos1,{},{0.0f,1.0f} };//左下
-	vertices[1] = { pos2,{},{0.5f,0.0f} };//上
-	vertices[2] = { pos3,{},{1.0f,1.0f} };//右下
+	vertices[0] = { pos1,{vertices[0].normal},{0.0f,1.0f} };//左下
+	vertices[1] = { pos2,{vertices[1].normal},{0.5f,0.0f} };//上
+	vertices[2] = { pos3,{vertices[2].normal},{1.0f,1.0f} };//右下
 	vertices[3] = vertices[1];//右上
 
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
@@ -1200,35 +1200,35 @@ void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	this->projection = projection;
 
 	//手前
-	vertices[0] = { {-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//左下
-	vertices[1] = { {-5.0f,5.0f, -5.0f},{},{0.0f,0.0f} };//左上
-	vertices[2] = { {5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//右下
-	vertices[3] = { {5.0f,5.0f,  -5.0f},{},{1.0f,0.0f} };//右上
+	vertices[0] = { {-5.0f,-5.0f,-5.0f},{vertices[0].normal},{0.0f,1.0f} };//左下
+	vertices[1] = { {-5.0f,5.0f, -5.0f},{vertices[1].normal},{0.0f,0.0f} };//左上
+	vertices[2] = { {5.0f,-5.0f, -5.0f},{vertices[2].normal},{1.0f,1.0f} };//右下
+	vertices[3] = { {5.0f,5.0f,  -5.0f},{vertices[3].normal},{1.0f,0.0f} };//右上
 
-	vertices[4] = { {-5.0f,-5.0f,5.0f},{},{0.0f,1.0f} };//左下
-	vertices[5] = { {-5.0f,5.0f, 5.0f},{},{0.0f,0.0f} };//左上
-	vertices[6] = { {5.0f,-5.0f, 5.0f},{},{1.0f,1.0f} };//右下
-	vertices[7] = { {5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//右上
+	vertices[4] = { {-5.0f,-5.0f,5.0f},{vertices[4].normal},{0.0f,1.0f} };//左下
+	vertices[5] = { {-5.0f,5.0f, 5.0f},{vertices[5].normal},{0.0f,0.0f} };//左上
+	vertices[6] = { {5.0f,-5.0f, 5.0f},{vertices[6].normal},{1.0f,1.0f} };//右下
+	vertices[7] = { {5.0f,5.0f,  5.0f},{vertices[7].normal},{1.0f,0.0f} };//右上
 		//上
-	vertices[8] = { {5.0f,5.0f,-5.0f},{},{0.0f,1.0f} };//左下
-	vertices[9] = { {5.0f,5.0f, 5.0f},{},{0.0f,0.0f} };//左上
-	vertices[10] = { {-5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//右下
-	vertices[11] = { {-5.0f,5.0f, 5.0f},{},{1.0f,0.0f} };//右上
+	vertices[8] = { {5.0f,5.0f,-5.0f},{vertices[8].normal},{0.0f,1.0f} };//左下
+	vertices[9] = { {5.0f,5.0f, 5.0f},{vertices[9].normal},{0.0f,0.0f} };//左上
+	vertices[10] = { {-5.0f,5.0f, -5.0f},{vertices[10].normal},{1.0f,1.0f} };//右下
+	vertices[11] = { {-5.0f,5.0f, 5.0f},{vertices[11].normal},{1.0f,0.0f} };//右上
 
-	vertices[12] = { {5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//左下
-	vertices[13] = { {5.0f,-5.0f, 5.0f},{},{0.0f,0.0f} };//左上
-	vertices[14] = { {-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//右下
-	vertices[15] = { {-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f} };//右上
+	vertices[12] = { {5.0f,-5.0f,-5.0f},{vertices[12].normal},{0.0f,1.0f} };//左下
+	vertices[13] = { {5.0f,-5.0f, 5.0f},{vertices[13].normal},{0.0f,0.0f} };//左上
+	vertices[14] = { {-5.0f,-5.0f, -5.0f},{vertices[14].normal},{1.0f,1.0f} };//右下
+	vertices[15] = { {-5.0f,-5.0f, 5.0f},{vertices[15].normal},{1.0f,0.0f} };//右上
 
-	vertices[16] = { {-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//左下
-	vertices[17] = { {-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f} };//左上
-	vertices[18] = { {-5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//右下
-	vertices[19] = { {-5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//右上
+	vertices[16] = { {-5.0f,-5.0f,-5.0f},{vertices[16].normal},{0.0f,1.0f} };//左下
+	vertices[17] = { {-5.0f,-5.0f, 5.0f},{vertices[17].normal},{0.0f,0.0f} };//左上
+	vertices[18] = { {-5.0f,5.0f, -5.0f},{vertices[18].normal},{1.0f,1.0f} };//右下
+	vertices[19] = { {-5.0f,5.0f,  5.0f},{vertices[19].normal},{1.0f,0.0f} };//右上
 
-	vertices[20] = { {5.0f,-5.0f,-5.0f},{},{0.0f,1.0f} };//左下
-	vertices[21] = { {5.0f,-5.0f, 5.0f},{},{0.0f,0.0f} };//左上
-	vertices[22] = { {5.0f,5.0f, -5.0f},{},{1.0f,1.0f} };//右下
-	vertices[23] = { {5.0f,5.0f,  5.0f},{},{1.0f,0.0f} };//右上;//左下
+	vertices[20] = { {5.0f,-5.0f,-5.0f},{vertices[20].normal},{0.0f,1.0f} };//左下
+	vertices[21] = { {5.0f,-5.0f, 5.0f},{vertices[21].normal},{0.0f,0.0f} };//左上
+	vertices[22] = { {5.0f,5.0f, -5.0f},{vertices[22].normal},{1.0f,1.0f} };//右下
+	vertices[23] = { {5.0f,5.0f,  5.0f},{vertices[23].normal},{1.0f,0.0f} };//右上;//左下
 	
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 	

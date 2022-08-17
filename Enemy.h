@@ -38,7 +38,7 @@ private:
 	Vec3 lockOnVec;
 	bool isLockOnDead = false;
 
-	const float lockOnScaleTmp = 0.8f;
+	const float lockOnScaleTmp = 1.5f;
 	float isLockOnScale = lockOnScaleTmp;
 
 	float lockOnAngle = 0.0f;

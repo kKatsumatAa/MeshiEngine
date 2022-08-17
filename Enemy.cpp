@@ -139,24 +139,28 @@ void Enemy::ShotResetTimer()
 
 void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
-	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[3]);
+	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,0.0f,0.0f,1.0f }, texHundle[0]);
 
 	if (isLockOned)
 	{
-		if (isLockOnScale >= 0.1f)
+		if (isLockOnScale >= 0.2f)
 		{
-			isLockOnScale -= 0.06f;
+			isLockOnScale -= 0.1f;
 			lockOnAngle += 5.0f;
 		}
 		else if(lockOnAngle != 0.0f) lockOnAngle = 0.0f;
 
 		//lockonÇÃê¸
+		if(isLockOnDead)
 		lockOnLine.DrawLine(worldMat.trans, worldMat.trans + lockOnVec * lockOnLength, lockOnLine.worldMat,
-			&view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[0]);
+			&view, &projection, { 1.0f,1.0f,0.0f,1.0f }, texHundle[0]);
+		else
+			lockOnLine.DrawLine(worldMat.trans, worldMat.trans + lockOnVec * lockOnLength, lockOnLine.worldMat,
+				&view, &projection, { 1.0f,1.0f,1.0f,0.5f }, texHundle[0]);
 
 		//lockonÇÃÉ}Å[ÉN
 		Vec2 v = Vec3toVec2(worldMat.trans, view.matView, projection.matProjection);
-		lockOn.DrawBoxSprite({ v.x,v.y,0 }, isLockOnScale, { 1.0f,0.0f,0.0f,1.0f }, texHundle[4], { 0.5f,0.5f }, lockOnAngle);
+		lockOn.DrawBoxSprite({ v.x,v.y,0 }, isLockOnScale, { 1.0f,1.0f,1.0f,0.7f }, texHundle[6], { 0.5f,0.5f }, lockOnAngle);
 	}
 	/*for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
 	{

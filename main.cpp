@@ -32,7 +32,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	LoadGraph(L"Resources/back.png", textureHandle[3]);//黄色春日
 	LoadGraph(L"Resources/scope.png", textureHandle[4]);//ロックオン
 	LoadGraph(L"Resources/back.jpg", textureHandle[5]);//背景
-	LoadGraph(L"Resources/ui.png", textureHandle[6]);//ui
+	LoadGraph(L"Resources/lockOn.png", textureHandle[6]);//敵のロックオン
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
@@ -41,10 +41,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	SoundData soundData[10];
 	soundData[0] = SoundLoadWave("Resources/SE.wav", true);
 	soundData[1] = SoundLoadWave("Resources/SE2.wav", true);
-	soundData[2] = SoundLoadWave("Resources/test2.wav", false);
+	soundData[2] = SoundLoadWave("Resources/BGM2.wav", false);
 	soundData[3] = SoundLoadWave("Resources/SE3.wav", false);
 
-	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 2.0f, true);
+	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 0.5f, true);
 
 	//背景
 	Draw backGround;
