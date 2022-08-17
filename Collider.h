@@ -10,12 +10,16 @@
 class Collider
 {
 private:
-	float radius_ = 5.0f;
+	
 
 	//衝突属性(自分)
 	uint32_t collisionAttribute_ = 0xffffffff;
 	//衝突属性(相手)
 	uint32_t collisionMask_ = 0xffffffff;
+
+
+protected:
+	float radius_ = 5.0f;
 
 public:
 	//ロックオンモードかどうか(player用→当たり判定の時に使用)

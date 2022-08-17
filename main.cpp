@@ -137,7 +137,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					colliderManager->SetListCollider(enemy.get());
 					//playerがロックオンモードじゃなければロックオン状態を解除
-					if (player->GetPlayerStatus() != TARGET && enemy->isLockOned)
+					if (player->GetPlayerStatus() != TARGET && enemy->isLockOned || player->isDead)
 					{
 						enemy->LockOnedReset();
 					}

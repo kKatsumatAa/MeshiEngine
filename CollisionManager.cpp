@@ -25,7 +25,7 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 
 void CollisionManager::CheckCollisionPair2(Collider* colliderA, Collider* colliderB)
 {
-	if (colliderA->isLockOn)//playerがロックオンモードの時のみ
+	if (colliderA->isLockOn && !colliderA->isDead)//playerがロックオンモードの時のみ
 	{
 
 		if (!(colliderA->GetCollisionAttribute() == kCollisionAttributePlayer

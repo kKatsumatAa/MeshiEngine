@@ -50,7 +50,7 @@ private:
 	EnemyState* state;
 	////’e
 	//std::list< std::unique_ptr<EnemyBullet>> bullets_;
-	static const int shotCool = 120;
+	static const int shotCool = 180;
 	std::list<std::unique_ptr<TimedCall>> timedCalls_;
 
 	//Ž©ƒLƒƒƒ‰

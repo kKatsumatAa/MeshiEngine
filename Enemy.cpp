@@ -18,6 +18,7 @@ void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& 
 	player_ = player;
 	this->bulletManager = bulletManager;
 	this->worldMat.trans = pos;
+	this->worldMat.SetWorld();
 
 	state = new EnemyStateApproach;
 	state->SetEnemy(this);
@@ -101,7 +102,8 @@ void Enemy::Fire()
 	Vec3 length = player_->GetWorldPos() - GetWorldPos();
 	length.Normalized();
 
-	Vec3 velocity(0.8f, 0, 0/*length*/);//ここで発射時の角度,位置を決める
+	//Vec3 velocity(0.8f, 0, 0/*length*/);//ここで発射時の角度,位置を決める
+	Vec3 velocity(length);//ここで発射時の角度,位置を決める
 
 	//速度ベクトルを自機の向きに合わせて回転させる
 	Vec3xM4(velocity, worldMat.matWorld, false);
