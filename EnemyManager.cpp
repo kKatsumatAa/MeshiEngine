@@ -6,6 +6,8 @@ void EnemyManager::Initialize(Player* player, BulletManager* bulletManager, Soun
 	this->soundData = soundData;
 	this->player = player;
 	this->bulletManager = bulletManager;
+
+	LoadEnemyPopData();
 }
 
 void EnemyManager::EnemyGenerate(const Vec3& pos)
@@ -14,6 +16,21 @@ void EnemyManager::EnemyGenerate(const Vec3& pos)
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
 	enemy->Initialize(player, bulletManager, { pos.x,pos.y,pos.z });
 	/*enemy->SetPlayer(player_);*/
+	//球を登録
+	enemies.push_back(std::move(enemy));
+}
+
+void EnemyManager::BossGenerate(const Vec3& pos, float& scale, int& HP)
+{
+	//球を生成、初期化
+	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+	enemy->Initialize(player, bulletManager, { pos.x,pos.y,pos.z });
+	enemy->radius_ *= scale;
+	enemy->worldMat.scale = { scale,scale,scale };
+	enemy->worldMat.SetWorld();
+	enemy->radius_ /= 2;
+	enemy->HP = HP;
+
 	//球を登録
 	enemies.push_back(std::move(enemy));
 }
@@ -111,6 +128,31 @@ void EnemyManager::UpdateEnemyPopCommands()
 			float z = (float)std::atof(word.c_str());
 
 			EnemyGenerate({ x,y,z });
+		}
+		//Bossコマンド
+		else if (word.find("BOSS") == 0)
+		{
+			//x座標
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			//y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			//z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			//scale
+			getline(line_stream, word, ',');
+			float scale = (float)std::atof(word.c_str());
+
+			//hp
+			getline(line_stream, word, ',');
+			int HP = (float)std::atof(word.c_str());
+
+			BossGenerate({ x,y,z }, scale, HP);
 		}
 		//WAITコマンド
 		else if(word.find("WAIT") == 0)

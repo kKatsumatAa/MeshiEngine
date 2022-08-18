@@ -19,9 +19,10 @@ private:
 
 
 protected:
-	float radius_ = 5.0f;
+
 
 public:
+	float radius_ = 5.0f;
 	//ロックオンモードかどうか(player用→当たり判定の時に使用)
 	bool isLockOn = false;
 	//自分がロックオンしている敵の数（player用）

@@ -76,7 +76,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//enemy
 	EnemyManager enemyManager;
 	enemyManager.Initialize(player, &bulletManager,soundData);
-	enemyManager.LoadEnemyPopData();
+	//enemyManager.LoadEnemyPopData();
 
 	//衝突
 	std::unique_ptr<CollisionManager> colliderManager = std::make_unique<CollisionManager>(&viewMat, &projectionMat);

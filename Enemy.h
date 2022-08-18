@@ -27,8 +27,7 @@ class Enemy : public Collider
 {
 	//変数
 private:
-	//ワールド変換データ
-	WorldMat worldMat;
+	
 	//モデル
 	Draw draw;
 	Draw lockOn;
@@ -59,12 +58,14 @@ private:
 	//弾マネージャー
 	BulletManager* bulletManager = nullptr;
 
-	int HP = 2;
-
-public:
-	//int shotTime = 0;
 	
 
+public:
+	bool isBoss = false;
+	//int shotTime = 0;
+	int HP = 1;
+	//ワールド変換データ
+	WorldMat worldMat;
 
 	//関数
 private:

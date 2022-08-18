@@ -22,6 +22,7 @@ private:
 	/// </summary>
 	void UpdateEnemyPopCommands();
 	void EnemyGenerate(const Vec3& pos);
+	void BossGenerate(const Vec3& pos, float& scale, int& HP);
 
 public:
 	std::list<std::unique_ptr<Enemy>> enemies;
