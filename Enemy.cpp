@@ -162,7 +162,10 @@ void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHund
 
 		//lockonÇÃÉ}Å[ÉN
 		Vec2 v = Vec3toVec2(worldMat.trans, view.matView, projection.matProjection);
-		lockOn.DrawBoxSprite({ v.x,v.y,0 }, isLockOnScale, { 1.0f,1.0f,1.0f,0.7f }, texHundle[6], { 0.5f,0.5f }, lockOnAngle);
+		if (isLockOnDead)
+			lockOn.DrawBoxSprite({ v.x,v.y,0 }, isLockOnScale, { 1.0f,1.0f,0.0f,0.7f }, texHundle[6], { 0.5f,0.5f }, lockOnAngle);
+		else
+			lockOn.DrawBoxSprite({ v.x,v.y,0 }, isLockOnScale, { 1.0f,1.0f,1.0f,0.7f }, texHundle[6], { 0.5f,0.5f }, lockOnAngle);
 	}
 	/*for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
 	{

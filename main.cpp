@@ -25,14 +25,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//画像用ハンドル
 	UINT64 textureHandle[30] = {0};
-
-	LoadGraph(L"Resources/white.png", textureHandle[0]);//ただの白（色変える用）
-	LoadGraph(L"Resources/texture.jpg", textureHandle[1]);
-	LoadGraph(L"Resources/texture2.jpg", textureHandle[2]);
-	LoadGraph(L"Resources/back.png", textureHandle[3]);//黄色春日
-	LoadGraph(L"Resources/scope2.png", textureHandle[4]);//ロックオン
-	LoadGraph(L"Resources/back.jpg", textureHandle[5]);//背景
-	LoadGraph(L"Resources/lockOn.png", textureHandle[6]);//敵のロックオン
+	{
+		LoadGraph(L"Resources/white.png", textureHandle[0]);//ただの白（色変える用）
+		LoadGraph(L"Resources/texture.jpg", textureHandle[1]);
+		LoadGraph(L"Resources/texture2.jpg", textureHandle[2]);
+		LoadGraph(L"Resources/back.png", textureHandle[3]);//黄色春日
+		LoadGraph(L"Resources/lock.png", textureHandle[4]);//ロックオン
+		LoadGraph(L"Resources/back.jpg", textureHandle[5]);//背景
+		LoadGraph(L"Resources/lockOn.png", textureHandle[6]);//敵のロックオン
+	}
+	//数字の画像
+	UINT64 textureNumHundle[12];
+	{
+		LoadGraph(L"Resources/numbers/0.png", textureNumHundle[0]);
+		LoadGraph(L"Resources/numbers/1_.png", textureNumHundle[1]);
+		LoadGraph(L"Resources/numbers/2.png", textureNumHundle[2]);
+		LoadGraph(L"Resources/numbers/3.png", textureNumHundle[3]);
+		LoadGraph(L"Resources/numbers/4.png", textureNumHundle[4]);
+		LoadGraph(L"Resources/numbers/5.png", textureNumHundle[5]);
+		LoadGraph(L"Resources/numbers/6.png", textureNumHundle[6]);
+		LoadGraph(L"Resources/numbers/7.png", textureNumHundle[7]);
+		LoadGraph(L"Resources/numbers/8.png", textureNumHundle[8]);
+		LoadGraph(L"Resources/numbers/9.png", textureNumHundle[9]);
+		LoadGraph(L"Resources/numbers/10.png", textureNumHundle[10]);
+	}
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
@@ -139,7 +155,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				player->isLockNum = lockOnNum;//代入
 
-				colliderManager->CheckAllCollisions2();
+				if (player->isLockNum < 10)//ロックオンは最大10まで
+					colliderManager->CheckAllCollisions2();
 			}
 		}
 
@@ -155,7 +172,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		bulletManager.DrawEnemyBullet(viewMat, projectionMat, textureHandle);
 		enemyManager.Draw(viewMat, projectionMat, textureHandle);
 		//player
-		player->Draw(viewMat, projectionMat, textureHandle);//playerを後にしないと透過されない！
+		player->Draw(viewMat, projectionMat, textureHandle,textureNumHundle);//playerを後にしないと透過されない！
 		//ui
 		//UI.DrawBoxSprite({ 180,200,0 }, 0.5f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[6], {0.5f,0.5f},angle);
 		

@@ -123,7 +123,7 @@ void Player::Update()
 	}
 }
 
-void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
+void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle, const UINT64* numTexHundle)
 {
 	//弾
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
@@ -137,7 +137,15 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		{
 			//3d->2d
 			Vec2 pos = Vec3toVec2({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z /*- view.eye.z*/ }, view.matView, projection.matProjection);
-			d.DrawBoxSprite({ pos.x,pos.y,0 }, 0.2f, { 0.6f, 0.6f, 0.6f, 0.7f }, texHundle[4], { 0.5f,0.5f });
+			d.DrawBoxSprite({ pos.x,pos.y,0 }, 0.25f, { 0.8f, 0.8f, 0.8f, 0.8f }, texHundle[4], { 0.5f,0.5f });
+
+			//ロックオンの数
+			if (isLockNum == 10)
+				num.DrawBoxSprite({ pos.x,pos.y,0 }, 0.16f, { 1.0f, 0.8f, 0.8f, 0.9f }, numTexHundle[10], { 0.5f,0.5f });
+			else
+				num.DrawBoxSprite({ pos.x,pos.y,0 }, 0.08f, { 0.8f, 0.8f, 0.8f, 0.8f }, numTexHundle[isLockNum], { 0.5f,0.5f });
+
+
 			//2d->3d
 			//Vec2 pos = Vec3toVec2({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z - view.eye.z }, view.matView, projection.matProjection);
 			//d.worldMat->trans = Vec2toVec3(pos, view.matView, projection.matProjection, worldMat.trans.z - view.eye.z * 2);
@@ -154,7 +162,6 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		}
 
 		//hpとかロックオンの数
-		num.DrawClippingBoxSprite({ 0,10,0 }, 0.1f, { 0,0 }, { 0.1f * isLockNum * 30,1.0f }, { 1.0f,1.0f,1.0f,1.0f }, 0.0f, texHundle[0]);
 		hp.DrawClippingBoxSprite({ 0,70,0 }, 0.1f, { 0,0 }, { 0.1f * HP * 30,1.0f }, { 1.0f,0.0f,0.0f,1.0f }, 0.0f, texHundle[0]);
 	}
 }

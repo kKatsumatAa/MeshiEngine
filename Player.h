@@ -26,7 +26,7 @@ public:
 	Player(SoundData* shotSE);
 	void Attack();
 	void Update();
-	void Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle);
+	void Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle, const UINT64* numTexHundle);
 	int  GetPlayerStatus() { return status; }
 
 	Vec3 GetWorldPos() override;
