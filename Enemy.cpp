@@ -46,6 +46,8 @@ void Enemy::InitializeApproach()
 
 void Enemy::Update()
 {
+	if (HP <= 0) isDead = true;
+
 	if (KeyboardInput::GetInstance().keyReleaseTrigger(DIK_Z) && isLockOned)
 	{
 		isLockOnDead = true;//‰¼
@@ -53,7 +55,11 @@ void Enemy::Update()
 	if (isLockOnDead)
 	{
 		lockOnLength -= 5;
-		if (lockOnLength <= 0) isDead = true;
+		if (lockOnLength <= 0)
+		{
+			HP--;
+			LockOnedReset();
+		}
 	}
 	else if(isLockOned)
 	{
@@ -201,7 +207,7 @@ Vec3 Enemy::GetWorldPos()
 
 void Enemy::OnCollision()
 {
-	isDead = true;
+	HP--;
 }
 
 void Enemy::OnCollision2()
@@ -212,9 +218,11 @@ void Enemy::OnCollision2()
 void Enemy::LockOnedReset()
 {
 	isLockOned = false;
+	isLockOnDead = false;
 	isLockOnScale = lockOnScaleTmp;
 	lockOnVec = { 0.0f,0.0f,0.0f };
 	lockOnLength = 0.0f;
+	lockOnAngle = 0.0f;
 }
 
 //----------------------------------------------

@@ -33,6 +33,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		LoadGraph(L"Resources/lock.png", textureHandle[4]);//ロックオン
 		LoadGraph(L"Resources/back.jpg", textureHandle[5]);//背景
 		LoadGraph(L"Resources/lockOn.png", textureHandle[6]);//敵のロックオン
+		LoadGraph(L"Resources/Title.png", textureHandle[7]);//敵のロックオン
 	}
 	//数字の画像
 	UINT64 textureNumHundle[12];
@@ -55,11 +56,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//音データ
 	SoundData soundData[10];
-	soundData[0] = SoundLoadWave("Resources/SE.wav", true);
-	soundData[1] = SoundLoadWave("Resources/SE2.wav", true);
-	soundData[2] = SoundLoadWave("Resources/BGM2.wav", false);
-	soundData[3] = SoundLoadWave("Resources/SE3.wav", false);
-
+	{
+		soundData[0] = SoundLoadWave("Resources/SE.wav", true);
+		soundData[1] = SoundLoadWave("Resources/SE2.wav", true);
+		soundData[2] = SoundLoadWave("Resources/BGM2.wav", false);
+		soundData[3] = SoundLoadWave("Resources/SE3.wav", false);
+	}
 	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 0.5f, true);
 
 	//UI
@@ -81,6 +83,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//背景
 	Background back;
+
+	//シーン
+	enum
+	{
+		TITLE,
+		GAME,
+
+	};
+	int Scene = TITLE;
+	
 
 
 	//描画初期化処理-------------

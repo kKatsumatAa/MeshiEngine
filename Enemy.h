@@ -59,7 +59,7 @@ private:
 	//弾マネージャー
 	BulletManager* bulletManager = nullptr;
 
-	
+	int HP = 2;
 
 public:
 	//int shotTime = 0;
