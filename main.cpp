@@ -84,14 +84,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//背景
 	Background back;
 
-	//シーン
-	enum
-	{
-		TITLE,
-		GAME,
-
-	};
-	int Scene = TITLE;
+	
 	
 
 
@@ -167,7 +160,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				player->isLockNum = lockOnNum;//代入
 
-				if (player->isLockNum > 10)player->isLockNum = 10;
+				if (player->isLockNum > 10)
+				{
+					player->isLockNum = 10;
+				}
 				if (player->isLockNum < 10)//ロックオンは最大10まで
 					colliderManager->CheckAllCollisions2();
 			}

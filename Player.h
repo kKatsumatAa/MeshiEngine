@@ -20,7 +20,6 @@ private:
 	int shotTime = 0;
 	int status = NORMAL;
 	SoundData* shotSE = nullptr;
-	int HP = 3;
 
 public:
 	Player(SoundData* shotSE);

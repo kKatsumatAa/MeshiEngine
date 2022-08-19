@@ -22,6 +22,8 @@ protected:
 
 
 public:
+	int HP;
+
 	float radius_ = 5.0f;
 	//ロックオンモードかどうか(player用→当たり判定の時に使用)
 	bool isLockOn = false;
@@ -30,7 +32,7 @@ public:
 	//死亡フラグ
 	bool isDead = false;
 	//ロックオンされているかどうか（敵用）
-	bool isLockOned = false;
+	int isLockOned = 0;
 
 	float GetRadius();
 	void SetRadius(const float& radius);

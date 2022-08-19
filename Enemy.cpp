@@ -23,6 +23,8 @@ void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& 
 	state = new EnemyStateApproach;
 	state->SetEnemy(this);
 
+	HP = 1;
+
 	//接近フェーズ初期化
 	InitializeApproach();
 
@@ -57,7 +59,7 @@ void Enemy::Update()
 		lockOnLength -= 5;
 		if (lockOnLength <= 0)
 		{
-			HP--;
+			HP -= isLockOned;
 			LockOnedReset();
 		}
 	}
@@ -212,12 +214,17 @@ void Enemy::OnCollision()
 
 void Enemy::OnCollision2()
 {
-	isLockOned = true;
+	isLockOnScale = lockOnScaleTmp;
+	lockOnVec = { 0.0f,0.0f,0.0f };
+	//lockOnLength = 0.0f;
+	lockOnAngle = 0.0f;
+	isLockOned++;
+	/*player_->isLockNum++;*/
 }
 
 void Enemy::LockOnedReset()
 {
-	isLockOned = false;
+	isLockOned = 0;
 	isLockOnDead = false;
 	isLockOnScale = lockOnScaleTmp;
 	lockOnVec = { 0.0f,0.0f,0.0f };
