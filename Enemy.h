@@ -66,6 +66,9 @@ public:
 	//ワールド変換データ
 	WorldMat worldMat;
 
+	const int lockCooltmp = 7;
+	int lockCool = lockCooltmp;
+
 	//関数
 private:
 

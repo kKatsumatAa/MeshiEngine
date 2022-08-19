@@ -22,6 +22,8 @@ protected:
 
 
 public:
+	int coolTime = 0;
+
 	int HP;
 
 	float radius_ = 5.0f;

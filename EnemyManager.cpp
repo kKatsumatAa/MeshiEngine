@@ -30,6 +30,7 @@ void EnemyManager::BossGenerate(const Vec3& pos, float& scale, int& HP)
 	enemy->worldMat.SetWorld();
 	enemy->radius_ /= 2;
 	enemy->HP = HP;
+	enemy->isBoss = true;
 
 	//‹…‚ð“o˜^
 	enemies.push_back(std::move(enemy));

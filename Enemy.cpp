@@ -48,6 +48,8 @@ void Enemy::InitializeApproach()
 
 void Enemy::Update()
 {
+	lockCool--;
+
 	if (HP <= 0) isDead = true;
 
 	if (KeyboardInput::GetInstance().keyReleaseTrigger(DIK_Z) && isLockOned)
@@ -149,6 +151,9 @@ void Enemy::ShotResetTimer()
 
 void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
+	if(isBoss)
+	draw.DrawCube3D(&worldMat, &view, &projection, { 0.7f,0.7f,0.0f,0.8f }, texHundle[0]);
+	else
 	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,0.0f,0.0f,0.7f }, texHundle[0]);
 
 	if (isLockOned)
@@ -214,12 +219,16 @@ void Enemy::OnCollision()
 
 void Enemy::OnCollision2()
 {
-	isLockOnScale = lockOnScaleTmp;
-	lockOnVec = { 0.0f,0.0f,0.0f };
-	//lockOnLength = 0.0f;
-	lockOnAngle = 0.0f;
-	isLockOned++;
-	/*player_->isLockNum++;*/
+	if (lockCool <= 0)
+	{
+		isLockOnScale = lockOnScaleTmp;
+		lockOnVec = { 0.0f,0.0f,0.0f };
+		//lockOnLength = 0.0f;
+		lockOnAngle = 0.0f;
+		isLockOned++;
+		lockCool = lockCooltmp;
+		/*player_->isLockNum++;*/
+	}
 }
 
 void Enemy::LockOnedReset()

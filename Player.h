@@ -20,6 +20,7 @@ private:
 	int shotTime = 0;
 	int status = NORMAL;
 	SoundData* shotSE = nullptr;
+	const int coolTimetmp = 120;
 
 public:
 	Player(SoundData* shotSE);

@@ -50,6 +50,7 @@ void Player::Attack()
 void Player::Update()
 {
 	if (HP <= 0) isDead = true;
+	coolTime--;
 
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_R))
 	{
@@ -178,7 +179,11 @@ Vec3 Player::GetWorldPos()
 
 void Player::OnCollision()
 {
-	HP--;
+	if (coolTime <= 0)
+	{
+		HP--;
+		coolTime = coolTimetmp;
+	}
 }
 
 void Player::OnCollision2()
