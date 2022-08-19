@@ -21,6 +21,7 @@ private:
 	int status = NORMAL;
 	SoundData* shotSE = nullptr;
 	const int coolTimetmp = 120;
+    float coolColor = 1.0f;
 
 public:
 	Player(SoundData* shotSE);

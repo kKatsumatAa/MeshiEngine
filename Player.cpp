@@ -56,6 +56,7 @@ void Player::Update()
 	{
 		HP = 3;
 		isDead = false;
+		coolTime = 0;
 	}
 
 	if (!isDead)
@@ -132,34 +133,37 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		bullet->Draw(view, projection, texHundle[0]);
 	}
 
+	//無敵時間の時は色を薄く
+	if (coolTime > 0)
+	{
+		//点滅
+		if (coolTime % 20 > 10)
+			coolColor = 0.0f;
+		else
+			coolColor = 1.0f;
+	}
+	else coolColor = 1.0f;
+
 	if (!isDead)
 	{
 		if (status == TARGET)
 		{
 			//3d->2d
 			Vec2 pos = Vec3toVec2({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z /*- view.eye.z*/ }, view.matView, projection.matProjection);
-			d.DrawBoxSprite({ pos.x,pos.y,0 }, 0.25f, { 0.8f, 0.8f, 0.8f, 0.8f }, texHundle[4], { 0.5f,0.5f });
+			d.DrawBoxSprite({ pos.x,pos.y,0 }, 0.25f, { 0.8f, 0.8f, 0.8f, 0.8f * coolColor }, texHundle[4], { 0.5f,0.5f });
 
 			//ロックオンの数
 			if (isLockNum == 10)
 				num.DrawBoxSprite({ pos.x,pos.y,0 }, 0.16f, { 1.0f, 0.8f, 0.8f, 0.9f }, numTexHundle[10], { 0.5f,0.5f });
 			else
 				num.DrawBoxSprite({ pos.x,pos.y,0 }, 0.08f, { 0.8f, 0.8f, 0.8f, 0.8f }, numTexHundle[isLockNum], { 0.5f,0.5f });
-
-
-			//2d->3d
-			//Vec2 pos = Vec3toVec2({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z - view.eye.z }, view.matView, projection.matProjection);
-			//d.worldMat->trans = Vec2toVec3(pos, view.matView, projection.matProjection, worldMat.trans.z - view.eye.z * 2);
-			//////*2なのは、*1だとnear+-view.eye.zでplayerと同じ位置になっちゃうから
-			//d.worldMat->SetWorld();
-			//d.DrawBox(d.worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHundle[4]);//弾の後で描画しないと透過できなくて弾が見えない！
 		}
 		else if (status == NORMAL)
 		{
 			//射線表示
 			ray.DrawCube3D(&rayWorld, &view, &projection, { 1.0f,1.0f,1.0f,0.7f }, texHundle[0]);
 			//player
-			draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.7f }, texHundle[0]);//弾の後で描画しないと透過できなくて弾が見えない！
+			draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.7f * coolColor }, texHundle[0]);//弾の後で描画しないと透過できなくて弾が見えない！
 		}
 
 		//hpとかロックオンの数
