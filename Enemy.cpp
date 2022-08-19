@@ -244,24 +244,30 @@ void Enemy::LockOnedReset()
 //----------------------------------------------
 void EnemyStateApproach::Update()
 {
-	//移動（ベクトルを加算）
-	enemy->MoveTrans(approachSpeed);
-	//既定の位置に達したら離脱
-	if (enemy->GetTrans().z <= 11.0f)
+	if (!enemy->isBoss)
 	{
-		enemy->RemoveTimeCall();
-		enemy->ChangeState(new EnemyStateLeave);
+		//移動（ベクトルを加算）
+		enemy->MoveTrans(approachSpeed);
+		//既定の位置に達したら離脱
+		if (enemy->GetTrans().z <= 11.0f)
+		{
+			enemy->RemoveTimeCall();
+			enemy->ChangeState(new EnemyStateLeave);
+		}
 	}
 }
 
 //----------------------------------------------
 void EnemyStateLeave::Update()
 {
-	//移動
-	enemy->MoveTrans(leaveSpeed);
-	Vec3 v = enemy->GetWorldPos();
-	if (v.y >= playerMoveRange.y + 50.0f || v.y <= -playerMoveRange.y - 50.0f)
-		enemy->SetIsAnnihilation(true);
+	if (!enemy->isBoss)
+	{
+		//移動
+		enemy->MoveTrans(leaveSpeed);
+		Vec3 v = enemy->GetWorldPos();
+		if (v.y >= playerMoveRange.y + 50.0f || v.y <= -playerMoveRange.y - 50.0f)
+			enemy->SetIsAnnihilation(true);
+	}
 }
 
 //----------------------------------------------
