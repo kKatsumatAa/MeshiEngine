@@ -61,7 +61,6 @@ private:
 	
 
 public:
-	bool isBoss = false;
 	//int shotTime = 0;
 	//ワールド変換データ
 	WorldMat worldMat;

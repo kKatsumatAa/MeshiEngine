@@ -45,7 +45,13 @@ void CollisionManager::CheckCollisionPair2(Collider* colliderA, Collider* collid
 		Vec3 posB = colliderB->GetWorldPos();
 
 		float rA = colliderA->GetRadius();
-		float rB = colliderB->GetRadius() * posB.GetLength() / 50;//‰¼
+
+		//”¼Œa‚ªˆá‚¤‚Æ‚¨‚©‚µ‚­‚È‚é‚Ì‚Å
+		float rB;
+		if (colliderB->isBoss)
+			rB = colliderB->GetRadius() * (posB.GetLength()+100) / 150.0f;//‰¼
+		else
+			rB = colliderB->GetRadius() * posB.GetLength() / 50.0f;//‰¼
 
 		if (CollisionRayCircle(nearFarPos[0], nearFarPos[1], rA, posB, rB))
 		{

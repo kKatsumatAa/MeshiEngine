@@ -22,6 +22,7 @@ protected:
 
 
 public:
+	bool isBoss = false;
 	int coolTime = 0;
 
 	int HP;

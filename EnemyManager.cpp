@@ -28,7 +28,7 @@ void EnemyManager::BossGenerate(const Vec3& pos, float& scale, int& HP)
 	enemy->radius_ *= scale;
 	enemy->worldMat.scale = { scale,scale,scale };
 	enemy->worldMat.SetWorld();
-	enemy->radius_ /= 2;
+	//enemy->radius_ /= 2;
 	enemy->HP = HP;
 	enemy->isBoss = true;
 
