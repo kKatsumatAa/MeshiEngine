@@ -13,8 +13,10 @@
 //	InitializeApproach();
 //}
 
-void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& pos)
+void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& pos, SoundData* soundData)
 {
+	this->soundData = soundData;
+
 	player_ = player;
 	this->bulletManager = bulletManager;
 	this->worldMat.trans = pos;
@@ -63,6 +65,8 @@ void Enemy::Update()
 		{
 			HP -= isLockOned;
 			LockOnedReset();
+			//ダメージ音
+			if (HP > 0)  SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.0f);
 		}
 	}
 	else if(isLockOned)
@@ -215,6 +219,8 @@ Vec3 Enemy::GetWorldPos()
 void Enemy::OnCollision()
 {
 	HP--;
+	//ダメージ音
+	if (HP > 0)  SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.0f);
 }
 
 void Enemy::OnCollision2()

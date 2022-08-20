@@ -14,7 +14,7 @@ void EnemyManager::EnemyGenerate(const Vec3& pos)
 {
 	//‹…‚ğ¶¬A‰Šú‰»
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
-	enemy->Initialize(player, bulletManager, { pos.x,pos.y,pos.z });
+	enemy->Initialize(player, bulletManager, { pos.x,pos.y,pos.z },soundData);
 	/*enemy->SetPlayer(player_);*/
 	//‹…‚ğ“o˜^
 	enemies.push_back(std::move(enemy));
@@ -24,7 +24,7 @@ void EnemyManager::BossGenerate(const Vec3& pos, float& scale, int& HP)
 {
 	//‹…‚ğ¶¬A‰Šú‰»
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
-	enemy->Initialize(player, bulletManager, { pos.x,pos.y,pos.z });
+	enemy->Initialize(player, bulletManager, { pos.x,pos.y,pos.z },soundData);
 	enemy->radius_ *= scale;
 	enemy->worldMat.scale = { scale,scale,scale };
 	enemy->worldMat.SetWorld();

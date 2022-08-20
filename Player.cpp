@@ -187,6 +187,7 @@ void Player::OnCollision()
 	{
 		HP--;
 		coolTime = coolTimetmp;
+		SoundPlayWave(Directx::GetInstance().xAudio2.Get(), shotSE[5], 1.0f);
 	}
 }
 

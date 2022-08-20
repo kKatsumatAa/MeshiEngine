@@ -61,6 +61,7 @@ private:
 	
 
 public:
+	SoundData* soundData;
 	//int shotTime = 0;
 	//ワールド変換データ
 	WorldMat worldMat;
@@ -74,7 +75,7 @@ private:
 
 public:
 	/*Enemy(Player* player);*/
-	void Initialize(Player* player, BulletManager* bulletManager,const Vec3& pos);
+	void Initialize(Player* player, BulletManager* bulletManager,const Vec3& pos, SoundData* soundData);
 	~Enemy();
 	void InitializeApproach();
 

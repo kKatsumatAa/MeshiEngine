@@ -60,7 +60,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		soundData[0] = SoundLoadWave("Resources/SE.wav", true);
 		soundData[1] = SoundLoadWave("Resources/SE2.wav", true);
 		soundData[2] = SoundLoadWave("Resources/BGM2.wav", false);
-		soundData[3] = SoundLoadWave("Resources/SE3.wav", false);
+		soundData[3] = SoundLoadWave("Resources/Death.wav", false);
+		soundData[4] = SoundLoadWave("Resources/Damage.wav", false);
+		soundData[5] = SoundLoadWave("Resources/SE3.wav", false);
 	}
 	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 0.5f, true);
 
