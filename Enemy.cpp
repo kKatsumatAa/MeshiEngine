@@ -50,6 +50,13 @@ void Enemy::InitializeApproach()
 
 void Enemy::Update()
 {
+	if (isBoss)
+	{
+		worldMat.rot.z += 0.07f;
+		worldMat.SetWorld();
+	}
+
+
 	lockCool--;
 
 	if (HP <= 0) isDead = true;
@@ -66,7 +73,7 @@ void Enemy::Update()
 			HP -= isLockOned;
 			LockOnedReset();
 			//ダメージ音
-			if (HP > 0)  SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.0f);
+			if (HP > 0)  SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.5f);
 		}
 	}
 	else if(isLockOned)
@@ -251,7 +258,7 @@ void Enemy::OnCollision()
 {
 	HP--;
 	//ダメージ音
-	if (HP > 0)  SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.0f);
+	if (HP > 0)  SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.5f);
 }
 
 void Enemy::OnCollision2()

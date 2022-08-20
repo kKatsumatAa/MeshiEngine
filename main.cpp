@@ -63,6 +63,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		soundData[3] = SoundLoadWave("Resources/Death.wav", false);
 		soundData[4] = SoundLoadWave("Resources/Damage.wav", false);
 		soundData[5] = SoundLoadWave("Resources/SE3.wav", false);
+		soundData[6] = SoundLoadWave("Resources/BGM.wav", false);
 	}
 	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 0.5f, true);
 
@@ -86,9 +87,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//背景
 	Background back;
 
-	
-	
-
+	int bossNum = 0;
 
 	//描画初期化処理-------------
 
@@ -109,6 +108,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Directx::GetInstance().DrawUpdate({ 0.0f,0.0f,0.0f,0.0f });
 
 //更新処理
+		
 
 		player->Update();
 		enemyManager.Update();
@@ -117,7 +117,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		back.Update();
 
-		int bossNum = 0;
+		int oldBossNum = bossNum;
+		bossNum = 0;
 		
 		//colliderManager
 		{
@@ -174,6 +175,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				if (player->isLockNum < 10)//ロックオンは最大10まで
 					colliderManager->CheckAllCollisions2();
 			}
+		}
+
+		//ボス戦の時にbgm変える
+		if (bossNum && !oldBossNum)
+		{
+			SoundStopWave(soundData[2]);
+			SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[6], 0.5f, true);
+		}
+		else if (!bossNum && oldBossNum)
+		{
+			SoundStopWave(soundData[6]);
+			SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 0.5f, true);
 		}
 
 // 4.描画コマンドここから　//-----------
