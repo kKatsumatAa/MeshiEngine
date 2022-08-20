@@ -58,6 +58,8 @@ private:
 	//弾マネージャー
 	BulletManager* bulletManager = nullptr;
 
+	int count = 0;
+
 	
 
 public:

@@ -116,15 +116,42 @@ void Enemy::Fire()
 	Vec3 length = player_->GetWorldPos() - GetWorldPos();
 	length.Normalized();
 
-	//Vec3 velocity(0.8f, 0, 0/*length*/);//ここで発射時の角度,位置を決める
-	Vec3 velocity(length);//ここで発射時の角度,位置を決める
+	//ボスだったら横に弾発射
+	Vec3 velocity;
+	if (isBoss)
+	{
+		switch (count % 4)
+		{
+		case 0:
+			velocity = { -0.8f, 0, 0 };
+			break;
+		case 1:
+			velocity = { 0, 0.8f, 0 };
+			break;
+		case 2:
+			velocity = { 0.8f, 0, 0 };
+			break;
+		case 3:
+			velocity = { 0, -0.8f, 0 };
+			break;
+		}
+
+		count++;
+	}
+	else
+		velocity = { length };//ここで発射時の角度,位置を決める
 
 	//速度ベクトルを自機の向きに合わせて回転させる
 	Vec3xM4(velocity, worldMat.matWorld, false);
 
 	//球を生成、初期化
 	std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
-	newBullet->Initialize(worldMat.trans, velocity);
+	
+	if (isBoss)
+		newBullet->Initialize(worldMat.trans, velocity,HOMING);
+	else
+		newBullet->Initialize(worldMat.trans, velocity);
+
 	newBullet->SetPlayer(player_);
 	//球を登録
 	bulletManager->enemyBullets_.push_back(std::move(newBullet));
@@ -144,8 +171,12 @@ void Enemy::ShotResetTimer()
 	Fire();
 
 	//発射タイマーリセット
-	timedCalls_.push_back(std::make_unique<TimedCall>
-		(std::bind(&Enemy::ShotResetTimer, this), shotCool));
+	if (isBoss)
+		timedCalls_.push_back(std::make_unique<TimedCall>
+			(std::bind(&Enemy::ShotResetTimer, this), shotCool / 2.0f));
+	else
+		timedCalls_.push_back(std::make_unique<TimedCall>
+			(std::bind(&Enemy::ShotResetTimer, this), shotCool));
 	//↑コンストラクタも起動↓
 	//TimedCall::TimedCall(std::function<void()> f, uint32_t time)
 	//①.shotresetTimerをfunctionに入れる

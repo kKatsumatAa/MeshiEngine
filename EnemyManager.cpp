@@ -24,13 +24,13 @@ void EnemyManager::BossGenerate(const Vec3& pos, float& scale, int& HP)
 {
 	//‹…‚ğ¶¬A‰Šú‰»
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+	enemy->isBoss = true;
 	enemy->Initialize(player, bulletManager, { pos.x,pos.y,pos.z },soundData);
 	enemy->radius_ *= scale;
 	enemy->worldMat.scale = { scale,scale,scale };
 	enemy->worldMat.SetWorld();
 	//enemy->radius_ /= 2;
 	enemy->HP = HP;
-	enemy->isBoss = true;
 
 	//‹…‚ğ“o˜^
 	enemies.push_back(std::move(enemy));
