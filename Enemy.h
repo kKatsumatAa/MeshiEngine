@@ -35,7 +35,7 @@ private:
 
 	float lockOnLength = 0;
 	Vec3 lockOnVec;
-	bool isLockOnDead = false;
+
 
 	const float lockOnScaleTmp = 1.5f;
 	float isLockOnScale = lockOnScaleTmp;
@@ -70,6 +70,8 @@ public:
 
 	const int lockCooltmp = 7;
 	int lockCool = lockCooltmp;
+
+	bool isLockOnDead = false;
 
 	//ä÷êî
 private:

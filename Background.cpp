@@ -29,10 +29,59 @@ void Background::Update()
 	}
 }
 
-void Background::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
+void Background::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle, const bool& boss)
 {
+	count+=0.05f;
+
+	float scale = 0;
+	//点滅
+	scale = (sinf(count)+5.0f) / 4.0f;
+
 	for (int i = 0; i < _countof(back) / 4; i++)
 	{
+		//ボスと戦闘時、おしゃれな奴動かす
+		if (boss)
+		{
+			if (i % 2 == 0)
+			{
+				back[i * 4].worldMat->scale.x = scale;
+				back[i * 4 + 1].worldMat->scale.x = scale;
+				back[i * 4 + 2].worldMat->scale.x = scale;
+				back[i * 4 + 3].worldMat->scale.x = scale;
+			}
+			else
+			{
+				back[i * 4].worldMat->scale.y = scale;
+				back[i * 4 + 1].worldMat->scale.y = scale;
+				back[i * 4 + 2].worldMat->scale.y = scale;
+				back[i * 4 + 3].worldMat->scale.y = scale;
+			}
+
+			back[i * 4].worldMat->SetWorld();
+			back[i * 4 + 1].worldMat->SetWorld();
+			back[i * 4 + 2].worldMat->SetWorld();
+			back[i * 4 + 3].worldMat->SetWorld();
+		}
+		else
+		{
+			//ゆっくり元の大きさに戻す
+			if (back[i * 4].worldMat->scale.x > 1.0f)
+			{
+				back[i * 4].worldMat->scale.x -= 0.02f;
+				back[i * 4 + 1].worldMat->scale.x -= 0.02f;
+				back[i * 4 + 2].worldMat->scale.x -= 0.02f;
+				back[i * 4 + 3].worldMat->scale.x -= 0.02f;
+			}
+
+			if (back[i * 4].worldMat->scale.y > 1.0f)
+			{
+				back[i * 4].worldMat->scale.y -= 0.02f;
+				back[i * 4 + 1].worldMat->scale.y -= 0.02f;
+				back[i * 4 + 2].worldMat->scale.y -= 0.02f;
+				back[i * 4 + 3].worldMat->scale.y -= 0.02f;
+			}
+		}
+
 		back[i * 4].DrawLine(pos[0], pos[1], back[i * 4].worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f / (back[i * 4].worldMat->trans.z / 130.0f) }, { texHundle[0] });
 		back[i * 4 + 1].DrawLine(pos[1], pos[2], back[i * 4 + 1].worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f / (back[i * 4].worldMat->trans.z / 130.0f) }, { texHundle[0] });
 		back[i * 4 + 2].DrawLine(pos[2], pos[3], back[i * 4 + 2].worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f / (back[i * 4].worldMat->trans.z / 130.0f) }, { texHundle[0] });

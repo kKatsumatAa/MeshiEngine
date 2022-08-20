@@ -60,7 +60,7 @@ void Enemy::Update()
 	}
 	if (isLockOnDead)
 	{
-		lockOnLength -= 5;
+		lockOnLength -= 7.5f;
 		if (lockOnLength <= 0)
 		{
 			HP -= isLockOned;

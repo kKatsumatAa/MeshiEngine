@@ -116,6 +116,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		bulletManager.UpdateEnemyBullet();
 
 		back.Update();
+
+		int bossNum = 0;
 		
 		//colliderManager
 		{
@@ -150,15 +152,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				const std::list<std::unique_ptr<Enemy>>& enemies = enemyManager.GetEnemies();
 
 				int lockOnNum = 0;
+				
+
 				for (const std::unique_ptr<Enemy>& enemy : enemies)
 				{
 					colliderManager->SetListCollider(enemy.get());
 					//playerがロックオンモードじゃなければロックオン状態を解除
-					if (player->GetPlayerStatus() != TARGET && enemy->isLockOned || player->isDead)
+					if (player->GetPlayerStatus() != TARGET && enemy->isLockOned && !enemy->isLockOnDead || player->isDead)
 					{
 						enemy->LockOnedReset();
 					}
 					lockOnNum += enemy.get()->isLockOned;//ロックオンされてる数をカウント
+					bossNum += enemy.get()->isBoss;
 				}
 				player->isLockNum = lockOnNum;//代入
 
@@ -171,21 +176,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 		}
 
-		//if (enemyManager.GetEnemies().size() == 0&& angle >= 4000)
-		//{
-		//	SoundStopWave(soundData2);
-		//}
-
 // 4.描画コマンドここから　//-----------
 		//背景
-		back.Draw(viewMat, projectionMat, textureHandle);
+		back.Draw(viewMat, projectionMat, textureHandle, bossNum);
 		//Enemy
 		bulletManager.DrawEnemyBullet(viewMat, projectionMat, textureHandle);
 		enemyManager.Draw(viewMat, projectionMat, textureHandle);
 		//player
 		player->Draw(viewMat, projectionMat, textureHandle,textureNumHundle);//playerを後にしないと透過されない！
-		//ui
-		//UI.DrawBoxSprite({ 180,200,0 }, 0.5f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[6], {0.5f,0.5f},angle);
 		
 
 // 4.描画コマンドここまで //
