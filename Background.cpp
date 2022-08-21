@@ -36,11 +36,18 @@ void Background::Update()
 		for (int i = 0; i < _countof(back); i++)
 		{
 			back[i].worldMat->trans.z += 1.0f;
-			back[i].worldMat->SetWorld();
+			
 			if (back[i].worldMat->trans.z >= distance * (float)backNum)
 			{
 				back[i].worldMat->trans.z = -15.0f;
 			}
+			if (back[i].worldMat->rot.z < pi / 2.0f)
+			{
+				back[i].worldMat->rot.z += 0.02f;
+				if (back[i].worldMat->rot.z >= pi / 2.0f) back[i].worldMat->rot.z = pi / 2.0f;
+			}
+
+			back[i].worldMat->SetWorld();
 		}
 	}
 }
