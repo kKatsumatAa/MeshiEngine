@@ -55,6 +55,9 @@ void EnemyManager::Update()
 			return (enemy->IsDead() || enemy->IsAnnihilation());
 		}
 	);
+
+	//終了フラグ
+	if (isEnd[0] && enemies.size() == 0) isEnd[1] = true;
 }
 
 void EnemyManager::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
@@ -167,6 +170,15 @@ void EnemyManager::UpdateEnemyPopCommands()
 			//待機開始
 			isWait = true;
 			waitTimer = waitTime;
+
+			//コマンドループ抜ける
+			break;//(次の行(POP)を読み込まないように)
+		}
+		//ENDコマンド
+		else if(word.find("END") == 0)
+		{
+			//終了フラグ
+			isEnd[0] = true;
 
 			//コマンドループ抜ける
 			break;//(次の行(POP)を読み込まないように)

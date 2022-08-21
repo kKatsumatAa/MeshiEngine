@@ -20,6 +20,9 @@ private:
 	float count = 0;
 
 public:
+	int phase = 0;
+
+
 	Background();
 	void Update();
 	void Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle, const bool& boss = false);

@@ -18,13 +18,29 @@ Background::Background()
 
 void Background::Update()
 {
-	for (int i = 0; i < _countof(back); i++)
+	if (phase == 0)
 	{
-		back[i].worldMat->trans.z -= 1.0f;
-		back[i].worldMat->SetWorld();
-		if (back[i].worldMat->trans.z <= -15.0f)
+		for (int i = 0; i < _countof(back); i++)
 		{
-			back[i].worldMat->trans.z = distance * (float)backNum;
+			back[i].worldMat->trans.z -= 1.0f;
+			back[i].worldMat->SetWorld();
+			if (back[i].worldMat->trans.z <= -15.0f)
+			{
+				back[i].worldMat->trans.z = distance * (float)backNum;
+			}
+		}
+	}
+	//フェーズ２
+	if (phase == 1)
+	{
+		for (int i = 0; i < _countof(back); i++)
+		{
+			back[i].worldMat->trans.z += 1.0f;
+			back[i].worldMat->SetWorld();
+			if (back[i].worldMat->trans.z >= distance * (float)backNum)
+			{
+				back[i].worldMat->trans.z = -15.0f;
+			}
 		}
 	}
 }

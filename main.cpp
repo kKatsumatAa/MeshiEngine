@@ -190,6 +190,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 0.5f, true);
 		}
 
+		back.phase = enemyManager.isEnd[1];
+
 // 4.描画コマンドここから　//-----------
 		//背景
 		back.Draw(viewMat, projectionMat, textureHandle, bossNum);

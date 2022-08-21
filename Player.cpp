@@ -170,11 +170,11 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		if (HP > 0)
 		{
 			if (HP >= 1)
-				hp[0].DrawBoxSprite({ 50.0f,650.0f,0 }, 0.1f, { 1.0f,1.0f,1.0f,0.8f }, texHundle[8]);
-			if (HP >= 2)											
-				hp[1].DrawBoxSprite({ 90.0f,650.0f,0 }, 0.1f,{ 1.0f, 1.0f,1.0f,0.8f }, texHundle[8]);
-			if (HP >= 3)											
-				hp[2].DrawBoxSprite({ 130.0f,650.0f,0 }, 0.1f,{ 1.0f,1.0f,1.0f,0.8f }, texHundle[8]);
+				hp[0].DrawBoxSprite({ 50.0f,650.0f,0 }, 0.1f, { 1.0f,1.0f,1.0f,0.6f }, texHundle[8]);
+			if (HP >= 2)
+				hp[1].DrawBoxSprite({ 90.0f,650.0f,0 }, 0.1f, { 1.0f, 1.0f,1.0f,0.6f }, texHundle[8]);
+			if (HP >= 3)
+				hp[2].DrawBoxSprite({ 130.0f,650.0f,0 }, 0.1f, { 1.0f,1.0f,1.0f,0.6f }, texHundle[8]);
 		}
 	}
 }

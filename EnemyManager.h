@@ -26,6 +26,7 @@ private:
 
 public:
 	std::list<std::unique_ptr<Enemy>> enemies;
+	bool isEnd[2] = { false };
 
 
 	void Initialize(Player* player, BulletManager* bulletManager,SoundData* soundData);
