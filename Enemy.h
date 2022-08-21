@@ -33,6 +33,7 @@ private:
 	Draw lockOn;
 	Draw lockOnLine;
 
+
 	float lockOnLength = 0;
 	Vec3 lockOnVec;
 
@@ -46,7 +47,7 @@ private:
 	bool isAnnihilation = false;
 
 	//状態（行動）
-	EnemyState* state;
+	EnemyState* state=nullptr;
 	////弾
 	//std::list< std::unique_ptr<EnemyBullet>> bullets_;
 	static const int shotCool = 180;
@@ -63,7 +64,7 @@ private:
 	
 
 public:
-	SoundData* soundData;
+	SoundData* soundData=nullptr;
 	//int shotTime = 0;
 	//ワールド変換データ
 	WorldMat worldMat;

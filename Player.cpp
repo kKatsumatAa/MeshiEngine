@@ -167,7 +167,7 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		}
 
 		//hpÇ∆Ç©ÉçÉbÉNÉIÉìÇÃêî
-		hp.DrawClippingBoxSprite({ 0,70,0 }, 0.1f, { 0,0 }, { 0.1f * HP * 30,1.0f }, { 1.0f,0.0f,0.0f,1.0f }, 0.0f, texHundle[0]);
+		hp.DrawClippingBoxSprite({ 10.0f,630.0f,0 }, 0.1f, { 0,0 }, { 0.1f * HP * 30,1.0f }, { 1.0f,0.0f,0.0f,1.0f }, 0.0f, texHundle[0]);
 	}
 }
 

@@ -25,7 +25,7 @@ public:
 	bool isBoss = false;
 	int coolTime = 0;
 
-	int HP;
+	int HP=0;
 
 	float radius_ = 5.0f;
 	//ロックオンモードかどうか(player用→当たり判定の時に使用)

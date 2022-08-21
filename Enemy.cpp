@@ -1,5 +1,8 @@
 #include "Enemy.h"
 
+Draw HPBox;
+Draw HPBox2;
+
 //Enemy::Enemy(Player* player)
 //{
 //	player_ = player;
@@ -193,10 +196,10 @@ void Enemy::ShotResetTimer()
 
 void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
-	if(isBoss)
-	draw.DrawCube3D(&worldMat, &view, &projection, { 0.7f,0.7f,0.0f,0.8f }, texHundle[0]);
+	if (isBoss)
+		draw.DrawCube3D(&worldMat, &view, &projection, { 0.7f,0.7f,0.0f,0.8f }, texHundle[0]);
 	else
-	draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,0.0f,0.0f,0.7f }, texHundle[0]);
+		draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,0.0f,0.0f,0.7f }, texHundle[0]);
 
 	if (isLockOned)
 	{
@@ -205,12 +208,12 @@ void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHund
 			isLockOnScale -= 0.1f;
 			lockOnAngle += 5.0f;
 		}
-		else if(lockOnAngle != 0.0f) lockOnAngle = 0.0f;
+		else if (lockOnAngle != 0.0f) lockOnAngle = 0.0f;
 
 		//lockonÇÃê¸
-		if(isLockOnDead)
-		lockOnLine.DrawLine(worldMat.trans, worldMat.trans + lockOnVec * lockOnLength, lockOnLine.worldMat,
-			&view, &projection, { 1.0f,1.0f,0.0f,1.0f }, texHundle[0]);
+		if (isLockOnDead)
+			lockOnLine.DrawLine(worldMat.trans, worldMat.trans + lockOnVec * lockOnLength, lockOnLine.worldMat,
+				&view, &projection, { 1.0f,1.0f,0.0f,1.0f }, texHundle[0]);
 		else
 			lockOnLine.DrawLine(worldMat.trans, worldMat.trans + lockOnVec * lockOnLength, lockOnLine.worldMat,
 				&view, &projection, { 1.0f,1.0f,1.0f,0.5f }, texHundle[0]);
@@ -222,10 +225,12 @@ void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHund
 		else
 			lockOn.DrawBoxSprite({ v.x,v.y,0 }, isLockOnScale, { 1.0f,1.0f,1.0f,0.7f }, texHundle[6], { 0.5f,0.5f }, lockOnAngle);
 	}
-	/*for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
+	//
+	if (isBoss)
 	{
-		bullet->Draw(view, projection, texHundle[0]);
-	}*/
+		HPBox2.DrawClippingBoxSprite({ 300,40,0 }, 0.1f, { 0,0.20f }, { 0.1f * 30 * 10,0.55f }, { 1.0f,1.0f,1.0f,0.6f }, 0.0f, texHundle[0]);
+		HPBox.DrawClippingBoxSprite({ 300,40,0 }, 0.1f, { 0.05f,0.25f }, { 0.1f * HP * 10 - 0.05f,0.5f }, { 1.0f,0.0f,0.0f,1.0f }, 0.0f, texHundle[0]);
+	}
 }
 
 Vec3 Enemy::GetTrans()

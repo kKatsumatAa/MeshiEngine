@@ -151,7 +151,7 @@ void EnemyManager::UpdateEnemyPopCommands()
 
 			//hp
 			getline(line_stream, word, ',');
-			int HP = (float)std::atof(word.c_str());
+			int HP = (int)std::atof(word.c_str());
 
 			BossGenerate({ x,y,z }, scale, HP);
 		}

@@ -67,18 +67,18 @@ void Background::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* te
 			//‚ä‚Á‚­‚èŒ³‚Ì‘å‚«‚³‚É–ß‚·
 			if (back[i * 4].worldMat->scale.x > 1.0f)
 			{
-				back[i * 4].worldMat->scale.x -= 0.002f;
-				back[i * 4 + 1].worldMat->scale.x -= 0.002f;
-				back[i * 4 + 2].worldMat->scale.x -= 0.002f;
-				back[i * 4 + 3].worldMat->scale.x -= 0.002f;
+				back[i * 4].worldMat->scale.x -= 0.01f;
+				back[i * 4 + 1].worldMat->scale.x -= 0.01f;
+				back[i * 4 + 2].worldMat->scale.x -= 0.01f;
+				back[i * 4 + 3].worldMat->scale.x -= 0.01f;
 			}
 
 			if (back[i * 4].worldMat->scale.y > 1.0f)
 			{
-				back[i * 4].worldMat->scale.y -= 0.002f;
-				back[i * 4 + 1].worldMat->scale.y -= 0.002f;
-				back[i * 4 + 2].worldMat->scale.y -= 0.002f;
-				back[i * 4 + 3].worldMat->scale.y -= 0.002f;
+				back[i * 4].worldMat->scale.y -= 0.01f;
+				back[i * 4 + 1].worldMat->scale.y -= 0.01f;
+				back[i * 4 + 2].worldMat->scale.y -= 0.01f;
+				back[i * 4 + 3].worldMat->scale.y -= 0.01f;
 			}
 		}
 
