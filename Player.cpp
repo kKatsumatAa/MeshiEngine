@@ -8,7 +8,7 @@ WorldMat rayWorld;
 Draw d;
 //実験用
 Draw num;
-Draw hp;
+Draw hp[3];
 
 Player::Player(SoundData* shotSE):
 	shotSE(shotSE)
@@ -167,7 +167,15 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		}
 
 		//hpとかロックオンの数
-		hp.DrawClippingBoxSprite({ 10.0f,630.0f,0 }, 0.1f, { 0,0 }, { 0.1f * HP * 30,1.0f }, { 1.0f,0.0f,0.0f,1.0f }, 0.0f, texHundle[0]);
+		if (HP > 0)
+		{
+			if (HP >= 1)
+				hp[0].DrawBoxSprite({ 50.0f,650.0f,0 }, 0.1f, { 1.0f,1.0f,1.0f,0.8f }, texHundle[8]);
+			if (HP >= 2)											
+				hp[1].DrawBoxSprite({ 90.0f,650.0f,0 }, 0.1f,{ 1.0f, 1.0f,1.0f,0.8f }, texHundle[8]);
+			if (HP >= 3)											
+				hp[2].DrawBoxSprite({ 130.0f,650.0f,0 }, 0.1f,{ 1.0f,1.0f,1.0f,0.8f }, texHundle[8]);
+		}
 	}
 }
 

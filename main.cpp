@@ -33,7 +33,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		LoadGraph(L"Resources/lock.png", textureHandle[4]);//ロックオン
 		LoadGraph(L"Resources/back.jpg", textureHandle[5]);//背景
 		LoadGraph(L"Resources/lockOn.png", textureHandle[6]);//敵のロックオン
-		LoadGraph(L"Resources/Title.png", textureHandle[7]);//敵のロックオン
+		LoadGraph(L"Resources/Title.png", textureHandle[7]);//タイトル
+		LoadGraph(L"Resources/HP.png", textureHandle[8]);//hp
 	}
 	//数字の画像
 	UINT64 textureNumHundle[12];
