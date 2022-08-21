@@ -61,7 +61,7 @@ private:
 
 	int count = 0;
 
-	
+
 
 public:
 	SoundData* soundData=nullptr;
@@ -73,6 +73,8 @@ public:
 	int lockCool = lockCooltmp;
 
 	bool isLockOnDead = false;
+
+	float bossScale = 0.0f;
 
 	//ä÷êî
 private:

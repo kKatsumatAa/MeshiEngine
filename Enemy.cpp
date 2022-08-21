@@ -57,6 +57,12 @@ void Enemy::Update()
 	{
 		worldMat.rot.z += 0.07f;
 		worldMat.SetWorld();
+
+		if (worldMat.scale.z > bossScale)
+		{
+			worldMat.scale -= {0.2f, 0.2f, 0.2f};
+			worldMat.SetWorld();
+		}
 	}
 
 
