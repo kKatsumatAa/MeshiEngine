@@ -23,10 +23,13 @@ private:
 	void UpdateEnemyPopCommands();
 	void EnemyGenerate(const Vec3& pos);
 	void BossGenerate(const Vec3& pos, float& scale, int& HP);
+	void Enemy2Generate(const Vec3& pos);
 
 public:
 	std::list<std::unique_ptr<Enemy>> enemies;
 	int phase = 0;
+	//phase‚ª•Ï‚í‚é‚Ü‚Å‘Ò‚Âƒtƒ‰ƒO
+	bool isPhase = false;
 	bool isEnd[2] = { false };
 
 

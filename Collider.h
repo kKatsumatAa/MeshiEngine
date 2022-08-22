@@ -23,6 +23,7 @@ protected:
 
 public:
 	bool isBoss = false;
+	bool isEnemy2 = false;
 	int coolTime = 0;
 
 	int HP=0;

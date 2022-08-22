@@ -97,12 +97,6 @@ void Enemy::Update()
 	{
 		time->Update();
 	}
-	////弾
-	//for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
-	//{
-	//	bullet->Update();
-	//}
-
 
 	//timerを消す
 	timedCalls_.remove_if([](std::unique_ptr<TimedCall>& time)
@@ -110,12 +104,6 @@ void Enemy::Update()
 			return time->IsFinished();
 		}
 	);
-	////弾を消す
-	//bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet)
-	//	{
-	//		return bullet->IsDead();
-	//	}
-	//);
 
 	state->Update();
 
@@ -154,6 +142,8 @@ void Enemy::Fire()
 
 		count++;
 	}
+	else if (isEnemy2)
+		velocity = { -0.8f, 0, 0 };
 	else
 		velocity = { length };//ここで発射時の角度,位置を決める
 
@@ -163,7 +153,7 @@ void Enemy::Fire()
 	//球を生成、初期化
 	std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
 	
-	if (isBoss)
+	if (isBoss || isEnemy2)
 		newBullet->Initialize(worldMat.trans, velocity,HOMING);
 	else
 		newBullet->Initialize(worldMat.trans, velocity);
@@ -189,7 +179,10 @@ void Enemy::ShotResetTimer()
 	//発射タイマーリセット
 	if (isBoss)
 		timedCalls_.push_back(std::make_unique<TimedCall>
-			(std::bind(&Enemy::ShotResetTimer, this), shotCool / 2.0f));
+			(std::bind(&Enemy::ShotResetTimer, this), shotCool / 4.0f));
+	else if(isEnemy2)
+		timedCalls_.push_back(std::make_unique<TimedCall>
+			(std::bind(&Enemy::ShotResetTimer, this), shotCool * 1.5f));
 	else
 		timedCalls_.push_back(std::make_unique<TimedCall>
 			(std::bind(&Enemy::ShotResetTimer, this), shotCool));
@@ -204,6 +197,8 @@ void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHund
 {
 	if (isBoss)
 		draw.DrawCube3D(&worldMat, &view, &projection, { 0.7f,0.7f,0.0f,0.8f }, texHundle[0]);
+	else if (isEnemy2)
+		draw.DrawCube3D(&worldMat, &view, &projection, { 0.0f,0.9f,1.0f,0.8f }, texHundle[0]);
 	else
 		draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,0.0f,0.0f,0.7f }, texHundle[0]);
 

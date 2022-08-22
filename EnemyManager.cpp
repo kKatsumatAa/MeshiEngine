@@ -37,30 +37,44 @@ void EnemyManager::BossGenerate(const Vec3& pos, float& scale, int& HP)
 	enemies.push_back(std::move(enemy));
 }
 
+void EnemyManager::Enemy2Generate(const Vec3& pos)
+{
+	//球を生成、初期化
+	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+	enemy->isEnemy2 = true;
+
+	enemy->Initialize(player, bulletManager, { pos.x,pos.y,pos.z }, soundData);
+	enemy->HP = 2;
+
+	//球を登録
+	enemies.push_back(std::move(enemy));
+}
+
 void EnemyManager::Update()
 {
 	//スクリプト発生処理
 	UpdateEnemyPopCommands();
 
-	//弾
+	//敵
 	for (std::unique_ptr<Enemy>& enemy : enemies)
 	{
 		enemy->Update();
 		if (enemy->IsDead()) SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[3], 2.0f);
 	}
 
-	//弾を消す
+	//敵消す
 	enemies.remove_if([](std::unique_ptr<Enemy>& enemy)
 		{
 			return (enemy->IsDead() || enemy->IsAnnihilation());
 		}
 	);
 
-	//フェーズ変更
+	//フェーズ変更（こいつを倒したらフェーズ変更になる && 敵が0になったら）
 	if (isEnd[0] && enemies.size() == 0)
 	{
 		phase++;
 		isEnd[0] = false;
+		isPhase = false;
 	}
 }
 
@@ -89,6 +103,11 @@ void EnemyManager::LoadEnemyPopData()
 void EnemyManager::UpdateEnemyPopCommands()
 {
 	//待機処理
+	if (isPhase)
+	{
+		return;
+	}
+
 	if (isWait)
 	{
 		waitTimer--;
@@ -121,8 +140,25 @@ void EnemyManager::UpdateEnemyPopCommands()
 			continue;
 		}
 
+		//Enemy2コマンド
+		if (word.find("POP2") == 0)
+		{
+			//x座標
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			//y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			//z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			Enemy2Generate({ x,y,z });
+		}
 		//POPコマンド
-		if (word.find("POP") == 0)
+		else if (word.find("POP") == 0)
 		{
 			//x座標
 			getline(line_stream, word, ',');
@@ -184,6 +220,8 @@ void EnemyManager::UpdateEnemyPopCommands()
 			//終了フラグ
 			//終了フラグ
 			isEnd[0] = true;
+			//phaseが変わるまで待つフラグ
+			isPhase = true;
 			//phase++;
 
 			//コマンドループ抜ける
