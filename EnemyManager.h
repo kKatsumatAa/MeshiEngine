@@ -26,6 +26,7 @@ private:
 
 public:
 	std::list<std::unique_ptr<Enemy>> enemies;
+	int phase = 0;
 	bool isEnd[2] = { false };
 
 

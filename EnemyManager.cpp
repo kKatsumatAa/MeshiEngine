@@ -46,9 +46,9 @@ void EnemyManager::Update()
 	for (std::unique_ptr<Enemy>& enemy : enemies)
 	{
 		enemy->Update();
-		if(enemy->IsDead()) SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[3], 2.0f);
+		if (enemy->IsDead()) SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[3], 2.0f);
 	}
-	
+
 	//弾を消す
 	enemies.remove_if([](std::unique_ptr<Enemy>& enemy)
 		{
@@ -56,8 +56,12 @@ void EnemyManager::Update()
 		}
 	);
 
-	//終了フラグ
-	if (isEnd[0] && enemies.size() == 0) isEnd[1] = true;
+	//フェーズ変更
+	if (isEnd[0] && enemies.size() == 0)
+	{
+		phase++;
+		isEnd[0] = false;
+	}
 }
 
 void EnemyManager::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
@@ -170,6 +174,17 @@ void EnemyManager::UpdateEnemyPopCommands()
 			//待機開始
 			isWait = true;
 			waitTimer = waitTime;
+
+			//コマンドループ抜ける
+			break;//(次の行(POP)を読み込まないように)
+		}
+		//PHASEコマンド
+		else if (word.find("PHASE") == 0)
+		{
+			//終了フラグ
+			//終了フラグ
+			isEnd[0] = true;
+			//phase++;
 
 			//コマンドループ抜ける
 			break;//(次の行(POP)を読み込まないように)

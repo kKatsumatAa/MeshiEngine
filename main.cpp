@@ -190,7 +190,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 0.5f, true);
 		}
 
-		back.phase = enemyManager.isEnd[1];
+		back.phase = enemyManager.phase;
 
 // 4.描画コマンドここから　//-----------
 		//背景

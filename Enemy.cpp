@@ -234,7 +234,7 @@ void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHund
 	//
 	if (isBoss)
 	{
-		HPBox2.DrawClippingBoxSprite({ 300,40,0 }, 0.1f, { 0,0.20f }, { 0.1f * 30 * 10,0.55f }, { 1.0f,1.0f,1.0f,0.6f }, 0.0f, texHundle[0]);
+		HPBox2.DrawClippingBoxSprite({ 300,40,0 }, 0.1f, { 0,0.20f }, { 0.1f * 30 * 10 + 0.05f,0.6f }, { 1.0f,1.0f,1.0f,0.6f }, 0.0f, texHundle[0]);
 		HPBox.DrawClippingBoxSprite({ 300,40,0 }, 0.1f, { 0.05f,0.25f }, { 0.1f * HP * 10 - 0.05f,0.5f }, { 1.0f,0.0f,0.0f,1.0f }, 0.0f, texHundle[0]);
 	}
 }
