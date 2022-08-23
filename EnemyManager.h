@@ -1,5 +1,6 @@
 #pragma once
 #include"Enemy.h"
+#include"Particle.h"
 #include<sstream>
 
 class EnemyManager
@@ -15,6 +16,8 @@ private:
 	//‘Ò‹@
 	bool isWait = false;
 	int  waitTimer = 0;
+
+	ParticleManager* particleManager;
 
 
 	/// <summary>
@@ -33,7 +36,7 @@ public:
 	bool isEnd[2] = { false };
 
 
-	void Initialize(Player* player, BulletManager* bulletManager,SoundData* soundData);
+	void Initialize(Player* player, BulletManager* bulletManager,SoundData* soundData, ParticleManager* pManager);
 	void Update();
 	void Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle);
 

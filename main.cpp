@@ -71,6 +71,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//UI
 	Draw UI;
 
+	//パーティクル
+	ParticleManager pManager;
+
 	//BulletManager
 	BulletManager bulletManager;
 
@@ -79,7 +82,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//enemy
 	EnemyManager enemyManager;
-	enemyManager.Initialize(player, &bulletManager,soundData);
+	enemyManager.Initialize(player, &bulletManager,soundData, &pManager);
 	//enemyManager.LoadEnemyPopData();
 
 	//衝突
@@ -89,6 +92,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Background back;
 
 	int bossNum = 0;
+
+
+
 
 	//描画初期化処理-------------
 
@@ -192,6 +198,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		back.phase = enemyManager.phase;
 
+		pManager.Update();
+
 // 4.描画コマンドここから　//-----------
 		//背景
 		back.Draw(viewMat, projectionMat, textureHandle, bossNum);
@@ -200,6 +208,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		enemyManager.Draw(viewMat, projectionMat, textureHandle);
 		//player
 		player->Draw(viewMat, projectionMat, textureHandle,textureNumHundle);//playerを後にしないと透過されない！
+
+		pManager.Draw(viewMat, projectionMat, textureHandle[0]);
 		
 
 // 4.描画コマンドここまで //

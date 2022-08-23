@@ -1,11 +1,12 @@
 #include "EnemyManager.h"
 using namespace std;
 
-void EnemyManager::Initialize(Player* player, BulletManager* bulletManager, SoundData* soundData)
+void EnemyManager::Initialize(Player* player, BulletManager* bulletManager, SoundData* soundData, ParticleManager* pManager)
 {
 	this->soundData = soundData;
 	this->player = player;
 	this->bulletManager = bulletManager;
+	particleManager = pManager;
 
 	LoadEnemyPopData();
 }
@@ -59,7 +60,11 @@ void EnemyManager::Update()
 	for (std::unique_ptr<Enemy>& enemy : enemies)
 	{
 		enemy->Update();
-		if (enemy->IsDead()) SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[3], 2.0f);
+		if (enemy->IsDead())
+		{
+			SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[3], 2.0f);
+			particleManager->GenerateRandomParticle(enemy->worldMat.trans, 120, enemy->worldMat.scale.x * 2.5f, { 1.0f,1.0f,1.0f,1.0f }, 10);
+		}
 	}
 
 	//ìGè¡Ç∑

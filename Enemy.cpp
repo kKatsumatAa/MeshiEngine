@@ -1,7 +1,6 @@
 #include "Enemy.h"
 
-Draw HPBox;
-Draw HPBox2;
+
 
 //Enemy::Enemy(Player* player)
 //{

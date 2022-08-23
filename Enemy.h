@@ -33,6 +33,9 @@ private:
 	Draw lockOn;
 	Draw lockOnLine;
 
+	Draw HPBox;
+	Draw HPBox2;
+
 
 	float lockOnLength = 0;
 	Vec3 lockOnVec;
@@ -60,6 +63,7 @@ private:
 	BulletManager* bulletManager = nullptr;
 
 	int count = 0;
+
 
 
 
