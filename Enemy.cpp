@@ -290,6 +290,11 @@ void Enemy::LockOnedReset()
 	lockOnAngle = 0.0f;
 }
 
+XMFLOAT4 Enemy::GetColor()
+{
+	return draw.GetColor();
+}
+
 //----------------------------------------------
 void EnemyStateApproach::Update()
 {

@@ -50,7 +50,7 @@ void ParticleManager::GenerateRandomParticle(const Vec3& pos, const int& deadTim
 	//メルセンヌツイスター
 	std::mt19937_64 engine(seed_gen());
 	//vecランダム
-	std::uniform_real_distribution<float> vecDist(-7.0f, 7.0f);
+	std::uniform_real_distribution<float> vecDist(-10.0f, 10.0f);
 
 	//Numの数だけ生成
 	for (int i = 0; i < Num; i++)

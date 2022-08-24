@@ -63,7 +63,8 @@ void EnemyManager::Update()
 		if (enemy->IsDead())
 		{
 			SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[3], 2.0f);
-			particleManager->GenerateRandomParticle(enemy->worldMat.trans, 120, enemy->worldMat.scale.x * 2.5f, { 1.0f,1.0f,1.0f,1.0f }, 10);
+			particleManager->GenerateRandomParticle(enemy->worldMat.trans, 120, enemy->worldMat.scale.x * 3.5f,
+				{ enemy->GetColor().x,enemy->GetColor().y,enemy->GetColor().z,1.0f }, 10);
 		}
 	}
 

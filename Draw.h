@@ -94,6 +94,9 @@ public:
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	void DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+
+
+	XMFLOAT4 GetColor() { return constMapMaterial->color; }
 	
 private:
 	void constBuffTransfer(const XMFLOAT4& plusRGBA);
