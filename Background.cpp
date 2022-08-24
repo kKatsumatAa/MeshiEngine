@@ -108,7 +108,7 @@ void Background::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* te
 		XMFLOAT4 color;
 
 		if (boss)
-			color = { 1.0f,0.0f,0.0f,0.9f };
+			color = { 1.0f,0.0f,0.0f,1.0f };
 		else if(phase == 0)
 			color = { 1.0f,1.0f,1.0f,1.0f / (back[i * 4].worldMat->trans.z / 130.0f) };
 		else if(phase == 1)

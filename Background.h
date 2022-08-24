@@ -4,7 +4,7 @@
 class Background
 {
 private:
-	static const int backNum = 7;
+	static const int backNum = 8;
 
 	Draw back[backNum * 4];
 	const Vec3 pos[4] =
