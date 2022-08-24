@@ -76,11 +76,15 @@ void EnemyManager::Update()
 	);
 
 	//フェーズ変更（こいつを倒したらフェーズ変更になる && 敵が0になったら）
-	if (isEnd[0] && enemies.size() == 0)
+	if ((isPhase) && enemies.size() == 0)
 	{
 		phase++;
-		isEnd[0] = false;
 		isPhase = false;
+	}
+	//敵が0になるまで待つのを解除
+	if ((isEnd[0]) && enemies.size() == 0)
+	{
+		isEnd[0] = false;
 	}
 }
 
@@ -109,7 +113,7 @@ void EnemyManager::LoadEnemyPopData()
 void EnemyManager::UpdateEnemyPopCommands()
 {
 	//待機処理
-	if (isPhase)
+	if (isPhase || isEnd[0])
 	{
 		return;
 	}
@@ -220,12 +224,19 @@ void EnemyManager::UpdateEnemyPopCommands()
 			//コマンドループ抜ける
 			break;//(次の行(POP)を読み込まないように)
 		}
+		//ZEROコマンド(敵がゼロになるまで待つ)
+		else if (word.find("ZERO") == 0)
+		{
+			//phaseが変わるまで待つフラグ
+			isEnd[0] = true;
+			//phase++;
+
+			//コマンドループ抜ける
+			break;//(次の行(POP)を読み込まないように)
+		}
 		//PHASEコマンド
 		else if (word.find("PHASE") == 0)
 		{
-			//終了フラグ
-			//終了フラグ
-			isEnd[0] = true;
 			//phaseが変わるまで待つフラグ
 			isPhase = true;
 			//phase++;
