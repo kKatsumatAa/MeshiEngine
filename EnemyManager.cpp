@@ -248,7 +248,7 @@ void EnemyManager::UpdateEnemyPopCommands()
 		else if(word.find("END") == 0)
 		{
 			//終了フラグ
-			isEnd[0] = true;
+			isEnd[1] = true;
 
 			//コマンドループ抜ける
 			break;//(次の行(POP)を読み込まないように)
