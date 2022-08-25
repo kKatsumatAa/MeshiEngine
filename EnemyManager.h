@@ -1,6 +1,7 @@
 #pragma once
 #include"Enemy.h"
 #include"Particle.h"
+#include"ItemManager.h"
 #include<sstream>
 
 class EnemyManager
@@ -18,6 +19,7 @@ private:
 	int  waitTimer = 0;
 
 	ParticleManager* particleManager;
+	ItemManager* itemManager;
 
 
 	/// <summary>
@@ -37,7 +39,7 @@ public:
 	bool isItem = false;
 
 
-	void Initialize(Player* player, BulletManager* bulletManager,SoundData* soundData, ParticleManager* pManager);
+	void Initialize(Player* player, BulletManager* bulletManager,SoundData* soundData, ParticleManager* pManager,ItemManager* iManager);
 	void Update();
 	void Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle);
 

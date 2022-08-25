@@ -4,7 +4,8 @@
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB)
 {
 	if (!(colliderA->GetCollisionAttribute() & colliderB->GetCollisionMask())
-		|| !(colliderB->GetCollisionAttribute() & colliderA->GetCollisionMask()))
+		|| !(colliderB->GetCollisionAttribute() & colliderA->GetCollisionMask())
+		|| (colliderA->isDead || colliderB->isDead))
 	{
 		return;//判定、衝突処理せず抜ける
 	}
@@ -25,7 +26,7 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 
 void CollisionManager::CheckCollisionPair2(Collider* colliderA, Collider* colliderB)
 {
-	if (colliderA->isLockOn && !colliderA->isDead)//playerがロックオンモードの時のみ
+	if (colliderA->isLockOn && !colliderA->isDead && !colliderB->isDead)//playerがロックオンモードの時のみ
 	{
 
 		if (!(colliderA->GetCollisionAttribute() == kCollisionAttributePlayer

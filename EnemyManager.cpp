@@ -1,12 +1,13 @@
 #include "EnemyManager.h"
 using namespace std;
 
-void EnemyManager::Initialize(Player* player, BulletManager* bulletManager, SoundData* soundData, ParticleManager* pManager)
+void EnemyManager::Initialize(Player* player, BulletManager* bulletManager, SoundData* soundData, ParticleManager* pManager, ItemManager* iManager)
 {
 	this->soundData = soundData;
 	this->player = player;
 	this->bulletManager = bulletManager;
 	particleManager = pManager;
+	itemManager = iManager;
 
 	LoadEnemyPopData();
 }
@@ -240,6 +241,30 @@ void EnemyManager::UpdateEnemyPopCommands()
 			//phaseが変わるまで待つフラグ
 			isPhase = true;
 			//phase++;
+
+			//コマンドループ抜ける
+			break;//(次の行(POP)を読み込まないように)
+		}
+		//ITEMコマンド
+		else if (word.find("ITEM") == 0)
+		{
+			//x座標
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			//y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			//z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			//scale
+			getline(line_stream, word, ',');
+			bool right = (float)std::atof(word.c_str());
+
+			itemManager->ItemGenerate({ x,y,z }, right);
 
 			//コマンドループ抜ける
 			break;//(次の行(POP)を読み込まないように)

@@ -65,6 +65,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		soundData[4] = SoundLoadWave("Resources/Damage.wav", false);
 		soundData[5] = SoundLoadWave("Resources/SE3.wav", false);
 		soundData[6] = SoundLoadWave("Resources/BGM.wav", false);
+		soundData[7] = SoundLoadWave("Resources/heal.wav", false);
 	}
 	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 0.5f, true);
 
@@ -80,9 +81,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//player
 	Player* player = new Player(soundData);
 
+	//item
+	ItemManager iManager;
+	iManager.Initialize(player, soundData, &pManager, &viewMat, &projectionMat);
+
 	//enemy
 	EnemyManager enemyManager;
-	enemyManager.Initialize(player, &bulletManager,soundData, &pManager);
+	enemyManager.Initialize(player, &bulletManager,soundData, &pManager, &iManager);
 	//enemyManager.LoadEnemyPopData();
 
 	//衝突
@@ -136,6 +141,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//bulletはそれ自体がlistなので特別
 			const std::list<std::unique_ptr<PlayerBullet>>& playerBullets = player->GetBullets();
 			const std::list<std::unique_ptr<EnemyBullet>>& enemyBullets = bulletManager.GetEnemyBullets();
+			const std::list<std::unique_ptr<Item>>& items = iManager.GetItems();
 
 			for (const std::unique_ptr<Enemy>& enemy : enemies)
 			{
@@ -149,6 +155,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				colliderManager->SetListCollider(bullet.get());
 			}
+			for (const std::unique_ptr<Item>& item : items)
+			{
+				colliderManager->SetListCollider(item.get());
+			}
 
 			colliderManager->CheckAllCollisions();
 
@@ -158,6 +168,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				colliderManager->ClearList();
 				colliderManager->SetListCollider(player);
 				const std::list<std::unique_ptr<Enemy>>& enemies = enemyManager.GetEnemies();
+				const std::list<std::unique_ptr<Item>>& items = iManager.GetItems();
 
 				int lockOnNum = 0;
 				
@@ -172,6 +183,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 					lockOnNum += enemy.get()->isLockOned;//ロックオンされてる数をカウント
 					bossNum += enemy.get()->isBoss;
+				}
+				//item用
+				for (const std::unique_ptr<Item>& item : items)
+				{
+					colliderManager->SetListCollider(item.get());
+					//playerがロックオンモードじゃなければロックオン状態を解除
+					if (player->GetPlayerStatus() != TARGET && item->isLockOned && !item->isLockOnDead || player->isDead)
+					{
+						item->LockOnedReset();
+					}
+					lockOnNum += item.get()->isLockOned;//ロックオンされてる数をカウント
 				}
 				player->isLockNum = lockOnNum;//代入
 
@@ -199,6 +221,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		back.phase = enemyManager.phase;
 
 		pManager.Update();
+		iManager.Update();
 
 // 4.描画コマンドここから　//-----------
 		//背景
@@ -206,11 +229,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//Enemy
 		bulletManager.DrawEnemyBullet(viewMat, projectionMat, textureHandle);
 		enemyManager.Draw(viewMat, projectionMat, textureHandle);
-
+		
 		pManager.Draw(viewMat, projectionMat, textureHandle[0]);
 		
 		//player
 		player->Draw(viewMat, projectionMat, textureHandle, textureNumHundle);//playerを後にしないと透過されない！
+
+		iManager.Draw(viewMat, projectionMat, textureHandle);
 
 // 4.描画コマンドここまで //
 

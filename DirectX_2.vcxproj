@@ -153,6 +153,7 @@
     <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="KeyboardInput.cpp" />
     <ClCompile Include="M4.cpp" />
     <ClCompile Include="main.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="KeyboardInput.h" />
     <ClInclude Include="M4.h" />
     <ClInclude Include="Particle.h" />
