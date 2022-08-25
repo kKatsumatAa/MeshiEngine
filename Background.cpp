@@ -112,7 +112,7 @@ void Background::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* te
 		else if(phase == 0)
 			color = { 1.0f,1.0f,1.0f,1.0f / (back[i * 4].worldMat->trans.z / 130.0f) };
 		else if(phase == 1)
-			color = { 0.7f,0.4f,0.8f,1.0f / (back[i * 4].worldMat->trans.z / 130.0f) };
+			color = { 0.8f,0.5f,0.9f,1.0f / (back[i * 4].worldMat->trans.z / 130.0f) };
 
 		back[i * 4].DrawLine(pos[0], pos[1], back[i * 4].worldMat, &view, &projection, color, { texHundle[0] });
 		back[i * 4 + 1].DrawLine(pos[1], pos[2], back[i * 4 + 1].worldMat, &view, &projection, color, { texHundle[0] });

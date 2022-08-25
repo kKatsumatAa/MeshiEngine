@@ -34,6 +34,7 @@ public:
 	//phase‚ª•Ï‚í‚é‚Ü‚Å‘Ò‚Âƒtƒ‰ƒO
 	bool isPhase = false;
 	bool isEnd[2] = { false };
+	bool isItem = false;
 
 
 	void Initialize(Player* player, BulletManager* bulletManager,SoundData* soundData, ParticleManager* pManager);

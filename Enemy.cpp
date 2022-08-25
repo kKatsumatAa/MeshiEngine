@@ -1,20 +1,6 @@
 #include "Enemy.h"
 
 
-
-//Enemy::Enemy(Player* player)
-//{
-//	player_ = player;
-//
-//	worldMat.trans = { 0,5,100 };
-//
-//	state = new EnemyStateApproach;
-//	state->SetEnemy(this);
-//
-//	//接近フェーズ初期化
-//	InitializeApproach();
-//}
-
 void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& pos, SoundData* soundData)
 {
 	this->soundData = soundData;
@@ -44,9 +30,6 @@ Enemy::~Enemy()
 
 void Enemy::InitializeApproach()
 {
-	//発射タイマーを初期化
-	//shotTime = shotCool;
-
 	ShotResetTimer();
 }
 
@@ -63,7 +46,6 @@ void Enemy::Update()
 			worldMat.SetWorld();
 		}
 	}
-
 
 	lockCool--;
 

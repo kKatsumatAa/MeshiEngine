@@ -206,11 +206,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//Enemy
 		bulletManager.DrawEnemyBullet(viewMat, projectionMat, textureHandle);
 		enemyManager.Draw(viewMat, projectionMat, textureHandle);
-		//player
-		player->Draw(viewMat, projectionMat, textureHandle,textureNumHundle);//playerを後にしないと透過されない！
 
 		pManager.Draw(viewMat, projectionMat, textureHandle[0]);
 		
+		//player
+		player->Draw(viewMat, projectionMat, textureHandle, textureNumHundle);//playerを後にしないと透過されない！
 
 // 4.描画コマンドここまで //
 
