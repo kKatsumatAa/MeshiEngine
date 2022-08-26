@@ -67,6 +67,7 @@ void Enemy::Update()
 			if (HP > 0)
 			{
 				SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.5f);
+				//ダメージ与えたら少し大きくなる（演出）
 				worldMat.scale = Vec3( scaletmp,scaletmp,scaletmp ) + Vec3(1.0f, 1.0f, 1.0f);
 				worldMat.SetWorld();
 			}
@@ -255,7 +256,7 @@ void Enemy::OnCollision()
 	if (HP > 0)
 	{
 		SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.5f);
-		//alpha = 0.0f;//colliderの処理が描画処理のalpha=0.8f;より前なのでできる
+		//ダメージ与えたら少し大きくなる（演出）
 		worldMat.scale = Vec3(scaletmp, scaletmp, scaletmp) + Vec3(1.0f, 1.0f, 1.0f);
 		worldMat.SetWorld();
 	}
