@@ -254,7 +254,7 @@ void Enemy::OnCollision()
 	if (HP > 0)
 	{
 		SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.5f);
-		alpha = 0.0f;
+		alpha = 0.0f;//collider‚Ìˆ—‚ª•`‰æˆ—‚Ìalpha=0.8f;‚æ‚è‘O‚È‚Ì‚Å‚Å‚«‚é
 	}
 }
 
