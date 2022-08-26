@@ -27,7 +27,7 @@ void EnemyManager::BossGenerate(const Vec3& pos, float& scale, int& HP)
 	//‹…‚ğ¶¬A‰Šú‰»
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
 	enemy->isBoss = true;
-	enemy->bossScale = scale;
+	enemy->scaletmp = scale;
 	enemy->Initialize(player, bulletManager, { pos.x,pos.y,pos.z },soundData);
 	enemy->radius_ *= scale;
 	enemy->worldMat.scale = { 10.0f,10.0f,10.0f };

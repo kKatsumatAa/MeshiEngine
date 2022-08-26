@@ -39,12 +39,13 @@ void Enemy::Update()
 	{
 		worldMat.rot.z += 0.07f;
 		worldMat.SetWorld();
+	}
 
-		if (worldMat.scale.z > bossScale)
-		{
-			worldMat.scale -= {0.2f, 0.2f, 0.2f};
-			worldMat.SetWorld();
-		}
+	//元のスケールより大きかったら小さくする
+	if (worldMat.scale.z > scaletmp)
+	{
+		worldMat.scale -= {0.2f, 0.2f, 0.2f};
+		worldMat.SetWorld();
 	}
 
 	lockCool--;
@@ -66,7 +67,8 @@ void Enemy::Update()
 			if (HP > 0)
 			{
 				SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.5f);
-				alpha = 0.0f;
+				worldMat.scale = Vec3( scaletmp,scaletmp,scaletmp ) + Vec3(1.0f, 1.0f, 1.0f);
+				worldMat.SetWorld();
 			}
 		}
 	}
@@ -181,13 +183,12 @@ void Enemy::ShotResetTimer()
 void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
 	if (isBoss)
-		draw.DrawCube3D(&worldMat, &view, &projection, { 0.7f,0.7f,0.0f,alpha }, texHundle[0]);
+		draw.DrawCube3D(&worldMat, &view, &projection, { 0.7f,0.7f,0.0f,0.8f }, texHundle[0]);
 	else if (isEnemy2)
-		draw.DrawCube3D(&worldMat, &view, &projection, { 0.0f,0.9f,1.0f,alpha }, texHundle[0]);
+		draw.DrawCube3D(&worldMat, &view, &projection, { 0.0f,0.9f,1.0f,0.8f }, texHundle[0]);
 	else
-		draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,0.0f,0.0f,alpha }, texHundle[0]);
+		draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,0.0f,0.0f,0.8f }, texHundle[0]);
 
-	alpha = 0.8f;
 
 	if (isLockOned)
 	{
@@ -254,7 +255,9 @@ void Enemy::OnCollision()
 	if (HP > 0)
 	{
 		SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.5f);
-		alpha = 0.0f;//colliderの処理が描画処理のalpha=0.8f;より前なのでできる
+		//alpha = 0.0f;//colliderの処理が描画処理のalpha=0.8f;より前なのでできる
+		worldMat.scale = Vec3(scaletmp, scaletmp, scaletmp) + Vec3(1.0f, 1.0f, 1.0f);
+		worldMat.SetWorld();
 	}
 }
 
