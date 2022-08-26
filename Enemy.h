@@ -64,7 +64,7 @@ private:
 
 	int count = 0;
 
-
+	float alpha = 0.0f;
 
 
 public:

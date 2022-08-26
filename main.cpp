@@ -232,10 +232,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		
 		pManager.Draw(viewMat, projectionMat, textureHandle[0]);
 		
+		iManager.Draw(viewMat, projectionMat, textureHandle);
+
 		//player
 		player->Draw(viewMat, projectionMat, textureHandle, textureNumHundle);//playerを後にしないと透過されない！
-
-		iManager.Draw(viewMat, projectionMat, textureHandle);
 
 // 4.描画コマンドここまで //
 

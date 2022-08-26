@@ -63,7 +63,11 @@ void Enemy::Update()
 			HP -= isLockOned;
 			LockOnedReset();
 			//ダメージ音
-			if (HP > 0)  SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.5f);
+			if (HP > 0)
+			{
+				SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.5f);
+				alpha = 0.0f;
+			}
 		}
 	}
 	else if(isLockOned)
@@ -177,11 +181,13 @@ void Enemy::ShotResetTimer()
 void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
 	if (isBoss)
-		draw.DrawCube3D(&worldMat, &view, &projection, { 0.7f,0.7f,0.0f,0.8f }, texHundle[0]);
+		draw.DrawCube3D(&worldMat, &view, &projection, { 0.7f,0.7f,0.0f,alpha }, texHundle[0]);
 	else if (isEnemy2)
-		draw.DrawCube3D(&worldMat, &view, &projection, { 0.0f,0.9f,1.0f,0.8f }, texHundle[0]);
+		draw.DrawCube3D(&worldMat, &view, &projection, { 0.0f,0.9f,1.0f,alpha }, texHundle[0]);
 	else
-		draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,0.0f,0.0f,0.7f }, texHundle[0]);
+		draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,0.0f,0.0f,alpha }, texHundle[0]);
+
+	alpha = 0.8f;
 
 	if (isLockOned)
 	{
@@ -245,7 +251,11 @@ void Enemy::OnCollision()
 {
 	HP--;
 	//ダメージ音
-	if (HP > 0)  SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.5f);
+	if (HP > 0)
+	{
+		SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.5f);
+		alpha = 0.0f;
+	}
 }
 
 void Enemy::OnCollision2()
