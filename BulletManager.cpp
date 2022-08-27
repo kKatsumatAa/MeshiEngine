@@ -1,5 +1,10 @@
 #include "BulletManager.h"
 
+void BulletManager::Initialize()
+{
+	enemyBullets_.clear();
+}
+
 void BulletManager::AddEnemyBullet(std::unique_ptr<EnemyBullet> enemyBulllet)
 {
 	enemyBullets_.push_back(std::move(enemyBulllet));

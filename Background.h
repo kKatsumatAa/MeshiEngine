@@ -22,6 +22,7 @@ private:
 public:
 	int phase = 0;
 
+	void Initialize();
 
 	Background();
 	void Update();

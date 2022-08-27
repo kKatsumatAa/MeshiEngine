@@ -11,6 +11,8 @@ public:
 	std::list< std::unique_ptr<EnemyBullet>> enemyBullets_;
 
 
+	void Initialize();
+
 	void AddEnemyBullet(std::unique_ptr<EnemyBullet> enemyBulllet);
 	void UpdateEnemyBullet();
 	void DrawEnemyBullet(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle);

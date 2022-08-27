@@ -2,6 +2,29 @@
 
 void Item::Initialize(Player* player, const Vec3& pos, SoundData* soundData, ParticleManager* pManager)
 {
+	lockOnLength = 0;
+	lockOnVec = { 0,0,0 };
+	isLockOnScale = lockOnScaleTmp;
+
+	lockOnAngle = 0.0f;
+
+	//自然消滅フラグ
+	isAnnihilation = false;
+
+	posVec2 = { 0,0 };
+	moveVec = { 0,0 };
+
+	count = 0;
+
+	lockCool = lockCooltmp;
+
+	isLockOnDead = false;
+
+	isGet = false;
+
+	rightMove = false;
+
+
 	this->soundData = soundData;
 
 	player_ = player;
@@ -22,6 +45,25 @@ Item::~Item()
 
 void Item::Update(ViewMat& view, ProjectionMat& projection)
 {
+	if (isDead)
+	{
+		isLockOned = false;
+		isLockOnDead = false;
+	}
+
+	count++;
+
+	//アイテム振動
+	if (count % 20 > 10)
+		worldMat.scale = { 1.5f,1.5f,1.5f };
+	else if(count % 20 < 5)
+		worldMat.scale = { 1.2f,1.2f,1.2f };
+	else
+		worldMat.scale = { 1.0f,1.0f,1.0f };
+
+	worldMat.SetWorld();
+
+
 	bool oldIsDead = isDead;
 
 	lockCool--;

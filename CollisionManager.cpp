@@ -62,6 +62,13 @@ void CollisionManager::CheckCollisionPair2(Collider* colliderA, Collider* collid
 	}
 }
 
+void CollisionManager::Initialize()
+{
+	colliders_.clear();
+	//view = nullptr;
+	//projection = nullptr;
+}
+
 void CollisionManager::CheckAllCollisions()
 {
 	//リスト内のペアを総当たり

@@ -1,5 +1,29 @@
 #include "Background.h"
 
+void Background::Initialize()
+{
+	 count = 0;
+	 phase = 0;
+
+	 for (int i = 0; i < _countof(back) / 4; i++)
+	 {
+		 back[i * 4].worldMat->trans.z = 0 + distance * (float)i;
+		 back[i * 4 + 1].worldMat->trans.z = 0 + distance * (float)i;
+		 back[i * 4 + 2].worldMat->trans.z = 0 + distance * (float)i;
+		 back[i * 4 + 3].worldMat->trans.z = 0 + distance * (float)i;
+		 
+		 back[i * 4].worldMat->rot.z = 0;
+		 back[i * 4 + 1].worldMat->rot.z = 0;
+		 back[i * 4 + 2].worldMat->rot.z = 0;
+		 back[i * 4 + 3].worldMat->rot.z = 0;
+
+		 back[i * 4].worldMat->SetWorld();
+		 back[i * 4 + 1].worldMat->SetWorld();
+		 back[i * 4 + 2].worldMat->SetWorld();
+		 back[i * 4 + 3].worldMat->SetWorld();
+	 }
+}
+
 Background::Background()
 {
 	for (int i = 0; i < _countof(back)/4; i++)
@@ -57,7 +81,7 @@ void Background::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* te
 	count+=0.05f;
 
 	float scale = 0;
-	//“_–Å
+	//
 	scale = (sinf(count)+5.0f) / 4.0f;
 
 	for (int i = 0; i < _countof(back) / 4; i++)

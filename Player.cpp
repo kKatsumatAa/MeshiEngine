@@ -10,8 +10,27 @@ Draw d;
 Draw num;
 Draw hp[3];
 
-Player::Player(SoundData* shotSE):
-	shotSE(shotSE)
+void Player::Initialize(SoundData* shotSE)
+{
+	this->shotSE = shotSE;
+	bullets_.clear();
+
+	shotTime = 0;
+	status = NORMAL;
+	coolColor = 1.0f;
+	//継承してる系はplayerはリスト管理ではないので自分で初期化しないとダメ！！！！
+	 coolTime = 0;
+	 HP = 3;
+	 isDead = false;
+	 isLockOn = false;
+	 isLockNum = 0;
+
+	rayWorld.scale = { 0.1f,0.1f,30.0f };
+	rayWorld.trans = { 0,0,150.0f };
+	rayWorld.SetWorld();
+}
+
+Player::Player()
 {
 	//衝突属性
 	SetCollisionAttribute(kCollisionAttributePlayer);

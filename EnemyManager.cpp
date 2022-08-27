@@ -3,6 +3,25 @@ using namespace std;
 
 void EnemyManager::Initialize(Player* player, BulletManager* bulletManager, SoundData* soundData, ParticleManager* pManager, ItemManager* iManager)
 {
+	////敵発生コマンド
+	// バッファをクリアします。
+	enemyPopCommands.str("");
+	// 状態をクリアします。
+	enemyPopCommands.clear(std::stringstream::goodbit);
+
+	//待機
+	isWait = false;
+	waitTimer = 0;
+
+	enemies.clear();
+	phase = 0;
+	//phaseが変わるまで待つフラグ
+	isPhase = false;
+	isEnd[0] = {false};
+	isEnd[1] = {false};
+	isItem = false;
+
+
 	this->soundData = soundData;
 	this->player = player;
 	this->bulletManager = bulletManager;

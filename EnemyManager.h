@@ -10,8 +10,6 @@ private:
 	SoundData* soundData;
 	Player* player;
 	BulletManager* bulletManager;
-
-	float gTimer = 300;
 	//敵発生コマンド
 	std::stringstream enemyPopCommands;
 	//待機

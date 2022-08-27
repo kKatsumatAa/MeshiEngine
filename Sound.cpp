@@ -126,6 +126,7 @@ void SoundPlayWave(IXAudio2* xAudio2, SoundData& soundData, const float& volume,
 
 void SoundStopWave(const SoundData& soundData)
 {
+    if(soundData.pSourceVoice != nullptr)
     soundData.pSourceVoice->Stop();
 }
 

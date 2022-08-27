@@ -32,7 +32,7 @@ struct SoundData
 	//波形フォーマット
 	WAVEFORMATEX wfex;
 	//バッファの先頭アドレス
-	BYTE* pBuffer;
+	BYTE* pBuffer = nullptr;
 	//バッファのサイズ
 	unsigned int bufferSize;
 	//

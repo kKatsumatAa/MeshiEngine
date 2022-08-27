@@ -21,6 +21,8 @@ private:
 	void CheckCollisionPair2(Collider* colliderA, Collider* colliderB);
 
 public:
+	void Initialize();
+
 	CollisionManager(ViewMat* view, ProjectionMat* projection):
 		view(view),projection(projection)
 	{}

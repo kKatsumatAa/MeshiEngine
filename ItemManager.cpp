@@ -3,6 +3,12 @@
 
 void ItemManager::Initialize(Player* player, SoundData* soundData, ParticleManager* pManager, ViewMat* view, ProjectionMat* projection)
 {
+	//‘Ò‹@
+	isWait = false;
+	waitTimer = 0;
+
+	items.clear();
+
 	this->soundData = soundData;
 	this->player = player;
 	this->view = view;

@@ -24,7 +24,8 @@ private:
     float coolColor = 1.0f;
 
 public:
-	Player(SoundData* shotSE);
+	void Initialize(SoundData* shotSE);
+	Player();
 	void Attack();
 	void Update();
 	void Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle, const UINT64* numTexHundle);

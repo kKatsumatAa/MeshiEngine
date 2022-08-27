@@ -34,6 +34,8 @@ private:
 	Vec2 posVec2;
 	Vec2 moveVec;
 
+	int count = 0;
+
 	//ViewMat* view = nullptr;
 	//ProjectionMat* projection = nullptr;
 

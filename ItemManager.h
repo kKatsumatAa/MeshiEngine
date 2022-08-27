@@ -8,8 +8,6 @@ private:
 	SoundData* soundData;
 	Player* player;
 
-	float gTimer = 300;
-
 	//‘Ò‹@
 	bool isWait = false;
 	int  waitTimer = 0;

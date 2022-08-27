@@ -1,8 +1,5 @@
-﻿
-#include "Enemy.h"
-#include "CollisionManager.h"
-#include"EnemyManager.h"
-#include"Background.h"
+﻿#include"Scene.h"
+
 
 
 //windowsアプリでのエントリーポイント(main関数)
@@ -15,13 +12,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Directx::GetInstance();
 
 	DrawInitialize();
-	
-	WorldMat cameraWorldMat;
 
 	MSG msg{};	//メッセージ
-	
-	ViewMat viewMat;
-	ProjectionMat projectionMat;
 
 	//画像用ハンドル
 	UINT64 textureHandle[30] = {0};
@@ -67,39 +59,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		soundData[6] = SoundLoadWave("Resources/BGM.wav", false);
 		soundData[7] = SoundLoadWave("Resources/heal.wav", false);
 	}
-	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 0.5f, true);
 
-	//UI
-	Draw UI;
-
-	//パーティクル
-	ParticleManager pManager;
-
-	//BulletManager
-	BulletManager bulletManager;
-
-	//player
-	Player* player = new Player(soundData);
-
-	//item
-	ItemManager iManager;
-	iManager.Initialize(player, soundData, &pManager, &viewMat, &projectionMat);
-
-	//enemy
-	EnemyManager enemyManager;
-	enemyManager.Initialize(player, &bulletManager,soundData, &pManager, &iManager);
-	//enemyManager.LoadEnemyPopData();
-
-	//衝突
-	std::unique_ptr<CollisionManager> colliderManager = std::make_unique<CollisionManager>(&viewMat, &projectionMat);
-
-	//背景
-	Background back;
-
-	int bossNum = 0;
-
-
-
+	Scene scene;
+	scene.Initialize(soundData);
 
 	//描画初期化処理-------------
 
@@ -120,122 +82,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Directx::GetInstance().DrawUpdate({ 0.0f,0.0f,0.0f,0.0f });
 
 //更新処理
+		scene.Update(soundData);
 		
-
-		player->Update();
-		enemyManager.Update();
-
-		bulletManager.UpdateEnemyBullet();
-
-		back.Update();
-
-		int oldBossNum = bossNum;
-		bossNum = 0;
-		
-		//colliderManager
-		{
-
-			colliderManager->ClearList();
-			colliderManager->SetListCollider(player);
-			const std::list<std::unique_ptr<Enemy>>& enemies = enemyManager.GetEnemies();
-			//bulletはそれ自体がlistなので特別
-			const std::list<std::unique_ptr<PlayerBullet>>& playerBullets = player->GetBullets();
-			const std::list<std::unique_ptr<EnemyBullet>>& enemyBullets = bulletManager.GetEnemyBullets();
-			const std::list<std::unique_ptr<Item>>& items = iManager.GetItems();
-
-			for (const std::unique_ptr<Enemy>& enemy : enemies)
-			{
-				colliderManager->SetListCollider(enemy.get());
-			}
-			for (const std::unique_ptr<PlayerBullet>& bullet : playerBullets)
-			{
-				colliderManager->SetListCollider(bullet.get());
-			}
-			for (const std::unique_ptr<EnemyBullet>& bullet : enemyBullets)
-			{
-				colliderManager->SetListCollider(bullet.get());
-			}
-			for (const std::unique_ptr<Item>& item : items)
-			{
-				colliderManager->SetListCollider(item.get());
-			}
-
-			colliderManager->CheckAllCollisions();
-
-
-			//rayの当たり判定(敵とプレイヤーのみ)
-			{
-				colliderManager->ClearList();
-				colliderManager->SetListCollider(player);
-				const std::list<std::unique_ptr<Enemy>>& enemies = enemyManager.GetEnemies();
-				const std::list<std::unique_ptr<Item>>& items = iManager.GetItems();
-
-				int lockOnNum = 0;
-				
-
-				for (const std::unique_ptr<Enemy>& enemy : enemies)
-				{
-					colliderManager->SetListCollider(enemy.get());
-					//playerがロックオンモードじゃなければロックオン状態を解除
-					if (player->GetPlayerStatus() != TARGET && enemy->isLockOned && !enemy->isLockOnDead || player->isDead)
-					{
-						enemy->LockOnedReset();
-					}
-					lockOnNum += enemy.get()->isLockOned;//ロックオンされてる数をカウント
-					bossNum += enemy.get()->isBoss;
-				}
-				//item用
-				for (const std::unique_ptr<Item>& item : items)
-				{
-					colliderManager->SetListCollider(item.get());
-					//playerがロックオンモードじゃなければロックオン状態を解除
-					if (player->GetPlayerStatus() != TARGET && item->isLockOned && !item->isLockOnDead || player->isDead)
-					{
-						item->LockOnedReset();
-					}
-					lockOnNum += item.get()->isLockOned;//ロックオンされてる数をカウント
-				}
-				player->isLockNum = lockOnNum;//代入
-
-				if (player->isLockNum > 10)
-				{
-					player->isLockNum = 10;
-				}
-				if (player->isLockNum < 10)//ロックオンは最大10まで
-					colliderManager->CheckAllCollisions2();
-			}
-		}
-
-		//ボス戦の時にbgm変える
-		if (bossNum && !oldBossNum)
-		{
-			SoundStopWave(soundData[2]);
-			SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[6], 0.5f, true);
-		}
-		else if (!bossNum && oldBossNum)
-		{
-			SoundStopWave(soundData[6]);
-			SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 0.5f, true);
-		}
-
-		back.phase = enemyManager.phase;
-
-		pManager.Update();
-		iManager.Update();
 
 // 4.描画コマンドここから　//-----------
-		//背景
-		back.Draw(viewMat, projectionMat, textureHandle, bossNum);
-		//Enemy
-		bulletManager.DrawEnemyBullet(viewMat, projectionMat, textureHandle);
-		enemyManager.Draw(viewMat, projectionMat, textureHandle);
-		
-		pManager.Draw(viewMat, projectionMat, textureHandle[0]);
-		
-		iManager.Draw(viewMat, projectionMat, textureHandle);
+		scene.Draw(textureHandle, textureNumHundle);
 
-		//player
-		player->Draw(viewMat, projectionMat, textureHandle, textureNumHundle);//playerを後にしないと透過されない！
 
 // 4.描画コマンドここまで //
 
@@ -252,7 +104,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	SoundUnLoad(&soundData[1]);
 	SoundUnLoad(&soundData[2]);
 	SoundUnLoad(&soundData[3]);
-	delete player;
+	
 
 	//ウィンドウクラスを登録解除
 	WindowsApp::GetInstance().UnregisterClassA();

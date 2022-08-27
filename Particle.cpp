@@ -50,6 +50,11 @@ bool Particle::GetIsDead()
 
 //------------------------------------------------------------------------------------------------------------
 
+void ParticleManager::Initialize()
+{
+	particles.clear();
+}
+
 void ParticleManager::GenerateRandomParticle(const Vec3& pos, const int& deadTimer, const float& scale, const XMFLOAT4& color, int Num)
 {
 	//Num‚Ì”‚¾‚¯¶¬
