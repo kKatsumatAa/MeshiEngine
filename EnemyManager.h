@@ -35,6 +35,7 @@ public:
 	bool isPhase = false;
 	bool isEnd[2] = { false };
 	bool isItem = false;
+	bool isBossDead = false;
 
 
 	void Initialize(Player* player, BulletManager* bulletManager,SoundData* soundData, ParticleManager* pManager,ItemManager* iManager);

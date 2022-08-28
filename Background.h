@@ -25,7 +25,7 @@ public:
 	void Initialize();
 
 	Background();
-	void Update();
+	void Update(const bool& boss);
 	void Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle, const bool& boss = false);
 
 };

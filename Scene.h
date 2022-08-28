@@ -50,6 +50,9 @@ public:
 	
 	int bossNum = 0;
 
+	int hitStopTimer = 0;
+	const int hitStoptmp = 5;
+
 
 public:
 	~Scene();
@@ -74,6 +77,9 @@ public:
 
 class SceneGame : public SceneState
 {
+private:
+	bool isHit[2] = { 0,0 };
+
 public:
 	void Initialize()override;
 	void Update(SoundData* soundData)override;

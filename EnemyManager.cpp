@@ -20,6 +20,7 @@ void EnemyManager::Initialize(Player* player, BulletManager* bulletManager, Soun
 	isEnd[0] = {false};
 	isEnd[1] = {false};
 	isItem = false;
+	isBossDead = false;
 
 
 	this->soundData = soundData;
@@ -85,6 +86,9 @@ void EnemyManager::Update()
 			SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[3], 2.0f);
 			particleManager->GenerateRandomParticle(enemy->worldMat.trans, 120, enemy->worldMat.scale.x * 3.5f,
 				{ enemy->GetColor().x,enemy->GetColor().y,enemy->GetColor().z,1.0f }, 10);
+
+			//ボス撃破したらヒットストップする用
+			if (enemy->isBoss) isBossDead = true;
 		}
 	}
 

@@ -40,7 +40,7 @@ Background::Background()
 	}
 }
 
-void Background::Update()
+void Background::Update(const bool& boss)
 {
 	if (phase == 0)
 	{
@@ -74,15 +74,13 @@ void Background::Update()
 			back[i].worldMat->SetWorld();
 		}
 	}
-}
 
-void Background::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle, const bool& boss)
-{
-	count+=0.05f;
+
+	count += 0.05f;
 
 	float scale = 0;
 	//
-	scale = (sinf(count)+5.0f) / 4.0f;
+	scale = (sinf(count) + 5.0f) / 4.0f;
 
 	for (int i = 0; i < _countof(back) / 4; i++)
 	{
@@ -128,7 +126,13 @@ void Background::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* te
 				back[i * 4 + 3].worldMat->scale.y -= 0.01f;
 			}
 		}
+	}
+}
 
+void Background::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle, const bool& boss)
+{
+	for (int i = 0; i < _countof(back) / 4; i++)
+	{
 		XMFLOAT4 color;
 
 		if (boss)
