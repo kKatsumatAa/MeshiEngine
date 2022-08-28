@@ -172,7 +172,9 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHun
 		{
 			//3d->2d
 			Vec2 pos = Vec3toVec2({ worldMat.trans.x,worldMat.trans.y,worldMat.trans.z /*- view.eye.z*/ }, view.matView, projection.matProjection);
+			draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.2f }, texHundle[0]);
 			d.DrawBoxSprite({ pos.x,pos.y,0 }, 0.25f, { 0.8f, 0.8f, 0.8f, 0.8f * coolColor }, texHundle[4], { 0.5f,0.5f });
+			
 
 			//ƒƒbƒNƒIƒ“‚Ì”
 			if (isLockNum == 10)
