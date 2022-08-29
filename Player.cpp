@@ -74,12 +74,15 @@ void Player::Update()
 	if (HP <= 0) isDead = true;
 	coolTime--;
 
+#ifdef _DEBUG
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_R))
 	{
 		HP = 3;
 		isDead = false;
 		coolTime = 0;
 	}
+#endif 
+	
 
 	if (!isDead)
 	{
@@ -104,11 +107,11 @@ void Player::Update()
 
 
 		//‰¡ˆÚ“®
-		worldMat.trans.x += (KeyboardInput::GetInstance().keyPush(DIK_D) || KeyboardInput::GetInstance().keyPush(DIK_RIGHTARROW)) -
-			(KeyboardInput::GetInstance().keyPush(DIK_A) || KeyboardInput::GetInstance().keyPush(DIK_LEFTARROW));
+		worldMat.trans.x += (/*KeyboardInput::GetInstance().keyPush(DIK_D) ||*/ KeyboardInput::GetInstance().keyPush(DIK_RIGHTARROW)) -
+			(/*KeyboardInput::GetInstance().keyPush(DIK_A) ||*/ KeyboardInput::GetInstance().keyPush(DIK_LEFTARROW));
 		//cˆÚ“®
-		worldMat.trans.y += (KeyboardInput::GetInstance().keyPush(DIK_W) || KeyboardInput::GetInstance().keyPush(DIK_UPARROW)) -
-			(KeyboardInput::GetInstance().keyPush(DIK_S) || KeyboardInput::GetInstance().keyPush(DIK_DOWNARROW));
+		worldMat.trans.y += (/*KeyboardInput::GetInstance().keyPush(DIK_W) ||*/ KeyboardInput::GetInstance().keyPush(DIK_UPARROW)) -
+			(/*KeyboardInput::GetInstance().keyPush(DIK_S) ||*/ KeyboardInput::GetInstance().keyPush(DIK_DOWNARROW));
 		//ˆÚ“®§ŒÀ
 		worldMat.trans.x = min(worldMat.trans.x, playerMoveRange.x);
 		worldMat.trans.x = max(worldMat.trans.x, -playerMoveRange.x);

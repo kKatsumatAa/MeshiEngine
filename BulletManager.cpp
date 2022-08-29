@@ -1,7 +1,8 @@
 #include "BulletManager.h"
 
-void BulletManager::Initialize()
+void BulletManager::Initialize(ParticleManager* pManager)
 {
+	particleManager = pManager;
 	enemyBullets_.clear();
 }
 
@@ -16,6 +17,12 @@ void BulletManager::UpdateEnemyBullet()
 	for (std::unique_ptr<EnemyBullet>& bullet : enemyBullets_)
 	{
 		bullet->Update();
+
+		if (bullet->isDead)
+		{
+			particleManager->GenerateRandomParticle(bullet->worldMat.trans, 30, bullet->worldMat.scale.x * 0.5f,
+				{ 0.5f,0.5f,0.5f,1.0f }, 4);
+		}
 	}
 
 	//íeÇè¡Ç∑

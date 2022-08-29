@@ -1,17 +1,18 @@
 #pragma once
 #include"EnemyBullet.h"
+#include"Particle.h"
 
 class BulletManager
 {
 private:
-	
+	ParticleManager* particleManager = nullptr;
 
 public:
 	//“G‚Ì’e
 	std::list< std::unique_ptr<EnemyBullet>> enemyBullets_;
 
 
-	void Initialize();
+	void Initialize(ParticleManager* pManager);
 
 	void AddEnemyBullet(std::unique_ptr<EnemyBullet> enemyBulllet);
 	void UpdateEnemyBullet();

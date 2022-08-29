@@ -15,7 +15,7 @@ void SceneTitle::Initialize()
 	scene->bossNum = 0;
 
 	scene->pManager.Initialize();
-	scene->bulletManager.Initialize();
+	scene->bulletManager.Initialize(&scene->pManager);
 	scene->iManager.Initialize(scene->player, scene->soundData, &scene->pManager, &scene->viewMat, &scene->projectionMat);
 	scene->player->Initialize(scene->soundData);
 	scene->enemyManager.Initialize(scene->player, &scene->bulletManager, scene->soundData, &scene->pManager, &scene->iManager);
@@ -155,7 +155,7 @@ void SceneGame::Initialize()
 	SoundStopWave(scene->soundData[6]);
 
 	scene->pManager.Initialize();
-	scene->bulletManager.Initialize();
+	scene->bulletManager.Initialize(&scene->pManager);
 	scene->iManager.Initialize(scene->player, scene->soundData, &scene->pManager, &scene->viewMat, &scene->projectionMat);
 	scene->player->Initialize(scene->soundData);
 	scene->enemyManager.Initialize(scene->player, &scene->bulletManager, scene->soundData, &scene->pManager, &scene->iManager);
@@ -317,7 +317,7 @@ void SceneEnd::Initialize()
 	scene->bossNum = 0;
 
 	scene->pManager.Initialize();
-	scene->bulletManager.Initialize();
+	scene->bulletManager.Initialize(&scene->pManager);
 	scene->iManager.Initialize(scene->player, scene->soundData, &scene->pManager, &scene->viewMat, &scene->projectionMat);
 	scene->player->Initialize(scene->soundData);
 	scene->enemyManager.Initialize(scene->player, &scene->bulletManager, scene->soundData, &scene->pManager, &scene->iManager);
@@ -362,7 +362,7 @@ void Scene::Initialize(SoundData* soundData)
 	this->soundData = soundData;
 
 	pManager.Initialize();
-	bulletManager.Initialize();
+	bulletManager.Initialize(&pManager);
 	iManager.Initialize(player, soundData, &pManager, &viewMat, &projectionMat);
 	player->Initialize(soundData);
 	enemyManager.Initialize(player, &bulletManager, soundData, &pManager, &iManager);
@@ -380,7 +380,10 @@ void Scene::Update(SoundData* soundData)
 {
 	state->Update(soundData);
 
+#ifdef _DEBUG
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_E)) ChangeState(new SceneTitle);
+#endif 
+	
 }
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)

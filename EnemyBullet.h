@@ -12,7 +12,7 @@ enum
 class EnemyBullet : public Collider
 {
 private:
-	WorldMat worldMat;
+	
 	Draw draw;
 	//Žõ–½
 	static const int32_t lifeTime = 60 * 6;
@@ -21,6 +21,7 @@ private:
 public:
 	Vec3 velocity_;
 	int BulletVariation = NORM;
+	WorldMat worldMat;
 
 public:
 	void Initialize(const Vec3& position, const Vec3& velocity, int BulletVariation = NORM);
