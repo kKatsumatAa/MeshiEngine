@@ -29,7 +29,7 @@ void EnemyManager::Initialize(Player* player, BulletManager* bulletManager, Soun
 	particleManager = pManager;
 	itemManager = iManager;
 
-	LoadEnemyPopData();
+	//LoadEnemyPopData();
 }
 
 void EnemyManager::EnemyGenerate(const Vec3& pos)
@@ -70,6 +70,64 @@ void EnemyManager::Enemy2Generate(const Vec3& pos)
 
 	//‹…‚ğ“o˜^
 	enemies.push_back(std::move(enemy));
+}
+
+void EnemyManager::StartGenerate()
+{
+	//S‚ğ¶¬A‰Šú‰»
+	std::unique_ptr<Enemy> s = std::make_unique<Enemy>();
+	
+	s->Initialize(player, bulletManager, { -30.0f,0,100.0f }, soundData,'s');
+	s->isSTART = true;
+	s->HP = 1;
+
+	//‹…‚ğ“o˜^
+	enemies.push_back(std::move(s));
+	
+//--------------------------------------------------------------------------------
+	//T‚ğ¶¬A‰Šú‰»
+	std::unique_ptr<Enemy> t = std::make_unique<Enemy>();
+
+	t->Initialize(player, bulletManager, { -15.0f,0,100.0f }, soundData,'t');
+	t->isSTART = true;
+	t->HP = 1;
+
+	//‹…‚ğ“o˜^
+	enemies.push_back(std::move(t));
+	
+//--------------------------------------------------------------------------------
+	//A‚ğ¶¬A‰Šú‰»
+	std::unique_ptr<Enemy> a = std::make_unique<Enemy>();
+
+	a->Initialize(player, bulletManager, { 0,0,100.0f }, soundData,'a');
+	a->isSTART = true;
+	a->HP = 1;
+
+	//‹…‚ğ“o˜^
+	enemies.push_back(std::move(a));
+	
+//--------------------------------------------------------------------------------
+	//R‚ğ¶¬A‰Šú‰»
+	std::unique_ptr<Enemy> r = std::make_unique<Enemy>();
+
+	r->Initialize(player, bulletManager, { 15.0f,0,100.0f }, soundData,'r');
+	r->HP = 1;
+	r->isSTART = true;
+
+	//‹…‚ğ“o˜^
+	enemies.push_back(std::move(r));
+
+
+//--------------------------------------------------------------------------------
+	//T2‚ğ¶¬A‰Šú‰»
+	std::unique_ptr<Enemy> t2 = std::make_unique<Enemy>();
+
+	t2->Initialize(player, bulletManager, { 30.0f,0,100.0f }, soundData, 't');
+	t2->isSTART = true;
+	t2->HP = 1;
+
+	//‹…‚ğ“o˜^
+	enemies.push_back(std::move(t2));
 }
 
 void EnemyManager::Update()

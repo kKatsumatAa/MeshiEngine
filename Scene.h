@@ -51,7 +51,7 @@ public:
 	int bossNum = 0;
 
 	int hitStopTimer = 0;
-	const int hitStoptmp = 5;
+	const int hitStoptmp = 3;
 
 
 public:
@@ -66,7 +66,7 @@ public:
 class SceneTitle : public SceneState
 {
 private:
-	Vec3 pos = { 0,0,0 };
+	Vec3 pos = { WindowsApp::GetInstance().window_width / 2.0f, WindowsApp::GetInstance().window_height / 2.0f, 0 };
 	float count = 0;
 
 public:
@@ -88,6 +88,10 @@ public:
 
 class SceneEnd : public SceneState
 {
+private:
+	float count = 0;
+	const Vec3 pos = { WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f,0 };
+
 public:
 	void Initialize()override;
 	void Update(SoundData* soundData) override;

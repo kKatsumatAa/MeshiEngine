@@ -78,13 +78,17 @@ public:
 
 	float scaletmp = 1.0f;
 
+	//タイトルのstart用
+	bool isSTART = false;
+	char start = NULL;
+
 	//関数
 private:
 
 
 public:
 	/*Enemy(Player* player);*/
-	void Initialize(Player* player, BulletManager* bulletManager,const Vec3& pos, SoundData* soundData);
+	void Initialize(Player* player, BulletManager* bulletManager, const Vec3& pos, SoundData* soundData, const char& start = NULL);
 	~Enemy();
 	void InitializeApproach();
 

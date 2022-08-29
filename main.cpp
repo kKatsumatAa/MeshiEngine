@@ -19,14 +19,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	UINT64 textureHandle[30] = {0};
 	{
 		LoadGraph(L"Resources/white.png", textureHandle[0]);//ただの白（色変える用）
-		LoadGraph(L"Resources/texture.jpg", textureHandle[1]);
-		LoadGraph(L"Resources/texture2.jpg", textureHandle[2]);
-		LoadGraph(L"Resources/back.png", textureHandle[3]);//黄色春日
+		LoadGraph(L"Resources/a.png", textureHandle[1]);//s
+		LoadGraph(L"Resources/b.png", textureHandle[2]);//t
+		LoadGraph(L"Resources/c.png", textureHandle[3]);//a
 		LoadGraph(L"Resources/lock.png", textureHandle[4]);//ロックオン
-		LoadGraph(L"Resources/back.jpg", textureHandle[5]);//背景
+		LoadGraph(L"Resources/d.png", textureHandle[5]);//r
 		LoadGraph(L"Resources/lockOn.png", textureHandle[6]);//敵のロックオン
 		LoadGraph(L"Resources/Title.png", textureHandle[7]);//タイトル
 		LoadGraph(L"Resources/HP.png", textureHandle[8]);//hp
+		LoadGraph(L"Resources/Clear.png", textureHandle[9]);//クリア
 	}
 	//数字の画像
 	UINT64 textureNumHundle[12];

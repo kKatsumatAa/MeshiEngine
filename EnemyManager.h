@@ -27,6 +27,7 @@ private:
 	void EnemyGenerate(const Vec3& pos);
 	void BossGenerate(const Vec3& pos, float& scale, int& HP);
 	void Enemy2Generate(const Vec3& pos);
+	
 
 public:
 	std::list<std::unique_ptr<Enemy>> enemies;
@@ -53,6 +54,6 @@ public:
 	/// </summary>
 	void LoadEnemyPopData();
 
-	
+	void StartGenerate();
 };
 

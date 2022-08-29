@@ -1,9 +1,12 @@
 #include "Enemy.h"
 
 
-void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& pos, SoundData* soundData)
+void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& pos, SoundData* soundData, const char& start)
 {
 	this->soundData = soundData;
+
+	this->start = start;
+	if (start != NULL) isSTART = true;
 
 	player_ = player;
 	this->bulletManager = bulletManager;
@@ -15,8 +18,9 @@ void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& 
 
 	HP = 1;
 
-	//接近フェーズ初期化
-	InitializeApproach();
+	//接近フェーズ初期化(startの文字は攻撃してこない)
+	if(!isSTART)
+		InitializeApproach();
 
 	//衝突属性
 	SetCollisionAttribute(kCollisionAttributeEnemy);
@@ -94,6 +98,14 @@ void Enemy::Update()
 	);
 
 	state->Update();
+
+
+	if (isSTART)
+	{
+		count++;
+		worldMat.scale = { (sinf((float)count / 50.0f) + 4.0f) / 4.0f, (sinf((float)count / 50.0f) + 4.0f) / 4.0f,
+			(sinf((float)count / 50.0f) + 4.0f) / 4.0f };
+	}
 
 	worldMat.SetWorld();
 
@@ -183,7 +195,14 @@ void Enemy::ShotResetTimer()
 
 void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHundle)
 {
-	if (isBoss)
+	if (isSTART && start != NULL)
+	{
+		if (start == 's')draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.8f }, texHundle[1]);
+		if (start == 't')draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.8f }, texHundle[2]);
+		if (start == 'a')draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.8f }, texHundle[3]);
+		if (start == 'r')draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.8f }, texHundle[5]);
+	}
+	else if (isBoss)
 		draw.DrawCube3D(&worldMat, &view, &projection, { 0.7f,0.7f,0.0f,0.8f }, texHundle[0]);
 	else if (isEnemy2)
 		draw.DrawCube3D(&worldMat, &view, &projection, { 0.0f,0.9f,1.0f,0.8f }, texHundle[0]);
@@ -294,7 +313,7 @@ XMFLOAT4 Enemy::GetColor()
 //----------------------------------------------
 void EnemyStateApproach::Update()
 {
-	if (!enemy->isBoss)
+	if (!enemy->isBoss && !enemy->isSTART)
 	{
 		//移動（ベクトルを加算）
 		enemy->MoveTrans(approachSpeed);
@@ -310,7 +329,7 @@ void EnemyStateApproach::Update()
 //----------------------------------------------
 void EnemyStateLeave::Update()
 {
-	if (!enemy->isBoss)
+	if (!enemy->isBoss && !enemy->isSTART)
 	{
 		//移動
 		enemy->MoveTrans(leaveSpeed);

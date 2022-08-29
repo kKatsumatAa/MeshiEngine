@@ -25,11 +25,11 @@ void Player::Initialize(SoundData* shotSE)
 	 isLockOn = false;
 	 isLockNum = 0;
 
-	 worldMat.trans = { 0,0,0 };
+	 worldMat.trans = { 0,-10.0f,0 };
 	 worldMat.SetWorld();
 
 	rayWorld.scale = { 0.1f,0.1f,30.0f };
-	rayWorld.trans = { 0,0,150.0f };
+	rayWorld.trans = { 0,-10.0f,150.0f };
 	rayWorld.SetWorld();
 }
 

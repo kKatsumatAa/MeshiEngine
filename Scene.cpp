@@ -26,17 +26,104 @@ void SceneTitle::Initialize()
 	SoundStopWave(scene->soundData[6]);
 	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), scene->soundData[2], 0.5f, true);
 	count = 0;
-	pos = { WindowsApp::GetInstance().window_width / 2.0f, WindowsApp::GetInstance().window_height / 2.0f, 0 };
+	pos = { WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f + sinf(count) * 10.0f - 150.0f,0 };
+
+	scene->enemyManager.StartGenerate();
 }
 
 void SceneTitle::Update(SoundData* soundData)
 {
+	int startNum = 0;
+
 	count += 0.02f;
-	pos = { WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f + sinf(count)*10.0f,0 };
+	pos = { WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f + sinf(count) * 10.0f - 150.0f,0 };
+
+	scene->enemyManager.Update();
+	scene->player->Update();
+	scene->pManager.Update();
+
+	//colliderManager
+	{
+
+		scene->colliderManager->ClearList();
+		scene->colliderManager->SetListCollider(scene->player);
+		const std::list<std::unique_ptr<Enemy>>& enemies = scene->enemyManager.GetEnemies();
+		//bulletはそれ自体がlistなので特別
+		const std::list<std::unique_ptr<PlayerBullet>>& playerBullets = scene->player->GetBullets();
+		const std::list<std::unique_ptr<EnemyBullet>>& enemyBullets = scene->bulletManager.GetEnemyBullets();
+		const std::list<std::unique_ptr<Item>>& items = scene->iManager.GetItems();
+
+		for (const std::unique_ptr<Enemy>& enemy : enemies)
+		{
+			scene->colliderManager->SetListCollider(enemy.get());
+		}
+		for (const std::unique_ptr<PlayerBullet>& bullet : playerBullets)
+		{
+			scene->colliderManager->SetListCollider(bullet.get());
+		}
+		for (const std::unique_ptr<EnemyBullet>& bullet : enemyBullets)
+		{
+			scene->colliderManager->SetListCollider(bullet.get());
+		}
+		for (const std::unique_ptr<Item>& item : items)
+		{
+			scene->colliderManager->SetListCollider(item.get());
+		}
+
+		scene->colliderManager->CheckAllCollisions();
+
+
+		//rayの当たり判定(敵とプレイヤーのみ)
+		{
+			scene->colliderManager->ClearList();
+			scene->colliderManager->SetListCollider(scene->player);
+			const std::list<std::unique_ptr<Enemy>>& enemies = scene->enemyManager.GetEnemies();
+			const std::list<std::unique_ptr<Item>>& items = scene->iManager.GetItems();
+
+			int lockOnNum = 0;
+
+
+			for (const std::unique_ptr<Enemy>& enemy : enemies)
+			{
+				scene->colliderManager->SetListCollider(enemy.get());
+				//playerがロックオンモードじゃなければロックオン状態を解除
+				if (scene->player->GetPlayerStatus() != TARGET && enemy->isLockOned && !enemy->isLockOnDead || scene->player->isDead)
+				{
+					enemy->LockOnedReset();
+				}
+				lockOnNum += enemy.get()->isLockOned;//ロックオンされてる数をカウント
+				scene->bossNum += enemy.get()->isBoss;
+
+				//startの残りをカウント
+				startNum += enemy->isSTART;
+			}
+			//item用
+			for (const std::unique_ptr<Item>& item : items)
+			{
+				scene->colliderManager->SetListCollider(item.get());
+				//playerがロックオンモードじゃなければロックオン状態を解除
+				if (scene->player->GetPlayerStatus() != TARGET && item->isLockOned && !item->isLockOnDead || scene->player->isDead)
+				{
+					item->LockOnedReset();
+				}
+				lockOnNum += item.get()->isLockOned;//ロックオンされてる数をカウント
+			}
+			scene->player->isLockNum = lockOnNum;//代入
+
+			if (scene->player->isLockNum > 10)
+			{
+				scene->player->isLockNum = 10;
+			}
+			if (scene->player->isLockNum < 10)//ロックオンは最大10まで
+				scene->colliderManager->CheckAllCollisions2();
+		}
+	}
+
 
 	scene->back.Update(scene->bossNum);
 
-	if (KeyboardInput::GetInstance().keyTrigger(DIK_Z))
+	//start全部消えて、パーティクルも消えたら遷移
+	if (startNum <= 0 && scene->pManager.particles.size() <= 0)
 	{
 		scene->ChangeState(new SceneGame);
 		SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[4], 1.0f, false);
@@ -45,6 +132,12 @@ void SceneTitle::Update(SoundData* soundData)
 
 void SceneTitle::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
+	scene->enemyManager.Draw(scene->viewMat, scene->projectionMat, textureHandle);
+
+	scene->pManager.Draw(scene->viewMat, scene->projectionMat, textureHandle[0]);
+	//player
+	scene->player->Draw(scene->viewMat, scene->projectionMat, textureHandle, textureNumHundle);//playerを後にしないと透過されない！
+
 	title.DrawBoxSprite(pos, 0.8f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[7], { 0.5f,0.5f });
 }
 
@@ -66,6 +159,7 @@ void SceneGame::Initialize()
 	scene->iManager.Initialize(scene->player, scene->soundData, &scene->pManager, &scene->viewMat, &scene->projectionMat);
 	scene->player->Initialize(scene->soundData);
 	scene->enemyManager.Initialize(scene->player, &scene->bulletManager, scene->soundData, &scene->pManager, &scene->iManager);
+	scene->enemyManager.LoadEnemyPopData();
 	scene->colliderManager->Initialize();
 }
 
@@ -218,6 +312,8 @@ void SceneGame::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 //終了画面
 void SceneEnd::Initialize()
 {
+	count = 0;
+
 	scene->bossNum = 0;
 
 	scene->pManager.Initialize();
@@ -238,6 +334,9 @@ void SceneEnd::Update(SoundData* soundData)
 
 void SceneEnd::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
+	count += 0.02f;
+
+	title.DrawBoxSprite({ pos.x ,pos.y + sinf(count) * 10.0f,pos.z}, 0.8f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[9], { 0.5f,0.5f });
 }
 
 
@@ -262,9 +361,6 @@ void Scene::Initialize(SoundData* soundData)
 {
 	this->soundData = soundData;
 
-	ChangeState(new SceneTitle);
-	state->SetScene(this);
-
 	pManager.Initialize();
 	bulletManager.Initialize();
 	iManager.Initialize(player, soundData, &pManager, &viewMat, &projectionMat);
@@ -272,6 +368,9 @@ void Scene::Initialize(SoundData* soundData)
 	enemyManager.Initialize(player, &bulletManager, soundData, &pManager, &iManager);
 	colliderManager->Initialize();
 	back.Initialize();
+
+	ChangeState(new SceneTitle);
+	state->SetScene(this);
 
 	//SoundPlayWave(Directx::GetInstance().xAudio2.Get(), soundData[2], 0.5f, true);
 }
