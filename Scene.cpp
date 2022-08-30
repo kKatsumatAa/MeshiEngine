@@ -56,7 +56,7 @@ void SceneTitle::Update(SoundData* soundData)
 	case 1:
 		if (KeyboardInput::GetInstance().keyTrigger(DIK_X))
 		{
-			infoGauge += 40;
+			infoGauge += 50;
 		}
 		break;
 	case 2:
@@ -73,6 +73,7 @@ void SceneTitle::Update(SoundData* soundData)
 		info.worldMat->scale = { 0,0,0 };
 		info.worldMat->SetWorld();
 		infoGauge = 0;
+		if (infoNum == 2) infoGauge = -100;
 
 		if (infoNum > 2) infoNum = 0;
 	}
@@ -211,6 +212,8 @@ void SceneGame::Initialize()
 	isHit[0] = { 0 };
 	isHit[1] = { 0 };
 
+	gameOverTimer = 0;
+
 	SoundStopWave(scene->soundData[6]);
 
 	scene->pManager.Initialize();
@@ -348,7 +351,11 @@ void SceneGame::Update(SoundData* soundData)
 
 	//ƒV[ƒ“‘JˆÚ
 	if (scene->enemyManager.isEnd[1]) scene->ChangeState(new SceneEnd);
-	else if (scene->player->isDead) scene->ChangeState(new SceneTitle);
+
+	if (scene->player->isDead) gameOverTimer++;
+	if (scene->player->isDead && gameOverTimer >= 100) scene->ChangeState(new SceneTitle);
+
+	
 }
 
 void SceneGame::Draw(UINT64* textureHandle, UINT64* textureNumHundle)

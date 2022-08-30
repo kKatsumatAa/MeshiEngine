@@ -82,6 +82,7 @@ class SceneGame : public SceneState
 {
 private:
 	bool isHit[2] = { 0,0 };
+	int gameOverTimer = 0;
 
 public:
 	void Initialize()override;
