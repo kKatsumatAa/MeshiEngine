@@ -27,12 +27,57 @@ void SceneTitle::Initialize()
 	SoundPlayWave(Directx::GetInstance().xAudio2.Get(), scene->soundData[2], 0.5f, true);
 	count = 0;
 	pos = { WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f + sinf(count) * 10.0f - 150.0f,0 };
+	
+	infoNum = 0;
+	infoGauge = 0;
+	info.worldMat->scale = { 0,0,0 };
 
 	scene->enemyManager.StartGenerate();
 }
 
 void SceneTitle::Update(SoundData* soundData)
 {
+	//説明の表示
+	if (info.worldMat->scale.x < 1.0f)
+	{
+		info.worldMat->scale += {0.2f, 0.2f, 0.2f};
+		info.worldMat->SetWorld();
+	}
+
+	switch (infoNum)
+	{
+	case 0:
+		if (KeyboardInput::GetInstance().keyPush(DIK_UPARROW) || KeyboardInput::GetInstance().keyPush(DIK_DOWNARROW) ||
+			KeyboardInput::GetInstance().keyPush(DIK_LEFTARROW) || KeyboardInput::GetInstance().keyPush(DIK_RIGHTARROW))
+		{
+			infoGauge++;
+		}
+		break;
+	case 1:
+		if (KeyboardInput::GetInstance().keyTrigger(DIK_X))
+		{
+			infoGauge += 40;
+		}
+		break;
+	case 2:
+		if (KeyboardInput::GetInstance().keyPush(DIK_Z))
+		{
+			infoGauge++;
+		}
+		break;
+	}
+
+	if (infoGauge >= 100)
+	{
+		infoNum++;
+		info.worldMat->scale = { 0,0,0 };
+		info.worldMat->SetWorld();
+		infoGauge = 0;
+
+		if (infoNum > 2) infoNum = 0;
+	}
+	
+
 	int startNum = 0;
 
 	count += 0.02f;
@@ -138,7 +183,21 @@ void SceneTitle::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	//player
 	scene->player->Draw(scene->viewMat, scene->projectionMat, textureHandle, textureNumHundle);//playerを後にしないと透過されない！
 
+	//タイトル
 	title.DrawBoxSprite(pos, 0.8f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[7], { 0.5f,0.5f });
+	//説明
+	switch (infoNum)
+	{
+	case 0:
+		info.DrawBoxSprite({ 1100.0f,550.0f - sinf(count) * 4.0f,0.0f }, 0.6f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[10], { 0.5f,0.5f });
+		break;
+	case 1:
+		info.DrawBoxSprite({ 1100.0f,550.0f - sinf(count) * 4.0f,0.0f }, 0.6f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[11], { 0.5f,0.5f });
+		break;
+	case 2:
+		info.DrawBoxSprite({ 1100.0f,550.0f - sinf(count) * 4.0f,0.0f }, 0.6f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[12], { 0.5f,0.5f });
+		break;
+	}
 }
 
 

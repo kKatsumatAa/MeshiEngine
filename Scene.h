@@ -12,6 +12,7 @@ class SceneState
 protected:
 	Scene* scene;
 	Draw title;
+	Draw info;
 
 public:
 	virtual void Initialize() = 0;
@@ -68,6 +69,8 @@ class SceneTitle : public SceneState
 private:
 	Vec3 pos = { WindowsApp::GetInstance().window_width / 2.0f, WindowsApp::GetInstance().window_height / 2.0f, 0 };
 	float count = 0;
+	int infoNum = 0;
+	int infoGauge = 0;
 
 public:
 	void Initialize()override;

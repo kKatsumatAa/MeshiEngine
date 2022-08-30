@@ -28,6 +28,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		LoadGraph(L"Resources/Title.png", textureHandle[7]);//タイトル
 		LoadGraph(L"Resources/HP.png", textureHandle[8]);//hp
 		LoadGraph(L"Resources/Clear.png", textureHandle[9]);//クリア
+		LoadGraph(L"Resources/info.png", textureHandle[10]);//説明1
+		LoadGraph(L"Resources/info2.png", textureHandle[11]);//説明2
+		LoadGraph(L"Resources/info3.png", textureHandle[12]);//説明3
 	}
 	//数字の画像
 	UINT64 textureNumHundle[12];
