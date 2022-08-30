@@ -13,6 +13,7 @@ protected:
 	Scene* scene;
 	Draw title;
 	Draw info;
+	Draw gauge;
 
 public:
 	virtual void Initialize() = 0;
@@ -70,7 +71,8 @@ private:
 	Vec3 pos = { WindowsApp::GetInstance().window_width / 2.0f, WindowsApp::GetInstance().window_height / 2.0f, 0 };
 	float count = 0;
 	int infoNum = 0;
-	int infoGauge = 0;
+	float infoGauge = 0;
+	float infoGauge2 = 0;
 
 public:
 	void Initialize()override;
@@ -95,6 +97,7 @@ class SceneEnd : public SceneState
 private:
 	float count = 0;
 	const Vec3 pos = { WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f,0 };
+	int timer = 0;
 
 public:
 	void Initialize()override;

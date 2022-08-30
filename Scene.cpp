@@ -30,6 +30,7 @@ void SceneTitle::Initialize()
 	
 	infoNum = 0;
 	infoGauge = 0;
+	infoGauge2 = 0;
 	info.worldMat->scale = { 0,0,0 };
 
 	scene->enemyManager.StartGenerate();
@@ -50,32 +51,38 @@ void SceneTitle::Update(SoundData* soundData)
 		if (KeyboardInput::GetInstance().keyPush(DIK_UPARROW) || KeyboardInput::GetInstance().keyPush(DIK_DOWNARROW) ||
 			KeyboardInput::GetInstance().keyPush(DIK_LEFTARROW) || KeyboardInput::GetInstance().keyPush(DIK_RIGHTARROW))
 		{
-			infoGauge++;
+			infoGauge += 1.0f;
 		}
 		break;
 	case 1:
 		if (KeyboardInput::GetInstance().keyTrigger(DIK_X))
 		{
-			infoGauge += 50;
+			infoGauge += 50.0f;
 		}
 		break;
 	case 2:
 		if (KeyboardInput::GetInstance().keyPush(DIK_Z))
 		{
-			infoGauge++;
+			infoGauge += 0.5f;
 		}
 		break;
 	}
 
-	if (infoGauge >= 100)
+	if (infoGauge2 >= 100.0f)
 	{
 		infoNum++;
 		info.worldMat->scale = { 0,0,0 };
 		info.worldMat->SetWorld();
 		infoGauge = 0;
-		if (infoNum == 2) infoGauge = -100;
+		infoGauge2 = 0;
 
 		if (infoNum > 2) infoNum = 0;
+	}
+
+	//­‚µ‚¸‚Â”½‰f
+	if (infoGauge2 < infoGauge)
+	{
+		infoGauge2 += 1.0f;
 	}
 	
 
@@ -199,6 +206,9 @@ void SceneTitle::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 		info.DrawBoxSprite({ 1100.0f,550.0f - sinf(count) * 4.0f,0.0f }, 0.6f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[12], { 0.5f,0.5f });
 		break;
 	}
+	//ƒQ[ƒW
+	gauge.DrawClippingBoxSprite({ 950.0f,430.0f - sinf(count) * 4.0f,0.0f }, 0.1f, { 0,0 },
+		{ 0.13f * (infoGauge2), 0.6f }, { 1.0f,1.0f,0,1.0f }, 0.0f, textureHandle[0]);
 }
 
 
@@ -353,7 +363,7 @@ void SceneGame::Update(SoundData* soundData)
 	if (scene->enemyManager.isEnd[1]) scene->ChangeState(new SceneEnd);
 
 	if (scene->player->isDead) gameOverTimer++;
-	if (scene->player->isDead && gameOverTimer >= 100) scene->ChangeState(new SceneTitle);
+	if (scene->player->isDead && gameOverTimer >= 150) scene->ChangeState(new SceneTitle);
 
 	
 }
@@ -378,6 +388,8 @@ void SceneGame::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 //I—¹‰æ–Ê
 void SceneEnd::Initialize()
 {
+	timer = 0;
+
 	count = 0;
 
 	scene->bossNum = 0;
@@ -394,8 +406,10 @@ void SceneEnd::Initialize()
 
 void SceneEnd::Update(SoundData* soundData)
 {
+	timer++;
+
 	scene->back.Update(scene->bossNum);
-	if (KeyboardInput::GetInstance().keyTrigger(DIK_Z)) scene->ChangeState(new SceneTitle);
+	if (timer >= 260) scene->ChangeState(new SceneTitle);
 }
 
 void SceneEnd::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
