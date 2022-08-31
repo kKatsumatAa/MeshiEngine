@@ -137,7 +137,7 @@ void EnemyManager::InfoEnd(bool& infoEnd)
 {
 	if (infoEnd)
 	{
-		if (infoEnd && !oldInfo) infoTimer = 240;
+		if (infoEnd && !oldInfo) infoTimer = 420;
 
 		for (std::unique_ptr<Enemy>& enemy : enemies)
 		{
