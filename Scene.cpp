@@ -361,11 +361,11 @@ void SceneGame::Update(SoundData* soundData)
 
 	//ƒV[ƒ“‘JˆÚ
 	if (scene->enemyManager.isEnd[1]) scene->ChangeState(new SceneEnd);
-
-	if (scene->player->isDead) gameOverTimer++;
-	if (scene->player->isDead && gameOverTimer >= 150) scene->ChangeState(new SceneTitle);
-
-	
+	else
+	{
+		if (scene->player->isDead) gameOverTimer++;
+		if (scene->player->isDead && gameOverTimer >= 150) scene->ChangeState(new SceneTitle);
+	}
 }
 
 void SceneGame::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
