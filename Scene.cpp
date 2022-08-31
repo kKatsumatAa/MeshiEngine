@@ -32,6 +32,7 @@ void SceneTitle::Initialize()
 	infoGauge = 0;
 	infoGauge2 = 0;
 	info.worldMat->scale = { 0,0,0 };
+	infoEnd = false;
 
 	scene->enemyManager.StartGenerate();
 }
@@ -76,7 +77,11 @@ void SceneTitle::Update(SoundData* soundData)
 		infoGauge = 0;
 		infoGauge2 = 0;
 
-		if (infoNum > 2) infoNum = 0;
+		if (infoNum > 2)
+		{
+			infoNum = 0;
+			infoEnd = true;
+		}
 	}
 
 	//­‚µ‚¸‚Â”½‰f
@@ -92,6 +97,7 @@ void SceneTitle::Update(SoundData* soundData)
 	pos = { WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f + sinf(count) * 10.0f - 150.0f,0 };
 
 	scene->enemyManager.Update();
+	scene->enemyManager.InfoEnd(infoEnd);
 	scene->player->Update();
 	scene->pManager.Update();
 

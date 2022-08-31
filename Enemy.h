@@ -81,6 +81,7 @@ public:
 	//タイトルのstart用
 	bool isSTART = false;
 	char start = NULL;
+	XMFLOAT4 startColor = { 1.0f,0.8f,0.8f,0.8f };
 
 	//関数
 private:

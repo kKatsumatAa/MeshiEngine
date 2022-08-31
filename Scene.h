@@ -73,6 +73,7 @@ private:
 	int infoNum = 0;
 	float infoGauge = 0;
 	float infoGauge2 = 0;
+	bool infoEnd = false;
 
 public:
 	void Initialize()override;

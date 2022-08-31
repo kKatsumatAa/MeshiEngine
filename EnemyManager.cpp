@@ -13,6 +13,9 @@ void EnemyManager::Initialize(Player* player, BulletManager* bulletManager, Soun
 	isWait = false;
 	waitTimer = 0;
 
+	infoTimer = 0;
+	oldInfo = false;
+
 	enemies.clear();
 	phase = 0;
 	//phase‚ª•Ï‚í‚é‚Ü‚Å‘Ò‚Âƒtƒ‰ƒO
@@ -128,6 +131,37 @@ void EnemyManager::StartGenerate()
 
 	//‹…‚ð“o˜^
 	enemies.push_back(std::move(t2));
+}
+
+void EnemyManager::InfoEnd(bool& infoEnd)
+{
+	if (infoEnd)
+	{
+		if (infoEnd && !oldInfo) infoTimer = 240;
+
+		for (std::unique_ptr<Enemy>& enemy : enemies)
+		{
+			if (enemy->isSTART)
+			{
+				if (infoTimer % 60 > 30)
+					enemy->startColor = { 1.0f,1.0f,0.0f,1.0f };
+
+				else				
+					enemy->startColor = { 1.0f,0.8f,0.8f,0.8f };
+				
+			}
+		}
+
+		infoTimer--;
+
+		if (infoTimer <= 0)
+		{
+			infoEnd = false;
+			infoTimer = 0;
+		}
+	}
+
+	oldInfo = infoEnd;
 }
 
 void EnemyManager::Update()

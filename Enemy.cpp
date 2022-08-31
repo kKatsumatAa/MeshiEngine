@@ -18,6 +18,8 @@ void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& 
 
 	HP = 1;
 
+	startColor = { 1.0f,0.8f,0.8f,0.8f };
+
 	//接近フェーズ初期化(startの文字は攻撃してこない)
 	if(!isSTART)
 		InitializeApproach();
@@ -197,10 +199,10 @@ void Enemy::Draw(ViewMat& view, ProjectionMat& projection, const UINT64* texHund
 {
 	if (isSTART && start != NULL)
 	{
-		if (start == 's')draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.8f }, texHundle[1]);
-		if (start == 't')draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.8f }, texHundle[2]);
-		if (start == 'a')draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.8f }, texHundle[3]);
-		if (start == 'r')draw.DrawCube3D(&worldMat, &view, &projection, { 1.0f,1.0f,1.0f,0.8f }, texHundle[5]);
+		if (start == 's')draw.DrawCube3D(&worldMat, &view, &projection, startColor, texHundle[1]);
+		if (start == 't')draw.DrawCube3D(&worldMat, &view, &projection, startColor, texHundle[2]);
+		if (start == 'a')draw.DrawCube3D(&worldMat, &view, &projection, startColor, texHundle[3]);
+		if (start == 'r')draw.DrawCube3D(&worldMat, &view, &projection, startColor, texHundle[5]);
 	}
 	else if (isBoss)
 		draw.DrawCube3D(&worldMat, &view, &projection, { 0.7f,0.7f,0.0f,0.8f }, texHundle[0]);

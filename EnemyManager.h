@@ -19,6 +19,9 @@ private:
 	ParticleManager* particleManager;
 	ItemManager* itemManager;
 
+	int infoTimer = 0;
+	bool oldInfo = false;
+
 
 	/// <summary>
 	/// 敵発生コマンドの更新
@@ -55,5 +58,7 @@ public:
 	void LoadEnemyPopData();
 
 	void StartGenerate();
+
+	void InfoEnd(bool& infoEnd);
 };
 
