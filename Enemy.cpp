@@ -156,8 +156,7 @@ void Enemy::Fire()
 	else
 		velocity = { length };//ここで発射時の角度,位置を決める
 
-	//速度ベクトルを自機の向きに合わせて回転させる
-	Vec3xM4(velocity, worldMat.matWorld, false);
+
 
 	//球を生成、初期化
 	std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
