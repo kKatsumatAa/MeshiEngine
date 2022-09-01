@@ -11,6 +11,7 @@ void Enemy::Initialize(Player* player,BulletManager* bulletManager, const Vec3& 
 	player_ = player;
 	this->bulletManager = bulletManager;
 	this->worldMat.trans = pos;
+	this->worldMat.scale.y = 0.0f;
 	this->worldMat.SetWorld();
 
 	state = new EnemyStateApproach;
@@ -41,6 +42,12 @@ void Enemy::InitializeApproach()
 
 void Enemy::Update()
 {
+	if (worldMat.scale.y < scaletmp)
+	{
+		worldMat.scale.y += 0.05f;
+		worldMat.SetWorld();
+	}
+
 	if (isBoss)
 	{
 		worldMat.rot.z += 0.07f;
