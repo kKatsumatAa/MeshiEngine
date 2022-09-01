@@ -75,7 +75,6 @@ private:
 	float infoGauge = 0;
 	float infoGauge2 = 0;
 	bool infoEnd = false;
-	Vec2 infoVec = { 0,0 };
 	Vec2 infoPlayerPos = { 0,0 };
 
 public:

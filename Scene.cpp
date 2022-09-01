@@ -34,7 +34,6 @@ void SceneTitle::Initialize()
 	info.worldMat->scale = { 0,0,0 };
 	infoEnd = false;
 
-	infoVec = { 0,0 };
 	infoPlayerPos = { 0,0 };
 
 	scene->enemyManager.StartGenerate();
@@ -84,53 +83,15 @@ void SceneTitle::Update(SoundData* soundData)
 		{
 			infoNum = 0;
 			infoEnd = true;
-
-			////説明用
-			////playerから画面真ん中までのベクトル計算
-			//infoVec = Vec2( WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f ) -
-			//	Vec3toVec2(scene->player->GetWorldPos(), scene->viewMat.matView, scene->projectionMat.matProjection);
-			//infoVec.Normalized();
-
-			////playerの位置を2dに直したものを使う
-			//infoPlayerPos = { Vec3toVec2(scene->player->GetWorldPos(), scene->viewMat.matView, scene->projectionMat.matProjection).x 
-			//	+ infoVec.GetNormalize().x * 5.0f,
-			//Vec3toVec2(scene->player->GetWorldPos(), scene->viewMat.matView, scene->projectionMat.matProjection).y 
-			//	+ infoVec.GetNormalize().y * 5.0f };
 		}
 	}
 
 	//説明用
 	if (infoEnd)
 	{
-		//移動
-		//infoPlayerPos += infoVec * 5.0f;
 
-		//ベクトルも直す
-		infoVec = Vec2(WindowsApp::GetInstance().window_width / 2.0f, WindowsApp::GetInstance().window_height / 2.0f) -
-			Vec3toVec2(scene->player->GetWorldPos(), scene->viewMat.matView, scene->projectionMat.matProjection);
-		infoVec.Normalized();
-
-		infoPlayerPos = { Vec3toVec2(scene->player->GetWorldPos(), scene->viewMat.matView, scene->projectionMat.matProjection).x
-				+ infoVec.x * 30.0f + infoVec.x * (sinf(count * 5.0f) * 30.0f) ,
-			Vec3toVec2(scene->player->GetWorldPos(), scene->viewMat.matView, scene->projectionMat.matProjection).y
-				+ infoVec.y * 30.0f + infoVec.y * (sinf(count * 5.0f) * 30.0f) };
-
-		
-
-		if (CollisionCircleCircle({ WindowsApp::GetInstance().window_width / 2.0f, WindowsApp::GetInstance().window_height / 2.0f, 0 }, 10.0f,
-			{ infoPlayerPos.x,infoPlayerPos.y,0 }, 10.0f))
-		{
-			//説明用のが真ん中行ったらplayerの位置に戻す
-			//infoPlayerPos= { Vec3toVec2(scene->player->GetWorldPos(), scene->viewMat.matView, scene->projectionMat.matProjection).x,
-			//Vec3toVec2(scene->player->GetWorldPos(), scene->viewMat.matView, scene->projectionMat.matProjection).y };
-
-			////ベクトルも直す
-			//infoVec = Vec2(WindowsApp::GetInstance().window_width / 2.0f, WindowsApp::GetInstance().window_height / 2.0f) -
-			//	Vec3toVec2(scene->player->GetWorldPos(), scene->viewMat.matView, scene->projectionMat.matProjection);
-			//infoVec.Normalized();
-
-			infoEnd = false;
-		}
+		infoPlayerPos = { WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f 
+			+ 100.0f + sinf(count * 5.0f) * 10.0f };
 	}
 
 	//少しずつ反映
@@ -268,8 +229,7 @@ void SceneTitle::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	//説明の動き
 	if (infoEnd)
 	{
-		float angle = RaditoAngle(atan2(infoVec.y, infoVec.x)) + 180.0f;
-		infoPlayer.DrawBoxSprite({ infoPlayerPos.x,infoPlayerPos.y,0 }, 0.2f, { 1.0f,1.0f,1.0f,0.9f }, textureHandle[13], { 0.5f,0.5f }, angle);
+		infoPlayer.DrawBoxSprite({ infoPlayerPos.x,infoPlayerPos.y,0 }, 0.2f, { 1.0f,1.0f,1.0f,0.9f }, textureHandle[13], { 0.5f,0.5f }, 90.0f);
 	}
 }
 
