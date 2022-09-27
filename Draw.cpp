@@ -888,7 +888,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	const bool& primitiveMode)
 {
 	//変換行列をGPUに送信
-	if (worldMat->parent != nullptr /*&& indexNum != SPRITE*/)//親がいる場合
+	if (worldMat->parent != nullptr && indexNum != SPRITE)//親がいる場合
 	{
 		worldMat->matWorld *= worldMat->parent->matWorld;
 		XMMATRIX matW;
@@ -899,7 +899,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		cbt.constMapTransform->mat = matW * view->matView * projection->matProjection;
 	}
-	else /*if(indexNum != SPRITE)*///親がいない場合
+	else if(indexNum != SPRITE)//親がいない場合
 	{
 		XMMATRIX matW;
 		matW = { (float)worldMat->matWorld.m[0][0],(float)worldMat->matWorld.m[0][1],(float)worldMat->matWorld.m[0][2],(float)worldMat->matWorld.m[0][3],
@@ -1130,20 +1130,40 @@ void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 	verticesS[2] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
 	verticesS[3] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
 	
-	
 
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
 	
 	//ワールド行列
-	worldMat->rot.z = AngletoRadi(rotation);
-	worldMat->trans = { pos.x /*+ resDesc.Width * ancorUV.x * scale*/,pos.y/* + resDesc.Height * ancorUV.y * scale*/,0.0f };
-	worldMat->SetWorld();
+	WorldMat worldMat;
 
-	view->matView = XMMatrixIdentity();
+	worldMat.rot.z = AngletoRadi(rotation);
+	worldMat.trans = { pos.x /*+ resDesc.Width * ancorUV.x * scale*/,pos.y/* + resDesc.Height * ancorUV.y * scale*/,0.0f };
+	worldMat.SetWorld();
+
+	//親がいたら
+	if (worldMat.parent != nullptr)
+	{
+		worldMat.matWorld *= worldMat.parent->matWorld;
+	}
+
+	XMMATRIX matW;
+	matW = { (float)worldMat.matWorld.m[0][0],(float)worldMat.matWorld.m[0][1],(float)worldMat.matWorld.m[0][2],(float)worldMat.matWorld.m[0][3],
+			 (float)worldMat.matWorld.m[1][0],(float)worldMat.matWorld.m[1][1],(float)worldMat.matWorld.m[1][2],(float)worldMat.matWorld.m[1][3],
+			 (float)worldMat.matWorld.m[2][0],(float)worldMat.matWorld.m[2][1],(float)worldMat.matWorld.m[2][2],(float)worldMat.matWorld.m[2][3],
+			 (float)worldMat.matWorld.m[3][0],(float)worldMat.matWorld.m[3][1],(float)worldMat.matWorld.m[3][2],(float)worldMat.matWorld.m[3][3] };
+
+	//view
+	ViewMat view;
+	view.matView = XMMatrixIdentity();
+
 
 	//平行投影の射影行列生成
-	projection->matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, 
+	ProjectionMat projection;
+
+	projection.matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, 
 		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
+
+	cbt.constMapTransform->mat = matW * view.matView * projection.matProjection;
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
@@ -1170,24 +1190,39 @@ void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const 
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
 	
 	//ワールド行列
-	worldMat->rot.z = AngletoRadi(rotation);
+	WorldMat worldMat;
+
+	worldMat.rot.z = AngletoRadi(rotation);
 
 	//切り抜いた後の画像の中心を設定！！！!!!!!!!!!!!!!!!!
-	worldMat->trans = { leftTop.x + texLeft + UVlength.x * (float)resDesc.Width * scale / 2.0f,
+	worldMat.trans = { leftTop.x + texLeft + UVlength.x * (float)resDesc.Width * scale / 2.0f,
 		leftTop.y + texTop + UVlength.y * (float)resDesc.Height * scale / 2.0f,
 		leftTop.z };
-	worldMat->SetWorld();
+	worldMat.SetWorld();
 
-	view->matView = XMMatrixIdentity();
+
+	//親がいたら
+	if (worldMat.parent != nullptr)
+	{
+		worldMat.matWorld *= worldMat.parent->matWorld;
+	}
+
+	XMMATRIX matW;
+	matW = { (float)worldMat.matWorld.m[0][0],(float)worldMat.matWorld.m[0][1],(float)worldMat.matWorld.m[0][2],(float)worldMat.matWorld.m[0][3],
+			 (float)worldMat.matWorld.m[1][0],(float)worldMat.matWorld.m[1][1],(float)worldMat.matWorld.m[1][2],(float)worldMat.matWorld.m[1][3],
+			 (float)worldMat.matWorld.m[2][0],(float)worldMat.matWorld.m[2][1],(float)worldMat.matWorld.m[2][2],(float)worldMat.matWorld.m[2][3],
+			 (float)worldMat.matWorld.m[3][0],(float)worldMat.matWorld.m[3][1],(float)worldMat.matWorld.m[3][2],(float)worldMat.matWorld.m[3][3] };
+
+	//view
+	ViewMat view;
+	view.matView = XMMatrixIdentity();
 
 	//平行投影の射影行列生成
-	projection->matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, 
+	ProjectionMat projection;
+	projection.matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, 
 		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 
-	////05_03
-	////平行投影変換（スプライト描画?）
-	//cbt.constMapTransform->mat =
-	//	XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
+	cbt.constMapTransform->mat = matW * view.matView * projection.matProjection;
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
