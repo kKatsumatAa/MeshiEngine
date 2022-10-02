@@ -224,7 +224,7 @@ void SceneTitle::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	}
 	//ƒQ[ƒW
 	gauge.DrawClippingBoxSprite({ 950.0f,430.0f - sinf(count) * 4.0f,0.0f }, 0.1f, { 0,0 },
-		{ 0.13f * (infoGauge2), 0.6f }, { 1.0f,1.0f,0,1.0f }, 0.0f, textureHandle[0]);
+		{ 0.13f * (infoGauge2), 0.6f }, { 1.0f,1.0f,0,1.0f }, textureHandle[0], 0.0f);
 
 	//à–¾‚Ì“®‚«
 	if (infoEnd)

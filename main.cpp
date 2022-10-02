@@ -1,4 +1,5 @@
 ﻿#include"Scene.h"
+#include"DebugText.h"
 
 
 
@@ -16,6 +17,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	MSG msg{};	//メッセージ
 
 	//画像用ハンドル
+	UINT64 debugTextHandle;
+	LoadGraph(L"Resources/ascii.png", debugTextHandle);
+
+	DebugText debugText;
+
 	UINT64 textureHandle[30] = {0};
 	{
 		LoadGraph(L"Resources/white.png", textureHandle[0]);//ただの白（色変える用）
@@ -68,6 +74,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Scene scene;
 	scene.Initialize(soundData);
 
+	float num = 114.514f;
+
 	//描画初期化処理-------------
 
    //初期化処理　ここまで//
@@ -88,11 +96,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 //更新処理
 		scene.Update(soundData);
-		
+		num+=0.001f;
 
 // 4.描画コマンドここから　//-----------
 		scene.Draw(textureHandle, textureNumHundle);
 
+		debugText.Print("num:", 10, 10, debugTextHandle,num);
 
 // 4.描画コマンドここまで //
 

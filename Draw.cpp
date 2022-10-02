@@ -586,167 +586,168 @@ Draw::Draw()
 	assert(SUCCEEDED(Directx::GetInstance().result));
 	//constBuffTransfer({ 1.0f,1.0f,1.0f,1.0f });
 	
-
-	//04_02
-	////横方向ピクセル数
-	//const size_t textureWidth = 256;
-	////縦方向ピクセル数
-	//const size_t textureHeight = 256;
-	////配列の要素数
-	//const size_t imageDataCount = textureWidth * textureHeight;
-	////画像イメージデータ配列
-	//XMFLOAT4* imageData = new XMFLOAT4[imageDataCount];//あとで必ず解放！！
-	////全ピクセルの色を初期化
-	//for (size_t i = 0; i < imageDataCount; i++)
-	//{
-	//	imageData[i].x = 1.0f;//R
-	//	imageData[i].y = 0.0f;//G
-	//	imageData[i].z = 0.0f;//B
-	//	imageData[i].w = 1.0f;//A
-	//}
-
-	
+	{
+		//04_02
+		////横方向ピクセル数
+		//const size_t textureWidth = 256;
+		////縦方向ピクセル数
+		//const size_t textureHeight = 256;
+		////配列の要素数
+		//const size_t imageDataCount = textureWidth * textureHeight;
+		////画像イメージデータ配列
+		//XMFLOAT4* imageData = new XMFLOAT4[imageDataCount];//あとで必ず解放！！
+		////全ピクセルの色を初期化
+		//for (size_t i = 0; i < imageDataCount; i++)
+		//{
+		//	imageData[i].x = 1.0f;//R
+		//	imageData[i].y = 0.0f;//G
+		//	imageData[i].z = 0.0f;//B
+		//	imageData[i].w = 1.0f;//A
+		//}
 
 
-	////05_02
-	//{
-	//	//ヒープ設定
-	//	D3D12_HEAP_PROPERTIES cbHeapProp{};
-	//	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
-	//	//リソース設定
-	//	D3D12_RESOURCE_DESC cbResourceDesc{};
-	//	ResourceProperties(cbResourceDesc, (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff/*256バイトアライメント*/);
-	//	//定数バッファの生成
-	//	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffTransform);
-	//}
-	////定数バッファのマッピング
-	//Directx::GetInstance().result = constBuffTransform->Map(0, nullptr, (void**)&constMapTransform);//マッピング
-	//assert(SUCCEEDED(Directx::GetInstance().result));
-	//単位行列を代入
-	//SetNormDigitalMat(constMapTransform->mat, win);
-
-	////05_03
-	////平行投影変換（スプライト描画?）
-	//constMapTransform->mat =
-	//	XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 
 
-	////05_04
-	//ViewMat view ( 0.0f, 0.0f, -100.0f
-	//	, 0.0f, 0.0f, 0.0f
-	//	, 0.f, 1.f, 0.f );
+		////05_02
+		//{
+		//	//ヒープ設定
+		//	D3D12_HEAP_PROPERTIES cbHeapProp{};
+		//	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
+		//	//リソース設定
+		//	D3D12_RESOURCE_DESC cbResourceDesc{};
+		//	ResourceProperties(cbResourceDesc, (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff/*256バイトアライメント*/);
+		//	//定数バッファの生成
+		//	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffTransform);
+		//}
+		////定数バッファのマッピング
+		//Directx::GetInstance().result = constBuffTransform->Map(0, nullptr, (void**)&constMapTransform);//マッピング
+		//assert(SUCCEEDED(Directx::GetInstance().result));
+		//単位行列を代入
+		//SetNormDigitalMat(constMapTransform->mat, win);
 
-	////定数バッファに転送
-	//constMapTransform->mat = view.matView * matProjection;
+		////05_03
+		////平行投影変換（スプライト描画?）
+		//constMapTransform->mat =
+		//	XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 
-	//05_05
-	/*XMMATRIX matWorld;
-	matWorld = XMMatrixIdentity();
 
-	constMapTransform=matWorld**/
-	/*constMapMaterial->color = { 0,0,0,1 };*/
+		////05_04
+		//ViewMat view ( 0.0f, 0.0f, -100.0f
+		//	, 0.0f, 0.0f, 0.0f
+		//	, 0.f, 1.f, 0.f );
 
-	//06_03
-	//こいつらのせいでチカチカする！（Draw のインスタンスが生成されるたびに、法線が上書きされるせい！）
-	///*else if (indexNum == TRIANGLE)*/
-	//{
-	//	for (int i = 0; i < _countof(indices2) / 3; i++)
-	//	{//三角形一つごとに計算
-	//		//三角形のインデックスを取り出して、一時的な変数に入れる
-	//		unsigned short index0 = indices2[i * 3 + 0];
-	//		unsigned short index1 = indices2[i * 3 + 1];
-	//		unsigned short index2 = indices2[i * 3 + 2];
-	//		//三角形を構成する頂点座標をベクトルに代入
-	//		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-	//		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-	//		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-	//		//p0->p1ベクトル、p0->p2ベクトルを計算
-	//		XMVECTOR v1 = XMVectorSubtract(p1, p0);
-	//		XMVECTOR v2 = XMVectorSubtract(p2, p0);
-	//		//外積（垂直なベクトル）
-	//		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-	//		//求めた法線を頂点データに代入
-	//		XMStoreFloat3(&vertices[index0].normal, normal);
-	//		XMStoreFloat3(&vertices[index1].normal, normal);
-	//		XMStoreFloat3(&vertices[index2].normal, normal);
-	//	}
-	//}
-	///*else if (indexNum == BOX)*/
-	//{
-	//	for (int i = 0; i < _countof(indices) / 3; i++)
-	//	{//三角形一つごとに計算
-	//		//三角形のインデックスを取り出して、一時的な変数に入れる
-	//		unsigned short index0 = indices[i * 3 + 0];
-	//		unsigned short index1 = indices[i * 3 + 1];
-	//		unsigned short index2 = indices[i * 3 + 2];
-	//		//三角形を構成する頂点座標をベクトルに代入
-	//		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-	//		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-	//		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-	//		//p0->p1ベクトル、p0->p2ベクトルを計算
-	//		XMVECTOR v1 = XMVectorSubtract(p1, p0);
-	//		XMVECTOR v2 = XMVectorSubtract(p2, p0);
-	//		//外積（垂直なベクトル）
-	//		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-	//		//求めた法線を頂点データに代入
-	//		XMStoreFloat3(&vertices[index0].normal, normal);
-	//		XMStoreFloat3(&vertices[index1].normal, normal);
-	//		XMStoreFloat3(&vertices[index2].normal, normal);
-	//	}
-	//}
-	///*else if (indexNum == CUBE)*/
-	//{
-	//	for (int i = 0; i < _countof(indicesCube) / 3; i++)
-	//	{//三角形一つごとに計算
-	//		//三角形のインデックスを取り出して、一時的な変数に入れる
-	//		unsigned short index0 = indicesCube[i * 3 + 0];
-	//		unsigned short index1 = indicesCube[i * 3 + 1];
-	//		unsigned short index2 = indicesCube[i * 3 + 2];
-	//		//三角形を構成する頂点座標をベクトルに代入
-	//		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-	//		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-	//		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-	//		//p0->p1ベクトル、p0->p2ベクトルを計算
-	//		XMVECTOR v1 = XMVectorSubtract(p1, p0);
-	//		XMVECTOR v2 = XMVectorSubtract(p2, p0);
-	//		//外積（垂直なベクトル）
-	//		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-	//		//求めた法線を頂点データに代入
-	//		XMStoreFloat3(&vertices[index0].normal, normal);
-	//		XMStoreFloat3(&vertices[index1].normal, normal);
-	//		XMStoreFloat3(&vertices[index2].normal, normal);
-	//	}
-	//}
-	///*else if (indexNum == CIRCLE)*/
-	//{
-	//	for (int i = 0; i < _countof(indicesCircle) / 3; i++)
-	//	{//三角形一つごとに計算
-	//		//三角形のインデックスを取り出して、一時的な変数に入れる
-	//		unsigned short index0 = indicesCircle[i * 3 + 0];
-	//		unsigned short index1 = indicesCircle[i * 3 + 1];
-	//		unsigned short index2 = indicesCircle[i * 3 + 2];
-	//		//三角形を構成する頂点座標をベクトルに代入
-	//		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-	//		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-	//		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-	//		//p0->p1ベクトル、p0->p2ベクトルを計算
-	//		XMVECTOR v1 = XMVectorSubtract(p1, p0);
-	//		XMVECTOR v2 = XMVectorSubtract(p2, p0);
-	//		//外積（垂直なベクトル）
-	//		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-	//		//求めた法線を頂点データに代入
-	//		XMStoreFloat3(&vertices[index0].normal, normal);
-	//		XMStoreFloat3(&vertices[index1].normal, normal);
-	//		XMStoreFloat3(&vertices[index2].normal, normal);
-	//	}
-	//}
-	///*else if (indexNum == LINE)*/
-	//{
-	//	//求めた法線を頂点データに代入
-	//	vertices[0].normal = XMFLOAT3(-1.0f / 3.0f, 1.0f / 3.0f, -1.0f / 3.0f);//仮の数字なので後で変更
-	//	vertices[1].normal = XMFLOAT3(-1.0f / 3.0f, 1.0f / 3.0f, -1.0f / 3.0f);//〃
+		////定数バッファに転送
+		//constMapTransform->mat = view.matView * matProjection;
 
-	//}
+		//05_05
+		/*XMMATRIX matWorld;
+		matWorld = XMMatrixIdentity();
+
+		constMapTransform=matWorld**/
+		/*constMapMaterial->color = { 0,0,0,1 };*/
+
+		//06_03
+		//こいつらのせいでチカチカする！（Draw のインスタンスが生成されるたびに、法線が上書きされるせい！）
+		///*else if (indexNum == TRIANGLE)*/
+		//{
+		//	for (int i = 0; i < _countof(indices2) / 3; i++)
+		//	{//三角形一つごとに計算
+		//		//三角形のインデックスを取り出して、一時的な変数に入れる
+		//		unsigned short index0 = indices2[i * 3 + 0];
+		//		unsigned short index1 = indices2[i * 3 + 1];
+		//		unsigned short index2 = indices2[i * 3 + 2];
+		//		//三角形を構成する頂点座標をベクトルに代入
+		//		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+		//		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+		//		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+		//		//p0->p1ベクトル、p0->p2ベクトルを計算
+		//		XMVECTOR v1 = XMVectorSubtract(p1, p0);
+		//		XMVECTOR v2 = XMVectorSubtract(p2, p0);
+		//		//外積（垂直なベクトル）
+		//		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
+		//		//求めた法線を頂点データに代入
+		//		XMStoreFloat3(&vertices[index0].normal, normal);
+		//		XMStoreFloat3(&vertices[index1].normal, normal);
+		//		XMStoreFloat3(&vertices[index2].normal, normal);
+		//	}
+		//}
+		///*else if (indexNum == BOX)*/
+		//{
+		//	for (int i = 0; i < _countof(indices) / 3; i++)
+		//	{//三角形一つごとに計算
+		//		//三角形のインデックスを取り出して、一時的な変数に入れる
+		//		unsigned short index0 = indices[i * 3 + 0];
+		//		unsigned short index1 = indices[i * 3 + 1];
+		//		unsigned short index2 = indices[i * 3 + 2];
+		//		//三角形を構成する頂点座標をベクトルに代入
+		//		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+		//		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+		//		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+		//		//p0->p1ベクトル、p0->p2ベクトルを計算
+		//		XMVECTOR v1 = XMVectorSubtract(p1, p0);
+		//		XMVECTOR v2 = XMVectorSubtract(p2, p0);
+		//		//外積（垂直なベクトル）
+		//		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
+		//		//求めた法線を頂点データに代入
+		//		XMStoreFloat3(&vertices[index0].normal, normal);
+		//		XMStoreFloat3(&vertices[index1].normal, normal);
+		//		XMStoreFloat3(&vertices[index2].normal, normal);
+		//	}
+		//}
+		///*else if (indexNum == CUBE)*/
+		//{
+		//	for (int i = 0; i < _countof(indicesCube) / 3; i++)
+		//	{//三角形一つごとに計算
+		//		//三角形のインデックスを取り出して、一時的な変数に入れる
+		//		unsigned short index0 = indicesCube[i * 3 + 0];
+		//		unsigned short index1 = indicesCube[i * 3 + 1];
+		//		unsigned short index2 = indicesCube[i * 3 + 2];
+		//		//三角形を構成する頂点座標をベクトルに代入
+		//		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+		//		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+		//		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+		//		//p0->p1ベクトル、p0->p2ベクトルを計算
+		//		XMVECTOR v1 = XMVectorSubtract(p1, p0);
+		//		XMVECTOR v2 = XMVectorSubtract(p2, p0);
+		//		//外積（垂直なベクトル）
+		//		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
+		//		//求めた法線を頂点データに代入
+		//		XMStoreFloat3(&vertices[index0].normal, normal);
+		//		XMStoreFloat3(&vertices[index1].normal, normal);
+		//		XMStoreFloat3(&vertices[index2].normal, normal);
+		//	}
+		//}
+		///*else if (indexNum == CIRCLE)*/
+		//{
+		//	for (int i = 0; i < _countof(indicesCircle) / 3; i++)
+		//	{//三角形一つごとに計算
+		//		//三角形のインデックスを取り出して、一時的な変数に入れる
+		//		unsigned short index0 = indicesCircle[i * 3 + 0];
+		//		unsigned short index1 = indicesCircle[i * 3 + 1];
+		//		unsigned short index2 = indicesCircle[i * 3 + 2];
+		//		//三角形を構成する頂点座標をベクトルに代入
+		//		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
+		//		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
+		//		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
+		//		//p0->p1ベクトル、p0->p2ベクトルを計算
+		//		XMVECTOR v1 = XMVectorSubtract(p1, p0);
+		//		XMVECTOR v2 = XMVectorSubtract(p2, p0);
+		//		//外積（垂直なベクトル）
+		//		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
+		//		//求めた法線を頂点データに代入
+		//		XMStoreFloat3(&vertices[index0].normal, normal);
+		//		XMStoreFloat3(&vertices[index1].normal, normal);
+		//		XMStoreFloat3(&vertices[index2].normal, normal);
+		//	}
+		//}
+		///*else if (indexNum == LINE)*/
+		//{
+		//	//求めた法線を頂点データに代入
+		//	vertices[0].normal = XMFLOAT3(-1.0f / 3.0f, 1.0f / 3.0f, -1.0f / 3.0f);//仮の数字なので後で変更
+		//	vertices[1].normal = XMFLOAT3(-1.0f / 3.0f, 1.0f / 3.0f, -1.0f / 3.0f);//〃
+
+		//}
+	}
 }
 
 void LoadGraph(const wchar_t* name, UINT64& textureHandle)
@@ -1169,7 +1170,7 @@ void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 }
 
 void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	XMFLOAT4 color, float rotation, const UINT64 textureHandle, const int& pipelineNum)
+	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, float rotation, const int& pipelineNum)
 {
 	
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
@@ -1181,12 +1182,22 @@ void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const 
 	float texTop = UVleftTop.y * +(float)resDesc.Height * scale;
 	float texBottom = (UVleftTop.y + UVlength.y) * +(float)resDesc.Height * scale;
 
-	//切り抜いた後の画像の中心からの位置！！！！！！！！
-	verticesS[0] = { {-UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-	verticesS[1] = { {-UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-	verticesS[2] = { {UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-	verticesS[3] = { {UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
-
+	if (isPosLeftTop)
+	{
+		//左上からの座標
+		verticesS[0] = { {0,UVlength.y * resDesc.Height * scale,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		verticesS[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
+		verticesS[2] = { {UVlength.x * resDesc.Width * scale,UVlength.y * resDesc.Height * scale,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		verticesS[3] = { {UVlength.x * resDesc.Width * scale,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+	}
+	else
+	{
+		//切り抜いた後の画像の中心からの位置！！！！！！！！
+		verticesS[0] = { {-UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		verticesS[1] = { {-UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
+		verticesS[2] = { {UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		verticesS[3] = { {UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+	}
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
 	
 	//ワールド行列
@@ -1194,10 +1205,18 @@ void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const 
 
 	worldMat.rot.z = AngletoRadi(rotation);
 
-	//切り抜いた後の画像の中心を設定！！！!!!!!!!!!!!!!!!!
-	worldMat.trans = { leftTop.x + texLeft + UVlength.x * (float)resDesc.Width * scale / 2.0f,
-		leftTop.y + texTop + UVlength.y * (float)resDesc.Height * scale / 2.0f,
-		leftTop.z };
+	if (isPosLeftTop)
+	{
+		//引数の左上座標を設定
+		worldMat.trans = { leftTop.x,leftTop.y,0 };
+	}
+	else
+	{
+		//切り抜いた後の画像の中心を設定！！！!!!!!!!!!!!!!!!!
+		worldMat.trans = { leftTop.x + texLeft + UVlength.x * (float)resDesc.Width * scale / 2.0f,
+			leftTop.y + texTop + UVlength.y * (float)resDesc.Height * scale / 2.0f,
+			leftTop.z };
+	}
 	worldMat.SetWorld();
 
 

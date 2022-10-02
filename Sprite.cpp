@@ -30,55 +30,55 @@ void SpriteCommonCreate(SpriteSet* spriteSet)
 
 }
 
-void Sprite::CreateSprite(D3D12_RESOURCE_DESC& resDesc, D3D12_HEAP_PROPERTIES& heapProp)
-{
-	HRESULT result = S_FALSE;
-
-	
-
-	UINT sizeVB;
-
-	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
-
-	//頂点バッファの設定		//ヒープ設定
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
-
-	ResourceProperties(resDesc, sizeVB);
-	resDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//頂点バッファの生成
-	BuffProperties(heapProp, resDesc, vertBuff.GetAddressOf());
-
-	// 頂点バッファビューの作成
-	// GPU仮想アドレス
-	vbView.BufferLocation = vertBuff.Get()->GetGPUVirtualAddress();
-	// 頂点バッファのサイズ
-	vbView.SizeInBytes = sizeVB;
-	// 頂点1つ分のデータサイズ
-	vbView.StrideInBytes = sizeof(vertices[0]);
-
-	//-----------------------------------------------------------------
-	//	//定数バッファ生成
-	//resDesc.Width = ((UINT)sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff;
-	//result = Directx::GetInstance().device->CreateCommittedResource(
-	//	&heapProp,//ヒープ設定
-	//	D3D12_HEAP_FLAG_NONE,
-	//	&resDesc,//リソース設定
-	//	D3D12_RESOURCE_STATE_GENERIC_READ,
-	//	nullptr,
-	//	IID_PPV_ARGS(constBuffMaterial.GetAddressOf()));
-	//assert(SUCCEEDED(result));
-
-	//// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
-	//result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);
-	//assert(SUCCEEDED(result));
-
-	//cbt.Initialize(Directx::GetInstance());
-
-	//cbt.constMapTransform->mat =
-	//	XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width,
-	//		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
-}
+//void Sprite::CreateSprite(D3D12_RESOURCE_DESC& resDesc, D3D12_HEAP_PROPERTIES& heapProp)
+//{
+//	HRESULT result = S_FALSE;
+//
+//	
+//
+//	UINT sizeVB;
+//
+//	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
+//	sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
+//
+//	//頂点バッファの設定		//ヒープ設定
+//	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
+//
+//	ResourceProperties(resDesc, sizeVB);
+//	resDesc.Format = DXGI_FORMAT_UNKNOWN;
+//	//頂点バッファの生成
+//	BuffProperties(heapProp, resDesc, vertBuff.GetAddressOf());
+//
+//	// 頂点バッファビューの作成
+//	// GPU仮想アドレス
+//	vbView.BufferLocation = vertBuff.Get()->GetGPUVirtualAddress();
+//	// 頂点バッファのサイズ
+//	vbView.SizeInBytes = sizeVB;
+//	// 頂点1つ分のデータサイズ
+//	vbView.StrideInBytes = sizeof(vertices[0]);
+//
+//	//-----------------------------------------------------------------
+//	//	//定数バッファ生成
+//	//resDesc.Width = ((UINT)sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff;
+//	//result = Directx::GetInstance().device->CreateCommittedResource(
+//	//	&heapProp,//ヒープ設定
+//	//	D3D12_HEAP_FLAG_NONE,
+//	//	&resDesc,//リソース設定
+//	//	D3D12_RESOURCE_STATE_GENERIC_READ,
+//	//	nullptr,
+//	//	IID_PPV_ARGS(constBuffMaterial.GetAddressOf()));
+//	//assert(SUCCEEDED(result));
+//
+//	//// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
+//	//result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);
+//	//assert(SUCCEEDED(result));
+//
+//	//cbt.Initialize(Directx::GetInstance());
+//
+//	//cbt.constMapTransform->mat =
+//	//	XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width,
+//	//		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
+//}
 
 void Sprite::SpriteCommonBeginDraw(SpriteSet* pipelineSet)
 {
