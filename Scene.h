@@ -1,8 +1,5 @@
 #pragma once
-#include "Enemy.h"
-#include "CollisionManager.h"
-#include"EnemyManager.h"
-#include"Background.h"
+#include"Draw.h"
 
 
 class Scene;
@@ -11,10 +8,6 @@ class SceneState
 {
 protected:
 	Scene* scene;
-	Draw title;
-	Draw info;
-	Draw gauge;
-	Draw infoPlayer;
 
 public:
 	virtual void Initialize() = 0;
@@ -34,28 +27,6 @@ public:
 	WorldMat cameraWorldMat;
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
-	//UI
-	Draw UI;
-	//パーティクル
-	ParticleManager pManager;
-	//BulletManager
-	BulletManager bulletManager;
-	//player
-	Player* player = new Player();
-	//item
-	ItemManager iManager;
-	//enemy
-	EnemyManager enemyManager;
-	//衝突
-	std::unique_ptr<CollisionManager> colliderManager = std::make_unique<CollisionManager>(&viewMat, &projectionMat);
-	//背景
-	Background back;
-	
-	int bossNum = 0;
-
-	int hitStopTimer = 0;
-	const int hitStoptmp = 3;
-
 
 public:
 	~Scene();
@@ -69,13 +40,7 @@ public:
 class SceneTitle : public SceneState
 {
 private:
-	Vec3 pos = { WindowsApp::GetInstance().window_width / 2.0f, WindowsApp::GetInstance().window_height / 2.0f, 0 };
-	float count = 0;
-	int infoNum = 0;
-	float infoGauge = 0;
-	float infoGauge2 = 0;
-	bool infoEnd = false;
-	Vec2 infoPlayerPos = { 0,0 };
+
 
 public:
 	void Initialize()override;
@@ -86,8 +51,7 @@ public:
 class SceneGame : public SceneState
 {
 private:
-	bool isHit[2] = { 0,0 };
-	int gameOverTimer = 0;
+
 
 public:
 	void Initialize()override;
@@ -98,9 +62,7 @@ public:
 class SceneEnd : public SceneState
 {
 private:
-	float count = 0;
-	const Vec3 pos = { WindowsApp::GetInstance().window_width / 2.0f,WindowsApp::GetInstance().window_height / 2.0f,0 };
-	int timer = 0;
+
 
 public:
 	void Initialize()override;

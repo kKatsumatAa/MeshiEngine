@@ -142,30 +142,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Background.cpp" />
-    <ClCompile Include="BulletManager.cpp" />
-    <ClCompile Include="Collider.cpp" />
-    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="ConstBuffTransform.cpp" />
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Draw.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="EnemyBullet.cpp" />
-    <ClCompile Include="EnemyManager.cpp" />
-    <ClCompile Include="Item.cpp" />
-    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="KeyboardInput.cpp" />
     <ClCompile Include="M4.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerBullet.cpp" />
     <ClCompile Include="ProjectionMat.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="TimedCall.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vec3.cpp" />
@@ -174,30 +162,17 @@
     <ClCompile Include="WorldMat.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Background.h" />
-    <ClInclude Include="BulletManager.h" />
-    <ClInclude Include="Collider.h" />
-    <ClInclude Include="CollisionConfig.h" />
-    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="ConstBuffTransform.h" />
     <ClInclude Include="DebugText.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Draw.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="EnemyBullet.h" />
-    <ClInclude Include="EnemyManager.h" />
-    <ClInclude Include="Item.h" />
-    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="KeyboardInput.h" />
     <ClInclude Include="M4.h" />
     <ClInclude Include="Particle.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerBullet.h" />
     <ClInclude Include="ProjectionMat.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
-    <ClInclude Include="TimedCall.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
