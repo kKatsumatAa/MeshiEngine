@@ -12,11 +12,10 @@
 
 class KeyboardInput
 {
-public:
+private:
 	//namespace省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-private:
 	//全キーの入力状態を取得する
 	BYTE key[256] = {};
 	BYTE oldkey[256] = {};
@@ -60,30 +59,32 @@ public:
 
 	void Update()
 	{
-		//キーボード情報の取得開始
-		keyboard->Acquire();
-
+		//前回のキー情報
 		for (int i = 0; i < 256; i++)
 		{
 			oldkey[i] = key[i];
 		}
+
+		//キーボード情報の取得開始
+		keyboard->Acquire();
+		//全キーの入力情報を取得
 		keyboard->GetDeviceState(sizeof(key), key);
 	}
 
 	//トリガー用
-	bool keyPush(uint8_t keys)
+	bool keyPush(BYTE keys)
 	{
 		return key[keys];
 	}
-	bool keyRelease(uint8_t keys)
+	bool keyRelease(BYTE keys)
 	{
 		return !key[keys];
 	}
-	bool keyTrigger(uint8_t keys)
+	bool keyTrigger(BYTE keys)
 	{
 		return (key[keys] && !oldkey[keys]);
 	}
-	bool keyReleaseTrigger(uint8_t keys)
+	bool keyReleaseTrigger(BYTE keys)
 	{
 		return (!key[keys] && oldkey[keys]);
 	}

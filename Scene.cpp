@@ -94,6 +94,10 @@ void Scene::Update(SoundData* soundData)
 {
 	state->Update(soundData);
 
+	box.worldMat->trans.x = box.worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
+	box.worldMat->trans.y = box.worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
+	box.worldMat->SetWorld();
+
 #ifdef _DEBUG
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_E)) ChangeState(new SceneTitle);
 #endif 
@@ -102,6 +106,8 @@ void Scene::Update(SoundData* soundData)
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
+	box.DrawCube3D(box.worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f },
+		textureHandle[0]);
 	state->Draw(textureHandle,textureNumHundle);
 }
 

@@ -118,22 +118,22 @@ void DebugText::Print(const std::string& text, float x, float y, UINT64 texhandl
 		float number = variable;
 		int printNumber[13] = { };
 
-		printNumber[0] = number / 100000;
+		printNumber[0] = (float)(number / 100000);
 		number -= (float)((int)number / (int)100000 * 100000);
 
-		printNumber[1] = number / 10000;
+		printNumber[1] = (float)(number / 10000);
 		number -= (float)((int)number / 10000 * 10000);
 
-		printNumber[2] = number / 1000;
+		printNumber[2] = (float)(number / 1000);
 		number -= (float)((int)number / 1000 * 1000);
 
-		printNumber[3] = number / 100;
+		printNumber[3] = (float)(number / 100);
 		number -= (float)((int)number / 100 * 100);
 
-		printNumber[4] = number / 10;
+		printNumber[4] = (float)(number / 10);
 		number -= (float)((int)number / 10 * 10);
 
-		printNumber[5] = number / 1;
+		printNumber[5] = (float)(number / 1);
 		number -= (float)((int)number / 1);
 
 //¬”“_ˆÈ‰º‚Ì•\¦

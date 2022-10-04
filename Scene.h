@@ -28,6 +28,8 @@ public:
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
 
+	Draw box;
+
 public:
 	~Scene();
 	void ChangeState(SceneState* state);
