@@ -107,12 +107,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="BasicVS.hlsl" />
-    <FxCompile Include="BasicPS.hlsl" />
-    <FxCompile Include="SpriteVS.hlsl" />
-    <FxCompile Include="SpritePS.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="KeyboardInput.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -206,9 +200,5 @@
     <ClInclude Include="DebugText.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Basic.hlsli" />
-    <None Include="Sprite.hlsli" />
   </ItemGroup>
 </Project>

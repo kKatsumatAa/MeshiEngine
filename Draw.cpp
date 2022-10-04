@@ -1351,7 +1351,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	{
 		// 頂点シェーダの読み込みとコンパイル
 		Directx::GetInstance().result = D3DCompileFromFile(
-			L"SpriteVS.hlsl", // シェーダファイル名
+			L"Resources/shaders/SpriteVS.hlsl", // シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 			"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
@@ -1364,7 +1364,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 
 		// ピクセルシェーダの読み込みとコンパイル
 		Directx::GetInstance().result = D3DCompileFromFile(
-			L"SpritePS.hlsl", // シェーダファイル名
+			L"Resources/shaders/SpritePS.hlsl", // シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 			"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
@@ -1379,7 +1379,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	{
 		// 頂点シェーダの読み込みとコンパイル
 		Directx::GetInstance().result = D3DCompileFromFile(
-			L"BasicVS.hlsl", // シェーダファイル名
+			L"Resources/shaders/BasicVS.hlsl", // シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 			"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
@@ -1392,7 +1392,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 
 		// ピクセルシェーダの読み込みとコンパイル
 		Directx::GetInstance().result = D3DCompileFromFile(
-			L"BasicPS.hlsl", // シェーダファイル名
+			L"Resources/shaders/BasicPS.hlsl", // シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 			"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
