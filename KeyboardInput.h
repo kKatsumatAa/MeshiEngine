@@ -15,6 +15,12 @@ private:
 	BYTE oldkey[256] = {};
 	HRESULT result;
 
+	//DirectInputの初期化
+	IDirectInput8* directInput = nullptr;
+	//キーボードデバイスの生成
+	IDirectInputDevice8* keyboard = nullptr;
+
+private:
 	KeyboardInput()
 	{
 		result = DirectInput8Create(
@@ -23,7 +29,6 @@ private:
 		assert(SUCCEEDED(result));
 
 		//キーボードデバイスの生成
-
 		result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
 		assert(SUCCEEDED(result));
 
@@ -36,18 +41,10 @@ private:
 			 WindowsApp::GetInstance().hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 		//画面が手前にあるとき入力受付｜デバイスをこのアプリだけで専有しない｜Windowsキーを無効
 		assert(SUCCEEDED(result));
-
-		result = DirectInput8Create(
-			 WindowsApp::GetInstance().w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
-			(void**)&directInput, nullptr);
-		assert(SUCCEEDED(result));
 	}
 
 public:
-	//DirectInputの初期化
-	IDirectInput8* directInput = nullptr;
-	//キーボードデバイスの生成
-	IDirectInputDevice8* keyboard = nullptr;
+	
 
 
 	static KeyboardInput& GetInstance()
