@@ -7,8 +7,15 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
+#include <wrl.h>
+
+
 class KeyboardInput
 {
+public:
+	//namespace省略
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 private:
 	//全キーの入力状態を取得する
 	BYTE key[256] = {};
@@ -16,9 +23,9 @@ private:
 	HRESULT result;
 
 	//DirectInputの初期化
-	IDirectInput8* directInput = nullptr;
+	ComPtr<IDirectInput8> directInput = nullptr;
 	//キーボードデバイスの生成
-	IDirectInputDevice8* keyboard = nullptr;
+	ComPtr<IDirectInputDevice8> keyboard = nullptr;
 
 private:
 	KeyboardInput()
@@ -44,8 +51,6 @@ private:
 	}
 
 public:
-	
-
 
 	static KeyboardInput& GetInstance()
 	{
