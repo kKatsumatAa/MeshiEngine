@@ -64,12 +64,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 //更新処理
 		scene.Update(soundData);
-		num+=0.001f;
+		
 
 // 4.描画コマンドここから　//-----------
 		scene.Draw(textureHandle, textureNumHundle);
 
-		debugText.Print("num:", 10, 10, debugTextHandle,num);
+		debugText.Print("num:", 10, 10, debugTextHandle, num);
+		num += 1.0f;
 
 // 4.描画コマンドここまで //
 

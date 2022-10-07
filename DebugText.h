@@ -20,7 +20,7 @@ private:
 public:
 	/*DebugText();*/
 	void Print(const std::string& text, float x, float y, UINT64 texhandle, int variable = NULL, float scale = 1.0f);
-	void Print(const std::string& text, float x, float y, UINT64 texhandle, float variable = NULL, float scale = 1.0f);
+	void Print(const std::string& text, float x, float y, UINT64 texhandle, const float& variable = NULL, float scale = 1.0f);
 
 };
 

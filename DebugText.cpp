@@ -82,7 +82,7 @@ void DebugText::Print(const std::string& text, float x, float y, UINT64 texhandl
 	spriteIndex = 0;
 }
 
-void DebugText::Print(const std::string& text, float x, float y, UINT64 texhandle, float variable, float scale)
+void DebugText::Print(const std::string& text, float x, float y, UINT64 texhandle, const float& variable, float scale)
 {
 	for (int i = 0; i < text.size(); i++)
 	{
@@ -118,22 +118,22 @@ void DebugText::Print(const std::string& text, float x, float y, UINT64 texhandl
 		float number = variable;
 		int printNumber[13] = { };
 
-		printNumber[0] = (float)(number / 100000);
-		number -= (float)((int)number / (int)100000 * 100000);
+		printNumber[0] = (int)(number / 100000);
+		number -= (float)((int)number / 100000 * 100000);
 
-		printNumber[1] = (float)(number / 10000);
+		printNumber[1] = (int)(number / 10000);
 		number -= (float)((int)number / 10000 * 10000);
 
-		printNumber[2] = (float)(number / 1000);
+		printNumber[2] = (int)(number / 1000);
 		number -= (float)((int)number / 1000 * 1000);
 
-		printNumber[3] = (float)(number / 100);
+		printNumber[3] = (int)(number / 100);
 		number -= (float)((int)number / 100 * 100);
 
-		printNumber[4] = (float)(number / 10);
+		printNumber[4] = (int)(number / 10);
 		number -= (float)((int)number / 10 * 10);
 
-		printNumber[5] = (float)(number / 1);
+		printNumber[5] = (int)(number / 1);
 		number -= (float)((int)number / 1);
 
 //¬”“_ˆÈ‰º‚Ì•\Ž¦
@@ -141,22 +141,22 @@ void DebugText::Print(const std::string& text, float x, float y, UINT64 texhandl
 
 		number *= 1000000;
 
-		printNumber[7] = number / 100000;
+		printNumber[7] = (int)(number / 100000);
 		number -= (int)number / (int)100000 * 100000;
 
-		printNumber[8] = number / 10000;
+		printNumber[8] = (int)(number / 10000);
 		number -= (int)number / (int)10000 * 10000;
 
-		printNumber[9] = number / 1000;
+		printNumber[9] = (int)(number / 1000);
 		number -= (int)number / (int)1000 * 1000;
 
-		printNumber[10] = number / 100;
+		printNumber[10] = (int)(number / 100);
 		number -= (int)number / (int)100 * 100;
 
-		printNumber[11] = number / 10;
+		printNumber[11] = (int)(number / 10);
 		number -= (int)number / (int)10 * 10;
 
-		printNumber[12] = number / 1;
+		printNumber[12] = (int)(number / 1);
 		number -= (int)number / (int)1;
 
 
