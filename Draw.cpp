@@ -178,8 +178,6 @@ SpriteSet pipelineSet;
 D3D12_ROOT_PARAMETER rootParams[3] = {};
 UINT sizeVB;
 
-
-
 // パイプランステートの生成
 ComPtr < ID3D12PipelineState> pipelineState[3] = { nullptr };
 // ルートシグネチャ
@@ -190,12 +188,17 @@ ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
 ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
 ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
 
-
 //頂点バッファの設定
 D3D12_HEAP_PROPERTIES heapProp{};
 // 2.描画先の変更
 	// レンダーターゲットビューのハンドルを取得
 D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
+
+//モデル用
+std::vector<Vertex> Draw::verticesM;
+std::vector<unsigned short> Draw::indicesM;
+ComPtr<ID3D12Resource> Draw::vertBuffM;
+ComPtr<ID3D12Resource> Draw::indexBuffM;
 
 
 void DrawInitialize()
@@ -750,6 +753,97 @@ Draw::Draw()
 	}
 }
 
+void Draw::CreateModel(const char* fileName)
+{
+	//ファイルストリーム
+	std::fstream file;
+	//.objファイルを開く
+	file.open(fileName);
+	//ファイルオープン失敗をチェック
+	if (file.fail()) { assert(0); }
+
+	//vertex用
+	std::vector<XMFLOAT3> positions;
+	std::vector<XMFLOAT3> normals;
+	std::vector<XMFLOAT3> texcoords;
+	//一行ずつ読み込む
+	std::string line;
+	while (getline(file, line));
+	{
+		//一行分の文字列をストリームに変換して解析しやすく
+		std::istringstream line_stream(line);
+
+		//半角スペース区切りで行の先頭文字列を取得
+		std::string key;
+		getline(line_stream, key, ' ');
+
+		//先頭文字列が'v'なら頂点座標
+		if (key == "v")
+		{
+			//x,y,z座標読み込み
+			XMFLOAT3 pos{};
+			line_stream >> pos.x;
+			line_stream >> pos.y;
+			line_stream >> pos.z;
+			//座標データに追加
+
+		}
+	}
+	
+
+	UINT sizeVB = static_cast<UINT>(sizeof(Vertex) * verticesM.size());
+	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indicesM.size());
+
+	// ヒーププロパティ
+	D3D12_HEAP_PROPERTIES heapProps;
+	heapProps.Type= D3D12_HEAP_TYPE_UPLOAD;
+	// リソース設定
+	D3D12_RESOURCE_DESC resourceDesc;
+	ResourceProperties(resourceDesc, sizeVB);
+
+	// 頂点バッファ生成
+	Directx::GetInstance().result = Directx::GetInstance().device->CreateCommittedResource(
+		&heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
+		IID_PPV_ARGS(&vertBuff));
+	assert(SUCCEEDED(Directx::GetInstance().result));
+
+	// 頂点バッファへのデータ転送
+	Vertex* vertMap = nullptr;
+	Directx::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	if (SUCCEEDED(Directx::GetInstance().result)) {
+		std::copy(verticesM.begin(), verticesM.end(), vertMap);
+		vertBuff->Unmap(0, nullptr);
+	}
+
+	// 頂点バッファビューの作成
+	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
+	vbView.SizeInBytes = sizeVB;
+	vbView.StrideInBytes = sizeof(vertices[0]);
+
+	// リソース設定
+	resourceDesc.Width = sizeIB;
+
+	// インデックスバッファ生成
+	Directx::GetInstance().result = Directx::GetInstance().device->CreateCommittedResource(
+		&heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
+		IID_PPV_ARGS(&indexBuffM));
+
+	// インデックスバッファへのデータ転送
+	unsigned short* indexMap = nullptr;
+	Directx::GetInstance().result = indexBuffM->Map(0, nullptr, (void**)&indexMap);
+	if (SUCCEEDED(Directx::GetInstance().result)) {
+
+		std::copy(indicesM.begin(), indicesM.end(), indexMap);
+
+		indexBuffM->Unmap(0, nullptr);
+	}
+
+	// インデックスバッファビューの作成
+	ibView.BufferLocation = indexBuffM->GetGPUVirtualAddress();
+	ibView.Format = DXGI_FORMAT_R16_UINT;
+	ibView.SizeInBytes = sizeIB;
+}
+
 void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 {
 	// 04_03
@@ -1065,6 +1159,9 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		break;
 	case SPRITE:
 		Directx::GetInstance().commandList->DrawInstanced(4, 1, 0, 0); // 全ての頂点を使って描画
+		break;
+	case MODEL:
+		Directx::GetInstance().commandList->DrawIndexedInstanced((UINT)indicesM.size(), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	}
 }

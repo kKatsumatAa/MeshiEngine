@@ -3,6 +3,11 @@
 #include "Util.h"
 #include "Sprite.h"
 
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+
 
 /// <summary>
 /// 頂点インデックス用
@@ -15,7 +20,8 @@ enum indices
 	LINE,
 	CIRCLE,
 	SPHERE,
-	SPRITE
+	SPRITE,
+	MODEL
 };
 struct Vertex
 {
@@ -57,6 +63,17 @@ private:
 	ComPtr < ID3D12Resource> vertBuffS = nullptr;
 	// 頂点バッファビューの作成
 	D3D12_VERTEX_BUFFER_VIEW vbViewS{};
+
+
+	//モデル用
+	//頂点データ配列
+	static std::vector<Vertex> verticesM;
+	//頂点インデックス配列
+	static std::vector<unsigned short> indicesM;
+	// 頂点バッファ
+	static ComPtr<ID3D12Resource> vertBuffM;
+	// インデックスバッファ
+	static ComPtr<ID3D12Resource> indexBuffM;
 	
 
 private:
@@ -75,6 +92,8 @@ public:
 
 	//
 	Draw();
+
+	void CreateModel(const char* fileName);
 
 	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 		WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color={NULL,NULL,NULL,NULL},
