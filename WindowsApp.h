@@ -8,6 +8,11 @@
 class WindowsApp
 {
 private:
+	WNDCLASSEX w;
+	HWND hwnd;
+
+
+
 	//ウインドウプロシージャ
 	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		//メッセージに応じてゲーム固有の処理を行う
@@ -65,8 +70,7 @@ public:
 	//ウィンドウサイズ
 	const float window_width = 1280.0f;
 	const float window_height = 720.0f;
-	WNDCLASSEX w;
-	HWND hwnd;
+
 	// ビューポート設定コマンド
 	D3D12_VIEWPORT viewport;
 
@@ -102,4 +106,8 @@ public:
 	{
 		*this = win;
 	}
+
+	//getter
+	WNDCLASSEX Getw() { return w; }
+	HWND Gethwnd() { return hwnd; }
 };

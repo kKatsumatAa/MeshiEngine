@@ -113,7 +113,7 @@ Directx::Directx()
 	ComPtr<IDXGISwapChain1> swapChain1;
 
 	result = dxgiFactory->CreateSwapChainForHwnd(
-		commandQueue.Get(), WindowsApp::GetInstance().hwnd, &swapChainDesc, nullptr, nullptr,
+		commandQueue.Get(), WindowsApp::GetInstance().Gethwnd(), &swapChainDesc, nullptr, nullptr,
 		&swapChain1);
 	assert(SUCCEEDED(result));
 

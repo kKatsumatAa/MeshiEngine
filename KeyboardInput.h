@@ -30,7 +30,7 @@ private:
 	KeyboardInput()
 	{
 		result = DirectInput8Create(
-			 WindowsApp::GetInstance().w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
+			WindowsApp::GetInstance().Getw().hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
 			(void**)&directInput, nullptr);
 		assert(SUCCEEDED(result));
 
@@ -44,7 +44,7 @@ private:
 
 		//排他制御レベルのリセット
 		result = keyboard->SetCooperativeLevel(
-			 WindowsApp::GetInstance().hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+			WindowsApp::GetInstance().Gethwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 		//画面が手前にあるとき入力受付｜デバイスをこのアプリだけで専有しない｜Windowsキーを無効
 		assert(SUCCEEDED(result));
 	}
