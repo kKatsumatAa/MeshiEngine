@@ -63,8 +63,8 @@ private:
 
 public:
 	//ウィンドウサイズ
-	const float window_width = 1280;
-	const float window_height = 720;
+	const float window_width = 1280.0f;
+	const float window_height = 720.0f;
 	WNDCLASSEX w;
 	HWND hwnd;
 	// ビューポート設定コマンド
