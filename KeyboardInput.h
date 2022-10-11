@@ -60,10 +60,7 @@ public:
 	void Update()
 	{
 		//前回のキー情報
-		for (int i = 0; i < 256; i++)
-		{
-			oldkey[i] = key[i];
-		}
+		memcpy(oldkey, key, sizeof(key));
 
 		//キーボード情報の取得開始
 		keyboard->Acquire();
