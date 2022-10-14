@@ -3,11 +3,6 @@
 #include "Util.h"
 #include "Sprite.h"
 
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
-
 
 /// <summary>
 /// 頂点インデックス用
@@ -67,13 +62,16 @@ private:
 
 	//モデル用
 	//頂点データ配列
-	static std::vector<Vertex> verticesM;
+	 std::vector<Vertex> verticesM;
 	//頂点インデックス配列
-	static std::vector<unsigned short> indicesM;
+	 std::vector<unsigned short> indicesM;
 	// 頂点バッファ
-	static ComPtr<ID3D12Resource> vertBuffM;
+	 ComPtr<ID3D12Resource> vertBuffM;
 	// インデックスバッファ
-	static ComPtr<ID3D12Resource> indexBuffM;
+	 ComPtr<ID3D12Resource> indexBuffM;
+	// 頂点バッファビューの作成
+	D3D12_VERTEX_BUFFER_VIEW vbViewM{};
+	D3D12_INDEX_BUFFER_VIEW ibViewM{};
 	
 
 private:
@@ -112,6 +110,8 @@ public:
 	void DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	void DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
+		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+	void DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 
 

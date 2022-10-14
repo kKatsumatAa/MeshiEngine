@@ -1,4 +1,9 @@
 #include "Draw.h"
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <d3dx12.h>
 
 
 //設定をもとにSRV用デスクリプタヒープを生成
@@ -194,11 +199,7 @@ D3D12_HEAP_PROPERTIES heapProp{};
 	// レンダーターゲットビューのハンドルを取得
 D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
-//モデル用
-std::vector<Vertex> Draw::verticesM;
-std::vector<unsigned short> Draw::indicesM;
-ComPtr<ID3D12Resource> Draw::vertBuffM;
-ComPtr<ID3D12Resource> Draw::indexBuffM;
+
 
 
 void DrawInitialize()
@@ -756,19 +757,29 @@ Draw::Draw()
 void Draw::CreateModel(const char* fileName)
 {
 	//ファイルストリーム
-	std::fstream file;
+	std::ifstream file;
 	//.objファイルを開く
 	file.open(fileName);
 	//ファイルオープン失敗をチェック
-	if (file.fail()) { assert(0); }
+	assert(file.is_open());
+
+	std::stringstream all;
+	//ファイルの内容を文字列ストリームにコピー
+	all << file.rdbuf();
+
+	//ファイルを閉じる
+	file.close();
+
 
 	//vertex用
 	std::vector<XMFLOAT3> positions;
 	std::vector<XMFLOAT3> normals;
 	std::vector<XMFLOAT3> texcoords;
-	//一行ずつ読み込む
+
+	//1行分の文字列を入れる変数
 	std::string line;
-	while (getline(file, line));
+
+	while (std::getline(all,line))
 	{
 		//一行分の文字列をストリームに変換して解析しやすく
 		std::istringstream line_stream(line);
@@ -786,47 +797,60 @@ void Draw::CreateModel(const char* fileName)
 			line_stream >> pos.y;
 			line_stream >> pos.z;
 			//座標データに追加
-
+			positions.emplace_back(pos);
+			Vertex vertex{};
+			vertex.pos = pos;
+			verticesM.emplace_back(vertex);
+		}
+		if (key == "f")
+		{
+			//半角スペース区切りで行の続きを読み込む
+			std::string index_string;
+			while (getline(line_stream, index_string, ' '))
+			{
+				//頂点インデックス一個分の文字列をストリームに変換して解析しやすく
+				std::istringstream index_stream(index_string);
+				unsigned short indexPosition;
+				index_stream >> indexPosition;
+				//頂点インデックスに追加
+				indicesM.emplace_back(indexPosition - 1);
+			}
 		}
 	}
-	
 
 	UINT sizeVB = static_cast<UINT>(sizeof(Vertex) * verticesM.size());
 	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indicesM.size());
 
 	// ヒーププロパティ
-	D3D12_HEAP_PROPERTIES heapProps;
-	heapProps.Type= D3D12_HEAP_TYPE_UPLOAD;
+	CD3DX12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 	// リソース設定
-	D3D12_RESOURCE_DESC resourceDesc;
-	ResourceProperties(resourceDesc, sizeVB);
+	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeVB);
 
 	// 頂点バッファ生成
 	Directx::GetInstance().result = Directx::GetInstance().device->CreateCommittedResource(
 		&heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-		IID_PPV_ARGS(&vertBuff));
+		IID_PPV_ARGS(&vertBuffM));
 	assert(SUCCEEDED(Directx::GetInstance().result));
+
 
 	// 頂点バッファへのデータ転送
 	Vertex* vertMap = nullptr;
-	Directx::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	Directx::GetInstance().result = vertBuffM->Map(0, nullptr, (void**)&vertMap);
 	if (SUCCEEDED(Directx::GetInstance().result)) {
 		std::copy(verticesM.begin(), verticesM.end(), vertMap);
-		vertBuff->Unmap(0, nullptr);
+		vertBuffM->Unmap(0, nullptr);
 	}
 
 	// 頂点バッファビューの作成
-	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
-	vbView.SizeInBytes = sizeVB;
-	vbView.StrideInBytes = sizeof(vertices[0]);
+	vbViewM.BufferLocation = vertBuffM->GetGPUVirtualAddress();
+	vbViewM.SizeInBytes = sizeVB;
+	vbViewM.StrideInBytes = sizeof(vertices[0]);
 
 	// リソース設定
 	resourceDesc.Width = sizeIB;
 
 	// インデックスバッファ生成
-	Directx::GetInstance().result = Directx::GetInstance().device->CreateCommittedResource(
-		&heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-		IID_PPV_ARGS(&indexBuffM));
+	BuffProperties(heapProps, resourceDesc, &indexBuffM);
 
 	// インデックスバッファへのデータ転送
 	unsigned short* indexMap = nullptr;
@@ -839,9 +863,9 @@ void Draw::CreateModel(const char* fileName)
 	}
 
 	// インデックスバッファビューの作成
-	ibView.BufferLocation = indexBuffM->GetGPUVirtualAddress();
-	ibView.Format = DXGI_FORMAT_R16_UINT;
-	ibView.SizeInBytes = sizeIB;
+	ibViewM.BufferLocation = indexBuffM->GetGPUVirtualAddress();
+	ibViewM.Format = DXGI_FORMAT_R16_UINT;
+	ibViewM.SizeInBytes = sizeIB;
 }
 
 void LoadGraph(const wchar_t* name, UINT64& textureHandle)
@@ -982,6 +1006,8 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
 	const bool& primitiveMode)
 {
+	worldMat->SetWorld();
+
 	//変換行列をGPUに送信
 	if (worldMat->parent != nullptr && indexNum != SPRITE)//親がいる場合
 	{
@@ -1091,6 +1117,11 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 			Directx::GetInstance().commandList.Get()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 		}
+		else if (indexNum == MODEL)
+		{
+			Directx::GetInstance().commandList.Get()->IASetVertexBuffers(0, 1, &vbViewM);
+			Directx::GetInstance().commandList.Get()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		}
 		else
 		{
 			// プリミティブ形状の設定コマンド
@@ -1131,6 +1162,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	if (indexNum != SPRITE)
 	{
 		if (indexNum == SPHERE)Directx::GetInstance().commandList->IASetIndexBuffer(&ibView3);
+		else if (indexNum == MODEL) Directx::GetInstance().commandList->IASetIndexBuffer(&ibViewM);
 		else if (indexNum != CIRCLE) Directx::GetInstance().commandList->IASetIndexBuffer(&ibView);
 		else if (indexNum == CIRCLE)Directx::GetInstance().commandList->IASetIndexBuffer(&ibView2);
 		
@@ -1439,6 +1471,19 @@ void Draw::DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	constMapMaterial->color = color;
 
 	Update(SPHERE, pipelineNum, textureHandle, cbt);
+}
+
+void Draw::DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
+	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+{
+	/*constBuffTransfer({ 0,0.01f,0,0 });*/
+	this->worldMat = world;
+	this->view = view;
+	this->projection = projection;
+
+	constMapMaterial->color = color;
+
+	Update(MODEL, pipelineNum, textureHandle, cbt);
 }
 
 void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
