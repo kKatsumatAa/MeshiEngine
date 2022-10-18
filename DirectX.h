@@ -39,6 +39,14 @@ private:
 
 	Directx();
 
+	//èâä˙âªån
+	void InitializeDevice();
+	void InitializeCommand();
+	void InitializeSwapchain();
+	void InitializeRendertargetView();
+	void InitializeDepthBuffer();
+	void InitializeFence();
+
 public:
 	//âπ
 	ComPtr<IXAudio2> xAudio2;
