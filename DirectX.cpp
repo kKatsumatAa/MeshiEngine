@@ -272,10 +272,25 @@ void Directx::DrawUpdate(const XMFLOAT4& winRGBA)
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH,
 		1.0f, 0, 0, nullptr);
 	//毎フレーム深度バッファの値が描画範囲で最も奥(1.0)にリセットされる
+
+	// ビューポート設定コマンドを、コマンドリストに積む
+	commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
+
+	// シザー矩形
+	D3D12_RECT scissorRect{};
+	scissorRect.left = 0; // 切り抜き座標左
+	scissorRect.right = (LONG)(scissorRect.left + WindowsApp::GetInstance().window_width); // 切り抜き座標右
+	scissorRect.top = 0; // 切り抜き座標上
+	scissorRect.bottom = (LONG)(scissorRect.top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
+	// シザー矩形設定コマンドを、コマンドリストに積む
+	commandList->RSSetScissorRects(1, &scissorRect);
 }
 
 void Directx::DrawUpdate2()
 {
+	// バックバッファの番号を取得(2つなので0番か1番)
+	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
+
 	// 5.リソースバリアを戻す
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT; // 表示状態へ
@@ -287,9 +302,6 @@ void Directx::DrawUpdate2()
 	// コマンドリストの実行
 	ID3D12CommandList* commandLists[] = { commandList.Get() };
 	commandQueue->ExecuteCommandLists(1, commandLists);
-	// 画面に表示するバッファをフリップ(裏表の入替え)
-	result = swapChain->Present(1, 0);
-	assert(SUCCEEDED(result));
 
 	// コマンドの実行完了を待つ
 	commandQueue->Signal(fence.Get(), ++fenceVal);
@@ -304,6 +316,10 @@ void Directx::DrawUpdate2()
 	assert(SUCCEEDED(result));
 	// 再びコマンドリストを貯める準備
 	result = commandList->Reset(commandAllocator.Get(), nullptr);
+	assert(SUCCEEDED(result));
+
+	// 画面に表示するバッファをフリップ(裏表の入替え)
+	result = swapChain->Present(1, 0);
 	assert(SUCCEEDED(result));
 }
 

@@ -941,18 +941,6 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		// 繋がりを解除
 		vertBuff2->Unmap(0, nullptr);
 	}
-	
-	// ビューポート設定コマンドを、コマンドリストに積む
-	Directx::GetInstance().commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
-
-	// シザー矩形
-	D3D12_RECT scissorRect{};
-	scissorRect.left = 0; // 切り抜き座標左
-	scissorRect.right = (LONG)(scissorRect.left + WindowsApp::GetInstance().window_width); // 切り抜き座標右
-	scissorRect.top = 0; // 切り抜き座標上
-	scissorRect.bottom = (LONG)(scissorRect.top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
-	// シザー矩形設定コマンドを、コマンドリストに積む
-	Directx::GetInstance().commandList->RSSetScissorRects(1, &scissorRect);
 
 	// パイプラインステートとルートシグネチャの設定コマンド
 	if (indexNum == LINE)
