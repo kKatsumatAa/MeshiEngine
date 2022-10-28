@@ -85,7 +85,7 @@ void Scene::Initialize(SoundData* soundData)
 {
 	this->soundData = soundData;
 
-	Model.CreateModel("Resources/triangle/triangle.obj");
+	Model.CreateModel("Resources/triangle_tex/triangle_tex.obj");
 	Model.worldMat->scale = { 10.0f, 10.0f, 10.0f };
 
 	ChangeState(new SceneTitle);
@@ -109,8 +109,8 @@ void Scene::Update(SoundData* soundData)
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
-	Model.DrawModel(Model.worldMat, &viewMat, &projectionMat, { 1.0f,0.0f,0.0f,1.0f },
-		textureHandle[0]);
+	Model.DrawModel(Model.worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f },
+		textureHandle[1]);
 	state->Draw(textureHandle,textureNumHundle);
 }
 

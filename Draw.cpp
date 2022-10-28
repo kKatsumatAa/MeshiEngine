@@ -774,7 +774,7 @@ void Draw::CreateModel(const char* fileName)
 	//vertex用
 	std::vector<XMFLOAT3> positions;
 	std::vector<XMFLOAT3> normals;
-	std::vector<XMFLOAT3> texcoords;
+	std::vector<XMFLOAT2> texcoords;
 
 	//1行分の文字列を入れる変数
 	std::string line;
@@ -798,10 +798,31 @@ void Draw::CreateModel(const char* fileName)
 			line_stream >> pos.z;
 			//座標データに追加
 			positions.emplace_back(pos);
-			Vertex vertex{};
-			vertex.pos = pos;
-			verticesM.emplace_back(vertex);
 		}
+		//テクスチャ
+		if (key == "vt")
+		{
+			//UV成分読み込み
+			XMFLOAT2 texcoord{};
+			line_stream >> texcoord.x;
+			line_stream >> texcoord.y;
+			//V方向反転
+			texcoord.y = 1.0f - texcoord.y;
+			//テクスチャ座標データに追加
+			texcoords.emplace_back(texcoord);
+		}
+		//法線ベクトル
+		if (key == "vn")
+		{
+			//X,Y,Z成分読み込み
+			XMFLOAT3 normal{};
+			line_stream >> normal.x;
+			line_stream >> normal.y;
+			line_stream >> normal.z;
+			//法線ベクトルデータに追加
+			normals.emplace_back(normal);
+		}
+		//ポリゴン
 		if (key == "f")
 		{
 			//半角スペース区切りで行の続きを読み込む
@@ -810,10 +831,24 @@ void Draw::CreateModel(const char* fileName)
 			{
 				//頂点インデックス一個分の文字列をストリームに変換して解析しやすく
 				std::istringstream index_stream(index_string);
-				unsigned short indexPosition;
+				unsigned short indexPosition, indexNormal, indexTexcoord;
 				index_stream >> indexPosition;
-				//頂点インデックスに追加
-				indicesM.emplace_back(indexPosition - 1);
+				//頂点インデックス等に追加(頂点インデックス、法線、uvの順)
+				//(1// 2// 3//　←("//")には非対応)
+				index_stream.seekg(1, std::ios_base::cur);//スラッシュを飛ばす
+				index_stream >> indexNormal;
+				index_stream.seekg(1, std::ios_base::cur);//スラッシュ(/)を飛ばす
+				index_stream >> indexTexcoord;
+				
+
+				//頂点データの追加
+				Vertex vertex{};
+				vertex.pos = positions[indexPosition - 1];
+				vertex.normal = normals[indexNormal - 1];
+				vertex.uv = texcoords[indexTexcoord - 1];
+				verticesM.emplace_back(vertex);
+				//インデックスデータの追加
+				indicesM.emplace_back((unsigned short)indicesM.size());
 			}
 		}
 	}
