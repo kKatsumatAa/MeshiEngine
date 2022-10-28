@@ -774,7 +774,7 @@ void Draw::CreateModel(const char* fileName)
 	//vertex—p
 	std::vector<XMFLOAT3> positions;
 	std::vector<XMFLOAT3> normals;
-	std::vector<XMFLOAT3> texcoords;
+	std::vector<XMFLOAT2> texcoords;
 
 	//1s•ª‚Ì•¶š—ñ‚ğ“ü‚ê‚é•Ï”
 	std::string line;
