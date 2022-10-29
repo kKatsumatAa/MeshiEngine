@@ -835,10 +835,11 @@ void Draw::CreateModel(const char* fileName)
 				index_stream >> indexPosition;
 				//頂点インデックス等に追加(頂点インデックス、法線、uvの順)
 				//(1// 2// 3//　←("//")には非対応)
-				index_stream.seekg(1, std::ios_base::cur);//スラッシュを飛ばす
-				index_stream >> indexNormal;
 				index_stream.seekg(1, std::ios_base::cur);//スラッシュ(/)を飛ばす
 				index_stream >> indexTexcoord;
+				index_stream.seekg(1, std::ios_base::cur);//スラッシュを飛ばす
+				index_stream >> indexNormal;
+			
 				
 
 				//頂点データの追加
