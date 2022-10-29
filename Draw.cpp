@@ -178,9 +178,11 @@ D3D12_INPUT_ELEMENT_DESC inputLayoutSprite[2] = {
 	} // (1行で書いたほうが見やすい)
 };
 SpriteSet pipelineSet;
+//al4_02_02
+SpriteSet pipelineSetM;
 
 //ルートパラメータの設定
-D3D12_ROOT_PARAMETER rootParams[3] = {};
+D3D12_ROOT_PARAMETER rootParams[4] = {};
 UINT sizeVB;
 
 // パイプランステートの生成
@@ -204,7 +206,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 void DrawInitialize()
 {
-	
+
 
 	//球体用
 	{
@@ -229,7 +231,7 @@ void DrawInitialize()
 
 
 		WorldMat worldMat;
-		Vec3 vec={ 0,-5.0f,0 };
+		Vec3 vec = { 0,-5.0f,0 };
 
 		//頂点二つ
 		verticesSphere[0] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };//下
@@ -242,13 +244,13 @@ void DrawInitialize()
 
 			for (int j = 0; j < 34; j++)//縦
 			{
-				worldMat.rot.x = ((float)(j+1) * (pi / 35.0f));
+				worldMat.rot.x = ((float)(j + 1) * (pi / 35.0f));
 				worldMat.SetWorld();
 				vec = { 0,-5.0f,0 };
 				Vec3xM4(vec, worldMat.matWorld, false);
 
 				int p = i * 34 + j;
-				verticesSphere[(2) + i * 34 + j ] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };
+				verticesSphere[(2) + i * 34 + j] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };
 			}
 		}
 
@@ -445,6 +447,11 @@ void DrawInitialize()
 	rootParams[2].Descriptor.ShaderRegister = 1;//定数バッファ番号(b1)
 	rootParams[2].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//定数バッファ2番
+	rootParams[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams[3].Descriptor.ShaderRegister = 2;//定数バッファ番号(b1)
+	rootParams[3].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 
 
 	// パイプランステートの生成
@@ -457,8 +464,13 @@ void DrawInitialize()
 
 	//sprite用
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSet.pipelineState.GetAddressOf(),
-		pipelineSet.rootSignature.GetAddressOf(), pipelineSet.vsBlob, 
+		pipelineSet.rootSignature.GetAddressOf(), pipelineSet.vsBlob,
 		pipelineSet.psBlob, SPRITE);
+
+	//model用
+	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetM.pipelineState.GetAddressOf(),
+		pipelineSetM.rootSignature.GetAddressOf(), pipelineSetM.vsBlob,
+		pipelineSetM.psBlob, MODEL);
 
 	//03_04
 	//インデックスデータ
@@ -561,7 +573,7 @@ Draw::Draw()
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
-	
+
 	ResourceProperties(resDesc, sizeVB);
 
 	//頂点バッファの生成
@@ -588,178 +600,29 @@ Draw::Draw()
 	//定数バッファのマッピング
 	Directx::GetInstance().result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
 	assert(SUCCEEDED(Directx::GetInstance().result));
-	//constBuffTransfer({ 1.0f,1.0f,1.0f,1.0f });
-	
+
+	//AL4_02_02
 	{
-		//04_02
-		////横方向ピクセル数
-		//const size_t textureWidth = 256;
-		////縦方向ピクセル数
-		//const size_t textureHeight = 256;
-		////配列の要素数
-		//const size_t imageDataCount = textureWidth * textureHeight;
-		////画像イメージデータ配列
-		//XMFLOAT4* imageData = new XMFLOAT4[imageDataCount];//あとで必ず解放！！
-		////全ピクセルの色を初期化
-		//for (size_t i = 0; i < imageDataCount; i++)
-		//{
-		//	imageData[i].x = 1.0f;//R
-		//	imageData[i].y = 0.0f;//G
-		//	imageData[i].z = 0.0f;//B
-		//	imageData[i].w = 1.0f;//A
-		//}
-
-
-
-
-		////05_02
-		//{
-		//	//ヒープ設定
-		//	D3D12_HEAP_PROPERTIES cbHeapProp{};
-		//	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
-		//	//リソース設定
-		//	D3D12_RESOURCE_DESC cbResourceDesc{};
-		//	ResourceProperties(cbResourceDesc, (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff/*256バイトアライメント*/);
-		//	//定数バッファの生成
-		//	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffTransform);
-		//}
-		////定数バッファのマッピング
-		//Directx::GetInstance().result = constBuffTransform->Map(0, nullptr, (void**)&constMapTransform);//マッピング
-		//assert(SUCCEEDED(Directx::GetInstance().result));
-		//単位行列を代入
-		//SetNormDigitalMat(constMapTransform->mat, win);
-
-		////05_03
-		////平行投影変換（スプライト描画?）
-		//constMapTransform->mat =
-		//	XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
-
-
-		////05_04
-		//ViewMat view ( 0.0f, 0.0f, -100.0f
-		//	, 0.0f, 0.0f, 0.0f
-		//	, 0.f, 1.f, 0.f );
-
-		////定数バッファに転送
-		//constMapTransform->mat = view.matView * matProjection;
-
-		//05_05
-		/*XMMATRIX matWorld;
-		matWorld = XMMatrixIdentity();
-
-		constMapTransform=matWorld**/
-		/*constMapMaterial->color = { 0,0,0,1 };*/
-
-		//06_03
-		//こいつらのせいでチカチカする！（Draw のインスタンスが生成されるたびに、法線が上書きされるせい！）
-		///*else if (indexNum == TRIANGLE)*/
-		//{
-		//	for (int i = 0; i < _countof(indices2) / 3; i++)
-		//	{//三角形一つごとに計算
-		//		//三角形のインデックスを取り出して、一時的な変数に入れる
-		//		unsigned short index0 = indices2[i * 3 + 0];
-		//		unsigned short index1 = indices2[i * 3 + 1];
-		//		unsigned short index2 = indices2[i * 3 + 2];
-		//		//三角形を構成する頂点座標をベクトルに代入
-		//		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-		//		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-		//		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-		//		//p0->p1ベクトル、p0->p2ベクトルを計算
-		//		XMVECTOR v1 = XMVectorSubtract(p1, p0);
-		//		XMVECTOR v2 = XMVectorSubtract(p2, p0);
-		//		//外積（垂直なベクトル）
-		//		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-		//		//求めた法線を頂点データに代入
-		//		XMStoreFloat3(&vertices[index0].normal, normal);
-		//		XMStoreFloat3(&vertices[index1].normal, normal);
-		//		XMStoreFloat3(&vertices[index2].normal, normal);
-		//	}
-		//}
-		///*else if (indexNum == BOX)*/
-		//{
-		//	for (int i = 0; i < _countof(indices) / 3; i++)
-		//	{//三角形一つごとに計算
-		//		//三角形のインデックスを取り出して、一時的な変数に入れる
-		//		unsigned short index0 = indices[i * 3 + 0];
-		//		unsigned short index1 = indices[i * 3 + 1];
-		//		unsigned short index2 = indices[i * 3 + 2];
-		//		//三角形を構成する頂点座標をベクトルに代入
-		//		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-		//		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-		//		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-		//		//p0->p1ベクトル、p0->p2ベクトルを計算
-		//		XMVECTOR v1 = XMVectorSubtract(p1, p0);
-		//		XMVECTOR v2 = XMVectorSubtract(p2, p0);
-		//		//外積（垂直なベクトル）
-		//		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-		//		//求めた法線を頂点データに代入
-		//		XMStoreFloat3(&vertices[index0].normal, normal);
-		//		XMStoreFloat3(&vertices[index1].normal, normal);
-		//		XMStoreFloat3(&vertices[index2].normal, normal);
-		//	}
-		//}
-		///*else if (indexNum == CUBE)*/
-		//{
-		//	for (int i = 0; i < _countof(indicesCube) / 3; i++)
-		//	{//三角形一つごとに計算
-		//		//三角形のインデックスを取り出して、一時的な変数に入れる
-		//		unsigned short index0 = indicesCube[i * 3 + 0];
-		//		unsigned short index1 = indicesCube[i * 3 + 1];
-		//		unsigned short index2 = indicesCube[i * 3 + 2];
-		//		//三角形を構成する頂点座標をベクトルに代入
-		//		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-		//		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-		//		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-		//		//p0->p1ベクトル、p0->p2ベクトルを計算
-		//		XMVECTOR v1 = XMVectorSubtract(p1, p0);
-		//		XMVECTOR v2 = XMVectorSubtract(p2, p0);
-		//		//外積（垂直なベクトル）
-		//		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-		//		//求めた法線を頂点データに代入
-		//		XMStoreFloat3(&vertices[index0].normal, normal);
-		//		XMStoreFloat3(&vertices[index1].normal, normal);
-		//		XMStoreFloat3(&vertices[index2].normal, normal);
-		//	}
-		//}
-		///*else if (indexNum == CIRCLE)*/
-		//{
-		//	for (int i = 0; i < _countof(indicesCircle) / 3; i++)
-		//	{//三角形一つごとに計算
-		//		//三角形のインデックスを取り出して、一時的な変数に入れる
-		//		unsigned short index0 = indicesCircle[i * 3 + 0];
-		//		unsigned short index1 = indicesCircle[i * 3 + 1];
-		//		unsigned short index2 = indicesCircle[i * 3 + 2];
-		//		//三角形を構成する頂点座標をベクトルに代入
-		//		XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-		//		XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-		//		XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-		//		//p0->p1ベクトル、p0->p2ベクトルを計算
-		//		XMVECTOR v1 = XMVectorSubtract(p1, p0);
-		//		XMVECTOR v2 = XMVectorSubtract(p2, p0);
-		//		//外積（垂直なベクトル）
-		//		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-		//		//求めた法線を頂点データに代入
-		//		XMStoreFloat3(&vertices[index0].normal, normal);
-		//		XMStoreFloat3(&vertices[index1].normal, normal);
-		//		XMStoreFloat3(&vertices[index2].normal, normal);
-		//	}
-		//}
-		///*else if (indexNum == LINE)*/
-		//{
-		//	//求めた法線を頂点データに代入
-		//	vertices[0].normal = XMFLOAT3(-1.0f / 3.0f, 1.0f / 3.0f, -1.0f / 3.0f);//仮の数字なので後で変更
-		//	vertices[1].normal = XMFLOAT3(-1.0f / 3.0f, 1.0f / 3.0f, -1.0f / 3.0f);//〃
-
-		//}
+		ResourceProperties(cbResourceDesc,
+			((UINT)sizeof(ConstBufferDataMaterial2) + 0xff) & ~0xff/*256バイトアライメント*/);
+		//定数バッファの生成
+		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial2);
+		//定数バッファのマッピング
+		Directx::GetInstance().result = constBuffMaterial2->Map(0, nullptr, (void**)&constMapMaterial2);//マッピング
+		assert(SUCCEEDED(Directx::GetInstance().result));
 	}
 }
 
-void Draw::CreateModel(const char* fileName)
+void Draw::CreateModel(const char* folderName)
 {
 	//ファイルストリーム
 	std::ifstream file;
+	//
+	const std::string modelname = folderName;
+	const std::string filename = modelname + ".obj";//"ファイル名.obj"
+	const std::string directoryPath = "Resources/" + modelname + "/";// "Resources/フォルダ名/"
 	//.objファイルを開く
-	file.open(fileName);
+	file.open(directoryPath + filename);// "Resources/フォルダ名/ファイル名.obj"
 	//ファイルオープン失敗をチェック
 	assert(file.is_open());
 
@@ -779,7 +642,7 @@ void Draw::CreateModel(const char* fileName)
 	//1行分の文字列を入れる変数
 	std::string line;
 
-	while (std::getline(all,line))
+	while (std::getline(all, line))
 	{
 		//一行分の文字列をストリームに変換して解析しやすく
 		std::istringstream line_stream(line);
@@ -788,7 +651,16 @@ void Draw::CreateModel(const char* fileName)
 		std::string key;
 		getline(line_stream, key, ' ');
 
-		//先頭文字列が'v'なら頂点座標
+		//先頭文字が"mtllib"ならマテリアル
+		if (key == "mtllib")
+		{
+			//マテリアルのファイル名読み込み
+			std::string filename;
+			line_stream >> filename;
+			//マテリアル読み込み
+			LoadMaterial(directoryPath, filename);
+		}
+		//'v'なら頂点座標
 		if (key == "v")
 		{
 			//x,y,z座標読み込み
@@ -839,8 +711,8 @@ void Draw::CreateModel(const char* fileName)
 				index_stream >> indexTexcoord;
 				index_stream.seekg(1, std::ios_base::cur);//スラッシュを飛ばす
 				index_stream >> indexNormal;
-			
-				
+
+
 
 				//頂点データの追加
 				Vertex vertex{};
@@ -902,6 +774,77 @@ void Draw::CreateModel(const char* fileName)
 	ibViewM.BufferLocation = indexBuffM->GetGPUVirtualAddress();
 	ibViewM.Format = DXGI_FORMAT_R16_UINT;
 	ibViewM.SizeInBytes = sizeIB;
+}
+
+void Draw::LoadMaterial(const std::string& directoryPath, const std::string& filename)
+{
+	//ファイルストリーム
+	std::ifstream file;
+	//マテリアルファイルを開く
+	file.open(directoryPath + filename);
+	//ファイルオープン失敗をチェック
+	if (file.fail()) assert(0);
+
+	//一行ずつ読み込む
+	std::string line;
+	while (std::getline(file, line))
+	{
+		//一行分の文字列をストリームに変換
+		std::istringstream line_stream(line);
+
+		//半角スペース区切りで行の先頭文字列を取得
+		std::string key;
+		std::getline(line_stream, key, ' ');
+
+		//先頭のtab文字は無視
+		if (key[0] == '\t')
+		{
+			key.erase(key.begin());
+		}
+
+		//先頭文字列が"newmtl"ならマテリアル名
+		if (key == "newmtl")
+		{
+			//マテリアル名読み込み
+			line_stream >> material.name;
+		}
+		//"Ka"ならアンビエント色
+		if (key == "Ka")
+		{
+			line_stream >> material.ambient.x;
+			line_stream >> material.ambient.y;
+			line_stream >> material.ambient.z;
+		}
+		//"Kd"ならディフューズ色
+		if (key == "Kd")
+		{
+			line_stream >> material.diffuse.x;
+			line_stream >> material.diffuse.y;
+			line_stream >> material.diffuse.z;
+		}
+		//"Ks"ならスペキュラー色
+		if (key == "Ks")
+		{
+			line_stream >> material.specular.x;
+			line_stream >> material.specular.y;
+			line_stream >> material.specular.z;
+		}
+		//"map_Kd"ならテクスチャファイル名
+		if (key == "map_Kd")
+		{
+			//テクスチャファイル名読み込み
+			line_stream >> material.textureFilename;
+			//テクスチャ読み込み
+			std::string nameS = directoryPath + material.textureFilename;
+			//
+			const char* name = nameS.c_str();
+			wchar_t wchar[128];
+			size_t size = _countof(wchar);
+			mbstowcs_s(&size, wchar, name, size);
+			LoadGraph(wchar, material.textureHandle);
+		}
+	}
+	file.close();
 }
 
 void LoadGraph(const wchar_t* name, UINT64& textureHandle)
@@ -1056,7 +999,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		cbt.constMapTransform->mat = matW * view->matView * projection->matProjection;
 	}
-	else if(indexNum != SPRITE)//親がいない場合
+	else if (indexNum != SPRITE)//親がいない場合
 	{
 		XMMATRIX matW;
 		matW = { (float)worldMat->matWorld.m[0][0],(float)worldMat->matWorld.m[0][1],(float)worldMat->matWorld.m[0][2],(float)worldMat->matWorld.m[0][3],
@@ -1067,9 +1010,14 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		cbt.constMapTransform->mat = matW * view->matView * projection->matProjection;
 	}
 
-	
-
-	if (indexNum != SPHERE && indexNum != SPRITE)
+	if (indexNum == MODEL)
+	{
+		constMapMaterial2->ambient = material.ambient;
+		constMapMaterial2->diffuse = material.diffuse;
+		constMapMaterial2->specular = material.specular;
+		constMapMaterial2->alpha = material.alpha;
+	}
+	else if (indexNum != SPHERE && indexNum != SPRITE)
 	{
 		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 		Vertex* vertMap = nullptr;
@@ -1082,7 +1030,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		// 繋がりを解除
 		vertBuff->Unmap(0, nullptr);
 	}
-	else//球体の時
+	else if (indexNum == SPHERE)//球体の時
 	{
 		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 		Vertex* vertMap = nullptr;
@@ -1097,7 +1045,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		// 繋がりを解除
 		vertBuff2->Unmap(0, nullptr);
 	}
-	
+
 	// ビューポート設定コマンドを、コマンドリストに積む
 	Directx::GetInstance().commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
 
@@ -1119,14 +1067,23 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	{
 		Directx::GetInstance().commandList->SetPipelineState(pipelineSet.pipelineState.Get());
 	}
+	else if (indexNum == MODEL)
+	{
+		Directx::GetInstance().commandList->SetPipelineState(pipelineSetM.pipelineState.Get());
+	}
 	else
 	{
 		Directx::GetInstance().commandList->SetPipelineState(pipelineState[pipelineNum].Get());
 	}
 
+
 	if (indexNum == SPRITE)
 	{
 		Directx::GetInstance().commandList.Get()->SetGraphicsRootSignature(pipelineSet.rootSignature.Get());
+	}
+	else if (indexNum == MODEL)
+	{
+		Directx::GetInstance().commandList->SetGraphicsRootSignature(pipelineSetM.rootSignature.Get());
 	}
 	else if (indexNum != SPRITE)
 	{
@@ -1176,12 +1133,11 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		// 頂点バッファビューの設定コマンド
 		Directx::GetInstance().commandList->IASetVertexBuffers(0, 1, &vbView2);
 	}
-	
+
 
 	//定数バッファビュー(CBV)の設定コマンド
 	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 	//04_02
-	/*if (textureHandle != NULL)*/
 	{
 		//SRVヒープの設定コマンド
 		Directx::GetInstance().commandList->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
@@ -1193,6 +1149,10 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	}
 	//定数バッファビュー(CBV)の設定コマンド
 	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+	//モデルの時
+	if (indexNum == MODEL)
+		//al4_02_02
+		Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(3, constBuffMaterial2->GetGPUVirtualAddress());
 
 	//インデックスバッファビューの設定コマンド
 	if (indexNum != SPRITE)
@@ -1201,7 +1161,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		else if (indexNum == MODEL) Directx::GetInstance().commandList->IASetIndexBuffer(&ibViewM);
 		else if (indexNum != CIRCLE) Directx::GetInstance().commandList->IASetIndexBuffer(&ibView);
 		else if (indexNum == CIRCLE)Directx::GetInstance().commandList->IASetIndexBuffer(&ibView2);
-		
+
 	}
 
 	// 描画コマンド
@@ -1248,7 +1208,7 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 	vertices[3] = vertices[1];//右上
 
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
-	
+
 	Update(TRIANGLE, pipelineNum, textureHandle, cbt);
 }
 
@@ -1264,19 +1224,19 @@ void Draw::DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection,/*X
 	vertices[1].normal = { 0.0f,0.0f,-1.0f };//左上
 	vertices[2].normal = { 0.0f,0.0f,-1.0f };//右下
 	vertices[3].normal = { 0.0f,0.0f,-1.0f };//右上
-	
-	vertices[0].pos = {-5.0f,-5.0f,-5.0f};//左下
-	vertices[1].pos = {-5.0f,5.0f, -5.0f};//左上
-	vertices[2].pos = {5.0f,-5.0f, -5.0f};//右下
-	vertices[3].pos = {5.0f,5.0f,  -5.0f};//右上
+
+	vertices[0].pos = { -5.0f,-5.0f,-5.0f };//左下
+	vertices[1].pos = { -5.0f,5.0f, -5.0f };//左上
+	vertices[2].pos = { 5.0f,-5.0f, -5.0f };//右下
+	vertices[3].pos = { 5.0f,5.0f,  -5.0f };//右上
 
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
-	
-	Update(BOX, pipelineNum, textureHandle,cbt);
+
+	Update(BOX, pipelineNum, textureHandle, cbt);
 }
 
 void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
-	XMFLOAT4 color , const UINT64 textureHandle, const Vec2& ancorUV, float rotation, const int& pipelineNum)
+	XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV, float rotation, const int& pipelineNum)
 {
 	//if (widthHeight.x != NULL && widthHeight.y != NULL)
 	//{
@@ -1286,7 +1246,7 @@ void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 	//	sprite.vertices[3] = { {+widthHeight.x / 2.0f,-widthHeight.y / 2.0f,0.0f},{1.0f,0.0f} };//右上
 	//}
 	//else
-	
+
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
 	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
@@ -1295,10 +1255,10 @@ void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 	verticesS[1] = { {-(float)(resDesc.Width * scale * ancorUV.x),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
 	verticesS[2] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
 	verticesS[3] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
-	
+
 
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
-	
+
 	//ワールド行列
 	WorldMat worldMat;
 
@@ -1326,7 +1286,7 @@ void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 	//平行投影の射影行列生成
 	ProjectionMat projection;
 
-	projection.matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, 
+	projection.matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width,
 		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 
 	cbt.constMapTransform->mat = matW * view.matView * projection.matProjection;
@@ -1337,7 +1297,7 @@ void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, float rotation, const int& pipelineNum)
 {
-	
+
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
 	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
@@ -1364,7 +1324,7 @@ void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const 
 		verticesS[3] = { {UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
-	
+
 	//ワールド行列
 	WorldMat worldMat;
 
@@ -1403,7 +1363,7 @@ void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const 
 
 	//平行投影の射影行列生成
 	ProjectionMat projection;
-	projection.matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width, 
+	projection.matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width,
 		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 
 	cbt.constMapTransform->mat = matW * view.matView * projection.matProjection;
@@ -1448,13 +1408,13 @@ void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	vertices[21] = { {5.0f,-5.0f, 5.0f},{vertices[21].normal},{0.0f,0.0f} };//左上
 	vertices[22] = { {5.0f,5.0f, -5.0f},{vertices[22].normal},{1.0f,1.0f} };//右下
 	vertices[23] = { {5.0f,5.0f,  5.0f},{vertices[23].normal},{1.0f,0.0f} };//右上;//左下
-	
+
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
-	
+
 	Update(CUBE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawLine(const Vec3& pos1, const Vec3& pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection,const XMFLOAT4& color,
+void Draw::DrawLine(const Vec3& pos1, const Vec3& pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,
 	const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
@@ -1471,7 +1431,7 @@ void Draw::DrawLine(const Vec3& pos1, const Vec3& pos2, WorldMat* world, ViewMat
 	Update(LINE, pipelineNum, textureHandle, cbt, false);
 }
 
-void Draw::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection, 
+void Draw::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
 	/*constBuffTransfer({ 0,0.01f,0,0 });*/
@@ -1479,7 +1439,7 @@ void Draw::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMa
 	this->view = view;
 	this->projection = projection;
 
-	vertices[0].pos = {0.0f,0.0f,0.0f} ;
+	vertices[0].pos = { 0.0f,0.0f,0.0f };
 
 	static float count = _countof(vertices) - 2;//中心点と初期の点はカウントしない
 
@@ -1519,7 +1479,10 @@ void Draw::DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 
 	constMapMaterial->color = color;
 
-	Update(MODEL, pipelineNum, textureHandle, cbt);
+	if (textureHandle == NULL)
+		Update(MODEL, pipelineNum, material.textureHandle, cbt);
+	else
+		Update(MODEL, pipelineNum, textureHandle, cbt);
 }
 
 void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
@@ -1543,6 +1506,34 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 		// ピクセルシェーダの読み込みとコンパイル
 		Directx::GetInstance().result = D3DCompileFromFile(
 			L"Resources/shaders/SpritePS.hlsl", // シェーダファイル名
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
+			"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
+			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
+			0,
+			&psBlob, &errorBlob);
+
+		// エラーなら
+		Error(FAILED(Directx::GetInstance().result));
+	}
+	else if (indexNum == MODEL)
+	{
+		// 頂点シェーダの読み込みとコンパイル
+		Directx::GetInstance().result = D3DCompileFromFile(
+			L"Resources/shaders/OBJVertexShader.hlsl", // シェーダファイル名
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
+			"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
+			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
+			0,
+			&vsBlob, &errorBlob);
+
+		// エラーなら
+		Error(FAILED(Directx::GetInstance().result));
+
+		// ピクセルシェーダの読み込みとコンパイル
+		Directx::GetInstance().result = D3DCompileFromFile(
+			L"Resources/shaders/OBJPixelShader.hlsl", // シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 			"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
@@ -1595,11 +1586,11 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	if (indexNum == SPRITE)
 	{
 		pipelineDesc.RasterizerState = D3D12_RASTERIZER_DESC();
-		pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; 
+		pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	}
 	else
 		pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // 背面カリング
-	
+
 	pipelineDesc.RasterizerState.FillMode = fillMode; // ポリゴン内塗りつぶし
 	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
@@ -1665,7 +1656,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	pipelineDesc.DepthStencilState = D3D12_DEPTH_STENCIL_DESC();
 	pipelineDesc.DepthStencilState.DepthEnable = true;//深度テストを行う
 	pipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-	if(indexNum == SPRITE)
+	if (indexNum == SPRITE)
 		pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;//小さければ合格
 	else
 		pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格

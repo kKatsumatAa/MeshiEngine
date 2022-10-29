@@ -46,11 +46,12 @@ private:
 	//定数バッファ用データ構造体（マテリアル）
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
-	
+
+	//AL4_02_02
+	ComPtr <ID3D12Resource> constBuffMaterial2 = nullptr;
+	ConstBufferDataMaterial2* constMapMaterial2 = nullptr;
 	
 	//04_02
-	
-	//D3D12_CPU_DESCRIPTOR_HANDLE srvHandle2;
 	int count2=0;
 	
 	////sprite用
@@ -72,6 +73,31 @@ private:
 	// 頂点バッファビューの作成
 	D3D12_VERTEX_BUFFER_VIEW vbViewM{};
 	D3D12_INDEX_BUFFER_VIEW ibViewM{};
+
+
+	//マテリアル
+	struct Material
+	{
+		std::string name;//マテリアル名
+		XMFLOAT3 ambient;//アンビエント影響度
+		XMFLOAT3 diffuse;//ディフューズ〃
+		XMFLOAT3 specular;//スペキュラー〃
+		float alpha;//アルファ
+		std::string textureFilename;//テクスチャファイル名
+		UINT64 textureHandle;
+
+		//コンストラクタ
+		Material()
+		{
+			ambient =  { 0.3f,0.3f,0.3f };
+			diffuse =  { 0.0f,0.0f,0.0f };
+			specular = { 0.0f,0.0f,0.0f };
+			alpha = 1.0f;
+		}
+	};
+
+	//マテリアル
+	Material material;
 	
 
 private:
@@ -91,7 +117,9 @@ public:
 	//
 	Draw();
 
-	void CreateModel(const char* fileName);
+	//"フォルダ名のみ"を指定すればmtl,obj,textuerを読みこむ（すべて同じ名前であれば）
+	void CreateModel(const char* folderName);
+	void LoadMaterial(const std::string& directoryPath, const std::string& filename);
 
 	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 		WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color={NULL,NULL,NULL,NULL},

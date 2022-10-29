@@ -85,8 +85,11 @@ void Scene::Initialize(SoundData* soundData)
 {
 	this->soundData = soundData;
 
-	Model.CreateModel("Resources/triangle_tex/triangle_tex.obj");
-	Model.worldMat->scale = { 10.0f, 10.0f, 10.0f };
+	Model[0].CreateModel("skydome");
+	Model[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
+	Model[1].CreateModel("ground");
+	Model[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
+	Model[1].worldMat->trans = { 10.0f, -10.0f, 0 };
 
 	ChangeState(new SceneTitle);
 	state->SetScene(this);
@@ -97,9 +100,10 @@ void Scene::Update(SoundData* soundData)
 {
 	state->Update(soundData);
 
-	Model.worldMat->trans.x = Model.worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
-	Model.worldMat->trans.y = Model.worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
-	Model.worldMat->SetWorld();
+	Model[0].worldMat->trans.x = Model[0].worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
+	Model[0].worldMat->trans.y = Model[0].worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
+	Model[0].worldMat->SetWorld();
+	Model[1].worldMat->SetWorld();
 
 #ifdef _DEBUG
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_E)) ChangeState(new SceneTitle);
@@ -109,8 +113,10 @@ void Scene::Update(SoundData* soundData)
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
-	Model.DrawModel(Model.worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f },
-		textureHandle[1]);
-	state->Draw(textureHandle,textureNumHundle);
+	for (int i = 0; i < 2; i++)
+	{
+		Model[i].DrawModel(Model[i].worldMat, &viewMat, &projectionMat);
+	}
+	state->Draw(textureHandle, textureNumHundle);
 }
 
