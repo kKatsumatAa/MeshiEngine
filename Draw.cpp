@@ -369,33 +369,6 @@ void DrawInitialize()
 					}
 				}
 			}
-			/*if (i % 198 == 0)
-			{
-				count++;
-				count2 = 0;
-				count3 = 0;
-				count4 = 0;
-			}
-
-			if (count2 % 2 == 0)
-			{
-				indicesSphere[i] = 35 * count - (count3 + 1);
-				indicesSphere[i + 1] = 35 * (count + 1) - count3;
-				indicesSphere[i + 2] = 35 * count - (count3);
-
-				count3++;
-				i += 2;
-			}
-			else if (count2 % 2 == 1)
-			{
-				indicesSphere[i] = 35 * (count + 1) - (count4);
-				indicesSphere[i + 1] = 35 * count - (count4 + 1);
-				indicesSphere[i + 2] =  35 * (count + 1) - (count4 + 1);
-
-				count4++;
-				i += 2;*/
-				//}
-
 		}
 
 		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesSphere));
@@ -449,7 +422,7 @@ void DrawInitialize()
 	rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//定数バッファ2番
 	rootParams[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rootParams[3].Descriptor.ShaderRegister = 2;//定数バッファ番号(b1)
+	rootParams[3].Descriptor.ShaderRegister = 2;//定数バッファ番号(b2)
 	rootParams[3].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 
@@ -711,8 +684,6 @@ void Draw::CreateModel(const char* folderName)
 				index_stream >> indexTexcoord;
 				index_stream.seekg(1, std::ios_base::cur);//スラッシュを飛ばす
 				index_stream >> indexNormal;
-
-
 
 				//頂点データの追加
 				Vertex vertex{};
@@ -1136,7 +1107,8 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 
 	//定数バッファビュー(CBV)の設定コマンド
-	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+	if (indexNum != MODEL)
+		Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 	//04_02
 	{
 		//SRVヒープの設定コマンド
@@ -1149,9 +1121,8 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	}
 	//定数バッファビュー(CBV)の設定コマンド
 	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
-	//モデルの時
+	//モデルの時//al4_02_02
 	if (indexNum == MODEL)
-		//al4_02_02
 		Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(3, constBuffMaterial2->GetGPUVirtualAddress());
 
 	//インデックスバッファビューの設定コマンド

@@ -90,7 +90,7 @@ void Scene::Initialize(SoundData* soundData)
 	Model[1].CreateModel("ground");
 	Model[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	Model[1].worldMat->trans = { 10.0f, -10.0f, 0 };
-	Model[2].CreateModel("MiG-25PD");
+	Model[2].CreateModel("ufo_");
 	Model[2].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	Model[2].worldMat->trans = { 10.0f, -10.0f, 0 };
 
@@ -103,10 +103,12 @@ void Scene::Update(SoundData* soundData)
 {
 	state->Update(soundData);
 
-	Model[2].worldMat->trans.x = Model[2].worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
-	Model[2].worldMat->trans.y = Model[2].worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
-	Model[2].worldMat->SetWorld();
-	Model[1].worldMat->SetWorld();
+	for (int i = 0; i < 3; i++)
+	{
+		Model[i].worldMat->trans.x = Model[i].worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
+		Model[i].worldMat->trans.y = Model[i].worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
+		Model[i].worldMat->SetWorld();
+	}
 
 #ifdef _DEBUG
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_E)) ChangeState(new SceneTitle);
