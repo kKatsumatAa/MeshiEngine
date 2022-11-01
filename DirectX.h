@@ -33,16 +33,20 @@ private:
 	std::vector< ComPtr <ID3D12Resource>> backBuffers;
 	//
 	ComPtr < ID3D12DescriptorHeap> dsvHeap = nullptr;
-	
+
 	// フェンスの生成
 	ComPtr < ID3D12Fence> fence = nullptr;
 	UINT64 fenceVal = 0;
 
 	// 1.リソースバリアで書き込み可能に変更
 	D3D12_RESOURCE_BARRIER barrierDesc{};
-	
+
 	//音
 	IXAudio2MasteringVoice* masterVoice;
+
+	//
+	ComPtr<ID3D12Device> device = nullptr;
+	ComPtr < ID3D12GraphicsCommandList> commandList = nullptr;
 
 
 	Directx();
@@ -60,9 +64,7 @@ public:
 	ComPtr<IXAudio2> xAudio2;
 	//
 	HRESULT result;
-	ComPtr<ID3D12Device> device = nullptr;
-	ComPtr < ID3D12GraphicsCommandList> commandList = nullptr;
-	
+
 
 
 
@@ -75,5 +77,7 @@ public:
 
 	void DrawUpdate2();
 
-	
+	//getter
+	ID3D12Device* GetDevice() const { return device.Get(); }
+	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
 };
