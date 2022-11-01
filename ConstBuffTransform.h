@@ -9,11 +9,6 @@ private:
 	{
 		XMMATRIX mat;//3D変換行列
 	};
-	//05_02
-	
-	/*HRESULT result;
-	ID3D12Device* device = nullptr;*/
-	//D3D12_RESOURCE_DESC resDesc{};
 
 public:
 	ComPtr < ID3D12Resource> constBuffTransform = nullptr;//定数バッファのGPUリソースのポインタ

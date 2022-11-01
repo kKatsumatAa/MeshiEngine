@@ -12,48 +12,69 @@ using namespace DirectX;
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #include"Sound.h"
+#include<chrono>
 
 class Directx
 {
 private:
-	// 対応レベルの配列
-	D3D_FEATURE_LEVEL levels[5];
-	D3D_FEATURE_LEVEL featureLevel;
-	//コマンドキューの設定
-	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
+	//成果物系
+	ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
+	ComPtr < ID3D12CommandAllocator> commandAllocator = nullptr;
+	ComPtr < ID3D12CommandQueue> commandQueue = nullptr;
 	// スワップチェーンの設定
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
+	ComPtr<IDXGISwapChain4> swapChain = nullptr;
 	// デスクリプタヒープの設定
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
-	// バックバッファ
-	std::vector< ComPtr <ID3D12Resource>> backBuffers;
-	// 1.リソースバリアで書き込み可能に変更
-	D3D12_RESOURCE_BARRIER barrierDesc{};
-	// フェンスの生成
-	ComPtr < ID3D12Fence> fence = nullptr;
-	UINT64 fenceVal = 0;
-	ComPtr < ID3D12DescriptorHeap> dsvHeap = nullptr;
-	//音
-	IXAudio2MasteringVoice* masterVoice;
-
-
-	Directx();
-
-public:
-	//音
-	ComPtr<IXAudio2> xAudio2;
-	
-	HRESULT result;
-	ComPtr<ID3D12Device> device = nullptr;
-	ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
-	ComPtr<IDXGISwapChain4> swapChain = nullptr;
-	ComPtr < ID3D12CommandAllocator> commandAllocator = nullptr;
-	ComPtr < ID3D12GraphicsCommandList> commandList = nullptr;
-	ComPtr < ID3D12CommandQueue> commandQueue = nullptr;
 	ComPtr < ID3D12DescriptorHeap> rtvHeap = nullptr;
 	// 2.描画先の変更
 		// レンダーターゲットビューのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
+	// バックバッファ
+	std::vector< ComPtr <ID3D12Resource>> backBuffers;
+	//
+	ComPtr < ID3D12DescriptorHeap> dsvHeap = nullptr;
+
+	// フェンスの生成
+	ComPtr < ID3D12Fence> fence = nullptr;
+	UINT64 fenceVal = 0;
+
+	// 1.リソースバリアで書き込み可能に変更
+	D3D12_RESOURCE_BARRIER barrierDesc{};
+
+	//音
+	IXAudio2MasteringVoice* masterVoice;
+
+	//外部で参照
+	ComPtr<ID3D12Device> device = nullptr;
+	ComPtr < ID3D12GraphicsCommandList> commandList = nullptr;
+
+	//記録時間（FPS固定
+	std::chrono::steady_clock::time_point reference_;
+
+
+private:
+	Directx();
+
+	//初期化系
+	void InitializeDevice();
+	void InitializeCommand();
+	void InitializeSwapchain();
+	void InitializeRendertargetView();
+	void InitializeDepthBuffer();
+	void InitializeFence();
+
+	//FPS固定初期化
+	void InitializeFixFPS();
+	//FPS固定更新
+	void UpdateFixFPS();
+
+public:
+	//音
+	ComPtr<IXAudio2> xAudio2;
+	//
+	HRESULT result;
+
 
 
 
@@ -66,5 +87,7 @@ public:
 
 	void DrawUpdate2();
 
-	
+	//getter
+	ID3D12Device* GetDevice() const { return device.Get(); }
+	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
 };

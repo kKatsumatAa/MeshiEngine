@@ -706,7 +706,7 @@ void Draw::CreateModel(const char* folderName)
 	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeVB);
 
 	// 頂点バッファ生成
-	Directx::GetInstance().result = Directx::GetInstance().device->CreateCommittedResource(
+	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
 		&heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
 		IID_PPV_ARGS(&vertBuffM));
 	assert(SUCCEEDED(Directx::GetInstance().result));
@@ -850,15 +850,6 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
 	textureHeapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
 	textureHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
-	////リソース設定
-	//D3D12_RESOURCE_DESC textureResourceDesc{};
-	//textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	//textureResourceDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	//textureResourceDesc.Width = textureWidth;						//頂点データ全体のサイズ
-	//textureResourceDesc.Height = textureHeight;
-	//textureResourceDesc.DepthOrArraySize = 1;
-	//textureResourceDesc.MipLevels = 1;
-	//textureResourceDesc.SampleDesc.Count = 1;
 	// 04_03
 
 	//リソース設定
@@ -873,7 +864,7 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 
 	//テクスチャバッファの生成
 	//ID3D12Resource* texBuff = nullptr;
-	Directx::GetInstance().result = Directx::GetInstance().device->CreateCommittedResource(
+	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
 		&textureHeapProp,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,//リソース設定
@@ -881,15 +872,6 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 		nullptr,
 		IID_PPV_ARGS(&texBuff[count]));
 	assert(SUCCEEDED(Directx::GetInstance().result));
-
-	////テクスチャバッファにデータ転送
-	//Directx::GetInstance().result = texBuff->WriteToSubresource(
-	//	0,
-	//	nullptr,//全領域へコピー
-	//	imageData,//元データアドレス
-	//	sizeof(XMFLOAT4) * textureWidth,//1ラインサイズ
-	//	sizeof(XMFLOAT4) * imageDataCount//全サイズ
-	//);
 
 	//04_03
 	// 全ミップマップについて
@@ -915,22 +897,12 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	//設定をもとにSRV用デスクリプタヒープを生成
 	if (count == 0)
 	{                                                          //descは設定
-		Directx::GetInstance().result = Directx::GetInstance().device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
+		Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
 		assert(SUCCEEDED(Directx::GetInstance().result));
 	}
 	//SRVヒープの先頭ハンドルを取得
 	if (count == 0)srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-	else srvHandle.ptr += Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type);
-
-	//シェーダーリソースビュー設定
-	//D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
-	//srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	//srvDesc.Shader4ComponentMapping =
-	//	D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	//srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-	//srvDesc.Texture2D.MipLevels = 1;
-	////ハンドルのさす位置にシェーダーリソースビュー作成
-	//device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
+	else srvHandle.ptr += Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type);
 
 	//04_03
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
@@ -940,17 +912,17 @@ void LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
 	srvDesc.Texture2D.MipLevels = 1;
 	//ハンドルのさす位置にシェーダーリソースビュー作成
-	Directx::GetInstance().device->CreateShaderResourceView(texBuff[count].Get(), &srvDesc, srvHandle);
+	Directx::GetInstance().GetDevice()->CreateShaderResourceView(texBuff[count].Get(), &srvDesc, srvHandle);
 
 	int count2 = count;
 	count++;
 
 	//04_02(画像貼る用のアドレスを引数に)
 	//SRVヒープの設定コマンド
-	Directx::GetInstance().commandList->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+	Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
 	//SRVヒープのハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	textureHandle = srvGpuHandle.ptr + (Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type) * count2);
+	textureHandle = srvGpuHandle.ptr + (Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type) * count2);
 }
 
 void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
@@ -1017,48 +989,36 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		vertBuff2->Unmap(0, nullptr);
 	}
 
-	// ビューポート設定コマンドを、コマンドリストに積む
-	Directx::GetInstance().commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
-
-	// シザー矩形
-	D3D12_RECT scissorRect{};
-	scissorRect.left = 0; // 切り抜き座標左
-	scissorRect.right = (LONG)(scissorRect.left + WindowsApp::GetInstance().window_width); // 切り抜き座標右
-	scissorRect.top = 0; // 切り抜き座標上
-	scissorRect.bottom = (LONG)(scissorRect.top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
-	// シザー矩形設定コマンドを、コマンドリストに積む
-	Directx::GetInstance().commandList->RSSetScissorRects(1, &scissorRect);
-
 	// パイプラインステートとルートシグネチャの設定コマンド
 	if (indexNum == LINE)
 	{
-		Directx::GetInstance().commandList->SetPipelineState(pipelineState[2].Get());
+		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineState[2].Get());
 	}
 	else if (indexNum == SPRITE)
 	{
-		Directx::GetInstance().commandList->SetPipelineState(pipelineSet.pipelineState.Get());
+		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineSet.pipelineState.Get());
 	}
 	else if (indexNum == MODEL)
 	{
-		Directx::GetInstance().commandList->SetPipelineState(pipelineSetM.pipelineState.Get());
+		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineSetM.pipelineState.Get());
 	}
 	else
 	{
-		Directx::GetInstance().commandList->SetPipelineState(pipelineState[pipelineNum].Get());
+		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineState[pipelineNum].Get());
 	}
 
 
 	if (indexNum == SPRITE)
 	{
-		Directx::GetInstance().commandList.Get()->SetGraphicsRootSignature(pipelineSet.rootSignature.Get());
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSet.rootSignature.Get());
 	}
 	else if (indexNum == MODEL)
 	{
-		Directx::GetInstance().commandList->SetGraphicsRootSignature(pipelineSetM.rootSignature.Get());
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSetM.rootSignature.Get());
 	}
 	else if (indexNum != SPRITE)
 	{
-		Directx::GetInstance().commandList->SetGraphicsRootSignature(rootSignature.Get());
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 	}
 
 	if (indexNum != SPHERE)
@@ -1076,62 +1036,62 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 			// 繋がりを解除
 			vertBuffS->Unmap(0, nullptr);
 
-			Directx::GetInstance().commandList.Get()->IASetVertexBuffers(0, 1, &vbViewS);
+			Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbViewS);
 
 
-			Directx::GetInstance().commandList.Get()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+			Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 		}
 		else if (indexNum == MODEL)
 		{
-			Directx::GetInstance().commandList.Get()->IASetVertexBuffers(0, 1, &vbViewM);
-			Directx::GetInstance().commandList.Get()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbViewM);
+			Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		}
 		else
 		{
 			// プリミティブ形状の設定コマンド
 			if (indexNum != LINE)
-				Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
+				Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
 			else//線の時（LINE）
-				Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 線
+				Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 線
 
 			// 頂点バッファビューの設定コマンド
-			Directx::GetInstance().commandList->IASetVertexBuffers(0, 1, &vbView);
+			Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
 		}
 	}
 	else//球体の時
 	{
-		Directx::GetInstance().commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角ストリップ
+		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角ストリップ
 		// 頂点バッファビューの設定コマンド
-		Directx::GetInstance().commandList->IASetVertexBuffers(0, 1, &vbView2);
+		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView2);
 	}
 
 
 	//定数バッファビュー(CBV)の設定コマンド
 	if (indexNum != MODEL)
-		Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 	//04_02
 	{
 		//SRVヒープの設定コマンド
-		Directx::GetInstance().commandList->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+		Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
 		//SRVヒープの先頭ハンドルを取得
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 		srvGpuHandle.ptr = textureHandle;
 		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
-		Directx::GetInstance().commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 	}
 	//定数バッファビュー(CBV)の設定コマンド
-	Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 	//モデルの時//al4_02_02
 	if (indexNum == MODEL)
-		Directx::GetInstance().commandList->SetGraphicsRootConstantBufferView(3, constBuffMaterial2->GetGPUVirtualAddress());
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, constBuffMaterial2->GetGPUVirtualAddress());
 
 	//インデックスバッファビューの設定コマンド
 	if (indexNum != SPRITE)
 	{
-		if (indexNum == SPHERE)Directx::GetInstance().commandList->IASetIndexBuffer(&ibView3);
-		else if (indexNum == MODEL) Directx::GetInstance().commandList->IASetIndexBuffer(&ibViewM);
-		else if (indexNum != CIRCLE) Directx::GetInstance().commandList->IASetIndexBuffer(&ibView);
-		else if (indexNum == CIRCLE)Directx::GetInstance().commandList->IASetIndexBuffer(&ibView2);
+		if (indexNum == SPHERE)Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView3);
+		else if (indexNum == MODEL) Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&ibViewM);
+		else if (indexNum != CIRCLE) Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView);
+		else if (indexNum == CIRCLE)Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView2);
 
 	}
 
@@ -1139,28 +1099,28 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	switch (indexNum)
 	{
 	case TRIANGLE:
-		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indices2), 1, 0, 0, 0); // 全ての頂点を使って描画
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indices2), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	case BOX:
-		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	case CUBE:
-		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesCube), 1, 0, 0, 0); // 全ての頂点を使って描画
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesCube), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	case LINE:
-		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesLine), 1, 0, 0, 0); // 全ての頂点を使って描画
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesLine), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;//ibview（+vbview）を図形ごとに用意する！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 	case CIRCLE:
-		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesCircle), 1, 0, 0, 0); // 全ての頂点を使って描画
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesCircle), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	case SPHERE:
-		Directx::GetInstance().commandList->DrawIndexedInstanced(_countof(indicesSphere), 1, 0, 0, 0); // 全ての頂点を使って描画
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesSphere), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	case SPRITE:
-		Directx::GetInstance().commandList->DrawInstanced(4, 1, 0, 0); // 全ての頂点を使って描画
+		Directx::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0); // 全ての頂点を使って描画
 		break;
 	case MODEL:
-		Directx::GetInstance().commandList->DrawIndexedInstanced((UINT)indicesM.size(), 1, 0, 0, 0); // 全ての頂点を使って描画
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced((UINT)indicesM.size(), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	}
 }
@@ -1220,7 +1180,7 @@ void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
+	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
 
 	verticesS[0] = { {-(float)(resDesc.Width * scale * ancorUV.x),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//左下
 	verticesS[1] = { {-(float)(resDesc.Width * scale * ancorUV.x),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
@@ -1271,7 +1231,7 @@ void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const 
 
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().device->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
+	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
 
 	float texLeft = UVleftTop.x * +(float)resDesc.Width * scale;
 	float texRight = (UVleftTop.x + UVlength.x) * +(float)resDesc.Width * scale;
@@ -1616,7 +1576,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	Directx::GetInstance().result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
 		&rootSigBlob, &errorBlob);
 	assert(SUCCEEDED(Directx::GetInstance().result));
-	Directx::GetInstance().result = Directx::GetInstance().device->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
+	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(rootSig));
 	assert(SUCCEEDED(Directx::GetInstance().result));
 	// パイプラインにルートシグネチャをセット
@@ -1633,7 +1593,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 		pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
 	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 
-	Directx::GetInstance().result = Directx::GetInstance().device->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(pipelineState));
+	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(pipelineState));
 	//assert(SUCCEEDED(Directx::GetInstance().result));
 }
 
