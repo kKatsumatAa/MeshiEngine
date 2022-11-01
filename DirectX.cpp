@@ -204,7 +204,7 @@ void Directx::UpdateFixFPS()
 	if (elapsed < kMinCheckTime)
 	{
 		//1/60(s)経過するまで微小なスリープ繰り返す
-		while (std::chrono::steady_clock::now() - reference_ < kMinCheckTime)
+		while (std::chrono::steady_clock::now() - reference_ < kMinCheckTime)//
 		{
 			//1マイクロ秒スリープ
 			std::this_thread::sleep_for(std::chrono::microseconds(1));
