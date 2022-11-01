@@ -13,7 +13,7 @@ void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size)
 
 void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, ID3D12Resource** buff)
 {
-	Directx::GetInstance().result = Directx::GetInstance().device->CreateCommittedResource(
+	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
 		&heap,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&resource,//リソース設定
@@ -60,7 +60,7 @@ void SpriteCommonCreate(SpriteSet* spriteSet)
 //	//-----------------------------------------------------------------
 //	//	//定数バッファ生成
 //	//resDesc.Width = ((UINT)sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff;
-//	//result = Directx::GetInstance().device->CreateCommittedResource(
+//	//result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
 //	//	&heapProp,//ヒープ設定
 //	//	D3D12_HEAP_FLAG_NONE,
 //	//	&resDesc,//リソース設定
@@ -82,11 +82,11 @@ void SpriteCommonCreate(SpriteSet* spriteSet)
 
 void Sprite::SpriteCommonBeginDraw(SpriteSet* pipelineSet)
 {
-	Directx::GetInstance().commandList.Get()->SetPipelineState(pipelineSet->pipelineState.Get());
+	Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineSet->pipelineState.Get());
 
-	Directx::GetInstance().commandList.Get()->SetGraphicsRootSignature(pipelineSet->rootSignature.Get());
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSet->rootSignature.Get());
 
-	Directx::GetInstance().commandList.Get()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	/*ID3D12DescriptorHeap* ppHeaps[] = { descHeap };
 	cmdlist->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);*/
@@ -105,9 +105,9 @@ void Sprite::SpriteDraw()
 	// 繋がりを解除
 	vertBuff->Unmap(0, nullptr);
 
-	Directx::GetInstance().commandList.Get()->IASetVertexBuffers(0, 1, &vbView);
+	Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
 
-	//Directx::GetInstance().commandList.Get()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+	//Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
-	//Directx::GetInstance().commandList.Get()->DrawInstanced(4, 1, 0, 0);
+	//Directx::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }
