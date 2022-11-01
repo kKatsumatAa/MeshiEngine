@@ -33,15 +33,6 @@ struct VertexSprite
 	XMFLOAT3 pos;//xyz座標
 	XMFLOAT2 uv;//uv座標
 };
-struct ConstBufferDataMaterial2
-{
-	XMFLOAT3 ambient;
-	float pad1;       //パディング
-	XMFLOAT3 diffuse;
-	float pad2;       //パディング
-	XMFLOAT3 specular;
-	float alpha;
-};
 
 
 

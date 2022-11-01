@@ -28,7 +28,7 @@ public:
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
 
-	Draw Model[5];
+	Draw box;
 
 public:
 	~Scene();

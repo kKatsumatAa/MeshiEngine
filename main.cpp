@@ -6,7 +6,7 @@
 //windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//コンソールへの文字入力
-	OutputDebugStringA("Hello,DirectX!!\n");//
+	OutputDebugStringA("Hello,DirectX!!\n");
 	
 	//初期化
 	WindowsApp::GetInstance();
@@ -26,7 +26,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	UINT64 textureHandle[30] = {0};
 	{
 		LoadGraph(L"Resources/image/white.png", textureHandle[0]);
-		LoadGraph(L"Resources/image/particle.png", textureHandle[1]);
 	}
 
 	//数字の画像
