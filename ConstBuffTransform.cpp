@@ -23,7 +23,7 @@ void ConstBuffTransform::Initialize(Directx& directx)
 		cbResourceDesc.SampleDesc.Count = 1;
 		cbResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
-		directx.result = directx.GetDevice()->CreateCommittedResource(
+		directx.result = directx.device->CreateCommittedResource(
 			&cbHeapProp,//ヒープ設定
 			D3D12_HEAP_FLAG_NONE,
 			&cbResourceDesc,//リソース設定

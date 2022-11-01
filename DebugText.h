@@ -8,7 +8,7 @@ static const int fontLineCount = 14;
 static const int fontIndexMaxX = 14;
 static const int fontIndexMaxY = 7;
 
-
+//
 class DebugText
 {
 private:
