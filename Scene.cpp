@@ -85,6 +85,19 @@ void Scene::Initialize(SoundData* soundData)
 {
 	this->soundData = soundData;
 
+	Model[0].CreateModel("skydome");
+	Model[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
+	Model[1].CreateModel("ground");
+	Model[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
+	Model[1].worldMat->trans = { 10.0f, -10.0f, 0 };
+	Model[2].CreateModel("ufo_");
+	Model[2].worldMat->scale = { 5.0f, 5.0f, 5.0f };
+	Model[2].worldMat->rot = { pi/2.0f, 0, 0 };
+	Model[2].worldMat->trans = { 10.0f, 10.0f, 0 };
+
+	Model[3].CreateModel("ufo_");
+	Model[3].worldMat->trans.x += 30.0f;
+
 	ChangeState(new SceneTitle);
 	state->SetScene(this);
 }
@@ -94,9 +107,12 @@ void Scene::Update(SoundData* soundData)
 {
 	state->Update(soundData);
 
-	box.worldMat->trans.x = box.worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
-	box.worldMat->trans.y = box.worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
-	box.worldMat->SetWorld();
+	for (int i = 0; i < 4; i++)
+	{
+		Model[i].worldMat->trans.x = Model[i].worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
+		Model[i].worldMat->trans.y = Model[i].worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
+		Model[i].worldMat->SetWorld();
+	}
 
 #ifdef _DEBUG
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_E)) ChangeState(new SceneTitle);
@@ -106,8 +122,10 @@ void Scene::Update(SoundData* soundData)
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
-	box.DrawCube3D(box.worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f },
-		textureHandle[0]);
-	state->Draw(textureHandle,textureNumHundle);
+	for (int i = 0; i < 4; i++)
+	{
+		Model[i].DrawModel(Model[i].worldMat, &viewMat, &projectionMat);
+	}
+	state->Draw(textureHandle, textureNumHundle);
 }
 
