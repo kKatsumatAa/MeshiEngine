@@ -126,11 +126,4 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl" />
-    <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\shaders\OBJShaderHeader.hlsli" />
-  </ItemGroup>
 </Project>
