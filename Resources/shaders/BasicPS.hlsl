@@ -1,0 +1,25 @@
+#include "Basic.hlsli"
+
+Texture2D<float4> tex : register(t0); //0番スロットに設定されたテクスチャ
+SamplerState smp : register(s0);      //0番スロットに設定されたサンプラー
+
+
+float4 main(VSOutput input) : SV_TARGET
+{
+	//float3 light = normalize(float3(1,-1,1));//右下奥向きのライト
+	//float  diffuse = saturate(dot(-light, input.normal));//diffuseを[0,1]の範囲にClampする
+	//float  brightness = diffuse + 0.3f;//アンビエント項を0.3として計算
+
+	//テクスチャ
+	float4 texcolor = float4(tex.Sample(smp, input.uv));
+
+	/*if (texcolor.a != 0&& texcolor.r == 0&& texcolor.g == 0&& texcolor.b == 0)
+	{
+		return float4(color.rgb * input.color.rgb, color.a);
+	}
+	else*/
+	{
+		return float4(texcolor.rgb /** brightness*/, texcolor.a) * 
+			(float4(color.r * input.color.r, color.g * input.color.g, color.b * input.color.b, color.a));//輝度をRGBに代入して出力
+	}
+}
