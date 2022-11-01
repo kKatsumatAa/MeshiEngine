@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <d3d12.h>
+#pragma comment(lib,"winmm.lib")
 
 
 
@@ -30,6 +31,9 @@ private:
 
 	WindowsApp()
 	{
+		//システムタイマーの分解能を上げる
+		timeBeginPeriod(1);
+
 		//ウインドウクラスの設定
 		w.cbSize = sizeof(WNDCLASSEX);
 		w.lpfnWndProc = (WNDPROC)WindowProc;		//ウインドウプロシージャの設定

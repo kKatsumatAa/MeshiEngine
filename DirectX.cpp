@@ -1,4 +1,5 @@
 #include "DirectX.h"
+#include <thread>
 
 
 void Directx::InitializeDevice()
@@ -180,8 +181,44 @@ void Directx::InitializeFence()
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 }
 
+void Directx::InitializeFixFPS()
+{
+	//現在時間を記録
+	reference_ = std::chrono::steady_clock::now();
+}
+
+void Directx::UpdateFixFPS()
+{
+	//1/60(s)ぴったりの時間
+	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
+	//1/60(s)よりわずかに短い時間
+	const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.0f));
+
+	//現在時間を取得
+	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+	//前回記録からの経過時間を取得する
+	std::chrono::microseconds elapsed =
+		std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
+
+	//1/60(s)（よりわずかに短い時間）経ってない場合
+	if (elapsed < kMinCheckTime)
+	{
+		//1/60(s)経過するまで微小なスリープ繰り返す
+		while (std::chrono::steady_clock::now() - reference_ < kMinCheckTime)
+		{
+			//1マイクロ秒スリープ
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
+		}
+	}
+	//現在の時間を記録
+	reference_ = std::chrono::steady_clock::now();
+}
+
 Directx::Directx()
 {
+	//FPS固定初期化
+	InitializeFixFPS();
+
 	//デバイス生成（ifdef系も関数にすると何故かエラーが起きる）
 #ifdef _DEBUG
 		//デバッグレイヤーをオンに
@@ -311,6 +348,10 @@ void Directx::DrawUpdate2()
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
+
+	//FPS固定
+	UpdateFixFPS();
+
 	// キューをクリア
 	result = commandAllocator->Reset();
 	assert(SUCCEEDED(result));

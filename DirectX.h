@@ -12,6 +12,7 @@ using namespace DirectX;
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #include"Sound.h"
+#include<chrono>
 
 class Directx
 {
@@ -44,11 +45,15 @@ private:
 	//音
 	IXAudio2MasteringVoice* masterVoice;
 
-	//
+	//外部で参照
 	ComPtr<ID3D12Device> device = nullptr;
 	ComPtr < ID3D12GraphicsCommandList> commandList = nullptr;
 
+	//記録時間（FPS固定
+	std::chrono::steady_clock::time_point reference_;
 
+	
+private:
 	Directx();
 
 	//初期化系
@@ -58,6 +63,11 @@ private:
 	void InitializeRendertargetView();
 	void InitializeDepthBuffer();
 	void InitializeFence();
+
+	//FPS固定初期化
+	void InitializeFixFPS();
+	//FPS固定更新
+	void UpdateFixFPS();
 
 public:
 	//音
