@@ -13,14 +13,15 @@ class DebugText
 {
 private:
 	Draw sprites[maxCharCount];
+	Vec3 leftTop[maxCharCount]; float scale[maxCharCount]; XMFLOAT2 UVleftTop[maxCharCount]; XMFLOAT2 UVlength[maxCharCount];
 
 	//ìYÇ¶éöópÇÃïœêî
 	int spriteIndex = 0;
 
 public:
-	/*DebugText();*/
-	void Print(const std::string& text, float x, float y, UINT64 texhandle, int variable = NULL, float scale = 1.0f);
-	void Print(const std::string& text, float x, float y, UINT64 texhandle, const float& variable = NULL, float scale = 1.0f);
-
+	void Print(const std::string& text, float x, float y, int variable = 114514, float scale = 1.0f);
+	void Printf(const std::string& text, float x, float y, float variable = 114514.0f, float scale = 1.0f);
+	
+	void DrawAll(UINT64 texhandle);
 };
 

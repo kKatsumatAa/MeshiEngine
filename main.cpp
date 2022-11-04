@@ -16,12 +16,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	MSG msg{};	//メッセージ
 
-	//デバッグテキスト
-	UINT64 debugTextHandle;
-	LoadGraph(L"Resources/ascii.png", debugTextHandle);
-
-	DebugText debugText;
-
 	//画像用ハンドル
 	UINT64 textureHandle[30] = {0};
 	{
@@ -41,9 +35,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//シーン
 	Scene scene;
 	scene.Initialize(soundData);
-
-
-	float num = 114.514f;
 
 	//描画初期化処理-------------
 
@@ -69,9 +60,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 // 4.描画コマンドここから　//-----------
 		scene.Draw(textureHandle, textureNumHundle);
-
-		debugText.Print("num:", 10, 10, debugTextHandle, num);
-		num += 1.0f;
 
 // 4.描画コマンドここまで //
 
