@@ -90,7 +90,7 @@ void Scene::Initialize(SoundData* soundData)
 	Model[1].CreateModel("ground");
 	Model[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	Model[1].worldMat->trans = { 10.0f, -10.0f, 0 };
-	Model[2].CreateModel("indoor_plant_02");
+	Model[2].CreateModel("ufo_");
 	Model[2].worldMat->scale = { 5.0f, 5.0f, 5.0f };
 	Model[2].worldMat->rot = { pi/2.0f, 0, 0 };
 	Model[2].worldMat->trans = { 10.0f, 10.0f, 0 };
