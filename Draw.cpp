@@ -615,6 +615,8 @@ void Draw::CreateModel(const char* folderName)
 	//1行分の文字列を入れる変数
 	std::string line;
 
+	int indexCount = 0;
+
 	while (std::getline(all, line))
 	{
 		//一行分の文字列をストリームに変換して解析しやすく
@@ -623,6 +625,8 @@ void Draw::CreateModel(const char* folderName)
 		//半角スペース区切りで行の先頭文字列を取得
 		std::string key;
 		getline(line_stream, key, ' ');
+
+		
 
 		//先頭文字が"mtllib"ならマテリアル
 		if (key == "mtllib")
@@ -670,6 +674,8 @@ void Draw::CreateModel(const char* folderName)
 		//ポリゴン
 		if (key == "f")
 		{
+			int count = 1;
+
 			//半角スペース区切りで行の続きを読み込む
 			std::string index_string;
 			while (getline(line_stream, index_string, ' '))
@@ -692,7 +698,17 @@ void Draw::CreateModel(const char* folderName)
 				vertex.uv = texcoords[indexTexcoord - 1];
 				verticesM.emplace_back(vertex);
 				//インデックスデータの追加
-				indicesM.emplace_back((unsigned short)indicesM.size());
+				if (count >= 4)
+				{
+					indicesM.emplace_back((unsigned short)indicesM.size() - 1 - indexCount);
+					indicesM.emplace_back((unsigned short)indicesM.size() - 3 - indexCount);
+					indicesM.emplace_back((unsigned short)indicesM.size() - 2 - indexCount);
+					indexCount += 2;
+					break;
+				}
+				else
+					indicesM.emplace_back((unsigned short)indicesM.size()-indexCount);
+				count++;
 			}
 		}
 	}

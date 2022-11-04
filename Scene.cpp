@@ -90,7 +90,7 @@ void Scene::Initialize(SoundData* soundData)
 	Model[1].CreateModel("ground");
 	Model[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	Model[1].worldMat->trans = { 10.0f, -10.0f, 0 };
-	Model[2].CreateModel("ufo_");
+	Model[2].CreateModel("indoor_plant_02");
 	Model[2].worldMat->scale = { 5.0f, 5.0f, 5.0f };
 	Model[2].worldMat->rot = { pi/2.0f, 0, 0 };
 	Model[2].worldMat->trans = { 10.0f, 10.0f, 0 };
@@ -109,8 +109,16 @@ void Scene::Update(SoundData* soundData)
 
 	for (int i = 0; i < 4; i++)
 	{
-		Model[i].worldMat->trans.x = Model[i].worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
-		Model[i].worldMat->trans.y = Model[i].worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
+		if (i == 2)
+		{
+			Model[i].worldMat->rot.x = Model[i].worldMat->rot.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT))*0.01f;
+			Model[i].worldMat->rot.y = Model[i].worldMat->rot.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN))*0.01f;
+		}
+		else
+		{
+			Model[i].worldMat->trans.x = Model[i].worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
+			Model[i].worldMat->trans.y = Model[i].worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
+		}
 		Model[i].worldMat->SetWorld();
 	}
 
