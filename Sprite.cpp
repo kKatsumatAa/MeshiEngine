@@ -23,12 +23,6 @@ void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, 
 	assert(SUCCEEDED(Directx::GetInstance().result));
 }
 
-void SpriteCommonCreate(SpriteSet* spriteSet)
-{
-	
-
-
-}
 
 void Sprite::SpriteCommonBeginDraw(SpriteSet* pipelineSet)
 {

@@ -86,28 +86,28 @@ void Scene::Initialize(SoundData* soundData)
 	this->soundData = soundData;
 
 	LoadGraph(L"Resources/ascii.png", debugTextHandle);
+	LoadGraph(L"Resources/image/white.png", texhandle);
 
-	Model[0].CreateModel("skydome");
-	Model[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
-	Model[1].CreateModel("ground");
-	Model[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
-	Model[1].worldMat->trans = { 10.0f, -10.0f, 0 };
-	Model[2].CreateModel("ufo_");
-	Model[2].worldMat->scale = { 5.0f, 5.0f, 5.0f };
-	Model[2].worldMat->rot = { pi / 2.0f, 0, 0 };
-	Model[2].worldMat->trans = { 10.0f, 10.0f, 0 };
-
-	Model[3].CreateModel("ufo_");
-	Model[3].worldMat->trans.x += 30.0f;
+	model[0].CreateModel("skydome");
+	draw[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
+	model[1].CreateModel("ground");
+	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
+	draw[1].worldMat->trans = { 10.0f, -10.0f, 0 };
+	model[2].CreateModel("ufo_");
+	draw[2].worldMat->scale = { 5.0f, 5.0f, 5.0f };
+	draw[2].worldMat->rot = { pi / 2.0f, 0, 0 };
+	draw[2].worldMat->trans = { 10.0f, 10.0f, 0 };
+	
+	draw[3].worldMat->trans.x += 30.0f;
 
 	//“–‚½‚è”»’è—p
-	tama[0].centor = { 0.0f,Model[2].worldMat->trans.y,0.0f };
-	tama[0].radius = Model[2].worldMat->scale.y;
+	tama[0].centor = { 0.0f,draw[2].worldMat->trans.y,0.0f };
+	tama[0].radius = draw[2].worldMat->scale.y;
 
 	tama[1].centor = { 0,0,0 };
 	tama[1].radius = 5;
 
-	plane.distance = Model[1].worldMat->trans.y;
+	plane.distance = draw[1].worldMat->trans.y;
 	plane.normal = { 0,1,0 };
 
 
@@ -122,11 +122,11 @@ void Scene::Update(SoundData* soundData)
 
 	{
 
-		Model[2].worldMat->trans.x = Model[2].worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
-		Model[2].worldMat->trans.y = Model[2].worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
-		tama[0].centor.m128_f32[1] = Model[2].worldMat->trans.y;
+		draw[2].worldMat->trans.x = draw[2].worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
+		draw[2].worldMat->trans.y = draw[2].worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
+		tama[0].centor.m128_f32[1] = draw[2].worldMat->trans.y;
 	}
-	Model[2].worldMat->SetWorld();
+	draw[2].worldMat->SetWorld();
 
 
 #ifdef _DEBUG
@@ -137,15 +137,17 @@ void Scene::Update(SoundData* soundData)
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
-	for (int i = 0; i < 4; i++)
-	{
-		Model[i].DrawModel(Model[i].worldMat, &viewMat, &projectionMat);
-	}
+	draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat,&model[0]);
+	draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat,&model[1]);
+	draw[2].DrawModel(draw[2].worldMat, &viewMat, &projectionMat,&model[2]);
+	draw[3].DrawModel(draw[3].worldMat, &viewMat, &projectionMat,&model[2]);
+	draw[4].DrawSphere(draw[4].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, texhandle);
+
 	state->Draw(textureHandle, textureNumHundle);
 
-	debugText.Printf("posX:", 0, 22, tama[0].centor.m128_f32[0]);
-	debugText.Printf("posY:", 0, 34, tama[0].centor.m128_f32[1]);
-	debugText.Printf("posZ:", 0, 46, tama[0].centor.m128_f32[2]);
+	debugText.Printf("posX:", 0, 22, draw[2].worldMat->trans.x);
+	debugText.Printf("posY:", 0, 34, draw[2].worldMat->trans.y);
+	debugText.Printf("posZ:", 0, 46, draw[2].worldMat->trans.z);
 
 	if (Collision::CheckSphere2Plane(tama[0], plane))
 	{

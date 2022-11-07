@@ -1,5 +1,4 @@
 #pragma once
-#include"Draw.h"
 #include"Collision.h"
 #include"DebugText.h"
 
@@ -30,7 +29,10 @@ public:
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
 
-	Draw Model[5];
+	Model model[5];
+
+	Draw draw[5];
+	
 
 	Sphere tama[2];
 	Plane plane;
@@ -38,6 +40,7 @@ public:
 
 	//デバッグテキスト
 	UINT64 debugTextHandle;
+	UINT64 texhandle;
 
 public:
 	~Scene();

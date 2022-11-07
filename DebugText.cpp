@@ -27,8 +27,17 @@ void DebugText::Print(const std::string& text, float x, float y, int variable, f
 	//変数の中身表示用------------------------
 	if (variable != 114514)
 	{
+		bool isMinus = false;
+
 		int number = variable;
 		int printNumber[6] = { };
+
+		//マイナス
+		if (number < 0)
+		{
+			isMinus = true;
+			number *= -1;
+		}
 
 		printNumber[0] = number / 100000;
 		number = number % 100000;
@@ -52,6 +61,28 @@ void DebugText::Print(const std::string& text, float x, float y, int variable, f
 		{
 			//最大文字数を超えたら
 			if (spriteIndex >= maxCharCount) break;
+
+			//マイナスの時
+			if (isMinus)
+			{
+				int fontIndex = '-' - 32;
+
+				int fontIndexY = fontIndex / fontLineCount;
+				int fontIndexX = fontIndex % fontLineCount;
+
+
+				leftTop[spriteIndex] = { x + (i + text.size()) * fontWidth * scale,y,0 };
+				this->scale[spriteIndex] = scale;
+				UVleftTop[spriteIndex] = { (float)(fontIndexX) / (float)((fontIndexMaxX)) - 0.003f,(float)(fontIndexY) / (float)((fontIndexMaxY)) - 0.003f };
+				UVlength[spriteIndex] = { (float)fontWidth / (float)(fontWidth * (fontIndexMaxX)) ,(float)fontHeight / (float)(fontHeight * (fontIndexMaxY)) };
+
+				// 添え字用変数をインクリメント
+				spriteIndex++;
+
+				isMinus = false;
+
+				continue;
+			}
 
 			//ASCIIコードの1段分飛ばした番号を計算
 			int fontIndex = printNumber[i] + 16;
@@ -97,8 +128,17 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 	//変数の中身表示用------------------------
 	if (variable != 114514.0f)
 	{
+		bool isMinus = false;
+
 		float number = variable;
 		int printNumber[13] = { };
+
+		//マイナス
+		if (number < 0)
+		{
+			isMinus = true;
+			number *= -1;
+		}
 
 		printNumber[0] = (int)(number / 100000);
 		number -= (float)((int)number / 100000 * 100000);
@@ -146,6 +186,28 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 		{
 			//最大文字数を超えたら
 			if (spriteIndex >= maxCharCount) break;
+
+			//マイナスの時
+			if (isMinus)
+			{
+				int fontIndex = '-' - 32;
+
+				int fontIndexY = fontIndex / fontLineCount;
+				int fontIndexX = fontIndex % fontLineCount;
+
+
+				leftTop[spriteIndex] = { x + (i + text.size()) * fontWidth * scale,y,0 };
+				this->scale[spriteIndex] = scale;
+				UVleftTop[spriteIndex] = { (float)(fontIndexX) / (float)((fontIndexMaxX)) - 0.003f,(float)(fontIndexY) / (float)((fontIndexMaxY)) - 0.003f };
+				UVlength[spriteIndex] = { (float)fontWidth / (float)(fontWidth * (fontIndexMaxX)) ,(float)fontHeight / (float)(fontHeight * (fontIndexMaxY)) };
+
+				//添え字用変数をインクリメント
+				spriteIndex++;
+
+				isMinus = false;
+
+				continue;
+			}
 
 			//ASCIIコードの1段分飛ばした番号を計算
 			int fontIndex = printNumber[i] + 16;
