@@ -137,8 +137,9 @@ void Scene::Update(SoundData* soundData)
 }
 
 float rot = 0;
-float scale = 0;
+float scale = 5.0f;
 float uvwidth = 0;
+float color = 0;
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
@@ -149,9 +150,10 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	draw[4].DrawSphere(draw[4].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, texhandle[0]);
 
 	rot += 1.0f;
-	scale += 0.01f;
+	//scale += 0.01f;
 	uvwidth += 0.005f;
-	draw[5].DrawClippingBoxSprite({ 0,0,0 }, scale, { 0,0.2f }, { uvwidth,0.8f }, { 0,1.0f,0,1.0f }, texhandle[1], false, rot);
+	color += 0.005f;
+	draw[5].DrawClippingBoxSprite({ 0,0,0 }, scale, { 0,0.2f }, { uvwidth,0.8f }, { 0,color,0,1.0f }, texhandle[1], false, rot);
 
 	state->Draw(textureHandle, textureNumHundle);
 
