@@ -31,7 +31,7 @@ public:
 
 	Model model[5];
 
-	Draw draw[5];
+	Draw draw[10];
 	
 
 	Sphere tama[2];
@@ -40,7 +40,7 @@ public:
 
 	//デバッグテキスト
 	UINT64 debugTextHandle;
-	UINT64 texhandle;
+	UINT64 texhandle[10];
 
 public:
 	~Scene();

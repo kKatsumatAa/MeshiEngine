@@ -86,7 +86,8 @@ void Scene::Initialize(SoundData* soundData)
 	this->soundData = soundData;
 
 	LoadGraph(L"Resources/ascii.png", debugTextHandle);
-	LoadGraph(L"Resources/image/white.png", texhandle);
+	LoadGraph(L"Resources/image/white.png", texhandle[0]);
+	LoadGraph(L"Resources/image/particle.png", texhandle[1]);
 
 	model[0].CreateModel("skydome");
 	draw[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
@@ -135,13 +136,22 @@ void Scene::Update(SoundData* soundData)
 
 }
 
+float rot = 0;
+float scale = 0;
+float uvwidth = 0;
+
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
 	draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat,&model[0]);
 	draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat,&model[1]);
 	draw[2].DrawModel(draw[2].worldMat, &viewMat, &projectionMat,&model[2]);
 	draw[3].DrawModel(draw[3].worldMat, &viewMat, &projectionMat,&model[2]);
-	draw[4].DrawSphere(draw[4].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, texhandle);
+	draw[4].DrawSphere(draw[4].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, texhandle[0]);
+
+	rot += 1.0f;
+	scale += 0.01f;
+	uvwidth += 0.005f;
+	draw[5].DrawClippingBoxSprite({ 0,0,0 }, scale, { 0,0.2f }, { uvwidth,0.8f }, { 0,1.0f,0,1.0f }, texhandle[1], false, rot);
 
 	state->Draw(textureHandle, textureNumHundle);
 
