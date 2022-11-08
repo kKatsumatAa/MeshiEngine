@@ -271,6 +271,11 @@ Directx::Directx()
 	result = xAudio2->CreateMasteringVoice(&masterVoice);
 }
 
+Directx::~Directx()
+{
+}
+
+
 
 Directx& Directx::GetInstance()
 {

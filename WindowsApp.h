@@ -69,6 +69,8 @@ private:
 		viewport = { 0, 0, window_width, window_height, 0.0f, 1.0f };
 	}
 
+	~WindowsApp() { ; }
+
 
 public:
 	//ウィンドウサイズ

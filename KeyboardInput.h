@@ -49,6 +49,8 @@ private:
 		assert(SUCCEEDED(result));
 	}
 
+	~KeyboardInput() { ; }
+
 public:
 
 	static KeyboardInput& GetInstance()

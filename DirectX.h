@@ -55,6 +55,7 @@ private:
 
 private:
 	Directx();
+	~Directx();
 
 	//‰Šú‰»Œn
 	void InitializeDevice();
