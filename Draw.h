@@ -63,7 +63,7 @@ public:
 	Draw();
 
 
-	void DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
+	void DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 		WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color = { NULL,NULL,NULL,NULL },
 		const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	void DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection, /*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,*/
@@ -75,7 +75,7 @@ public:
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, bool isPosLeftTop = true, float rotation = 0.0f, const int& pipelineNum = 0);
 	void DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
-	void DrawLine(const Vec3& pos1, const Vec3& pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color
+	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */WorldMat* world, ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color
 		, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	void DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);

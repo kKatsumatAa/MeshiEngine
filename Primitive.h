@@ -4,16 +4,31 @@
 static const int PAPA = 66 * 3 + 6;
 
 
-
+/// <summary>
+/// 図形用の情報を持ったクラス（drawで使うので一個のみ生成）
+/// </summary>
 class Primitive
 {
 private:
-	
+
 public:
 	//頂点バッファの生成
-	ComPtr < ID3D12Resource> vertBuff = nullptr;
+	ComPtr < ID3D12Resource> vertBuffTriangle = nullptr;
+	ComPtr < ID3D12Resource> vertBuffBox = nullptr;
+	ComPtr < ID3D12Resource> vertBuffCircle = nullptr;
+	ComPtr < ID3D12Resource> vertBuffCube = nullptr;
+	ComPtr < ID3D12Resource> vertBuffLine = nullptr;
+	ComPtr<ID3D12Resource> vertBuffSphere = nullptr;
+
 	// 頂点バッファビューの作成
-	D3D12_VERTEX_BUFFER_VIEW vbView{};
+	D3D12_VERTEX_BUFFER_VIEW vbTriangleView{};
+	D3D12_VERTEX_BUFFER_VIEW vbBoxView{};
+	D3D12_VERTEX_BUFFER_VIEW vbCircleView{};
+	D3D12_VERTEX_BUFFER_VIEW vbCubeView{};
+	D3D12_VERTEX_BUFFER_VIEW vbLineView{};
+	// 頂点バッファビューの作成
+	D3D12_VERTEX_BUFFER_VIEW vbViewSphere{};
+
 	//04_01
 		//頂点データ構造体
 
@@ -21,68 +36,89 @@ public:
 	D3D12_HEAP_PROPERTIES heapProp{};
 
 	//インデックスバッファビューの作成
-	D3D12_INDEX_BUFFER_VIEW ibView{};
-	//インデックスバッファビューの作成
-	D3D12_INDEX_BUFFER_VIEW ibView2{};
-	D3D12_INDEX_BUFFER_VIEW ibView3{};
-
-
-
+	D3D12_INDEX_BUFFER_VIEW ibViewTriangle{};
+	D3D12_INDEX_BUFFER_VIEW ibViewBox{};
+	D3D12_INDEX_BUFFER_VIEW ibViewCircle{};
+	D3D12_INDEX_BUFFER_VIEW ibViewLine{};
+	D3D12_INDEX_BUFFER_VIEW ibViewCube{};
+	D3D12_INDEX_BUFFER_VIEW ibViewSphere{};
 
 	//いろんな図形用
-	Vertex vertices[24] = {
+	Vertex verticesTriangle[3] = {
+		//手前
+		{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+		{{-5.0f,5.0f, -5.0f},{},{0.0f,0.0f}},//左上
+		{{5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+	};
+	Vertex verticesBox[4] = {
 		//手前
 		{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
 		{{-5.0f,5.0f, -5.0f},{},{0.0f,0.0f}},//左上
 		{{5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
 		{{5.0f,5.0f,  -5.0f},{},{1.0f,0.0f}},//右上
-		//奥
-		{{-5.0f,-5.0f,5.0f},{},{0.0f,1.0f}},//左下
-		{{-5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-		{{5.0f,-5.0f, 5.0f},{},{1.0f,1.0f}},//右下
-		{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
-		//上
-		{{5.0f,5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-		{{5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-		{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-		{{-5.0f,5.0f, 5.0f},{},{1.0f,0.0f}},//右上
-		//下
-		{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-		{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-		{{-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-		{{-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f}},//右上
-		//左
-		{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-		{{-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-		{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-		{{-5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
-		//右
-		{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-		{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-		{{5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-		{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
 	};
-
+	Vertex verticesCircle[24] = {};
+	Vertex verticesCube[24] = {};
+	Vertex verticesLine[2] = {};
 	//球体
 	Vertex verticesSphere[2 + 34 * 36];
-	// 頂点バッファビューの作成
-	D3D12_VERTEX_BUFFER_VIEW vbView2{};
 
-	//頂点バッファの生成
-	ComPtr<ID3D12Resource> vertBuff2 = nullptr;
+	//Vertex vertices[24] = {
+	//	//手前
+	//	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+	//	{{-5.0f,5.0f, -5.0f},{},{0.0f,0.0f}},//左上
+	//	{{5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+	//	{{5.0f,5.0f,  -5.0f},{},{1.0f,0.0f}},//右上
+	//	//奥
+	//	{{-5.0f,-5.0f,5.0f},{},{0.0f,1.0f}},//左下
+	//	{{-5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+	//	{{5.0f,-5.0f, 5.0f},{},{1.0f,1.0f}},//右下
+	//	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
+	//	//上
+	//	{{5.0f,5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+	//	{{5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+	//	{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+	//	{{-5.0f,5.0f, 5.0f},{},{1.0f,0.0f}},//右上
+	//	//下
+	//	{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+	//	{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+	//	{{-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+	//	{{-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f}},//右上
+	//	//左
+	//	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+	//	{{-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+	//	{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+	//	{{-5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
+	//	//右
+	//	{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
+	//	{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
+	//	{{5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
+	//	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
+	//};
+
+	
 	unsigned short indicesSphere[PAPA * 36];
+	
 
 public:
 	void Initialize();
+
+	void InitializeTriangle();
+	void InitializeBox();
+	void InitializeCircle();
+	void InitializeCube();
+	void InitializeLine();
+	void InitializeSphere();
+
 };
 
 
-static unsigned short indices[6] =
+static unsigned short indicesBox[6] =
 {
 	0,1,2,//三角形1つ目
 	2,1,3,//三角形2つ目
 };
-static unsigned short indices2[3] =
+static unsigned short indicesTriangle[3] =
 {
 	0,1,2//三角形2つ目
 };

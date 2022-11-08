@@ -100,6 +100,8 @@ void Scene::Initialize(SoundData* soundData)
 	draw[2].worldMat->trans = { 10.0f, 10.0f, 0 };
 	
 	draw[3].worldMat->trans.x += 30.0f;
+	draw[6].worldMat->trans.x -= 30.0f;
+	draw[7].worldMat->trans.z -= 20.0f;
 
 	//“–‚½‚è”»’è—p
 	tama[0].centor = { 0.0f,draw[2].worldMat->trans.y,0.0f };
@@ -154,6 +156,8 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	uvwidth += 0.005f;
 	color += 0.005f;
 	draw[5].DrawClippingBoxSprite({ 0,0,0 }, scale, { 0,0.2f }, { uvwidth,0.8f }, { 0,color,0,1.0f }, texhandle[1], false, rot);
+	draw[6].DrawCube3D(draw[6].worldMat, &viewMat, &projectionMat, { 1.0f,0.0f,1.0f,1.0f }, texhandle[1]);
+	draw[7].DrawLine(draw[7].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, texhandle[0]);
 
 	state->Draw(textureHandle, textureNumHundle);
 

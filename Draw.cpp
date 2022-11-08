@@ -72,14 +72,10 @@ ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
 D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 
-
-
 void DrawInitialize()
 {
-
+	//図形クラスの
 	primitive.Initialize();
-	
-
 
 	//デスクリプタレンジの設定
 	descriptorRange.NumDescriptors = 100;   //一度の描画に使うテクスチャの枚数
@@ -129,7 +125,7 @@ void DrawInitialize()
 		pipelineSetM.rootSignature.GetAddressOf(), pipelineSetM.vsBlob,
 		pipelineSetM.psBlob, MODEL);
 
-	
+
 }
 
 Draw::Draw()
@@ -205,31 +201,229 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		cbt.constMapTransform->mat = matW * view->matView * projection->matProjection;
 	}
 
-	if (indexNum == MODEL)
-	{
-		model->constMapMaterial2->ambient = model->material.ambient;
-		model->constMapMaterial2->diffuse = model->material.diffuse;
-		model->constMapMaterial2->specular = model->material.specular;
-		model->constMapMaterial2->alpha = model->material.alpha;
-	}
-	else if (indexNum != SPHERE && indexNum != SPRITE)
+
+	if (indexNum == TRIANGLE)
 	{
 		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 		Vertex* vertMap = nullptr;
-		Directx::GetInstance().result = primitive.vertBuff->Map(0, nullptr, (void**)&vertMap);
+		Directx::GetInstance().result = primitive.vertBuffTriangle->Map(0, nullptr, (void**)&vertMap);
 		assert(SUCCEEDED(Directx::GetInstance().result));
 		// 全頂点に対して
-		for (int i = 0; i < _countof(primitive.vertices); i++) {
-			vertMap[i] = primitive.vertices[i]; // 座標をコピー
+		for (int i = 0; i < _countof(primitive.verticesTriangle); i++) {
+
+			vertMap[i] = primitive.verticesTriangle[i]; // 座標をコピー
+
 		}
 		// 繋がりを解除
-		primitive.vertBuff->Unmap(0, nullptr);
+		primitive.vertBuffTriangle->Unmap(0, nullptr);
+
+		// パイプラインステートとルートシグネチャの設定コマンド
+		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineState[pipelineNum].Get());
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+
+		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
+
+		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbTriangleView);
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewTriangle);
+
+		//04_02
+		{
+			//SRVヒープの設定コマンド
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			//SRVヒープの先頭ハンドルを取得
+			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+			srvGpuHandle.ptr = textureHandle;
+			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		}
+		//定数バッファビュー(CBV)の設定コマンド
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesTriangle), 1, 0, 0, 0); // 全ての頂点を使って描画
+
 	}
-	else if (indexNum == SPHERE)//球体の時
+	else if (indexNum == BOX)
 	{
 		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 		Vertex* vertMap = nullptr;
-		Directx::GetInstance().result = primitive.vertBuff2->Map(0, nullptr, (void**)&vertMap);
+		Directx::GetInstance().result = primitive.vertBuffBox->Map(0, nullptr, (void**)&vertMap);
+		assert(SUCCEEDED(Directx::GetInstance().result));
+		// 全頂点に対して
+		for (int i = 0; i < _countof(primitive.verticesBox); i++) {
+
+			vertMap[i] = primitive.verticesBox[i]; // 座標をコピー
+
+		}
+		// 繋がりを解除
+		primitive.vertBuffBox->Unmap(0, nullptr);
+
+		// パイプラインステートとルートシグネチャの設定コマンド
+		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineState[pipelineNum].Get());
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+
+		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
+
+		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbBoxView);
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewBox);
+
+		//04_02
+		{
+			//SRVヒープの設定コマンド
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			//SRVヒープの先頭ハンドルを取得
+			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+			srvGpuHandle.ptr = textureHandle;
+			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		}
+		//定数バッファビュー(CBV)の設定コマンド
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesBox), 1, 0, 0, 0); // 全ての頂点を使って描画
+	}
+	else if (indexNum == CUBE)
+	{
+		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
+		Vertex* vertMap = nullptr;
+		Directx::GetInstance().result = primitive.vertBuffCube->Map(0, nullptr, (void**)&vertMap);
+		assert(SUCCEEDED(Directx::GetInstance().result));
+		// 全頂点に対して
+		for (int i = 0; i < _countof(primitive.verticesCube); i++) {
+
+			vertMap[i] = primitive.verticesCube[i]; // 座標をコピー
+
+		}
+		// 繋がりを解除
+		primitive.vertBuffCube->Unmap(0, nullptr);
+
+		// パイプラインステートとルートシグネチャの設定コマンド
+		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineState[pipelineNum].Get());
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+
+		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
+
+		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbCubeView);
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewCube);
+
+		//04_02
+		{
+			//SRVヒープの設定コマンド
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			//SRVヒープの先頭ハンドルを取得
+			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+			srvGpuHandle.ptr = textureHandle;
+			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		}
+		//定数バッファビュー(CBV)の設定コマンド
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesCube), 1, 0, 0, 0); // 全ての頂点を使って描画
+	}
+	else if (indexNum == LINE)
+	{
+		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
+		Vertex* vertMap = nullptr;
+		Directx::GetInstance().result = primitive.vertBuffLine->Map(0, nullptr, (void**)&vertMap);
+		assert(SUCCEEDED(Directx::GetInstance().result));
+		// 全頂点に対して
+		for (int i = 0; i < _countof(primitive.verticesLine); i++) {
+
+			vertMap[i] = primitive.verticesLine[i]; // 座標をコピー
+
+		}
+		// 繋がりを解除
+		primitive.vertBuffLine->Unmap(0, nullptr);
+
+		//パイプライン
+		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineState[2].Get());
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+
+		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 線
+
+		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbLineView);
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewLine);
+
+		//04_02
+		{
+			//SRVヒープの設定コマンド
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			//SRVヒープの先頭ハンドルを取得
+			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+			srvGpuHandle.ptr = textureHandle;
+			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		}
+		//定数バッファビュー(CBV)の設定コマンド
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesLine), 1, 0, 0, 0); // 全ての頂点を使って描画
+	}
+	else if (indexNum == CIRCLE)
+	{
+		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
+		Vertex* vertMap = nullptr;
+		Directx::GetInstance().result = primitive.vertBuffCircle->Map(0, nullptr, (void**)&vertMap);
+		assert(SUCCEEDED(Directx::GetInstance().result));
+		// 全頂点に対して
+		for (int i = 0; i < _countof(primitive.verticesCircle); i++) {
+
+			vertMap[i] = primitive.verticesCircle[i]; // 座標をコピー
+
+		}
+		// 繋がりを解除
+		primitive.vertBuffCircle->Unmap(0, nullptr);
+
+		// パイプラインステートとルートシグネチャの設定コマンド
+		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineState[pipelineNum].Get());
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+
+		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
+
+		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbCircleView);
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewCircle);
+
+		//04_02
+		{
+			//SRVヒープの設定コマンド
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			//SRVヒープの先頭ハンドルを取得
+			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+			srvGpuHandle.ptr = textureHandle;
+			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		}
+		//定数バッファビュー(CBV)の設定コマンド
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesCircle), 1, 0, 0, 0); // 全ての頂点を使って描画
+	}
+	else if (indexNum == SPHERE)
+	{
+
+		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
+		Vertex* vertMap = nullptr;
+		Directx::GetInstance().result = primitive.vertBuffSphere->Map(0, nullptr, (void**)&vertMap);
 		assert(SUCCEEDED(Directx::GetInstance().result));
 		// 全頂点に対して
 		for (int i = 0; i < _countof(primitive.verticesSphere); i++) {
@@ -238,146 +432,113 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		}
 		// 繋がりを解除
-		primitive.vertBuff2->Unmap(0, nullptr);
-	}
+		primitive.vertBuffSphere->Unmap(0, nullptr);
 
-	// パイプラインステートとルートシグネチャの設定コマンド
-	if (indexNum == LINE)
-	{
-		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineState[2].Get());
+		// パイプラインステートとルートシグネチャの設定コマンド
+		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineState[pipelineNum].Get());
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+
+		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角ストリップ
+		// 頂点バッファビューの設定コマンド
+		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbViewSphere);
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewSphere);
+
+		//04_02
+		{
+			//SRVヒープの設定コマンド
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			//SRVヒープの先頭ハンドルを取得
+			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+			srvGpuHandle.ptr = textureHandle;
+			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		}
+		//定数バッファビュー(CBV)の設定コマンド
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(primitive.indicesSphere), 1, 0, 0, 0); // 全ての頂点を使って描画
 	}
 	else if (indexNum == SPRITE)
 	{
+		// パイプラインステートとルートシグネチャの設定コマンド
 		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineSet.pipelineState.Get());
-	}
-	else if (indexNum == MODEL)
-	{
-		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineSetM.pipelineState.Get());
-	}
-	else
-	{
-		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineState[pipelineNum].Get());
-	}
 
-
-	if (indexNum == SPRITE)
-	{
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSet.rootSignature.Get());
+
+		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
+		VertexSprite* vertMap = nullptr;
+		Directx::GetInstance().result = vertBuffS->Map(0, nullptr, (void**)&vertMap);
+		assert(SUCCEEDED(Directx::GetInstance().result));
+		// 全頂点に対して
+		for (int i = 0; i < 4; i++) {
+			vertMap[i] = verticesS[i]; // 座標をコピー
+		}
+		// 繋がりを解除
+		vertBuffS->Unmap(0, nullptr);
+
+		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbViewS);
+
+		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+
+		//04_02
+		{
+			//SRVヒープの設定コマンド
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			//SRVヒープの先頭ハンドルを取得
+			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+			srvGpuHandle.ptr = textureHandle;
+			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		}
+		//定数バッファビュー(CBV)の設定コマンド
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0); // 全ての頂点を使って描画
 	}
 	else if (indexNum == MODEL)
 	{
+		//マテリアルをセット
+		model->constMapMaterial2->ambient = model->material.ambient;
+		model->constMapMaterial2->diffuse = model->material.diffuse;
+		model->constMapMaterial2->specular = model->material.specular;
+		model->constMapMaterial2->alpha = model->material.alpha;
+
+		// パイプラインステートとルートシグネチャの設定コマンド
+		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineSetM.pipelineState.Get());
+
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSetM.rootSignature.Get());
-	}
-	else if (indexNum != SPRITE)
-	{
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
-	}
 
-	if (indexNum != SPHERE)
-	{
-		if (indexNum == SPRITE)
-		{
-			// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
-			VertexSprite* vertMap = nullptr;
-			Directx::GetInstance().result = vertBuffS->Map(0, nullptr, (void**)&vertMap);
-			assert(SUCCEEDED(Directx::GetInstance().result));
-			// 全頂点に対して
-			for (int i = 0; i < 4; i++) {
-				vertMap[i] = verticesS[i]; // 座標をコピー
-			}
-			// 繋がりを解除
-			vertBuffS->Unmap(0, nullptr);
+		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &model->vbViewM);
+		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbViewS);
-
-
-			Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-		}
-		else if (indexNum == MODEL)
-		{
-			Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &model->vbViewM);
-			Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		}
-		else
-		{
-			// プリミティブ形状の設定コマンド
-			if (indexNum != LINE)
-				Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角リスト
-			else//線の時（LINE）
-				Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 線
-
-			// 頂点バッファビューの設定コマンド
-			Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbView);
-		}
-	}
-	else//球体の時
-	{
-		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角ストリップ
-		// 頂点バッファビューの設定コマンド
-		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbView2);
-	}
-
-
-	//定数バッファビュー(CBV)の設定コマンド
-	if (indexNum != MODEL)
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
-	//04_02
-	{
-		//SRVヒープの設定コマンド
-		Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
-		//SRVヒープの先頭ハンドルを取得
-		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-		srvGpuHandle.ptr = textureHandle;
-		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
-	}
-	//定数バッファビュー(CBV)の設定コマンド
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
-	//モデルの時//al4_02_02
-	if (indexNum == MODEL)
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, model->constBuffMaterial2->GetGPUVirtualAddress());
 
-	//インデックスバッファビューの設定コマンド
-	if (indexNum != SPRITE)
-	{
-		if (indexNum == SPHERE)Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibView3);
-		else if (indexNum == MODEL) Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&model->ibViewM);
-		else if (indexNum != CIRCLE) Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibView);
-		else if (indexNum == CIRCLE)Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibView2);
+		//04_02
+		{
+			//SRVヒープの設定コマンド
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			//SRVヒープの先頭ハンドルを取得
+			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+			srvGpuHandle.ptr = textureHandle;
+			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		}
+		//定数バッファビュー(CBV)の設定コマンド
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
-	}
+		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&model->ibViewM);
 
-	// 描画コマンド
-	switch (indexNum)
-	{
-	case TRIANGLE:
-		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indices2), 1, 0, 0, 0); // 全ての頂点を使って描画
-		break;
-	case BOX:
-		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
-		break;
-	case CUBE:
-		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesCube), 1, 0, 0, 0); // 全ての頂点を使って描画
-		break;
-	case LINE:
-		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesLine), 1, 0, 0, 0); // 全ての頂点を使って描画
-		break;//ibview（+vbview）を図形ごとに用意する！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-	case CIRCLE:
-		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesCircle), 1, 0, 0, 0); // 全ての頂点を使って描画
-		break;
-	case SPHERE:
-		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(primitive.indicesSphere), 1, 0, 0, 0); // 全ての頂点を使って描画
-		break;
-	case SPRITE:
-		Directx::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0); // 全ての頂点を使って描画
-		break;
-	case MODEL:
 		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced((UINT)model->indicesM.size(), 1, 0, 0, 0); // 全ての頂点を使って描画
-		break;
 	}
 }
 
-void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
+void Draw::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 	WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
 	//constBuffTransfer({ 0.01f,0.05f,0.1f,0 });
@@ -385,12 +546,7 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 	this->view = view;
 	this->projection = projection;
 
-	primitive.vertices[0] = { pos1,{primitive.vertices[0].normal},{0.0f,1.0f} };//左下
-	primitive.vertices[1] = { pos2,{primitive.vertices[1].normal},{0.5f,0.0f} };//上
-	primitive.vertices[2] = { pos3,{primitive.vertices[2].normal},{1.0f,1.0f} };//右下
-	primitive.vertices[3] = primitive.vertices[1];//右上
-
-	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
+	constMapMaterial->color = color;
 
 	Update(TRIANGLE, pipelineNum, textureHandle, cbt);
 }
@@ -403,17 +559,7 @@ void Draw::DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection,/*X
 	this->view = view;
 	this->projection = projection;
 
-	primitive.vertices[0].normal = { 0.0f,0.0f,-1.0f };//左下
-	primitive.vertices[1].normal = { 0.0f,0.0f,-1.0f };//左上
-	primitive.vertices[2].normal = { 0.0f,0.0f,-1.0f };//右下
-	primitive.vertices[3].normal = { 0.0f,0.0f,-1.0f };//右上
-
-	primitive.vertices[0].pos = { -5.0f,-5.0f,-5.0f };//左下
-	primitive.vertices[1].pos = { -5.0f,5.0f, -5.0f };//左上
-	primitive.vertices[2].pos = { 5.0f,-5.0f, -5.0f };//右下
-	primitive.vertices[3].pos = { 5.0f,5.0f,  -5.0f };//右上
-
-	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
+	constMapMaterial->color = color;
 
 	Update(BOX, pipelineNum, textureHandle, cbt);
 }
@@ -556,48 +702,16 @@ void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const 
 
 void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	//constBuffTransfer({ 0.01f,0.05f,0.1f,0 });
 	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
 
-	//手前
-	primitive.vertices[0] = { {-5.0f,-5.0f,-5.0f},{primitive.vertices[0].normal},{0.0f,1.0f} };//左下
-	primitive.vertices[1] = { {-5.0f,5.0f, -5.0f},{primitive.vertices[1].normal},{0.0f,0.0f} };//左上
-	primitive.vertices[2] = { {5.0f,-5.0f, -5.0f},{primitive.vertices[2].normal},{1.0f,1.0f} };//右下
-	primitive.vertices[3] = { {5.0f,5.0f,  -5.0f},{primitive.vertices[3].normal},{1.0f,0.0f} };//右上
-
-	primitive.vertices[4] = { {-5.0f,-5.0f,5.0f},{primitive.vertices[4].normal},{0.0f,1.0f} };//左下
-	primitive.vertices[5] = { {-5.0f,5.0f, 5.0f},{primitive.vertices[5].normal},{0.0f,0.0f} };//左上
-	primitive.vertices[6] = { {5.0f,-5.0f, 5.0f},{primitive.vertices[6].normal},{1.0f,1.0f} };//右下
-	primitive.vertices[7] = { {5.0f,5.0f,  5.0f},{primitive.vertices[7].normal},{1.0f,0.0f} };//右上
-		//上
-	primitive.vertices[8] = { {5.0f,5.0f,-5.0f},{primitive.vertices[8].normal},{0.0f,1.0f} };//左下
-	primitive.vertices[9] = { {5.0f,5.0f, 5.0f},{primitive.vertices[9].normal},{0.0f,0.0f} };//左上
-	primitive.vertices[10] = { {-5.0f,5.0f, -5.0f},{primitive.vertices[10].normal},{1.0f,1.0f} };//右下
-	primitive.vertices[11] = { {-5.0f,5.0f, 5.0f},{primitive.vertices[11].normal},{1.0f,0.0f} };//右上
-
-	primitive.vertices[12] = { {5.0f,-5.0f,-5.0f},{primitive.vertices[12].normal},{0.0f,1.0f} };//左下
-	primitive.vertices[13] = { {5.0f,-5.0f, 5.0f},{primitive.vertices[13].normal},{0.0f,0.0f} };//左上
-	primitive.vertices[14] = { {-5.0f,-5.0f, -5.0f},{primitive.vertices[14].normal},{1.0f,1.0f} };//右下
-	primitive.vertices[15] = { {-5.0f,-5.0f, 5.0f},{primitive.vertices[15].normal},{1.0f,0.0f} };//右上
-
-	primitive.vertices[16] = { {-5.0f,-5.0f,-5.0f},{primitive.vertices[16].normal},{0.0f,1.0f} };//左下
-	primitive.vertices[17] = { {-5.0f,-5.0f, 5.0f},{primitive.vertices[17].normal},{0.0f,0.0f} };//左上
-	primitive.vertices[18] = { {-5.0f,5.0f, -5.0f},{primitive.vertices[18].normal},{1.0f,1.0f} };//右下
-	primitive.vertices[19] = { {-5.0f,5.0f,  5.0f},{primitive.vertices[19].normal},{1.0f,0.0f} };//右上
-
-	primitive.vertices[20] = { {5.0f,-5.0f,-5.0f},{primitive.vertices[20].normal},{0.0f,1.0f} };//左下
-	primitive.vertices[21] = { {5.0f,-5.0f, 5.0f},{primitive.vertices[21].normal},{0.0f,0.0f} };//左上
-	primitive.vertices[22] = { {5.0f,5.0f, -5.0f},{primitive.vertices[22].normal},{1.0f,1.0f} };//右下
-	primitive.vertices[23] = { {5.0f,5.0f,  5.0f},{primitive.vertices[23].normal},{1.0f,0.0f} };//右上;//左下
-
-	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
+	constMapMaterial->color = color;
 
 	Update(CUBE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawLine(const Vec3& pos1, const Vec3& pos2, WorldMat* world, ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,
+void Draw::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/ WorldMat* world, ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,
 	const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
@@ -606,33 +720,16 @@ void Draw::DrawLine(const Vec3& pos1, const Vec3& pos2, WorldMat* world, ViewMat
 
 	constMapMaterial->color = color;
 
-	primitive.vertices[0].pos = { pos1.x,pos1.y,pos1.z };
-	primitive.vertices[1].pos = { pos2.x,pos2.y,pos2.z };
-	primitive.vertices[0].normal = { 0,0,-1.0f };//normalの処理（ここ以外も）どうにかする！！！！！！！！！！！！！！！！！！！
-	primitive.vertices[1].normal = { 0,0,-1.0f };
-
 	Update(LINE, pipelineNum, textureHandle, cbt, nullptr, false);
 }
 
 void Draw::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	/*constBuffTransfer({ 0,0.01f,0,0 });*/
 	this->worldMat = world;
+	this->worldMat->scale = { radius,radius,radius };
 	this->view = view;
 	this->projection = projection;
-
-	primitive.vertices[0].pos = { 0.0f,0.0f,0.0f };
-
-	static float count = _countof(primitive.vertices) - 2;//中心点と初期の点はカウントしない
-
-	for (int i = 1; i < _countof(primitive.vertices); i++)
-	{
-		primitive.vertices[i].pos = { radius * cosf(AngletoRadi(360 / count) * (i - 1)),radius * sinf(AngletoRadi(360 / count) * (i - 1)),0 };
-	}
-	//primitive.vertices[1] = { {-5.0f,5.0f, -5.0f},{},{0.0f,0.0f} };//左上
-	//primitive.vertices[2] = { {5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//右下
-	//primitive.vertices[3] = { {5.0f,5.0f,  -5.0f},{},{1.0f,0.0f} };//右上
 
 	constMapMaterial->color = color;
 
@@ -642,7 +739,6 @@ void Draw::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMa
 void Draw::DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	/*constBuffTransfer({ 0,0.01f,0,0 });*/
 	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
@@ -655,7 +751,6 @@ void Draw::DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 void Draw::DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	Model* model, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	/*constBuffTransfer({ 0,0.01f,0,0 });*/
 	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
