@@ -68,6 +68,10 @@ public:
 	D3D12_VERTEX_BUFFER_VIEW vbViewM{};
 	D3D12_INDEX_BUFFER_VIEW ibViewM{};
 
+	//AL4_02_02
+	ComPtr <ID3D12Resource> constBuffMaterial2 = nullptr;
+	ConstBufferDataMaterial2* constMapMaterial2 = nullptr;
+
 	//ƒ}ƒeƒŠƒAƒ‹
 	Material material;
 

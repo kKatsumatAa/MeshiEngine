@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Util.h"
-#include "Model.h"
+#include "Primitive.h"
 
 
 /// <summary>
@@ -27,23 +27,12 @@ private:
 	//D3D12_RESOURCE_DESC resDesc{};
 	ConstBuffTransform cbt;//ここをどうにかすれば、インスタンス一つでも色々描画
 
-	//頂点バッファの生成
-	ComPtr < ID3D12Resource> vertBuff = nullptr;
-	// 頂点バッファビューの作成
-	D3D12_VERTEX_BUFFER_VIEW vbView{};
-	//04_01
-		//頂点データ構造体
-
 
 		//定数バッファの生成
 	ComPtr < ID3D12Resource> constBuffMaterial = nullptr;
 	//定数バッファ用データ構造体（マテリアル）
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
-
-	//AL4_02_02
-	ComPtr <ID3D12Resource> constBuffMaterial2 = nullptr;
-	ConstBufferDataMaterial2* constMapMaterial2 = nullptr;
 
 	//04_02
 	int count2 = 0;

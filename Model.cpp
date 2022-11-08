@@ -17,6 +17,24 @@ int count = 0;
 
 void Model::CreateModel(const char* folderName)
 {
+	//ヒープ設定
+	D3D12_HEAP_PROPERTIES cbHeapProp{};
+	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+	//リソース設定
+	D3D12_RESOURCE_DESC cbResourceDesc{};
+
+	//AL4_02_02
+	{
+		ResourceProperties(cbResourceDesc,
+			((UINT)sizeof(ConstBufferDataMaterial2) + 0xff) & ~0xff/*256バイトアライメント*/);
+		//定数バッファの生成
+		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial2);
+		//定数バッファのマッピング
+		Directx::GetInstance().result = constBuffMaterial2->Map(0, nullptr, (void**)&constMapMaterial2);//マッピング
+		assert(SUCCEEDED(Directx::GetInstance().result));
+	}
+
+
 	//ファイルストリーム
 	std::ifstream file;
 	//

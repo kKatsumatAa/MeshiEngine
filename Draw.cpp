@@ -5,120 +5,11 @@
 #include <vector>
 #include <d3dx12.h>
 
-
-//インデックスバッファビューの作成
-D3D12_INDEX_BUFFER_VIEW ibView{};
-//インデックスバッファビューの作成
-D3D12_INDEX_BUFFER_VIEW ibView2{};
-D3D12_INDEX_BUFFER_VIEW ibView3{};
-
-static unsigned short indices[6] =
-{
-	0,1,2,//三角形1つ目
-	2,1,3,//三角形2つ目
-};
-static unsigned short indices2[3] =
-{
-	0,1,2//三角形2つ目
-};
-static unsigned short indicesCube[36] =
-{
-	//前
-	0,1,2,//三角形1つ目
-	2,1,3,//三角形2つ目
-	//奥
-	6,5,4,//三角形1つ目
-	7,5,6,//三角形2つ目
-	//上
-	10,9,8,//三角形1つ目
-	11,9,10,//三角形2つ目
-	//下
-	12,13,14,//三角形1つ目
-	14,13,15,//三角形2つ目
-	//左
-	16,17,18,//三角形1つ目
-	18,17,19,//三角形2つ目
-	//右
-	22,21,20,//三角形1つ目
-	23,21,22,//三角形2つ目
-};
-static unsigned short indicesCircle[] =
-{
-	2,1,0,
-	3,2,0,
-	4,3,0,
-	5,4,0,
-	6,5,0,
-	7,6,0,
-	8,7,0,
-	9,8,0,
-	10,9,0,
-	11,10,0,
-	12,11,0,
-	13,12,0,
-	14,13,0,
-	15,14,0,
-	16,15,0,
-	17,16,0,
-	18,17,0,
-	19,18,0,
-	20,19,0,
-	21,20,0,
-	22,21,0,
-	23,22,0,
-};
-
-static unsigned short indicesLine[2] =
-{
-	0,1//三角形2つ目
-};
-
-
-//いろんな図形用
-Vertex vertices[24] = {
-	//手前
-	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-	{{-5.0f,5.0f, -5.0f},{},{0.0f,0.0f}},//左上
-	{{5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-	{{5.0f,5.0f,  -5.0f},{},{1.0f,0.0f}},//右上
-	//奥
-	{{-5.0f,-5.0f,5.0f},{},{0.0f,1.0f}},//左下
-	{{-5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-	{{5.0f,-5.0f, 5.0f},{},{1.0f,1.0f}},//右下
-	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
-	//上
-	{{5.0f,5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-	{{5.0f,5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-	{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-	{{-5.0f,5.0f, 5.0f},{},{1.0f,0.0f}},//右上
-	//下
-	{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-	{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-	{{-5.0f,-5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-	{{-5.0f,-5.0f, 5.0f},{},{1.0f,0.0f}},//右上
-	//左
-	{{-5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-	{{-5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-	{{-5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-	{{-5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
-	//右
-	{{5.0f,-5.0f,-5.0f},{},{0.0f,1.0f}},//左下
-	{{5.0f,-5.0f, 5.0f},{},{0.0f,0.0f}},//左上
-	{{5.0f,5.0f, -5.0f},{},{1.0f,1.0f}},//右下
-	{{5.0f,5.0f,  5.0f},{},{1.0f,0.0f}},//右上
-};
+//図形のクラス
+Primitive primitive;
 
 //スプライト用
 VertexSprite verticesS[4];
-
-//球体
-Vertex verticesSphere[2 + 34 * 36];
-// 頂点バッファビューの作成
-D3D12_VERTEX_BUFFER_VIEW vbView2{};
-const int PAPA = 66 * 3 + 6;
-//頂点バッファの生成
-ComPtr<ID3D12Resource> vertBuff2 = nullptr;
-static unsigned short indicesSphere[PAPA * 36];
 
 //デスクリプタレンジの設定
 D3D12_DESCRIPTOR_RANGE descriptorRange;
@@ -165,7 +56,6 @@ SpriteSet pipelineSetM;
 
 //ルートパラメータの設定
 D3D12_ROOT_PARAMETER rootParams[4] = {};
-UINT sizeVB;
 
 // パイプランステートの生成
 ComPtr < ID3D12PipelineState> pipelineState[3] = { nullptr };
@@ -177,8 +67,6 @@ ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
 ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
 ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
 
-//頂点バッファの設定
-D3D12_HEAP_PROPERTIES heapProp{};
 // 2.描画先の変更
 	// レンダーターゲットビューのハンドルを取得
 D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
@@ -189,194 +77,8 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 void DrawInitialize()
 {
 
-
-	//球体用
-	{
-		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-		sizeVB = static_cast<UINT>(sizeof(verticesSphere[0]) * (_countof(verticesSphere)));
-
-		//頂点バッファの設定		//ヒープ設定
-		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
-
-		ResourceProperties(resDesc, sizeVB);
-
-		//頂点バッファの生成
-		BuffProperties(heapProp, resDesc, vertBuff2.GetAddressOf());
-
-		// 頂点バッファビューの作成
-		// GPU仮想アドレス
-		vbView2.BufferLocation = vertBuff2->GetGPUVirtualAddress();
-		// 頂点バッファのサイズ
-		vbView2.SizeInBytes = sizeVB;
-		// 頂点1つ分のデータサイズ
-		vbView2.StrideInBytes = sizeof(verticesSphere[0]);
-
-
-		WorldMat worldMat;
-		Vec3 vec = { 0,-5.0f,0 };
-
-		//頂点二つ
-		verticesSphere[0] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };//下
-		verticesSphere[1] = { {vec.x,-vec.y,vec.z},{},{1.0f,0.0f} };//上
-
-		for (int i = 0; i < 36; i++)//横
-		{
-			worldMat.rot.y = (float)i * AngletoRadi(360.0f / 35.0f);
-
-
-			for (int j = 0; j < 34; j++)//縦
-			{
-				worldMat.rot.x = ((float)(j + 1) * (pi / 35.0f));
-				worldMat.SetWorld();
-				vec = { 0,-5.0f,0 };
-				Vec3xM4(vec, worldMat.matWorld, false);
-
-				int p = i * 34 + j;
-				verticesSphere[(2) + i * 34 + j] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };
-			}
-		}
-
-		int count = 0;
-		int count2 = 0;
-		int count3 = 0;
-		int count4 = 0;
-		bool isLast = false;
-		//インデックス
-		for (int i = 0; i < _countof(indicesSphere); i++)
-		{
-			if (i % (PAPA * 35) == 0 && i != 0)//最後の縦の列
-			{
-				isLast = true;
-			}
-
-			if (i % PAPA == 0 || i % (PAPA * (count + 1) - 3) == 0)
-			{
-
-			}
-			else if (1)//一番下か上じゃなければ
-			{
-				if (count2 % 2 == 0)
-				{
-					if (isLast)
-					{
-						indicesSphere[i] = 2 + 34 * count + (count3);
-						indicesSphere[i + 1] = 2 + 0 + (count3);//一周してきたので一番最初の列を使う
-						indicesSphere[i + 2] = 2 + 34 * count + (count3 + 1);
-
-						count3++;
-						i += 2;
-					}
-					else
-					{
-						indicesSphere[i] = 2 + 34 * count + (count3);
-						indicesSphere[i + 1] = 2 + 34 * (count + 1) + (count3);
-						indicesSphere[i + 2] = 2 + 34 * count + (count3 + 1);
-
-						count3++;
-						i += 2;
-					}
-				}
-				else if (count2 % 2 == 1)
-				{
-					if (isLast)
-					{
-						indicesSphere[i] = 2 + 0 + (count4 + 1);//一周してきたので一番最初の列を使う
-						indicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
-						indicesSphere[i + 2] = 2 + 0 + (count4);//一周してきたので一番最初の列を使う
-
-						count4++;
-						i += 2;
-					}
-					else
-					{
-						indicesSphere[i] = 2 + 34 * (count + 1) + (count4 + 1);
-						indicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
-						indicesSphere[i + 2] = 2 + 34 * (count + 1) + (count4);
-
-						count4++;
-						i += 2;
-					}
-				}
-
-				count2++;
-			}
-			if (i % PAPA == 0 || i % (PAPA * (count + 1) - 3) == 0)
-			{
-				if (i % PAPA == 0)//一番下の三角形
-				{
-					if (isLast)
-					{
-						indicesSphere[i] = 0;
-						indicesSphere[i + 1] = 2 + 0;
-						indicesSphere[i + 2] = 2 + 34 * count;
-
-						i += 2;
-					}
-					else
-					{
-						indicesSphere[i] = 2 + 34 * (count + 1);
-						indicesSphere[i + 1] = 2 + 34 * count;
-						indicesSphere[i + 2] = 0;
-
-						i += 2;
-					}
-				}
-				else if (i % (PAPA * (count + 1) - 3) == 0)//一番上の三角形
-				{
-					if (isLast)
-					{
-						indicesSphere[i] = 1 + 34 * (count + 1);
-						indicesSphere[i + 1] = 35;
-						indicesSphere[i + 2] = 1;
-
-						i += 2;
-
-						count++;
-						count2 = 0;
-						count3 = 0;
-						count4 = 0;
-					}
-					else
-					{
-						indicesSphere[i] = 1 + 34 * (count + 1);
-						indicesSphere[i + 1] = 1 + 34 * (count + 2);
-						indicesSphere[i + 2] = 1;
-
-						i += 2;
-
-						count++;
-						count2 = 0;
-						count3 = 0;
-						count4 = 0;
-					}
-				}
-			}
-		}
-
-		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesSphere));
-
-		//リソース設定
-		ResourceProperties(resDesc, sizeIB);
-		//インデックスバッファの作成
-		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, resDesc, &indexBuff);
-		//インデックスバッファをマッピング
-		uint16_t* indexMap = nullptr;
-		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-		//全インデックスに対して
-		for (int i = 0; i < _countof(indicesSphere); i++)
-		{
-			indexMap[i] = indicesSphere[i];//インデックスをコピー
-
-		}
-		//マッピングを解除
-		indexBuff->Unmap(0, nullptr);
-
-		//インデックスバッファビューの作成
-		ibView3.BufferLocation = indexBuff->GetGPUVirtualAddress();
-		ibView3.Format = DXGI_FORMAT_R16_UINT;
-		ibView3.SizeInBytes = sizeIB;
-	}
+	primitive.Initialize();
+	
 
 
 	//デスクリプタレンジの設定
@@ -427,71 +129,7 @@ void DrawInitialize()
 		pipelineSetM.rootSignature.GetAddressOf(), pipelineSetM.vsBlob,
 		pipelineSetM.psBlob, MODEL);
 
-	//03_04
-	//インデックスデータ
-	//インデックスデータ全体のサイズ
-	//int p= _countof(indicesCube);
-	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesCircle));
-
-	//リソース設定
-	ResourceProperties(resDesc, sizeIB);
-	//インデックスバッファの作成
-	ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-	ID3D12Resource* indexBuff2 = nullptr;//GPU側のメモリ
-	BuffProperties(heapProp, resDesc, &indexBuff);
-	BuffProperties(heapProp, resDesc, &indexBuff2);
-	//インデックスバッファをマッピング
-	uint16_t* indexMap = nullptr;
-	uint16_t* indexMap2 = nullptr;
-	Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-	Directx::GetInstance().result = indexBuff2->Map(0, nullptr, (void**)&indexMap2);
-	//全インデックスに対して
-	for (int i = 0; i < _countof(indicesCube); i++)
-	{
-		indexMap[i] = indicesCube[i];//インデックスをコピー
-
-	}
-	for (int i = 0; i < _countof(indicesCircle); i++)
-	{
-		indexMap2[i] = indicesCircle[i];//インデックスをコピー
-	}
-	//マッピングを解除
-	indexBuff->Unmap(0, nullptr);
-	indexBuff2->Unmap(0, nullptr);
-
-	//インデックスバッファビューの作成
-	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
-	ibView.Format = DXGI_FORMAT_R16_UINT;
-	ibView.SizeInBytes = sizeIB;
-
-	ibView2.BufferLocation = indexBuff2->GetGPUVirtualAddress();
-	ibView2.Format = DXGI_FORMAT_R16_UINT;
-	ibView2.SizeInBytes = sizeIB;
-
-	//06_03
-	/*if (indexNum == SPHERE)*/
-	{
-		for (int i = 0; i < _countof(indicesSphere) / 3; i++)
-		{//三角形一つごとに計算
-			//三角形のインデックスを取り出して、一時的な変数に入れる
-			unsigned short index0 = indicesSphere[i * 3 + 0];
-			unsigned short index1 = indicesSphere[i * 3 + 1];
-			unsigned short index2 = indicesSphere[i * 3 + 2];
-			//三角形を構成する頂点座標をベクトルに代入
-			XMVECTOR p0 = XMLoadFloat3(&verticesSphere[index0].pos);
-			XMVECTOR p1 = XMLoadFloat3(&verticesSphere[index1].pos);
-			XMVECTOR p2 = XMLoadFloat3(&verticesSphere[index2].pos);
-			//p0->p1ベクトル、p0->p2ベクトルを計算
-			XMVECTOR v1 = XMVectorSubtract(p1, p0);
-			XMVECTOR v2 = XMVectorSubtract(p2, p0);
-			//外積（垂直なベクトル）
-			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-			//求めた法線を頂点データに代入
-			XMStoreFloat3(&verticesSphere[index0].normal, normal);
-			XMStoreFloat3(&verticesSphere[index1].normal, normal);
-			XMStoreFloat3(&verticesSphere[index2].normal, normal);
-		}
-	}
+	
 }
 
 Draw::Draw()
@@ -516,31 +154,11 @@ Draw::Draw()
 		// 頂点バッファのサイズ
 		vbViewS.SizeInBytes = sizeVB;
 		// 頂点1つ分のデータサイズ
-		vbViewS.StrideInBytes = sizeof(verticesS[0]);//kokogamatigatteita(vertices[0]ni!)
+		vbViewS.StrideInBytes = sizeof(verticesS[0]);//kokogamatigatteita(primitive.vertices[0]ni!)
 	}
 
 	//行列
 	cbt.Initialize(Directx::GetInstance());
-
-
-	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
-
-	//頂点バッファの設定		//ヒープ設定
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
-
-	ResourceProperties(resDesc, sizeVB);
-
-	//頂点バッファの生成
-	BuffProperties(heapProp, resDesc, &vertBuff);
-
-	// 頂点バッファビューの作成
-	// GPU仮想アドレス
-	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
-	// 頂点バッファのサイズ
-	vbView.SizeInBytes = sizeVB;
-	// 頂点1つ分のデータサイズ
-	vbView.StrideInBytes = sizeof(vertices[0]);
 
 	//03_02
 	//ヒープ設定
@@ -555,17 +173,6 @@ Draw::Draw()
 	//定数バッファのマッピング
 	Directx::GetInstance().result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
 	assert(SUCCEEDED(Directx::GetInstance().result));
-
-	//AL4_02_02
-	{
-		ResourceProperties(cbResourceDesc,
-			((UINT)sizeof(ConstBufferDataMaterial2) + 0xff) & ~0xff/*256バイトアライメント*/);
-		//定数バッファの生成
-		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial2);
-		//定数バッファのマッピング
-		Directx::GetInstance().result = constBuffMaterial2->Map(0, nullptr, (void**)&constMapMaterial2);//マッピング
-		assert(SUCCEEDED(Directx::GetInstance().result));
-	}
 }
 
 
@@ -600,38 +207,38 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 	if (indexNum == MODEL)
 	{
-		constMapMaterial2->ambient = model->material.ambient;
-		constMapMaterial2->diffuse = model->material.diffuse;
-		constMapMaterial2->specular = model->material.specular;
-		constMapMaterial2->alpha = model->material.alpha;
+		model->constMapMaterial2->ambient = model->material.ambient;
+		model->constMapMaterial2->diffuse = model->material.diffuse;
+		model->constMapMaterial2->specular = model->material.specular;
+		model->constMapMaterial2->alpha = model->material.alpha;
 	}
 	else if (indexNum != SPHERE && indexNum != SPRITE)
 	{
 		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 		Vertex* vertMap = nullptr;
-		Directx::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+		Directx::GetInstance().result = primitive.vertBuff->Map(0, nullptr, (void**)&vertMap);
 		assert(SUCCEEDED(Directx::GetInstance().result));
 		// 全頂点に対して
-		for (int i = 0; i < _countof(vertices); i++) {
-			vertMap[i] = vertices[i]; // 座標をコピー
+		for (int i = 0; i < _countof(primitive.vertices); i++) {
+			vertMap[i] = primitive.vertices[i]; // 座標をコピー
 		}
 		// 繋がりを解除
-		vertBuff->Unmap(0, nullptr);
+		primitive.vertBuff->Unmap(0, nullptr);
 	}
 	else if (indexNum == SPHERE)//球体の時
 	{
 		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 		Vertex* vertMap = nullptr;
-		Directx::GetInstance().result = vertBuff2->Map(0, nullptr, (void**)&vertMap);
+		Directx::GetInstance().result = primitive.vertBuff2->Map(0, nullptr, (void**)&vertMap);
 		assert(SUCCEEDED(Directx::GetInstance().result));
 		// 全頂点に対して
-		for (int i = 0; i < _countof(verticesSphere); i++) {
+		for (int i = 0; i < _countof(primitive.verticesSphere); i++) {
 
-			vertMap[i] = verticesSphere[i]; // 座標をコピー
+			vertMap[i] = primitive.verticesSphere[i]; // 座標をコピー
 
 		}
 		// 繋がりを解除
-		vertBuff2->Unmap(0, nullptr);
+		primitive.vertBuff2->Unmap(0, nullptr);
 	}
 
 	// パイプラインステートとルートシグネチャの設定コマンド
@@ -700,14 +307,14 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 				Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 線
 
 			// 頂点バッファビューの設定コマンド
-			Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
+			Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbView);
 		}
 	}
 	else//球体の時
 	{
 		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角ストリップ
 		// 頂点バッファビューの設定コマンド
-		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView2);
+		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbView2);
 	}
 
 
@@ -728,15 +335,15 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 	//モデルの時//al4_02_02
 	if (indexNum == MODEL)
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, constBuffMaterial2->GetGPUVirtualAddress());
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, model->constBuffMaterial2->GetGPUVirtualAddress());
 
 	//インデックスバッファビューの設定コマンド
 	if (indexNum != SPRITE)
 	{
-		if (indexNum == SPHERE)Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView3);
+		if (indexNum == SPHERE)Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibView3);
 		else if (indexNum == MODEL) Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&model->ibViewM);
-		else if (indexNum != CIRCLE) Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView);
-		else if (indexNum == CIRCLE)Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView2);
+		else if (indexNum != CIRCLE) Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibView);
+		else if (indexNum == CIRCLE)Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibView2);
 
 	}
 
@@ -759,7 +366,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesCircle), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	case SPHERE:
-		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesSphere), 1, 0, 0, 0); // 全ての頂点を使って描画
+		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(primitive.indicesSphere), 1, 0, 0, 0); // 全ての頂点を使って描画
 		break;
 	case SPRITE:
 		Directx::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0); // 全ての頂点を使って描画
@@ -778,10 +385,10 @@ void Draw::DrawTriangle(XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,
 	this->view = view;
 	this->projection = projection;
 
-	vertices[0] = { pos1,{vertices[0].normal},{0.0f,1.0f} };//左下
-	vertices[1] = { pos2,{vertices[1].normal},{0.5f,0.0f} };//上
-	vertices[2] = { pos3,{vertices[2].normal},{1.0f,1.0f} };//右下
-	vertices[3] = vertices[1];//右上
+	primitive.vertices[0] = { pos1,{primitive.vertices[0].normal},{0.0f,1.0f} };//左下
+	primitive.vertices[1] = { pos2,{primitive.vertices[1].normal},{0.5f,0.0f} };//上
+	primitive.vertices[2] = { pos3,{primitive.vertices[2].normal},{1.0f,1.0f} };//右下
+	primitive.vertices[3] = primitive.vertices[1];//右上
 
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 
@@ -796,15 +403,15 @@ void Draw::DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection,/*X
 	this->view = view;
 	this->projection = projection;
 
-	vertices[0].normal = { 0.0f,0.0f,-1.0f };//左下
-	vertices[1].normal = { 0.0f,0.0f,-1.0f };//左上
-	vertices[2].normal = { 0.0f,0.0f,-1.0f };//右下
-	vertices[3].normal = { 0.0f,0.0f,-1.0f };//右上
+	primitive.vertices[0].normal = { 0.0f,0.0f,-1.0f };//左下
+	primitive.vertices[1].normal = { 0.0f,0.0f,-1.0f };//左上
+	primitive.vertices[2].normal = { 0.0f,0.0f,-1.0f };//右下
+	primitive.vertices[3].normal = { 0.0f,0.0f,-1.0f };//右上
 
-	vertices[0].pos = { -5.0f,-5.0f,-5.0f };//左下
-	vertices[1].pos = { -5.0f,5.0f, -5.0f };//左上
-	vertices[2].pos = { 5.0f,-5.0f, -5.0f };//右下
-	vertices[3].pos = { 5.0f,5.0f,  -5.0f };//右上
+	primitive.vertices[0].pos = { -5.0f,-5.0f,-5.0f };//左下
+	primitive.vertices[1].pos = { -5.0f,5.0f, -5.0f };//左上
+	primitive.vertices[2].pos = { 5.0f,-5.0f, -5.0f };//右下
+	primitive.vertices[3].pos = { 5.0f,5.0f,  -5.0f };//右上
 
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 
@@ -816,10 +423,10 @@ void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 {
 	//if (widthHeight.x != NULL && widthHeight.y != NULL)
 	//{
-	//	sprite.vertices[0] = { {-widthHeight.x / 2.0f,+widthHeight.y / 2.0f,0.0f},{0.0f,1.0f} };//左下
-	//	sprite.vertices[1] = { {-widthHeight.x / 2.0f,-widthHeight.y / 2.0f,0.0f},{0.0f,0.0f} };//左上
-	//	sprite.vertices[2] = { {+widthHeight.x / 2.0f,+widthHeight.y / 2.0f,0.0f},{1.0f,1.0f} };//右下
-	//	sprite.vertices[3] = { {+widthHeight.x / 2.0f,-widthHeight.y / 2.0f,0.0f},{1.0f,0.0f} };//右上
+	//	sprite.primitive.vertices[0] = { {-widthHeight.x / 2.0f,+widthHeight.y / 2.0f,0.0f},{0.0f,1.0f} };//左下
+	//	sprite.primitive.vertices[1] = { {-widthHeight.x / 2.0f,-widthHeight.y / 2.0f,0.0f},{0.0f,0.0f} };//左上
+	//	sprite.primitive.vertices[2] = { {+widthHeight.x / 2.0f,+widthHeight.y / 2.0f,0.0f},{1.0f,1.0f} };//右下
+	//	sprite.primitive.vertices[3] = { {+widthHeight.x / 2.0f,-widthHeight.y / 2.0f,0.0f},{1.0f,0.0f} };//右上
 	//}
 	//else
 
@@ -955,35 +562,35 @@ void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	this->projection = projection;
 
 	//手前
-	vertices[0] = { {-5.0f,-5.0f,-5.0f},{vertices[0].normal},{0.0f,1.0f} };//左下
-	vertices[1] = { {-5.0f,5.0f, -5.0f},{vertices[1].normal},{0.0f,0.0f} };//左上
-	vertices[2] = { {5.0f,-5.0f, -5.0f},{vertices[2].normal},{1.0f,1.0f} };//右下
-	vertices[3] = { {5.0f,5.0f,  -5.0f},{vertices[3].normal},{1.0f,0.0f} };//右上
+	primitive.vertices[0] = { {-5.0f,-5.0f,-5.0f},{primitive.vertices[0].normal},{0.0f,1.0f} };//左下
+	primitive.vertices[1] = { {-5.0f,5.0f, -5.0f},{primitive.vertices[1].normal},{0.0f,0.0f} };//左上
+	primitive.vertices[2] = { {5.0f,-5.0f, -5.0f},{primitive.vertices[2].normal},{1.0f,1.0f} };//右下
+	primitive.vertices[3] = { {5.0f,5.0f,  -5.0f},{primitive.vertices[3].normal},{1.0f,0.0f} };//右上
 
-	vertices[4] = { {-5.0f,-5.0f,5.0f},{vertices[4].normal},{0.0f,1.0f} };//左下
-	vertices[5] = { {-5.0f,5.0f, 5.0f},{vertices[5].normal},{0.0f,0.0f} };//左上
-	vertices[6] = { {5.0f,-5.0f, 5.0f},{vertices[6].normal},{1.0f,1.0f} };//右下
-	vertices[7] = { {5.0f,5.0f,  5.0f},{vertices[7].normal},{1.0f,0.0f} };//右上
+	primitive.vertices[4] = { {-5.0f,-5.0f,5.0f},{primitive.vertices[4].normal},{0.0f,1.0f} };//左下
+	primitive.vertices[5] = { {-5.0f,5.0f, 5.0f},{primitive.vertices[5].normal},{0.0f,0.0f} };//左上
+	primitive.vertices[6] = { {5.0f,-5.0f, 5.0f},{primitive.vertices[6].normal},{1.0f,1.0f} };//右下
+	primitive.vertices[7] = { {5.0f,5.0f,  5.0f},{primitive.vertices[7].normal},{1.0f,0.0f} };//右上
 		//上
-	vertices[8] = { {5.0f,5.0f,-5.0f},{vertices[8].normal},{0.0f,1.0f} };//左下
-	vertices[9] = { {5.0f,5.0f, 5.0f},{vertices[9].normal},{0.0f,0.0f} };//左上
-	vertices[10] = { {-5.0f,5.0f, -5.0f},{vertices[10].normal},{1.0f,1.0f} };//右下
-	vertices[11] = { {-5.0f,5.0f, 5.0f},{vertices[11].normal},{1.0f,0.0f} };//右上
+	primitive.vertices[8] = { {5.0f,5.0f,-5.0f},{primitive.vertices[8].normal},{0.0f,1.0f} };//左下
+	primitive.vertices[9] = { {5.0f,5.0f, 5.0f},{primitive.vertices[9].normal},{0.0f,0.0f} };//左上
+	primitive.vertices[10] = { {-5.0f,5.0f, -5.0f},{primitive.vertices[10].normal},{1.0f,1.0f} };//右下
+	primitive.vertices[11] = { {-5.0f,5.0f, 5.0f},{primitive.vertices[11].normal},{1.0f,0.0f} };//右上
 
-	vertices[12] = { {5.0f,-5.0f,-5.0f},{vertices[12].normal},{0.0f,1.0f} };//左下
-	vertices[13] = { {5.0f,-5.0f, 5.0f},{vertices[13].normal},{0.0f,0.0f} };//左上
-	vertices[14] = { {-5.0f,-5.0f, -5.0f},{vertices[14].normal},{1.0f,1.0f} };//右下
-	vertices[15] = { {-5.0f,-5.0f, 5.0f},{vertices[15].normal},{1.0f,0.0f} };//右上
+	primitive.vertices[12] = { {5.0f,-5.0f,-5.0f},{primitive.vertices[12].normal},{0.0f,1.0f} };//左下
+	primitive.vertices[13] = { {5.0f,-5.0f, 5.0f},{primitive.vertices[13].normal},{0.0f,0.0f} };//左上
+	primitive.vertices[14] = { {-5.0f,-5.0f, -5.0f},{primitive.vertices[14].normal},{1.0f,1.0f} };//右下
+	primitive.vertices[15] = { {-5.0f,-5.0f, 5.0f},{primitive.vertices[15].normal},{1.0f,0.0f} };//右上
 
-	vertices[16] = { {-5.0f,-5.0f,-5.0f},{vertices[16].normal},{0.0f,1.0f} };//左下
-	vertices[17] = { {-5.0f,-5.0f, 5.0f},{vertices[17].normal},{0.0f,0.0f} };//左上
-	vertices[18] = { {-5.0f,5.0f, -5.0f},{vertices[18].normal},{1.0f,1.0f} };//右下
-	vertices[19] = { {-5.0f,5.0f,  5.0f},{vertices[19].normal},{1.0f,0.0f} };//右上
+	primitive.vertices[16] = { {-5.0f,-5.0f,-5.0f},{primitive.vertices[16].normal},{0.0f,1.0f} };//左下
+	primitive.vertices[17] = { {-5.0f,-5.0f, 5.0f},{primitive.vertices[17].normal},{0.0f,0.0f} };//左上
+	primitive.vertices[18] = { {-5.0f,5.0f, -5.0f},{primitive.vertices[18].normal},{1.0f,1.0f} };//右下
+	primitive.vertices[19] = { {-5.0f,5.0f,  5.0f},{primitive.vertices[19].normal},{1.0f,0.0f} };//右上
 
-	vertices[20] = { {5.0f,-5.0f,-5.0f},{vertices[20].normal},{0.0f,1.0f} };//左下
-	vertices[21] = { {5.0f,-5.0f, 5.0f},{vertices[21].normal},{0.0f,0.0f} };//左上
-	vertices[22] = { {5.0f,5.0f, -5.0f},{vertices[22].normal},{1.0f,1.0f} };//右下
-	vertices[23] = { {5.0f,5.0f,  5.0f},{vertices[23].normal},{1.0f,0.0f} };//右上;//左下
+	primitive.vertices[20] = { {5.0f,-5.0f,-5.0f},{primitive.vertices[20].normal},{0.0f,1.0f} };//左下
+	primitive.vertices[21] = { {5.0f,-5.0f, 5.0f},{primitive.vertices[21].normal},{0.0f,0.0f} };//左上
+	primitive.vertices[22] = { {5.0f,5.0f, -5.0f},{primitive.vertices[22].normal},{1.0f,1.0f} };//右下
+	primitive.vertices[23] = { {5.0f,5.0f,  5.0f},{primitive.vertices[23].normal},{1.0f,0.0f} };//右上;//左下
 
 	/*if (color.x != NULL && color.y != NULL && color.z != NULL && color.w != NULL)*/ constMapMaterial->color = color;
 
@@ -999,10 +606,10 @@ void Draw::DrawLine(const Vec3& pos1, const Vec3& pos2, WorldMat* world, ViewMat
 
 	constMapMaterial->color = color;
 
-	vertices[0].pos = { pos1.x,pos1.y,pos1.z };
-	vertices[1].pos = { pos2.x,pos2.y,pos2.z };
-	vertices[0].normal = { 0,0,-1.0f };//normalの処理（ここ以外も）どうにかする！！！！！！！！！！！！！！！！！！！
-	vertices[1].normal = { 0,0,-1.0f };
+	primitive.vertices[0].pos = { pos1.x,pos1.y,pos1.z };
+	primitive.vertices[1].pos = { pos2.x,pos2.y,pos2.z };
+	primitive.vertices[0].normal = { 0,0,-1.0f };//normalの処理（ここ以外も）どうにかする！！！！！！！！！！！！！！！！！！！
+	primitive.vertices[1].normal = { 0,0,-1.0f };
 
 	Update(LINE, pipelineNum, textureHandle, cbt, nullptr, false);
 }
@@ -1015,17 +622,17 @@ void Draw::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMa
 	this->view = view;
 	this->projection = projection;
 
-	vertices[0].pos = { 0.0f,0.0f,0.0f };
+	primitive.vertices[0].pos = { 0.0f,0.0f,0.0f };
 
-	static float count = _countof(vertices) - 2;//中心点と初期の点はカウントしない
+	static float count = _countof(primitive.vertices) - 2;//中心点と初期の点はカウントしない
 
-	for (int i = 1; i < _countof(vertices); i++)
+	for (int i = 1; i < _countof(primitive.vertices); i++)
 	{
-		vertices[i].pos = { radius * cosf(AngletoRadi(360 / count) * (i - 1)),radius * sinf(AngletoRadi(360 / count) * (i - 1)),0 };
+		primitive.vertices[i].pos = { radius * cosf(AngletoRadi(360 / count) * (i - 1)),radius * sinf(AngletoRadi(360 / count) * (i - 1)),0 };
 	}
-	//vertices[1] = { {-5.0f,5.0f, -5.0f},{},{0.0f,0.0f} };//左上
-	//vertices[2] = { {5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//右下
-	//vertices[3] = { {5.0f,5.0f,  -5.0f},{},{1.0f,0.0f} };//右上
+	//primitive.vertices[1] = { {-5.0f,5.0f, -5.0f},{},{0.0f,0.0f} };//左上
+	//primitive.vertices[2] = { {5.0f,-5.0f, -5.0f},{},{1.0f,1.0f} };//右下
+	//primitive.vertices[3] = { {5.0f,5.0f,  -5.0f},{},{1.0f,0.0f} };//右上
 
 	constMapMaterial->color = color;
 

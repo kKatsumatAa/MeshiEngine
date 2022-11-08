@@ -153,6 +153,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="ProjectionMat.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sound.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="M4.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="Primitive.h" />
     <ClInclude Include="ProjectionMat.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Sound.h" />
