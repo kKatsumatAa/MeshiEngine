@@ -78,7 +78,7 @@ void Model::CreateModel(const char* folderName)
 		//先頭文字が"mtllib"ならマテリアル
 		if (key == "mtllib")
 		{
-			//マテリアルのファイル名読み込み
+			//マテリアルのファイル名読み込み・・
 			std::string filename;
 			line_stream >> filename;
 			//マテリアル読み込み
