@@ -98,7 +98,7 @@ void Scene::Initialize(SoundData* soundData)
 	draw[2].worldMat->scale = { 5,5,5 };
 	/*draw[2].worldMat->rot = { pi / 2.0f, 0, 0 };
 	draw[2].worldMat->trans = { 10.0f, 10.0f, 0 };*/
-	
+
 	draw[3].worldMat->trans.x += 30.0f;
 	draw[6].worldMat->trans.x -= 30.0f;
 	draw[7].worldMat->trans.z -= 20.0f;
@@ -113,6 +113,11 @@ void Scene::Initialize(SoundData* soundData)
 	plane.distance = draw[1].worldMat->trans.y;
 	plane.normal = { 0,1,0 };
 
+	triangle.p0 = XMVectorSet(-10.0f, 0, -1.0f, 1);//¶Žè‘O
+	triangle.p1 = XMVectorSet(-10.0f, 0, +1.0f, 1);//¶Žè‘O
+	triangle.p2 = XMVectorSet(+10.0f, 0, -1.0f, 1);//¶Žè‘O
+	triangle.normal = XMVectorSet(0.0f, 1.0f, 0.0f, 0);//ãŒü‚«
+
 
 	ChangeState(new SceneTitle);
 	state->SetScene(this);
@@ -123,11 +128,13 @@ void Scene::Update(SoundData* soundData)
 {
 	state->Update(soundData);
 
+	//move
 	{
-
-		draw[2].worldMat->trans.x = draw[2].worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
-		draw[2].worldMat->trans.y = draw[2].worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
-		tama[0].centor.m128_f32[1] = draw[2].worldMat->trans.y;
+		draw[4].worldMat->trans.x = draw[4].worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
+		draw[4].worldMat->trans.y = draw[4].worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
+		tama[0].centor.m128_f32[0] = draw[4].worldMat->trans.x;
+		tama[0].centor.m128_f32[1] = draw[4].worldMat->trans.y;
+		tama[0].centor.m128_f32[2] = draw[4].worldMat->trans.z;
 	}
 	draw[2].worldMat->SetWorld();
 
@@ -145,10 +152,10 @@ float color = 0;
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
-	draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat,&model[0]);
-	draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat,&model[1]);
-	draw[2].DrawModel(draw[2].worldMat, &viewMat, &projectionMat,&model[2]);
-	draw[3].DrawModel(draw[3].worldMat, &viewMat, &projectionMat,&model[2]);
+	draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat, &model[0]);
+	draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat, &model[1]);
+	draw[2].DrawModel(draw[2].worldMat, &viewMat, &projectionMat, &model[2]);
+	draw[3].DrawModel(draw[3].worldMat, &viewMat, &projectionMat, &model[2]);
 	draw[4].DrawSphere(draw[4].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, texhandle[0]);
 
 	rot += 1.0f;
@@ -161,14 +168,25 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 
 	state->Draw(textureHandle, textureNumHundle);
 
-	debugText.Printf("posX:", 0, 22, draw[2].worldMat->trans.x);
-	debugText.Printf("posY:", 0, 34, draw[2].worldMat->trans.y);
-	debugText.Printf("posZ:", 0, 46, draw[2].worldMat->trans.z);
+	debugText.Printf("posX:", 0, 22, draw[4].worldMat->trans.x);
+	debugText.Printf("posY:", 0, 34, draw[4].worldMat->trans.y);
+	debugText.Printf("posZ:", 0, 46, draw[4].worldMat->trans.z);
 
-	if (Collision::CheckSphere2Plane(tama[0], plane))
+	//“–‚½‚è”»’è
+	XMVECTOR inter;
+	if (Collision::CheckSphere2Plane(tama[0], plane, &inter))
 	{
 		debugText.Print("hit", 0, 10);
 	}
+	XMVECTOR inter2;
+	if (Collision::CheckSphere2Triangle(tama[0],triangle,&inter2))
+	{
+		debugText.Print("hitTriangle", 0, 60);
+		
+	}
+	debugText.Printf("inter.x:", 0, 64 + 14, inter2.m128_f32[0]);
+	debugText.Printf("      y:", 0, 78 + 14, inter2.m128_f32[1]);
+	debugText.Printf("      z:", 0, 92 + 14, inter2.m128_f32[2]);
 
 	debugText.DrawAll(debugTextHandle);
 }

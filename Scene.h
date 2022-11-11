@@ -36,6 +36,7 @@ public:
 
 	Sphere tama[2];
 	Plane plane;
+	Triangle triangle;
 	DebugText debugText;
 
 	//デバッグテキスト
