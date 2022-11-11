@@ -182,11 +182,11 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	if (Collision::CheckSphere2Triangle(tama[0],triangle,&inter2))
 	{
 		debugText.Print("hitTriangle", 0, 60);
-		
+		debugText.Printf("inter.x:", 0, 64 + 14, inter2.m128_f32[0]);
+		debugText.Printf("      y:", 0, 78 + 14, inter2.m128_f32[1]);
+		debugText.Printf("      z:", 0, 92 + 14, inter2.m128_f32[2]);
 	}
-	debugText.Printf("inter.x:", 0, 64 + 14, inter2.m128_f32[0]);
-	debugText.Printf("      y:", 0, 78 + 14, inter2.m128_f32[1]);
-	debugText.Printf("      z:", 0, 92 + 14, inter2.m128_f32[2]);
+	
 
 	debugText.DrawAll(debugTextHandle);
 }
