@@ -148,7 +148,7 @@ void Scene::Update(SoundData* soundData)
 float rot = 0;
 float scale = 5.0f;
 float uvwidth = 0;
-float color = 0;
+float color = 0;//
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
