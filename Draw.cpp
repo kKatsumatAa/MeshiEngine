@@ -71,6 +71,11 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 void DrawInitialize()
 {
+	//設定をもとにSRV用デスクリプタヒープを生成
+											 //descは設定
+	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
+	assert(SUCCEEDED(Directx::GetInstance().result));
+
 	//図形クラスの
 	primitive.Initialize();
 
@@ -439,25 +444,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	}
 	else if (indexNum == SPRITE)
 	{
-		// パイプラインステートとルートシグネチャの設定コマンド
-		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineSet.pipelineState.Get());
-
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSet.rootSignature.Get());
-
-		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
-		VertexSprite* vertMap = nullptr;
-		Directx::GetInstance().result = sprite.vertBuff->Map(0, nullptr, (void**)&vertMap);
-		assert(SUCCEEDED(Directx::GetInstance().result));
-		// 全頂点に対して
-		for (int i = 0; i < 4; i++) {
-			vertMap[i] = sprite.vertices[i]; // 座標をコピー
-		}
-		// 繋がりを解除
-		sprite.vertBuff->Unmap(0, nullptr);
-
-		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &sprite.vbView);
-
-		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+		SpriteCommonBeginDraw(&pipelineSet);
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
@@ -474,7 +461,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		//定数バッファビュー(CBV)の設定コマンド
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
-		Directx::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0); // 全ての頂点を使って描画
+		sprite.SpriteDraw();
 	}
 	else if (indexNum == MODEL)
 	{
@@ -542,58 +529,7 @@ void Draw::DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection,/*X
 void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 	XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV, float rotation, const int& pipelineNum)
 {
-	//if (widthHeight.x != NULL && widthHeight.y != NULL)
-	//{
-	//	sprite.primitive.vertices[0] = { {-widthHeight.x / 2.0f,+widthHeight.y / 2.0f,0.0f},{0.0f,1.0f} };//左下
-	//	sprite.primitive.vertices[1] = { {-widthHeight.x / 2.0f,-widthHeight.y / 2.0f,0.0f},{0.0f,0.0f} };//左上
-	//	sprite.primitive.vertices[2] = { {+widthHeight.x / 2.0f,+widthHeight.y / 2.0f,0.0f},{1.0f,1.0f} };//右下
-	//	sprite.primitive.vertices[3] = { {+widthHeight.x / 2.0f,-widthHeight.y / 2.0f,0.0f},{1.0f,0.0f} };//右上
-	//}
-	//else
-
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
-
-	sprite.vertices[0] = { {-(float)(resDesc.Width * scale * ancorUV.x),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//左下
-	sprite.vertices[1] = { {-(float)(resDesc.Width * scale * ancorUV.x),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
-	sprite.vertices[2] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
-	sprite.vertices[3] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
-
-
-	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
-
-	//ワールド行列
-	WorldMat worldMat;
-
-	worldMat.rot.z = AngletoRadi(rotation);
-	worldMat.trans = { pos.x /*+ resDesc.Width * ancorUV.x * scale*/,pos.y/* + resDesc.Height * ancorUV.y * scale*/,0.0f };
-	worldMat.SetWorld();
-
-	//親がいたら
-	if (worldMat.parent != nullptr)
-	{
-		worldMat.matWorld *= worldMat.parent->matWorld;
-	}
-
-	XMMATRIX matW;
-	matW = { (float)worldMat.matWorld.m[0][0],(float)worldMat.matWorld.m[0][1],(float)worldMat.matWorld.m[0][2],(float)worldMat.matWorld.m[0][3],
-			 (float)worldMat.matWorld.m[1][0],(float)worldMat.matWorld.m[1][1],(float)worldMat.matWorld.m[1][2],(float)worldMat.matWorld.m[1][3],
-			 (float)worldMat.matWorld.m[2][0],(float)worldMat.matWorld.m[2][1],(float)worldMat.matWorld.m[2][2],(float)worldMat.matWorld.m[2][3],
-			 (float)worldMat.matWorld.m[3][0],(float)worldMat.matWorld.m[3][1],(float)worldMat.matWorld.m[3][2],(float)worldMat.matWorld.m[3][3] };
-
-	//view
-	ViewMat view;
-	view.matView = XMMatrixIdentity();
-
-
-	//平行投影の射影行列生成
-	ProjectionMat projection;
-
-	projection.matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width,
-		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
-
-	cbt.constMapTransform->mat = matW * view.matView * projection.matProjection;
+	sprite.Update(pos, scale, color, textureHandle, ancorUV, rotation, &cbt, constMapMaterial);
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
@@ -601,76 +537,7 @@ void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, float rotation, const int& pipelineNum)
 {
-
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
-
-	float texLeft = UVleftTop.x * +(float)resDesc.Width * scale;
-	float texRight = (UVleftTop.x + UVlength.x) * +(float)resDesc.Width * scale;
-	float texTop = UVleftTop.y * +(float)resDesc.Height * scale;
-	float texBottom = (UVleftTop.y + UVlength.y) * +(float)resDesc.Height * scale;
-
-	if (isPosLeftTop)
-	{
-		//左上からの座標
-		sprite.vertices[0] = { {0,UVlength.y * resDesc.Height * scale,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-		sprite.vertices[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		sprite.vertices[2] = { {UVlength.x * resDesc.Width * scale,UVlength.y * resDesc.Height * scale,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		sprite.vertices[3] = { {UVlength.x * resDesc.Width * scale,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
-	}
-	else
-	{
-		//切り抜いた後の画像の中心からの位置！！！！！！！！
-		sprite.vertices[0] = { {-UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-		sprite.vertices[1] = { {-UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		sprite.vertices[2] = { {UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		sprite.vertices[3] = { {UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
-	}
-	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
-
-	//ワールド行列
-	WorldMat worldMat;
-
-	worldMat.rot.z = AngletoRadi(rotation);
-
-	if (isPosLeftTop)
-	{
-		//引数の左上座標を設定
-		worldMat.trans = { leftTop.x,leftTop.y,0 };
-	}
-	else
-	{
-		//切り抜いた後の画像の中心を設定！！！!!!!!!!!!!!!!!!!
-		worldMat.trans = { leftTop.x + texLeft + UVlength.x * (float)resDesc.Width * scale / 2.0f,
-			leftTop.y + texTop + UVlength.y * (float)resDesc.Height * scale / 2.0f,
-			leftTop.z };
-	}
-	worldMat.SetWorld();
-
-
-	//親がいたら
-	if (worldMat.parent != nullptr)
-	{
-		worldMat.matWorld *= worldMat.parent->matWorld;
-	}
-
-	XMMATRIX matW;
-	matW = { (float)worldMat.matWorld.m[0][0],(float)worldMat.matWorld.m[0][1],(float)worldMat.matWorld.m[0][2],(float)worldMat.matWorld.m[0][3],
-			 (float)worldMat.matWorld.m[1][0],(float)worldMat.matWorld.m[1][1],(float)worldMat.matWorld.m[1][2],(float)worldMat.matWorld.m[1][3],
-			 (float)worldMat.matWorld.m[2][0],(float)worldMat.matWorld.m[2][1],(float)worldMat.matWorld.m[2][2],(float)worldMat.matWorld.m[2][3],
-			 (float)worldMat.matWorld.m[3][0],(float)worldMat.matWorld.m[3][1],(float)worldMat.matWorld.m[3][2],(float)worldMat.matWorld.m[3][3] };
-
-	//view
-	ViewMat view;
-	view.matView = XMMatrixIdentity();
-
-	//平行投影の射影行列生成
-	ProjectionMat projection;
-	projection.matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width,
-		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
-
-	cbt.constMapTransform->mat = matW * view.matView * projection.matProjection;
+	sprite.UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle, isPosLeftTop, rotation, &cbt, constMapMaterial);
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }

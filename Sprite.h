@@ -1,37 +1,25 @@
 #pragma once
-#include"ConstBuffTransform.h"
-#include"DirectX.h"
-#include "WorldMat.h"
-#include "ViewMat.h"
-#include "ProjectionMat.h"
-using namespace Microsoft::WRL;
+#include"SpriteCommon.h"
+#include "Util.h"
 
-struct SpriteSet
-{
-	ComPtr<ID3D12PipelineState> pipelineState;
-	ComPtr<ID3D12RootSignature> rootSignature;
-	ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
-	ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
+//リソース設定
+extern D3D12_RESOURCE_DESC resDesc;
+//設定をもとにSRV用デスクリプタヒープを生成
+extern ComPtr < ID3D12DescriptorHeap> srvHeap;
+extern D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
 
-	ProjectionMat projectionMat;
-	WorldMat worldMat;
-};
-struct ConstBufferDataMaterial
-{
-	XMFLOAT4 color;//色(RGBA)
-};
-struct SpriteBuff
-{
-	//頂点バッファ
-	ComPtr < ID3D12Resource> vertBuff = nullptr;
-	// 頂点バッファビューの作成
-	D3D12_VERTEX_BUFFER_VIEW vbView{};
-		//定数バッファの生成
-};
-struct VertexSprite
-{
-	XMFLOAT3 pos;//xyz座標
-	XMFLOAT2 uv;//uv座標
+static const int srvCount = 512;
+extern ComPtr<ID3D12Resource> texBuff[srvCount];
+
+
+
+//SRVの最大個数
+const size_t kMaxSRVCount = 2056;
+//デスクリプタヒープの設定
+static D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {
+srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+srvHeapDesc.NumDescriptors = kMaxSRVCount,
+srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE//シェーダーから見えるように
 };
 
 class Sprite
@@ -53,13 +41,24 @@ public:
 
 public:
 	void Initialize();
-	void SpriteCommonBeginDraw(SpriteSet* pipelineSet);
 	void SpriteDraw();
+
+	void Update(const Vec3& pos, const float& scale,
+		XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV, float rotation,
+		ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
+
+	void UpdateClipping(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+		XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
 };
+
+//共通の処理
+void SpriteCommonBeginDraw(SpriteSet* pipelineSet);
 
 void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size);
 
 void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource,
 	ID3D12Resource** buff);
+
+void LoadGraph(const wchar_t* name, UINT64& textureHandle);
 
 //void SpriteCommonCreate(SpriteSet* spriteSet);

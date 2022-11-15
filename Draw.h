@@ -95,10 +95,6 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 void Blend(const D3D12_BLEND_OP& blendMode,
 	const bool& Inversion = 0, const bool& Translucent = 0);
 
-
-
-
-
 void SetNormDigitalMat(XMMATRIX& mat);
 
 void Error(const bool& filed);
