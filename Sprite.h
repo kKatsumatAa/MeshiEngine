@@ -44,11 +44,13 @@ public:
 	void SpriteDraw();
 
 	void Update(const Vec3& pos, const float& scale,
-		XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV, float rotation,
+		XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV,
+		const bool& isReverseX,const bool& isReverseY, float rotation,
 		ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
 
 	void UpdateClipping(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-		XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
+		XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop,
+		const bool& isReverseX,const bool& isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
 };
 
 //ã§í ÇÃèàóù

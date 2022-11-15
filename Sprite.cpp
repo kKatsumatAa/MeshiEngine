@@ -190,17 +190,24 @@ void Sprite::SpriteDraw()
 }
 
 void Sprite::Update(const Vec3& pos, const float& scale,
-	XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV, float rotation,
+	XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV,
+	const bool& isReverseX,const bool& isReverseY, float rotation,
 	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
 	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
 
-	vertices[0] = { {-(float)(resDesc.Width * scale * ancorUV.x),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//左下
-	vertices[1] = { {-(float)(resDesc.Width * scale * ancorUV.x),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
-	vertices[2] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
-	vertices[3] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
+	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
+
+	//反転
+	if (isReverseX)length.x *= -1;
+	if (isReverseY)length.y *= -1;
+
+	vertices[0] = { {-(float)(length.x * scale * ancorUV.x),+(float)(length.y * scale * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//左下
+	vertices[1] = { {-(float)(length.x * scale * ancorUV.x),-(float)(length.y * scale * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
+	vertices[2] = { {+(float)(length.x * scale * (1.0f - ancorUV.x)),+(float)(length.y * scale * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
+	vertices[3] = { {+(float)(length.x * scale * (1.0f - ancorUV.x)),-(float)(length.y * scale * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
 
 
 	constMapMaterial->color = color;
@@ -209,7 +216,7 @@ void Sprite::Update(const Vec3& pos, const float& scale,
 	WorldMat worldMat;
 
 	worldMat.rot.z = AngletoRadi(rotation);
-	worldMat.trans = { pos.x /*+ resDesc.Width * ancorUV.x * scale*/,pos.y/* + resDesc.Height * ancorUV.y * scale*/,0.0f };
+	worldMat.trans = { pos.x /*+ length.x * ancorUV.x * scale*/,pos.y/* + length.y * ancorUV.y * scale*/,0.0f };
 	worldMat.SetWorld();
 
 	//親がいたら
@@ -239,34 +246,41 @@ void Sprite::Update(const Vec3& pos, const float& scale,
 }
 
 void Sprite::UpdateClipping(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
+	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop,
+	const bool& isReverseX,const bool& isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
 	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
 
-	float texLeft = UVleftTop.x * +(float)resDesc.Width * scale;
-	float texRight = (UVleftTop.x + UVlength.x) * +(float)resDesc.Width * scale;
-	float texTop = UVleftTop.y * +(float)resDesc.Height * scale;
-	float texBottom = (UVleftTop.y + UVlength.y) * +(float)resDesc.Height * scale;
+	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
+
+	//反転
+	if (isReverseX)length.x *= -1;
+	if (isReverseY)length.y *= -1;
+
+	float texLeft = UVleftTop.x * +(float)length.x * scale;
+	float texRight = (UVleftTop.x + UVlength.x) * +(float)length.x * scale;
+	float texTop = UVleftTop.y * +(float)length.y * scale;
+	float texBottom = (UVleftTop.y + UVlength.y) * +(float)length.y * scale;
 
 	if (isPosLeftTop)
 	{
 		//左上からの座標
-		vertices[0] = { {0,UVlength.y * resDesc.Height * scale,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		vertices[0] = { {0,UVlength.y * length.y * scale,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
 		vertices[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		vertices[2] = { {UVlength.x * resDesc.Width * scale,UVlength.y * resDesc.Height * scale,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices[3] = { {UVlength.x * resDesc.Width * scale,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		vertices[2] = { {UVlength.x * length.x * scale,UVlength.y * length.y * scale,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		vertices[3] = { {UVlength.x * length.x * scale,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	else
 	{
 		//切り抜いた後の画像の中心からの位置！！！！！！！！
-		vertices[0] = { {-UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-		vertices[1] = { {-UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		vertices[2] = { {UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices[3] = { {UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		vertices[0] = { {-UVlength.x * length.x * scale / 2.0f,UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		vertices[1] = { {-UVlength.x * length.x * scale / 2.0f,-UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
+		vertices[2] = { {UVlength.x * length.x * scale / 2.0f,UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		vertices[3] = { {UVlength.x * length.x * scale / 2.0f,-UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
-	 constMapMaterial->color = color;
+	constMapMaterial->color = color;
 
 	//ワールド行列
 	WorldMat worldMat;
@@ -281,8 +295,8 @@ void Sprite::UpdateClipping(const Vec3& leftTop, const float& scale, const XMFLO
 	else
 	{
 		//切り抜いた後の画像の中心を設定！！！!!!!!!!!!!!!!!!!
-		worldMat.trans = { leftTop.x + texLeft + UVlength.x * (float)resDesc.Width * scale / 2.0f,
-			leftTop.y + texTop + UVlength.y * (float)resDesc.Height * scale / 2.0f,
+		worldMat.trans = { leftTop.x + texLeft + UVlength.x * (float)length.x * scale / 2.0f,
+			leftTop.y + texTop + UVlength.y * (float)length.y * scale / 2.0f,
 			leftTop.z };
 	}
 	worldMat.SetWorld();

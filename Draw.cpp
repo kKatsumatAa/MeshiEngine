@@ -527,17 +527,20 @@ void Draw::DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection,/*X
 }
 
 void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
-	XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV, float rotation, const int& pipelineNum)
+	XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV, const bool& isReverseX, const bool& isReverseY,
+	float rotation, const int& pipelineNum)
 {
-	sprite.Update(pos, scale, color, textureHandle, ancorUV, rotation, &cbt, constMapMaterial);
+	sprite.Update(pos, scale, color, textureHandle, ancorUV, isReverseX, isReverseY, rotation, &cbt, constMapMaterial);
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
 
 void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, float rotation, const int& pipelineNum)
+	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, const bool& isReverseX,const bool& isReverseY,
+	float rotation, const int& pipelineNum)
 {
-	sprite.UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle, isPosLeftTop, rotation, &cbt, constMapMaterial);
+	sprite.UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle, 
+		isPosLeftTop, isReverseX, isReverseY, rotation, &cbt, constMapMaterial);
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }

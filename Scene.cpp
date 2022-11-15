@@ -88,6 +88,7 @@ void Scene::Initialize(SoundData* soundData)
 	LoadGraph(L"Resources/ascii.png", debugTextHandle);
 	LoadGraph(L"Resources/image/white.png", texhandle[0]);
 	LoadGraph(L"Resources/image/particle.png", texhandle[1]);
+	LoadGraph(L"Resources/image/p.jpg", texhandle[2]);
 
 	model[0].CreateModel("skydome");
 	draw[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
@@ -146,7 +147,7 @@ void Scene::Update(SoundData* soundData)
 }
 
 float rot = 0;
-float scale = 5.0f;
+float scale = 1.0f;
 float uvwidth = 0;
 float color = 0;//
 
@@ -162,12 +163,15 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	//scale += 0.01f;
 	uvwidth += 0.005f;
 	color += 0.005f;
-	draw[5].DrawClippingBoxSprite({ 0,0,0 }, scale, { 0,0.2f }, { uvwidth,0.8f }, { 0,color,0,1.0f }, texhandle[1], false, rot);
-	draw[8].DrawBoxSprite({ 100,500,0 }, scale,{ 1.0f,color,0,1.0f }, texhandle[1]);
 	draw[6].DrawCube3D(draw[6].worldMat, &viewMat, &projectionMat, { 1.0f,0.0f,1.0f,1.0f }, texhandle[0]);
 	draw[7].DrawLine(draw[7].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, texhandle[0]);
 
 	state->Draw(textureHandle, textureNumHundle);
+
+	draw[5].DrawClippingBoxSprite({ 0,0,0 }, scale, { 0,0.2f }, { uvwidth,0.8f }, { 0,color,0,1.0f }, texhandle[2], false, false, false, rot);
+	draw[8].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.5f,0.5f }, false);
+	draw[9].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.0f,0.0f },false,true);
+
 
 	debugText.Printf("posX:", 0, 22, draw[4].worldMat->trans.x);
 	debugText.Printf("posY:", 0, 34, draw[4].worldMat->trans.y);
@@ -180,14 +184,14 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 		debugText.Print("hit", 0, 10);
 	}
 	XMVECTOR inter2;
-	if (Collision::CheckSphere2Triangle(tama[0],triangle,&inter2))
+	if (Collision::CheckSphere2Triangle(tama[0], triangle, &inter2))
 	{
 		debugText.Print("hitTriangle", 0, 60);
 		debugText.Printf("inter.x:", 0, 64 + 14, inter2.m128_f32[0]);
 		debugText.Printf("      y:", 0, 78 + 14, inter2.m128_f32[1]);
 		debugText.Printf("      z:", 0, 92 + 14, inter2.m128_f32[2]);
 	}
-	
+
 
 	debugText.DrawAll(debugTextHandle);
 }
