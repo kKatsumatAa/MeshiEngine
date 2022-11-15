@@ -8,9 +8,6 @@
 //図形のクラス
 Primitive primitive;
 
-//スプライト用
-VertexSprite verticesS[4];
-
 //デスクリプタレンジの設定
 D3D12_DESCRIPTOR_RANGE descriptorRange;
 //テクスチャ
@@ -124,37 +121,15 @@ void DrawInitialize()
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetM.pipelineState.GetAddressOf(),
 		pipelineSetM.rootSignature.GetAddressOf(), pipelineSetM.vsBlob,
 		pipelineSetM.psBlob, MODEL);
-
-
 }
 
 Draw::Draw()
 {
-	//sprite用
-	{
-		UINT sizeVB;
-		D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
-		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-		sizeVB = static_cast<UINT>(sizeof(verticesS[0]) * 4.0);
-		//頂点バッファの設定		//ヒープ設定
-		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
-
-		ResourceProperties(resDesc, sizeVB);
-		resDesc.Format = DXGI_FORMAT_UNKNOWN;
-		//頂点バッファの生成
-		BuffProperties(heapProp, resDesc, vertBuffS.GetAddressOf());
-
-		// 頂点バッファビューの作成
-		// GPU仮想アドレス
-		vbViewS.BufferLocation = vertBuffS.Get()->GetGPUVirtualAddress();
-		// 頂点バッファのサイズ
-		vbViewS.SizeInBytes = sizeVB;
-		// 頂点1つ分のデータサイズ
-		vbViewS.StrideInBytes = sizeof(verticesS[0]);//kokogamatigatteita(primitive.vertices[0]ni!)
-	}
-
 	//行列
 	cbt.Initialize(Directx::GetInstance());
+
+	//スプライトクラスの
+	sprite.Initialize();
 
 	//03_02
 	//ヒープ設定
@@ -471,16 +446,16 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 		VertexSprite* vertMap = nullptr;
-		Directx::GetInstance().result = vertBuffS->Map(0, nullptr, (void**)&vertMap);
+		Directx::GetInstance().result = sprite.vertBuff->Map(0, nullptr, (void**)&vertMap);
 		assert(SUCCEEDED(Directx::GetInstance().result));
 		// 全頂点に対して
 		for (int i = 0; i < 4; i++) {
-			vertMap[i] = verticesS[i]; // 座標をコピー
+			vertMap[i] = sprite.vertices[i]; // 座標をコピー
 		}
 		// 繋がりを解除
-		vertBuffS->Unmap(0, nullptr);
+		sprite.vertBuff->Unmap(0, nullptr);
 
-		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbViewS);
+		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &sprite.vbView);
 
 		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
@@ -580,10 +555,10 @@ void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 	D3D12_RESOURCE_DESC resDesc{};
 	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
 
-	verticesS[0] = { {-(float)(resDesc.Width * scale * ancorUV.x),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//左下
-	verticesS[1] = { {-(float)(resDesc.Width * scale * ancorUV.x),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
-	verticesS[2] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
-	verticesS[3] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
+	sprite.vertices[0] = { {-(float)(resDesc.Width * scale * ancorUV.x),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//左下
+	sprite.vertices[1] = { {-(float)(resDesc.Width * scale * ancorUV.x),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
+	sprite.vertices[2] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),+(float)(resDesc.Height * scale * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
+	sprite.vertices[3] = { {+(float)(resDesc.Width * scale * (1.0f - ancorUV.x)),-(float)(resDesc.Height * scale * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
 
 
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
@@ -639,18 +614,18 @@ void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const 
 	if (isPosLeftTop)
 	{
 		//左上からの座標
-		verticesS[0] = { {0,UVlength.y * resDesc.Height * scale,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-		verticesS[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		verticesS[2] = { {UVlength.x * resDesc.Width * scale,UVlength.y * resDesc.Height * scale,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		verticesS[3] = { {UVlength.x * resDesc.Width * scale,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		sprite.vertices[0] = { {0,UVlength.y * resDesc.Height * scale,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		sprite.vertices[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
+		sprite.vertices[2] = { {UVlength.x * resDesc.Width * scale,UVlength.y * resDesc.Height * scale,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		sprite.vertices[3] = { {UVlength.x * resDesc.Width * scale,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	else
 	{
 		//切り抜いた後の画像の中心からの位置！！！！！！！！
-		verticesS[0] = { {-UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-		verticesS[1] = { {-UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		verticesS[2] = { {UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		verticesS[3] = { {UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		sprite.vertices[0] = { {-UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		sprite.vertices[1] = { {-UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
+		sprite.vertices[2] = { {UVlength.x * resDesc.Width * scale / 2.0f,UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		sprite.vertices[3] = { {UVlength.x * resDesc.Width * scale / 2.0f,-UVlength.y * resDesc.Height * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	/*if(color.x!=NULL&& color.y != NULL&& color.z != NULL&& color.w != NULL)*/ constMapMaterial->color = color;
 

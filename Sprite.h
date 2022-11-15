@@ -52,7 +52,7 @@ public:
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
 
 public:
-	//void CreateSprite(D3D12_RESOURCE_DESC& resDesc, D3D12_HEAP_PROPERTIES& heapProp);
+	void Initialize();
 	void SpriteCommonBeginDraw(SpriteSet* pipelineSet);
 	void SpriteDraw();
 };

@@ -24,6 +24,32 @@ void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, 
 }
 
 
+void Sprite::Initialize()
+{
+	//sprite用
+	{
+		UINT sizeVB;
+		D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
+		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
+		sizeVB = static_cast<UINT>(sizeof(vertices[0]) * 4.0);
+		//頂点バッファの設定		//ヒープ設定
+		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
+
+		ResourceProperties(resDesc, sizeVB);
+		resDesc.Format = DXGI_FORMAT_UNKNOWN;
+		//頂点バッファの生成
+		BuffProperties(heapProp, resDesc, vertBuff.GetAddressOf());
+
+		// 頂点バッファビューの作成
+		// GPU仮想アドレス
+		vbView.BufferLocation = vertBuff.Get()->GetGPUVirtualAddress();
+		// 頂点バッファのサイズ
+		vbView.SizeInBytes = sizeVB;
+		// 頂点1つ分のデータサイズ
+		vbView.StrideInBytes = sizeof(vertices[0]);//kokogamatigatteita(primitive.vertices[0]ni!)
+	}
+}
+
 void Sprite::SpriteCommonBeginDraw(SpriteSet* pipelineSet)
 {
 	Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineSet->pipelineState.Get());

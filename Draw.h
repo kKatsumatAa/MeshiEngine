@@ -37,13 +37,7 @@ private:
 	//04_02
 	int count2 = 0;
 
-	////sprite用
-	//頂点バッファの生成
-	ComPtr < ID3D12Resource> vertBuffS = nullptr;
-	// 頂点バッファビューの作成
-	D3D12_VERTEX_BUFFER_VIEW vbViewS{};
-
-
+	Sprite sprite;
 
 private:
 	//--------------------
