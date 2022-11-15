@@ -162,7 +162,8 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	//scale += 0.01f;
 	uvwidth += 0.005f;
 	color += 0.005f;
-	//draw[5].DrawClippingBoxSprite({ 0,0,0 }, scale, { 0,0.2f }, { uvwidth,0.8f }, { 0,color,0,1.0f }, texhandle[1], false, rot);
+	draw[5].DrawClippingBoxSprite({ 0,0,0 }, scale, { 0,0.2f }, { uvwidth,0.8f }, { 0,color,0,1.0f }, texhandle[1], false, rot);
+	draw[8].DrawBoxSprite({ 100,500,0 }, scale,{ 1.0f,color,0,1.0f }, texhandle[1]);
 	draw[6].DrawCube3D(draw[6].worldMat, &viewMat, &projectionMat, { 1.0f,0.0f,1.0f,1.0f }, texhandle[0]);
 	draw[7].DrawLine(draw[7].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, texhandle[0]);
 
