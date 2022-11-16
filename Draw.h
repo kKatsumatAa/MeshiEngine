@@ -34,8 +34,6 @@ private:
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
 
-	//04_02
-	int count2 = 0;
 
 	Sprite sprite;
 
