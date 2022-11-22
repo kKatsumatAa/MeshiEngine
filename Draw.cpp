@@ -47,9 +47,9 @@ D3D12_INPUT_ELEMENT_DESC inputLayoutSprite[2] = {
 	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 	} // (1行で書いたほうが見やすい)
 };
-SpriteSet pipelineSet;
+PipeLineSet pipelineSet;
 //al4_02_02
-SpriteSet pipelineSetM;
+PipeLineSet pipelineSetM;
 
 //ルートパラメータの設定
 D3D12_ROOT_PARAMETER rootParams[4] = {};
@@ -71,11 +71,9 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 void DrawInitialize()
 {
-	//設定をもとにSRV用デスクリプタヒープを生成
-											 //descは設定
-	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
-	assert(SUCCEEDED(Directx::GetInstance().result));
-
+	//テクスチャ用のデスクリプタヒープ初期化
+	InitializeDescriptorHeap();
+	
 	//図形クラスの
 	primitive.Initialize();
 
@@ -465,12 +463,6 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	}
 	else if (indexNum == MODEL)
 	{
-		//マテリアルをセット
-		model->constMapMaterial2->ambient = model->material.ambient;
-		model->constMapMaterial2->diffuse = model->material.diffuse;
-		model->constMapMaterial2->specular = model->material.specular;
-		model->constMapMaterial2->alpha = model->material.alpha;
-
 		// パイプラインステートとルートシグネチャの設定コマンド
 		Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineSetM.pipelineState.Get());
 
@@ -536,10 +528,10 @@ void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 }
 
 void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, const bool& isReverseX,const bool& isReverseY,
+	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, const bool& isReverseX, const bool& isReverseY,
 	float rotation, const int& pipelineNum)
 {
-	sprite.UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle, 
+	sprite.UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle,
 		isPosLeftTop, isReverseX, isReverseY, rotation, &cbt, constMapMaterial);
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
@@ -856,3 +848,14 @@ void Error(const bool& filed)
 	}
 }
 
+
+void InitializeDescriptorHeap()
+{
+	//設定をもとにSRV用デスクリプタヒープを生成
+	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	srvHeapDesc.NumDescriptors = kMaxSRVCount;
+	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダーから見えるように
+													 //descは設定
+	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
+	assert(SUCCEEDED(Directx::GetInstance().result));
+}

@@ -7,24 +7,6 @@
 
 void Model::LoadFromOBJInternal(const char* folderName)
 {
-	//ヒープ設定
-	D3D12_HEAP_PROPERTIES cbHeapProp{};
-	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
-	//リソース設定
-	D3D12_RESOURCE_DESC cbResourceDesc{};
-
-	//AL4_02_02
-	{
-		ResourceProperties(cbResourceDesc,
-			((UINT)sizeof(ConstBufferDataMaterial2) + 0xff) & ~0xff/*256バイトアライメント*/);
-		//定数バッファの生成
-		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial2);
-		//定数バッファのマッピング
-		Directx::GetInstance().result = constBuffMaterial2->Map(0, nullptr, (void**)&constMapMaterial2);//マッピング
-		assert(SUCCEEDED(Directx::GetInstance().result));
-	}
-
-
 	//ファイルストリーム
 	std::ifstream file;
 	//
@@ -149,6 +131,34 @@ void Model::LoadFromOBJInternal(const char* folderName)
 			}
 		}
 	}
+}
+
+void Model::CreateBuffers()
+{
+	//ヒープ設定
+	D3D12_HEAP_PROPERTIES cbHeapProp{};
+	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+	//リソース設定
+	D3D12_RESOURCE_DESC cbResourceDesc{};
+
+	//AL4_02_02
+	{
+		ResourceProperties(cbResourceDesc,
+			((UINT)sizeof(ConstBufferDataMaterial2) + 0xff) & ~0xff/*256バイトアライメント*/);
+		//定数バッファの生成
+		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial2);
+		//定数バッファのマッピング
+		Directx::GetInstance().result = constBuffMaterial2->Map(0, nullptr, (void**)&constMapMaterial2);//マッピング
+		assert(SUCCEEDED(Directx::GetInstance().result));
+		//マテリアルをセット(毎フレーム変わる様なものじゃないので、updateに入れない)
+		constMapMaterial2->ambient = material.ambient;
+		constMapMaterial2->diffuse = material.diffuse;
+		constMapMaterial2->specular = material.specular;
+		constMapMaterial2->alpha = material.alpha;
+
+		constBuffMaterial2->Unmap(0, nullptr);
+	}
+
 
 	UINT sizeVB = static_cast<UINT>(sizeof(Vertex) * verticesM.size());
 	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indicesM.size());
@@ -276,8 +286,10 @@ Model* Model::LoadFromOBJ(const char* folderName)
 {
 	//新たなModel型のインスタンスのメモリを確保
 	Model* model = new Model();
-
+	//読み込み
 	model->LoadFromOBJInternal(folderName);
+	//バッファ生成
+	model->CreateBuffers();
 
 	return model;
 }

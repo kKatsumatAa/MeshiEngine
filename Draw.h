@@ -93,8 +93,11 @@ private:
 	void constBuffTransfer(const XMFLOAT4& plusRGBA);
 };
 
+//優先して最初の方に初期化
 void DrawInitialize();
 
+//デスクリプタヒープ初期化
+void InitializeDescriptorHeap();
 
 //
 void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,

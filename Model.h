@@ -71,6 +71,8 @@ public:
 private:
 	//OBJファイルから3Dモデルを読み込む
 	void LoadFromOBJInternal(const char* folderName);
+	//各種バッファ生成
+	void CreateBuffers();
 
 public:
 	void LoadMaterial(const std::string& directoryPath, const std::string& filename);

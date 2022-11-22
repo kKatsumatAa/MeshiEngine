@@ -162,7 +162,7 @@ void Sprite::Initialize()
 	}
 }
 
-void SpriteCommonBeginDraw(SpriteSet* pipelineSet)
+void SpriteCommonBeginDraw(PipeLineSet* pipelineSet)
 {
 	Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineSet->pipelineState.Get());
 

@@ -7,15 +7,12 @@
 using namespace Microsoft::WRL;
 
 
-struct SpriteSet
+struct PipeLineSet
 {
 	ComPtr<ID3D12PipelineState> pipelineState;
 	ComPtr<ID3D12RootSignature> rootSignature;
 	ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
 	ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
-
-	ProjectionMat projectionMat;
-	WorldMat worldMat;
 };
 struct ConstBufferDataMaterial
 {
@@ -41,6 +38,6 @@ private:
 
 
 public:
-	SpriteSet pipelineSet;
+	PipeLineSet pipelineSet;
 };
 
