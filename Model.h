@@ -2,8 +2,6 @@
 #include "Sprite.h"
 
 
-
-
 struct Vertex
 {
 	XMFLOAT3 pos;   //xyz座標
@@ -11,15 +9,7 @@ struct Vertex
 	XMFLOAT2 uv;    //uv座標
 };
 //頂点データ
-struct ConstBufferDataMaterial2
-{
-	XMFLOAT3 ambient;
-	float pad1;       //パディング
-	XMFLOAT3 diffuse;
-	float pad2;       //パディング
-	XMFLOAT3 specular;
-	float alpha;
-};
+
 
 class Model
 {
@@ -46,6 +36,16 @@ private:
 		}
 	};
 
+	struct ConstBufferDataMaterial2
+	{
+		XMFLOAT3 ambient;
+		float pad1;       //パディング
+		XMFLOAT3 diffuse;
+		float pad2;       //パディング
+		XMFLOAT3 specular;
+		float alpha;
+	};
+
 public:
 	//モデル用
 //頂点データ配列
@@ -68,9 +68,15 @@ public:
 	Material material;
 
 
+private:
+	//OBJファイルから3Dモデルを読み込む
+	void LoadFromOBJInternal(const char* folderName);
+
 public:
-	//"フォルダ名のみ"を指定すればmtl,obj,textuerを読みこむ（すべて同じ名前であれば）
-	void CreateModel(const char* folderName);
 	void LoadMaterial(const std::string& directoryPath, const std::string& filename);
 
+public://静的メンバ関数
+	//OBJファイルから3Dモデルを読み込む
+	//"フォルダ名のみ"を指定すればmtl,obj,textuerを読みこむ（すべて同じ名前であれば）
+	static Model* LoadFromOBJ(const char* folderName);
 };

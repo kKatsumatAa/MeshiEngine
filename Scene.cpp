@@ -71,6 +71,10 @@ void SceneEnd::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 Scene::~Scene()
 {
 	delete state;
+	for (int i = 0; i < _countof(model); i++)
+	{
+		delete model[i];
+	}
 }
 
 void Scene::ChangeState(SceneState* state)
@@ -90,12 +94,12 @@ void Scene::Initialize(SoundData* soundData)
 	LoadGraph(L"Resources/image/particle.png", texhandle[1]);
 	LoadGraph(L"Resources/image/p.jpg", texhandle[2]);
 
-	model[0].CreateModel("skydome");
+	model[0] = Model::LoadFromOBJ("skydome");
 	draw[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
-	model[1].CreateModel("ground");
+	model[1] = Model::LoadFromOBJ("ground");
 	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[1].worldMat->trans = { 10.0f, -10.0f, 0 };
-	model[2].CreateModel("boss");
+	model[2] = Model::LoadFromOBJ("boss");
 	draw[2].worldMat->scale = { 5,5,5 };
 	/*draw[2].worldMat->rot = { pi / 2.0f, 0, 0 };
 	draw[2].worldMat->trans = { 10.0f, 10.0f, 0 };*/
@@ -153,10 +157,10 @@ float color = 0;//
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
-	draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat, &model[0]);
-	draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat, &model[1]);
-	draw[2].DrawModel(draw[2].worldMat, &viewMat, &projectionMat, &model[2]);
-	draw[3].DrawModel(draw[3].worldMat, &viewMat, &projectionMat, &model[2]);
+	draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat, model[0]);
+	draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat, model[1]);
+	draw[2].DrawModel(draw[2].worldMat, &viewMat, &projectionMat, model[2]);
+	draw[3].DrawModel(draw[3].worldMat, &viewMat, &projectionMat, model[2]);
 	draw[4].DrawSphere(draw[4].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, texhandle[0]);
 
 	rot += 1.0f;

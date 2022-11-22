@@ -29,7 +29,7 @@ public:
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
 
-	Model model[5];
+	Model* model[5];
 
 	Draw draw[10];
 	

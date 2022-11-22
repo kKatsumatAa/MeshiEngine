@@ -33,8 +33,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	KeyboardInput::GetInstance();
 
 	//シーン
-	Scene scene;
-	scene.Initialize(soundData);
+	Scene* scene = new Scene();
+	scene->Initialize(soundData);
 
 	//描画初期化処理-------------
 
@@ -55,11 +55,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Directx::GetInstance().DrawUpdate({ 0.1f,0.25f, 0.5f,0.0f });
 
 //更新処理
-		scene.Update(soundData);
+		scene->Update(soundData);
 		
 
 // 4.描画コマンドここから　//-----------
-		scene.Draw(textureHandle, textureNumHundle);
+		scene->Draw(textureHandle, textureNumHundle);
 
 // 4.描画コマンドここまで //
 
@@ -69,6 +69,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (KeyboardInput::GetInstance().keyPush(DIK_ESCAPE)) break;
 	}
+
+	delete scene;
 
 	//音データ解放
 	Directx::GetInstance().xAudio2.Reset();

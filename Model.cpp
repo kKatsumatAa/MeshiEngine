@@ -5,8 +5,7 @@
 #include <vector>
 #include <d3dx12.h>
 
-
-void Model::CreateModel(const char* folderName)
+void Model::LoadFromOBJInternal(const char* folderName)
 {
 	//ヒープ設定
 	D3D12_HEAP_PROPERTIES cbHeapProp{};
@@ -270,4 +269,15 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 		}
 	}
 	file.close();
+}
+
+
+Model* Model::LoadFromOBJ(const char* folderName)
+{
+	//新たなModel型のインスタンスのメモリを確保
+	Model* model = new Model();
+
+	model->LoadFromOBJInternal(folderName);
+
+	return model;
 }
