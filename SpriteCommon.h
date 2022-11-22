@@ -4,7 +4,7 @@
 #include "WorldMat.h"
 #include "ViewMat.h"
 #include "ProjectionMat.h"
-using namespace Microsoft::WRL;
+using namespace Microsoft::WRL;//
 
 
 struct PipeLineSet
