@@ -99,8 +99,11 @@ void Scene::Initialize(SoundData* soundData)
 	model[1] = Model::LoadFromOBJ("ground");
 	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[1].worldMat->trans = { 10.0f, -10.0f, 0 };
-	model[2] = Model::LoadFromOBJ("boss");
-	draw[2].worldMat->scale = { 5,5,5 };
+	model[2] = Model::LoadFromOBJ("chr_sword");
+	draw[2].worldMat->scale = { 15,15,15 };
+	draw[1].worldMat->trans = { 10.0f, -10.0f, 0 };
+	model[3] = Model::LoadFromOBJ("sphere");
+	draw[3].worldMat->scale = { 5,5,5 };
 	/*draw[2].worldMat->rot = { pi / 2.0f, 0, 0 };
 	draw[2].worldMat->trans = { 10.0f, 10.0f, 0 };*/
 
@@ -157,10 +160,10 @@ float color = 0;//
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
-	draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat, model[0]);
-	draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat, model[1]);
+	//draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat, model[0]);
+	//draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat, model[1]);
 	draw[2].DrawModel(draw[2].worldMat, &viewMat, &projectionMat, model[2]);
-	draw[3].DrawModel(draw[3].worldMat, &viewMat, &projectionMat, model[2]);
+	draw[3].DrawModel(draw[3].worldMat, &viewMat, &projectionMat, model[3]);
 	if (KeyboardInput::GetInstance().keyPush(DIK_SPACE))
 	{
 		draw[4].DrawModel(draw[4].worldMat, &viewMat, &projectionMat,model[2],{1.0f,1.0f,1.0f,1.0f}, texhandle[0]);
@@ -169,18 +172,19 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	{
 		draw[4].DrawSphere(draw[4].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,0.5f }, textureHandle[0]);
 	}
-	rot += 1.0f;
-	//scale += 0.01f;
-	uvwidth += 0.005f;
-	color += 0.005f;
-	draw[6].DrawCube3D(draw[6].worldMat, &viewMat, &projectionMat, { 1.0f,0.0f,1.0f,1.0f }, texhandle[0]);
-	draw[7].DrawLine(draw[7].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, texhandle[0]);
+	//rot += 1.0f;
+	////scale += 0.01f;
+	//uvwidth += 0.005f;
+	//color += 0.005f;
+	//draw[6].DrawCube3D(draw[6].worldMat, &viewMat, &projectionMat, { 1.0f,0.0f,1.0f,1.0f }, texhandle[0]);
+	//draw[7].DrawLine(draw[7].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, texhandle[0]);
 
 	state->Draw(textureHandle, textureNumHundle);
 
+//スプライト
 	//draw[5].DrawClippingBoxSprite({ 0,0,0 }, scale, { 0,0.2f }, { uvwidth,0.8f }, { 0,color,0,1.0f }, texhandle[2], false, false, false, rot);
-	draw[8].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.5f,0.5f }, false);
-	draw[9].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.0f,0.0f },false,true);
+	/*draw[8].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.5f,0.5f }, false);
+	draw[9].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.0f,0.0f },false,true);*/
 
 
 	debugText.Printf("posX:", 0, 22, draw[4].worldMat->trans.x);
