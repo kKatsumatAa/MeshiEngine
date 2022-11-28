@@ -93,7 +93,7 @@ void Model::LoadFromOBJInternal(const char* folderName)
 		//ポリゴン
 		if (key == "f")
 		{
-			int count = 1;
+			int count = 0;
 
 			//半角スペース区切りで行の続きを読み込む
 			std::string index_string;
@@ -117,20 +117,22 @@ void Model::LoadFromOBJInternal(const char* folderName)
 				vertex.uv = texcoords[indexTexcoord - 1];
 				verticesM.emplace_back(vertex);
 				//インデックスデータの追加
+				count++;
+
+				indicesM.emplace_back((unsigned short)indicesM.size() - indexCount);
 				if (count >= 4)
 				{
-					indicesM.emplace_back((unsigned short)indicesM.size() - 1 - indexCount);
+					indicesM.emplace_back((unsigned short)indicesM.size() - 4 - indexCount);
 					indicesM.emplace_back((unsigned short)indicesM.size() - 3 - indexCount);
-					indicesM.emplace_back((unsigned short)indicesM.size() - 2 - indexCount);
 					indexCount += 2;
+					count = 0;
 					break;
 				}
-				else
-					indicesM.emplace_back((unsigned short)indicesM.size() - indexCount);
-				count++;
+
 			}
 		}
 	}
+
 }
 
 void Model::CreateBuffers()

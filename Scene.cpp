@@ -172,8 +172,8 @@ float color = 0;//
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
-	//draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat, model[0]);
-	//draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat, model[1]);
+	draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat, model[0]);
+	draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat, model[1]);
 	draw[2].DrawModel(draw[2].worldMat, &viewMat, &projectionMat, model[2]);
 	draw[3].DrawModel(draw[3].worldMat, &viewMat, &projectionMat, model[3]);
 	if (KeyboardInput::GetInstance().keyPush(DIK_SPACE))
