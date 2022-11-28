@@ -26,6 +26,7 @@ private:
 public:
 	SoundData* soundData;
 	WorldMat cameraWorldMat;
+	const Vec3 cameraPos = { 0,0,-100 };
 	ViewMat viewMat;
 	ProjectionMat projectionMat;
 

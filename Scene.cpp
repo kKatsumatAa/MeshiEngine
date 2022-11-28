@@ -145,6 +145,18 @@ void Scene::Update(SoundData* soundData)
 		tama[0].centor.m128_f32[2] = draw[4].worldMat->trans.z;
 	}
 	draw[2].worldMat->SetWorld();
+	{
+		cameraWorldMat.rot.y += (KeyboardInput::GetInstance().keyPush(DIK_A) - KeyboardInput::GetInstance().keyPush(DIK_D)) * 0.05f;
+
+		cameraWorldMat.rot.x += (KeyboardInput::GetInstance().keyPush(DIK_W) - KeyboardInput::GetInstance().keyPush(DIK_S)) * 0.05f;
+		cameraWorldMat.rot.x = min(cameraWorldMat.rot.x, pi / 2.0f);
+		cameraWorldMat.rot.x = max(cameraWorldMat.rot.x, -pi / 2.0f);
+
+		cameraWorldMat.SetWorld();
+		viewMat.eye = cameraPos;
+		Vec3xM4(viewMat.eye, cameraWorldMat.matWorld, 0);
+		viewMat.SetMat();
+	}
 
 
 #ifdef _DEBUG
@@ -166,7 +178,7 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	draw[3].DrawModel(draw[3].worldMat, &viewMat, &projectionMat, model[3]);
 	if (KeyboardInput::GetInstance().keyPush(DIK_SPACE))
 	{
-		draw[4].DrawModel(draw[4].worldMat, &viewMat, &projectionMat,model[2],{1.0f,1.0f,1.0f,1.0f}, texhandle[0]);
+		draw[4].DrawModel(draw[4].worldMat, &viewMat, &projectionMat, model[2], { 1.0f,1.0f,1.0f,1.0f }, texhandle[0]);
 	}
 	else
 	{
@@ -181,10 +193,10 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 
 	state->Draw(textureHandle, textureNumHundle);
 
-//スプライト
-	//draw[5].DrawClippingBoxSprite({ 0,0,0 }, scale, { 0,0.2f }, { uvwidth,0.8f }, { 0,color,0,1.0f }, texhandle[2], false, false, false, rot);
-	/*draw[8].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.5f,0.5f }, false);
-	draw[9].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.0f,0.0f },false,true);*/
+	//スプライト
+		//draw[5].DrawClippingBoxSprite({ 0,0,0 }, scale, { 0,0.2f }, { uvwidth,0.8f }, { 0,color,0,1.0f }, texhandle[2], false, false, false, rot);
+		/*draw[8].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.5f,0.5f }, false);
+		draw[9].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.0f,0.0f },false,true);*/
 
 
 	debugText.Printf("posX:", 0, 22, draw[4].worldMat->trans.x);
