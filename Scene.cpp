@@ -2,7 +2,7 @@
 
 void SceneState::SetScene(Scene* scene)
 {
-	//stateではなくSceneクラスのインスタンス
+	//stateではなくSceneクラスのインスタンス//
 	this->scene = scene;
 }
 
