@@ -2,21 +2,6 @@
 #include"SpriteCommon.h"
 #include "Util.h"
 
-//リソース設定
-extern D3D12_RESOURCE_DESC resDesc;
-//設定をもとにSRV用デスクリプタヒープを生成
-extern ComPtr < ID3D12DescriptorHeap> srvHeap;
-extern D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
-
-static const int srvCount = 512;
-extern ComPtr<ID3D12Resource> texBuff[srvCount];
-
-//SRVの最大個数
-const size_t kMaxSRVCount = 2056;
-//デスクリプタヒープの設定
-static D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc;
-
-
 
 class Sprite
 {

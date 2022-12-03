@@ -2,6 +2,15 @@
 #include <thread>
 
 
+//リソース設定
+D3D12_RESOURCE_DESC resDesc;
+//設定をもとにSRV用デスクリプタヒープを生成
+ComPtr < ID3D12DescriptorHeap> srvHeap;
+D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
+
+ComPtr<ID3D12Resource> texBuff[srvCount];
+
+
 void Directx::InitializeDevice()
 {
 	// DXGIファクトリーの生成

@@ -1,6 +1,7 @@
 #pragma once
 #include"Collision.h"
 #include"DebugText.h"
+#include"ImGuiManager.h"
 
 
 class Scene;
@@ -43,6 +44,9 @@ public:
 	//デバッグテキスト
 	UINT64 debugTextHandle;
 	UINT64 texhandle[10];
+
+	//imgui
+	ImGuiManager* imGuiManager;
 
 public:
 	~Scene();

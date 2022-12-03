@@ -75,6 +75,8 @@ Scene::~Scene()
 	{
 		delete model[i];
 	}
+	imGuiManager->Finalize();
+	delete imGuiManager;
 }
 
 void Scene::ChangeState(SceneState* state)
@@ -126,6 +128,9 @@ void Scene::Initialize(SoundData* soundData)
 	triangle.p2 = XMVectorSet(+10.0f, 0, -1.0f, 1);//¶Žè‘O
 	triangle.normal = XMVectorSet(0.0f, 1.0f, 0.0f, 0);//ãŒü‚«
 
+	//imgui
+	imGuiManager = new ImGuiManager();
+	imGuiManager->Initialize();
 
 	ChangeState(new SceneTitle);
 	state->SetScene(this);
@@ -134,6 +139,9 @@ void Scene::Initialize(SoundData* soundData)
 
 void Scene::Update(SoundData* soundData)
 {
+	//imgui
+	imGuiManager->Begin();
+
 	state->Update(soundData);
 
 	//move
@@ -163,6 +171,8 @@ void Scene::Update(SoundData* soundData)
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_E)) ChangeState(new SceneTitle);
 #endif 
 
+	//imgui
+	imGuiManager->End();
 }
 
 float rot = 0;
@@ -220,5 +230,8 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 
 
 	debugText.DrawAll(debugTextHandle);
+
+	//imgui
+	imGuiManager->Draw();
 }
 
