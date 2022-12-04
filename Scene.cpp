@@ -136,11 +136,71 @@ void Scene::Initialize(SoundData* soundData)
 	state->SetScene(this);
 }
 
+struct im
+{
+	char buf[128];
+	float f = 0.0f;
+};
+im* saveData = nullptr;
+im data;
+
+struct im2
+{
+	bool my_tool_active = false;
+	float my_color = 0.0f;
+};
+im2 data2;
 
 void Scene::Update(SoundData* soundData)
 {
 	//imgui
 	imGuiManager->Begin();
+
+	{
+		ImGui::ShowDemoWindow();
+
+
+		ImGui::Text("Hello, world %d", 123);
+		if (ImGui::Button("Save"))
+		{
+			saveData = &data;
+		}
+		ImGui::InputText("string", data.buf, IM_ARRAYSIZE(data.buf));
+		ImGui::SliderFloat("float", &data.f, 0.0f, 1.0f);
+
+
+
+		// Create a window called "My First Tool", with a menu bar.
+		ImGui::Begin("My First Tool", &data2.my_tool_active, ImGuiWindowFlags_MenuBar);
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
+				if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+				if (ImGui::MenuItem("Close", "Ctrl+W")) { data2.my_tool_active = false; }
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
+		// Edit a color stored as 4 floats
+		ImGui::ColorEdit4("Color", &data2.my_color);
+
+		// Generate samples and plot them
+		float samples[100];
+		for (int n = 0; n < 100; n++)
+			samples[n] = sinf(n * 0.2f + ImGui::GetTime() * 1.5f);
+		ImGui::PlotLines("Samples", samples, 100);
+
+		// Display contents in a scrolling region
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
+		ImGui::BeginChild("Scrolling");
+		for (int n = 0; n < 50; n++)
+			ImGui::Text("%04d: Some text", n);
+		ImGui::EndChild();
+		ImGui::End();
+	}
 
 	state->Update(soundData);
 
