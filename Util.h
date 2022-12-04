@@ -4,7 +4,7 @@
 #include "Vec2.h"
 #include "Vec4.h"
 #include "M4.h"
-#include"DirectX.h"
+#include"TextureManager.h"
 
 //é©çÏ
 void Vec4xM4(Vec4& v, const M4& m4);

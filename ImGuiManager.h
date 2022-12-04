@@ -1,6 +1,6 @@
 #pragma once
 #include<imgui.h>
-#include"DirectX.h"
+#include"TextureManager.h"
 
 //ImGui‚ÌŠÇ—
 class ImGuiManager

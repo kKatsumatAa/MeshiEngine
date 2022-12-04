@@ -8,8 +8,7 @@
 //図形のクラス
 Primitive primitive;
 
-//デスクリプタレンジの設定
-D3D12_DESCRIPTOR_RANGE descriptorRange;
+
 //テクスチャ
 
 // 頂点レイアウト
@@ -72,17 +71,10 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 void DrawInitialize()
 {
 	//テクスチャ用のデスクリプタヒープ初期化
-	InitializeDescriptorHeap();
+	TextureManager::GetInstance().InitializeDescriptorHeap();
 	
 	//図形クラスの
 	primitive.Initialize();
-
-	//デスクリプタレンジの設定
-	descriptorRange.NumDescriptors = 100;   //一度の描画に使うテクスチャの枚数
-	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange.BaseShaderRegister = 0;  //テクスチャレジスタ0番(t0)
-	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
 
 	//ルートパラメータの設定
 	//定数バッファ0番
@@ -92,7 +84,7 @@ void DrawInitialize()
 	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ0番
 	rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	rootParams[1].DescriptorTable.pDescriptorRanges = &descriptorRange;//デスクリプタレンジ
+	rootParams[1].DescriptorTable.pDescriptorRanges = &TextureManager::GetInstance().descriptorRange;//デスクリプタレンジ
 	rootParams[1].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//定数バッファ1番
@@ -211,7 +203,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		//04_02
 		{
 			//SRVヒープの設定コマンド
-			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 			srvGpuHandle.ptr = textureHandle;
@@ -255,7 +247,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		//04_02
 		{
 			//SRVヒープの設定コマンド
-			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 			srvGpuHandle.ptr = textureHandle;
@@ -298,7 +290,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		//04_02
 		{
 			//SRVヒープの設定コマンド
-			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 			srvGpuHandle.ptr = textureHandle;
@@ -341,7 +333,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		//04_02
 		{
 			//SRVヒープの設定コマンド
-			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 			srvGpuHandle.ptr = textureHandle;
@@ -384,7 +376,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		//04_02
 		{
 			//SRVヒープの設定コマンド
-			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 			srvGpuHandle.ptr = textureHandle;
@@ -428,7 +420,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		//04_02
 		{
 			//SRVヒープの設定コマンド
-			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 			srvGpuHandle.ptr = textureHandle;
@@ -449,7 +441,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		//04_02
 		{
 			//SRVヒープの設定コマンド
-			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 			srvGpuHandle.ptr = textureHandle;
@@ -476,7 +468,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		//04_02
 		{
 			//SRVヒープの設定コマンド
-			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
+			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 			srvGpuHandle.ptr = textureHandle;
@@ -846,16 +838,4 @@ void Error(const bool& filed)
 		OutputDebugStringA(error.c_str());
 		assert(0);
 	}
-}
-
-
-void InitializeDescriptorHeap()
-{
-	//設定をもとにSRV用デスクリプタヒープを生成
-	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	srvHeapDesc.NumDescriptors = kMaxSRVCount;
-	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダーから見えるように
-													 //descは設定
-	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
-	assert(SUCCEEDED(Directx::GetInstance().result));
 }

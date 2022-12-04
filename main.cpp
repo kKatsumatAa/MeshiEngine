@@ -19,8 +19,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//画像用ハンドル
 	UINT64 textureHandle[30] = {0};
 	{
-		LoadGraph(L"Resources/image/white.png", textureHandle[0]);
-		LoadGraph(L"Resources/image/particle.png", textureHandle[1]);
+		TextureManager::LoadGraph(L"Resources/image/white.png", textureHandle[0]);
+		TextureManager::LoadGraph(L"Resources/image/particle.png", textureHandle[1]);
 	}
 
 	//数字の画像

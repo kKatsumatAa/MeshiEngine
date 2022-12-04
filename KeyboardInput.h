@@ -27,48 +27,21 @@ private:
 	ComPtr<IDirectInputDevice8> keyboard = nullptr;
 
 private:
-	KeyboardInput()
-	{
-		result = DirectInput8Create(
-			WindowsApp::GetInstance().Getw().hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
-			(void**)&directInput, nullptr);
-		assert(SUCCEEDED(result));
+	KeyboardInput();
 
-		//キーボードデバイスの生成
-		result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
-		assert(SUCCEEDED(result));
-
-		//入力データ形式のセット
-		result = keyboard->SetDataFormat(&c_dfDIKeyboard);
-		assert(SUCCEEDED(result));
-
-		//排他制御レベルのリセット
-		result = keyboard->SetCooperativeLevel(
-			WindowsApp::GetInstance().Gethwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-		//画面が手前にあるとき入力受付｜デバイスをこのアプリだけで専有しない｜Windowsキーを無効
-		assert(SUCCEEDED(result));
-	}
-
-	~KeyboardInput() { ; }
+	~KeyboardInput();
 
 public:
+	//コピーコンストラクタを無効
+	KeyboardInput(const KeyboardInput& obj) = delete;
+	//代入演算子も
+	KeyboardInput& operator=(const KeyboardInput& obj) = delete;
 
-	static KeyboardInput& GetInstance()
-	{
-		static KeyboardInput inst; // private なコンストラクタを呼び出す。
-		return inst;
-	}
 
-	void Update()
-	{
-		//前回のキー情報
-		memcpy(oldkey, key, sizeof(key));
+	static KeyboardInput& GetInstance();
 
-		//キーボード情報の取得開始
-		keyboard->Acquire();
-		//全キーの入力情報を取得
-		keyboard->GetDeviceState(sizeof(key), key);
-	}
+	void Update();
+
 
 	//トリガー用
 	bool keyPush(BYTE keys)

@@ -277,7 +277,7 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 			wchar_t wchar[128];
 			size_t size = _countof(wchar);
 			mbstowcs_s(&size, wchar, name, size);
-			LoadGraph(wchar, material.textureHandle);
+			TextureManager::GetInstance().LoadGraph(wchar, material.textureHandle);
 		}
 	}
 	file.close();

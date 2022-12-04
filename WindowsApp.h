@@ -30,6 +30,11 @@ public:
 	D3D12_VIEWPORT viewport;
 
 
+	//コピーコンストラクタを無効
+	WindowsApp(const WindowsApp& obj) = delete;
+	//代入演算子も
+	WindowsApp& operator=(const WindowsApp& obj) = delete;
+
 	static WindowsApp& GetInstance();
 
 	bool MessegeRoop(MSG msg);
@@ -39,10 +44,10 @@ public:
 		UnregisterClass(w.lpszClassName, w.hInstance);
 	}
 
-	void operator=(const WindowsApp& win)
-	{
-		*this = win;
-	}
+	//void operator=(const WindowsApp& win)
+	//{
+	//	*this = win;
+	//}
 
 	//getter
 	WNDCLASSEX Getw() { return w; }

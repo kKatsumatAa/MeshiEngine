@@ -91,10 +91,10 @@ void Scene::Initialize(SoundData* soundData)
 {
 	this->soundData = soundData;
 
-	LoadGraph(L"Resources/ascii.png", debugTextHandle);
-	LoadGraph(L"Resources/image/white.png", texhandle[0]);
-	LoadGraph(L"Resources/image/particle.png", texhandle[1]);
-	LoadGraph(L"Resources/image/p.jpg", texhandle[2]);
+	TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
+	TextureManager::LoadGraph(L"Resources/image/white.png", texhandle[0]);
+	TextureManager::LoadGraph(L"Resources/image/particle.png", texhandle[1]);
+	TextureManager::LoadGraph(L"Resources/image/p.jpg", texhandle[2]);
 
 	model[0] = Model::LoadFromOBJ("skydome");
 	draw[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
@@ -141,9 +141,9 @@ void Scene::Update(SoundData* soundData)
 
 	{
 		ImGui::SetNextWindowSize({ 500,100 });
-		ImGui::ShowDemoWindow();
-
 		ImGui::SliderFloat2("position", pos, 0.0f,WindowsApp::GetInstance().window_height, "%4.1f");
+
+		ImGui::ShowDemoWindow();
 	}
 
 	state->Update(soundData);

@@ -28,10 +28,10 @@ void Primitive::InitializeTriangle()
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(resDesc, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().resDesc, sizeVB);
 
 	//頂点バッファの生成
-	BuffProperties(heapProp, resDesc, &vertBuffTriangle);
+	BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &vertBuffTriangle);
 
 	// 頂点バッファビューの作成
 	// GPU仮想アドレス
@@ -48,10 +48,10 @@ void Primitive::InitializeTriangle()
 		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesTriangle));
 
 		//リソース設定
-		ResourceProperties(resDesc, sizeIB);
+		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
 		//インデックスバッファの作成
 		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, resDesc, &indexBuff);
+		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
 		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
@@ -103,10 +103,10 @@ void Primitive::InitializeBox()
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(resDesc, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().resDesc, sizeVB);
 
 	//頂点バッファの生成
-	BuffProperties(heapProp, resDesc, &vertBuffBox);
+	BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &vertBuffBox);
 
 	// 頂点バッファビューの作成
 	// GPU仮想アドレス
@@ -123,10 +123,10 @@ void Primitive::InitializeBox()
 		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesBox));
 
 		//リソース設定
-		ResourceProperties(resDesc, sizeIB);
+		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
 		//インデックスバッファの作成
 		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, resDesc, &indexBuff);
+		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
 		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
@@ -187,10 +187,10 @@ void Primitive::InitializeCircle()
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(resDesc, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().resDesc, sizeVB);
 
 	//頂点バッファの生成
-	BuffProperties(heapProp, resDesc, &vertBuffCircle);
+	BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &vertBuffCircle);
 
 	// 頂点バッファビューの作成
 	// GPU仮想アドレス
@@ -207,10 +207,10 @@ void Primitive::InitializeCircle()
 		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesCircle));
 
 		//リソース設定
-		ResourceProperties(resDesc, sizeIB);
+		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
 		//インデックスバッファの作成
 		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, resDesc, &indexBuff);
+		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
 		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
@@ -295,10 +295,10 @@ void Primitive::InitializeCube()
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(resDesc, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().resDesc, sizeVB);
 
 	//頂点バッファの生成
-	BuffProperties(heapProp, resDesc, &vertBuffCube);
+	BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &vertBuffCube);
 
 	// 頂点バッファビューの作成
 	// GPU仮想アドレス
@@ -315,10 +315,10 @@ void Primitive::InitializeCube()
 		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesCube));
 
 		//リソース設定
-		ResourceProperties(resDesc, sizeIB);
+		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
 		//インデックスバッファの作成
 		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, resDesc, &indexBuff);
+		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
 		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
@@ -376,10 +376,10 @@ void Primitive::InitializeLine()
 		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesLine));
 
 		//リソース設定
-		ResourceProperties(resDesc, sizeIB);
+		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
 		//インデックスバッファの作成
 		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, resDesc, &indexBuff);
+		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
 		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
@@ -404,10 +404,10 @@ void Primitive::InitializeLine()
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(resDesc, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().resDesc, sizeVB);
 
 	//頂点バッファの生成
-	BuffProperties(heapProp, resDesc, &vertBuffLine);
+	BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &vertBuffLine);
 
 	// 頂点バッファビューの作成
 	// GPU仮想アドレス
@@ -428,10 +428,10 @@ void Primitive::InitializeSphere()
 		//頂点バッファの設定		//ヒープ設定
 		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-		ResourceProperties(resDesc, sizeVB);
+		ResourceProperties(TextureManager::GetInstance().resDesc, sizeVB);
 
 		//頂点バッファの生成
-		BuffProperties(heapProp, resDesc, vertBuffSphere.GetAddressOf());
+		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, vertBuffSphere.GetAddressOf());
 
 		// 頂点バッファビューの作成
 		// GPU仮想アドレス
@@ -586,10 +586,10 @@ void Primitive::InitializeSphere()
 		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesSphere));
 
 		//リソース設定
-		ResourceProperties(resDesc, sizeIB);
+		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
 		//インデックスバッファの作成
 		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, resDesc, &indexBuff);
+		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
 		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);

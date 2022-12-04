@@ -1,131 +1,5 @@
 #include "Sprite.h"
 
-int count = 0;
-
-void LoadGraph(const wchar_t* name, UINT64& textureHandle)
-{
-	assert(count <= srvCount - 1);
-
-	// 04_03
-	TexMetadata metadata{};
-	ScratchImage scratchImg{};
-	//WICのテクスチャのロード
-	Directx::GetInstance().result = LoadFromWICFile(
-		name,
-		WIC_FLAGS_NONE,
-		&metadata, scratchImg
-	);
-
-	assert(SUCCEEDED(Directx::GetInstance().result));
-
-	ScratchImage mipChain{};
-	//mipmap生成
-	Directx::GetInstance().result = GenerateMipMaps(
-		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
-		TEX_FILTER_DEFAULT, 0, mipChain);
-	if (SUCCEEDED(Directx::GetInstance().result))
-	{
-		scratchImg = std::move(mipChain);
-		metadata = scratchImg.GetMetadata();
-	}
-	//読み込んだディフューズテクスチャをSRGBとして扱う
-	metadata.format = MakeSRGB(metadata.format);
-
-	//ヒープ設定
-	D3D12_HEAP_PROPERTIES textureHeapProp{};
-	textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
-	textureHeapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
-	textureHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
-	// 04_03
-
-	//リソース設定
-	D3D12_RESOURCE_DESC textureResourceDesc{};
-	textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	textureResourceDesc.Format = metadata.format;
-	textureResourceDesc.Width = metadata.width;						//頂点データ全体のサイズ
-	textureResourceDesc.Height = (UINT)metadata.height;
-	textureResourceDesc.DepthOrArraySize = (UINT16)metadata.arraySize;
-	textureResourceDesc.MipLevels = (UINT16)metadata.mipLevels;
-	textureResourceDesc.SampleDesc.Count = 1;
-
-	//テクスチャバッファの生成
-	//ID3D12Resource* texBuff = nullptr;
-	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
-		&textureHeapProp,//ヒープ設定
-		D3D12_HEAP_FLAG_NONE,
-		&textureResourceDesc,//リソース設定
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&texBuff[count]));
-	assert(SUCCEEDED(Directx::GetInstance().result));
-
-	//04_03
-	// 全ミップマップについて
-	for (size_t i = 0; i < metadata.mipLevels; i++)
-	{
-		//ミップマップレベルを指定してイメージを取得
-		const Image* img = scratchImg.GetImage(i, 0, 0);
-		//テクスチャバッファにデータ転送
-		Directx::GetInstance().result = texBuff[count]->WriteToSubresource(
-			(UINT)i,
-			nullptr,//全領域へコピー
-			img->pixels,//元データアドレス
-			(UINT)img->rowPitch,//1ラインサイズ
-			(UINT)img->slicePitch//全サイズ
-		);
-		assert(SUCCEEDED(Directx::GetInstance().result));
-	}
-	////元データ解放
-	//delete[] imageData;
-
-
-	//SRVヒープの先頭ハンドルを取得
-	if (count == 0)srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-	else srvHandle.ptr += Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type);
-
-	//04_03
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
-	srvDesc.Format = resDesc.Format;
-	srvDesc.Shader4ComponentMapping =
-		D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-	srvDesc.Texture2D.MipLevels = 1;
-	//ハンドルのさす位置にシェーダーリソースビュー作成
-	Directx::GetInstance().GetDevice()->CreateShaderResourceView(texBuff[count].Get(), &srvDesc, srvHandle);
-
-	//04_02(画像貼る用のアドレスを引数に)
-	//SRVヒープの設定コマンド
-	Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
-	//SRVヒープのハンドルを取得
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	textureHandle = srvGpuHandle.ptr + (Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type) * count);
-
-
-	count++;
-}
-
-void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size)
-{
-	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	resDesc.Width = size;						//頂点データ全体のサイズ
-	resDesc.Height = 1;
-	resDesc.DepthOrArraySize = 1;
-	resDesc.MipLevels = 1;
-	resDesc.SampleDesc.Count = 1;
-	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-}
-
-void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, ID3D12Resource** buff)
-{
-	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
-		&heap,//ヒープ設定
-		D3D12_HEAP_FLAG_NONE,
-		&resource,//リソース設定
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(buff));
-	assert(SUCCEEDED(Directx::GetInstance().result));
-}
 
 
 void Sprite::Initialize()
@@ -186,9 +60,9 @@ void Sprite::Update(const Vec3& pos, const float& scale,
 	const bool& isReverseX,const bool& isReverseY, float rotation,
 	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetInstance().srvHeap->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
+	resDesc = TextureManager::GetInstance().texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type)]->GetDesc();
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
@@ -241,9 +115,9 @@ void Sprite::UpdateClipping(const Vec3& leftTop, const float& scale, const XMFLO
 	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop,
 	const bool& isReverseX,const bool& isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetInstance().srvHeap->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type)]->GetDesc();
+	resDesc = TextureManager::GetInstance().texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type)]->GetDesc();
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 

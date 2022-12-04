@@ -42,6 +42,4 @@ void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size);
 void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource,
 	ID3D12Resource** buff);
 
-void LoadGraph(const wchar_t* name, UINT64& textureHandle);
-
 //void SpriteCommonCreate(SpriteSet* spriteSet);
