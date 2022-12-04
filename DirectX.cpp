@@ -90,8 +90,8 @@ void Directx::InitializeCommand()
 void Directx::InitializeSwapchain()
 {
 	//スワップチェーン設定
-	swapChainDesc.Width = 1280;
-	swapChainDesc.Height = 720;
+	swapChainDesc.Width = WindowsApp::GetInstance().window_width;
+	swapChainDesc.Height = WindowsApp::GetInstance().window_height;
 	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 色情報の書式
 	swapChainDesc.SampleDesc.Count = 1; // マルチサンプルしない
 	swapChainDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER; // バックバッファ用

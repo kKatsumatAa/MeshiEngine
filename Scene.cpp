@@ -106,8 +106,6 @@ void Scene::Initialize(SoundData* soundData)
 	draw[1].worldMat->trans = { 10.0f, -10.0f, 0 };
 	model[3] = Model::LoadFromOBJ("sphere");
 	draw[3].worldMat->scale = { 5,5,5 };
-	/*draw[2].worldMat->rot = { pi / 2.0f, 0, 0 };
-	draw[2].worldMat->trans = { 10.0f, 10.0f, 0 };*/
 
 	draw[3].worldMat->trans.x += 30.0f;
 	draw[6].worldMat->trans.x -= 30.0f;
@@ -136,70 +134,16 @@ void Scene::Initialize(SoundData* soundData)
 	state->SetScene(this);
 }
 
-struct im
-{
-	char buf[128];
-	float f = 0.0f;
-};
-im* saveData = nullptr;
-im data;
-
-struct im2
-{
-	bool my_tool_active = false;
-	float my_color = 0.0f;
-};
-im2 data2;
-
 void Scene::Update(SoundData* soundData)
 {
 	//imgui
 	imGuiManager->Begin();
 
 	{
+		ImGui::SetNextWindowSize({ 500,100 });
 		ImGui::ShowDemoWindow();
 
-
-		ImGui::Text("Hello, world %d", 123);
-		if (ImGui::Button("Save"))
-		{
-			saveData = &data;
-		}
-		ImGui::InputText("string", data.buf, IM_ARRAYSIZE(data.buf));
-		ImGui::SliderFloat("float", &data.f, 0.0f, 1.0f);
-
-
-
-		// Create a window called "My First Tool", with a menu bar.
-		ImGui::Begin("My First Tool", &data2.my_tool_active, ImGuiWindowFlags_MenuBar);
-		if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("File"))
-			{
-				if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
-				if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
-				if (ImGui::MenuItem("Close", "Ctrl+W")) { data2.my_tool_active = false; }
-				ImGui::EndMenu();
-			}
-			ImGui::EndMenuBar();
-		}
-
-		// Edit a color stored as 4 floats
-		ImGui::ColorEdit4("Color", &data2.my_color);
-
-		// Generate samples and plot them
-		float samples[100];
-		for (int n = 0; n < 100; n++)
-			samples[n] = sinf(n * 0.2f + ImGui::GetTime() * 1.5f);
-		ImGui::PlotLines("Samples", samples, 100);
-
-		// Display contents in a scrolling region
-		ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
-		ImGui::BeginChild("Scrolling");
-		for (int n = 0; n < 50; n++)
-			ImGui::Text("%04d: Some text", n);
-		ImGui::EndChild();
-		ImGui::End();
+		ImGui::SliderFloat2("position", pos, 0.0f,WindowsApp::GetInstance().window_height, "%4.1f");
 	}
 
 	state->Update(soundData);
@@ -235,11 +179,6 @@ void Scene::Update(SoundData* soundData)
 	imGuiManager->End();
 }
 
-float rot = 0;
-float scale = 1.0f;
-float uvwidth = 0;
-float color = 0;//
-
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
 	draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat, model[0]);
@@ -254,17 +193,11 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	{
 		draw[4].DrawSphere(draw[4].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,0.5f }, textureHandle[0]);
 	}
-	//rot += 1.0f;
-	////scale += 0.01f;
-	//uvwidth += 0.005f;
-	//color += 0.005f;
-	//draw[6].DrawCube3D(draw[6].worldMat, &viewMat, &projectionMat, { 1.0f,0.0f,1.0f,1.0f }, texhandle[0]);
-	//draw[7].DrawLine(draw[7].worldMat, &viewMat, &projectionMat, { 1.0f,1.0f,1.0f,1.0f }, texhandle[0]);
 
 	state->Draw(textureHandle, textureNumHundle);
 
 	//スプライト
-		//draw[5].DrawClippingBoxSprite({ 0,0,0 }, scale, { 0,0.2f }, { uvwidth,0.8f }, { 0,color,0,1.0f }, texhandle[2], false, false, false, rot);
+		draw[5].DrawClippingBoxSprite({ pos[0],pos[1],0}, 1.0f, {0,0}, {1.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f}, texhandle[2], false, false, false, rot);
 		/*draw[8].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.5f,0.5f }, false);
 		draw[9].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.0f,0.0f },false,true);*/
 

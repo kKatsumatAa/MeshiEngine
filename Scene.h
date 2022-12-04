@@ -48,6 +48,27 @@ public:
 	//imgui
 	ImGuiManager* imGuiManager;
 
+	struct im
+	{
+		char buf[128];
+		float f = 0.0f;
+	};
+	im* saveData = nullptr;
+	im data;
+
+	struct im2
+	{
+		bool my_tool_active = false;
+		float my_color = 0.0f;
+	};
+	im2 data2;
+
+	float pos[2] = { 100,100 };
+	float rot = 0;
+	float scale = 1.0f;
+	float uvwidth = 0;
+	float color = 0;//
+
 public:
 	~Scene();
 	void ChangeState(SceneState* state);
