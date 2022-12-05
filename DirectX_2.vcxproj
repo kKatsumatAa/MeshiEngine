@@ -160,6 +160,7 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="KeyboardInput.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="M4.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="KeyboardInput.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="M4.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Particle.h" />
