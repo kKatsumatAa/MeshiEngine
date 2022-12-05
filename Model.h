@@ -1,5 +1,6 @@
 #pragma once
 #include "Sprite.h"
+#include <unordered_map>
 
 
 struct Vertex
@@ -14,6 +15,8 @@ struct Vertex
 class Model
 {
 private:
+	// 頂点法線スムージング用データ
+	std::unordered_map<unsigned short, std::vector<unsigned short>> smoothData_;
 
 	//マテリアル
 	struct Material
@@ -70,7 +73,7 @@ public:
 
 private:
 	//OBJファイルから3Dモデルを読み込む
-	void LoadFromOBJInternal(const char* folderName);
+	void LoadFromOBJInternal(const char* folderName, const bool smoothing = false);
 	//各種バッファ生成
 	void CreateBuffers();
 
@@ -80,5 +83,23 @@ public:
 public://静的メンバ関数
 	//OBJファイルから3Dモデルを読み込む
 	//"フォルダ名のみ"を指定すればmtl,obj,textuerを読みこむ（すべて同じ名前であれば）
-	static Model* LoadFromOBJ(const char* folderName);
+	static Model* LoadFromOBJ(const char* folderName, const bool smoothing = false);
+
+	/// <summary>
+/// 頂点データの数を取得
+/// </summary>
+/// <returns>頂点データの数</returns>
+	inline size_t GetVertexCount() { return verticesM.size(); }
+
+	/// <summary>
+/// エッジ平滑化データの追加
+/// </summary>
+/// <param name="indexPosition">座標インデックス</param>
+/// <param name="indexVertex">頂点インデックス</param>
+	void AddSmoothData(unsigned short indexPosition, unsigned short indexVertex);
+
+	/// <summary>
+	/// 平滑化された頂点法線の計算
+	/// </summary>
+	void CalculateSmoothedVertexNormals();
 };

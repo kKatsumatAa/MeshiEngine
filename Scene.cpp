@@ -104,7 +104,7 @@ void Scene::Initialize(SoundData* soundData)
 	model[2] = Model::LoadFromOBJ("chr_sword");
 	draw[2].worldMat->scale = { 15,15,15 };
 	draw[1].worldMat->trans = { 10.0f, -10.0f, 0 };
-	model[3] = Model::LoadFromOBJ("sphere");
+	model[3] = Model::LoadFromOBJ("sphere", true);
 	draw[3].worldMat->scale = { 5,5,5 };
 
 	draw[3].worldMat->trans.x += 30.0f;

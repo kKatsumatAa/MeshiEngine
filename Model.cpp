@@ -5,7 +5,7 @@
 #include <vector>
 #include <d3dx12.h>
 
-void Model::LoadFromOBJInternal(const char* folderName)
+void Model::LoadFromOBJInternal(const char* folderName, const bool smoothing)
 {
 	//ファイルストリーム
 	std::ifstream file;
@@ -116,6 +116,14 @@ void Model::LoadFromOBJInternal(const char* folderName)
 				vertex.normal = normals[indexNormal - 1];
 				vertex.uv = texcoords[indexTexcoord - 1];
 				verticesM.emplace_back(vertex);
+
+				//エッジ平滑化用のデータを追加
+				if (smoothing)
+				{
+					//vキー（座標データ）の番号と、全て合成した頂点のインデックスをセットで登録する
+					AddSmoothData(indexPosition, (unsigned short)GetVertexCount() - 1);
+				}
+
 				//インデックスデータの追加
 				count++;
 
@@ -132,7 +140,11 @@ void Model::LoadFromOBJInternal(const char* folderName)
 			}
 		}
 	}
-
+	//頂点法線の平均によるエッジの平滑化
+	if (smoothing)
+	{
+		CalculateSmoothedVertexNormals();
+	}
 }
 
 void Model::CreateBuffers()
@@ -284,14 +296,41 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 }
 
 
-Model* Model::LoadFromOBJ(const char* folderName)
+Model* Model::LoadFromOBJ(const char* folderName, const bool smoothing)
 {
 	//新たなModel型のインスタンスのメモリを確保
 	Model* model = new Model();
 	//読み込み
-	model->LoadFromOBJInternal(folderName);
+	model->LoadFromOBJInternal(folderName, smoothing);
 	//バッファ生成
 	model->CreateBuffers();
 
 	return model;
+}
+
+void Model::AddSmoothData(unsigned short indexPosition, unsigned short indexVertex)
+{
+	smoothData_[indexPosition].emplace_back(indexVertex);
+}
+
+void Model::CalculateSmoothedVertexNormals()
+{
+	auto itr = smoothData_.begin();
+	for (; itr != smoothData_.end(); itr++)
+	{
+		//各面用の共通頂点コレクション
+		std::vector<unsigned short>& v = itr->second;
+		//全頂点の法線を平均する
+		XMVECTOR normal = {};
+		for (unsigned short index : v)
+		{
+			normal += XMVectorSet(verticesM[index].normal.x, verticesM[index].normal.y, verticesM[index].normal.z, 0);
+		}
+		normal = XMVector3Normalize(normal / (float)v.size());
+		//共通法線を使用するすべてのデータに書き込む
+		for (unsigned short index : v)
+		{
+			verticesM[index].normal = { normal.m128_f32[0],normal.m128_f32[1] ,normal.m128_f32[2] };
+		}
+	}
 }
