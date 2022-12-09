@@ -98,3 +98,9 @@ public:
 	//バックバッファの数を取得
 	size_t GetBackBufferCount() const { return backBuffers.size(); }
 };
+
+
+void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size);
+
+void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource,
+	ID3D12Resource** buff);

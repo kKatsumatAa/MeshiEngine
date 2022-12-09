@@ -2,6 +2,7 @@
 
 #include "Util.h"
 #include "Primitive.h"
+#include "Light.h"
 
 
 /// <summary>
@@ -36,6 +37,9 @@ private:
 
 
 	Sprite sprite;
+
+	//ライト
+	static Light* light;
 
 private:
 	//--------------------
@@ -86,8 +90,13 @@ public:
 	void DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		Model* model, XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 
-
+	//色を返す
 	XMFLOAT4 GetColor() { return constMapMaterial->color; }
+	/// <summary>
+	/// ライトのセット
+	/// </summary>
+	/// <param name="light"></param>
+	static void SetLight(Light* light) { Draw::light = light; }
 
 private:
 	void constBuffTransfer(const XMFLOAT4& plusRGBA);

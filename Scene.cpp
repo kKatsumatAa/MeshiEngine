@@ -1,4 +1,6 @@
 #include "Scene.h"
+#include <sstream>
+#include <iomanip>
 
 void SceneState::SetScene(Scene* scene)
 {
@@ -77,6 +79,7 @@ Scene::~Scene()
 	}
 	imGuiManager->Finalize();
 	delete imGuiManager;
+	delete light;
 }
 
 void Scene::ChangeState(SceneState* state)
@@ -120,18 +123,62 @@ void Scene::Initialize(SoundData* soundData)
 
 	ChangeState(new SceneTitle);
 	state->SetScene(this);
+
+	//Light
+	Light::StaticInitialize();
+	//インスタンス生成
+	light = Light::Create();
+	//ライト色を設定
+	light->SetLightColor({ 1,1,1 });
+	//3Dオブジェクトにライトをセット(全体で一つを共有)
+	Draw::SetLight(light);
 }
 
 void Scene::Update(SoundData* soundData)
 {
+
 	//imgui
 	imGuiManager->Begin();
 
 	{
 		ImGui::SetNextWindowSize({ 500,100 });
-		ImGui::SliderFloat2("position", pos, 0.0f,WindowsApp::GetInstance().window_height, "%4.1f");
-
+		ImGui::SliderFloat2("position", pos, 0.0f, WindowsApp::GetInstance().window_height, "%4.1f");
+		//デモ
 		ImGui::ShowDemoWindow();
+
+		{
+			//ライト
+			//光線方向初期化
+			static XMVECTOR lightDir = { 0,1,5,0 };
+
+			if (KeyboardInput::GetInstance().keyPush(DIK_UP)) { lightDir.m128_f32[1] += 1.0f; }
+			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN)) { lightDir.m128_f32[1] -= 1.0f; }
+			if (KeyboardInput::GetInstance().keyPush(DIK_RIGHT)) { lightDir.m128_f32[0] += 1.0f; }
+			if (KeyboardInput::GetInstance().keyPush(DIK_LEFT)) { lightDir.m128_f32[0] -= 1.0f; }
+
+			light->SetLightDir(lightDir);
+
+			std::ostringstream debugstr;
+			debugstr << "lightDirFactor("
+				<< std::fixed << std::setprecision(2)
+				<< lightDir.m128_f32[0] << ","
+				<< lightDir.m128_f32[1] << ","
+				<< lightDir.m128_f32[2] << ")";
+			debugText.Print(debugstr.str(), 50, 50, 1.0f);
+
+			debugstr.str("");
+			debugstr.clear();
+
+			const XMFLOAT3& cameraPos = { viewMat.eye.x,viewMat.eye.y,viewMat.eye.z };
+			debugstr << "cameraPos("
+				<< std::fixed << std::setprecision(2)
+				<< lightDir.m128_f32[0] << ","
+				<< lightDir.m128_f32[1] << ","
+				<< lightDir.m128_f32[2] << ")";
+			debugText.Print(debugstr.str(), 50, 70, 1.0f);
+
+			light->Update();
+		}
 	}
 
 	state->Update(soundData);
@@ -179,10 +226,11 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	state->Draw(textureHandle, textureNumHundle);
 
 	//スプライト
-		draw[5].DrawClippingBoxSprite({ pos[0],pos[1],0}, 1.0f, {0,0}, {1.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f}, texhandle[2], false, false, false, rot);
-		/*draw[8].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.5f,0.5f }, false);
-		draw[9].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.0f,0.0f },false,true);*/
+	draw[5].DrawClippingBoxSprite({ pos[0],pos[1],0 }, 1.0f, { 0,0 }, { 1.0f,1.0f }, { 1.0f,1.0f,1.0f,1.0f }, texhandle[2], false, false, false, rot);
+	/*draw[8].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.5f,0.5f }, false);
+	draw[9].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.0f,0.0f },false,true);*/
 
+	draw[6].DrawCube3D(draw[6].worldMat, &viewMat, &projectionMat, { 1,1,1,1 }, texhandle[0]);
 
 	debugText.DrawAll(debugTextHandle);
 

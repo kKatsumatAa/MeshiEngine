@@ -2,7 +2,7 @@
 #include "DirectX.h"
 
 /// <summary>
-/// 照明
+/// 照明(様々なライトを作るときはポリモーフィズムで継承するといい)
 /// </summary>
 class Light
 {
@@ -38,10 +38,45 @@ public://サブクラス
 	};
 
 
+
+private:
+	/// <summary>
+/// 定数バッファ転送
+/// </summary>
+	void TransferConstBuffer();
+
 public://静的メンバ関数
 	static void StaticInitialize();
 
 public:
 	void Initialize();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update();
+
+	/// <summary>
+	/// 描画（描画はせず、定数バッファビューのセットのみ行う）
+	/// </summary>
+	/// <param name="rootParamaterIndex"></param>
+	void Draw(UINT rootParamaterIndex);
+
+	/// <summary>
+	/// インスタンス生成
+	/// </summary>
+	static Light* Create();
+
+	/// <summary>
+	/// ライト方向をセット
+	/// </summary>
+	/// <param name="lightdir"></param>
+	void SetLightDir(const XMVECTOR& lightdir);
+
+	/// <summary>
+	/// ライトの色をセット
+	/// </summary>
+	/// <param name="lightcolor"></param>
+	void SetLightColor(const XMFLOAT3& lightcolor);
 };
 

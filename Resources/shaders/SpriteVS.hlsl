@@ -2,8 +2,9 @@
 
 VSOutput main(float4 pos : POSITION, float2 uv : TEXCOORD)
 {
-	VSOutput output;//ピクセルシェーダーに渡す値(hlsliの構造体)
-	output.svpos = mul(mat, pos);//座標に行列を乗算
+	//ピクセルシェーダに渡す値
+	VSOutput output;//ピクセルシェーダに渡す値
+	output.svpos = mul(mul(viewproj, world), pos);
 	output.uv = uv;
 
 	return output;

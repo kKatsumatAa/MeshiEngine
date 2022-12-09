@@ -2,38 +2,32 @@
 
 VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD)
 {
-	//VSOutput output;//ピクセルシェーダーに渡す値(hlsliの構造体)
-	////output.svpos = pos;
-	//output.svpos = mul(mat, pos);//座標に行列を乗算
-	//output.normal = normal;
-	//output.uv = uv;
+	//法線にワールド行列によるスケーリング・回転を適用
+	float4 wnormal = normalize(mul(world, float4(normal, 0)));
+	float4 wpos = mul(world, pos);
 
-//ランバート
-	float3 lightdir = normalize(float3(1, -1, 1));
-	lightdir = normalize(lightdir);
-	float3 lightcolor = float3(1, 1, 1);
-	VSOutput output;
-	output.svpos = mul(mat, pos);
-	 //ランバートを入れとく
-	float3 diffuse = saturate(dot(-lightdir, normal));
+	//ピクセルシェーダに渡す値
+	VSOutput output;//ピクセルシェーダに渡す値
+	output.svpos = mul(mul(viewproj, world), pos);
 
-//フォン
-	//環境光
-	float3 ambient = float3(0.1f, 0.1f, 0.1f);
+	//環境反射光
+	float3 ambient = 0.01f;
+	//拡散反射光
+	float3 diffuse = dot(lightv, wnormal.xyz) * 1.0f;
+	//光沢度
+	const float shininess = 4.0f;
+	//頂点から視点への方向ベクトル
+	float3 eyedir = normalize(cameraPos - wpos.xyz);
+	//反射光ベクトル//一個目のlightdirは-しない
+	float3 reflect = normalize(-lightv + 2 * dot(lightv, wnormal.xyz) * wnormal.xyz);
+	//鏡面反射光（saturate->0~1へのクランプ）
+	float3 specular = pow(saturate(dot(reflect, eyedir)), shininess) * 0.1f;
 
-	const float3 eye = float3(0, 0, -20.0f);
-	const float shine = 4.0f;
-	float3 eyedir = normalize(eye - pos.xyz);
-	 //反射光ベクトル
-	float3 reflect = normalize( + 2.0f * dot(lightdir, normal) * normal - lightdir);
-	float3 specular = pow(saturate(dot(reflect, eyedir)), shine);
-	//if (specular.x < 0.0f) specular.x = 0.0f;
-	//if (specular.y < 0.0f) specular.y = 0.0f;
-	//if (specular.z < 0.0f) specular.z = 0.0f;
-
-	output.color.rgb = ((ambient + diffuse + specular) * lightcolor);
+	//全て加算する
+	output.color.rgb = (ambient + diffuse + specular) * lightcolor;
 	output.color.a = 1.0f;
 	output.uv = uv;
+	return output;
 
 	return output;
 }

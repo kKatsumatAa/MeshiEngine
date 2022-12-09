@@ -20,8 +20,17 @@ struct VSOutput
 	float2 uv : TEXCOORD;
 };
 
+
 //3D変換行列
 cbuffer ConstBufferDataTransform : register(b1)
 {
-	matrix mat;//3D変換行列
+	matrix viewproj; //ビュープロジェクション行列
+	matrix world;    //ワールド行列
+	float3 cameraPos;//カメラ座標（ワールド座標）
+}
+
+cbuffer ConstBufferDataMaterial3 : register(b3)
+{
+	float3 lightv;     //ライトへの方向ベクトル
+	float3 lightcolor; //ライトの色（RGB）
 }

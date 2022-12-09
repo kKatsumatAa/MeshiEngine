@@ -51,7 +51,7 @@ PipeLineSet pipelineSet;
 PipeLineSet pipelineSetM;
 
 //ルートパラメータの設定
-D3D12_ROOT_PARAMETER rootParams[4] = {};
+D3D12_ROOT_PARAMETER rootParams[5] = {};
 
 // パイプランステートの生成
 ComPtr < ID3D12PipelineState> pipelineState[3] = { nullptr };
@@ -67,12 +67,15 @@ ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
 	// レンダーターゲットビューのハンドルを取得
 D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
+//static
+Light* Draw::light = nullptr;
+
 
 void DrawInitialize()
 {
 	//テクスチャ用のデスクリプタヒープ初期化
 	TextureManager::GetInstance().InitializeDescriptorHeap();
-	
+
 	//図形クラスの
 	primitive.Initialize();
 
@@ -92,11 +95,16 @@ void DrawInitialize()
 	rootParams[2].Descriptor.ShaderRegister = 1;//定数バッファ番号(b1)
 	rootParams[2].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//定数バッファ2番
+	//定数バッファ3番
 	rootParams[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
 	rootParams[3].Descriptor.ShaderRegister = 2;//定数バッファ番号(b2)
 	rootParams[3].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//定数バッファ4番
+	rootParams[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams[4].Descriptor.ShaderRegister = 3;//定数バッファ番号(b3)
+	rootParams[4].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 
 
 	// パイプランステートの生成
@@ -158,7 +166,11 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 				 (float)worldMat->matWorld.m[2][0],(float)worldMat->matWorld.m[2][1],(float)worldMat->matWorld.m[2][2],(float)worldMat->matWorld.m[2][3],
 				 (float)worldMat->matWorld.m[3][0],(float)worldMat->matWorld.m[3][1],(float)worldMat->matWorld.m[3][2],(float)worldMat->matWorld.m[3][3] };
 
-		cbt.constMapTransform->mat = matW * view->matView * projection->matProjection;
+		cbt.constMapTransform->world = matW;
+		cbt.constMapTransform->viewproj = view->matView * projection->matProjection;
+		XMFLOAT3 cPos = { view->eye.x,view->eye.y,view->eye.z };
+		cbt.constMapTransform->cameraPos = cPos;
+		
 	}
 	else if (indexNum != SPRITE)//親がいない場合
 	{
@@ -168,7 +180,10 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 				 (float)worldMat->matWorld.m[2][0],(float)worldMat->matWorld.m[2][1],(float)worldMat->matWorld.m[2][2],(float)worldMat->matWorld.m[2][3],
 				 (float)worldMat->matWorld.m[3][0],(float)worldMat->matWorld.m[3][1],(float)worldMat->matWorld.m[3][2],(float)worldMat->matWorld.m[3][3] };
 
-		cbt.constMapTransform->mat = matW * view->matView * projection->matProjection;
+		cbt.constMapTransform->world = matW;
+		cbt.constMapTransform->viewproj = view->matView * projection->matProjection;
+		XMFLOAT3 cPos = { view->eye.x,view->eye.y,view->eye.z };
+		cbt.constMapTransform->cameraPos = cPos;
 	}
 
 
@@ -197,6 +212,8 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbTriangleView);
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+
+		light->Draw(4);
 
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewTriangle);
 
@@ -242,6 +259,8 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
+		light->Draw(4);
+
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewBox);
 
 		//04_02
@@ -284,6 +303,8 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbCubeView);
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+
+		light->Draw(4);
 
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewCube);
 
@@ -328,6 +349,8 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
+		light->Draw(4);
+
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewLine);
 
 		//04_02
@@ -370,6 +393,8 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbCircleView);
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+
+		light->Draw(4);
 
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewCircle);
 
@@ -415,6 +440,8 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
+		light->Draw(4);
+
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewSphere);
 
 		//04_02
@@ -437,6 +464,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		SpriteCommonBeginDraw(&pipelineSet);
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+
 
 		//04_02
 		{
@@ -464,6 +492,8 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, model->constBuffMaterial2->GetGPUVirtualAddress());
+
+		light->Draw(4);
 
 		//04_02
 		{

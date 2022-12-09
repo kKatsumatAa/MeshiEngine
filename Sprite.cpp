@@ -108,7 +108,10 @@ void Sprite::Update(const Vec3& pos, const float& scale,
 	projection.matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width,
 		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 
-	cbt->constMapTransform->mat = matW * view.matView * projection.matProjection;
+	cbt->constMapTransform->world = matW;
+	cbt->constMapTransform->viewproj = view.matView * projection.matProjection;
+	XMFLOAT3 cPos = { view.eye.x,view.eye.y,view.eye.z };
+	cbt->constMapTransform->cameraPos = cPos;
 }
 
 void Sprite::UpdateClipping(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
@@ -189,7 +192,10 @@ void Sprite::UpdateClipping(const Vec3& leftTop, const float& scale, const XMFLO
 	projection.matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width,
 		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
 
-	cbt->constMapTransform->mat = matW * view.matView * projection.matProjection;
+	cbt->constMapTransform->world = matW;
+	cbt->constMapTransform->viewproj = view.matView * projection.matProjection;
+	XMFLOAT3 cPos = { view.eye.x,view.eye.y,view.eye.z };
+	cbt->constMapTransform->cameraPos = cPos;
 }
 
 

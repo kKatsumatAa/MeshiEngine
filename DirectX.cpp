@@ -371,3 +371,26 @@ void Directx::DrawUpdate2()
 
 
 
+//------------------------------------------------------------------------------
+void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size)
+{
+	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	resDesc.Width = size;						//頂点データ全体のサイズ
+	resDesc.Height = 1;
+	resDesc.DepthOrArraySize = 1;
+	resDesc.MipLevels = 1;
+	resDesc.SampleDesc.Count = 1;
+	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+}
+
+void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, ID3D12Resource** buff)
+{
+	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
+		&heap,//ヒープ設定
+		D3D12_HEAP_FLAG_NONE,
+		&resource,//リソース設定
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(buff));
+	assert(SUCCEEDED(Directx::GetInstance().result));
+}
