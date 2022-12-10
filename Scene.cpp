@@ -101,6 +101,11 @@ void Scene::Update(SoundData* soundData)
 	Model.worldMat->trans.y = Model.worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
 	Model.worldMat->SetWorld();
 
+	viewMat.eye.x = viewMat.eye.x + (KeyboardInput::GetInstance().keyPush(DIK_D) - KeyboardInput::GetInstance().keyPush(DIK_A));
+	viewMat.eye.y = viewMat.eye.y + (KeyboardInput::GetInstance().keyPush(DIK_W) - KeyboardInput::GetInstance().keyPush(DIK_S));
+	viewMat.target = viewMat.eye + Vec3{0, 0, 1.0f};
+	viewMat.SetMat();
+
 #ifdef _DEBUG
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_E)) ChangeState(new SceneTitle);
 #endif 
