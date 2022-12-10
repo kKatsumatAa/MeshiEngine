@@ -22,7 +22,7 @@ void SceneTitle::Update(SoundData* soundData)
 
 void SceneTitle::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 {
-	
+
 }
 
 
@@ -92,7 +92,7 @@ void Scene::Initialize(SoundData* soundData)
 	Model[1].worldMat->trans = { 10.0f, -10.0f, 0 };
 	Model[2].CreateModel("ufo_");
 	Model[2].worldMat->scale = { 5.0f, 5.0f, 5.0f };
-	Model[2].worldMat->rot = { pi/2.0f, 0, 0 };
+	Model[2].worldMat->rot = { pi / 2.0f, 0, 0 };
 	Model[2].worldMat->trans = { 10.0f, 10.0f, 0 };
 
 	Model[3].CreateModel("ufo_");
@@ -107,25 +107,17 @@ void Scene::Update(SoundData* soundData)
 {
 	state->Update(soundData);
 
-	for (int i = 0; i < 4; i++)
-	{
-		if (i == 2)
-		{
-			Model[i].worldMat->rot.x = Model[i].worldMat->rot.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT))*0.01f;
-			Model[i].worldMat->rot.y = Model[i].worldMat->rot.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN))*0.01f;
-		}
-		else
-		{
-			Model[i].worldMat->trans.x = Model[i].worldMat->trans.x + (KeyboardInput::GetInstance().keyPush(DIK_RIGHT) - KeyboardInput::GetInstance().keyPush(DIK_LEFT));
-			Model[i].worldMat->trans.y = Model[i].worldMat->trans.y + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
-		}
-		Model[i].worldMat->SetWorld();
-	}
+	viewMat.eye.x = viewMat.eye.x + (KeyboardInput::GetInstance().keyPush(DIK_D) - KeyboardInput::GetInstance().keyPush(DIK_A));
+	viewMat.eye.y = viewMat.eye.y + (KeyboardInput::GetInstance().keyPush(DIK_W) - KeyboardInput::GetInstance().keyPush(DIK_S));
+	viewMat.eye.z = viewMat.eye.z + (KeyboardInput::GetInstance().keyPush(DIK_UP) - KeyboardInput::GetInstance().keyPush(DIK_DOWN));
+	viewMat.target = viewMat.eye + Vec3{0, 0, 1.0f};
+	viewMat.SetMat();
+
 
 #ifdef _DEBUG
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_E)) ChangeState(new SceneTitle);
 #endif 
-	
+
 }
 
 void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
