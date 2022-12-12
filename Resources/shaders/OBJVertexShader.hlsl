@@ -8,27 +8,12 @@ VSOutput main(float4 pos : POSITION, float3 normal : NORMAL,
 	float4 wnormal = normalize(mul(world, float4(normal, 0)));
 	float4 wpos = mul(world, pos);
 
-	//ピクセルシェーダに渡す値
+	//ピクセルシェーダに渡す値(ラスタライザで各ピクセルごとのワールド法線、座標が計算される)
 	VSOutput output;//ピクセルシェーダに渡す値
 	output.svpos = mul(mul(viewproj, world), pos);
-
-	//環境反射光
-	float3 ambient = m_ambient;
-	//拡散反射光
-	float3 diffuse = dot(lightv, wnormal.xyz) * m_diffuse;
-	//光沢度
-	const float shininess = 4.0f;
-	//頂点から視点への方向ベクトル
-	float3 eyedir = normalize(cameraPos - wpos.xyz);
-	//反射光ベクトル//一個目のlightdirは-しない
-	float3 reflect = normalize(-lightv + 2 * dot(lightv, wnormal.xyz) * wnormal.xyz);
-	//鏡面反射光（saturate->0~1へのクランプ）
-	float3 specular = pow(saturate(dot(reflect, eyedir)), shininess) * m_specular;
-
-	//全て加算する
-	output.color.rgb = (ambient + diffuse + specular) * lightcolor;
-	output.color.a = m_alpha;
-	output.color.a = m_alpha;
+	output.worldpos = wpos;
+	output.normal = wnormal.xyz;
 	output.uv = uv;
+
 	return output;
 }

@@ -6,20 +6,29 @@ SamplerState smp : register(s0);      //0番スロットに設定されたサンプラー
 
 float4 main(VSOutput input) : SV_TARGET
 {
-	//float3 light = normalize(float3(1,-1,1));//右下奥向きのライト
-	//float  diffuse = saturate(dot(-light, input.normal));//diffuseを[0,1]の範囲にClampする
-	//float  brightness = diffuse + 0.3f;//アンビエント項を0.3として計算
+	//テクスチャマッピング
+	float4 texcolor = tex.Sample(smp, input.uv);
 
-	//テクスチャ
-	float4 texcolor = float4(tex.Sample(smp, input.uv));
+	//シェーディングによる色
+	float4 shadecolor;
+	//光沢度
+	const float shininess = 4.0f;
+	//頂点から視点への方向ベクトル
+	float3 eyedir = normalize(cameraPos - input.worldpos.xyz);
+	//ライトに向かうベクトルと法線の内積
+	float3 dotlightnormal = dot(lightv, input.normal);
+	//反射光ベクトル
+	float3 reflect = normalize(-lightv + 2 * dotlightnormal * input.normal);
+	//環境反射光
+	float3 ambient = 0.06f;
+	//拡散反射光
+	float3 diffuse = dotlightnormal * 0.8f;
+	//鏡面反射光（saturate->0~1へのクランプ）
+	float3 specular = pow(saturate(dot(reflect, eyedir)), shininess) * 0.1f;
+	//全て加算
+	shadecolor.rgb = (ambient + diffuse + specular) * lightcolor;
+	shadecolor.a = 1.0f;
 
-	/*if (texcolor.a != 0&& texcolor.r == 0&& texcolor.g == 0&& texcolor.b == 0)
-	{
-		return float4(color.rgb * input.color.rgb, color.a);
-	}
-	else*/
-	{
-		return float4(texcolor.rgb /** brightness*/, texcolor.a) * 
-			(float4(color.r * input.color.r, color.g * input.color.g, color.b * input.color.b, color.a));//輝度をRGBに代入して出力
-	}
+	//シェーディングによる色で描画
+	return shadecolor * texcolor * color;
 }

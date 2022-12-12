@@ -188,9 +188,11 @@ void Scene::Update(SoundData* soundData)
 		draw[2].worldMat->rot.y = draw[2].worldMat->rot.y + 0.01f;
 		draw[3].worldMat->rot.y = draw[3].worldMat->rot.y + 0.01f;
 		draw[4].worldMat->rot.y = draw[4].worldMat->rot.y + 0.01f;
+		draw[6].worldMat->rot.y = draw[6].worldMat->rot.y + 0.01f;
 		draw[2].worldMat->SetWorld();
 		draw[3].worldMat->SetWorld();
 		draw[4].worldMat->SetWorld();
+		draw[6].worldMat->SetWorld();
 	}
 
 	{

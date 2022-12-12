@@ -5,19 +5,13 @@ cbuffer ConstBufferDataMaterial : register(b0)
 	float4 color;//色(RGBA)
 }
 
-//頂点シェーダーの出力構造体
-//（頂点シェーダーからピクセルシェーダーへのやり取りに使用する）
+//頂点シェーダからピクセルシェーダーへのやり取りに使用する構造体
 struct VSOutput
 {
-	//システム用頂点座標
-	float4 svpos : SV_POSITION;
-	//法線ベクトル
-	//float3 normal : NORMAL;
-	// 
-	float4 color : COLOR;
-
-	//uv値
-	float2 uv : TEXCOORD;
+	float4 svpos    : SV_POSITION;//システム用頂点座標
+	float4 worldpos : POSITION;//ワールド座標
+	float3 normal   : NORMAL;//ワールド座標
+	float2 uv       : TEXCOORD;//uv座標
 };
 
 
