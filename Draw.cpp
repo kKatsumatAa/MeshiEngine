@@ -68,7 +68,7 @@ ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
 D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 //static
-Light* Draw::light = nullptr;
+LightManager* Draw::lightManager = nullptr;
 
 
 void DrawInitialize()
@@ -213,7 +213,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
-		light->Draw(4);
+		lightManager->Draw(4);
 
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewTriangle);
 
@@ -259,7 +259,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
-		light->Draw(4);
+		lightManager->Draw(4);
 
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewBox);
 
@@ -304,7 +304,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
-		light->Draw(4);
+		lightManager->Draw(4);
 
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewCube);
 
@@ -349,7 +349,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
-		light->Draw(4);
+		lightManager->Draw(4);
 
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewLine);
 
@@ -394,7 +394,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
-		light->Draw(4);
+		lightManager->Draw(4);
 
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewCircle);
 
@@ -440,7 +440,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
-		light->Draw(4);
+		lightManager->Draw(4);
 
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewSphere);
 
@@ -491,9 +491,11 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &model->vbViewM);
 		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, model->constBuffMaterial2->GetGPUVirtualAddress());
 
-		light->Draw(4);
+		lightManager->Draw(4);
 
 		//04_02
 		{

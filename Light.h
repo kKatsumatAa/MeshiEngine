@@ -1,6 +1,7 @@
 #pragma once
-#include "DirectX.h"
-#include "PointLight.h"
+#include<DirectXMath.h>
+#include <wrl.h>
+using namespace Microsoft::WRL;
 
 /// <summary>
 /// 照明(様々なライトを作るときはポリモーフィズムで継承するといい)
@@ -17,25 +18,15 @@ private://エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-private://定数
-//点光源の数
-	static const int PointLightNum = 3;
-
-private://静的メンバ変数
-	static ID3D12Device* device_;
 
 private://メンバ変数
-	//定数バッファ
-	ComPtr<ID3D12Resource> constBuff;
 	//ライト光線方向
 	XMVECTOR lightdir = { 1,0,0,0 };
 	//ライト色
 	XMFLOAT3 lightColor = { 1,1,1 };
-	//ダーティフラグ
-	bool dirty = false;
+	// 有効フラグ
+	bool active = false;
 
-	//点光源の配列
-	PointLight pointLights[PointLightNum];
 
 public://サブクラス
 	//定数バッファ用データ構造体
@@ -43,56 +34,45 @@ public://サブクラス
 	{
 		XMVECTOR lightv;     //ライトの方向を表すベクトル
 		XMFLOAT3 lightColor; //ライトの色
-
-		//点光源用
-		PointLight::ConstBufferData pointLights[PointLightNum];
+		unsigned int active; //有効か
 	};
 
 
-
-private:
-	/// <summary>
-/// 定数バッファ転送
-/// </summary>
-	void TransferConstBuffer();
-
-public://静的メンバ関数
-	static void StaticInitialize();
-
 public:
-	void Initialize();
-
-	/// <summary>
-	/// 更新
-	/// </summary>
-	void Update();
-
-	/// <summary>
-	/// 描画（描画はせず、定数バッファビューのセットのみ行う）
-	/// </summary>
-	/// <param name="rootParamaterIndex"></param>
-	void Draw(UINT rootParamaterIndex);
-
-	/// <summary>
-	/// インスタンス生成
-	/// </summary>
-	static Light* Create();
-
 	/// <summary>
 	/// ライト方向をセット
 	/// </summary>
-	/// <param name="lightdir"></param>
-	void SetLightDir(const XMVECTOR& lightdir);
+	/// <param name="lightdir">ライト方向</param>
+	inline void SetLightDir(const XMVECTOR& lightdir) { this->lightdir = DirectX::XMVector3Normalize(lightdir); }
 
 	/// <summary>
-	/// ライトの色をセット
+	/// ライト方向を取得
 	/// </summary>
-	/// <param name="lightcolor"></param>
-	void SetLightColor(const XMFLOAT3& lightcolor);
+	/// <returns>ライト方向</returns>
+	inline const XMVECTOR& GetLightDir() { return lightdir; }
 
-	void SetPointLightActive(int index, bool active);
-		void SetPointLightPos(int index, const XMFLOAT3& pos);
-		void SetPointLightColor(int index, const XMFLOAT3& color);
-		void SetPointLightAtten(int index, const XMFLOAT3& atten);
+	/// <summary>
+	/// ライト色をセット
+	/// </summary>
+	/// <param name="lightcolor">ライト色</param>
+	inline void SetLightColor(const XMFLOAT3& lightcolor) { this->lightColor = lightcolor; }
+
+	/// <summary>
+	/// ライト色を取得
+	/// </summary>
+	/// <returns>ライト色</returns>
+	inline const XMFLOAT3& GetLightColor() { return lightColor; }
+
+	/// <summary>
+	/// 有効フラグをセット
+	/// </summary>
+	/// <param name="active">有効フラグ</param>
+	inline void SetActive(bool active) { this->active = active; }
+
+	/// <summary>
+	/// 有効チェック
+	/// </summary>
+	/// <returns>有効フラグ</returns>
+	inline bool IsActive() { return active; }
 };
 

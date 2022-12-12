@@ -79,7 +79,7 @@ Scene::~Scene()
 	}
 	imGuiManager->Finalize();
 	delete imGuiManager;
-	delete light;
+	delete lightManager;
 }
 
 void Scene::ChangeState(SceneState* state)
@@ -106,7 +106,7 @@ void Scene::Initialize(SoundData* soundData)
 	draw[1].worldMat->trans = { 10.0f, -10.0f, 0 };
 	model[2] = Model::LoadFromOBJ("chr_sword");
 	draw[2].worldMat->scale = { 15,15,15 };
-	draw[2].worldMat->trans = { 10.0f, -10.0f, 0 };
+	draw[2].worldMat->trans = { 5.0f, -10.0f, 0 };
 	model[3] = Model::LoadFromOBJ("sphere", true);
 	draw[3].worldMat->scale = { 5,5,5 };
 	model[4] = Model::LoadFromOBJ("sphere");
@@ -125,16 +125,19 @@ void Scene::Initialize(SoundData* soundData)
 	state->SetScene(this);
 
 	//Light
-	Light::StaticInitialize();
+	LightManager::StaticInitialize();
 	//インスタンス生成
-	light = Light::Create();
+	lightManager = LightManager::Create();
 	//ライト色を設定
-	light->SetLightColor({ 1,1,1 });
+	lightManager->SetDirLightColor(0,{ 1,1,1 });
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
-	Draw::SetLight(light);
+	Draw::SetLight(lightManager);
 
 	//点光源
-	light->SetPointLightActive(0, true);
+	lightManager->SetDirLightActive(0, false);
+	lightManager->SetDirLightActive(1, false);
+	lightManager->SetDirLightActive(2, false);
+	lightManager->SetPointLightActive(0, true);
 	pointLightPos[0] = 0.5f;
 	pointLightPos[1] = 1.0f;
 	pointLightPos[2] = 0.0f;
@@ -147,8 +150,6 @@ void Scene::Update(SoundData* soundData)
 	imGuiManager->Begin();
 
 	{
-		ImGui::SetNextWindowSize({ 500,100 });
-		ImGui::SliderFloat2("position", pos, 0.0f, WindowsApp::GetInstance().window_height, "%4.1f");
 		//デモ
 		ImGui::ShowDemoWindow();
 
@@ -185,15 +186,17 @@ void Scene::Update(SoundData* soundData)
 
 
 			//点光源
-			light->SetPointLightPos(0, XMFLOAT3(pointLightPos));
-			light->SetPointLightColor(0, XMFLOAT3(pointLightColor));
-			light->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
+			lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
+			lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
+			lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
 
+			static bool a=true;
+			ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
 			ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
 			ImGui::InputFloat3("pointLightPos", pointLightPos);
 			ImGui::InputFloat3("pointLight", pointLightAtten);
-
-			light->Update();
+			ImGui::End();
+			lightManager->Update();
 		}
 	}
 
@@ -244,7 +247,7 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	state->Draw(textureHandle, textureNumHundle);
 
 	//スプライト
-	draw[5].DrawBoxSprite({ pos[0],pos[1],0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, texhandle[2]);
+	//draw[5].DrawBoxSprite({ pos[0],pos[1],0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, texhandle[2]);
 	/*draw[8].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.5f,0.5f }, false);
 	draw[9].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.0f,0.0f },false,true);*/
 

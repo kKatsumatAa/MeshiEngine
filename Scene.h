@@ -34,7 +34,7 @@ public:
 	Model* model[5];
 
 	Draw draw[10];
-	
+
 
 	Sphere tama[2];
 	Plane plane;
@@ -55,10 +55,10 @@ public:
 	float color = 0;//
 
 	//ƒ‰ƒCƒg
-	Light* light = nullptr;
+	LightManager* lightManager = nullptr;
 
 	float pointLightPos[3] = { 0,0,0 };
-	float pointLightColor[3] = { 1,1,1 };
+	float pointLightColor[3] = { 1.0f,1.0f,1.0f };
 	float pointLightAtten[3] = { 0.3f,0.1f,0.1f };
 
 public:

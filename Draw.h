@@ -2,7 +2,7 @@
 
 #include "Util.h"
 #include "Primitive.h"
-#include "Light.h"
+#include "LightManager.h"
 
 
 /// <summary>
@@ -39,7 +39,7 @@ private:
 	Sprite sprite;
 
 	//ライト
-	static Light* light;
+	static LightManager* lightManager;
 
 private:
 	//--------------------
@@ -60,35 +60,35 @@ public:
 
 
 	void DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-		WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color = { NULL,NULL,NULL,NULL },
+		WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f },
 		const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 
 	void DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection, /*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,*/
-		XMFLOAT4 color = { NULL,NULL,NULL,NULL },
+		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f },
 		const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 
-	void DrawBoxSprite(const Vec3& pos, const float& scale, XMFLOAT4 color = { NULL,NULL,NULL,NULL }
+	void DrawBoxSprite(const Vec3& pos, const float& scale, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }
 		, const UINT64 textureHandle = NULL, const Vec2& ancorUV = { 0,0 }, const bool& isReverseX = false, const bool& isReverseY = false,
 		float rotation = 0.0f, const int& pipelineNum = 0);
 
 	void DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, bool isPosLeftTop = true,
+		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, bool isPosLeftTop = true,
 		const bool& isReverseX = false, const bool& isReverseY = false, float rotation = 0.0f, const int& pipelineNum = 0);
 	
 	void DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
-		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	
 	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */WorldMat* world, ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color
 		, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	
 	void DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
-		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	
 	void DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
-		XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	
 	void DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
-		Model* model, XMFLOAT4 color = { NULL,NULL,NULL,NULL }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+		Model* model, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 
 	//色を返す
 	XMFLOAT4 GetColor() { return constMapMaterial->color; }
@@ -96,7 +96,7 @@ public:
 	/// ライトのセット
 	/// </summary>
 	/// <param name="light"></param>
-	static void SetLight(Light* light) { Draw::light = light; }
+	static void SetLight(LightManager* lightManager) { Draw::lightManager = lightManager; }
 
 private:
 	void constBuffTransfer(const XMFLOAT4& plusRGBA);
