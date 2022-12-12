@@ -17,6 +17,10 @@ private://エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+private://定数
+//点光源の数
+	static const int PointLightNum = 3;
+
 private://静的メンバ変数
 	static ID3D12Device* device_;
 
@@ -30,9 +34,8 @@ private://メンバ変数
 	//ダーティフラグ
 	bool dirty = false;
 
-private://定数
-	//点光源の数
-	static const int PointLightNum = 3;
+	//点光源の配列
+	PointLight pointLights[PointLightNum];
 
 public://サブクラス
 	//定数バッファ用データ構造体
@@ -40,6 +43,9 @@ public://サブクラス
 	{
 		XMVECTOR lightv;     //ライトの方向を表すベクトル
 		XMFLOAT3 lightColor; //ライトの色
+
+		//点光源用
+		PointLight::ConstBufferData pointLights[PointLightNum];
 	};
 
 
@@ -83,5 +89,10 @@ public:
 	/// </summary>
 	/// <param name="lightcolor"></param>
 	void SetLightColor(const XMFLOAT3& lightcolor);
+
+	void SetPointLightActive(int index, bool active);
+		void SetPointLightPos(int index, const XMFLOAT3& pos);
+		void SetPointLightColor(int index, const XMFLOAT3& color);
+		void SetPointLightAtten(int index, const XMFLOAT3& atten);
 };
 

@@ -30,6 +30,9 @@ void Light::Initialize()
 
 	//定数バッファへデータ転送
 	TransferConstBuffer();
+
+	//点光源
+	PointLight::ConstBufferData pointLights[PointLightNum];
 }
 
 void Light::TransferConstBuffer()
@@ -42,8 +45,32 @@ void Light::TransferConstBuffer()
 	{
 		constMap->lightv = -lightdir;
 		constMap->lightColor = lightColor;
+
+		//点光源
+		for (int i = 0; i < PointLightNum; i++)
+		{
+			//ライトが有効なら設定を転送
+			if (pointLights[i].GetActive())
+			{
+				constMap->pointLights[i].active = 1;
+				constMap->pointLights[i].lightpos = pointLights[i].GetLightPos();
+				constMap->pointLights[i].lightcolor = 
+					pointLights[i].GetLightColor();
+				constMap->pointLights[i].lightatten =
+					pointLights[i].GetLightAtten();
+			}
+
+			//ライトが無効ならライト色を0に
+			else
+			{
+				constMap->pointLights[i].active = 0;
+			}
+		}
+
 		constBuff->Unmap(0, nullptr);
 	}
+
+	
 }
 
 void Light::SetLightDir(const XMVECTOR& lightdir)
@@ -59,6 +86,39 @@ void Light::SetLightColor(const XMFLOAT3& lightcolor)
 	dirty = true;
 }
 
+//-------------------------------------------------------------
+void Light::SetPointLightActive(int index, bool active)
+{
+	assert(0 <= index && index < PointLightNum);
+	pointLights[index].SetActive(active);
+}
+
+void Light::SetPointLightPos(int index, const XMFLOAT3& pos)
+{
+	assert(0 <= index && index < PointLightNum);
+	pointLights[index].SetLightPos(pos);
+
+	dirty = true;
+}
+
+void Light::SetPointLightColor(int index, const XMFLOAT3& color)
+{
+	assert(0 <= index && index < PointLightNum);
+	pointLights[index].SetLightColor(color);
+
+	dirty = true;
+}
+
+void Light::SetPointLightAtten(int index, const XMFLOAT3& atten)
+{
+	assert(0 <= index && index < PointLightNum);
+	pointLights[index].SetLightAtten(atten);
+
+	dirty = true;
+}
+
+
+//-----------------------------------------------------------------------
 void Light::Update()
 {
 	//値の更新があった時だけ定数バッファに転送

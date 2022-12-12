@@ -132,6 +132,12 @@ void Scene::Initialize(SoundData* soundData)
 	light->SetLightColor({ 1,1,1 });
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
 	Draw::SetLight(light);
+
+	//点光源
+	light->SetPointLightActive(0, true);
+	pointLightPos[0] = 0.5f;
+	pointLightPos[1] = 1.0f;
+	pointLightPos[2] = 0.0f;
 }
 
 void Scene::Update(SoundData* soundData)
@@ -148,34 +154,44 @@ void Scene::Update(SoundData* soundData)
 
 		{
 			//ライト
-			//光線方向初期化
-			static XMVECTOR lightDir = { 0,1,5,0 };
+			////光線方向初期化
+			//static XMVECTOR lightDir = { 0,1,5,0 };
 
-			if (KeyboardInput::GetInstance().keyPush(DIK_UP)) { lightDir.m128_f32[1] += 1.0f; }
-			if (KeyboardInput::GetInstance().keyPush(DIK_DOWN)) { lightDir.m128_f32[1] -= 1.0f; }
-			if (KeyboardInput::GetInstance().keyPush(DIK_RIGHT)) { lightDir.m128_f32[0] += 1.0f; }
-			if (KeyboardInput::GetInstance().keyPush(DIK_LEFT)) { lightDir.m128_f32[0] -= 1.0f; }
+			//if (KeyboardInput::GetInstance().keyPush(DIK_UP)) { lightDir.m128_f32[1] += 1.0f; }
+			//if (KeyboardInput::GetInstance().keyPush(DIK_DOWN)) { lightDir.m128_f32[1] -= 1.0f; }
+			//if (KeyboardInput::GetInstance().keyPush(DIK_RIGHT)) { lightDir.m128_f32[0] += 1.0f; }
+			//if (KeyboardInput::GetInstance().keyPush(DIK_LEFT)) { lightDir.m128_f32[0] -= 1.0f; }
 
-			light->SetLightDir(lightDir);
+			//light->SetLightDir(lightDir);
 
-			std::ostringstream debugstr;
-			debugstr << "lightDirFactor("
-				<< std::fixed << std::setprecision(2)
-				<< lightDir.m128_f32[0] << ","
-				<< lightDir.m128_f32[1] << ","
-				<< lightDir.m128_f32[2] << ")";
-			debugText.Print(debugstr.str(), 50, 50, 1.0f);
+			//std::ostringstream debugstr;
+			//debugstr << "lightDirFactor("
+			//	<< std::fixed << std::setprecision(2)
+			//	<< lightDir.m128_f32[0] << ","
+			//	<< lightDir.m128_f32[1] << ","
+			//	<< lightDir.m128_f32[2] << ")";
+			//debugText.Print(debugstr.str(), 50, 50, 1.0f);
 
-			debugstr.str("");
-			debugstr.clear();
+			//debugstr.str("");
+			//debugstr.clear();
 
-			const XMFLOAT3& cameraPos = { viewMat.eye.x,viewMat.eye.y,viewMat.eye.z };
-			debugstr << "cameraPos("
-				<< std::fixed << std::setprecision(2)
-				<< lightDir.m128_f32[0] << ","
-				<< lightDir.m128_f32[1] << ","
-				<< lightDir.m128_f32[2] << ")";
-			debugText.Print(debugstr.str(), 50, 70, 1.0f);
+			//const XMFLOAT3& cameraPos = { viewMat.eye.x,viewMat.eye.y,viewMat.eye.z };
+			//debugstr << "cameraPos("
+			//	<< std::fixed << std::setprecision(2)
+			//	<< lightDir.m128_f32[0] << ","
+			//	<< lightDir.m128_f32[1] << ","
+			//	<< lightDir.m128_f32[2] << ")";
+			//debugText.Print(debugstr.str(), 50, 70, 1.0f);
+
+
+			//点光源
+			light->SetPointLightPos(0, XMFLOAT3(pointLightPos));
+			light->SetPointLightColor(0, XMFLOAT3(pointLightColor));
+			light->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
+
+			ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
+			ImGui::InputFloat3("pointLightPos", pointLightPos);
+			ImGui::InputFloat3("pointLight", pointLightAtten);
 
 			light->Update();
 		}

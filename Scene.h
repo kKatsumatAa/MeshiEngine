@@ -57,6 +57,10 @@ public:
 	//ƒ‰ƒCƒg
 	Light* light = nullptr;
 
+	float pointLightPos[3] = { 0,0,0 };
+	float pointLightColor[3] = { 1,1,1 };
+	float pointLightAtten[3] = { 0.3f,0.1f,0.1f };
+
 public:
 	~Scene();
 	void ChangeState(SceneState* state);
