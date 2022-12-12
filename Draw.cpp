@@ -80,27 +80,27 @@ void DrawInitialize()
 	primitive.Initialize();
 
 	//ルートパラメータの設定
-	//定数バッファ0番
+	//定数バッファ0番（色）
 	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
 	rootParams[0].Descriptor.ShaderRegister = 0;//定数バッファ番号(b0)
 	rootParams[0].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//テクスチャレジスタ0番
+	//テクスチャレジスタ0番（テクスチャ）
 	rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
 	rootParams[1].DescriptorTable.pDescriptorRanges = &TextureManager::GetInstance().descriptorRange;//デスクリプタレンジ
 	rootParams[1].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//定数バッファ1番
+	//定数バッファ1番(行列)
 	rootParams[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
 	rootParams[2].Descriptor.ShaderRegister = 1;//定数バッファ番号(b1)
 	rootParams[2].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//定数バッファ3番
+	//定数バッファ2番（マテリアル）
 	rootParams[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
 	rootParams[3].Descriptor.ShaderRegister = 2;//定数バッファ番号(b2)
 	rootParams[3].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//定数バッファ4番
+	//定数バッファ3番(ライト用)
 	rootParams[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
 	rootParams[4].Descriptor.ShaderRegister = 3;//定数バッファ番号(b3)
 	rootParams[4].Descriptor.RegisterSpace = 0;//デフォルト値

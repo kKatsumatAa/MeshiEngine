@@ -1,5 +1,6 @@
 #pragma once
 #include "DirectX.h"
+#include "PointLight.h"
 
 /// <summary>
 /// 照明(様々なライトを作るときはポリモーフィズムで継承するといい)
@@ -28,6 +29,10 @@ private://メンバ変数
 	XMFLOAT3 lightColor = { 1,1,1 };
 	//ダーティフラグ
 	bool dirty = false;
+
+private://定数
+	//点光源の数
+	static const int PointLightNum = 3;
 
 public://サブクラス
 	//定数バッファ用データ構造体

@@ -228,7 +228,7 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	state->Draw(textureHandle, textureNumHundle);
 
 	//スプライト
-	draw[5].DrawClippingBoxSprite({ pos[0],pos[1],0 }, 1.0f, { 0,0 }, { 1.0f,1.0f }, { 1.0f,1.0f,1.0f,1.0f }, texhandle[2], false, false, false, rot);
+	draw[5].DrawBoxSprite({ pos[0],pos[1],0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, texhandle[2]);
 	/*draw[8].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.5f,0.5f }, false);
 	draw[9].DrawBoxSprite({ 100,500,0 }, scale, { 1.0f,1.0f,0,1.0f }, texhandle[2], { 0.0f,0.0f },false,true);*/
 
