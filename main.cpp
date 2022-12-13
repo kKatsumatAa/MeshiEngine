@@ -16,25 +16,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	MSG msg{};	//メッセージ
 
-	//画像用ハンドル
-	UINT64 textureHandle[30] = {0};
-	{
-		TextureManager::LoadGraph(L"Resources/image/white.png", textureHandle[0]);
-		TextureManager::LoadGraph(L"Resources/image/particle.png", textureHandle[1]);
-	}
-
-	//数字の画像
-	UINT64 textureNumHundle[12];
-
-	//音データ
-	SoundData soundData[10];
-
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
 
 	//シーン
 	Scene* scene = new Scene();
-	scene->Initialize(soundData);
+	scene->Initialize();
 
 	//描画初期化処理-------------
 
@@ -55,11 +42,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Directx::GetInstance().DrawUpdate({ 0.1f,0.25f, 0.5f,0.0f });
 
 //更新処理
-		scene->Update(soundData);
+		scene->Update();
 		
 
 // 4.描画コマンドここから　//-----------
-		scene->Draw(textureHandle, textureNumHundle);
+		scene->Draw();
 
 // 4.描画コマンドここまで //
 
@@ -71,10 +58,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 	delete scene;
-
-	//音データ解放
-	Directx::GetInstance().xAudio2.Reset();
-	//SoundUnLoad(&soundData[0]);
 	
 
 	//ウィンドウクラスを登録解除

@@ -17,12 +17,12 @@ void SceneTitle::Initialize()
 
 }
 
-void SceneTitle::Update(SoundData* soundData)
+void SceneTitle::Update()
 {
 	/*if (1){scene->ChangeState(new SceneGame);}*/
 }
 
-void SceneTitle::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
+void SceneTitle::Draw()
 {
 
 }
@@ -36,13 +36,13 @@ void SceneGame::Initialize()
 
 }
 
-void SceneGame::Update(SoundData* soundData)
+void SceneGame::Update()
 {
 	//シーン遷移
 	//if (1) scene->ChangeState(new SceneEnd);
 }
 
-void SceneGame::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
+void SceneGame::Draw()
 {
 
 }
@@ -56,12 +56,12 @@ void SceneEnd::Initialize()
 
 }
 
-void SceneEnd::Update(SoundData* soundData)
+void SceneEnd::Update()
 {
 	//if (1) scene->ChangeState(new SceneTitle);
 }
 
-void SceneEnd::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
+void SceneEnd::Draw()
 {
 
 }
@@ -80,6 +80,9 @@ Scene::~Scene()
 	imGuiManager->Finalize();
 	delete imGuiManager;
 	delete lightManager;
+	//音データ解放
+	Sound::GetInstance().xAudio2.Reset();
+	Sound::SoundUnLoad(&soundData[0]);
 }
 
 void Scene::ChangeState(SceneState* state)
@@ -90,10 +93,15 @@ void Scene::ChangeState(SceneState* state)
 	state->Initialize();
 }
 
-void Scene::Initialize(SoundData* soundData)
+void Scene::Initialize()
 {
-	this->soundData = soundData;
+	//音
+	soundData[0] = Sound::SoundLoadWave("Resources/sound/a.wav", true);
+	soundData[1] = Sound::SoundLoadWave("Resources/sound/BGM.wav", false);
 
+	Sound::SoundPlayWave(soundData[1], 1.0f, true);
+
+	//画像
 	TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
 	TextureManager::LoadGraph(L"Resources/image/white.png", texhandle[0]);
 	TextureManager::LoadGraph(L"Resources/image/particle.png", texhandle[1]);
@@ -143,9 +151,8 @@ void Scene::Initialize(SoundData* soundData)
 	pointLightPos[2] = 0.0f;
 }
 
-void Scene::Update(SoundData* soundData)
+void Scene::Update()
 {
-
 	//imgui
 	imGuiManager->Begin();
 
@@ -200,7 +207,7 @@ void Scene::Update(SoundData* soundData)
 		}
 	}
 
-	state->Update(soundData);
+	state->Update();
 
 	//move
 	{
@@ -227,6 +234,11 @@ void Scene::Update(SoundData* soundData)
 		viewMat.SetMat();
 	}
 
+	if (KeyboardInput::GetInstance().keyTrigger(DIK_SPACE))
+	{
+		Sound::SoundPlayWave(soundData[0]);
+	}
+
 
 #ifdef _DEBUG
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_E)) ChangeState(new SceneTitle);
@@ -236,7 +248,7 @@ void Scene::Update(SoundData* soundData)
 	imGuiManager->End();
 }
 
-void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
+void Scene::Draw()
 {
 	draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat, model[0]);
 	draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat, model[1]);
@@ -244,7 +256,7 @@ void Scene::Draw(UINT64* textureHandle, UINT64* textureNumHundle)
 	draw[3].DrawModel(draw[3].worldMat, &viewMat, &projectionMat, model[3]);
 	draw[4].DrawModel(draw[4].worldMat, &viewMat, &projectionMat, model[4]);
 
-	state->Draw(textureHandle, textureNumHundle);
+	state->Draw();
 
 	//スプライト
 	//draw[5].DrawBoxSprite({ pos[0],pos[1],0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, texhandle[2]);

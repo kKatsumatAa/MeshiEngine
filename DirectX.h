@@ -12,10 +12,12 @@ using namespace DirectX;
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #include"Sound.h"
+#include <wrl.h>
+using namespace Microsoft::WRL;
 #include<chrono>
 
 
-class Directx
+class Directx final
 {
 private:
 	//成果物系
@@ -43,8 +45,7 @@ private:
 	// 1.リソースバリアで書き込み可能に変更
 	D3D12_RESOURCE_BARRIER barrierDesc{};
 
-	//音
-	IXAudio2MasteringVoice* masterVoice;
+
 
 	//外部で参照
 	ComPtr<ID3D12Device> device = nullptr;
@@ -72,8 +73,6 @@ private:
 	void UpdateFixFPS();
 
 public:
-	//音
-	ComPtr<IXAudio2> xAudio2;
 	//
 	HRESULT result;
 

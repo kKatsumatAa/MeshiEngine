@@ -10,7 +10,7 @@
 #include <wrl.h>
 
 
-class KeyboardInput
+class KeyboardInput final
 {
 private:
 	//namespaceÈ—ª

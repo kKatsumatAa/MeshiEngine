@@ -4,9 +4,7 @@
 #pragma comment(lib,"winmm.lib")
 
 
-
-
-class WindowsApp
+class WindowsApp final
 {
 private:
 	WNDCLASSEX w;

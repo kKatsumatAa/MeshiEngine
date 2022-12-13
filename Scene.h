@@ -2,6 +2,7 @@
 #include"Collision.h"
 #include"DebugText.h"
 #include"ImGuiManager.h"
+#include"Sound.h"
 
 
 class Scene;
@@ -14,8 +15,8 @@ protected:
 public:
 	virtual void Initialize() = 0;
 	void SetScene(Scene* scene);
-	virtual void Update(SoundData* soundData) = 0;
-	virtual void Draw(UINT64* textureHandle, UINT64* textureNumHundle) = 0;
+	virtual void Update() = 0;
+	virtual void Draw() = 0;
 };
 
 class Scene
@@ -25,7 +26,6 @@ private:
 	SceneState* state = nullptr;
 
 public:
-	SoundData* soundData;
 	WorldMat cameraWorldMat;
 	const Vec3 cameraPos = { 0,0,-100 };
 	ViewMat viewMat;
@@ -44,6 +44,15 @@ public:
 	//デバッグテキスト
 	UINT64 debugTextHandle;
 	UINT64 texhandle[10];
+
+	//画像用ハンドル
+	UINT64 textureHandle[30] = { 0 };
+
+	//数字の画像
+	UINT64 textureNumHundle[12];
+
+	//音データ
+	Sound::SoundData soundData[10];
 
 	//imgui
 	ImGuiManager* imGuiManager;
@@ -65,9 +74,9 @@ public:
 	~Scene();
 	void ChangeState(SceneState* state);
 
-	void Initialize(SoundData* soundData);
-	void Update(SoundData* soundData);
-	void Draw(UINT64* textureHandle, UINT64* textureNumHundle);
+	void Initialize();
+	void Update();
+	void Draw();
 };
 
 class SceneTitle : public SceneState
@@ -77,8 +86,8 @@ private:
 
 public:
 	void Initialize()override;
-	void Update(SoundData* soundData)override;
-	void Draw(UINT64* textureHandle, UINT64* textureNumHundle)override;
+	void Update()override;
+	void Draw()override;
 };
 
 class SceneGame : public SceneState
@@ -88,8 +97,8 @@ private:
 
 public:
 	void Initialize()override;
-	void Update(SoundData* soundData)override;
-	void Draw(UINT64* textureHandle, UINT64* textureNumHundle)override;
+	void Update()override;
+	void Draw()override;
 };
 
 class SceneEnd : public SceneState
@@ -99,7 +108,7 @@ private:
 
 public:
 	void Initialize()override;
-	void Update(SoundData* soundData) override;
-	void Draw(UINT64* textureHandle, UINT64* textureNumHundle) override;
+	void Update() override;
+	void Draw() override;
 
 };
