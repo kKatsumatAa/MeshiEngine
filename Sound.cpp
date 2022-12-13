@@ -1,10 +1,9 @@
 #include "Sound.h"
 
-//音
 IXAudio2MasteringVoice* Sound::masterVoice;
-//音
-ComPtr<IXAudio2> Sound::xAudio2;
-
+ComPtr<IXAudio2> Sound::xAudio2_;
+std::map < std::string, Sound::SoundData> Sound::soundDatas_;
+std::string Sound::directoryPath_ = "Resources/sound/";
 
 Sound::Sound()
 {
@@ -12,32 +11,50 @@ Sound::Sound()
 
 Sound::~Sound()
 {
+	xAudio2_.Reset();
+
+	//音声データ解放
+	std::map < std::string, Sound::SoundData>::iterator it = soundDatas_.begin();
+
+	for (; it != soundDatas_.end(); ++it)
+	{
+		//secondはペアの二つ目
+		UnLoad(&it->second);
+	}
+	soundDatas_.clear();
 }
 
-void Sound::Initialize()
+void Sound::Initialize(const std::string& directoryPath_)
 {
+	Sound::directoryPath_ = directoryPath_;
+
 	HRESULT result;
 
 	// XAudioエンジンのインスタンスを生成
-	result = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
+	result = XAudio2Create(&xAudio2_, 0, XAUDIO2_DEFAULT_PROCESSOR);
 	if FAILED(result) {
 		assert(0);
 	}
 
 	// マスターボイスを生成
-	result = xAudio2->CreateMasteringVoice(&masterVoice);
+	result = xAudio2_->CreateMasteringVoice(&masterVoice);
 	if FAILED(result) {
 		assert(0);
 	}
 }
 
-Sound::SoundData Sound::SoundLoadWave(const char* filename, const bool& isConvert)
+void Sound::LoadWave(const std::string& filename, const bool& isConvert)
 {
+	std::string fullpath = directoryPath_ + filename;
+
+	//同じ音をロードしていないか
+	if (soundDatas_.find(fullpath) != soundDatas_.end()) { return; }
+
 	//ファイル入力ストリームのインスタンス
 	std::ifstream file;
 
 	//wavファイルをバイナリモードで開く
-	file.open(filename, std::ios_base::binary);
+	file.open(fullpath, std::ios_base::binary);
 	assert(file.is_open());
 
 	//RIFFヘッダの読み込み
@@ -117,10 +134,11 @@ Sound::SoundData Sound::SoundLoadWave(const char* filename, const bool& isConver
 	soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);//波形データ
 	soundData.bufferSize = data.size;//波形データのサイズ
 
-	return SoundData(soundData);
+	//サウンドデータを連想配列に格納(複製してセットでマップに格納)
+	soundDatas_.insert(std::make_pair(fullpath, soundData));
 }
 
-void Sound::SoundUnLoad(SoundData* soundData)
+void Sound::UnLoad(SoundData* soundData)
 {
 	//バッファのメモリ開放
 	delete[] soundData->pBuffer;
@@ -130,13 +148,23 @@ void Sound::SoundUnLoad(SoundData* soundData)
 	soundData->wfex = {};
 }
 
-void Sound::SoundPlayWave(SoundData& soundData, const float& volume, const bool& Loop)
+void Sound::PlayWave(const std::string& filename, const float& volume, const bool& Loop)
 {
 	HRESULT result;
 
+	std::string fullpath = directoryPath_ + filename;
+
+	//ファイル名から探す
+	std::map < std::string, Sound::SoundData>::iterator it
+		= soundDatas_.find(fullpath);
+	//未読み込みの検出
+	assert(it != soundDatas_.end());
+	//サウンドデータの参照を取得
+	SoundData& soundData = it->second;
+
 	//波形フォーマットを元にSourceVoiceの生成
 	IXAudio2SourceVoice* pSourceVoice = nullptr;
-	result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
+	result = xAudio2_->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
 	assert(SUCCEEDED(result));
 
 	//再生する波形データの設定
@@ -152,15 +180,35 @@ void Sound::SoundPlayWave(SoundData& soundData, const float& volume, const bool&
 	result = pSourceVoice->SetVolume(volume);
 	result = pSourceVoice->Start();
 
-	soundData.pSourceVoice = pSourceVoice;
+	//停止用
+	soundData.pSourceVoice.push_back(pSourceVoice);
 }
 
-void Sound::SoundStopWave(const SoundData& soundData)
+void Sound::StopWave(const std::string& filename)
 {
-	if (soundData.pSourceVoice != nullptr)
-		soundData.pSourceVoice->Stop();
-}
+	std::string fullpath = directoryPath_ + filename;
 
+	//ファイル名から探す
+	std::map < std::string, Sound::SoundData>::iterator it
+		= soundDatas_.find(fullpath);
+	//未読み込みの検出
+	assert(it != soundDatas_.end());
+
+	//そのファイル名があれば
+	SoundData& soundData_ = it->second;
+
+	if (soundData_.pSourceVoice.size() > 0)
+	{
+		for (IXAudio2SourceVoice* source : soundData_.pSourceVoice)
+		{
+			//再生中の同じ名前のをすべて止める
+			if (source != nullptr) { source->Stop(); }
+		}
+
+		//vectorを空にする
+ 		soundData_.pSourceVoice.clear();
+	}
+}
 Sound& Sound::GetInstance()
 {
 	static Sound inst; // private なコンストラクタを呼び出す。

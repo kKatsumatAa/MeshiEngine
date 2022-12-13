@@ -81,8 +81,7 @@ Scene::~Scene()
 	delete imGuiManager;
 	delete lightManager;
 	//âπÉfÅ[É^âï˙
-	Sound::GetInstance().xAudio2.Reset();
-	Sound::SoundUnLoad(&soundData[0]);
+
 }
 
 void Scene::ChangeState(SceneState* state)
@@ -96,10 +95,10 @@ void Scene::ChangeState(SceneState* state)
 void Scene::Initialize()
 {
 	//âπ
-	soundData[0] = Sound::SoundLoadWave("Resources/sound/a.wav", true);
-	soundData[1] = Sound::SoundLoadWave("Resources/sound/BGM.wav", false);//
+	Sound::LoadWave("a.wav", true);
+	Sound::LoadWave("BGM.wav", false);//
 
-	Sound::SoundPlayWave(soundData[1], 1.0f, true);
+	Sound::PlayWave("BGM.wav", 0.1f, true);
 
 	//âÊëú
 	TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
@@ -236,7 +235,13 @@ void Scene::Update()
 
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_SPACE))
 	{
-		Sound::SoundPlayWave(soundData[0]);
+		Sound::PlayWave("a.wav", 0.1f);
+		Sound::PlayWave("BGM.wav", 0.1f);
+	}
+	if (KeyboardInput::GetInstance().keyTrigger(DIK_1))
+	{
+		Sound::StopWave("a.wav");
+		Sound::StopWave("BGM.wav");
 	}
 
 

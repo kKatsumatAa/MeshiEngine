@@ -6,17 +6,18 @@
 #include <string>
 #include <wrl.h>
 using namespace Microsoft::WRL;
+#include <map>
+#include <vector>
 
 
 class Sound final
 {
-private:
-
 public:
 	//音
 	static IXAudio2MasteringVoice* masterVoice;
 	//音
-	static ComPtr<IXAudio2> xAudio2;
+	static ComPtr<IXAudio2> xAudio2_;
+
 
 public://サブクラス
 	//チャンクヘッダ
@@ -47,8 +48,14 @@ public://サブクラス
 		//バッファのサイズ
 		unsigned int bufferSize;
 		//
-		IXAudio2SourceVoice* pSourceVoice = nullptr;
+		std::vector<IXAudio2SourceVoice*> pSourceVoice = { nullptr };
 	};
+
+private:
+	//サウンドデータの連想配列
+	static std::map < std::string, SoundData> soundDatas_;
+	//サウンド格納ディレクトリ
+	static std::string directoryPath_;
 
 
 private:
@@ -57,7 +64,7 @@ private:
 
 public://メンバ関数
 
-	static void Initialize();
+	static void Initialize(const std::string& directoryPath_ = "Resources/sound/");
 
 	/// <summary>
 /// 音の読み込み（第2は基本true,読み込めない/再生されないときはfalseにする）
@@ -65,22 +72,24 @@ public://メンバ関数
 /// <param name="filename"></param>
 /// <param name="isConvert"></param>
 /// <returns></returns>
-	static SoundData SoundLoadWave(const char* filename, const bool& isConvert);
+	static void LoadWave(const std::string& filename, const bool& isConvert);
 	/// <summary>
 	/// 解放処理
 	/// </summary>
 	/// <param name="soudData"></param>
 	/// <returns></returns>
-	static void SoundUnLoad(SoundData* soundData);
+	static void UnLoad(SoundData* soundData);
+
 
 	/// <summary>
-	/// wave音データ再生
+	/// 音声再生
 	/// </summary>
-	/// <param name="xAudio2"></param>
-	/// <param name="soundData"></param>
-	static void SoundPlayWave(SoundData& soundData, const float& volume = 5.0f, const bool& Loop = false);
+	/// <param name="">wavファイル名</param>
+	/// <param name="volume">音量</param>
+	/// <param name="Loop">ループ再生</param>
+	static void PlayWave(const std::string& filename, const float& volume = 5.0f, const bool& Loop = false);
 
-	static void SoundStopWave(const SoundData& soundData);
+	static void StopWave(const std::string& filename);
 
 
 public://シングルトン
