@@ -97,7 +97,7 @@ void Scene::Initialize()
 {
 	//‰¹
 	soundData[0] = Sound::SoundLoadWave("Resources/sound/a.wav", true);
-	soundData[1] = Sound::SoundLoadWave("Resources/sound/BGM.wav", false);
+	soundData[1] = Sound::SoundLoadWave("Resources/sound/BGM.wav", false);//
 
 	Sound::SoundPlayWave(soundData[1], 1.0f, true);
 
