@@ -98,7 +98,7 @@ void Scene::Initialize()
 	Sound::LoadWave("a.wav", true);
 	Sound::LoadWave("BGM.wav", false);//
 
-	Sound::PlayWave("BGM.wav", 0.1f, true);
+	Sound::PlayWave("BGM.wav", 5.0f, true);
 
 	//‰æ‘œ
 	TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
@@ -110,14 +110,14 @@ void Scene::Initialize()
 	draw[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	model[1] = Model::LoadFromOBJ("ground");
 	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
-	draw[1].worldMat->trans = { 10.0f, -10.0f, 0 };
+	draw[1].worldMat->trans = { 10.0f, -5.0f, 0 };
 	model[2] = Model::LoadFromOBJ("chr_sword");
-	draw[2].worldMat->scale = { 15,15,15 };
-	draw[2].worldMat->trans = { 5.0f, -10.0f, 0 };
+	draw[2].worldMat->scale = { 10,10,10 };
+	draw[2].worldMat->trans = { 5.0f, -4.0f, 0 };
 	model[3] = Model::LoadFromOBJ("sphere", true);
 	draw[3].worldMat->scale = { 5,5,5 };
 	model[4] = Model::LoadFromOBJ("sphere");
-	draw[4].worldMat->scale = { 5,5,5 };
+	draw[4].worldMat->scale = { 4,4,4 };
 	draw[4].worldMat->trans = { -10.0f, 0.0f, 0 };
 
 	draw[3].worldMat->trans.x += 30.0f;
@@ -141,7 +141,7 @@ void Scene::Initialize()
 	Draw::SetLight(lightManager);
 
 	//“_ŒõŒ¹
-	lightManager->SetDirLightActive(0, false);
+	lightManager->SetDirLightActive(0, true);
 	lightManager->SetDirLightActive(1, false);
 	lightManager->SetDirLightActive(2, false);
 	lightManager->SetPointLightActive(0, true);
@@ -235,8 +235,8 @@ void Scene::Update()
 
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_SPACE))
 	{
-		Sound::PlayWave("a.wav", 0.1f);
-		Sound::PlayWave("BGM.wav", 0.1f);
+		Sound::PlayWave("a.wav");
+		Sound::PlayWave("BGM.wav");
 	}
 	if (KeyboardInput::GetInstance().keyTrigger(DIK_1))
 	{
