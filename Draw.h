@@ -88,7 +88,7 @@ public:
 		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 	
 	void DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
-		Model* model, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+		Model* model, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const int& pipelineNum = 0);
 
 	//F‚ð•Ô‚·
 	XMFLOAT4 GetColor() { return constMapMaterial->color; }

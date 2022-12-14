@@ -106,6 +106,9 @@ void Scene::Initialize()
 	TextureManager::LoadGraph(L"Resources/image/particle.png", texhandle[1]);
 	TextureManager::LoadGraph(L"Resources/image/p.jpg", texhandle[2]);
 
+	//model
+	Model::StaticInitialize();
+
 	model[0] = Model::LoadFromOBJ("skydome");
 	draw[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	model[1] = Model::LoadFromOBJ("ground");
@@ -114,8 +117,8 @@ void Scene::Initialize()
 	model[2] = Model::LoadFromOBJ("chr_sword");
 	draw[2].worldMat->scale = { 10,10,10 };
 	draw[2].worldMat->trans = { 5.0f, -4.0f, 0 };
-	model[3] = Model::LoadFromOBJ("sphere", true);
-	draw[3].worldMat->scale = { 5,5,5 };
+	model[3] = Model::LoadFromOBJ("MiG-25PD", true);
+	draw[3].worldMat->scale = { -5,5,5 };
 	model[4] = Model::LoadFromOBJ("sphere");
 	draw[4].worldMat->scale = { 4,4,4 };
 	draw[4].worldMat->trans = { -10.0f, 0.0f, 0 };

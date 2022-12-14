@@ -488,31 +488,18 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSetM.rootSignature.Get());
 
-		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &model->vbViewM);
 		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, model->constBuffMaterial2->GetGPUVirtualAddress());
 
 		lightManager->Draw(4);
 
-		//04_02
-		{
-			//SRVヒープの設定コマンド
-			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
-			//SRVヒープの先頭ハンドルを取得
-			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-			srvGpuHandle.ptr = textureHandle;
-			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
-			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
-		}
 		//定数バッファビュー(CBV)の設定コマンド
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
-		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&model->ibViewM);
-
-		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced((UINT)model->indicesM.size(), 1, 0, 0, 0); // 全ての頂点を使って描画
+		//モデル用描画
+		model->Draw();
 	}
 }
 
@@ -610,7 +597,7 @@ void Draw::DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 }
 
 void Draw::DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
-	Model* model, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+	Model* model, XMFLOAT4 color, const int& pipelineNum)
 {
 	this->worldMat = world;
 	this->view = view;
@@ -618,10 +605,7 @@ void Draw::DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 
 	constMapMaterial->color = color;
 
-	if (textureHandle == NULL)
-		Update(MODEL, pipelineNum, model->material.textureHandle, cbt, model);
-	else
-		Update(MODEL, pipelineNum, textureHandle, cbt, model);
+	Update(MODEL, pipelineNum, NULL, cbt, model);
 }
 
 void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
