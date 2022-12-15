@@ -164,17 +164,17 @@ void Scene::Update()
 
 		{
 
-			//“_ŒõŒ¹
-			lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
-			lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
-			lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
+			////“_ŒõŒ¹
+			//lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
+			//lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
+			//lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
 
-			static bool a = true;
-			ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
-			ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
-			ImGui::InputFloat3("pointLightPos", pointLightPos);
-			ImGui::InputFloat3("pointLight", pointLightAtten);
-			ImGui::End();
+			//static bool a = true;
+			//ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
+			//ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
+			//ImGui::InputFloat3("pointLightPos", pointLightPos);
+			//ImGui::InputFloat3("pointLight", pointLightAtten);
+			//ImGui::End();
 			lightManager->Update();
 		}
 	}
