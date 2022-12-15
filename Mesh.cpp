@@ -37,6 +37,11 @@ void Mesh::AddIndex(unsigned short index)
 	indices.emplace_back(index);
 }
 
+void Mesh::PopIndex()
+{
+	indices.pop_back();
+}
+
 void Mesh::AddSmoothData(unsigned short indexPosition, unsigned short indexVertex)
 {
 	smoothData[indexPosition].emplace_back(indexVertex);

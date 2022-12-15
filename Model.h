@@ -33,7 +33,7 @@ private:
 
 private:
 	//OBJファイルから3Dモデルを読み込む
-	void LoadFromOBJInternal(const std::string& folderName, const bool smoothing = false);
+	void LoadFromOBJInternal(const std::string& folderName, const bool smoothing = false, const bool& modelType = false);
 
 	/// <summary>
 	/// マテリアル登録
@@ -51,7 +51,7 @@ public:
 public://静的メンバ関数
 	//OBJファイルから3Dモデルを読み込む
 	//"フォルダ名のみ"を指定すればmtl,obj,textuerを読みこむ（すべて同じ名前であれば）
-	static Model* LoadFromOBJ(const std::string& folderName, const bool smoothing = false);
+	static Model* LoadFromOBJ(const std::string& folderName, const bool smoothing = false, const bool& modelType = false);
 
 public: // メンバ関数
 	/// <summary>

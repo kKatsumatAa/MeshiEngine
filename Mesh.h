@@ -70,6 +70,8 @@ public: // メンバ関数
 	/// <param name="index">インデックス</param>
 	void AddIndex(unsigned short index);
 
+	void PopIndex();
+
 	/// <summary>
 	/// 頂点データの数を取得
 	/// </summary>

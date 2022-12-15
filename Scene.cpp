@@ -114,13 +114,13 @@ void Scene::Initialize()
 	model[1] = Model::LoadFromOBJ("ground");
 	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[1].worldMat->trans = { 10.0f, -5.0f, 0 };
-	model[2] = Model::LoadFromOBJ("chr_sword");
-	draw[2].worldMat->scale = { 10,10,10 };
-	draw[2].worldMat->trans = { 5.0f, -4.0f, 0 };
-	model[3] = Model::LoadFromOBJ("MiG-25PD", true);
-	draw[3].worldMat->scale = { -5,5,5 };
-	model[4] = Model::LoadFromOBJ("sphere");
-	draw[4].worldMat->scale = { 4,4,4 };
+	model[2] = Model::LoadFromOBJ("WoodenLog_obj");
+	draw[2].worldMat->scale = { 15,15,15 };
+	draw[2].worldMat->trans = { 5.0f, 0.0f, 0 };
+	model[3] = Model::LoadFromOBJ("cup_green_obj");
+	//draw[3].worldMat->scale = { 1,1,1 };
+	model[4] = Model::LoadFromOBJ("hanger");
+	draw[4].worldMat->scale = { 25,25,25 };
 	draw[4].worldMat->trans = { -10.0f, 0.0f, 0 };
 
 	draw[3].worldMat->trans.x += 30.0f;
@@ -139,7 +139,7 @@ void Scene::Initialize()
 	//インスタンス生成
 	lightManager = LightManager::Create();
 	//ライト色を設定
-	lightManager->SetDirLightColor(0,{ 1,1,1 });
+	lightManager->SetDirLightColor(0, { 1,1,1 });
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
 	Draw::SetLight(lightManager);
 
@@ -163,43 +163,13 @@ void Scene::Update()
 		ImGui::ShowDemoWindow();
 
 		{
-			//ライト
-			////光線方向初期化
-			//static XMVECTOR lightDir = { 0,1,5,0 };
-
-			//if (KeyboardInput::GetInstance().keyPush(DIK_UP)) { lightDir.m128_f32[1] += 1.0f; }
-			//if (KeyboardInput::GetInstance().keyPush(DIK_DOWN)) { lightDir.m128_f32[1] -= 1.0f; }
-			//if (KeyboardInput::GetInstance().keyPush(DIK_RIGHT)) { lightDir.m128_f32[0] += 1.0f; }
-			//if (KeyboardInput::GetInstance().keyPush(DIK_LEFT)) { lightDir.m128_f32[0] -= 1.0f; }
-
-			//light->SetLightDir(lightDir);
-
-			//std::ostringstream debugstr;
-			//debugstr << "lightDirFactor("
-			//	<< std::fixed << std::setprecision(2)
-			//	<< lightDir.m128_f32[0] << ","
-			//	<< lightDir.m128_f32[1] << ","
-			//	<< lightDir.m128_f32[2] << ")";
-			//debugText.Print(debugstr.str(), 50, 50, 1.0f);
-
-			//debugstr.str("");
-			//debugstr.clear();
-
-			//const XMFLOAT3& cameraPos = { viewMat.eye.x,viewMat.eye.y,viewMat.eye.z };
-			//debugstr << "cameraPos("
-			//	<< std::fixed << std::setprecision(2)
-			//	<< lightDir.m128_f32[0] << ","
-			//	<< lightDir.m128_f32[1] << ","
-			//	<< lightDir.m128_f32[2] << ")";
-			//debugText.Print(debugstr.str(), 50, 70, 1.0f);
-
 
 			//点光源
 			lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
 			lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
 			lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
 
-			static bool a=true;
+			static bool a = true;
 			ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
 			ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
 			ImGui::InputFloat3("pointLightPos", pointLightPos);

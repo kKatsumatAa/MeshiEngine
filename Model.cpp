@@ -13,7 +13,7 @@ const std::string Model::baseDirectory = "Resources/";
 UINT Model::descriptorHandleIncrementSize = 0;
 
 
-void Model::LoadFromOBJInternal(const std::string& folderName, const bool smoothing)
+void Model::LoadFromOBJInternal(const std::string& folderName, const bool smoothing, const bool& modelType)
 {
 	const std::string filename = folderName + ".obj";
 	const std::string directoryPath = baseDirectory + folderName + "/";
@@ -188,11 +188,29 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 				}
 				// インデックスデータの追加
 				if (faceIndexCount >= 3) {
-					// 四角形ポリゴンの4点目なので、
-					// 四角形の0,1,2,3の内 2,3,0で三角形を構築する
-					mesh->AddIndex(indexCountTex - 1);
-					mesh->AddIndex(indexCountTex);
-					mesh->AddIndex(indexCountTex - 3);
+
+					if (modelType == false)
+					{
+						// 四角形ポリゴンの4点目なので、
+						// 四角形の0,1,2,3の内 2,3,0で三角形を構築する
+						mesh->AddIndex(indexCountTex - 1);
+						mesh->AddIndex(indexCountTex);
+						mesh->AddIndex(indexCountTex - 3);
+					}
+					else
+					{
+						mesh->PopIndex();
+						mesh->PopIndex();
+						mesh->PopIndex();
+
+						mesh->AddIndex(indexCountTex - 1);
+						mesh->AddIndex(indexCountTex - 2);
+						mesh->AddIndex(indexCountTex - 3);
+
+						mesh->AddIndex(indexCountTex - 3);
+						mesh->AddIndex(indexCountTex);
+						mesh->AddIndex(indexCountTex - 1);
+					}
 				}
 				else
 				{
@@ -325,8 +343,8 @@ void Model::LoadTextures()
 		}
 		// テクスチャなし
 		else {
-			CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV; cpuDescHandleSRV.ptr = 0; /*= CD3DX12_CPU_DESCRIPTOR_HANDLE(descHeap->GetCPUDescriptorHandleForHeapStart(), textureIndex, descriptorHandleIncrementSize)*/;
-			CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV; gpuDescHandleSRV.ptr = 0;/*= CD3DX12_GPU_DESCRIPTOR_HANDLE(descHeap->GetGPUDescriptorHandleForHeapStart(), textureIndex, descriptorHandleIncrementSize)*/;
+			CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV; cpuDescHandleSRV.ptr = 0;
+			CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV; gpuDescHandleSRV.ptr = 0;
 			// マテリアルにテクスチャ読み込み
 			material->LoadTexture(baseDirectory, cpuDescHandleSRV, gpuDescHandleSRV);
 		}
@@ -334,12 +352,10 @@ void Model::LoadTextures()
 }
 
 
-Model* Model::LoadFromOBJ(const std::string& folderName, const bool smoothing)
+Model* Model::LoadFromOBJ(const std::string& folderName, const bool smoothing, const bool& modelType)
 {
 	//新たなModel型のインスタンスのメモリを確保
 	Model* model = new Model;
-	//読み込み
-	model->LoadFromOBJInternal(folderName, smoothing);
 	model->Initialize(folderName, smoothing);
 
 	return model;
@@ -372,7 +388,7 @@ void Model::Initialize(const std::string& foldername, bool smoothing)
 	// メッシュのマテリアルチェック
 	for (Mesh* m : meshes) {
 		// マテリアルの割り当てがない
-		if (m->GetMaterial() == nullptr) {
+		if (m && m->GetMaterial() == nullptr) {
 			if (defaultMaterial == nullptr) {
 				// デフォルトマテリアルを生成
 				defaultMaterial = Material::Create();
@@ -385,10 +401,11 @@ void Model::Initialize(const std::string& foldername, bool smoothing)
 	}
 
 	// メッシュのバッファ生成
-	for (Mesh* m : meshes) {
-		m->CreateBuffers();
+	for (auto& m : meshes) {
+		if (m) {
+			m->CreateBuffers();
+		}
 	}
-
 	// マテリアルの数値を定数バッファに反映
 	for (auto& m : materials) {
 		m.second->Update();
