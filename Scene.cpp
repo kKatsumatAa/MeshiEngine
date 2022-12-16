@@ -159,8 +159,8 @@ void Scene::Update()
 	imGuiManager->Begin();
 
 	{
-		//ƒfƒ‚
-		ImGui::ShowDemoWindow();
+		////ƒfƒ‚
+		//ImGui::ShowDemoWindow();
 
 		{
 
