@@ -94,12 +94,6 @@ void Scene::ChangeState(SceneState* state)
 
 void Scene::Initialize()
 {
-	//音
-	Sound::LoadWave("a.wav", true);
-	Sound::LoadWave("BGM.wav", false);//
-
-	Sound::PlayWave("BGM.wav", 5.0f, true);
-
 	//画像
 	TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
 	TextureManager::LoadGraph(L"Resources/image/white.png", texhandle[0]);
@@ -127,6 +121,12 @@ void Scene::Initialize()
 	draw[6].worldMat->trans.x -= 30.0f;
 	draw[7].worldMat->trans.z -= 20.0f;
 
+	//音
+	Sound::LoadWave("a.wav", true);
+	Sound::LoadWave("BGM.wav", false);//
+
+	Sound::PlayWave("BGM.wav", 5.0f, true);
+
 	//imgui
 	imGuiManager = new ImGuiManager();
 	imGuiManager->Initialize();
@@ -144,7 +144,7 @@ void Scene::Initialize()
 	Draw::SetLight(lightManager);
 
 	//点光源
-	lightManager->SetDirLightActive(0, true);
+	lightManager->SetDirLightActive(0, false);
 	lightManager->SetDirLightActive(1, false);
 	lightManager->SetDirLightActive(2, false);
 	lightManager->SetPointLightActive(0, true);
@@ -159,22 +159,22 @@ void Scene::Update()
 	imGuiManager->Begin();
 
 	{
-		////デモ
-		//ImGui::ShowDemoWindow();
+		//デモ
+		ImGui::ShowDemoWindow();
 
 		{
 
-			////点光源
-			//lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
-			//lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
-			//lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
+			//点光源
+			lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
+			lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
+			lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
 
-			//static bool a = true;
-			//ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
-			//ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
-			//ImGui::InputFloat3("pointLightPos", pointLightPos);
-			//ImGui::InputFloat3("pointLight", pointLightAtten);
-			//ImGui::End();
+			static bool a = true;
+			ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
+			ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
+			ImGui::InputFloat3("pointLightPos", pointLightPos);
+			ImGui::InputFloat3("pointLight", pointLightAtten);
+			ImGui::End();
 			lightManager->Update();
 		}
 	}
