@@ -29,10 +29,13 @@ private:
 
 	Vec3 velocity;
 
+	//ˆÚ“®§ŒÀ
+	const float movingMax = 25.0f;
+
 	//ƒWƒƒƒ“ƒvŒn
 	const float gravityTmp = 0.05f;
 	float velocityY = 0;
-	const float jumpPowerTmp = 2.0f;
+	const float jumpPowerTmp = 1.1f;
 	const float velocityYMin = -5.0f;
 	bool isJump = false;
 
@@ -49,7 +52,7 @@ private:
 	int dmageCoolTime = 0;
 	const int dmageCoolTimeTmp = 90;
 
-	const float scaleTmp = 1.0f;
+	const float scaleTmp = 0.3f;
 
 	//hp
 	Draw gaugeS;

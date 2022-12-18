@@ -38,12 +38,17 @@ void SceneGame::Initialize()
 
 void SceneGame::Update()
 {
+	//player
 	scene->player.get()->Update();
-
+	//カメラ
 	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
 	scene->viewMat.eye = { scene->viewMat.eye.x,pos.y,scene->viewMat.eye.z };
 	scene->viewMat.target = { 0,pos.y,1.0f };
 	scene->viewMat.SetMat();
+	//ポイントライト
+	scene->lightManager->SetPointLightPos(0, { pos.x,pos.y,pos.z });
+	scene->lightManager->Update();
+
 
 	//シーン遷移
 	//if (1) scene->ChangeState(new SceneEnd);
@@ -110,11 +115,10 @@ void Scene::Initialize()
 	//model
 	Model::StaticInitialize();
 
-	model[0] = Model::LoadFromOBJ("skydome");
-	draw[0].worldMat->scale = { 100.0f, 100.0f, 100.0f };
 	model[1] = Model::LoadFromOBJ("ground");
-	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
-	draw[1].worldMat->trans = { 10.0f, -5.0f, 0 };
+	draw[1].worldMat->scale = { 100.0f, 100.0f, 100.0f };
+	draw[1].worldMat->trans = { 0, 0, 10.0f };
+	draw[1].worldMat->rot = { (-pi / 2.0f), 0, 0 };
 	model[2] = Model::LoadFromOBJ("cup_green_obj");
 	model[3] = Model::LoadFromOBJ("hanger");
 
@@ -140,9 +144,7 @@ void Scene::Initialize()
 	lightManager->SetDirLightActive(1, false);
 	lightManager->SetDirLightActive(2, false);
 	lightManager->SetPointLightActive(0, true);
-	pointLightPos[0] = 0.5f;
-	pointLightPos[1] = 1.0f;
-	pointLightPos[2] = 0.0f;
+	lightManager->SetPointLightAtten(0, { 0.01f,0.01f,0.01f });
 
 	//player
 	player = std::make_unique<Player>();
@@ -161,25 +163,11 @@ void Scene::Update()
 		//デモ
 		ImGui::ShowDemoWindow();
 
-		{
-			//点光源
-			lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
-			lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
-			lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
-
-			static bool a = true;
-			ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
-			ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
-			ImGui::InputFloat3("pointLightPos", pointLightPos);
-			ImGui::InputFloat3("pointLight", pointLightAtten);
-			ImGui::End();
-			lightManager->Update();
-		}
 	}
 
 	state->Update();
 
-	
+
 
 
 #ifdef _DEBUG
@@ -207,7 +195,6 @@ void Scene::Draw()
 {
 	state->Draw();
 
-	draw[0].DrawModel(draw[0].worldMat, &viewMat, &projectionMat, model[0]);
 	draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat, model[1]);
 
 	debugText.DrawAll(debugTextHandle);

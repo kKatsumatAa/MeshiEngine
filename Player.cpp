@@ -31,6 +31,7 @@ void Player::Initialize(Model* model, Model* modelAttack/*, EffectManager* effec
 
 	worldTransform_.trans = { 0,0.0f,0 };
 	worldTransform_.rot = { 0,0.0f,0 };
+	worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
 	worldTransform_.SetWorld();
 
 	velocityY = 0;
@@ -71,12 +72,14 @@ void Player::Update()
 	}
 
 	//入力
-	if (input_->KeyPush(DIK_RIGHTARROW) || input_->KeyPush(DIK_LEFTARROW)) {
-		worldTransform_.trans.x += (input_->KeyPush(DIK_RIGHTARROW) - input_->KeyPush(DIK_LEFTARROW)) * 0.3f;
+	if (input_->KeyPush(DIK_RIGHTARROW) || input_->KeyPush(DIK_LEFTARROW)
+		|| input_->KeyPush(DIK_D) || input_->KeyPush(DIK_A)) {
+		worldTransform_.trans.x += ((input_->KeyPush(DIK_RIGHTARROW) || input_->KeyPush(DIK_D))
+			- (input_->KeyPush(DIK_LEFTARROW) || input_->KeyPush(DIK_A))) * 0.5f;
 	}
 	//移動制限
-	if (worldTransform_.trans.x <= -30.0f)worldTransform_.trans.x = -30.0f;
-	if (worldTransform_.trans.x >= 30.0f)worldTransform_.trans.x = 30.0f;
+	if (worldTransform_.trans.x <= -movingMax)worldTransform_.trans.x = -movingMax;
+	if (worldTransform_.trans.x >= movingMax)worldTransform_.trans.x = movingMax;
 
 	state->Update();
 
