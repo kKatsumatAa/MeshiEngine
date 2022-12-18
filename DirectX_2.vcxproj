@@ -153,6 +153,8 @@
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Draw.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="KeyboardInput.cpp" />
     <ClCompile Include="Light.cpp" />
@@ -191,6 +193,8 @@
     <ClInclude Include="DebugText.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Draw.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="KeyboardInput.h" />
     <ClInclude Include="Light.h" />

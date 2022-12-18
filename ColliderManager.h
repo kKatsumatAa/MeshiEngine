@@ -1,6 +1,6 @@
 #pragma once
 #include <list>
-#include "Player.h"
+#include "EnemyManager.h"
 
 
 class ColliderManager
@@ -14,7 +14,7 @@ private:
 public:
 	void Initialize();
 
-	void Update(Player* player/*,Enemy* enemy*/);
+	void Update(Player* player, EnemyManager* enemyM);
 
 	//player‚Æ“G
 	void CheckAllCollisions();

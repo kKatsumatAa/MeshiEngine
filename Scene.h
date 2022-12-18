@@ -2,7 +2,8 @@
 #include"Collision.h"
 #include"DebugText.h"
 #include"ImGuiManager.h"
-#include"Player.h"
+#include"EnemyManager.h"
+#include"ColliderManager.h"
 
 
 class Scene;
@@ -72,6 +73,10 @@ public:
 
 	//player
 	std::unique_ptr<Player> player;
+
+	std::unique_ptr<EnemyManager> enemyM;
+
+	std::unique_ptr<ColliderManager> colliderM;
 
 public:
 	~Scene();

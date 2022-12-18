@@ -11,6 +11,14 @@
 #include <random>
 #include "Sound.h"
 
+//仮
+	//乱数シード生成器
+static std::random_device seed_gen;
+//メルセンヌツイスター
+static std::mt19937_64 engine(seed_gen());
+//乱数範囲
+static std::uniform_real_distribution<float> posDistX(-5.0, 5.0f);
+static std::uniform_real_distribution<float> posDistY(-10.0f, 10.0f);
 
 /// <summary>
 /// 衝突判定オブジェクト
@@ -23,7 +31,7 @@ private:
 	//衝突属性(相手)
 	uint32_t collisionMask_ = 0xffffffff;
 
-	
+
 
 protected:
 	float radius_ = 1.0f;
@@ -37,13 +45,20 @@ protected:
 
 	int HP = 0;
 
+	//敵の赤い部分（ダメージ受ける部分）
+	float enemyRedRate = 0;
+
 public:
 	bool GetIsDead() { return isDead; }
+	void SetIsDead(bool isDead) { this->isDead = isDead; }
 
 	int GetHP() { return HP; }
+	void SetHP(int hp) { HP = hp; }
 	float GetRadius() { return radius_; };
 	bool GetIsPlayer() { return isPlayer; }
 	void SetRadius(const float& radius) { this->radius_ = radius; };
+	float GetEnemyRedRate() { return enemyRedRate; }
+	void SetEnemyRedRate(float enemyRedRate) { this->enemyRedRate = enemyRedRate; }
 
 	//衝突時に呼ばれる
 	virtual void OnCollision(Collider& collider) = 0;

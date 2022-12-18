@@ -47,7 +47,7 @@ void Player::Initialize(Model* model, Model* modelAttack/*, EffectManager* effec
 	SetCollisionMask(kCollisionAttributeEnemy);
 
 
-	ChangeState(new NoAttack);
+	ChangeState(new NoAttackP);
 }
 
 void Player::Update()
@@ -117,6 +117,8 @@ void Player::OnCollision(Collider& collider)
 
 void Player::OnCollision2(Collider& collider)
 {
+	SetJumpPower(1.0f);
+	SetIsJump(true);
 }
 
 
@@ -128,7 +130,7 @@ void PlayerAttackState::SetPlayer(Player* player)
 }
 
 //--------------------------------------------------------------------------------------
-void NoAttack::Update()
+void NoAttackP::Update()
 {
 	if (player->input_->KeyPush(DIK_SPACE))
 	{
@@ -136,25 +138,26 @@ void NoAttack::Update()
 
 		count++;
 
-		player->SetIsJump(true);
 		player->SetIsGround(false);
 		player->SetJumpPower(LerpVec3({ 0,0,0 }, { 0,player->GetJumpPowerTmp(),0 }, EaseOut((float)count / (float)countMax)).y);
 		player->SetWorldPos({ player->GetWorldPos().x, player->GetWorldPos().y + player->GetJumpPower(), player->GetWorldPos().z });
+
 	}
-	if (player->input_->KeyReleaseTrigger(DIK_SPACE) || count >= countMax)
+	if (player->input_->KeyReleaseTrigger(DIK_SPACE) || count >= countMax || player->GetIsJump())
 	{
-		player->ChangeState(new JumpAttack);
+		player->SetIsJump(true);
+		player->ChangeState(new JumpAttackP);
 	}
 }
 
-void NoAttack::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack)
+void NoAttackP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack)
 {
 	player->draw[0].DrawModel(player->GetWorldTransForm(), &view, &projection, model);
 }
 
 
 //--------------------------------------------------------------------------------------
-void JumpAttack::Update()
+void JumpAttackP::Update()
 {
 	//重力を加算していく
 	player->SetJumpPower(player->GetJumpPower() - player->GetGravityTmp());
@@ -166,11 +169,11 @@ void JumpAttack::Update()
 	{
 		player->SetIsJump(false);
 		player->SetJumpPower(0);
-		player->ChangeState(new NoAttack);
+		player->ChangeState(new NoAttackP);
 	}
 }
 
-void JumpAttack::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack)
+void JumpAttackP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack)
 {
 	player->draw[1].DrawModel(player->GetWorldTransForm(), &view, &projection, model);
 }

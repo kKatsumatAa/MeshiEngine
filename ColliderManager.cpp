@@ -9,11 +9,36 @@ void ColliderManager::Initialize()
 	this->audio = &Sound::GetInstance();
 }
 
-void ColliderManager::Update(Player* player/*,Enemy* enemy*/)
+void ColliderManager::Update(Player* player, EnemyManager* enemyM)
 {
+	//“G‚Æplayer‚Ì‚Ý
+	for (std::unique_ptr<Enemy>& enemy : enemyM->enemies)
+	{
+		if (CollisionCircleCircle(player->GetWorldPos(), player->GetRadius(), enemy->GetWorldPos(), enemy->GetRadius()))
+		{
+			//player‚ª“G‚ÌÔ‚¢‚Æ‚±‚ë‚æ‚èã‚É‚¢‚½‚ç
+			if (enemy.get()->GetWorldPos().y - enemy.get()->GetRadius() + (2 * enemy.get()->GetRadius() * enemy.get()->GetEnemyRedRate())
+				<= player->GetWorldPos().y)
+			{
+				player->OnCollision2(*enemy.get());
+				enemy.get()->SetIsDead(true);
+			}
+			else
+			{
+				player->OnCollision(*enemy.get());
+			}
+		}
+	}
+
 	//’e‚Æ‚©‚Æ‚Ì“–‚½‚è”»’è
 	ClearList();
-	SetListCollider(player);
+	//bullet‚Í‚»‚êŽ©‘Ì‚ªlist‚È‚Ì‚Å“Á•Ê
+	std::list<std::unique_ptr<Enemy>>& enemies = enemyM->enemies;
+
+	for (std::unique_ptr<Enemy>& enemy : enemies)
+	{
+		SetListCollider(enemy.get());
+	}
 
 	CheckAllCollisions();
 }
@@ -21,9 +46,7 @@ void ColliderManager::Update(Player* player/*,Enemy* enemy*/)
 //---------------------------------------------------------------------------------------------
 void ColliderManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB)
 {
-	if ((colliderA->GetCollisionAttribute() & colliderB->GetCollisionAttribute())
-		/*|| !(colliderB->GetCollisionAttribute() & colliderA->GetCollisionMask())*/
-		|| (colliderA->GetIsDead() || colliderB->GetIsDead()))
+	if ((colliderA->GetIsDead() || colliderB->GetIsDead()))
 	{
 		return;//”»’èAÕ“Ëˆ—‚¹‚¸”²‚¯‚é
 	}
@@ -37,10 +60,17 @@ void ColliderManager::CheckCollisionPair(Collider* colliderA, Collider* collider
 
 	if (CollisionCircleCircle(posA, rA, posB, rB))
 	{
-
-		colliderA->OnCollision(*colliderB);
-		colliderB->OnCollision(*colliderA);
-
+		//enemy“¯Žm‚Ì”»’è
+		if (colliderA->GetCollisionAttribute() & colliderB->GetCollisionAttribute())
+		{
+			colliderA->OnCollision2(*colliderB);
+		}
+		//“G‚Æ’e
+		else
+		{
+			colliderA->OnCollision(*colliderB);
+			colliderB->OnCollision(*colliderA);
+		}
 	}
 }
 

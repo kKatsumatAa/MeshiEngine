@@ -40,13 +40,17 @@ void SceneGame::Update()
 {
 	//player
 	scene->player.get()->Update();
+	//敵
+	scene->enemyM.get()->Update();
+	//当たり判定
+	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get());
 	//カメラ
 	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
-	scene->viewMat.eye = { scene->viewMat.eye.x,pos.y,scene->viewMat.eye.z };
-	scene->viewMat.target = { 0,pos.y,1.0f };
+	scene->viewMat.eye = { scene->viewMat.eye.x,pos.y - 10.0f,scene->viewMat.eye.z };
+	scene->viewMat.target = { 0,pos.y - 10.0f,1.0f };
 	scene->viewMat.SetMat();
 	//ポイントライト
-	scene->lightManager->SetPointLightPos(0, { pos.x,pos.y,pos.z });
+	scene->lightManager->SetPointLightPos(0, { pos.x,pos.y,pos.z - 5.0f });
 	scene->lightManager->Update();
 
 
@@ -56,7 +60,10 @@ void SceneGame::Update()
 
 void SceneGame::Draw()
 {
+	//player
 	scene->player.get()->Draw(scene->viewMat, scene->projectionMat);
+	//敵
+	scene->enemyM.get()->Draw(scene->viewMat, scene->projectionMat);
 }
 
 
@@ -93,6 +100,8 @@ Scene::~Scene()
 	delete imGuiManager;
 	delete lightManager;
 	player.reset();
+	enemyM.reset();
+	colliderM.reset();
 	//音データ解放
 
 }
@@ -119,7 +128,7 @@ void Scene::Initialize()
 	draw[1].worldMat->scale = { 100.0f, 100.0f, 100.0f };
 	draw[1].worldMat->trans = { 0, 0, 10.0f };
 	draw[1].worldMat->rot = { (-pi / 2.0f), 0, 0 };
-	model[2] = Model::LoadFromOBJ("cup_green_obj");
+	model[2] = Model::LoadFromOBJ("sphere");
 	model[3] = Model::LoadFromOBJ("hanger");
 
 	//音
@@ -149,6 +158,12 @@ void Scene::Initialize()
 	//player
 	player = std::make_unique<Player>();
 	player.get()->Initialize(model[2], model[3]);
+	//
+	enemyM = std::make_unique<EnemyManager>();
+	enemyM.get()->Initialize(model[2], player.get());
+	//
+	colliderM = std::make_unique<ColliderManager>();
+	colliderM.get()->Initialize();
 
 	//ステート変更
 	ChangeState(new SceneGame);

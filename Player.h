@@ -52,7 +52,7 @@ private:
 	int dmageCoolTime = 0;
 	const int dmageCoolTimeTmp = 90;
 
-	const float scaleTmp = 0.3f;
+	const float scaleTmp = 3.0f;
 
 	//hp
 	Draw gaugeS;
@@ -101,7 +101,7 @@ public:
 
 
 //‰½‚à‚µ‚Ä‚¢‚È‚¢
-class NoAttack : public PlayerAttackState
+class NoAttackP : public PlayerAttackState
 {
 private:
 	int count = 0;
@@ -113,7 +113,7 @@ public:
 };
 
 //ƒWƒƒƒ“ƒvUŒ‚’†
-class JumpAttack : public PlayerAttackState
+class JumpAttackP : public PlayerAttackState
 {
 private:
 
