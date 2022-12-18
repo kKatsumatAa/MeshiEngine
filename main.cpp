@@ -54,7 +54,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//毎フレーム処理　ここまで//
 
-		if (KeyboardInput::GetInstance().keyPush(DIK_ESCAPE)) break;
+		if (KeyboardInput::GetInstance().KeyPush(DIK_ESCAPE)) break;
 	}
 
 	delete scene;

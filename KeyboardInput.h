@@ -44,19 +44,19 @@ public:
 
 
 	//ÉgÉäÉKÅ[óp
-	bool keyPush(BYTE keys)
+	bool KeyPush(BYTE keys)
 	{
 		return key[keys];
 	}
-	bool keyRelease(BYTE keys)
+	bool KeyRelease(BYTE keys)
 	{
 		return !key[keys];
 	}
-	bool keyTrigger(BYTE keys)
+	bool KeyTrigger(BYTE keys)
 	{
 		return (key[keys] && !oldkey[keys]);
 	}
-	bool keyReleaseTrigger(BYTE keys)
+	bool KeyReleaseTrigger(BYTE keys)
 	{
 		return (!key[keys] && oldkey[keys]);
 	}

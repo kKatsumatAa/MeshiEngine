@@ -2,7 +2,7 @@
 #include"Collision.h"
 #include"DebugText.h"
 #include"ImGuiManager.h"
-#include"Sound.h"
+#include"Player.h"
 
 
 class Scene;
@@ -69,6 +69,9 @@ public:
 	float pointLightPos[3] = { 0,0,0 };
 	float pointLightColor[3] = { 1.0f,1.0f,1.0f };
 	float pointLightAtten[3] = { 0.3f,0.1f,0.1f };
+
+	//player
+	std::unique_ptr<Player> player;
 
 public:
 	~Scene();

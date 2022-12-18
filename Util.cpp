@@ -100,6 +100,16 @@ Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t)
 	return v;
 }
 
+float EaseIn(float t)
+{
+	return 1 - cos((t * 3.14f) / 2.0f);
+}
+
+float EaseOut(float t)
+{
+	return sin((t * 3.14f) / 2.0f);
+}
+
 bool CollisionCircleCircle(const Vec3& pos1, const float& r1, const Vec3& pos2, const float& r2)
 {
 	if (pow(pos2.x - pos1.x, 2) + pow(pos2.y - pos1.y, 2) + pow(pos2.z - pos1.z, 2)

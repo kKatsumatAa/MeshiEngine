@@ -21,6 +21,10 @@ float GetRadianVec3(const Vec3& v1, const Vec3& v2);
 Vec3 LerpVec3(const Vec3& v1, const Vec3& v2, float t);
 Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t);
 
+float EaseIn(float t);
+
+float EaseOut(float t);
+
 //è’ìÀ
 bool CollisionCircleCircle(const Vec3& pos1, const float& r1,
 	const Vec3& pos2, const float& r2);
