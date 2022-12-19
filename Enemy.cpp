@@ -85,10 +85,11 @@ void Enemy::OnCollision(Collider& collider)
 
 void Enemy::OnCollision2(Collider& collider)
 {
+	//“G“¯m‚Åd‚È‚ç‚È‚¢‚æ‚¤‚É
 	Vec3 vec = collider.GetWorldPos() - GetWorldPos();
 	vec.Normalized();
 
-	collider.SetWorldPos(collider.GetWorldPos() + (vec * collider.GetRadius() * 1.01f));
+	collider.SetWorldPos(collider.GetWorldPos() + (vec * 0.1f));
 }
 
 

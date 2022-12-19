@@ -1,6 +1,6 @@
 #pragma once
-#include"Collider.h"
 #include "Sound.h"
+#include "PlayerBulletManager.h"
 
 class Player;
 
@@ -66,6 +66,7 @@ public:
 	KeyboardInput* input_ = nullptr;
 	const Vec2 gaugeLength = { 1280,720 };
 	Draw draw[10];
+	PlayerBulletManager* playerBulletM;
 
 	/*XINPUT_STATE joyState;
 	XINPUT_STATE oldJoyState;*/
@@ -73,7 +74,7 @@ public:
 
 	void ChangeState(PlayerAttackState* state);
 
-	void Initialize(Model* model, Model* modelAttack/* EffectManager* effectM_,*/
+	void Initialize(Model* model, Model* modelAttack, PlayerBulletManager* playerBulletM/* EffectManager* effectM_,*/
 	/*,Tutorial* tutorial = nullptr*/);
 	void Update();
 	void Draw( ViewMat& view,  ProjectionMat& projection);
@@ -95,7 +96,9 @@ public:
 	Vec3 GetVelocity() { return velocity; }
 
 	//衝突を検出したら呼び出す（コールバック関数）
+	//ダメージうけた時
 	void OnCollision(Collider& collider)override;
+	//敵踏んだ時
 	void OnCollision2(Collider& collider)override;
 };
 
@@ -116,6 +119,8 @@ public:
 class JumpAttackP : public PlayerAttackState
 {
 private:
+	int count = 0;
+	const int countMax = 10;
 
 public:
 	void Update(/*Tutorial* tutorial = nullptr*/);

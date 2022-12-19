@@ -27,30 +27,36 @@ void SceneTitle::Draw()
 
 }
 
+void SceneTitle::DrawSprite()
+{
+}
+
 
 
 //---------------------------------------------------------------------------------------
 //ゲーム
 void SceneGame::Initialize()
 {
-	scene->player.get()->Initialize(scene->model[2], scene->model[3]);
+	scene->player.get()->Initialize(scene->model[2], scene->model[3], scene->playerBulletM.get());
 }
 
 void SceneGame::Update()
 {
+	//弾
+	scene->playerBulletM.get()->Update();
 	//player
 	scene->player.get()->Update();
 	//敵
 	scene->enemyM.get()->Update();
 	//当たり判定
-	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get());
+	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get());
 	//カメラ
 	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
 	scene->viewMat.eye = { scene->viewMat.eye.x,pos.y - 10.0f,scene->viewMat.eye.z };
 	scene->viewMat.target = { 0,pos.y - 10.0f,1.0f };
 	scene->viewMat.SetMat();
 	//ポイントライト
-	scene->lightManager->SetPointLightPos(0, { pos.x,pos.y,pos.z - 5.0f });
+	scene->lightManager->SetPointLightPos(0, { pos.x,pos.y,pos.z - 10.0f });
 	scene->lightManager->Update();
 
 
@@ -62,8 +68,15 @@ void SceneGame::Draw()
 {
 	//player
 	scene->player.get()->Draw(scene->viewMat, scene->projectionMat);
+	//弾
+	scene->playerBulletM.get()->Draw(scene->viewMat, scene->projectionMat);
 	//敵
 	scene->enemyM.get()->Draw(scene->viewMat, scene->projectionMat);
+}
+
+void SceneGame::DrawSprite()
+{
+	scene->playerBulletM.get()->DrawSprite();
 }
 
 
@@ -85,6 +98,10 @@ void SceneEnd::Draw()
 
 }
 
+void SceneEnd::DrawSprite()
+{
+}
+
 
 
 //---------------------------------------------------------------------------------------
@@ -102,6 +119,7 @@ Scene::~Scene()
 	player.reset();
 	enemyM.reset();
 	colliderM.reset();
+	playerBulletM.reset();
 	//音データ解放
 
 }
@@ -154,16 +172,21 @@ void Scene::Initialize()
 	lightManager->SetDirLightActive(2, false);
 	lightManager->SetPointLightActive(0, true);
 	lightManager->SetPointLightAtten(0, { 0.01f,0.01f,0.01f });
+	lightManager->SetPointLightColor(0, { 0.8f,0.8f,0.01f });
 
+	//
+	playerBulletM = std::make_unique<PlayerBulletManager>();
+	playerBulletM.get()->Initialize(model[2]);
 	//player
 	player = std::make_unique<Player>();
-	player.get()->Initialize(model[2], model[3]);
+	player.get()->Initialize(model[2], model[3], playerBulletM.get());
 	//
 	enemyM = std::make_unique<EnemyManager>();
 	enemyM.get()->Initialize(model[2], player.get());
 	//
 	colliderM = std::make_unique<ColliderManager>();
 	colliderM.get()->Initialize();
+
 
 	//ステート変更
 	ChangeState(new SceneGame);
@@ -216,5 +239,10 @@ void Scene::Draw()
 
 	//imgui
 	imGuiManager->Draw();
+}
+
+void Scene::DrawSprite()
+{
+	state->DrawSprite();
 }
 

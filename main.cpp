@@ -48,6 +48,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 // 4.描画コマンドここから　//-----------
 		scene->Draw();
 
+
+		scene->DrawSprite();
+
 // 4.描画コマンドここまで //
 
 		Directx::GetInstance().DrawUpdate2();

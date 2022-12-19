@@ -14,7 +14,7 @@ private:
 public:
 	void Initialize();
 
-	void Update(Player* player, EnemyManager* enemyM);
+	void Update(Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM);
 
 	//player‚Æ“G
 	void CheckAllCollisions();

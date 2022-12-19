@@ -9,13 +9,14 @@ void Player::ChangeState(PlayerAttackState* state)
 	state->SetPlayer(this);
 }
 
-void Player::Initialize(Model* model, Model* modelAttack/*, EffectManager* effectM*//*, Tutorial* tutorial*/)
+void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* playerBulletM/*, EffectManager* effectM*//*, Tutorial* tutorial*/)
 {
 	assert(model);
 	assert(modelAttack);
 
 	model_ = model;
 	this->modelAttack = modelAttack;
+	this->playerBulletM = playerBulletM;
 
 	isPlayer = true;
 	isDead = false;
@@ -98,6 +99,7 @@ void Player::DrawSprite()
 
 
 //--------------------------------------------------------------------------------------
+
 void Player::OnCollision(Collider& collider)
 {
 	if (dmageCoolTime <= 0)
@@ -115,8 +117,11 @@ void Player::OnCollision(Collider& collider)
 	}
 }
 
+//敵を踏んだ時
 void Player::OnCollision2(Collider& collider)
 {
+	//弾全回復
+	playerBulletM->SetBulletNum(playerBulletM->GetBulletNumMax());
 	SetJumpPower(1.0f);
 	SetIsJump(true);
 }
@@ -164,9 +169,23 @@ void JumpAttackP::Update()
 	//ジャンプパワーで座標を移動(yのみ)
 	player->SetWorldPos({ player->GetWorldPos().x, player->GetWorldPos().y + player->GetJumpPower(), player->GetWorldPos().z });
 
+
+	//弾発射
+	count++;
+	if (player->input_->KeyPush(DIK_SPACE) && count >= countMax && player->playerBulletM->GetBulletNum() > 0)
+	{
+		count = 0;
+		//重力０
+		player->SetJumpPower(0);
+		player->playerBulletM->SetBulletNum(player->playerBulletM->GetBulletNum() - 1);
+		player->playerBulletM->GeneratePlayerBullet(player->GetWorldPos(), { 0,-1.0f,0 });
+	}
+
 	//地面と当たったら
 	if (player->GetIsGround() || player->input_->KeyTrigger(DIK_Q))
 	{
+		//弾全回復
+		player->playerBulletM->SetBulletNum(player->playerBulletM->GetBulletNumMax());
 		player->SetIsJump(false);
 		player->SetJumpPower(0);
 		player->ChangeState(new NoAttackP);

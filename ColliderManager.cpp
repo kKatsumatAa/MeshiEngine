@@ -9,7 +9,7 @@ void ColliderManager::Initialize()
 	this->audio = &Sound::GetInstance();
 }
 
-void ColliderManager::Update(Player* player, EnemyManager* enemyM)
+void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM)
 {
 	//“G‚Æplayer‚Ì‚Ý
 	for (std::unique_ptr<Enemy>& enemy : enemyM->enemies)
@@ -21,7 +21,7 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM)
 				<= player->GetWorldPos().y)
 			{
 				player->OnCollision2(*enemy.get());
-				enemy.get()->SetIsDead(true);
+				enemy.get()->OnCollision(*player);
 			}
 			else
 			{
@@ -34,10 +34,14 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM)
 	ClearList();
 	//bullet‚Í‚»‚êŽ©‘Ì‚ªlist‚È‚Ì‚Å“Á•Ê
 	std::list<std::unique_ptr<Enemy>>& enemies = enemyM->enemies;
-
 	for (std::unique_ptr<Enemy>& enemy : enemies)
 	{
 		SetListCollider(enemy.get());
+	}
+	std::list<std::unique_ptr<PlayerBullet>>& bullets = playerBulletM->playerBullets_;
+	for (std::unique_ptr<PlayerBullet>& bullet : bullets)
+	{
+		SetListCollider(bullet.get());
 	}
 
 	CheckAllCollisions();

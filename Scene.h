@@ -3,6 +3,7 @@
 #include"DebugText.h"
 #include"ImGuiManager.h"
 #include"EnemyManager.h"
+#include"PlayerBulletManager.h"
 #include"ColliderManager.h"
 
 
@@ -18,6 +19,7 @@ public:
 	void SetScene(Scene* scene);
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
+	virtual void DrawSprite() = 0;
 };
 
 class Scene
@@ -78,6 +80,10 @@ public:
 
 	std::unique_ptr<ColliderManager> colliderM;
 
+	std::unique_ptr<PlayerBulletManager> playerBulletM;
+
+
+
 public:
 	~Scene();
 	void ChangeState(SceneState* state);
@@ -85,6 +91,7 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
+	void DrawSprite();
 };
 
 class SceneTitle : public SceneState
@@ -96,6 +103,7 @@ public:
 	void Initialize()override;
 	void Update()override;
 	void Draw()override;
+	void DrawSprite()override;
 };
 
 class SceneGame : public SceneState
@@ -107,6 +115,7 @@ public:
 	void Initialize()override;
 	void Update()override;
 	void Draw()override;
+	void DrawSprite()override;
 };
 
 class SceneEnd : public SceneState
@@ -118,5 +127,5 @@ public:
 	void Initialize()override;
 	void Update() override;
 	void Draw() override;
-
+	void DrawSprite()override;
 };
