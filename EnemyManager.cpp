@@ -34,9 +34,12 @@ void EnemyManager::Update()
 
 
 	//‰¼
-	if (enemies.size() < 5)
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_2))
 	{
-		GenerateEnemy(Vec3(player->GetWorldPos().x + posDistX(engine), player->GetWorldPos().x + posDistY(engine), 0));
+		for (int i = 0; i < 3; i++)
+		{
+			GenerateEnemy(Vec3(player->GetWorldPos().x + posDistX(engine), player->GetWorldPos().y - 20.0f + posDistY(engine), 0));
+		}
 	}
 }
 

@@ -131,5 +131,5 @@ void AttackE::Update()
 
 void AttackE::Draw(ViewMat& view, ProjectionMat& projection, Model* model)
 {
-	enemy->draw[1].DrawModel(enemy->GetWorldTransForm(), &view, &projection, model, { 1.0f,0,0,1.0f });
+	enemy->draw[1].DrawModel(enemy->GetWorldTransForm(), &view, &projection, model, { 1.0f,0,0.5f,1.0f });
 }

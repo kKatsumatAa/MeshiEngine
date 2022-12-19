@@ -181,8 +181,8 @@ void JumpAttackP::Update()
 		player->playerBulletM->GeneratePlayerBullet(player->GetWorldPos(), { 0,-1.0f,0 });
 	}
 
-	//地面と当たったら
-	if (player->GetIsGround() || player->input_->KeyTrigger(DIK_Q))
+	//地面と当たったら                                     //仮
+	if (player->GetIsGround() || player->input_->KeyTrigger(DIK_1))
 	{
 		//弾全回復
 		player->playerBulletM->SetBulletNum(player->playerBulletM->GetBulletNumMax());
