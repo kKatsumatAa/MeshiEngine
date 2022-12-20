@@ -187,6 +187,18 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 	}
 
 
+	//テクスチャを設定していなかったら
+	UINT64 textureHandle_;
+
+	if (textureHandle == NULL)
+	{
+		textureHandle_ = TextureManager::GetInstance().whiteTexHandle;
+	}
+	else
+	{
+		textureHandle_ = textureHandle;
+	}
+
 	if (indexNum == TRIANGLE)
 	{
 		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
@@ -223,7 +235,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-			srvGpuHandle.ptr = textureHandle;
+			srvGpuHandle.ptr = textureHandle_;
 			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
 			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 		}
@@ -269,7 +281,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-			srvGpuHandle.ptr = textureHandle;
+			srvGpuHandle.ptr = textureHandle_;
 			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
 			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 		}
@@ -314,7 +326,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-			srvGpuHandle.ptr = textureHandle;
+			srvGpuHandle.ptr = textureHandle_;
 			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
 			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 		}
@@ -359,7 +371,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-			srvGpuHandle.ptr = textureHandle;
+			srvGpuHandle.ptr = textureHandle_;
 			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
 			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 		}
@@ -404,7 +416,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-			srvGpuHandle.ptr = textureHandle;
+			srvGpuHandle.ptr = textureHandle_;
 			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
 			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 		}
@@ -450,7 +462,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-			srvGpuHandle.ptr = textureHandle;
+			srvGpuHandle.ptr = textureHandle_;
 			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
 			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 		}
@@ -472,7 +484,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 			Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-			srvGpuHandle.ptr = textureHandle;
+			srvGpuHandle.ptr = textureHandle_;
 			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
 			Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 		}

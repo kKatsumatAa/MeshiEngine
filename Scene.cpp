@@ -138,6 +138,9 @@ void Scene::ChangeState(SceneState* state)
 
 void Scene::Initialize()
 {
+	//”’‚¢‰æ‘œ
+	TextureManager::GetInstance().LoadGraph(L"Resources/image/white.png", TextureManager::GetInstance().whiteTexHandle);
+
 	//‰æ‘œ
 	TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
 	TextureManager::LoadGraph(L"Resources/image/white.png", texhandle[0]);

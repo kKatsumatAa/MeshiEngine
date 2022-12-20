@@ -122,6 +122,10 @@ void Stage::CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround
 
 		velocity.y = 0;//仮に進んだとしてそこにブロックがあれば移動停止
 	}
+	else
+	{
+		isGround = false;
+	}
 
 	pos.y += velocity.y;
 }
@@ -142,12 +146,12 @@ void Stage::Draw(ViewMat& view, ProjectionMat& projection)
 			{
 				if (blockMapChip[j][i] == NORMAL)
 				{
-					blocks[count].DrawModel(blocks[count].worldMat, &view, &projection, model, { 1.0f,1.0f,1.0f,1.0f });
+					blocks[count].DrawCube3D(blocks[count].worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f });
 					count++;
 				}
 				if (blockMapChip[j][i] == HARD)
 				{
-					blocks[count].DrawModel(blocks[count].worldMat, &view, &projection, model, { 1.0f,0,0,1.0f });
+					blocks[count].DrawCube3D(blocks[count].worldMat, &view, &projection, { 1.0f,0,0,1.0f });
 					count++;
 				}
 			}

@@ -7,12 +7,14 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//コンソールへの文字入力
 	OutputDebugStringA("Hello,DirectX!!\n");
-	
+
 	//初期化
 	WindowsApp::GetInstance();
 	Directx::GetInstance();
 
 	DrawInitialize();
+
+
 
 	MSG msg{};	//メッセージ
 
@@ -41,17 +43,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		Directx::GetInstance().DrawUpdate({ 0.1f,0.25f, 0.5f,0.0f });
 
-//更新処理
+		//更新処理
 		scene->Update();
-		
 
-// 4.描画コマンドここから　//-----------
+
+		// 4.描画コマンドここから　//-----------
 		scene->Draw();
 
 
 		scene->DrawSprite();
 
-// 4.描画コマンドここまで //
+		// 4.描画コマンドここまで //
 
 		Directx::GetInstance().DrawUpdate2();
 
@@ -61,7 +63,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 	delete scene;
-	
+
 
 	//ウィンドウクラスを登録解除
 	WindowsApp::GetInstance().UnregisterClassA();

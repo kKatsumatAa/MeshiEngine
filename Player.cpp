@@ -145,7 +145,13 @@ void NoAttackP::Update()
 		player->SetJumpPower(LerpVec3({ 0,0,0 }, { 0,player->GetJumpPowerTmp(),0 }, EaseOut((float)count / (float)countMax)).y);
 
 	}
-	if (player->input_->KeyReleaseTrigger(DIK_SPACE) || count >= countMax || player->GetIsJump())
+	//space押してなくて落ちたら
+	else if(!player->GetIsGround())
+	{
+		player->SetIsJump(true);
+		player->ChangeState(new JumpAttackP);
+	}
+	else if (player->input_->KeyReleaseTrigger(DIK_SPACE) || count >= countMax || player->GetIsJump())
 	{
 		player->SetIsJump(true);
 		player->ChangeState(new JumpAttackP);

@@ -7,7 +7,7 @@ class TextureManager
 private:
 	static int count;
 
-	
+
 
 	TextureManager();
 
@@ -44,7 +44,7 @@ public:
 	static TextureManager& GetInstance();
 
 	//デスクリプタヒープ初期化
-	void InitializeDescriptorHeap();
+	static void InitializeDescriptorHeap();
 	static void LoadGraph(const wchar_t* name, UINT64& textureHandle);
 };
 

@@ -52,7 +52,7 @@ private:
 	int dmageCoolTime = 0;
 	const int dmageCoolTimeTmp = 90;
 
-	const float scaleTmp = 3.0f;
+	const float scaleTmp = 2.0f;
 
 	//hp
 	Object gaugeS;
