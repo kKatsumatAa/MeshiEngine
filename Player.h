@@ -27,8 +27,6 @@ private:
 	uint32_t* textureHandle_;
 	DebugText* debugText_ = nullptr;
 
-	Vec3 velocity;
-
 	//移動制限
 	const float movingMax = 25.0f;
 
@@ -92,8 +90,6 @@ public:
 	void SetIsJump(bool isJump) { this->isJump = isJump; }
 	void SetIsGround(bool isGround) { this->isGround = isGround; }
 	void SetJumpPower(float jumpPower) { if (jumpPower > velocityYMin) this->velocity.y = jumpPower; }
-	void SetVelocity(Vec3 vec) { velocity = vec; }
-	Vec3& GetVelocity() { return velocity; }
 
 	//衝突を検出したら呼び出す（コールバック関数）
 	//ダメージうけた時

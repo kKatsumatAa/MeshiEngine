@@ -7,6 +7,7 @@ void PlayerBullet::Initialize(const Vec3& position, const Vec3& velocity, Model*
 
 	worldTransform_.trans = position;
 	this->velocity = velocity;
+	this->velocityTmp = velocity;
 	this->model = model;
 
 	radius_ = scaleTmp.x;
@@ -25,7 +26,8 @@ void PlayerBullet::Update()
 	count++;
 
 	//移動させたり
-	worldTransform_.trans += velocity.GetNormalized() /** LerpVec3({ 0,0,0 }, { 1.0f,0,0 }, EaseOut(lifeTime - deathTimer_ / (float)lifeTime)).x*/;
+	velocity = LerpVec3({ 0,0,0 }, { velocityTmp * 1.5f }, ((deathTimer_) / (float)lifeTime));
+	worldTransform_.scale = scaleTmp + LerpVec3({ velocityTmp }, { 0,0,0 }, ((deathTimer_) / (float)lifeTime));
 	worldTransform_.SetWorld();
 
 	//自然消滅までのタイマー

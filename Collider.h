@@ -48,8 +48,10 @@ protected:
 	//敵の赤い部分（ダメージ受ける部分）
 	float enemyRedRate = 0;
 
+	Vec3 velocity;
+
 public:
-	bool GetIsDead() { return isDead; }
+	bool& GetIsDead() { return isDead; }
 	void SetIsDead(bool isDead) { this->isDead = isDead; }
 
 	int GetHP() { return HP; }
@@ -68,6 +70,9 @@ public:
 	void SetWorldPos(Vec3 pos) { worldTransform_.trans = pos; }//
 	Vec3& GetWorldPos() { return worldTransform_.trans; }
 	WorldMat* GetWorldTransForm() { return &worldTransform_; }
+
+	void SetVelocity(Vec3 vec) { velocity = vec; }
+	Vec3& GetVelocity() { return velocity; }
 
 	//衝突用ビット系
 	//自分

@@ -23,8 +23,6 @@ private:
 
 	DebugText* debugText_ = nullptr;
 
-	Vec3 velocity;
-
 	//移動制限
 	const float movingMax = 25.0f;
 
@@ -61,8 +59,7 @@ public:
 	void SetWorldPos(const Vec3& pos) { worldTransform_.trans = pos; };
 	int GetHP() { return HPp; }
 
-	void SetVelocity(Vec3 vec) { velocity = vec; }
-	Vec3 GetVelocity() { return velocity; }
+	
 
 	//衝突を検出したら呼び出す（コールバック関数）
 	void OnCollision(Collider& collider)override;

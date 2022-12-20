@@ -49,7 +49,19 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 
 	//ƒXƒe[ƒW‚Æ‚Ì“–‚½‚è”»’è
 	{
+		//player
 		stage->CollisionMap(player->GetWorldPos(), player->GetVelocity(), player->GetRadius(), player->GetIsGround());
+		//“G
+		bool demo;
+		for (std::unique_ptr<Enemy>& enemy : enemies)
+		{
+			stage->CollisionMap(enemy->GetWorldPos(), enemy->GetVelocity(), enemy->GetRadius(), demo);
+		}
+		//’e
+		for (std::unique_ptr<PlayerBullet>& bullet : bullets)
+		{
+			stage->CollisionMap(bullet->GetWorldPos(), bullet->GetVelocity(), bullet->GetRadius(), bullet->GetIsDead(), true);
+		}
 	}
 }
 

@@ -13,9 +13,9 @@ private:
 
 	const Vec3 scaleTmp = { 1.0f,1.0f,1.0f };
 
-	Vec3 velocity = { 0,0,0 };
-
 	int count = 0;
+
+	Vec3 velocityTmp;
 
 public:
 

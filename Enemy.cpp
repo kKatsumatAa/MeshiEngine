@@ -89,7 +89,7 @@ void Enemy::OnCollision2(Collider& collider)
 	Vec3 vec = collider.GetWorldPos() - GetWorldPos();
 	vec.Normalized();
 
-	collider.SetWorldPos(collider.GetWorldPos() + (vec * 0.1f));
+	collider.SetVelocity(vec * 0.1f);
 }
 
 
@@ -125,7 +125,7 @@ void AttackE::Update()
 	if (lengthV.GetLength() < Enemy::pLength)
 	{
 		//player‚ÉŒü‚©‚¤
-		enemy->SetWorldPos(enemy->GetWorldPos() + lengthV * 0.01f);
+		enemy->SetVelocity(lengthV * 0.01f);
 	}
 }
 
