@@ -5,6 +5,7 @@
 #include"EnemyManager.h"
 #include"PlayerBulletManager.h"
 #include"ColliderManager.h"
+#include"Stage.h"
 
 
 class Scene;
@@ -36,7 +37,7 @@ public:
 
 	Model* model[5];
 
-	Draw draw[10];
+	Object draw[10];
 
 
 	Sphere tama[2];
@@ -82,7 +83,7 @@ public:
 
 	std::unique_ptr<PlayerBulletManager> playerBulletM;
 
-
+	std::unique_ptr<Stage> stage;
 
 public:
 	~Scene();

@@ -44,7 +44,7 @@ private:
 public:
 	//sound
 	Sound* audio = nullptr;
-	Draw draw[10];
+	Object draw[10];
 	//player
 	Player* player;
 	static const float pLength;

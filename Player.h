@@ -55,7 +55,7 @@ private:
 	const float scaleTmp = 3.0f;
 
 	//hp
-	Draw gaugeS;
+	Object gaugeS;
 
 	/*Tutorial* tutorial;*/
 
@@ -65,7 +65,7 @@ public:
 	Sound* audio = nullptr;
 	KeyboardInput* input_ = nullptr;
 	const Vec2 gaugeLength = { 1280,720 };
-	Draw draw[10];
+	Object draw[10];
 	PlayerBulletManager* playerBulletM;
 
 	/*XINPUT_STATE joyState;
@@ -84,16 +84,16 @@ public:
 	void SetWorldPos(const Vec3& pos) { worldTransform_.trans = pos; };
 	float GetGravityTmp() { return gravityTmp; }
 	float GetJumpPowerTmp() { return jumpPowerTmp; }
-	float GetJumpPower() { return velocityY; }
+	float GetJumpPower() { return velocity.y; }
 	bool GetIsJump() { return isJump; }
-	bool GetIsGround() { return isGround; }
+	bool& GetIsGround() { return isGround; }
 	int GetHP() { return HPp; }
 
 	void SetIsJump(bool isJump) { this->isJump = isJump; }
 	void SetIsGround(bool isGround) { this->isGround = isGround; }
-	void SetJumpPower(float jumpPower) { if (jumpPower > velocityYMin) this->velocityY = jumpPower; }
+	void SetJumpPower(float jumpPower) { if (jumpPower > velocityYMin) this->velocity.y = jumpPower; }
 	void SetVelocity(Vec3 vec) { velocity = vec; }
-	Vec3 GetVelocity() { return velocity; }
+	Vec3& GetVelocity() { return velocity; }
 
 	//衝突を検出したら呼び出す（コールバック関数）
 	//ダメージうけた時

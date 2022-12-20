@@ -66,7 +66,7 @@ public:
 	virtual void OnCollision2(Collider& collider) = 0;
 
 	void SetWorldPos(Vec3 pos) { worldTransform_.trans = pos; }//
-	Vec3 GetWorldPos() { return worldTransform_.trans; }
+	Vec3& GetWorldPos() { return worldTransform_.trans; }
 	WorldMat* GetWorldTransForm() { return &worldTransform_; }
 
 	//衝突用ビット系

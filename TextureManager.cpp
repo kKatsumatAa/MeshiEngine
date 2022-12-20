@@ -16,10 +16,12 @@ int TextureManager::count = 0;
 
  D3D12_DESCRIPTOR_RANGE TextureManager::descriptorRange;
 
+ UINT64 TextureManager::whiteTexHandle = NULL;
 
-TextureManager::TextureManager()
-{
-}
+ TextureManager::TextureManager()
+ {
+	 
+ }
 
 TextureManager::~TextureManager()
 {
@@ -48,6 +50,13 @@ void TextureManager::InitializeDescriptorHeap()
 	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRange.BaseShaderRegister = 0;  //テクスチャレジスタ0番(t0)
 	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+
+	//白い画像
+	if (whiteTexHandle == NULL)
+	{
+		LoadGraph(L"Resources/image/white.png", whiteTexHandle);
+	}
 }
 
 

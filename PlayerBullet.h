@@ -6,7 +6,7 @@ class PlayerBullet : public Collider
 private:
 
 	Model* model = nullptr;
-	Draw draw;
+	Object draw;
 	//Žõ–½
 	static const int32_t lifeTime = 60;
 	int32_t deathTimer_ = lifeTime;

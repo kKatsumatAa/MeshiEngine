@@ -1,5 +1,5 @@
 #pragma once
-#include"Draw.h"
+#include"Object.h"
 
 static const int maxCharCount = 256;
 static const int fontWidth = 9;
@@ -12,7 +12,7 @@ static const int fontIndexMaxY = 7;
 class DebugText
 {
 private:
-	Draw sprites[maxCharCount];
+	Object sprites[maxCharCount];
 	Vec3 leftTop[maxCharCount]; float scale[maxCharCount]; XMFLOAT2 UVleftTop[maxCharCount]; XMFLOAT2 UVlength[maxCharCount];
 
 	//“Y‚¦š—p‚Ì•Ï”

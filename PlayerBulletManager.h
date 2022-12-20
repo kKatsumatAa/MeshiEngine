@@ -11,7 +11,7 @@ private:
 	const int bulletNumMax = 8;
 	int bulletNum = bulletNumMax;
 
-	Draw gauge[2];
+	Object gauge[2];
 
 	UINT64 texhandle = NULL;
 

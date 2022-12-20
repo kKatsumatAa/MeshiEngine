@@ -31,6 +31,13 @@ bool CollisionCircleCircle(const Vec3& pos1, const float& r1,
 
 bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, const float r, const Vec3& pos, const float r2);
 
+bool collisionBox(const int x1, const int y1, const int x2, const int y2, const int r1, const int r2);
+
+
+//ï÷óò
+template<typename T>
+T sign(T num);
+
 //ïœä∑
 Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection);
 /// <summary>
@@ -53,3 +60,21 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 /// <param name="projection"></param>
 void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, const XMMATRIX& view, const XMMATRIX& projection);
 
+/// <summary>
+/// 1Ç©Å]1Ç≈ï‘Ç∑Åi0ÇÕ0Åj
+/// </summary>
+/// <typeparam name="T"></typeparam>
+/// <param name="num"></param>
+/// <returns></returns>
+template<typename T>
+inline T sign(T num)
+{
+	if (num < 0) {
+		return T(-1);
+	}
+	if (num > 0) {
+		return T(1);
+	}
+	else
+		return 0;
+}

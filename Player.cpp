@@ -30,7 +30,7 @@ void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* p
 	//シングルトンインスタンスを取得
 	input_ = &KeyboardInput::GetInstance();
 
-	worldTransform_.trans = { 0,0.0f,0 };
+	worldTransform_.trans = { 0,-10.0f,0 };
 	worldTransform_.rot = { 0,0.0f,0 };
 	worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
 	worldTransform_.SetWorld();
@@ -73,10 +73,8 @@ void Player::Update()
 	}
 
 	//入力
-	if (input_->KeyPush(DIK_RIGHTARROW) || input_->KeyPush(DIK_LEFTARROW)
-		|| input_->KeyPush(DIK_D) || input_->KeyPush(DIK_A)) {
-		worldTransform_.trans.x += ((input_->KeyPush(DIK_RIGHTARROW) || input_->KeyPush(DIK_D))
-			- (input_->KeyPush(DIK_LEFTARROW) || input_->KeyPush(DIK_A))) * 0.5f;
+	{
+		velocity.x = ((input_->KeyPush(DIK_RIGHTARROW) || input_->KeyPush(DIK_D)) - (input_->KeyPush(DIK_LEFTARROW) || input_->KeyPush(DIK_A))) * 0.5f;
 	}
 	//移動制限
 	if (worldTransform_.trans.x <= -movingMax)worldTransform_.trans.x = -movingMax;
@@ -145,7 +143,6 @@ void NoAttackP::Update()
 
 		player->SetIsGround(false);
 		player->SetJumpPower(LerpVec3({ 0,0,0 }, { 0,player->GetJumpPowerTmp(),0 }, EaseOut((float)count / (float)countMax)).y);
-		player->SetWorldPos({ player->GetWorldPos().x, player->GetWorldPos().y + player->GetJumpPower(), player->GetWorldPos().z });
 
 	}
 	if (player->input_->KeyReleaseTrigger(DIK_SPACE) || count >= countMax || player->GetIsJump())
@@ -166,9 +163,6 @@ void JumpAttackP::Update()
 {
 	//重力を加算していく
 	player->SetJumpPower(player->GetJumpPower() - player->GetGravityTmp());
-	//ジャンプパワーで座標を移動(yのみ)
-	player->SetWorldPos({ player->GetWorldPos().x, player->GetWorldPos().y + player->GetJumpPower(), player->GetWorldPos().z });
-
 
 	//弾発射
 	count++;

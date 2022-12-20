@@ -1,4 +1,4 @@
-#include "Draw.h"
+#include "Object.h"
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -68,7 +68,7 @@ ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
 D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 //static
-LightManager* Draw::lightManager = nullptr;
+LightManager* Object::lightManager = nullptr;
 
 
 void DrawInitialize()
@@ -126,7 +126,7 @@ void DrawInitialize()
 		pipelineSetM.psBlob, MODEL);
 }
 
-Draw::Draw()
+Object::Object()
 {
 	//行列
 	cbt.Initialize(Directx::GetInstance());
@@ -151,7 +151,7 @@ Draw::Draw()
 
 
 
-void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
+void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
 	Model* model, const bool& primitiveMode)
 {
 	worldMat->SetWorld();
@@ -503,7 +503,7 @@ void Draw::Update(const int& indexNum, const int& pipelineNum, const UINT64 text
 	}
 }
 
-void Draw::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
+void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 	WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
 	//constBuffTransfer({ 0.01f,0.05f,0.1f,0 });
@@ -516,7 +516,7 @@ void Draw::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 	Update(TRIANGLE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
+void Object::DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
 	//constBuffTransfer({ 0.01f,0.05f,0.1f,0 });
@@ -529,7 +529,7 @@ void Draw::DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection,/*X
 	Update(BOX, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
+void Object::DrawBoxSprite(const Vec3& pos, const float& scale,
 	XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV, const bool& isReverseX, const bool& isReverseY,
 	float rotation, const int& pipelineNum)
 {
@@ -538,7 +538,7 @@ void Draw::DrawBoxSprite(const Vec3& pos, const float& scale,
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+void Object::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, const bool& isReverseX, const bool& isReverseY,
 	float rotation, const int& pipelineNum)
 {
@@ -548,7 +548,7 @@ void Draw::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+void Object::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
 	this->view = view;
@@ -559,7 +559,7 @@ void Draw::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	Update(CUBE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/ WorldMat* world, ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,
+void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/ WorldMat* world, ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,
 	const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
@@ -571,7 +571,7 @@ void Draw::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/ WorldMat* world, Vie
 	Update(LINE, pipelineNum, textureHandle, cbt, nullptr, false);
 }
 
-void Draw::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
+void Object::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
@@ -584,7 +584,7 @@ void Draw::DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMa
 	Update(CIRCLE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
+void Object::DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
 	this->worldMat = world;
@@ -596,7 +596,7 @@ void Draw::DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	Update(SPHERE, pipelineNum, textureHandle, cbt);
 }
 
-void Draw::DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
+void Object::DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 	Model* model, XMFLOAT4 color, const int& pipelineNum)
 {
 	this->worldMat = world;
@@ -817,7 +817,7 @@ void Blend(const D3D12_BLEND_OP& blendMode, const bool& Inversion, const bool& T
 	}
 }
 
-void Draw::constBuffTransfer(const XMFLOAT4& plusRGBA)
+void Object::constBuffTransfer(const XMFLOAT4& plusRGBA)
 {
 	if (constMapMaterial->color.x <= 1.0f && constMapMaterial->color.x >= 0.0f)
 		constMapMaterial->color.x += plusRGBA.x;

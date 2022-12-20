@@ -9,7 +9,7 @@ void ColliderManager::Initialize()
 	this->audio = &Sound::GetInstance();
 }
 
-void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM)
+void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM, Stage* stage)
 {
 	//敵とplayerのみ
 	for (std::unique_ptr<Enemy>& enemy : enemyM->enemies)
@@ -45,6 +45,12 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 	}
 
 	CheckAllCollisions();
+
+
+	//ステージとの当たり判定
+	{
+		stage->CollisionMap(player->GetWorldPos(), player->GetVelocity(), player->GetRadius(), player->GetIsGround());
+	}
 }
 
 //---------------------------------------------------------------------------------------------

@@ -49,7 +49,7 @@ void SceneGame::Update()
 	//敵
 	scene->enemyM.get()->Update();
 	//当たり判定
-	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get());
+	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get(),scene->stage.get());
 	//カメラ
 	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
 	scene->viewMat.eye = { scene->viewMat.eye.x,pos.y - 10.0f,scene->viewMat.eye.z };
@@ -72,6 +72,8 @@ void SceneGame::Draw()
 	scene->playerBulletM.get()->Draw(scene->viewMat, scene->projectionMat);
 	//敵
 	scene->enemyM.get()->Draw(scene->viewMat, scene->projectionMat);
+
+	scene->stage.get()->Draw(scene->viewMat, scene->projectionMat);
 }
 
 void SceneGame::DrawSprite()
@@ -120,6 +122,7 @@ Scene::~Scene()
 	enemyM.reset();
 	colliderM.reset();
 	playerBulletM.reset();
+	stage.reset();
 	//音データ解放
 
 }
@@ -164,7 +167,7 @@ void Scene::Initialize()
 	//ライト色を設定
 	lightManager->SetDirLightColor(0, { 1,1,1 });
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
-	Draw::SetLight(lightManager);
+	Object::SetLight(lightManager);
 
 	//点光源
 	lightManager->SetDirLightActive(0, false);
@@ -186,6 +189,10 @@ void Scene::Initialize()
 	//
 	colliderM = std::make_unique<ColliderManager>();
 	colliderM.get()->Initialize();
+	//
+	stage = std::make_unique<Stage>();
+	stage.get()->Initialize(model[2]);
+	stage.get()->GenerateStage();
 
 
 	//ステート変更

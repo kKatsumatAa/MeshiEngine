@@ -7,6 +7,7 @@ class TextureManager
 private:
 	static int count;
 
+	
 
 	TextureManager();
 
@@ -14,6 +15,9 @@ private:
 
 
 public:
+	static UINT64 whiteTexHandle;
+
+
 	//リソース設定
 	static D3D12_RESOURCE_DESC resDesc;
 	//設定をもとにSRV用デスクリプタヒープを生成
