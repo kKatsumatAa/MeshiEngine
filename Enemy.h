@@ -32,7 +32,7 @@ private:
 	//UŒ‚‚Ìó‘Ô
 	EnemyState* state = nullptr;
 
-	const float scaleTmp = 3.0f;
+	const float scaleTmp = 2.5f;
 
 	
 

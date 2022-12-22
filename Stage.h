@@ -24,7 +24,7 @@ private:
 
 	//ˆê—ñ‚ÌÅ‘åƒuƒƒbƒN”“™
 	static const int blockLineNumMax = mapLengthX - 4;
-	static const int blockHardNumMax = mapLengthY - 20;
+	static const int blockHardNumMax = mapLengthX - 6;
 	int blockLineNum = blockLineNumMax;
 	int blockHardNum = blockHardNumMax;
 
@@ -37,6 +37,7 @@ private:
 public:
 	void Initialize(Model* model);
 	void GenerateStage();
+	void GenerateBlock(int X, int Y);
 
 	void BreakBlock(const int X, const int Y);
 

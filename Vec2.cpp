@@ -9,13 +9,17 @@ float Vec2::GetLength() const
 
 void Vec2::Normalized()
 {
-	*this /= GetLength();
+	float len = GetLength();
+	if (len > 0)
+	{
+		*this /= GetLength();
+	}
 }
 
 Vec2 Vec2::GetNormalize()
 {
 	float len = GetLength();
-	if (len > 0) return *this / len;
+	if (len > 0) { return *this / len; }
 
 	return *this;
 }

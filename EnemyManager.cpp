@@ -38,7 +38,7 @@ void EnemyManager::Update()
 	{
 		for (int i = 0; i < 3; i++)
 		{
-			GenerateEnemy(Vec3(player->GetWorldPos().x + posDistX(engine), player->GetWorldPos().y - 20.0f + posDistY(engine), 0));
+			GenerateEnemy({ player->GetWorldPos().x + posDistX(engine), player->GetWorldPos().y - 20.0f + posDistY(engine), 0 });
 		}
 	}
 }

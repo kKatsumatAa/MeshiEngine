@@ -111,6 +111,18 @@ public:
 	void Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack);
 };
 
+//ジャンプのみ
+class JumpP : public PlayerAttackState
+{
+private:
+	int count = 0;
+	const int countMax = 20;
+
+public:
+	void Update(/*Tutorial* tutorial = nullptr*/);
+	void Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack);
+};
+
 //ジャンプ攻撃中
 class JumpAttackP : public PlayerAttackState
 {

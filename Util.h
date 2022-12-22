@@ -35,8 +35,11 @@ bool collisionBox(const int x1, const int y1, const int x2, const int y2, const 
 
 
 //便利
-template<typename T>
-T sign(T num);
+/// <summary>
+/// 1か‐1で返す（0は0）
+/// </summary>
+/// <returns></returns>
+float sign(float num);
 
 //変換
 Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection);
@@ -60,21 +63,4 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 /// <param name="projection"></param>
 void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, const XMMATRIX& view, const XMMATRIX& projection);
 
-/// <summary>
-/// 1か‐1で返す（0は0）
-/// </summary>
-/// <typeparam name="T"></typeparam>
-/// <param name="num"></param>
-/// <returns></returns>
-template<typename T>
-inline T sign(T num)
-{
-	if (num < 0) {
-		return T(-1);
-	}
-	if (num > 0) {
-		return T(1);
-	}
-	else
-		return 0;
-}
+

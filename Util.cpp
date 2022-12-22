@@ -254,3 +254,15 @@ void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, 
 	returnNearPos = posNear;
 	returnFarPos = posFar;
 }
+
+float sign(float num)
+{
+	if (num < 0) {
+		return (-1.0f);
+	}
+	if (num > 0) {
+		return (1.0f);
+	}
+	else
+		return 0;
+}

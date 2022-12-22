@@ -6,7 +6,8 @@ static std::random_device seed_gen;
 //メルセンヌツイスター
 static std::mt19937_64 engine(seed_gen());
 //乱数範囲
-static std::uniform_int_distribution<int> mapRand(NONE, HARD);
+static std::uniform_int_distribution<int> mapRand(NONE, HARD + 3);
+static std::uniform_int_distribution<int> hardRand(NONE, HARD + 2);
 
 
 void Stage::Initialize(Model* model)
@@ -26,49 +27,60 @@ void Stage::GenerateStage()
 {
 	for (int j = 0; j < mapLengthY; j++)
 	{
-		if (j % 4 == 0)
+		if (j % 6 == 0)
 		{
 			//ブロック最大数をリセット
 			blockHardNum = blockHardNumMax;
 			blockLineNum = blockLineNumMax;
 		}
 
+		int hard[2] = { hardRand(engine),hardRand(engine) };
+
 		for (int i = 0; i < mapLengthX; i++)
 		{
 			int blockNum = mapRand(engine);
 
-
-			//何も置かない
-			if (blockNum != BLOCK::NORMAL && blockNum != BLOCK::HARD)
+			//左右の端は壊れないブロックを置く
+			if (i == 0 || i == mapLengthX - 1)
 			{
-				this->blockMapChip[j][i] = 0;
-			}
-			//壊れるブロック
-			else if (blockNum == BLOCK::NORMAL && blockLineNum > 0)
-			{
-				this->blockMapChip[j][i] = NORMAL;
-				blockLineNum--;
-				//登録
-				blocks[j][i] = new Object;
-				blocks[j][i]->worldMat->trans = { -mapLeftLength + (float)i * blockRadius * 2.0f, (float)-j * blockRadius * 2.0f,0 };
-				blocks[j][i]->worldMat->scale = { blockRadius,blockRadius,blockRadius };
-				blocks[j][i]->worldMat->SetWorld();
+				this->blockMapChip[j][i] = HARD;
+				GenerateBlock(i, j);
 			}
 			//壊れない〃
-			else if (blockNum == BLOCK::HARD && blockHardNum > 0 && blockLineNum > 0)
+			else if (((i == 1 && hard[0] == HARD) || (hard[1] == HARD && i == mapLengthX - 2))
+				&& blockHardNum > 0 && j > 10)
 			{
 				this->blockMapChip[j][i] = HARD;
 				blockHardNum--;
 				blockLineNum--;
-				//登録
-				blocks[j][i] = new Object;
-				blocks[j][i]->worldMat->trans = { -mapLeftLength + (float)i * blockRadius * 2.0f, (float)-j * blockRadius * 2.0f,0 };
-				blocks[j][i]->worldMat->scale = { blockRadius,blockRadius,blockRadius };
-				blocks[j][i]->worldMat->SetWorld();
+
+				GenerateBlock(i, j);
+			}
+			//何も置かない
+			else if (blockNum != BLOCK::NORMAL && blockNum != BLOCK::HARD)
+			{
+				this->blockMapChip[j][i] = 0;
+			}
+			//壊れるブロック
+			else if (blockNum == BLOCK::NORMAL && blockLineNum > 0 && j > 10)
+			{
+				this->blockMapChip[j][i] = NORMAL;
+				blockLineNum--;
+
+				GenerateBlock(i, j);
 			}
 		}
 	}
 
+}
+
+void Stage::GenerateBlock(int X, int Y)
+{
+	//登録
+	blocks[Y][X] = new Object;
+	blocks[Y][X]->worldMat->trans = { -mapLeftLength + (float)X * blockRadius * 2.0f, (float)-Y * blockRadius * 2.0f,0 };
+	blocks[Y][X]->worldMat->scale = { blockRadius,blockRadius,blockRadius };
+	blocks[Y][X]->worldMat->SetWorld();
 }
 
 void Stage::BreakBlock(const int X, const int Y)
@@ -136,7 +148,7 @@ bool Stage::CollisionMapInternal(float left, float right, float down, float up, 
 void Stage::CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround, bool isBlockBreak)
 {
 	//何故か判定おかしいので少し変えてあげる
-	Vec3 pos_ = { pos.x + radius,pos.y - radius,pos.z };
+	Vec3 pos_ = { pos.x + radius * 1.66f,pos.y - radius * 1.66f,pos.z };
 
 	//マップチップとの判定
 	//左右
@@ -145,11 +157,11 @@ void Stage::CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround
 	float down = pos_.y - radius;
 	float up = pos_.y + radius;//移動でplayer位置が変わっている場合があるので角の更新
 
-	if (CollisionMapInternal(left + velocity.x, right + velocity.x, down, up, isBlockBreak))//仮に進んだとしてそこにブロックがあるか
+	if (CollisionMapInternal(left + velocity.x, right + velocity.x, down, up))//仮に進んだとしてそこにブロックがあるか
 	{
-		while (!CollisionMapInternal(left + sign(velocity.x) * 0.1f, right + sign(velocity.x) * 0.1f, down, up, isBlockBreak))
+		while (!CollisionMapInternal(left + sign(velocity.x) * 0.01f, right + sign(velocity.x) * 0.01f, down, up, isBlockBreak))
 		{
-			pos_.x += sign(velocity.x) * 0.1f;//1ピクセル先にブロックがなければ1ピクセル進む
+			pos_.x += sign(velocity.x) * 0.01f;//1ピクセル先にブロックがなければ1ピクセル進む
 
 			left = pos_.x - radius;
 			right = pos_.x + radius;
@@ -163,16 +175,16 @@ void Stage::CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround
 	pos.x += velocity.x;
 
 	//y
-	if (CollisionMapInternal(left, right, down + velocity.y, up + velocity.y, isBlockBreak))//仮に進んだとしてそこにブロックがあるか
+	if (CollisionMapInternal(left, right, down + velocity.y, up + velocity.y))//仮に進んだとしてそこにブロックがあるか
 	{
 		if (velocity.y < 0)
 		{
 			isGround = true;
 		}
 
-		while (!CollisionMapInternal(left, right, down + sign(velocity.y) * 0.1f, up + sign(velocity.y) * 0.1f, isBlockBreak))
+		while (!CollisionMapInternal(left, right, down + sign(velocity.y) * 0.01f, up + sign(velocity.y) * 0.01f, isBlockBreak))
 		{
-			pos_.y += sign(velocity.y) * 0.1f;//1ピクセル先にブロックがなければ1ピクセル進む
+			pos_.y += sign(velocity.y) * 0.01f;//1ピクセル先にブロックがなければ1ピクセル進む
 
 			left = pos_.x - radius;
 			right = pos_.x + radius;
@@ -182,7 +194,7 @@ void Stage::CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround
 
 		velocity.y = 0;//仮に進んだとしてそこにブロックがあれば移動停止
 	}
-	else
+	if (!CollisionMapInternal(left, right, down - 0.11f, up - 0.11f))
 	{
 		isGround = false;
 	}
@@ -202,7 +214,7 @@ void Stage::Draw(ViewMat& view, ProjectionMat& projection)
 	{
 		for (int i = 0; i < mapLengthX; i++)
 		{
-			if (blocks[j][i] != nullptr && (view.eye.y - blocks[j][i]->worldMat->trans.y) < mapLeftLength)
+			if (blocks[j][i] != nullptr && (view.eye.y - blocks[j][i]->worldMat->trans.y) < mapLeftLength + 20.0f)
 			{
 				if (blockMapChip[j][i] == NORMAL)
 				{

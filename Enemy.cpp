@@ -33,6 +33,8 @@ void Enemy::Initialize(Model* model, Player* player/*, EffectManager* effectM*//
 	HPp = hptmp;
 	radius_ = scaleTmp;
 
+	velocity = { 0,0,0 };
+
 	//è’ìÀëÆê´
 	SetCollisionAttribute(kCollisionAttributeEnemy);
 	SetCollisionMask(kCollisionAttributePlayer);
@@ -89,7 +91,7 @@ void Enemy::OnCollision2(Collider& collider)
 	Vec3 vec = collider.GetWorldPos() - GetWorldPos();
 	vec.Normalized();
 
-	collider.SetVelocity(vec * 0.1f);
+	SetVelocity(-vec);
 }
 
 
@@ -125,7 +127,8 @@ void AttackE::Update()
 	if (lengthV.GetLength() < Enemy::pLength)
 	{
 		//playerÇ…å¸Ç©Ç§
-		enemy->SetVelocity(lengthV * 0.01f);
+		Vec3 v = enemy->GetVelocity() * 5.0f + lengthV * 0.1f;
+		enemy->SetVelocity(v.GetNormalized() * 0.3f);
 	}
 }
 

@@ -7,15 +7,18 @@ float Vec3::GetLength() const
 
 void Vec3::Normalized()
 {
-    *this /= GetLength();
+    float len = GetLength();
+    if (len > 0) {
+        *this /= GetLength();
+    }
 }
 
 Vec3 Vec3::GetNormalized() const
 {
-    Vec3 v;
-    v = *this / GetLength();
+    float len = GetLength();
+    if (len > 0) { return *this / len; }
 
-    return v;
+    return *this;
 }
 
 Vec3 Vec3::Cross(const Vec3& other)const

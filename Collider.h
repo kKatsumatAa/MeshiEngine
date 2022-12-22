@@ -17,7 +17,7 @@ static std::random_device seed_gen;
 //メルセンヌツイスター
 static std::mt19937_64 engine(seed_gen());
 //乱数範囲
-static std::uniform_real_distribution<float> posDistX(-10.0, 10.0f);
+static std::uniform_real_distribution<float> posDistX(-8.0, 8.0f);
 static std::uniform_real_distribution<float> posDistY(-20.0f, 20.0f);
 
 /// <summary>

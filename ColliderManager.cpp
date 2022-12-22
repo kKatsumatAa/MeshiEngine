@@ -11,6 +11,28 @@ void ColliderManager::Initialize()
 
 void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM, Stage* stage)
 {
+	//bullet‚Í‚»‚êŽ©‘Ì‚ªlist‚È‚Ì‚Å“Á•Ê
+	std::list<std::unique_ptr<Enemy>>& enemies = enemyM->enemies;
+	std::list<std::unique_ptr<PlayerBullet>>& bullets = playerBulletM->playerBullets_;
+
+	//ƒXƒe[ƒW‚Æ‚Ì“–‚½‚è”»’è
+	{
+		//player
+		stage->CollisionMap(player->GetWorldPos(), player->GetVelocity(), player->GetRadius(), player->GetIsGround());
+		//“G
+		bool demo;
+		for (std::unique_ptr<Enemy>& enemy : enemies)
+		{
+			stage->CollisionMap(enemy->GetWorldPos(), enemy->GetVelocity(), enemy->GetRadius(), demo);
+		}
+		//’e
+		for (std::unique_ptr<PlayerBullet>& bullet : bullets)
+		{
+			stage->CollisionMap(bullet->GetWorldPos(), bullet->GetVelocity(), bullet->GetRadius(), bullet->GetIsDead(), true);
+		}
+	}
+
+
 	//“G‚Æplayer‚Ì‚Ý
 	for (std::unique_ptr<Enemy>& enemy : enemyM->enemies)
 	{
@@ -32,37 +54,16 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 
 	//’e‚Æ‚©‚Æ‚Ì“–‚½‚è”»’è
 	ClearList();
-	//bullet‚Í‚»‚êŽ©‘Ì‚ªlist‚È‚Ì‚Å“Á•Ê
-	std::list<std::unique_ptr<Enemy>>& enemies = enemyM->enemies;
 	for (std::unique_ptr<Enemy>& enemy : enemies)
 	{
 		SetListCollider(enemy.get());
 	}
-	std::list<std::unique_ptr<PlayerBullet>>& bullets = playerBulletM->playerBullets_;
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets)
 	{
 		SetListCollider(bullet.get());
 	}
 
 	CheckAllCollisions();
-
-
-	//ƒXƒe[ƒW‚Æ‚Ì“–‚½‚è”»’è
-	{
-		//player
-		stage->CollisionMap(player->GetWorldPos(), player->GetVelocity(), player->GetRadius(), player->GetIsGround());
-		//“G
-		bool demo;
-		for (std::unique_ptr<Enemy>& enemy : enemies)
-		{
-			stage->CollisionMap(enemy->GetWorldPos(), enemy->GetVelocity(), enemy->GetRadius(), demo);
-		}
-		//’e
-		for (std::unique_ptr<PlayerBullet>& bullet : bullets)
-		{
-			stage->CollisionMap(bullet->GetWorldPos(), bullet->GetVelocity(), bullet->GetRadius(), bullet->GetIsDead(), true);
-		}
-	}
 }
 
 //---------------------------------------------------------------------------------------------
@@ -86,9 +87,10 @@ void ColliderManager::CheckCollisionPair(Collider* colliderA, Collider* collider
 		if (colliderA->GetCollisionAttribute() & colliderB->GetCollisionAttribute())
 		{
 			colliderA->OnCollision2(*colliderB);
+			colliderB->OnCollision2(*colliderA);
 		}
 		//“G‚Æ’e
-		else
+		if (!(colliderA->GetCollisionAttribute() & colliderB->GetCollisionAttribute()))
 		{
 			colliderA->OnCollision(*colliderB);
 			colliderB->OnCollision(*colliderA);

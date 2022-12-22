@@ -135,33 +135,64 @@ void PlayerAttackState::SetPlayer(Player* player)
 //--------------------------------------------------------------------------------------
 void NoAttackP::Update()
 {
-	if (player->input_->KeyPush(DIK_SPACE))
+	if (player->input_->KeyTrigger(DIK_SPACE))
 	{
 		//音
 
-		count++;
-
 		player->SetIsGround(false);
-		player->SetJumpPower(LerpVec3({ 0,0,0 }, { 0,player->GetJumpPowerTmp(),0 }, EaseOut((float)count / (float)countMax)).y);
-
+		player->SetIsJump(true);
+		player->ChangeState(new JumpP);
 	}
 	//space押してなくて落ちたら
-	else if(!player->GetIsGround())
+	else if (!player->GetIsGround())
 	{
 		player->SetIsJump(true);
 		player->ChangeState(new JumpAttackP);
 	}
-	else if (player->input_->KeyReleaseTrigger(DIK_SPACE) || count >= countMax || player->GetIsJump())
-	{
-		player->SetIsJump(true);
-		player->ChangeState(new JumpAttackP);
-	}
+	
 }
 
 void NoAttackP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack)
 {
 	player->draw[0].DrawModel(player->GetWorldTransForm(), &view, &projection, model);
 }
+
+
+//---------------------------------------------------------------------------------------------------
+void JumpP::Update()
+{
+	if (player->input_->KeyPush(DIK_SPACE) && player->GetIsJump() && !player->GetIsGround())
+	{
+		if (count < countMax) {
+			count++;
+			player->SetJumpPower(LerpVec3({ 0,0,0 }, { 0,player->GetJumpPowerTmp(),0 }, EaseOut((float)count / (float)countMax)).y);
+		}
+
+		//重力を加算していく
+		player->SetJumpPower(player->GetJumpPower() - player->GetGravityTmp());
+	}
+	//地面と当たったら                                     
+	if (player->GetIsGround())
+	{
+		//弾全回復
+		player->playerBulletM->SetBulletNum(player->playerBulletM->GetBulletNumMax());
+		player->SetIsJump(false);
+		player->SetJumpPower(0);
+		player->ChangeState(new NoAttackP);
+	}
+	else if (player->input_->KeyRelease(DIK_SPACE))
+	{
+		player->SetIsJump(true);
+		player->ChangeState(new JumpAttackP);
+	}
+	
+}
+
+void JumpP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack)
+{
+	player->draw[0].DrawModel(player->GetWorldTransForm(), &view, &projection, model);
+}
+
 
 
 //--------------------------------------------------------------------------------------
@@ -181,8 +212,8 @@ void JumpAttackP::Update()
 		player->playerBulletM->GeneratePlayerBullet(player->GetWorldPos(), { 0,-1.0f,0 });
 	}
 
-	//地面と当たったら                                     //仮
-	if (player->GetIsGround() || player->input_->KeyTrigger(DIK_1))
+	//地面と当たったら                                     
+	if (player->GetIsGround())
 	{
 		//弾全回復
 		player->playerBulletM->SetBulletNum(player->playerBulletM->GetBulletNumMax());
@@ -196,3 +227,4 @@ void JumpAttackP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, M
 {
 	player->draw[1].DrawModel(player->GetWorldTransForm(), &view, &projection, model);
 }
+
