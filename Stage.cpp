@@ -77,8 +77,8 @@ void Stage::GenerateStage()
 void Stage::GenerateBlock(int X, int Y)
 {
 	//登録
-	blocks[Y][X] = new Object;
-	blocks[Y][X]->worldMat->trans = { -mapLeftLength + (float)X * blockRadius * 2.0f, (float)-Y * blockRadius * 2.0f,0 };
+	blocks[Y][X] = new Object;                                                     //中心座標なので左上座標に合わせる（blockRadiusを足したり）
+	blocks[Y][X]->worldMat->trans = { -mapLeftLength + (float)X * blockRadius * 2.0f + blockRadius, (float)-Y * blockRadius * 2.0f - blockRadius,0 };
 	blocks[Y][X]->worldMat->scale = { blockRadius,blockRadius,blockRadius };
 	blocks[Y][X]->worldMat->SetWorld();
 }
@@ -98,8 +98,8 @@ bool Stage::CollisionMapInternal(float left, float right, float down, float up, 
 {
 	int X, Y;
 
-	Y = (int)(up / -(blockRadius * 2.0f));
-	X = (int)((left + mapLeftLength) / (blockRadius * 2.0f));
+	Y = (up / -(blockRadius * 2.0f));
+	X = ((left + (float)mapLeftLength) / (blockRadius * 2.0f));
 	if (blockMapChip[Y][X] != 0)
 	{
 		if (isBlockBreak)
@@ -109,8 +109,8 @@ bool Stage::CollisionMapInternal(float left, float right, float down, float up, 
 		return TRUE;
 	}//左上
 
-	Y = (int)(down / -(blockRadius * 2.0f));
-	X = (int)((left + mapLeftLength) / (blockRadius * 2.0f));
+	Y = (down / -(blockRadius * 2.0f));
+	X = ((left + (float)mapLeftLength) / (blockRadius * 2.0f));
 	if (blockMapChip[Y][X] != 0)
 	{
 		if (isBlockBreak)
@@ -120,8 +120,8 @@ bool Stage::CollisionMapInternal(float left, float right, float down, float up, 
 		return TRUE;
 	}//左下
 
-	Y = (int)(up / -(blockRadius * 2.0f));
-	X = (int)((right + mapLeftLength) / (blockRadius * 2.0f));
+	Y = (up / -(blockRadius * 2.0f));
+	X = ((right + (float)mapLeftLength) / (blockRadius * 2.0f));
 	if (blockMapChip[Y][X] != 0)
 	{
 		if (isBlockBreak)
@@ -131,8 +131,8 @@ bool Stage::CollisionMapInternal(float left, float right, float down, float up, 
 		return TRUE;
 	}//右上
 
-	Y = (int)(down / -(blockRadius * 2.0f));
-	X = (int)((right + mapLeftLength) / (blockRadius * 2.0f));
+	Y = (down / -(blockRadius * 2.0f));
+	X = ((right + (float)mapLeftLength) / (blockRadius * 2.0f));
 	if (blockMapChip[Y][X] != 0)
 	{
 		if (isBlockBreak)
@@ -148,7 +148,7 @@ bool Stage::CollisionMapInternal(float left, float right, float down, float up, 
 void Stage::CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround, bool isBlockBreak)
 {
 	//何故か判定おかしいので少し変えてあげる
-	Vec3 pos_ = { pos.x + radius * 1.66f,pos.y - radius * 1.66f,pos.z };
+	Vec3 pos_ = { pos.x  ,pos.y  ,pos.z };
 
 	//マップチップとの判定
 	//左右
@@ -159,6 +159,7 @@ void Stage::CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround
 
 	if (CollisionMapInternal(left + velocity.x, right + velocity.x, down, up))//仮に進んだとしてそこにブロックがあるか
 	{
+
 		while (!CollisionMapInternal(left + sign(velocity.x) * 0.01f, right + sign(velocity.x) * 0.01f, down, up, isBlockBreak))
 		{
 			pos_.x += sign(velocity.x) * 0.01f;//1ピクセル先にブロックがなければ1ピクセル進む
@@ -194,7 +195,7 @@ void Stage::CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround
 
 		velocity.y = 0;//仮に進んだとしてそこにブロックがあれば移動停止
 	}
-	if (!CollisionMapInternal(left, right, down - 0.11f, up - 0.11f))
+	else if (!CollisionMapInternal(left, right, down - 1.0f, up))
 	{
 		isGround = false;
 	}

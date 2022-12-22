@@ -13,14 +13,14 @@ enum BLOCK
 class Stage
 {
 private:
-	static const int mapLengthX = 11;
+	static const int mapLengthX = 12;
 	static const int mapLengthY = 500;
 
 	const float blockRadius = 3.0f;
 	Object* blocks[mapLengthY][mapLengthX] = { nullptr };
 	Model* model;
 
-	const int mapLeftLength = mapLengthX / 2 * blockRadius * 2;
+	const float mapLeftLength = ((float)mapLengthX * (float)blockRadius * 2.0f) / 2.0f;
 
 	//ˆê—ñ‚ÌÅ‘åƒuƒƒbƒN”“™
 	static const int blockLineNumMax = mapLengthX - 4;

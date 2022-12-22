@@ -42,14 +42,16 @@ void SceneGame::Initialize()
 
 void SceneGame::Update()
 {
+	//“–‚½‚è”»’è
+	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get(), scene->stage.get());
+
 	//’e
 	scene->playerBulletM.get()->Update();
 	//player
 	scene->player.get()->Update();
 	//“G
 	scene->enemyM.get()->Update();
-	//“–‚½‚è”»’è
-	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get(),scene->stage.get());
+	
 	//ƒJƒƒ‰
 	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
 	scene->viewMat.eye = { scene->viewMat.eye.x,pos.y - 10.0f,scene->viewMat.eye.z };
