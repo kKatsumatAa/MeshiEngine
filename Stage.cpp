@@ -133,18 +133,18 @@ void Stage::GenerateRoom()
 	if (hardRand(engine) % 2 == 0) {
 		roomPosX = 0;
 		isleft = true;
-		GenerateHardBlock(roomPosX + hardWallNum, roomPosY + 4);
-		GenerateBlock(roomPosX + hardWallNum + 1, roomPosY + 4);
+		GenerateHardBlock(roomPosX + hardWallNum, roomPosY + 3);
+		GenerateBlock(roomPosX + hardWallNum + 1, roomPosY + 3);
 	}
 	//右
 	else
 	{
 		roomPosX = mapNumX - hardWallNum;
-		GenerateHardBlock(roomPosX - 1, roomPosY + 4);
-		GenerateBlock(roomPosX - 2, roomPosY + 4);
+		GenerateHardBlock(roomPosX - 1, roomPosY + 3);
+		GenerateBlock(roomPosX - 2, roomPosY + 3);
 	}
 
-	for (int j = roomPosY; j < roomPosY + 4; j++)
+	for (int j = roomPosY; j < roomPosY + 3; j++)
 	{
 		//左に部屋
 		if (isleft)
@@ -189,6 +189,30 @@ void Stage::GenerateRoomInternal()
 			}
 		}
 	}
+
+	//右部屋
+	for (int i = beginRoomYLeft; i < beginRoomYLeft + roomLengthY; i++)
+	{
+		for (int j = hardWallNum; j < hardWallNum + roomLengthX; j++)
+		{
+			//天井と床
+			if (i == beginRoomYLeft || i == beginRoomYLeft + roomLengthY - 1)
+			{
+				GenerateHardBlock(j, i);
+			}
+			//左右の壁
+			else if ((j == hardWallNum) || (j == hardWallNum + roomLengthX - 1 && i == beginRoomYLeft + 1))
+			{
+				GenerateHardBlock(j, i);
+			}
+			//元に戻る
+			else if ((j == hardWallNum + roomLengthX - 1 && i > beginRoomYLeft + 1))
+			{
+				blockMapChip[i][j] = ROOMR;
+			}
+		}
+	}
+
 }
 
 Vec3 Stage::MapChipTransVec3(int X, int Y)
@@ -298,21 +322,33 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
 	float down = pos_.y - radius;
 	float up = pos_.y + radius;//移動でplayer位置が変わっている場合があるので角の更新
 
+	//部屋
 	{
 		//部屋に入ったら部屋にワープ
-		if (((pos.x > -mapLeftLength && pos.x < -mapLeftLength + hardWallNum * blockRadius * 2.0f) ||
-			(pos.x < mapLeftLength && pos.x > mapLeftLength - hardWallNum * blockRadius * 2.0f))
-			&& collider->GetIsPlayer() && !isPlayerRoom)
+		if (collider->GetIsPlayer() && !isPlayerRoom)
 		{
-			beforeRoomPos = pos - velocity;
-			isPlayerRoom = true;
-			pos = { MapChipTransVec3(hardWallNum + 1,beginRoomY + 4) };
+			//左の部屋
+			if ((pos.x > -mapLeftLength && pos.x < -mapLeftLength + hardWallNum * blockRadius * 2.0f))
+			{
+				beforeRoomPos = pos + Vec3(1.0f, 0, 0);
+				isPlayerRoom = true;
+				pos = { MapChipTransVec3(hardWallNum + roomLengthX - 2,beginRoomYLeft + 4) };
+			}
+			//右の部屋
+			else if (pos.x < mapLeftLength && pos.x > mapLeftLength - hardWallNum * blockRadius * 2.0f)
+			{
+				beforeRoomPos = pos + Vec3(-1.0f, 0, 0);
+				isPlayerRoom = true;
+				pos = { MapChipTransVec3(hardWallNum + 1,beginRoomY + 4) };
+			}
 		}
+		//もどる
 		else if (((CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOML) ||
-			(CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOMR)) 
+			(CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOMR))
 			&& isPlayerRoom)
 		{
 			pos = beforeRoomPos;
+			velocity = { 0,0,0 };
 			isPlayerRoom = false;
 		}
 	}

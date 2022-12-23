@@ -49,6 +49,7 @@ private:
 
 	//•”‰®‚ğì‚éÛ‚Ég‚¤
 	static const int beginRoomY = mapDownMaxNum + 20;
+	static const int beginRoomYLeft = mapDownMaxNum + 20 + 15;
 	static const int roomLengthX = 10;
 	static const int roomLengthY = 7;
 
