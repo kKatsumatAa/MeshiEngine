@@ -25,7 +25,7 @@ private:
 
 	//テクスチャハンドル
 	uint32_t* textureHandle_;
-	DebugText* debugText_ = nullptr;
+
 
 	//移動制限
 	const float movingMax = 25.0f;
@@ -65,6 +65,7 @@ public:
 	const Vec2 gaugeLength = { 1280,720 };
 	Object draw[10];
 	PlayerBulletManager* playerBulletM;
+	DebugText* debugText_ = nullptr;
 
 	/*XINPUT_STATE joyState;
 	XINPUT_STATE oldJoyState;*/
@@ -72,7 +73,7 @@ public:
 
 	void ChangeState(PlayerAttackState* state);
 
-	void Initialize(Model* model, Model* modelAttack, PlayerBulletManager* playerBulletM/* EffectManager* effectM_,*/
+	void Initialize(Model* model, Model* modelAttack, PlayerBulletManager* playerBulletM, DebugText* debugText_/* EffectManager* effectM_,*/
 	/*,Tutorial* tutorial = nullptr*/);
 	void Update();
 	void Draw( ViewMat& view,  ProjectionMat& projection);

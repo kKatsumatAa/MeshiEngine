@@ -47,6 +47,9 @@ void EnemyManager::Draw(ViewMat& view, ProjectionMat& projection)
 {
 	for (std::unique_ptr<Enemy>& enemy : enemies)
 	{
-		enemy->Draw(view, projection);
+		if (fabs(view.eye.y - enemy->GetWorldPos().y) < 45.0f)
+		{
+			enemy->Draw(view, projection);
+		}
 	}
 }

@@ -9,7 +9,7 @@ void Player::ChangeState(PlayerAttackState* state)
 	state->SetPlayer(this);
 }
 
-void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* playerBulletM/*, EffectManager* effectM*//*, Tutorial* tutorial*/)
+void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* playerBulletM, DebugText* debugText_/*, EffectManager* effectM*//*, Tutorial* tutorial*/)
 {
 	assert(model);
 	assert(modelAttack);
@@ -17,6 +17,7 @@ void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* p
 	model_ = model;
 	this->modelAttack = modelAttack;
 	this->playerBulletM = playerBulletM;
+	this->debugText_ = debugText_;
 
 	isPlayer = true;
 	isDead = false;
@@ -85,10 +86,14 @@ void Player::Update()
 void Player::Draw(ViewMat& view, ProjectionMat& projection)
 {
 	state->Draw(view, projection, model_, modelAttack);
+
+	debugText_->Print("isGround", 10, 10, isGround);
+	debugText_->Print("isJump", 10, 30, isJump);
 }
 
 void Player::DrawSprite()
 {
+
 	//gaugeS->Draw();
 }
 
@@ -138,6 +143,7 @@ void NoAttackP::Update()
 
 		player->SetIsGround(false);
 		player->SetIsJump(true);
+		player->SetJumpPower(0.5f);
 		player->ChangeState(new JumpP);
 	}
 	//space押してなくて落ちたら
@@ -158,15 +164,15 @@ void NoAttackP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Mod
 //---------------------------------------------------------------------------------------------------
 void JumpP::Update()
 {
+	//重力を加算していく
+	player->SetJumpPower(player->GetJumpPower() - player->GetGravityTmp());
+
 	if (player->input_->KeyPush(DIK_SPACE) && player->GetIsJump() && !player->GetIsGround())
 	{
 		if (count < countMax) {
 			count++;
 			player->SetJumpPower(LerpVec3({ 0,0,0 }, { 0,player->GetJumpPowerTmp(),0 }, EaseOut((float)count / (float)countMax)).y);
 		}
-
-		//重力を加算していく
-		player->SetJumpPower(player->GetJumpPower() - player->GetGravityTmp());
 	}
 	//地面と当たったら                                     
 	if (player->GetIsGround())
@@ -179,7 +185,6 @@ void JumpP::Update()
 	}
 	else if (player->input_->KeyRelease(DIK_SPACE))
 	{
-		player->SetIsJump(true);
 		player->ChangeState(new JumpAttackP);
 	}
 	

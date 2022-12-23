@@ -37,7 +37,7 @@ void SceneTitle::DrawSprite()
 //ƒQ[ƒ€
 void SceneGame::Initialize()
 {
-	scene->player.get()->Initialize(scene->model[2], scene->model[3], scene->playerBulletM.get());
+	scene->player.get()->Initialize(scene->model[2], scene->model[3], scene->playerBulletM.get(), &scene->debugText);
 }
 
 void SceneGame::Update()
@@ -49,7 +49,7 @@ void SceneGame::Update()
 	//“G
 	scene->enemyM.get()->Update();
 	//“–‚½‚è”»’è
-	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get(),scene->stage.get());
+	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get(), scene->stage.get());
 	//ƒJƒƒ‰
 	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
 	scene->viewMat.eye = { scene->viewMat.eye.x,pos.y - 10.0f,scene->viewMat.eye.z };
@@ -185,7 +185,7 @@ void Scene::Initialize()
 	playerBulletM.get()->Initialize(model[2]);
 	//player
 	player = std::make_unique<Player>();
-	player.get()->Initialize(model[2], model[3], playerBulletM.get());
+	player.get()->Initialize(model[2], model[3], playerBulletM.get(), &debugText);
 	//
 	enemyM = std::make_unique<EnemyManager>();
 	enemyM.get()->Initialize(model[2], player.get());
@@ -194,7 +194,7 @@ void Scene::Initialize()
 	colliderM.get()->Initialize();
 	//
 	stage = std::make_unique<Stage>();
-	stage.get()->Initialize(model[2]);
+	stage.get()->Initialize(model[2], enemyM.get());
 	stage.get()->GenerateStage();
 
 

@@ -1,5 +1,6 @@
 #pragma once
 #include"Object.h"
+#include"EnemyManager.h"
 
 enum BLOCK
 {
@@ -12,10 +13,15 @@ enum BLOCK
 
 class Stage
 {
-private:
-	static const int mapLengthX = 12;
+public:
+	static const int mapLengthX = 24;
 	static const int mapLengthY = 500;
+	static const int stageBeginY = 10;
 
+private:
+	EnemyManager* enemyM;
+	
+	const int hardWallLength = mapLengthX / 3;
 	const float blockRadius = 3.0f;
 	Object* blocks[mapLengthY][mapLengthX] = { nullptr };
 	Model* model;
@@ -23,21 +29,32 @@ private:
 	const float mapLeftLength = ((float)mapLengthX * (float)blockRadius * 2.0f) / 2.0f;
 
 	//ˆê—ñ‚ÌÅ‘åƒuƒƒbƒN”“™
-	static const int blockLineNumMax = mapLengthX - 4;
-	static const int blockHardNumMax = mapLengthX - 6;
+	static const int blockLineNumMax = mapLengthX - 16;
+	static const int blockHardNumMax = mapLengthX - 16;
 	int blockLineNum = blockLineNumMax;
 	int blockHardNum = blockHardNumMax;
 
 	int blockMapChip[mapLengthY][mapLengthX] = { 0 };
 
+	//“G”
+	static const int enemyLineMax = 3;
+	int enemyLineNum = enemyLineMax;
 
 private:
 	bool CollisionMapInternal(float left, float right, float down, float up, bool isBlockBreak = false);
 
 public:
-	void Initialize(Model* model);
+	~Stage();
+
+	void Initialize(Model* model, EnemyManager* enemyM);
 	void GenerateStage();
 	void GenerateBlock(int X, int Y);
+	void GenerateHardBlock(int X, int Y);
+	void GenerateRoom();
+
+	Vec3 MapChipTransVec3(int X, int Y);
+
+	void DeleteBlock(int X, int Y);
 
 	void BreakBlock(const int X, const int Y);
 
