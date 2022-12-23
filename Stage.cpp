@@ -210,7 +210,7 @@ void Stage::DeleteBlock(int X, int Y)
 
 void Stage::BreakBlock(const int X, const int Y)
 {
-	if (blockMapChip[Y][X] == NORMAL) 
+	if (blockMapChip[Y][X] == NORMAL)
 	{
 		blockMapChip[Y][X] = NONE;
 		DeleteBlock(X, Y);
@@ -231,44 +231,52 @@ int Stage::CollisionMapInternal(float left, float right, float down, float up, b
 	X = ((left + (float)mapLeftLength) / (blockRadius * 2.0f));
 	if (blockMapChip[Y][X] != 0)
 	{
+		int ans = blockMapChip[Y][X];
+
 		if (isBlockBreak)
 		{
 			BreakBlock(X, Y);
 		}
-		return blockMapChip[Y][X];
+		return ans;
 	}//左上
 
 	Y = (down / -(blockRadius * 2.0f));
 	X = ((left + (float)mapLeftLength) / (blockRadius * 2.0f));
 	if (blockMapChip[Y][X] != 0)
 	{
+		int ans = blockMapChip[Y][X];
+
 		if (isBlockBreak)
 		{
 			BreakBlock(X, Y);
 		}
-		return blockMapChip[Y][X];
+		return ans;
 	}//左下
 
 	Y = (up / -(blockRadius * 2.0f));
 	X = ((right + (float)mapLeftLength) / (blockRadius * 2.0f));
 	if (blockMapChip[Y][X] != 0)
 	{
+		int ans = blockMapChip[Y][X];
+
 		if (isBlockBreak)
 		{
 			BreakBlock(X, Y);
 		}
-		return blockMapChip[Y][X];
+		return ans;
 	}//右上
 
 	Y = (down / -(blockRadius * 2.0f));
 	X = ((right + (float)mapLeftLength) / (blockRadius * 2.0f));
 	if (blockMapChip[Y][X] != 0)
 	{
+		int ans = blockMapChip[Y][X];
+
 		if (isBlockBreak)
 		{
 			BreakBlock(X, Y);
 		}
-		return blockMapChip[Y][X];
+		return ans;
 	}//右下
 
 	return false;
@@ -289,6 +297,25 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
 	float right = pos_.x + radius;
 	float down = pos_.y - radius;
 	float up = pos_.y + radius;//移動でplayer位置が変わっている場合があるので角の更新
+
+	{
+		//部屋に入ったら部屋にワープ
+		if (((pos.x > -mapLeftLength && pos.x < -mapLeftLength + hardWallNum * blockRadius * 2.0f) ||
+			(pos.x < mapLeftLength && pos.x > mapLeftLength - hardWallNum * blockRadius * 2.0f))
+			&& collider->GetIsPlayer() && !isPlayerRoom)
+		{
+			beforeRoomPos = pos - velocity;
+			isPlayerRoom = true;
+			pos = { MapChipTransVec3(hardWallNum + 1,beginRoomY + 4) };
+		}
+		else if (((CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOML) ||
+			(CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOMR)) 
+			&& isPlayerRoom)
+		{
+			pos = beforeRoomPos;
+			isPlayerRoom = false;
+		}
+	}
 
 	if (CollisionMapInternal(left + velocity.x, right + velocity.x, down, up))//仮に進んだとしてそこにブロックがあるか
 	{
@@ -333,22 +360,6 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
 	}
 
 	pos.y += velocity.y;
-
-
-	//部屋に入ったら部屋にワープ
-	if (((pos.x > -mapLeftLength && pos.x < -mapLeftLength + hardWallNum * blockRadius * 2.0f) ||
-		(pos.x < mapLeftLength && pos.x > mapLeftLength - hardWallNum * blockRadius * 2.0f))
-		&& collider->GetIsPlayer() && !isPlayerRoom)
-	{
-		beforeRoomPos = pos - velocity;
-		isPlayerRoom = true;
-		pos = { MapChipTransVec3(hardWallNum + 1,beginRoomY + 4) };
-	}
-	else if (CollisionMapInternal(left, right, down, up) == (ROOML || ROOMR) && isPlayerRoom)
-	{
-		pos = beforeRoomPos;
-		isPlayerRoom = false;
-	}
 }
 
 void Stage::Update(Vec2& pos, Vec2& velocity, float radius)
@@ -377,12 +388,6 @@ void Stage::Draw(ViewMat& view, ProjectionMat& projection)
 					count++;
 				}
 			}
-
-			////ある程度下に行ったら削除する
-			//if ((view.eye.y) + 50.0f < blocks[j][i]->worldMat->trans.y)
-			//{
-			//	DeleteBlock(i, j);
-			//}
 		}
 	}
 }
