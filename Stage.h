@@ -7,6 +7,8 @@ enum BLOCK
 	NONE,
 	NORMAL,//壊れるブロック
 	HARD,//壊れない
+	ROOML,//左の部屋
+	ROOMR//右の部屋
 };
 
 
@@ -14,36 +16,50 @@ enum BLOCK
 class Stage
 {
 public:
-	static const int mapLengthX = 24;
-	static const int mapLengthY = 500;
-	static const int stageBeginY = 10;
+	static const int mapNumX = 24;
+	static const int mapNumY = 500;
+	static const int stageBeginNumY = 10;
+	//ステージの下限
+	static const int mapDownMaxNum = mapNumY - mapNumY * 0.1f;
 
 	bool isPlayerRoom = false;
 
 private:
 	EnemyManager* enemyM;
-	
-	const int hardWallLength = mapLengthX / 3;
+
+	//両壁の幅
+	const int hardWallNum = mapNumX / 3;
+	//ブロックの半径
 	const float blockRadius = 3.0f;
-	Object* blocks[mapLengthY][mapLengthX] = { nullptr };
+
+	//Objectのインスタンスのポインタを入れる
+	Object* blocks[mapNumY][mapNumX] = { nullptr };
 	Model* model;
 
-	const float mapLeftLength = ((float)mapLengthX * (float)blockRadius * 2.0f) / 2.0f;
+	//3Dで(0,0)が中心なので左にずらすための幅
+	const float mapLeftLength = ((float)mapNumX * (float)blockRadius * 2.0f) / 2.0f;
 
 	//一列の最大ブロック数等
-	static const int blockLineNumMax = mapLengthX - 16;
-	static const int blockHardNumMax = mapLengthX - 16;
+	static const int blockLineNumMax = mapNumX - 16;
+	static const int blockHardNumMax = mapNumX - 16;
 	int blockLineNum = blockLineNumMax;
 	int blockHardNum = blockHardNumMax;
 
-	int blockMapChip[mapLengthY][mapLengthX] = { 0 };
+	int blockMapChip[mapNumY][mapNumX] = { 0 };
+
+	//部屋を作る際に使う
+	static const int beginRoomY = mapDownMaxNum + 20;
+	static const int roomLengthX = 10;
+	static const int roomLengthY = 7;
 
 	//敵数
 	static const int enemyLineMax = 3;
 	int enemyLineNum = enemyLineMax;
 
+	Vec3 beforeRoomPos;
+
 private:
-	bool CollisionMapInternal(float left, float right, float down, float up, bool isBlockBreak = false);
+	int CollisionMapInternal(float left, float right, float down, float up, bool isBlockBreak = false);
 
 public:
 	~Stage();
@@ -53,6 +69,7 @@ public:
 	void GenerateBlock(int X, int Y);
 	void GenerateHardBlock(int X, int Y);
 	void GenerateRoom();
+	void GenerateRoomInternal();
 
 	Vec3 MapChipTransVec3(int X, int Y);
 

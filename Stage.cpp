@@ -4,15 +4,15 @@
 //乱数範囲
 static std::uniform_int_distribution<int> mapRand(NONE, HARD + 7);
 static std::uniform_int_distribution<int> hardRand(NONE, HARD + 4);
-static std::uniform_int_distribution<int> roomRand(0 + Stage::stageBeginY, Stage::mapLengthY - 10);
+static std::uniform_int_distribution<int> roomRand(0 + Stage::stageBeginNumY, Stage::mapDownMaxNum - 10);
 static std::uniform_int_distribution<int> enemyRand(0, 30);
 
 
 Stage::~Stage()
 {
-	for (int j = 0; j < mapLengthY; j++)
+	for (int j = 0; j < mapNumY; j++)
 	{
-		for (int i = 0; i < mapLengthX; i++)
+		for (int i = 0; i < mapNumX; i++)
 		{
 			DeleteBlock(i, j);
 		}
@@ -21,9 +21,9 @@ Stage::~Stage()
 
 void Stage::Initialize(Model* model, EnemyManager* enemyM)
 {
-	for (int j = 0; j < mapLengthY; j++)
+	for (int j = 0; j < mapNumY; j++)
 	{
-		for (int i = 0; i < mapLengthX; i++)
+		for (int i = 0; i < mapNumX; i++)
 		{
 			DeleteBlock(i, j);
 		}
@@ -35,7 +35,7 @@ void Stage::Initialize(Model* model, EnemyManager* enemyM)
 
 void Stage::GenerateStage()
 {
-	for (int j = 0; j < mapLengthY; j++)
+	for (int j = 0; j < mapDownMaxNum; j++)
 	{
 		if (j % 13 == 0)
 		{
@@ -51,19 +51,19 @@ void Stage::GenerateStage()
 
 		int hard[2] = { hardRand(engine),hardRand(engine) };
 
-		for (int i = 0; i < mapLengthX; i++)
+		for (int i = 0; i < mapNumX; i++)
 		{
 			int blockNum = mapRand(engine);
 
 			//左右の端は壊れないブロックを置く
-			if ((i < hardWallLength && i >= 0) ||
-				(i >= mapLengthX - hardWallLength && i <= mapLengthX - 1))
+			if ((i < hardWallNum && i >= 0) ||
+				(i >= mapNumX - hardWallNum && i <= mapNumX - 1))
 			{
 				GenerateHardBlock(i, j);
 			}
 			//壊れない〃
-			else if (((i == hardWallLength && hard[0] == HARD) || (hard[1] == HARD && i == mapLengthX - hardWallLength - 1))
-				&& blockHardNum > 0 && j > stageBeginY)
+			else if (((i == hardWallNum && hard[0] == HARD) || (hard[1] == HARD && i == mapNumX - hardWallNum - 1))
+				&& blockHardNum > 0 && j > stageBeginNumY)
 			{
 				blockHardNum--;
 				GenerateHardBlock(i, j);
@@ -74,20 +74,22 @@ void Stage::GenerateStage()
 				this->blockMapChip[j][i] = NONE;
 
 				//敵生成
-				if (enemyRand(engine) == 0 && enemyLineNum > 0 && j > stageBeginY)
+				if (enemyRand(engine) == 0 && enemyLineNum > 0 && j > stageBeginNumY)
 				{
 					enemyLineNum--;
 					enemyM->GenerateEnemy(MapChipTransVec3(i, j));
 				}
 			}
 			//壊れるブロック
-			else if (blockNum == BLOCK::NORMAL && blockLineNum > 0 && j > stageBeginY)
+			else if (blockNum == BLOCK::NORMAL && blockLineNum > 0 && j > stageBeginNumY)
 			{
 				blockLineNum--;
 				GenerateBlock(i, j);
 			}
 		}
 	}
+
+	GenerateRoomInternal();
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -131,13 +133,13 @@ void Stage::GenerateRoom()
 	if (hardRand(engine) % 2 == 0) {
 		roomPosX = 0;
 		isleft = true;
-		GenerateHardBlock(roomPosX + hardWallLength, roomPosY + 4);
-		GenerateBlock(roomPosX + hardWallLength + 1, roomPosY + 4);
+		GenerateHardBlock(roomPosX + hardWallNum, roomPosY + 4);
+		GenerateBlock(roomPosX + hardWallNum + 1, roomPosY + 4);
 	}
 	//右
 	else
 	{
-		roomPosX = mapLengthX - hardWallLength;
+		roomPosX = mapNumX - hardWallNum;
 		GenerateHardBlock(roomPosX - 1, roomPosY + 4);
 		GenerateBlock(roomPosX - 2, roomPosY + 4);
 	}
@@ -147,7 +149,7 @@ void Stage::GenerateRoom()
 		//左に部屋
 		if (isleft)
 		{
-			for (int i = roomPosX + 1; i < roomPosX + hardWallLength + 2; i++)
+			for (int i = roomPosX + 1; i < roomPosX + hardWallNum + 2; i++)
 			{
 				DeleteBlock(i, j);
 			}
@@ -155,9 +157,35 @@ void Stage::GenerateRoom()
 		//右に部屋
 		else
 		{
-			for (int i = roomPosX - 2; i < roomPosX + hardWallLength - 1; i++)
+			for (int i = roomPosX - 2; i < roomPosX + hardWallNum - 1; i++)
 			{
 				DeleteBlock(i, j);
+			}
+		}
+	}
+}
+
+void Stage::GenerateRoomInternal()
+{
+	//右部屋
+	for (int i = beginRoomY; i < beginRoomY + roomLengthY; i++)
+	{
+		for (int j = hardWallNum; j < hardWallNum + roomLengthX; j++)
+		{
+			//天井と床
+			if (i == beginRoomY || i == beginRoomY + roomLengthY - 1)
+			{
+				GenerateHardBlock(j, i);
+			}
+			//左右の壁
+			else if ((j == hardWallNum + roomLengthX - 1) || (j == hardWallNum && i == beginRoomY + 1))
+			{
+				GenerateHardBlock(j, i);
+			}
+			//元に戻る
+			else if ((j == hardWallNum && i > beginRoomY + 1))
+			{
+				blockMapChip[i][j] = ROOMR;
 			}
 		}
 	}
@@ -182,7 +210,8 @@ void Stage::DeleteBlock(int X, int Y)
 
 void Stage::BreakBlock(const int X, const int Y)
 {
-	if (blockMapChip[Y][X] == NORMAL) {
+	if (blockMapChip[Y][X] == NORMAL) 
+	{
 		blockMapChip[Y][X] = NONE;
 		DeleteBlock(X, Y);
 	}
@@ -194,7 +223,7 @@ void Stage::BreakBlock(const int X, const int Y)
 
 //判定
 //----------------------------------------------------------------------------------------------------
-bool Stage::CollisionMapInternal(float left, float right, float down, float up, bool isBlockBreak)
+int Stage::CollisionMapInternal(float left, float right, float down, float up, bool isBlockBreak)
 {
 	int X, Y;
 
@@ -206,7 +235,7 @@ bool Stage::CollisionMapInternal(float left, float right, float down, float up, 
 		{
 			BreakBlock(X, Y);
 		}
-		return TRUE;
+		return blockMapChip[Y][X];
 	}//左上
 
 	Y = (down / -(blockRadius * 2.0f));
@@ -217,7 +246,7 @@ bool Stage::CollisionMapInternal(float left, float right, float down, float up, 
 		{
 			BreakBlock(X, Y);
 		}
-		return TRUE;
+		return blockMapChip[Y][X];
 	}//左下
 
 	Y = (up / -(blockRadius * 2.0f));
@@ -228,7 +257,7 @@ bool Stage::CollisionMapInternal(float left, float right, float down, float up, 
 		{
 			BreakBlock(X, Y);
 		}
-		return TRUE;
+		return blockMapChip[Y][X];
 	}//右上
 
 	Y = (down / -(blockRadius * 2.0f));
@@ -239,7 +268,7 @@ bool Stage::CollisionMapInternal(float left, float right, float down, float up, 
 		{
 			BreakBlock(X, Y);
 		}
-		return TRUE;
+		return blockMapChip[Y][X];
 	}//右下
 
 	return false;
@@ -263,7 +292,7 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
 
 	if (CollisionMapInternal(left + velocity.x, right + velocity.x, down, up))//仮に進んだとしてそこにブロックがあるか
 	{
-		while (!CollisionMapInternal(left + sign(velocity.x) * 0.1f, right + sign(velocity.x) * 0.1f, down, up, isBlockBreak))
+		while (!CollisionMapInternal(left + sign(velocity.x) * 0.1f, right + sign(velocity.x) * 0.1f, down, up))
 		{
 			pos_.x += sign(velocity.x) * 0.1f;//1ピクセル先にブロックがなければ1ピクセル進む
 
@@ -306,14 +335,18 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
 	pos.y += velocity.y;
 
 
-	//部屋に入っていたらフラグTRUE
-	if ((pos.x > -mapLeftLength && pos.x < -mapLeftLength + hardWallLength * blockRadius * 2.0f) ||
-		(pos.x < mapLeftLength && pos.x > mapLeftLength - hardWallLength * blockRadius * 2.0f) && collider->GetIsPlayer())
+	//部屋に入ったら部屋にワープ
+	if (((pos.x > -mapLeftLength && pos.x < -mapLeftLength + hardWallNum * blockRadius * 2.0f) ||
+		(pos.x < mapLeftLength && pos.x > mapLeftLength - hardWallNum * blockRadius * 2.0f))
+		&& collider->GetIsPlayer() && !isPlayerRoom)
 	{
+		beforeRoomPos = pos - velocity;
 		isPlayerRoom = true;
+		pos = { MapChipTransVec3(hardWallNum + 1,beginRoomY + 4) };
 	}
-	else if(collider->GetIsPlayer())
+	else if (CollisionMapInternal(left, right, down, up) == (ROOML || ROOMR) && isPlayerRoom)
 	{
+		pos = beforeRoomPos;
 		isPlayerRoom = false;
 	}
 }
@@ -326,9 +359,9 @@ void Stage::Draw(ViewMat& view, ProjectionMat& projection)
 {
 	int count = 0;
 
-	for (int j = 0; j < mapLengthY; j++)
+	for (int j = 0; j < mapNumY; j++)
 	{
-		for (int i = 0; i < mapLengthX; i++)
+		for (int i = 0; i < mapNumX; i++)
 		{
 			//カリング
 			if (blocks[j][i] != nullptr && fabsf(view.eye.y - blocks[j][i]->worldMat->trans.y) < 45.0f)
