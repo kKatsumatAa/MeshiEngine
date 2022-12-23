@@ -50,7 +50,7 @@ private:
 	int dmageCoolTime = 0;
 	const int dmageCoolTimeTmp = 90;
 
-	const float scaleTmp = 2.0f;
+	const float scaleTmp = 1.8f;
 
 	//hp
 	Object gaugeS;
@@ -127,8 +127,8 @@ public:
 class JumpAttackP : public PlayerAttackState
 {
 private:
-	int count = 0;
 	const int countMax = 10;
+	int count = countMax;
 
 public:
 	void Update(/*Tutorial* tutorial = nullptr*/);

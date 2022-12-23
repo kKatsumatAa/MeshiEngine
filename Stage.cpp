@@ -159,7 +159,6 @@ void Stage::CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround
 
 	if (CollisionMapInternal(left + velocity.x, right + velocity.x, down, up))//仮に進んだとしてそこにブロックがあるか
 	{
-
 		while (!CollisionMapInternal(left + sign(velocity.x) * 0.01f, right + sign(velocity.x) * 0.01f, down, up, isBlockBreak))
 		{
 			pos_.x += sign(velocity.x) * 0.01f;//1ピクセル先にブロックがなければ1ピクセル進む
@@ -178,7 +177,7 @@ void Stage::CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround
 	//y
 	if (CollisionMapInternal(left, right, down + velocity.y, up + velocity.y))//仮に進んだとしてそこにブロックがあるか
 	{
-		if (velocity.y < 0)
+		if (CollisionMapInternal(left, right, down - 1.0f, up))
 		{
 			isGround = true;
 		}
