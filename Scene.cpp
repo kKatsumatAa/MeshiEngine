@@ -52,8 +52,16 @@ void SceneGame::Update()
 	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get(), scene->stage.get());
 	//カメラ
 	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
-	scene->viewMat.eye = { scene->viewMat.eye.x,pos.y - 10.0f,scene->viewMat.eye.z };
-	scene->viewMat.target = { 0,pos.y - 10.0f,1.0f };
+	if (scene->stage->isPlayerRoom)
+	{
+		scene->viewMat.eye = { pos.x,pos.y - 10.0f,scene->viewMat.eye.z };
+		scene->viewMat.target = { pos.x,pos.y - 10.0f,1.0f };
+	}
+	else
+	{
+		scene->viewMat.eye = { 0,pos.y - 10.0f,scene->viewMat.eye.z };
+		scene->viewMat.target = { 0,pos.y - 10.0f,1.0f };
+	}
 	scene->viewMat.SetMat();
 	//ポイントライト
 	scene->lightManager->SetPointLightPos(0, { pos.x,pos.y,pos.z - 10.0f });

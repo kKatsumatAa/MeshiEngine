@@ -18,6 +18,8 @@ public:
 	static const int mapLengthY = 500;
 	static const int stageBeginY = 10;
 
+	bool isPlayerRoom = false;
+
 private:
 	EnemyManager* enemyM;
 	
@@ -59,7 +61,7 @@ public:
 	void BreakBlock(const int X, const int Y);
 
 	//ˆÚ“®‚à‚±‚ÌŠÖ”“à‚Å‚â‚Á‚Ä‚à‚¢‚¢‚©‚à
-	void CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround, bool isBlockBreak = false);
+	void CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak = false);
 
 	void Update(Vec2& pos, Vec2& velocity, float radius);
 	void Draw(ViewMat& view, ProjectionMat& projection);

@@ -50,6 +50,10 @@ protected:
 
 	Vec3 velocity;
 
+	//’n–Ê‚É‚¢‚é‚©
+	bool isGround = false;
+
+
 public:
 	bool& GetIsDead() { return isDead; }
 	void SetIsDead(bool isDead) { this->isDead = isDead; }
@@ -61,6 +65,8 @@ public:
 	void SetRadius(const float& radius) { this->radius_ = radius; };
 	float GetEnemyRedRate() { return enemyRedRate; }
 	void SetEnemyRedRate(float enemyRedRate) { this->enemyRedRate = enemyRedRate; }
+	bool& GetIsGround() { return isGround; }
+	void SetIsGround(bool isGround) { this->isGround = isGround; }
 
 	//Õ“Ë‚ÉŒÄ‚Î‚ê‚é
 	virtual void OnCollision(Collider& collider) = 0;

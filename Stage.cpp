@@ -131,23 +131,23 @@ void Stage::GenerateRoom()
 	if (hardRand(engine) % 2 == 0) {
 		roomPosX = 0;
 		isleft = true;
-		GenerateHardBlock(roomPosX + hardWallLength, roomPosY + 3);
-		GenerateBlock(roomPosX + hardWallLength + 1, roomPosY + 3);
+		GenerateHardBlock(roomPosX + hardWallLength, roomPosY + 4);
+		GenerateBlock(roomPosX + hardWallLength + 1, roomPosY + 4);
 	}
 	//右
 	else
 	{
 		roomPosX = mapLengthX - hardWallLength;
-		GenerateHardBlock(roomPosX - 1, roomPosY + 3);
-		GenerateBlock(roomPosX - 2, roomPosY + 3);
+		GenerateHardBlock(roomPosX - 1, roomPosY + 4);
+		GenerateBlock(roomPosX - 2, roomPosY + 4);
 	}
 
-	for (int j = roomPosY; j < roomPosY + 3; j++)
+	for (int j = roomPosY; j < roomPosY + 4; j++)
 	{
 		//左に部屋
 		if (isleft)
 		{
-			for (int i = roomPosX; i < roomPosX + hardWallLength + 2; i++)
+			for (int i = roomPosX + 1; i < roomPosX + hardWallLength + 2; i++)
 			{
 				DeleteBlock(i, j);
 			}
@@ -155,7 +155,7 @@ void Stage::GenerateRoom()
 		//右に部屋
 		else
 		{
-			for (int i = roomPosX - 2; i < roomPosX + hardWallLength; i++)
+			for (int i = roomPosX - 2; i < roomPosX + hardWallLength - 1; i++)
 			{
 				DeleteBlock(i, j);
 			}
@@ -245,8 +245,12 @@ bool Stage::CollisionMapInternal(float left, float right, float down, float up, 
 	return false;
 }
 
-void Stage::CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround, bool isBlockBreak)
+void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
 {
+	Vec3& pos = collider->GetWorldPos();
+	Vec3& velocity = collider->GetVelocity();
+	float radius = collider->GetRadius();
+
 	//何故か判定おかしいので少し変えてあげる
 	Vec3 pos_ = { pos.x  ,pos.y  ,pos.z };
 
@@ -300,6 +304,18 @@ void Stage::CollisionMap(Vec3& pos, Vec3& velocity, float radius, bool& isGround
 	}
 
 	pos.y += velocity.y;
+
+
+	//部屋に入っていたらフラグTRUE
+	if ((pos.x > -mapLeftLength && pos.x < -mapLeftLength + hardWallLength * blockRadius * 2.0f) ||
+		(pos.x < mapLeftLength && pos.x > mapLeftLength - hardWallLength * blockRadius * 2.0f) && collider->GetIsPlayer())
+	{
+		isPlayerRoom = true;
+	}
+	else if(collider->GetIsPlayer())
+	{
+		isPlayerRoom = false;
+	}
 }
 
 void Stage::Update(Vec2& pos, Vec2& velocity, float radius)

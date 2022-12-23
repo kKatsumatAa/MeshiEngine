@@ -37,8 +37,7 @@ private:
 	const float velocityYMin = -5.0f;
 	bool isJump = false;
 
-	//地面にいるか
-	bool isGround = false;
+
 
 	float HPp;
 	const float hptmp = 5;
@@ -85,11 +84,11 @@ public:
 	float GetJumpPowerTmp() { return jumpPowerTmp; }
 	float GetJumpPower() { return velocity.y; }
 	bool GetIsJump() { return isJump; }
-	bool& GetIsGround() { return isGround; }
+
 	int GetHP() { return HPp; }
 
 	void SetIsJump(bool isJump) { this->isJump = isJump; }
-	void SetIsGround(bool isGround) { this->isGround = isGround; }
+
 	void SetJumpPower(float jumpPower) { if (jumpPower > velocityYMin) this->velocity.y = jumpPower; }
 
 	//衝突を検出したら呼び出す（コールバック関数）
