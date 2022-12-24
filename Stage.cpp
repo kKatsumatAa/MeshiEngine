@@ -33,6 +33,7 @@ void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM)
 
 	this->enemyM = enemyM;
 	this->itemM = itemM;
+	rooms.clear();
 }
 
 void Stage::GenerateStage()
@@ -127,6 +128,8 @@ void Stage::GenerateHardBlock(int X, int Y)
 
 void Stage::GenerateRoom()
 {
+	Room* room = new Room;
+
 	//部屋を生成
 	int roomPosY = roomRand(engine);
 	int roomPosX;
@@ -137,6 +140,9 @@ void Stage::GenerateRoom()
 		isleft = true;
 		GenerateHardBlock(roomPosX + hardWallNum, roomPosY + 3);
 		GenerateBlock(roomPosX + hardWallNum + 1, roomPosY + 3);
+
+		room->Initialize(MapChipTransVec3(roomPosX + hardWallNum - 4, roomPosY + 1), ROOM_TYPE::LEFT_ROOM, 3.0f * blockRadius);
+		rooms.push_back(room);
 	}
 	//右
 	else
@@ -144,6 +150,9 @@ void Stage::GenerateRoom()
 		roomPosX = mapNumX - hardWallNum;
 		GenerateHardBlock(roomPosX - 1, roomPosY + 3);
 		GenerateBlock(roomPosX - 2, roomPosY + 3);
+
+		room->Initialize(MapChipTransVec3(roomPosX + 2, roomPosY + 1), ROOM_TYPE::RIGHT_ROOM, 3.0f * blockRadius);
+		rooms.push_back(room);
 	}
 
 	for (int j = roomPosY; j < roomPosY + 3; j++)
@@ -323,40 +332,6 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
 	float down = pos_.y - radius;
 	float up = pos_.y + radius;//移動でplayer位置が変わっている場合があるので角の更新
 
-	//部屋
-	{
-		//部屋に入ったら部屋にワープ
-		if (collider->GetIsPlayer() && !isPlayerRoom)
-		{
-			//左の部屋
-			if ((pos.x > -mapLeftLength && pos.x < -mapLeftLength + hardWallNum / 1.5f * blockRadius * 2.0f))
-			{
-				beforeRoomPos = pos + Vec3(1.0f, 0, 0);
-				isPlayerRoom = true;
-				pos = { MapChipTransVec3(hardWallNum + roomLengthX - 2,beginRoomYLeft + 4) };
-				//アイテム生成
-				itemM->GenerateItem(MapChipTransVec3(hardWallNum + roomLengthX - 6, beginRoomYLeft + 4), itemRand(engine));
-			}
-			//右の部屋
-			else if (pos.x < mapLeftLength && pos.x > mapLeftLength - hardWallNum / 1.5f * blockRadius * 2.0f)
-			{
-				beforeRoomPos = pos + Vec3(-1.0f, 0, 0);
-				isPlayerRoom = true;
-				pos = { MapChipTransVec3(hardWallNum + 1,beginRoomY + 4) };
-				//アイテム生成
-				itemM->GenerateItem(MapChipTransVec3(hardWallNum + 6, beginRoomY + 4), itemRand(engine));
-			}
-		}
-		//もどる
-		else if (((CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOML) ||
-			(CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOMR))
-			&& isPlayerRoom)
-		{
-			pos = beforeRoomPos;
-			velocity = { 0,0,0 };
-			isPlayerRoom = false;
-		}
-	}
 
 	if (CollisionMapInternal(left + velocity.x, right + velocity.x, down, up))//仮に進んだとしてそこにブロックがあるか
 	{
@@ -401,7 +376,74 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
 	}
 
 	pos.y += velocity.y;
+
+
+	//部屋との判定
+	CollisionRoom(collider);
 }
+
+void Stage::CollisionRoom(Collider* collider)
+{
+	Vec3& pos = collider->GetWorldPos();
+	Vec3& velocity = collider->GetVelocity();
+	float radius = collider->GetRadius();
+
+	//マップチップとの判定
+	//左右
+	float left = pos.x - radius;
+	float right = pos.x + radius;
+	float down = pos.y - radius;
+	float up = pos.y + radius;//移動でplayer位置が変わっている場合があるので角の更新
+
+		//部屋に入ったら部屋にワープ
+	if (collider->GetIsPlayer() && !isPlayerRoom)
+	{
+		for (Room* room : rooms)
+		{
+			//左の部屋
+			if (room->Collision(pos, radius) == ROOM_TYPE::LEFT_ROOM)
+			{
+				//アイテム生成
+				if (!room->GetIsUsed())
+				{
+					itemM->GenerateItem(MapChipTransVec3(hardWallNum + roomLengthX - 6, beginRoomYLeft + 4), itemRand(engine));
+				}
+				room->SetIsUsed(true);
+
+				beforeRoomPos = pos + Vec3(1.0f, 0, 0);
+				isPlayerRoom = true;
+				pos = { MapChipTransVec3(hardWallNum + roomLengthX - 2,beginRoomYLeft + 4) };
+
+			}
+			//右の部屋
+			else if (room->Collision(pos, radius) == ROOM_TYPE::RIGHT_ROOM)
+			{
+				//アイテム生成
+				if (!room->GetIsUsed())
+				{
+					itemM->GenerateItem(MapChipTransVec3(hardWallNum + 6, beginRoomY + 4), itemRand(engine));
+				}
+				room->SetIsUsed(true);
+
+				beforeRoomPos = pos + Vec3(-1.0f, 0, 0);
+				isPlayerRoom = true;
+				pos = { MapChipTransVec3(hardWallNum + 1,beginRoomY + 4) };
+
+			}
+		}
+	}
+	//もどる
+	else if (((CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOML) ||
+		(CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOMR))
+		&& isPlayerRoom)
+	{
+		pos = beforeRoomPos;
+		velocity = { 0,0,0 };
+		isPlayerRoom = false;
+	}
+
+}
+
 
 void Stage::Update(Vec2& pos, Vec2& velocity, float radius)
 {

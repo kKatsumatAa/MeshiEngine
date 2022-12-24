@@ -2,6 +2,7 @@
 #include"Object.h"
 #include"EnemyManager.h"
 #include"ItemManager.h"
+#include"Room.h"
 
 enum BLOCK
 {
@@ -29,6 +30,8 @@ private:
 	//ŠO•”ƒNƒ‰ƒX
 	EnemyManager* enemyM;
 	ItemManager* itemM;
+
+	std::vector<Room *> rooms;
 
 	//—¼•Ç‚Ì•
 	const int hardWallNum = mapNumX / 3;
@@ -83,6 +86,8 @@ public:
 
 	//ˆÚ“®‚à‚±‚ÌŠÖ”“à‚Å‚â‚Á‚Ä‚à‚¢‚¢‚©‚à
 	void CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak = false);
+
+	void CollisionRoom(Collider* collider);
 
 	void Update(Vec2& pos, Vec2& velocity, float radius);
 	void Draw(ViewMat& view, ProjectionMat& projection);

@@ -175,6 +175,7 @@
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="ProjectionMat.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="ProjectionMat.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />

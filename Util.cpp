@@ -148,6 +148,14 @@ bool CollisionRayCircle(const Vec3& sv,const Vec3& ev, const float r, const Vec3
 	}
 }
 
+bool CollisionBox(const int x1, const int y1, const int x2, const int y2, const int r1, const int r2)
+{
+	return x1 - r1 < x2 + r2 && x2 - r2 < x1 + r1 &&
+		y1 - r1 < y2 + r2 && y2 - r2 < y1 + r1;
+
+	return 0;
+}
+
 Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 {
 	//view,projection,viewports—ñ‚ðŠ|‚¯‚é
