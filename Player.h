@@ -91,6 +91,10 @@ public:
 
 	void SetJumpPower(float jumpPower) { if (jumpPower > velocityYMin) this->velocity.y = jumpPower; }
 
+	//アイテムとの当たり判定時
+	void SetBulletType(const int itemType) { playerBulletM->SetBulletType(itemType); }
+	int GetBulletType() { playerBulletM->GetBulletType(); }
+
 	//衝突を検出したら呼び出す（コールバック関数）
 	//ダメージうけた時
 	void OnCollision(Collider& collider)override;

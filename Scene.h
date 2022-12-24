@@ -6,6 +6,7 @@
 #include"PlayerBulletManager.h"
 #include"ColliderManager.h"
 #include"Stage.h"
+#include"ItemManager.h"
 
 
 class Scene;
@@ -84,6 +85,8 @@ public:
 	std::unique_ptr<PlayerBulletManager> playerBulletM;
 
 	std::unique_ptr<Stage> stage;
+
+	std::unique_ptr<ItemManager> itemM;
 
 public:
 	~Scene();

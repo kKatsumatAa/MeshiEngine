@@ -38,6 +38,9 @@ void SceneTitle::DrawSprite()
 void SceneGame::Initialize()
 {
 	scene->player.get()->Initialize(scene->model[2], scene->model[3], scene->playerBulletM.get(), &scene->debugText);
+	//後で他のイニシャライズも追加
+
+
 }
 
 void SceneGame::Update()
@@ -48,8 +51,10 @@ void SceneGame::Update()
 	scene->player.get()->Update();
 	//敵
 	scene->enemyM.get()->Update();
+	//アイテム
+	scene->itemM.get()->Update();
 	//当たり判定
-	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get(), scene->stage.get());
+	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get(), scene->itemM.get(), scene->stage.get());
 	//カメラ
 	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
 	//if (scene->stage->isPlayerRoom)
@@ -80,7 +85,9 @@ void SceneGame::Draw()
 	scene->playerBulletM.get()->Draw(scene->viewMat, scene->projectionMat);
 	//敵
 	scene->enemyM.get()->Draw(scene->viewMat, scene->projectionMat);
-
+	//アイテム
+	scene->itemM.get()->Draw(scene->viewMat, scene->projectionMat);
+	//ステージ
 	scene->stage.get()->Draw(scene->viewMat, scene->projectionMat);
 }
 
@@ -115,7 +122,7 @@ void SceneEnd::DrawSprite()
 
 
 //---------------------------------------------------------------------------------------
-//常に行うもの
+//デストラクタ
 Scene::~Scene()
 {
 	delete state;
@@ -131,6 +138,7 @@ Scene::~Scene()
 	colliderM.reset();
 	playerBulletM.reset();
 	stage.reset();
+	itemM.reset();
 	//音データ解放
 
 }
@@ -188,22 +196,26 @@ void Scene::Initialize()
 	lightManager->SetPointLightAtten(0, { 0.01f,0.01f,0.01f });
 	lightManager->SetPointLightColor(0, { 0.8f,0.8f,0.01f });
 
-	//
+	//プレイヤー弾
 	playerBulletM = std::make_unique<PlayerBulletManager>();
 	playerBulletM.get()->Initialize(model[2]);
 	//player
 	player = std::make_unique<Player>();
 	player.get()->Initialize(model[2], model[3], playerBulletM.get(), &debugText);
-	//
+	//敵
 	enemyM = std::make_unique<EnemyManager>();
 	enemyM.get()->Initialize(model[2], player.get());
-	//
+	//当たり判定クラス
 	colliderM = std::make_unique<ColliderManager>();
 	colliderM.get()->Initialize();
-	//
+	//アイテム
+	itemM = std::make_unique<ItemManager>();
+	itemM.get()->Initialize(model[2]);
+	//ステージ
 	stage = std::make_unique<Stage>();
-	stage.get()->Initialize(model[2], enemyM.get());
+	stage.get()->Initialize(model[2], enemyM.get(), itemM.get());
 	stage.get()->GenerateStage();
+
 
 
 	//ステート変更

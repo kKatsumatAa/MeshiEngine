@@ -1,6 +1,7 @@
 #pragma once
 #include"Object.h"
 #include"EnemyManager.h"
+#include"ItemManager.h"
 
 enum BLOCK
 {
@@ -25,7 +26,9 @@ public:
 	bool isPlayerRoom = false;
 
 private:
+	//ŠO•”ƒNƒ‰ƒX
 	EnemyManager* enemyM;
+	ItemManager* itemM;
 
 	//—¼•Ç‚Ì•
 	const int hardWallNum = mapNumX / 3;
@@ -65,7 +68,7 @@ private:
 public:
 	~Stage();
 
-	void Initialize(Model* model, EnemyManager* enemyM);
+	void Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM);
 	void GenerateStage();
 	void GenerateBlock(int X, int Y);
 	void GenerateHardBlock(int X, int Y);

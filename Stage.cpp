@@ -6,6 +6,7 @@ static std::uniform_int_distribution<int> mapRand(NONE, HARD + 7);
 static std::uniform_int_distribution<int> hardRand(NONE, HARD + 4);
 static std::uniform_int_distribution<int> roomRand(0 + Stage::stageBeginNumY, Stage::mapDownMaxNum - 10);
 static std::uniform_int_distribution<int> enemyRand(0, 30);
+static std::uniform_int_distribution<int> itemRand(ITEM_TYPE::INORMAL, ITEM_TYPE::ISHOTGUN);
 
 
 Stage::~Stage()
@@ -19,7 +20,7 @@ Stage::~Stage()
 	}
 }
 
-void Stage::Initialize(Model* model, EnemyManager* enemyM)
+void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM)
 {
 	for (int j = 0; j < mapNumY; j++)
 	{
@@ -31,6 +32,7 @@ void Stage::Initialize(Model* model, EnemyManager* enemyM)
 	this->model = model;
 
 	this->enemyM = enemyM;
+	this->itemM = itemM;
 }
 
 void Stage::GenerateStage()
@@ -185,7 +187,7 @@ void Stage::GenerateRoomInternal()
 			//元に戻る
 			else if ((j == hardWallNum && i > beginRoomY + 1))
 			{
-				blockMapChip[i][j] = ROOMR;
+				blockMapChip[i][j] = ROOML;
 			}
 		}
 	}
@@ -312,7 +314,6 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
 	Vec3& velocity = collider->GetVelocity();
 	float radius = collider->GetRadius();
 
-	//何故か判定おかしいので少し変えてあげる
 	Vec3 pos_ = { pos.x  ,pos.y  ,pos.z };
 
 	//マップチップとの判定
@@ -328,18 +329,22 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
 		if (collider->GetIsPlayer() && !isPlayerRoom)
 		{
 			//左の部屋
-			if ((pos.x > -mapLeftLength && pos.x < -mapLeftLength + hardWallNum * blockRadius * 2.0f))
+			if ((pos.x > -mapLeftLength && pos.x < -mapLeftLength + hardWallNum / 1.5f * blockRadius * 2.0f))
 			{
 				beforeRoomPos = pos + Vec3(1.0f, 0, 0);
 				isPlayerRoom = true;
 				pos = { MapChipTransVec3(hardWallNum + roomLengthX - 2,beginRoomYLeft + 4) };
+				//アイテム生成
+				itemM->GenerateItem(MapChipTransVec3(hardWallNum + roomLengthX - 6, beginRoomYLeft + 4), itemRand(engine));
 			}
 			//右の部屋
-			else if (pos.x < mapLeftLength && pos.x > mapLeftLength - hardWallNum * blockRadius * 2.0f)
+			else if (pos.x < mapLeftLength && pos.x > mapLeftLength - hardWallNum / 1.5f * blockRadius * 2.0f)
 			{
 				beforeRoomPos = pos + Vec3(-1.0f, 0, 0);
 				isPlayerRoom = true;
 				pos = { MapChipTransVec3(hardWallNum + 1,beginRoomY + 4) };
+				//アイテム生成
+				itemM->GenerateItem(MapChipTransVec3(hardWallNum + 6, beginRoomY + 4), itemRand(engine));
 			}
 		}
 		//もどる

@@ -153,6 +153,8 @@
     <ClCompile Include="ConstBuffTransform.cpp" />
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
@@ -200,6 +202,8 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="ImGuiManager.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="KeyboardInput.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightManager.h" />

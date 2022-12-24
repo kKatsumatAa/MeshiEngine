@@ -99,7 +99,6 @@ void Player::DrawSprite()
 
 
 //--------------------------------------------------------------------------------------
-
 void Player::OnCollision(Collider& collider)
 {
 	if (dmageCoolTime <= 0)

@@ -9,7 +9,7 @@ void ColliderManager::Initialize()
 	this->audio = &Sound::GetInstance();
 }
 
-void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM, Stage* stage)
+void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM, ItemManager* itemM, Stage* stage)
 {
 	//bulletはそれ自体がlistなので特別
 	std::list<std::unique_ptr<Enemy>>& enemies = enemyM->enemies;
@@ -49,6 +49,18 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 			{
 				player->OnCollision(*enemy.get());
 			}
+		}
+	}
+
+	//アイテムとplayerのみ
+	for (std::unique_ptr<Item>& item : itemM->items_)
+	{
+		if (CollisionCircleCircle(player->GetWorldPos(), player->GetRadius(), item->GetWorldPos(), item->GetRadius()))
+		{
+			//playerに弾の種類をセット
+			player->SetBulletType(item.get()->GetItemType());
+			//item
+			item.get()->OnCollision(*player);
 		}
 	}
 

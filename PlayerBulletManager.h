@@ -1,5 +1,6 @@
 #pragma once
 #include"PlayerBullet.h"
+#include"ItemManager.h"
 
 class PlayerBulletManager
 {
@@ -15,6 +16,8 @@ private:
 
 	UINT64 texhandle = NULL;
 
+	int bulletType = ITEM_TYPE::INORMAL;
+
 public:
 	//“G‚Ì’e
 	std::list< std::unique_ptr<PlayerBullet>> playerBullets_;
@@ -26,6 +29,10 @@ public:
 	int GetBulletNumMax() { return bulletNumMax; }
 	void SetBulletNum(int num) { bulletNum = num; }
 	//void SetBulletNumMax(int num) { bulletNumMax = num; }
+
+	//’e‚ÌŽí—Þ
+	int GetBulletType() { return bulletType; }
+	void SetBulletType(const int bulletType) { this->bulletType = bulletType; }
 
 	void GeneratePlayerBullet(const Vec3& position, const Vec3& velocity);
 	void Update();
