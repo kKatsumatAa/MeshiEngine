@@ -31,7 +31,9 @@ private:
 	EnemyManager* enemyM;
 	ItemManager* itemM;
 
+	//•”‰®Œn
 	std::vector<Room *> rooms;
+	std::vector<int> roomNumY;
 
 	//—¼•Ç‚Ì•
 	const int hardWallNum = mapNumX / 3;

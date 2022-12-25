@@ -11,6 +11,7 @@ static std::uniform_int_distribution<int> itemRand(ITEM_TYPE::INORMAL, ITEM_TYPE
 
 Stage::~Stage()
 {
+
 	for (int j = 0; j < mapNumY; j++)
 	{
 		for (int i = 0; i < mapNumX; i++)
@@ -18,6 +19,8 @@ Stage::~Stage()
 			DeleteBlock(i, j);
 		}
 	}
+	rooms.clear();
+	roomNumY.clear();
 }
 
 void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM)
@@ -34,6 +37,7 @@ void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM)
 	this->enemyM = enemyM;
 	this->itemM = itemM;
 	rooms.clear();
+	roomNumY.clear();
 }
 
 void Stage::GenerateStage()
@@ -131,7 +135,37 @@ void Stage::GenerateRoom()
 	Room* room = new Room;
 
 	//部屋を生成
-	int roomPosY = roomRand(engine);
+	int roomPosY;
+	bool is = false;
+	int num = 0;
+
+	//部屋の距離が一定になるまで再抽選
+	while (!is)
+	{
+		roomPosY = roomRand(engine);
+
+		if (roomNumY.size() == 0)
+		{
+			roomNumY.push_back(roomPosY);
+			break;
+		}
+
+		for (int i = 0; i < roomNumY.size(); i++)
+		{
+			if (fabsf(roomPosY - roomNumY[i]) >= 20)
+			{
+				num++;
+				//全てと比較してokなら
+				if (num >= roomNumY.size())
+				{
+					roomNumY.push_back(roomPosY);
+					is = true;
+				}
+			}
+		}
+
+	}
+
 	int roomPosX;
 	bool isleft = false;
 	//左に生成
@@ -406,6 +440,8 @@ void Stage::CollisionRoom(Collider* collider)
 				//アイテム生成
 				if (!room->GetIsUsed())
 				{
+					itemM->items_.clear();
+
 					itemM->GenerateItem(MapChipTransVec3(hardWallNum + roomLengthX - 6, beginRoomYLeft + 4), itemRand(engine));
 				}
 				room->SetIsUsed(true);
@@ -421,6 +457,8 @@ void Stage::CollisionRoom(Collider* collider)
 				//アイテム生成
 				if (!room->GetIsUsed())
 				{
+					itemM->items_.clear();
+
 					itemM->GenerateItem(MapChipTransVec3(hardWallNum + 6, beginRoomY + 4), itemRand(engine));
 				}
 				room->SetIsUsed(true);
