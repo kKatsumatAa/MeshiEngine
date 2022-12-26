@@ -31,7 +31,7 @@ void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* p
 	//シングルトンインスタンスを取得
 	input_ = &KeyboardInput::GetInstance();
 
-	worldTransform_.trans = { 0,-10.0f,0 };
+	worldTransform_.trans = { -50.0f,0.0f,0 };
 	worldTransform_.rot = { 0,0.0f,0 };
 	worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
 	worldTransform_.SetWorld();

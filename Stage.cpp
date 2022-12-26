@@ -44,7 +44,7 @@ void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM, L
 
 void Stage::GenerateStage()
 {
-	for (int j = 0; j < mapDownMaxNum; j++)
+	for (int j = stageBeginNumY; j < mapDownMaxNum; j++)
 	{
 		if (j % 13 == 0)
 		{
@@ -72,7 +72,7 @@ void Stage::GenerateStage()
 			}
 			//壊れない〃
 			else if (((i == hardWallNum && hard[0] == HARD) || (hard[1] == HARD && i == mapNumX - hardWallNum - 1))
-				&& blockHardNum > 0 && j > stageBeginNumY)
+				&& blockHardNum > 0 && j > stageBeginNumY * 2)
 			{
 				blockHardNum--;
 				GenerateHardBlock(i, j);
@@ -83,14 +83,14 @@ void Stage::GenerateStage()
 				this->blockMapChip[j][i] = NONE;
 
 				//敵生成
-				if (enemyRand(engine) == 0 && enemyLineNum > 0 && j > stageBeginNumY)
+				if (enemyRand(engine) == 0 && enemyLineNum > 0 && j > stageBeginNumY * 2)
 				{
 					enemyLineNum--;
 					enemyM->GenerateEnemy(MapChipTransVec3(i, j));
 				}
 			}
 			//壊れるブロック
-			else if (blockNum == BLOCK::NORMAL && blockLineNum > 0 && j > stageBeginNumY)
+			else if (blockNum == BLOCK::NORMAL && blockLineNum > 0 && j > stageBeginNumY * 2)
 			{
 				blockLineNum--;
 				GenerateBlock(i, j);
@@ -181,7 +181,7 @@ void Stage::GenerateRoom()
 		rooms.push_back(room);
 
 		//ライト
-		PointLightSetPos(lightCount, MapChipTransVec3(roomPosX + hardWallNum - 1, roomPosY ));
+		PointLightSetPos(lightCount, MapChipTransVec3(roomPosX + hardWallNum - 1, roomPosY));
 		lightCount++;
 	}
 	//右
