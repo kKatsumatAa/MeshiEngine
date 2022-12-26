@@ -94,7 +94,7 @@ public:
 	void PointLightSetPos(int count, Vec3 pos);
 
 	//ˆÚ“®‚à‚±‚ÌŠÖ”“à‚Å‚â‚Á‚Ä‚à‚¢‚¢‚©‚à
-	void CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak = false);
+	void CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool isBlockBreak = false);
 
 	void CollisionRoom(Collider* collider);
 

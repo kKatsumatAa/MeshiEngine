@@ -151,7 +151,7 @@ void NoAttackP::Update()
 		player->SetIsJump(true);
 		player->ChangeState(new JumpAttackP);
 	}
-	
+
 }
 
 void NoAttackP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack)
@@ -186,7 +186,7 @@ void JumpP::Update()
 	{
 		player->ChangeState(new JumpAttackP);
 	}
-	
+
 }
 
 void JumpP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack)
@@ -203,15 +203,9 @@ void JumpAttackP::Update()
 	player->SetJumpPower(player->GetJumpPower() - player->GetGravityTmp());
 
 	//弾発射
-	count++;
-	if (player->input_->KeyPush(DIK_SPACE) && count >= countMax && player->playerBulletM->GetBulletNum() > 0)
-	{
-		count = 0;
-		//重力０
-		player->SetJumpPower(0);
-		player->playerBulletM->SetBulletNum(player->playerBulletM->GetBulletNum() - 1);
-		player->playerBulletM->GeneratePlayerBullet(player->GetWorldPos(), { 0,-1.0f,0 });
-	}
+	std::function<void()>p = [=]() {player->SetZeroJumpPower(); };
+	player->playerBulletM->Shot(player->GetWorldPos(), p);
+
 
 	//地面と当たったら                                     
 	if (player->GetIsGround())

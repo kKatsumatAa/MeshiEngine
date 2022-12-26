@@ -82,8 +82,10 @@ public:
 	void SetWorldPos(const Vec3& pos) { worldTransform_.trans = pos; };
 	float GetGravityTmp() { return gravityTmp; }
 	float GetJumpPowerTmp() { return jumpPowerTmp; }
-	float GetJumpPower() { return velocity.y; }
+	float& GetJumpPower() { return velocity.y; }
 	bool GetIsJump() { return isJump; }
+
+	void SetZeroJumpPower() { velocity.y = 0; }
 
 	int GetHP() { return HPp; }
 

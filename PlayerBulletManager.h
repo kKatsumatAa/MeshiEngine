@@ -2,6 +2,55 @@
 #include"PlayerBullet.h"
 #include"ItemManager.h"
 
+class PlayerBulletManager;
+
+
+class PlayerBulletState
+{
+protected:
+	PlayerBulletManager* playerBulletM;
+
+public:
+	void SetPlayerBulletManager(PlayerBulletManager* playerBulletM);
+	virtual void Shot(Vec3 pos, std::function<void()> p) = 0;
+};
+
+//•’Ê‚Ì’e
+class BulletNormal : public PlayerBulletState
+{
+private:
+	const int coolTimeTmp = 10;
+	int coolTime = 0;
+
+
+public:
+	void Shot(Vec3 pos, std::function<void()> p) override;
+};
+
+//ƒŒ[ƒU[
+class BulletLayser : public PlayerBulletState
+{
+private:
+
+
+public:
+	void Shot(Vec3 pos, std::function<void()> p) override;
+};
+
+//ƒVƒ‡ƒbƒgƒKƒ“
+class BulletShotGun : public PlayerBulletState
+{
+private:
+	const int coolTimeTmp = 20;
+	int coolTime = 0;
+	const int num = 5;
+
+public:
+	void Shot(Vec3 pos, std::function<void()> p) override;
+};
+
+
+//---------------------------------------------------------------------------------------
 class PlayerBulletManager
 {
 private:
@@ -18,6 +67,10 @@ private:
 
 	int bulletType = ITEM_TYPE::INORMAL;
 
+	PlayerBulletState* state = nullptr;
+
+	bool isChange = false;
+
 public:
 	//“G‚Ì’e
 	std::list< std::unique_ptr<PlayerBullet>> playerBullets_;
@@ -25,19 +78,24 @@ public:
 
 	void Initialize(Model* model);
 
+	void ChangeState(PlayerBulletState* state);
+
 	int GetBulletNum() { return bulletNum; }
 	int GetBulletNumMax() { return bulletNumMax; }
-	void SetBulletNum(int num) { bulletNum = num; }
+	void SetBulletNum(int num);
 	//void SetBulletNumMax(int num) { bulletNumMax = num; }
 
 	//’e‚Ìí—Ş
 	int GetBulletType() { return bulletType; }
-	void SetBulletType(const int bulletType) { this->bulletType = bulletType; }
+	void SetBulletType(const int bulletType);
 
 	void GeneratePlayerBullet(const Vec3& position, const Vec3& velocity);
 	void Update();
 	void Draw(ViewMat& view, ProjectionMat& projection);
 	void DrawSprite();
+
+	//’e‘Å‚Â
+	void Shot(Vec3 pos, std::function<void()> p);
 
 	//’eƒŠƒXƒg‚ğæ“¾(constQÆ)
 	const std::list<std::unique_ptr<PlayerBullet>>& GetPlayerBullets()

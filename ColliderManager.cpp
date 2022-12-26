@@ -17,18 +17,18 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 
 	//ƒXƒe[ƒW‚Æ‚Ì“–‚½‚è”»’è
 	{
-		//player
-		stage->CollisionMap(player, player->GetIsGround());
-		//“G
 		bool demo;
+		//player
+		stage->CollisionMap(player, player->GetIsGround(), demo);
+		//“G
 		for (std::unique_ptr<Enemy>& enemy : enemies)
 		{
-			stage->CollisionMap(enemy.get(), demo);
+			stage->CollisionMap(enemy.get(), demo, demo);
 		}
 		//’e
 		for (std::unique_ptr<PlayerBullet>& bullet : bullets)
 		{
-			stage->CollisionMap(bullet.get(), bullet->GetIsDead(), true);
+			stage->CollisionMap(bullet.get(), demo, bullet->GetIsDead(), true);
 		}
 	}
 

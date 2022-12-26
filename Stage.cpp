@@ -376,7 +376,7 @@ int Stage::CollisionMapInternal(float left, float right, float down, float up, b
 	return false;
 }
 
-void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
+void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool isBlockBreak)
 {
 	Vec3& pos = collider->GetWorldPos();
 	Vec3& velocity = collider->GetVelocity();
@@ -394,7 +394,10 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
 
 	if (CollisionMapInternal(left + velocity.x, right + velocity.x, down, up))//仮に進んだとしてそこにブロックがあるか
 	{
-		while (!CollisionMapInternal(left + sign(velocity.x) * 0.1f, right + sign(velocity.x) * 0.1f, down, up))
+
+		isDead = true;
+
+		while (!CollisionMapInternal(left + sign(velocity.x) * 0.1f, right + sign(velocity.x) * 0.1f, down, up, isBlockBreak))
 		{
 			pos_.x += sign(velocity.x) * 0.1f;//1ピクセル先にブロックがなければ1ピクセル進む
 
@@ -422,6 +425,7 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak)
 			up = pos_.y + radius;//移動したので角の更新
 		}
 
+		isDead = true;
 		if (velocity.y < 0)
 		{
 			isGround = true;
