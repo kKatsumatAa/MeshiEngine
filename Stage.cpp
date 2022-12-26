@@ -23,7 +23,7 @@ Stage::~Stage()
 	roomNumY.clear();
 }
 
-void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM)
+void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM, LightManager* lightM)
 {
 	for (int j = 0; j < mapNumY; j++)
 	{
@@ -36,8 +36,10 @@ void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM)
 
 	this->enemyM = enemyM;
 	this->itemM = itemM;
+	this->lightM = lightM;
 	rooms.clear();
 	roomNumY.clear();
+	lightCount = 1;
 }
 
 void Stage::GenerateStage()
@@ -177,6 +179,10 @@ void Stage::GenerateRoom()
 
 		room->Initialize(MapChipTransVec3(roomPosX + hardWallNum - 4, roomPosY + 1), ROOM_TYPE::LEFT_ROOM, 3.0f * blockRadius);
 		rooms.push_back(room);
+
+		//ライト
+		PointLightSetPos(lightCount, MapChipTransVec3(roomPosX + hardWallNum - 1, roomPosY ));
+		lightCount++;
 	}
 	//右
 	else
@@ -187,6 +193,10 @@ void Stage::GenerateRoom()
 
 		room->Initialize(MapChipTransVec3(roomPosX + 2, roomPosY + 1), ROOM_TYPE::RIGHT_ROOM, 3.0f * blockRadius);
 		rooms.push_back(room);
+
+		//ライト
+		PointLightSetPos(lightCount, MapChipTransVec3(roomPosX + 1, roomPosY));
+		lightCount++;
 	}
 
 	for (int j = roomPosY; j < roomPosY + 3; j++)
@@ -234,6 +244,10 @@ void Stage::GenerateRoomInternal()
 			}
 		}
 	}
+	//ライト
+	PointLightSetPos(lightCount, MapChipTransVec3(hardWallNum + 2, beginRoomY + 2));
+	lightCount++;
+
 
 	//右部屋
 	for (int i = beginRoomYLeft; i < beginRoomYLeft + roomLengthY; i++)
@@ -258,6 +272,9 @@ void Stage::GenerateRoomInternal()
 		}
 	}
 
+	//ライト
+	PointLightSetPos(lightCount, MapChipTransVec3(hardWallNum + 2, beginRoomYLeft + 2));
+	lightCount++;
 }
 
 Vec3 Stage::MapChipTransVec3(int X, int Y)
@@ -286,6 +303,14 @@ void Stage::BreakBlock(const int X, const int Y)
 	}
 	//演出など
 
+}
+
+void Stage::PointLightSetPos(int count, Vec3 pos)
+{
+	//ライト
+	Vec3 posV = pos;
+	XMFLOAT3 pos_ = { posV.x,posV.y,posV.z };
+	lightM->SetPointLightPos(count, pos_);
 }
 
 

@@ -3,6 +3,7 @@
 #include"EnemyManager.h"
 #include"ItemManager.h"
 #include"Room.h"
+#include"LightManager.h"
 
 enum BLOCK
 {
@@ -30,6 +31,7 @@ private:
 	//外部クラス
 	EnemyManager* enemyM;
 	ItemManager* itemM;
+	LightManager* lightM;
 
 	//部屋系
 	std::vector<Room *> rooms;
@@ -67,13 +69,16 @@ private:
 
 	Vec3 beforeRoomPos;
 
+	//ライトのカウント
+	int lightCount = 0;
+
 private:
 	int CollisionMapInternal(float left, float right, float down, float up, bool isBlockBreak = false);
 
 public:
 	~Stage();
 
-	void Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM);
+	void Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM, LightManager* lightM);
 	void GenerateStage();
 	void GenerateBlock(int X, int Y);
 	void GenerateHardBlock(int X, int Y);
@@ -85,6 +90,8 @@ public:
 	void DeleteBlock(int X, int Y);
 
 	void BreakBlock(const int X, const int Y);
+
+	void PointLightSetPos(int count, Vec3 pos);
 
 	//移動もこの関数内でやってもいいかも
 	void CollisionMap(Collider* collider, bool& isGround, bool isBlockBreak = false);

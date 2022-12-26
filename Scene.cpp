@@ -192,10 +192,19 @@ void Scene::Initialize()
 	lightManager->SetDirLightActive(0, false);
 	lightManager->SetDirLightActive(1, false);
 	lightManager->SetDirLightActive(2, false);
-	lightManager->SetPointLightActive(0, true);
-	lightManager->SetPointLightAtten(0, { 0.01f,0.01f,0.01f });
-	lightManager->SetPointLightColor(0, { 0.8f,0.8f,0.01f });
-
+	for (int i = 0; i < LightManager::PointLightNum; i++)
+	{
+		lightManager->SetPointLightActive(i, true);
+		lightManager->SetPointLightAtten(i, { 0.01f,0.01f,0.01f });
+		if (i == 0)
+		{
+			lightManager->SetPointLightColor(i, { 0.8f,0.8f,0.01f });
+		}
+		else
+		{
+			lightManager->SetPointLightColor(i, { 1.0f,0.8f,0.3f });
+		}
+	}
 	//プレイヤー弾
 	playerBulletM = std::make_unique<PlayerBulletManager>();
 	playerBulletM.get()->Initialize(model[2]);
@@ -213,7 +222,7 @@ void Scene::Initialize()
 	itemM.get()->Initialize(model[2]);
 	//ステージ
 	stage = std::make_unique<Stage>();
-	stage.get()->Initialize(model[2], enemyM.get(), itemM.get());
+	stage.get()->Initialize(model[2], enemyM.get(), itemM.get(), lightManager);
 	stage.get()->GenerateStage();
 
 

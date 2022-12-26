@@ -24,7 +24,7 @@ cbuffer ConstBufferDataTransform : register(b1)
 }
 
 // 点光源の数
-static const int POINTLIGHT_NUM = 3;
+static const int POINTLIGHT_NUM = 6;
 struct PointLight
 {
 	float3 lightpos;//ライトの座標

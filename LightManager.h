@@ -5,6 +5,10 @@
 
 class LightManager
 {
+public:
+	//点光源の数
+	static const int PointLightNum = 6;
+
 private://エイリアス
 //Microsoft::WRL::を省略
 	template<class T> using Comptr = Microsoft::WRL::ComPtr<T>;
@@ -16,8 +20,7 @@ private://エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 private://定数
-//点光源の数
-	static const int PointLightNum = 3;
+
 	//平行光源
 	static const int DirLightNum = 3;
 

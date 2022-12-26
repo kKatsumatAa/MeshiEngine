@@ -61,7 +61,8 @@ void LightManager::TransferConstBuffer()
 			else {
 				constMap->dirLights[i].active = 0;
 			}
-
+		}
+		for (int i = 0; i < PointLightNum; i++) {
 			//点光源
 			//ライトが有効なら設定を転送
 			if (pointLights[i].GetActive())
