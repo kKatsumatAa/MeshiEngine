@@ -3,7 +3,7 @@
 
 //óêêîîÕàÕ
 static std::uniform_int_distribution<int> mapRand(NONE, HARD + 7);
-static std::uniform_int_distribution<int> hardRand(NONE, HARD + 4);
+static std::uniform_int_distribution<int> hardRand(NONE, HARD + 5);
 static std::uniform_int_distribution<int> roomRand(0 + Stage::stageBeginNumY, Stage::mapDownMaxNum - 10);
 static std::uniform_int_distribution<int> enemyRand(0, 30);
 static std::uniform_int_distribution<int> itemRand(ITEM_TYPE::INORMAL, ITEM_TYPE::ISHOTGUN);
@@ -380,7 +380,8 @@ int Stage::CollisionMapInternal(float left, float right, float down, float up, b
 
 void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool isBlockBreak)
 {
-
+	//ïîâÆÇ∆ÇÃîªíË
+	CollisionRoom(collider);
 
 	Vec3& pos = collider->GetWorldPos();
 	Vec3& velocity = collider->GetVelocity();
@@ -443,9 +444,6 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 	}
 
 	pos.y += velocity.y;
-
-	//ïîâÆÇ∆ÇÃîªíË
-	CollisionRoom(collider);
 }
 
 void Stage::CollisionRoom(Collider* collider)
@@ -474,13 +472,13 @@ void Stage::CollisionRoom(Collider* collider)
 				{
 					itemM->items_.clear();
 
-					itemM->GenerateItem(MapChipTransVec3(hardWallNum + roomLengthX - 6, beginRoomYLeft + 4), itemRand(engine));
+					itemM->GenerateItem(MapChipTransVec3(hardWallNum + roomLengthX - 6, beginRoomYLeft + 5), itemRand(engine));
 				}
 				room->SetIsUsed(true);
 
 				beforeRoomPos = pos + Vec3(1.0f, 0, 0);
 				isPlayerRoom = true;
-				pos = { MapChipTransVec3(hardWallNum + roomLengthX - 3,beginRoomYLeft + 5) };
+				pos = { MapChipTransVec3(hardWallNum + roomLengthX - 2,beginRoomYLeft + 5) };
 
 			}
 			//âEÇÃïîâÆ
@@ -491,13 +489,13 @@ void Stage::CollisionRoom(Collider* collider)
 				{
 					itemM->items_.clear();
 
-					itemM->GenerateItem(MapChipTransVec3(hardWallNum + 7, beginRoomY + 5), itemRand(engine));
+					itemM->GenerateItem(MapChipTransVec3(hardWallNum + 6, beginRoomY + 5), itemRand(engine));
 				}
 				room->SetIsUsed(true);
 
 				beforeRoomPos = pos + Vec3(-1.0f, 0, 0);
 				isPlayerRoom = true;
-				pos = { MapChipTransVec3(hardWallNum + 1,beginRoomY + 4) };
+				pos = { MapChipTransVec3(hardWallNum + 1,beginRoomY + 5) };
 
 			}
 		}
