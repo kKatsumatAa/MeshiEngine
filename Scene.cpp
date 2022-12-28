@@ -169,7 +169,7 @@ void Scene::Initialize()
 	draw[1].worldMat->trans = { 0, 0, 10.0f };
 	draw[1].worldMat->rot = { (-pi / 2.0f), 0, 0 };
 	model[2] = Model::LoadFromOBJ("sphere");
-	//model[3] = Model::LoadFromOBJ("hanger");
+	model[3] = Model::LoadFromOBJ("hanger");
 
 	//‰¹
 	Sound::LoadWave("a.wav", true);

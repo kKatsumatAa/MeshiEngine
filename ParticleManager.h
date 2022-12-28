@@ -8,6 +8,7 @@
 #include <forward_list>
 #include "ViewMat.h"
 #include "ProjectionMat.h"
+#include "TextureManager.h"
 
 /// <summary>
 /// パーティクルマネージャ
@@ -115,11 +116,11 @@ public: // メンバ関数
 	/// <param name="end_scale">終了時スケール</param>
 	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale);
 
-	/// <summary>
-	/// デスクリプタヒープの初期化
-	/// </summary>
-	/// <returns></returns>
-	void InitializeDescriptorHeap();
+	///// <summary>
+	///// デスクリプタヒープの初期化
+	///// </summary>
+	///// <returns></returns>
+	//void InitializeDescriptorHeap();
 
 	/// <summary>
 	/// グラフィックパイプライン生成
@@ -127,11 +128,11 @@ public: // メンバ関数
 	/// <returns>成否</returns>
 	void InitializeGraphicsPipeline();
 
-	/// <summary>
-	/// テクスチャ読み込み
-	/// </summary>
-	/// <returns>成否</returns>
-	void LoadTexture();
+	///// <summary>
+	///// テクスチャ読み込み
+	///// </summary>
+	///// <returns>成否</returns>
+	//void LoadTexture();
 
 	/// <summary>
 	/// モデル作成
