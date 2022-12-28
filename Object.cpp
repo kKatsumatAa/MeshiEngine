@@ -131,9 +131,6 @@ Object::Object()
 	//行列
 	cbt.Initialize(Directx::GetInstance());
 
-	//スプライトクラスの
-	sprite.Initialize();
-
 	//03_02
 	//ヒープ設定
 	D3D12_HEAP_PROPERTIES cbHeapProp{};
@@ -170,7 +167,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		cbt.constMapTransform->viewproj = view->matView * projection->matProjection;
 		XMFLOAT3 cPos = { view->eye.x,view->eye.y,view->eye.z };
 		cbt.constMapTransform->cameraPos = cPos;
-		
+
 	}
 	else if (indexNum != SPRITE)//親がいない場合
 	{
@@ -491,7 +488,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		//定数バッファビュー(CBV)の設定コマンド
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
-		sprite.SpriteDraw();
+		sprite->SpriteDraw();
 	}
 	else if (indexNum == MODEL)
 	{
@@ -545,7 +542,13 @@ void Object::DrawBoxSprite(const Vec3& pos, const float& scale,
 	XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV, const bool& isReverseX, const bool& isReverseY,
 	float rotation, const int& pipelineNum)
 {
-	sprite.Update(pos, scale, color, textureHandle, ancorUV, isReverseX, isReverseY, rotation, &cbt, constMapMaterial);
+	if (sprite == nullptr)
+	{
+		sprite = new Sprite();
+		//スプライトクラスの初期化
+		sprite->Initialize();
+	}
+	sprite->Update(pos, scale, color, textureHandle, ancorUV, isReverseX, isReverseY, rotation, &cbt, constMapMaterial);
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
@@ -554,7 +557,13 @@ void Object::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, cons
 	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, const bool& isReverseX, const bool& isReverseY,
 	float rotation, const int& pipelineNum)
 {
-	sprite.UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle,
+	if (sprite == nullptr)
+	{
+		sprite = new Sprite();
+		//スプライトクラスの初期化
+		sprite->Initialize();
+	}
+	sprite->UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle,
 		isPosLeftTop, isReverseX, isReverseY, rotation, &cbt, constMapMaterial);
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);

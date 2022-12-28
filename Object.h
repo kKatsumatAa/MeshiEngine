@@ -36,7 +36,7 @@ private:
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
 
 
-	Sprite sprite;
+	Sprite* sprite;
 
 	//ƒ‰ƒCƒg
 	static LightManager* lightManager;
