@@ -232,16 +232,17 @@ void Stage::GenerateRoomInternal()
 			{
 				GenerateHardBlock(j, i);
 			}
-			//左右の壁
-			else if ((j == hardWallNum + roomLengthX - 1) || (j == hardWallNum && i == beginRoomY + 1))
-			{
-				GenerateHardBlock(j, i);
-			}
 			//元に戻る
 			else if ((j == hardWallNum && i > beginRoomY + 1))
 			{
 				blockMapChip[i][j] = ROOML;
 			}
+			//左右の壁
+			else if ((j == hardWallNum + roomLengthX - 1) || (j == hardWallNum && i == beginRoomY + 1))
+			{
+				GenerateHardBlock(j, i);
+			}
+			
 		}
 	}
 	//ライト
@@ -259,16 +260,17 @@ void Stage::GenerateRoomInternal()
 			{
 				GenerateHardBlock(j, i);
 			}
-			//左右の壁
-			else if ((j == hardWallNum) || (j == hardWallNum + roomLengthX - 1 && i == beginRoomYLeft + 1))
-			{
-				GenerateHardBlock(j, i);
-			}
 			//元に戻る
 			else if ((j == hardWallNum + roomLengthX - 1 && i > beginRoomYLeft + 1))
 			{
 				blockMapChip[i][j] = ROOMR;
 			}
+			//左右の壁
+			else if ((j == hardWallNum) || (j == hardWallNum + roomLengthX - 1 && i == beginRoomYLeft + 1))
+			{
+				GenerateHardBlock(j, i);
+			}
+			
 		}
 	}
 
@@ -378,6 +380,9 @@ int Stage::CollisionMapInternal(float left, float right, float down, float up, b
 
 void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool isBlockBreak)
 {
+	//部屋との判定
+	CollisionRoom(collider);
+
 	Vec3& pos = collider->GetWorldPos();
 	Vec3& velocity = collider->GetVelocity();
 	float radius = collider->GetRadius();
@@ -439,10 +444,6 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 	}
 
 	pos.y += velocity.y;
-
-
-	//部屋との判定
-	CollisionRoom(collider);
 }
 
 void Stage::CollisionRoom(Collider* collider)
