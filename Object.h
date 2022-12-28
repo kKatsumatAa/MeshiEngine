@@ -48,8 +48,8 @@ private:
 
 public://•Ï”
 	WorldMat* worldMat = new WorldMat();
-	ViewMat* view = new ViewMat();
-	ProjectionMat* projection = new ProjectionMat();
+	ViewMat* view;
+	ProjectionMat* projection;
 	bool isWireFrame = 0;
 
 public:

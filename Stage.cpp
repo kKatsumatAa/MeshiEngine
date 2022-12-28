@@ -235,7 +235,7 @@ void Stage::GenerateRoomInternal()
 			//元に戻る
 			else if ((j == hardWallNum && i > beginRoomY + 1))
 			{
-				blockMapChip[i][j] = ROOML;
+				blockMapChip[i][j] = ROOMR;
 			}
 			//左右の壁
 			else if ((j == hardWallNum + roomLengthX - 1) || (j == hardWallNum && i == beginRoomY + 1))
@@ -250,7 +250,7 @@ void Stage::GenerateRoomInternal()
 	lightCount++;
 
 
-	//右部屋
+	//左部屋
 	for (int i = beginRoomYLeft; i < beginRoomYLeft + roomLengthY; i++)
 	{
 		for (int j = hardWallNum; j < hardWallNum + roomLengthX; j++)
@@ -263,7 +263,7 @@ void Stage::GenerateRoomInternal()
 			//元に戻る
 			else if ((j == hardWallNum + roomLengthX - 1 && i > beginRoomYLeft + 1))
 			{
-				blockMapChip[i][j] = ROOMR;
+				blockMapChip[i][j] = ROOML;
 			}
 			//左右の壁
 			else if ((j == hardWallNum) || (j == hardWallNum + roomLengthX - 1 && i == beginRoomYLeft + 1))
@@ -380,8 +380,7 @@ int Stage::CollisionMapInternal(float left, float right, float down, float up, b
 
 void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool isBlockBreak)
 {
-	//部屋との判定
-	CollisionRoom(collider);
+
 
 	Vec3& pos = collider->GetWorldPos();
 	Vec3& velocity = collider->GetVelocity();
@@ -444,6 +443,9 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 	}
 
 	pos.y += velocity.y;
+
+	//部屋との判定
+	CollisionRoom(collider);
 }
 
 void Stage::CollisionRoom(Collider* collider)
@@ -478,7 +480,7 @@ void Stage::CollisionRoom(Collider* collider)
 
 				beforeRoomPos = pos + Vec3(1.0f, 0, 0);
 				isPlayerRoom = true;
-				pos = { MapChipTransVec3(hardWallNum + roomLengthX - 2,beginRoomYLeft + 4) };
+				pos = { MapChipTransVec3(hardWallNum + roomLengthX - 3,beginRoomYLeft + 5) };
 
 			}
 			//右の部屋
@@ -489,7 +491,7 @@ void Stage::CollisionRoom(Collider* collider)
 				{
 					itemM->items_.clear();
 
-					itemM->GenerateItem(MapChipTransVec3(hardWallNum + 6, beginRoomY + 4), itemRand(engine));
+					itemM->GenerateItem(MapChipTransVec3(hardWallNum + 7, beginRoomY + 5), itemRand(engine));
 				}
 				room->SetIsUsed(true);
 
@@ -501,9 +503,9 @@ void Stage::CollisionRoom(Collider* collider)
 		}
 	}
 	//もどる
-	else if (((CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOML) ||
+	if (((CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOML) ||
 		(CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOMR))
-		&& isPlayerRoom)
+		/*&& isPlayerRoom*/)
 	{
 		pos = beforeRoomPos;
 		velocity = { 0,0,0 };
