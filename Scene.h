@@ -7,6 +7,7 @@
 #include"ColliderManager.h"
 #include"Stage.h"
 #include"ItemManager.h"
+#include"ParticleManager.h"
 
 
 class Scene;

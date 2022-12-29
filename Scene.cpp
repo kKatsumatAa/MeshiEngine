@@ -161,6 +161,8 @@ void Scene::Initialize()
 	TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
 	TextureManager::LoadGraph(L"Resources/image/white.png", texhandle[0]);
 
+	TextureManager::LoadGraph(L"Resources/image/effect1.png", texhandle[1]);
+
 	//model
 	Model::StaticInitialize();
 
@@ -224,8 +226,8 @@ void Scene::Initialize()
 	stage = std::make_unique<Stage>();
 	stage.get()->Initialize(model[2], enemyM.get(), itemM.get(), lightManager);
 	stage.get()->GenerateStage();
-
-
+	//
+	ParticleManager::GetInstance()->Initialize();
 
 	//ステート変更
 	ChangeState(new SceneGame);
@@ -233,6 +235,42 @@ void Scene::Initialize()
 
 void Scene::Update()
 {
+	for (int i = 0; i < 10; i++)
+	{
+		//XYZ全て[-5.0f~+5.0f]でランダムに分布
+		const float md_pos = 5.0f;
+		Vec3 pos = player.get()->GetWorldPos();
+
+		//XYZ全て[-0.05~+0.05f]でランダムに分布
+		const float md_vel = 0.1f;
+		XMFLOAT3 vel{};
+		vel.x = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
+		vel.y = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
+		vel.z = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
+
+		//重力に見立ててYのみ[-0.001f~0]でランダムに
+		XMFLOAT3 acc{};
+		const float md_acc = 0.001f;
+		acc.y = -(float)rand() / RAND_MAX * md_acc;
+
+		//色
+		XMFLOAT4 color{};
+		const float md_color = 1.0f;
+		color.x = (float)rand() / RAND_MAX * md_color;
+		color.y = (float)rand() / RAND_MAX * md_color;
+		color.z = (float)rand() / RAND_MAX * md_color;
+		color.w = (float)rand() / RAND_MAX * md_color;
+
+		//if (count2 == 0)
+		//	particleM->Add(60, pos, vel, acc, 1.0f, 0.0f
+		//		, color, color);
+		//else if (count2 == 1)
+		ParticleManager::GetInstance()->Add(180, { pos.x,pos.y,pos.z }, vel, acc, 1.0f, 0.0f
+			, { 1.0f,0.0f,1.0f,1.0f }, { 1.0f,1.0f,0.0f,1.0f });
+	}
+	ParticleManager::GetInstance()->Update(&viewMat, &projectionMat);
+
+
 	//imgui
 	imGuiManager->Begin();
 
@@ -270,11 +308,15 @@ void Scene::Update()
 
 void Scene::Draw()
 {
+
+
 	state->Draw();
 
 	draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat, model[1]);
 
 	debugText.DrawAll(debugTextHandle);
+
+	ParticleManager::GetInstance()->Draw(texhandle[1]);
 
 	//imgui
 	imGuiManager->Draw();

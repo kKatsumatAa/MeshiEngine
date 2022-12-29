@@ -30,6 +30,7 @@ public: // サブクラス
 	{
 		XMFLOAT3 pos; // xyz座標
 		float scale; // スケール
+		XMFLOAT4 color;//色
 	};
 
 	// 定数バッファ用データ構造体
@@ -58,17 +59,17 @@ public: // サブクラス
 		// 加速度
 		XMFLOAT3 accel = {};
 		// 色
-		XMFLOAT3 color = {};
+		XMFLOAT4 color = {};
 		// スケール
 		float scale = 1.0f;
 		// 回転
 		float rotation = 0.0f;
 		// 初期値
-		XMFLOAT3 s_color = {};
+		XMFLOAT4 s_color = {};
 		float s_scale = 1.0f;
 		float s_rotation = 0.0f;
 		// 最終値
-		XMFLOAT3 e_color = {};
+		XMFLOAT4 e_color = {};
 		float e_scale = 0.0f;
 		float e_rotation = 0.0f;
 		// 現在フレーム
@@ -88,22 +89,16 @@ public: // メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <returns></returns>
-	void Initialize(ID3D12Device* device);
+	void Initialize();
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	void Update(ViewMat* view, ProjectionMat* projection);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(ID3D12GraphicsCommandList* cmdList);
-
-	/// <summary>
-	/// カメラのセット
-	/// </summary>
-	/// <param name="camera">カメラ</param>
-	inline void SetViewProjection(ViewMat* view, ProjectionMat* projection) { this->view = view; this->projection = projection; }
+	void Draw(UINT64 texHandle);
 
 	/// <summary>
 	/// パーティクルの追加
@@ -114,13 +109,8 @@ public: // メンバ関数
 	/// <param name="accel">加速度</param>
 	/// <param name="start_scale">開始時スケール</param>
 	/// <param name="end_scale">終了時スケール</param>
-	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale);
-
-	///// <summary>
-	///// デスクリプタヒープの初期化
-	///// </summary>
-	///// <returns></returns>
-	//void InitializeDescriptorHeap();
+	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale
+		, XMFLOAT4 start_color = { 1.0f,1.0f,1.0f,1.0f }, XMFLOAT4 end_color = { 1.0f,1.0f,1.0f,1.0f }, float start_rot = 0.0f, float end_rot = 0.0f);
 
 	/// <summary>
 	/// グラフィックパイプライン生成
@@ -128,46 +118,26 @@ public: // メンバ関数
 	/// <returns>成否</returns>
 	void InitializeGraphicsPipeline();
 
-	///// <summary>
-	///// テクスチャ読み込み
-	///// </summary>
-	///// <returns>成否</returns>
-	//void LoadTexture();
-
 	/// <summary>
 	/// モデル作成
 	/// </summary>
 	void CreateModel();
 
-	void UpdateMatrix();
+	void UpdateMatrix(ViewMat* view, ProjectionMat* projection);
 
 private: // メンバ変数
-	// デバイス
-	ID3D12Device* device = nullptr;
-	// デスクリプタサイズ
-	UINT descriptorHandleIncrementSize = 0u;
 	// ルートシグネチャ
 	ComPtr<ID3D12RootSignature> rootsignature;
 	// パイプラインステートオブジェクト
 	ComPtr<ID3D12PipelineState> pipelinestate;
-	// デスクリプタヒープ
-	ComPtr<ID3D12DescriptorHeap> descHeap;
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
-	// テクスチャバッファ
-	ComPtr<ID3D12Resource> texbuff;
-	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV;
-	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
 	// 頂点バッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vbView;
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuff;
 	// パーティクル配列
 	std::forward_list<Particle> particles;
-	//// カメラ
-	//Camera* camera = nullptr;
 	//
 	ViewMat* view = nullptr;
 	ProjectionMat* projection = nullptr;
@@ -178,11 +148,14 @@ private: // メンバ変数
 	// ビュー行列
 	XMMATRIX matView = DirectX::XMMatrixIdentity();
 
+public:
+	UINT64 texHandle = NULL;
+
 
 private:
-	ParticleManager() = default;
+	ParticleManager() { ; }
 	ParticleManager(const ParticleManager&) = delete;
-	~ParticleManager() = default;
+	~ParticleManager();
 	ParticleManager& operator=(const ParticleManager&) = delete;
 };
 

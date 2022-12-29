@@ -4,7 +4,7 @@
 //—””ÍˆÍ
 static std::uniform_int_distribution<int> mapRand(NONE, HARD + 7);
 static std::uniform_int_distribution<int> hardRand(NONE, HARD + 5);
-static std::uniform_int_distribution<int> roomRand(0 + Stage::stageBeginNumY, Stage::mapDownMaxNum - 10);
+static std::uniform_int_distribution<int> roomRand(0 + Stage::stageBeginNumY * 2, Stage::mapDownMaxNum - 10);
 static std::uniform_int_distribution<int> enemyRand(0, 30);
 static std::uniform_int_distribution<int> itemRand(ITEM_TYPE::INORMAL, ITEM_TYPE::ISHOTGUN);
 
@@ -242,7 +242,7 @@ void Stage::GenerateRoomInternal()
 			{
 				GenerateHardBlock(j, i);
 			}
-			
+
 		}
 	}
 	//ƒ‰ƒCƒg
@@ -270,7 +270,7 @@ void Stage::GenerateRoomInternal()
 			{
 				GenerateHardBlock(j, i);
 			}
-			
+
 		}
 	}
 
