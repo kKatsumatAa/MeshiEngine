@@ -24,6 +24,13 @@ void EnemyManager::Update()
 	for (std::unique_ptr<Enemy>& enemy : enemies)
 	{
 		enemy->Update();
+		if (enemy->GetIsDead())
+		{
+			//パーティクル
+			XMFLOAT4 color = enemy->draw->GetColor();
+			ParticleManager::GetInstance()->GenerateRandomParticle(5, 20, 0.7f, enemy->GetWorldPos(),
+				2.5f, 0.0f, color, {0,0,0,0});
+		}
 	}
 
 	enemies.remove_if([](std::unique_ptr<Enemy>& enemy)
@@ -31,16 +38,6 @@ void EnemyManager::Update()
 			return enemy->GetIsDead();
 		}
 	);
-
-
-	//仮
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_2))
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			GenerateEnemy({ player->GetWorldPos().x + posDistX(engine), player->GetWorldPos().y - 20.0f + posDistY(engine), 0 });
-		}
-	}
 }
 
 void EnemyManager::Draw(ViewMat& view, ProjectionMat& projection)
