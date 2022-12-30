@@ -1,5 +1,6 @@
 #include "Stage.h"
 #include <random>
+#include "ParticleManager.h"
 
 //乱数範囲
 static std::uniform_int_distribution<int> mapRand(NONE, HARD + 7);
@@ -300,6 +301,9 @@ void Stage::BreakBlock(const int X, const int Y)
 {
 	if (blockMapChip[Y][X] == NORMAL)
 	{
+		//パーティクル
+		ParticleManager::GetInstance()->GenerateRandomParticle(5, 40, 0.7f, MapChipTransVec3(X, Y), 3.5f, 0.0f, { 0.2f,0.2f,0.2f,1.0f }, { 0,0,0,0 });
+
 		blockMapChip[Y][X] = NONE;
 		DeleteBlock(X, Y);
 	}

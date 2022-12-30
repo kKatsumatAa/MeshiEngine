@@ -516,6 +516,28 @@ void ParticleManager::UpdateMatrix(ViewMat* view, ProjectionMat* projection)
 #pragma endregion
 }
 
+void ParticleManager::GenerateRandomParticle(int num, int lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale, XMFLOAT4 start_color, XMFLOAT4 end_color)
+{
+	for (int i = 0; i < num; i++)
+	{
+		Vec3 pos = position;
+
+		const float md_vel = vecPower;
+		XMFLOAT3 vel{};
+		vel.x = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
+		vel.y = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
+		vel.z = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
+
+		//重力に見立ててYのみ[-0.001f~0]でランダムに
+		XMFLOAT3 acc{};
+		const float md_acc = 0.1f;
+		acc.y = -(float)rand() / RAND_MAX * md_acc;
+
+		ParticleManager::GetInstance()->Add(lifeTime, { pos.x,pos.y,pos.z }, vel, acc, start_scale, end_scale
+			, start_color, end_color);
+	}
+}
+
 ParticleManager::~ParticleManager()
 {
 	{ particles.clear(); }

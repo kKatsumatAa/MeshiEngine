@@ -84,6 +84,20 @@ private: // 定数
 public:// 静的メンバ関数
 	static ParticleManager* GetInstance();
 
+private:
+	/// <summary>
+/// グラフィックパイプライン生成
+/// </summary>
+/// <returns>成否</returns>
+	void InitializeGraphicsPipeline();
+
+	/// <summary>
+	/// モデル作成
+	/// </summary>
+	void CreateModel();
+
+	void UpdateMatrix(ViewMat* view, ProjectionMat* projection);
+
 public: // メンバ関数	
 	/// <summary>
 	/// 初期化
@@ -112,18 +126,9 @@ public: // メンバ関数
 	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale
 		, XMFLOAT4 start_color = { 1.0f,1.0f,1.0f,1.0f }, XMFLOAT4 end_color = { 1.0f,1.0f,1.0f,1.0f }, float start_rot = 0.0f, float end_rot = 0.0f);
 
-	/// <summary>
-	/// グラフィックパイプライン生成
-	/// </summary>
-	/// <returns>成否</returns>
-	void InitializeGraphicsPipeline();
-
-	/// <summary>
-	/// モデル作成
-	/// </summary>
-	void CreateModel();
-
-	void UpdateMatrix(ViewMat* view, ProjectionMat* projection);
+	//ランダムに生成
+	void GenerateRandomParticle(int num, int lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale
+		, XMFLOAT4 start_color = { 1.0f,1.0f,1.0f,1.0f }, XMFLOAT4 end_color = { 1.0f,1.0f,1.0f,1.0f });
 
 private: // メンバ変数
 	// ルートシグネチャ
