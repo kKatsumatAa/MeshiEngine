@@ -89,6 +89,9 @@ public:
 
 	std::unique_ptr<ItemManager> itemM;
 
+	std::unique_ptr<CartridgeEffectManager> cartridgeEffectM;
+
+
 public:
 	~Scene();
 	void ChangeState(SceneState* state);

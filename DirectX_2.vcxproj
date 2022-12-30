@@ -146,6 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="CartridgeEffectManager.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="ColliderManager.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -193,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
+    <ClInclude Include="CartridgeEffectManager.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ColliderManager.h" />
     <ClInclude Include="Collision.h" />

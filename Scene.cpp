@@ -57,12 +57,6 @@ void SceneGame::Update()
 	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get(), scene->itemM.get(), scene->stage.get());
 	//カメラ
 	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
-	//if (scene->stage->isPlayerRoom)
-	//{
-	//	scene->viewMat.eye = { pos.x,pos.y - 10.0f,scene->viewMat.eye.z };
-	//	scene->viewMat.target = { pos.x,pos.y - 10.0f,1.0f };
-	//}
-	//else
 	{
 		scene->viewMat.eye = { 0,pos.y - 10.0f,scene->viewMat.eye.z };
 		scene->viewMat.target = { 0,pos.y - 10.0f,1.0f };
@@ -73,6 +67,8 @@ void SceneGame::Update()
 	scene->lightManager->Update();
 
 	ParticleManager::GetInstance()->Update(&scene->viewMat, &scene->projectionMat);
+
+	scene->cartridgeEffectM->Update();
 
 	//シーン遷移
 	//if (1) scene->ChangeState(new SceneEnd);
@@ -92,6 +88,8 @@ void SceneGame::Draw()
 	scene->stage.get()->Draw(scene->viewMat, scene->projectionMat);
 	//パーティクル
 	ParticleManager::GetInstance()->Draw(scene->texhandle[1]);
+	//薬莢
+	scene->cartridgeEffectM->Draw(scene->viewMat, scene->projectionMat);
 }
 
 void SceneGame::DrawSprite()
@@ -210,9 +208,12 @@ void Scene::Initialize()
 			lightManager->SetPointLightColor(i, { 1.0f,0.8f,0.3f });
 		}
 	}
+	//薬莢
+	cartridgeEffectM = std::make_unique<CartridgeEffectManager>();
+	cartridgeEffectM->Initialize();
 	//プレイヤー弾
 	playerBulletM = std::make_unique<PlayerBulletManager>();
-	playerBulletM.get()->Initialize(model[2]);
+	playerBulletM.get()->Initialize(model[2], cartridgeEffectM.get());
 	//player
 	player = std::make_unique<Player>();
 	player.get()->Initialize(model[2], model[3], playerBulletM.get(), &debugText);
@@ -232,13 +233,14 @@ void Scene::Initialize()
 	//
 	ParticleManager::GetInstance()->Initialize();
 
+
 	//ステート変更
 	ChangeState(new SceneGame);
 }
 
 void Scene::Update()
 {
-	
+
 
 
 	//imgui

@@ -1,6 +1,6 @@
 #include "PlayerBulletManager.h"
 
-void PlayerBulletManager::Initialize(Model* model)
+void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartridgeEffectManager)
 {
 	assert(model);
 
@@ -9,6 +9,7 @@ void PlayerBulletManager::Initialize(Model* model)
 		TextureManager::LoadGraph(L"Resources/image/white.png", texhandle);
 	}
 
+	this->cartridgeEffectM = cartridgeEffectManager;
 	this->model = model;
 	playerBullets_.clear();
 
@@ -17,7 +18,7 @@ void PlayerBulletManager::Initialize(Model* model)
 
 	isChange = false;
 
-	ChangeState(new BulletShotGun);
+	ChangeState(new BulletNormal);
 }
 
 void PlayerBulletManager::ChangeState(PlayerBulletState* state)
@@ -116,6 +117,9 @@ void BulletNormal::Shot(Vec3 pos, std::function<void()> p)
 
 		//重力を0にする
 		p();
+
+		//薬莢エフェクト
+		playerBulletM->cartridgeEffectM->GenerateCartridgeEffect(pos);
 	}
 }
 
@@ -128,6 +132,9 @@ void BulletLayser::Shot(Vec3 pos, std::function<void()> p)
 
 		//重力を0にする
 		p();
+
+		//薬莢エフェクト
+		playerBulletM->cartridgeEffectM->GenerateCartridgeEffect(pos);
 	}
 }
 
@@ -145,11 +152,16 @@ void BulletShotGun::Shot(Vec3 pos, std::function<void()> p)
 
 			playerBulletM->SetBulletNum(playerBulletM->GetBulletNum() - 1);
 			playerBulletM->GeneratePlayerBullet(pos, vec);
+
+			//薬莢エフェクト
+			playerBulletM->cartridgeEffectM->GenerateCartridgeEffect(pos);
 		}
 
 		coolTime = coolTimeTmp;
 
 		//重力を0にする
 		p();
+
+
 	}
 }

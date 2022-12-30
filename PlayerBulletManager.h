@@ -1,6 +1,7 @@
 #pragma once
 #include"PlayerBullet.h"
 #include"ItemManager.h"
+#include"CartridgeEffectManager.h"
 
 class PlayerBulletManager;
 
@@ -71,12 +72,17 @@ private:
 
 	bool isChange = false;
 
+
+
 public:
+	//薬莢エフェクト
+	CartridgeEffectManager* cartridgeEffectM;
+
 	//敵の弾
 	std::list< std::unique_ptr<PlayerBullet>> playerBullets_;
 
 
-	void Initialize(Model* model);
+	void Initialize(Model* model, CartridgeEffectManager* cartridgeEffectManager);
 
 	void ChangeState(PlayerBulletState* state);
 
