@@ -24,7 +24,7 @@ Stage::~Stage()
 	roomNumY.clear();
 }
 
-void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM, LightManager* lightM)
+void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM, LightManager* lightM, BreakEffectManager* breakEffectM)
 {
 	for (int j = 0; j < mapNumY; j++)
 	{
@@ -38,6 +38,7 @@ void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM, L
 	this->enemyM = enemyM;
 	this->itemM = itemM;
 	this->lightM = lightM;
+	this->breakEffectM = breakEffectM;
 	rooms.clear();
 	roomNumY.clear();
 	lightCount = 1;
@@ -302,7 +303,7 @@ void Stage::BreakBlock(const int X, const int Y)
 	if (blockMapChip[Y][X] == NORMAL)
 	{
 		//パーティクル
-		ParticleManager::GetInstance()->GenerateRandomParticle(5, 40, 0.7f, MapChipTransVec3(X, Y), 3.5f, 0.0f, { 0.2f,0.2f,0.2f,1.0f }, { 0,0,0,0 });
+		breakEffectM->GenerateRandomEffect(MapChipTransVec3(X, Y), 3);
 
 		blockMapChip[Y][X] = NONE;
 		DeleteBlock(X, Y);

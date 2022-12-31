@@ -8,6 +8,7 @@
 #include"Stage.h"
 #include"ItemManager.h"
 #include"ParticleManager.h"
+#include"Camera.h"
 
 
 class Scene;
@@ -34,8 +35,6 @@ private:
 public:
 	WorldMat cameraWorldMat;
 	const Vec3 cameraPos = { 0,0,-100 };
-	ViewMat viewMat;
-	ProjectionMat projectionMat;
 
 	Model* model[5];
 
@@ -91,6 +90,9 @@ public:
 
 	std::unique_ptr<CartridgeEffectManager> cartridgeEffectM;
 
+	std::unique_ptr<BreakEffectManager> breakEffectM;
+
+	std::unique_ptr<Camera> camera;
 
 public:
 	~Scene();

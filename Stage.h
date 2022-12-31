@@ -4,6 +4,7 @@
 #include"ItemManager.h"
 #include"Room.h"
 #include"LightManager.h"
+#include"BreakEffectManager.h"
 
 enum BLOCK
 {
@@ -72,13 +73,16 @@ private:
 	//ライトのカウント
 	int lightCount = 0;
 
+	//
+	BreakEffectManager* breakEffectM;
+
 private:
 	int CollisionMapInternal(float left, float right, float down, float up, bool isBlockBreak = false);
 
 public:
 	~Stage();
 
-	void Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM, LightManager* lightM);
+	void Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM, LightManager* lightM, BreakEffectManager* breakEffectM);
 	void GenerateStage();
 	void GenerateBlock(int X, int Y);
 	void GenerateHardBlock(int X, int Y);

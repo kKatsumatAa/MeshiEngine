@@ -58,17 +58,18 @@ void SceneGame::Update()
 	//カメラ
 	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
 	{
-		scene->viewMat.eye = { 0,pos.y - 10.0f,scene->viewMat.eye.z };
-		scene->viewMat.target = { 0,pos.y - 10.0f,1.0f };
+		scene->camera->SetEye({0,pos.y - 10.0f,scene->camera->viewMat.eye.z});
+		scene->camera->SetTarget({0,pos.y - 10.0f,1.0f});
 	}
-	scene->viewMat.SetMat();
+	scene->camera->Update();
 	//ポイントライト
 	scene->lightManager->SetPointLightPos(0, { pos.x,pos.y,pos.z - 10.0f });
 	scene->lightManager->Update();
 
-	ParticleManager::GetInstance()->Update(&scene->viewMat, &scene->projectionMat);
+	ParticleManager::GetInstance()->Update(&scene->camera->viewMat, &scene->camera->projectionMat);
 
 	scene->cartridgeEffectM->Update();
+	scene->breakEffectM->Update();
 
 	//シーン遷移
 	//if (1) scene->ChangeState(new SceneEnd);
@@ -77,19 +78,21 @@ void SceneGame::Update()
 void SceneGame::Draw()
 {
 	//player
-	scene->player.get()->Draw(scene->viewMat, scene->projectionMat);
+	scene->player.get()->Draw(scene->camera->viewMat, scene->camera->projectionMat);
 	//弾
-	scene->playerBulletM.get()->Draw(scene->viewMat, scene->projectionMat);
+	scene->playerBulletM.get()->Draw(scene->camera->viewMat, scene->camera->projectionMat);
 	//敵
-	scene->enemyM.get()->Draw(scene->viewMat, scene->projectionMat);
+	scene->enemyM.get()->Draw(scene->camera->viewMat, scene->camera->projectionMat);
 	//アイテム
-	scene->itemM.get()->Draw(scene->viewMat, scene->projectionMat);
+	scene->itemM.get()->Draw(scene->camera->viewMat, scene->camera->projectionMat);
 	//ステージ
-	scene->stage.get()->Draw(scene->viewMat, scene->projectionMat);
+	scene->stage.get()->Draw(scene->camera->viewMat, scene->camera->projectionMat);
 	//パーティクル
 	ParticleManager::GetInstance()->Draw(scene->texhandle[1]);
 	//薬莢
-	scene->cartridgeEffectM->Draw(scene->viewMat, scene->projectionMat);
+	scene->cartridgeEffectM->Draw(scene->camera->viewMat, scene->camera->projectionMat);
+	//
+	scene->breakEffectM->Draw(scene->camera->viewMat, scene->camera->projectionMat);
 }
 
 void SceneGame::DrawSprite()
@@ -140,6 +143,8 @@ Scene::~Scene()
 	playerBulletM.reset();
 	stage.reset();
 	itemM.reset();
+	breakEffectM.reset();
+	camera.reset();
 	//音データ解放
 
 }
@@ -226,13 +231,18 @@ void Scene::Initialize()
 	//アイテム
 	itemM = std::make_unique<ItemManager>();
 	itemM.get()->Initialize(model[2]);
+	//
+	breakEffectM = std::make_unique<BreakEffectManager>();
+	breakEffectM.get()->Initialize();
 	//ステージ
 	stage = std::make_unique<Stage>();
-	stage.get()->Initialize(model[2], enemyM.get(), itemM.get(), lightManager);
+	stage.get()->Initialize(model[2], enemyM.get(), itemM.get(), lightManager, breakEffectM.get());
 	stage.get()->GenerateStage();
 	//
 	ParticleManager::GetInstance()->Initialize();
-
+	//
+	camera = std::make_unique<Camera>();
+	
 
 	//ステート変更
 	ChangeState(new SceneGame);
@@ -280,7 +290,7 @@ void Scene::Update()
 
 void Scene::Draw()
 {
-	draw[1].DrawModel(draw[1].worldMat, &viewMat, &projectionMat, model[1]);
+	draw[1].DrawModel(draw[1].worldMat, &camera->viewMat, &camera->projectionMat, model[1]);
 
 	state->Draw();
 

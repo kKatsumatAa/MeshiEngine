@@ -146,6 +146,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="BreakEffectManager.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CartridgeEffectManager.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="ColliderManager.cpp" />
@@ -194,6 +196,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
+    <ClInclude Include="BreakEffectManager.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CartridgeEffectManager.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ColliderManager.h" />
