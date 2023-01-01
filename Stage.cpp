@@ -388,11 +388,9 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 	//部屋との判定
 	CollisionRoom(collider);
 
-	Vec3& pos = collider->GetWorldPos();
+	Vec3& pos_ = collider->GetWorldPos();
 	Vec3& velocity = collider->GetVelocity();
 	float radius = collider->GetRadius();
-
-	Vec3 pos_ = { pos.x  ,pos.y  ,pos.z };
 
 	//マップチップとの判定
 	//左右
@@ -407,9 +405,9 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 
 		isDead = true;
 
-		while (!CollisionMapInternal(left + sign(velocity.x) * 0.1f, right + sign(velocity.x) * 0.1f, down, up, isBlockBreak))
+		while (!CollisionMapInternal(left + sign(velocity.x) * 0.01f, right + sign(velocity.x) * 0.01f, down, up, isBlockBreak))
 		{
-			pos_.x += sign(velocity.x) * 0.1f;//1ピクセル先にブロックがなければ1ピクセル進む
+			pos_.x += sign(velocity.x) * 0.01f;//1ピクセル先にブロックがなければ1ピクセル進む
 
 			left = pos_.x - radius;
 			right = pos_.x + radius;
@@ -420,7 +418,7 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 		velocity.x = 0;//仮に進んだとしてそこにブロックがあれば移動停止
 	}
 
-	pos.x += velocity.x;
+	pos_.x += velocity.x;
 
 	//y
 	if (CollisionMapInternal(left, right, down + velocity.y, up + velocity.y))//仮に進んだとしてそこにブロックがあるか
@@ -436,19 +434,19 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 		}
 
 		isDead = true;
-		if (velocity.y < 0)
+		if (velocity.y < 0.0f)
 		{
 			isGround = true;
 		}
 
 		velocity.y = 0;//仮に進んだとしてそこにブロックがあれば移動停止
 	}
-	else if (!CollisionMapInternal(left, right, down - 0.1f, up))
+	else
 	{
 		isGround = false;
 	}
 
-	pos.y += velocity.y;
+	pos_.y += velocity.y;
 }
 
 void Stage::CollisionRoom(Collider* collider)

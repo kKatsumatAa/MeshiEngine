@@ -16,24 +16,6 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 	std::list<std::unique_ptr<Enemy>>& enemies = enemyM->enemies;
 	std::list<std::unique_ptr<PlayerBullet>>& bullets = playerBulletM->playerBullets_;
 
-	//ƒXƒe[ƒW‚Æ‚Ì“–‚½‚è”»’è
-	{
-		bool demo;
-		//player
-		stage->CollisionMap(player, player->GetIsGround(), demo);
-		//“G
-		for (std::unique_ptr<Enemy>& enemy : enemies)
-		{
-			stage->CollisionMap(enemy.get(), demo, demo);
-		}
-		//’e
-		for (std::unique_ptr<PlayerBullet>& bullet : bullets)
-		{
-			stage->CollisionMap(bullet.get(), demo, bullet->GetIsDead(), true);
-		}
-	}
-
-
 	//“G‚Æplayer‚Ì‚Ý
 	for (std::unique_ptr<Enemy>& enemy : enemyM->enemies)
 	{
@@ -79,6 +61,24 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 	}
 
 	CheckAllCollisions();
+
+
+	//ƒXƒe[ƒW‚Æ‚Ì“–‚½‚è”»’è
+	{
+		bool demo;
+		//player
+		stage->CollisionMap(player, player->GetIsGround(), demo);
+		//“G
+		for (std::unique_ptr<Enemy>& enemy : enemies)
+		{
+			stage->CollisionMap(enemy.get(), demo, demo);
+		}
+		//’e
+		for (std::unique_ptr<PlayerBullet>& bullet : bullets)
+		{
+			stage->CollisionMap(bullet.get(), demo, bullet->GetIsDead(), true);
+		}
+	}
 }
 
 //---------------------------------------------------------------------------------------------
