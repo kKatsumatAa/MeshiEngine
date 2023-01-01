@@ -37,7 +37,7 @@ void SceneTitle::DrawSprite()
 //ゲーム
 void SceneGame::Initialize()
 {
-	scene->player.get()->Initialize(scene->model[2], scene->model[3], scene->playerBulletM.get(), &scene->debugText);
+	scene->player.get()->Initialize(scene->model[2], scene->model[3], scene->playerBulletM.get(), &scene->debugText, scene->camera.get());
 	//後で他のイニシャライズも追加
 
 
@@ -54,7 +54,8 @@ void SceneGame::Update()
 	//アイテム
 	scene->itemM.get()->Update();
 	//当たり判定
-	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get(), scene->itemM.get(), scene->stage.get());
+	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get(), scene->itemM.get(), scene->stage.get(),
+		scene->camera.get());
 	//カメラ
 	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
 	{
@@ -223,7 +224,7 @@ void Scene::Initialize()
 	playerBulletM.get()->Initialize(model[2], cartridgeEffectM.get(), camera.get());
 	//player
 	player = std::make_unique<Player>();
-	player.get()->Initialize(model[2], model[3], playerBulletM.get(), &debugText);
+	player.get()->Initialize(model[2], model[3], playerBulletM.get(), &debugText, camera.get());
 	//敵
 	enemyM = std::make_unique<EnemyManager>();
 	enemyM.get()->Initialize(model[2], player.get());

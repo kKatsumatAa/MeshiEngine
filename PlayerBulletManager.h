@@ -75,7 +75,7 @@ private:
 
 	Camera* camera;
 
-	const float shakeLength = 1.4f;
+	const float shakeLength = 1.1f;
 	const int shakeTime = 7;
 
 public:

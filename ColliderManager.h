@@ -11,11 +11,14 @@ private:
 
 	std::list<Collider*> colliders_;
 	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
+	const float shakeLength = 1.2f;
+	const int shakeTime = 8;
 
 public:
 	void Initialize();
 
-	void Update(Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM, ItemManager* itemM, Stage* stage);
+	void Update(Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM, ItemManager* itemM, Stage* stage,
+		Camera* camera);
 
 	//player‚Æ“G
 	void CheckAllCollisions();

@@ -9,7 +9,8 @@ void ColliderManager::Initialize()
 	this->audio = &Sound::GetInstance();
 }
 
-void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM, ItemManager* itemM, Stage* stage)
+void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM, ItemManager* itemM, Stage* stage,
+	Camera* camera)
 {
 	//bullet‚Í‚»‚êŽ©‘Ì‚ªlist‚È‚Ì‚Å“Á•Ê
 	std::list<std::unique_ptr<Enemy>>& enemies = enemyM->enemies;
@@ -43,7 +44,9 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 				<= player->GetWorldPos().y)
 			{
 				player->OnCollision2(*enemy.get());
-				enemy.get()->OnCollision(*player);
+				enemy.get()->SetIsDead(true);
+				//shake
+				camera->CameraShake(10, 1.2f);
 			}
 			else
 			{

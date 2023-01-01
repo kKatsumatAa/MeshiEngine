@@ -80,10 +80,6 @@ void Enemy::OnCollision(Collider& collider)
 		isDead = true;
 		HPp = 0;
 	}
-	//パーティクル
-	XMFLOAT4 color = draw->GetColor();
-	ParticleManager::GetInstance()->GenerateRandomParticle(5, 20, 0.7f, GetWorldPos(),
-		2.5f, 0.0f, color, { 0,0,0,0 });
 
 	//音
 

@@ -23,6 +23,8 @@ private:
 	Model* model_ = nullptr;
 	Model* modelAttack = nullptr;
 
+
+
 	//テクスチャハンドル
 	uint32_t* textureHandle_;
 
@@ -58,6 +60,8 @@ private:
 
 	//EffectManager* effectM_;
 public:
+	//
+	Camera* camera;
 	//sound
 	Sound* audio = nullptr;
 	KeyboardInput* input_ = nullptr;
@@ -72,7 +76,7 @@ public:
 
 	void ChangeState(PlayerAttackState* state);
 
-	void Initialize(Model* model, Model* modelAttack, PlayerBulletManager* playerBulletM, DebugText* debugText_/* EffectManager* effectM_,*/
+	void Initialize(Model* model, Model* modelAttack, PlayerBulletManager* playerBulletM, DebugText* debugText_, Camera* camera/* EffectManager* effectM_,*/
 	/*,Tutorial* tutorial = nullptr*/);
 	void Update();
 	void Draw( ViewMat& view,  ProjectionMat& projection);

@@ -9,7 +9,8 @@ void Player::ChangeState(PlayerAttackState* state)
 	state->SetPlayer(this);
 }
 
-void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* playerBulletM, DebugText* debugText_/*, EffectManager* effectM*//*, Tutorial* tutorial*/)
+void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* playerBulletM, DebugText* debugText_,
+	Camera* camera/*, EffectManager* effectM*//*, Tutorial* tutorial*/)
 {
 	assert(model);
 	assert(modelAttack);
@@ -18,6 +19,7 @@ void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* p
 	this->modelAttack = modelAttack;
 	this->playerBulletM = playerBulletM;
 	this->debugText_ = debugText_;
+	this->camera = camera;
 
 	isPlayer = true;
 	isDead = false;
@@ -65,8 +67,14 @@ void Player::Update()
 	{
 		dmageCoolTime--;
 
-		if (dmageCoolTime % 20 < 10) worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
-		else                         worldTransform_.scale = { scaleTmp + 0.5f,scaleTmp + 0.5f,scaleTmp + 0.5f };
+		if (dmageCoolTime % 15 < 8) 
+		{
+			worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
+		}
+		else 
+		{
+			worldTransform_.scale = { scaleTmp + 0.5f,scaleTmp + 0.5f,scaleTmp + 0.5f };
+		}
 	}
 	else
 	{
@@ -106,6 +114,8 @@ void Player::OnCollision(Collider& collider)
 		HPp--;
 		//無敵時間
 		dmageCoolTime = dmageCoolTimeTmp;
+		//
+		camera->CameraShake(80, 1.5f);
 		if (HPp <= 0)
 		{
 			isDead = true;
