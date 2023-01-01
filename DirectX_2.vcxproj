@@ -181,6 +181,7 @@
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Shake.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteCommon.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Shake.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteCommon.h" />

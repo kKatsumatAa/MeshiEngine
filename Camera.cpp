@@ -33,14 +33,19 @@ void Camera::Update()
 		// ビュープロジェクションの合成
 		matViewProjection = viewMat.matView * projectionMat.matProjection;
 	}
+
+
 }
 
 void Camera::UpdateViewMatrix()
 {
+	//shake
+	shake.Update();
+	float shakeNum = shake.GetShake();
 	// 視点座標
-	XMVECTOR eyePosition = { viewMat.eye.x,viewMat.eye.y,viewMat.eye.z };
+	XMVECTOR eyePosition = { viewMat.eye.x + shakeNum,viewMat.eye.y + shakeNum,viewMat.eye.z + shakeNum };
 	// 注視点座標
-	XMVECTOR targetPosition = { viewMat.target.x,viewMat.target.y,viewMat.target.z };
+	XMVECTOR targetPosition = { viewMat.target.x + shakeNum,viewMat.target.y + shakeNum,viewMat.target.z + shakeNum };
 	// （仮の）上方向
 	XMVECTOR upVector = { viewMat.up.x,viewMat.up.y,viewMat.up.z };
 
@@ -145,6 +150,11 @@ void Camera::MoveEyeVector(const XMVECTOR& move)
 	eye_moved.z += move.m128_f32[2];
 
 	SetEye(eye_moved);
+}
+
+void Camera::CameraShake(int time, float length)
+{
+	shake.SetShake(time, length);
 }
 
 void Camera::MoveVector(const Vec3& move)

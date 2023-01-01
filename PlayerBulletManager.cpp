@@ -1,6 +1,6 @@
 #include "PlayerBulletManager.h"
 
-void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartridgeEffectManager)
+void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartridgeEffectManager,Camera* camera)
 {
 	assert(model);
 
@@ -11,6 +11,7 @@ void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartr
 
 	this->cartridgeEffectM = cartridgeEffectManager;
 	this->model = model;
+	this->camera = camera;
 	playerBullets_.clear();
 
 	bulletType = ITEM_TYPE::INORMAL;
@@ -92,6 +93,11 @@ void PlayerBulletManager::DrawSprite()
 		texhandle);
 }
 
+void PlayerBulletManager::ShakeCamera()
+{
+	camera->CameraShake(shakeTime, shakeLength);
+}
+
 void PlayerBulletManager::Shot(Vec3 pos, std::function<void()> p)
 {
 	state->Shot(pos, p);
@@ -120,6 +126,9 @@ void BulletNormal::Shot(Vec3 pos, std::function<void()> p)
 
 		//薬莢エフェクト
 		playerBulletM->cartridgeEffectM->GenerateCartridgeEffect(pos);
+
+		//shake
+		playerBulletM->ShakeCamera();
 	}
 }
 
@@ -135,6 +144,9 @@ void BulletLayser::Shot(Vec3 pos, std::function<void()> p)
 
 		//薬莢エフェクト
 		playerBulletM->cartridgeEffectM->GenerateCartridgeEffect(pos);
+
+		//shake
+		playerBulletM->ShakeCamera();
 	}
 }
 
@@ -162,6 +174,7 @@ void BulletShotGun::Shot(Vec3 pos, std::function<void()> p)
 		//重力を0にする
 		p();
 
-
+		//shake
+		playerBulletM->ShakeCamera();
 	}
 }

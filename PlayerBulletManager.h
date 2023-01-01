@@ -2,6 +2,7 @@
 #include"PlayerBullet.h"
 #include"ItemManager.h"
 #include"CartridgeEffectManager.h"
+#include"Camera.h"
 
 class PlayerBulletManager;
 
@@ -72,7 +73,10 @@ private:
 
 	bool isChange = false;
 
+	Camera* camera;
 
+	const float shakeLength = 1.4f;
+	const int shakeTime = 7;
 
 public:
 	//薬莢エフェクト
@@ -82,7 +86,7 @@ public:
 	std::list< std::unique_ptr<PlayerBullet>> playerBullets_;
 
 
-	void Initialize(Model* model, CartridgeEffectManager* cartridgeEffectManager);
+	void Initialize(Model* model, CartridgeEffectManager* cartridgeEffectManager, Camera* camera);
 
 	void ChangeState(PlayerBulletState* state);
 
@@ -99,6 +103,8 @@ public:
 	void Update();
 	void Draw(ViewMat& view, ProjectionMat& projection);
 	void DrawSprite();
+
+	void ShakeCamera();
 
 	//弾打つ
 	void Shot(Vec3 pos, std::function<void()> p);

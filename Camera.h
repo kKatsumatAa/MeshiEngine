@@ -1,6 +1,7 @@
 #pragma once
 #include"ViewMat.h"
 #include"ProjectionMat.h"
+#include"Shake.h"
 
 #include <DirectXMath.h>
 
@@ -108,6 +109,9 @@ public: // メンバ関数
 	void MoveEyeVector(const Vec3& move);
 	void MoveEyeVector(const XMVECTOR& move);
 
+	//
+	void CameraShake(int time, float length);
+
 	/// <summary>
 	/// ベクトルによる移動
 	/// </summary>
@@ -116,6 +120,7 @@ public: // メンバ関数
 	void MoveVector(const XMVECTOR& move);
 
 protected: // メンバ変数
+	Shake shake;
 
 	// ビルボード行列
 	XMMATRIX matBillboard = DirectX::XMMatrixIdentity();

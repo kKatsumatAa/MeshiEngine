@@ -58,8 +58,8 @@ void SceneGame::Update()
 	//カメラ
 	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
 	{
-		scene->camera->SetEye({0,pos.y - 10.0f,scene->camera->viewMat.eye.z});
-		scene->camera->SetTarget({0,pos.y - 10.0f,1.0f});
+		scene->camera->SetEye({ 0,pos.y - 10.0f,scene->camera->viewMat.eye.z });
+		scene->camera->SetTarget({ 0,pos.y - 10.0f,1.0f });
 	}
 	scene->camera->Update();
 	//ポイントライト
@@ -213,12 +213,14 @@ void Scene::Initialize()
 			lightManager->SetPointLightColor(i, { 1.0f,0.8f,0.3f });
 		}
 	}
+	//カメラ
+	camera = std::make_unique<Camera>();
 	//薬莢
 	cartridgeEffectM = std::make_unique<CartridgeEffectManager>();
 	cartridgeEffectM->Initialize();
 	//プレイヤー弾
 	playerBulletM = std::make_unique<PlayerBulletManager>();
-	playerBulletM.get()->Initialize(model[2], cartridgeEffectM.get());
+	playerBulletM.get()->Initialize(model[2], cartridgeEffectM.get(), camera.get());
 	//player
 	player = std::make_unique<Player>();
 	player.get()->Initialize(model[2], model[3], playerBulletM.get(), &debugText);
@@ -240,9 +242,8 @@ void Scene::Initialize()
 	stage.get()->GenerateStage();
 	//
 	ParticleManager::GetInstance()->Initialize();
-	//
-	camera = std::make_unique<Camera>();
-	
+
+
 
 	//ステート変更
 	ChangeState(new SceneGame);
