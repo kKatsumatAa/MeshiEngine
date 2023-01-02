@@ -46,6 +46,7 @@ void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM, L
 
 void Stage::GenerateStage()
 {
+	//部屋を作る場所より上
 	for (int j = stageBeginNumY; j < mapDownMaxNum; j++)
 	{
 		if (j % 13 == 0)
@@ -97,6 +98,14 @@ void Stage::GenerateStage()
 				blockLineNum--;
 				GenerateBlock(i, j);
 			}
+		}
+	}
+	//〃より下
+	for (int j = mapDownMaxNum; j < mapNumY; j++)
+	{
+		for (int i = 0; i < mapNumX; i++)
+		{
+			GenerateHardBlock(i, j);
 		}
 	}
 
@@ -244,6 +253,10 @@ void Stage::GenerateRoomInternal()
 			{
 				GenerateHardBlock(j, i);
 			}
+			else
+			{
+				DeleteBlock(j, i);
+			}
 
 		}
 	}
@@ -271,6 +284,10 @@ void Stage::GenerateRoomInternal()
 			else if ((j == hardWallNum) || (j == hardWallNum + roomLengthX - 1 && i == beginRoomYLeft + 1))
 			{
 				GenerateHardBlock(j, i);
+			}
+			else
+			{
+				DeleteBlock(j, i);
 			}
 
 		}
@@ -416,6 +433,11 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 		}
 
 		velocity.x = 0;//仮に進んだとしてそこにブロックがあれば移動停止
+
+		if (isBlockBreak)
+		{
+			ParticleManager::GetInstance()->GenerateRandomParticle(4, 10, 1.5f, collider->GetWorldPos(), 1.0f, 0);
+		}
 	}
 
 	pos_.x += velocity.x;
@@ -440,6 +462,11 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 		}
 
 		velocity.y = 0;//仮に進んだとしてそこにブロックがあれば移動停止
+
+		if (isBlockBreak)
+		{
+			ParticleManager::GetInstance()->GenerateRandomParticle(4, 10, 1.5f, collider->GetWorldPos(), 1.0f, 0);
+		}
 	}
 	else
 	{

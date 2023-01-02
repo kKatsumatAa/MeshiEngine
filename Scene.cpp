@@ -207,14 +207,14 @@ void Scene::Initialize()
 	for (int i = 0; i < LightManager::PointLightNum; i++)
 	{
 		lightManager->SetPointLightActive(i, true);
-		lightManager->SetPointLightAtten(i, { 0.01f,0.01f,0.01f });
+		lightManager->SetPointLightAtten(i, { 0.005f,0.005f,0.005f });
 		if (i == 0)
 		{
 			lightManager->SetPointLightColor(i, { 0.8f,0.8f,0.01f });
 		}
 		else
 		{
-			lightManager->SetPointLightColor(i, { 1.0f,0.8f,0.3f });
+			lightManager->SetPointLightColor(i, { 0.3f,0.5f,0.8f });
 		}
 	}
 	//ƒJƒƒ‰

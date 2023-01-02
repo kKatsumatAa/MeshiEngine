@@ -1,4 +1,5 @@
 #include "PlayerBulletManager.h"
+#include "ParticleManager.h"
 
 void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartridgeEffectManager,Camera* camera)
 {

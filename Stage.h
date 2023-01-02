@@ -21,7 +21,7 @@ class Stage
 {
 public:
 	static const int mapNumX = 24;
-	static const int mapNumY = 500;
+	static const int mapNumY = 700;
 	static const int stageBeginNumY = 10;
 	//ステージの下限
 	static const int mapDownMaxNum = mapNumY - mapNumY * 0.1f;
