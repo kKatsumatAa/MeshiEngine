@@ -28,7 +28,7 @@ private:
 	const float movingMax = 25.0f;
 
 	float HPp;
-	const float hptmp = 1;
+	const float hptmp = 3;
 
 	//UŒ‚‚Ìó‘Ô
 	EnemyState* state = nullptr;

@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "Util.h"
+#include "ParticleManager.h"
 
 const float Enemy::pLength = 50.0f;
 
@@ -75,6 +76,12 @@ void Enemy::DrawSprite()
 void Enemy::OnCollision(Collider& collider)
 {
 	HPp--;
+	//effect
+	ParticleManager::GetInstance()->GenerateRandomParticle(5, 20, 1.5f, GetWorldPos(), 1.0f, 0);
+
+	//
+	SetVelocity(collider.GetVelocity() * 3.0f);
+
 	if (HPp <= 0)
 	{
 		isDead = true;
