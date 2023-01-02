@@ -68,6 +68,7 @@ void SceneGame::Update()
 	scene->lightManager->Update();
 
 	ParticleManager::GetInstance()->Update(&scene->camera->viewMat, &scene->camera->projectionMat);
+	ReloadEffectManager::GetInstance().Update();
 
 	scene->cartridgeEffectM->Update();
 	scene->breakEffectM->Update();
@@ -94,6 +95,8 @@ void SceneGame::Draw()
 	scene->cartridgeEffectM->Draw(scene->camera->viewMat, scene->camera->projectionMat);
 	//
 	scene->breakEffectM->Draw(scene->camera->viewMat, scene->camera->projectionMat);
+	//
+	ReloadEffectManager::GetInstance().Draw(scene->camera->viewMat, scene->camera->projectionMat);
 }
 
 void SceneGame::DrawSprite()
@@ -243,6 +246,7 @@ void Scene::Initialize()
 	stage.get()->GenerateStage();
 	//
 	ParticleManager::GetInstance()->Initialize();
+	ReloadEffectManager::GetInstance().Initialize();
 
 
 

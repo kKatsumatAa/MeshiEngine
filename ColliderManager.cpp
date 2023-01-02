@@ -25,6 +25,8 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 			if (enemy.get()->GetWorldPos().y - enemy.get()->GetRadius() + (2 * enemy.get()->GetRadius() * enemy.get()->GetEnemyRedRate())
 				<= player->GetWorldPos().y)
 			{
+				//
+				player->LandingEffect();
 				player->OnCollision2(*enemy.get());
 				enemy.get()->SetIsDead(true);
 				//shake

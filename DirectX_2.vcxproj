@@ -179,6 +179,7 @@
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="ProjectionMat.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="ReloadEffect.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shake.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="ProjectionMat.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="ReloadEffect.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shake.h" />

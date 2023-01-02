@@ -2,6 +2,7 @@
 #include "Util.h"
 
 
+
 void Player::ChangeState(PlayerAttackState* state)
 {
 	delete this->state;
@@ -67,11 +68,11 @@ void Player::Update()
 	{
 		dmageCoolTime--;
 
-		if (dmageCoolTime % 15 < 8) 
+		if (dmageCoolTime % 15 < 8)
 		{
 			worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
 		}
-		else 
+		else
 		{
 			worldTransform_.scale = { scaleTmp + 0.5f,scaleTmp + 0.5f,scaleTmp + 0.5f };
 		}
@@ -108,6 +109,22 @@ void Player::DrawSprite()
 	//gaugeS->Draw();
 }
 
+void Player::LandingEffect()
+{
+	//プレイヤー着地時演出
+	ParticleManager::GetInstance()->GenerateRandomParticle(5, 7, 1.7f,
+		{ GetWorldPos().x,GetWorldPos().y - GetRadius(),GetWorldPos().z }, 2.0f, 0, { 1.0f,1.0f,1.0f,1.0f }, { 0,0,0,0 });
+
+	//リロード
+	if (playerBulletM->GetBulletNum() < playerBulletM->GetBulletNumMax())
+	{
+		Vec3 pos = GetWorldPos();
+
+		ReloadEffectManager::GetInstance().GenerateReloadEffect({ pos.x,pos.y - GetRadius(),pos.z }, 
+			{ pos.x,pos.y + GetRadius() * 4.0f,pos.z }, 15, GetRadius() * 4.0f);
+	}
+}
+
 
 //--------------------------------------------------------------------------------------
 void Player::OnCollision(Collider& collider)
@@ -118,7 +135,7 @@ void Player::OnCollision(Collider& collider)
 		//無敵時間
 		dmageCoolTime = dmageCoolTimeTmp;
 		//
-		camera->CameraShake(80, 1.5f);
+		camera->CameraShake(60, 2.0f);
 		if (HPp <= 0)
 		{
 			isDead = true;
@@ -154,6 +171,10 @@ void NoAttackP::Update()
 	{
 		//音
 
+		//effect
+		ParticleManager::GetInstance()->GenerateRandomParticle(8, 10, 2.0f,
+			{ player->GetWorldPos().x,player->GetWorldPos().y - player->GetRadius(),player->GetWorldPos().z },
+			3.0f, 0, { 1.0f,1.0f,1.0f,1.0f }, { 0,0,0,0 });
 		player->SetIsGround(false);
 		player->SetIsJump(true);
 		player->SetJumpPower(0.5f);
@@ -181,9 +202,13 @@ void JumpP::Update()
 	//地面と当たったら                                     
 	if (player->GetIsGround())
 	{
+		//プレイヤー着地時演出
+		player->LandingEffect();
 		//弾全回復
 		player->playerBulletM->SetBulletNum(player->playerBulletM->GetBulletNumMax());
 		player->SetIsJump(false);
+
+
 		player->ChangeState(new NoAttackP);
 	}
 	else
@@ -216,9 +241,12 @@ void JumpAttackP::Update()
 	//地面と当たったら                                     
 	if (player->GetIsGround())
 	{
+		//プレイヤー着地時演出
+		player->LandingEffect();
 		//弾全回復
 		player->playerBulletM->SetBulletNum(player->playerBulletM->GetBulletNumMax());
 		player->SetIsJump(false);
+
 		player->ChangeState(new NoAttackP);
 	}
 	else
@@ -228,7 +256,7 @@ void JumpAttackP::Update()
 		player->playerBulletM->Shot(player->GetWorldPos(), p);
 
 	}
-	
+
 }
 
 void JumpAttackP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack)

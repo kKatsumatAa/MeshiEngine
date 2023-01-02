@@ -1,6 +1,8 @@
 #pragma once
 #include "Sound.h"
 #include "PlayerBulletManager.h"
+#include "ParticleManager.h"
+#include "ReloadEffect.h"
 
 class Player;
 
@@ -82,6 +84,8 @@ public:
 	void Draw( ViewMat& view,  ProjectionMat& projection);
 	void DrawSprite();
 
+	//着地時エフェクト
+	void LandingEffect();
 
 	void SetWorldPos(const Vec3& pos) { worldTransform_.trans = pos; };
 	float GetGravityTmp() { return gravityTmp; }
