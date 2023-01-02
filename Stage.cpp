@@ -345,8 +345,8 @@ int Stage::CollisionMapInternal(float left, float right, float down, float up, b
 {
 	int X, Y;
 
-	Y = (up / -(blockRadius * 2.0f));
-	X = ((left + (float)mapLeftLength) / (blockRadius * 2.0f));
+	Y = (int)(up / -(blockRadius * 2.0f));
+	X = (int)((left + (float)mapLeftLength) / (blockRadius * 2.0f));
 	if (blockMapChip[Y][X] != 0)
 	{
 		int ans = blockMapChip[Y][X];
@@ -358,8 +358,8 @@ int Stage::CollisionMapInternal(float left, float right, float down, float up, b
 		return ans;
 	}//左上
 
-	Y = (down / -(blockRadius * 2.0f));
-	X = ((left + (float)mapLeftLength) / (blockRadius * 2.0f));
+	Y = (int)(down / -(blockRadius * 2.0f));
+	X = (int)((left + (float)mapLeftLength) / (blockRadius * 2.0f));
 	if (blockMapChip[Y][X] != 0)
 	{
 		int ans = blockMapChip[Y][X];
@@ -371,8 +371,8 @@ int Stage::CollisionMapInternal(float left, float right, float down, float up, b
 		return ans;
 	}//左下
 
-	Y = (up / -(blockRadius * 2.0f));
-	X = ((right + (float)mapLeftLength) / (blockRadius * 2.0f));
+	Y = (int)(up / -(blockRadius * 2.0f));
+	X = (int)((right + (float)mapLeftLength) / (blockRadius * 2.0f));
 	if (blockMapChip[Y][X] != 0)
 	{
 		int ans = blockMapChip[Y][X];
@@ -384,8 +384,8 @@ int Stage::CollisionMapInternal(float left, float right, float down, float up, b
 		return ans;
 	}//右上
 
-	Y = (down / -(blockRadius * 2.0f));
-	X = ((right + (float)mapLeftLength) / (blockRadius * 2.0f));
+	Y = (int)(down / -(blockRadius * 2.0f));
+	X = (int)((right + (float)mapLeftLength) / (blockRadius * 2.0f));
 	if (blockMapChip[Y][X] != 0)
 	{
 		int ans = blockMapChip[Y][X];
@@ -402,6 +402,8 @@ int Stage::CollisionMapInternal(float left, float right, float down, float up, b
 
 void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool isBlockBreak)
 {
+	Vec3 oldPos = collider->GetWorldPos();
+
 	//部屋との判定
 	CollisionRoom(collider);
 
@@ -417,14 +419,14 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 	float up = pos_.y + radius;//移動でplayer位置が変わっている場合があるので角の更新
 
 
-	if (CollisionMapInternal(left + velocity.x, right + velocity.x, down, up))//仮に進んだとしてそこにブロックがあるか
+	if (CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) > 0)//仮に進んだとしてそこにブロックがあるか
 	{
 
 		isDead = true;
 
-		while (!CollisionMapInternal(left + sign(velocity.x) * 0.01f, right + sign(velocity.x) * 0.01f, down, up, isBlockBreak))
+		while (CollisionMapInternal(left + sign(velocity.x) , right + sign(velocity.x) , down, up, isBlockBreak) == NONE)
 		{
-			pos_.x += sign(velocity.x) * 0.01f;//1ピクセル先にブロックがなければ1ピクセル進む
+			pos_.x += sign(velocity.x) ;//1ピクセル先にブロックがなければ1ピクセル進む
 
 			left = pos_.x - radius;
 			right = pos_.x + radius;
@@ -443,16 +445,27 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 	pos_.x += velocity.x;
 
 	//y
-	if (CollisionMapInternal(left, right, down + velocity.y, up + velocity.y))//仮に進んだとしてそこにブロックがあるか
+	if (CollisionMapInternal(left, right, down + velocity.y, up + velocity.y) > 0)//仮に進んだとしてそこにブロックがあるか
 	{
-		while (!CollisionMapInternal(left, right, down + sign(velocity.y) * 0.1f, up + sign(velocity.y) * 0.1f, isBlockBreak))
+		int count = 0;
+		while (CollisionMapInternal(left, right, down + sign(velocity.y) , up + sign(velocity.y) , isBlockBreak) == NONE)
 		{
-			pos_.y += sign(velocity.y) * 0.1f;//1ピクセル先にブロックがなければ1ピクセル進む
+			count++;
+			if (count > 6) 
+			{ 
+				left = pos_.x - radius;
+			}
+			pos_.y += sign(velocity.y) ;//1ピクセル先にブロックがなければ1ピクセル進む
 
 			left = pos_.x - radius;
 			right = pos_.x + radius;
 			down = pos_.y - radius;
 			up = pos_.y + radius;//移動したので角の更新
+		}
+
+		if ((pos_ - oldPos).GetLength() > 6.0f)
+		{
+ 			left = pos_.x - radius;
 		}
 
 		isDead = true;

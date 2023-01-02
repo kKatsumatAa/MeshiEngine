@@ -101,6 +101,7 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection)
 
 	debugText_->Print("isGround", 10, 10, isGround);
 	debugText_->Print("isJump", 10, 30, isJump);
+	debugText_->Printf("velocityY", 10, 50, velocity.y);
 }
 
 void Player::DrawSprite()
@@ -166,7 +167,6 @@ void PlayerAttackState::SetPlayer(Player* player)
 //--------------------------------------------------------------------------------------
 void NoAttackP::Update()
 {
-
 	if (player->input_->KeyTrigger(DIK_SPACE))
 	{
 		//音
@@ -198,7 +198,6 @@ void NoAttackP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Mod
 //---------------------------------------------------------------------------------------------------
 void JumpP::Update()
 {
-
 	//地面と当たったら                                     
 	if (player->GetIsGround())
 	{
@@ -207,7 +206,6 @@ void JumpP::Update()
 		//弾全回復
 		player->playerBulletM->SetBulletNum(player->playerBulletM->GetBulletNumMax());
 		player->SetIsJump(false);
-
 
 		player->ChangeState(new NoAttackP);
 	}
@@ -237,7 +235,6 @@ void JumpP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* 
 //--------------------------------------------------------------------------------------
 void JumpAttackP::Update()
 {
-
 	//地面と当たったら                                     
 	if (player->GetIsGround())
 	{

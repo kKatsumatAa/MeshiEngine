@@ -121,7 +121,7 @@ bool CollisionCircleCircle(const Vec3& pos1, const float& r1, const Vec3& pos2, 
 	return false;
 }
 
-bool CollisionRayCircle(const Vec3& sv,const Vec3& ev, const float r, const Vec3& pos, const float r2)
+bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, const float r, const Vec3& pos, const float r2)
 {
 	//レイとの当たり判定
 	Vec3 rayLength = ev - sv;
@@ -173,11 +173,11 @@ Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 
 	Vec3 vec3 = v;
 
-	/*M4 m4 = { 
+	/*M4 m4 = {
 		(float)mVPVp.r[0].m128_f32[0],(float)mVPVp.r[0].m128_f32[1],(float)mVPVp.r[0].m128_f32[2],(float)mVPVp.r[0].m128_f32[3],
 		(float)mVPVp.r[1].m128_f32[0],(float)mVPVp.r[1].m128_f32[1],(float)mVPVp.r[1].m128_f32[2],(float)mVPVp.r[1].m128_f32[3],
 		(float)mVPVp.r[2].m128_f32[0],(float)mVPVp.r[2].m128_f32[1],(float)mVPVp.r[2].m128_f32[2],(float)mVPVp.r[2].m128_f32[3],
-		(float)mVPVp.r[3].m128_f32[0],(float)mVPVp.r[3].m128_f32[1],(float)mVPVp.r[3].m128_f32[2],(float)mVPVp.r[3].m128_f32[3] 
+		(float)mVPVp.r[3].m128_f32[0],(float)mVPVp.r[3].m128_f32[1],(float)mVPVp.r[3].m128_f32[2],(float)mVPVp.r[3].m128_f32[3]
 	};*/
 	M4 m4;
 	m4.PutinXMMATRIX(mVPVp);
@@ -206,7 +206,7 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 	//逆行列計算
 	XMMATRIX mInverseVPVp = XMMatrixInverse(nullptr, mVPVp);
 	//m4.SetInverseMatrix();
-	
+
 	m4.PutinXMMATRIX(mInverseVPVp);
 
 	//スクリーン座標
@@ -271,6 +271,5 @@ float sign(float num)
 	if (num > 0) {
 		return (1.0f);
 	}
-	else
-		return 0;
+	return 0.0f;
 }
