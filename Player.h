@@ -56,7 +56,7 @@ private:
 	const float scaleTmp = 1.8f;
 
 	//hp
-	Object gaugeS;
+	Object gauge[2];
 
 	/*Tutorial* tutorial;*/
 

@@ -52,6 +52,14 @@ void Enemy::Update()
 	//	isDead = false;
 	//}
 
+	if (count > 0) {
+		count--;
+	}
+	if (count == 0)
+	{
+		color = { 1.0f,0,0,1.0f };
+	}
+
 	//ˆÚ“®§ŒÀ
 	if (worldTransform_.trans.x <= -movingMax)worldTransform_.trans.x = -movingMax;
 	if (worldTransform_.trans.x >= movingMax)worldTransform_.trans.x = movingMax;
@@ -81,6 +89,10 @@ void Enemy::OnCollision(Collider& collider)
 
 	//
 	SetVelocity(collider.GetVelocity() * 3.0f);
+
+	//F•Ï‚¦‚é
+	color = { 1.0f,1.0f,1.0f,1.0f };
+	count = countMax;
 
 	if (HPp <= 0)
 	{
@@ -123,7 +135,7 @@ void NoAttackE::Update()
 
 void NoAttackE::Draw(ViewMat& view, ProjectionMat& projection, Model* model)
 {
-	enemy->draw[0].DrawModel(enemy->GetWorldTransForm(), &view, &projection, model, { 1.0f,0,0,1.0f });
+	enemy->draw[0].DrawModel(enemy->GetWorldTransForm(), &view, &projection, model, enemy->color);
 }
 
 
@@ -142,5 +154,5 @@ void AttackE::Update()
 
 void AttackE::Draw(ViewMat& view, ProjectionMat& projection, Model* model)
 {
-	enemy->draw[1].DrawModel(enemy->GetWorldTransForm(), &view, &projection, model, { 0.3f,0,5.5f,1.0f });
+	enemy->draw[1].DrawModel(enemy->GetWorldTransForm(), &view, &projection, model, enemy->color);
 }

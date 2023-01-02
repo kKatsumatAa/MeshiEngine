@@ -105,8 +105,8 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection)
 
 void Player::DrawSprite()
 {
-
-	//gaugeS->Draw();
+	gauge[1].DrawClippingBoxSprite({ 100,40,0 }, 1.0f, { 0,0 }, { 1.0f,0.2f }, { 0.3f,0.3f,0.3f,1.0f });
+	gauge[0].DrawClippingBoxSprite({ 100,40,0 }, 1.0f, { 0,0 }, { HPp / (float)hptmp ,0.2f }, { 1.0f,0.0f,0.0f,0.9f });
 }
 
 void Player::LandingEffect()
@@ -120,7 +120,7 @@ void Player::LandingEffect()
 	{
 		Vec3 pos = GetWorldPos();
 
-		ReloadEffectManager::GetInstance().GenerateReloadEffect({ pos.x,pos.y - GetRadius(),pos.z }, 
+		ReloadEffectManager::GetInstance().GenerateReloadEffect({ pos.x,pos.y - GetRadius(),pos.z },
 			{ pos.x,pos.y + GetRadius() * 4.0f,pos.z }, 15, GetRadius() * 4.0f);
 	}
 }

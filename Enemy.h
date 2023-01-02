@@ -35,7 +35,8 @@ private:
 
 	const float scaleTmp = 2.5f;
 
-	
+	const int countMax = 5;
+	int count = 0;
 
 	/*Tutorial* tutorial;*/
 
@@ -47,6 +48,8 @@ public:
 	//player
 	Player* player;
 	static const float pLength;
+
+	XMFLOAT4 color;
 
 	void ChangeState(EnemyState* state);
 

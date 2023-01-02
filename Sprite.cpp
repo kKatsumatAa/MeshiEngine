@@ -60,9 +60,21 @@ void Sprite::Update(const Vec3& pos, const float& scale,
 	const bool& isReverseX,const bool& isReverseY, float rotation,
 	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
+	//テクスチャを設定していなかったら
+	UINT64 textureHandle_;
+
+	if (textureHandle == NULL)
+	{
+		textureHandle_ = TextureManager::GetInstance().whiteTexHandle;
+	}
+	else
+	{
+		textureHandle_ = textureHandle;
+	}
+
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetInstance().srvHeap->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = TextureManager::GetInstance().texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type)]->GetDesc();
+	resDesc = TextureManager::GetInstance().texBuff[(textureHandle_ - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type)]->GetDesc();
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
@@ -118,9 +130,21 @@ void Sprite::UpdateClipping(const Vec3& leftTop, const float& scale, const XMFLO
 	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop,
 	const bool& isReverseX,const bool& isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
+	//テクスチャを設定していなかったら
+	UINT64 textureHandle_;
+
+	if (textureHandle == NULL)
+	{
+		textureHandle_ = TextureManager::GetInstance().whiteTexHandle;
+	}
+	else
+	{
+		textureHandle_ = textureHandle;
+	}
+
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetInstance().srvHeap->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = TextureManager::GetInstance().texBuff[(textureHandle - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type)]->GetDesc();
+	resDesc = TextureManager::GetInstance().texBuff[(textureHandle_ - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type)]->GetDesc();
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 

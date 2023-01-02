@@ -102,6 +102,7 @@ void SceneGame::Draw()
 void SceneGame::DrawSprite()
 {
 	scene->playerBulletM.get()->DrawSprite();
+	scene->player.get()->DrawSprite();
 }
 
 
