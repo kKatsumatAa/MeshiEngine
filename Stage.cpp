@@ -447,14 +447,8 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 	//y
 	if (CollisionMapInternal(left, right, down + velocity.y, up + velocity.y) > 0)//仮に進んだとしてそこにブロックがあるか
 	{
-		int count = 0;
 		while (CollisionMapInternal(left, right, down + sign(velocity.y) , up + sign(velocity.y) , isBlockBreak) == NONE)
 		{
-			count++;
-			if (count > 6) 
-			{ 
-				left = pos_.x - radius;
-			}
 			pos_.y += sign(velocity.y) ;//1ピクセル先にブロックがなければ1ピクセル進む
 
 			left = pos_.x - radius;
@@ -463,6 +457,7 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 			up = pos_.y + radius;//移動したので角の更新
 		}
 
+		//急に瞬間移動するのを確認する用(breakpoint)
 		if ((pos_ - oldPos).GetLength() > 6.0f)
 		{
  			left = pos_.x - radius;
