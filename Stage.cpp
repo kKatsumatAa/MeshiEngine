@@ -424,9 +424,9 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 
 		isDead = true;
 
-		while (CollisionMapInternal(left + sign(velocity.x) , right + sign(velocity.x) , down, up, isBlockBreak) == NONE)
+		while (CollisionMapInternal(left + sign(velocity.x), right + sign(velocity.x), down, up, isBlockBreak) == NONE)
 		{
-			pos_.x += sign(velocity.x) ;//1ピクセル先にブロックがなければ1ピクセル進む
+			pos_.x += sign(velocity.x);//1ピクセル先にブロックがなければ1ピクセル進む
 
 			left = pos_.x - radius;
 			right = pos_.x + radius;
@@ -447,9 +447,14 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 	//y
 	if (CollisionMapInternal(left, right, down + velocity.y, up + velocity.y) > 0)//仮に進んだとしてそこにブロックがあるか
 	{
-		while (CollisionMapInternal(left, right, down + sign(velocity.y) , up + sign(velocity.y) , isBlockBreak) == NONE)
+		while (CollisionMapInternal(left, right, down + sign(velocity.y), up + sign(velocity.y), isBlockBreak) == NONE)
 		{
-			pos_.y += sign(velocity.y) ;//1ピクセル先にブロックがなければ1ピクセル進む
+			pos_.y += sign(velocity.y);//1ピクセル先にブロックがなければ1ピクセル進む
+
+			if (fabsf(pos_.y - oldPos.y) >= fabsf(velocity.y)) 
+			{ 
+  				break; 
+			}
 
 			left = pos_.x - radius;
 			right = pos_.x + radius;
@@ -460,7 +465,7 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 		//急に瞬間移動するのを確認する用(breakpoint)
 		if ((pos_ - oldPos).GetLength() > 6.0f)
 		{
- 			left = pos_.x - radius;
+			left = pos_.x - radius;
 		}
 
 		isDead = true;
@@ -540,7 +545,7 @@ void Stage::CollisionRoom(Collider* collider)
 	}
 	//もどる
 	if (((CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOML) ||
-		(CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOMR)) 
+		(CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOMR))
 		&& collider->GetIsPlayer() && isPlayerRoom)
 	{
 		pos = beforeRoomPos;
