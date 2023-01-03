@@ -20,7 +20,7 @@ void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartr
 
 	isChange = false;
 
-	ChangeState(new BulletNormal);
+	ChangeState(new BulletShotGun);
 }
 
 void PlayerBulletManager::ChangeState(PlayerBulletState* state)

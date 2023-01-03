@@ -28,6 +28,9 @@ public:
 
 	bool isPlayerRoom = false;
 
+	//ブロックの半径
+	const float blockRadius = 3.0f;
+
 private:
 	//外部クラス
 	EnemyManager* enemyM;
@@ -40,8 +43,7 @@ private:
 
 	//両壁の幅
 	const int hardWallNum = mapNumX / 3;
-	//ブロックの半径
-	const float blockRadius = 3.0f;
+
 
 	//Objectのインスタンスのポインタを入れる
 	Object* blocks[mapNumY][mapNumX] = { nullptr };

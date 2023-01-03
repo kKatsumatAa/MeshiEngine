@@ -14,6 +14,11 @@ Camera::Camera()
 	matViewProjection = viewMat.matView * projectionMat.matProjection;
 }
 
+void Camera::Initialize()
+{
+	shake.Initialize();
+}
+
 void Camera::Update()
 {
 	if (viewDirty || projectionDirty) {

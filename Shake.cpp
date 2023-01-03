@@ -32,6 +32,15 @@ float Shake::GetShake()
 	return  GetRandomShakeInternal(-shakeLength * t, shakeLength * t);
 }
 
+void Shake::Initialize()
+{
+	shakeLength = 0.0f;
+	lifeTimer = 0;
+	lifeTimerTmp = 0;
+	t = 0.0f;
+
+}
+
 void Shake::Update()
 {
 	if (lifeTimer != 0 && lifeTimerTmp != 0)

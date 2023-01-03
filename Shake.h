@@ -5,8 +5,8 @@ class Shake
 {
 private:
 	float shakeLength = 0.0f;
-	int lifeTimer = 0;
-	int lifeTimerTmp = 0;
+	int   lifeTimer = 0;
+	int   lifeTimerTmp = 0;
 	float t = 0.0f;
 
 private:
@@ -17,6 +17,8 @@ private:
 public:
 	void SetShake(int time, float length);
 	float GetShake();
+
+	void Initialize();
 
 	void Update();
 

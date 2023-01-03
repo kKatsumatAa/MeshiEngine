@@ -540,8 +540,8 @@ void Stage::CollisionRoom(Collider* collider)
 	}
 	//‚à‚Ç‚é
 	if (((CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOML) ||
-		(CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOMR))
-		/*&& isPlayerRoom*/)
+		(CollisionMapInternal(left + velocity.x, right + velocity.x, down, up) == ROOMR)) 
+		&& collider->GetIsPlayer() && isPlayerRoom)
 	{
 		pos = beforeRoomPos;
 		velocity = { 0,0,0 };

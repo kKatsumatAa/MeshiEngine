@@ -128,7 +128,19 @@ public:
 	void DrawSprite()override;
 };
 
-class SceneEnd : public SceneState
+class SceneGameOver : public SceneState
+{
+private:
+
+
+public:
+	void Initialize()override;
+	void Update() override;
+	void Draw() override;
+	void DrawSprite()override;
+};
+
+class SceneClear : public SceneState
 {
 private:
 

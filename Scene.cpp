@@ -14,33 +14,102 @@ void SceneState::SetScene(Scene* scene)
 //タイトル
 void SceneTitle::Initialize()
 {
-
+	//薬莢
+	scene->cartridgeEffectM->Initialize();
+	//
+	scene->camera->Initialize();
+	//プレイヤー弾
+	scene->playerBulletM.get()->Initialize(scene->model[2], scene->cartridgeEffectM.get(), scene->camera.get());
+	//player
+	scene->player.get()->Initialize(scene->model[2], scene->model[3], scene->playerBulletM.get(), &scene->debugText, scene->camera.get());
+	//敵
+	scene->enemyM.get()->Initialize(scene->model[2], scene->player.get());
+	//当たり判定クラス
+	scene->colliderM.get()->Initialize();
+	//アイテム
+	scene->itemM.get()->Initialize(scene->model[2]);
+	//
+	scene->breakEffectM.get()->Initialize();
+	//ステージ
+	scene->stage.get()->Initialize(scene->model[2], scene->enemyM.get(), scene->itemM.get(), scene->lightManager, scene->breakEffectM.get());
+	scene->stage.get()->GenerateStage();
+	//
+	ParticleManager::GetInstance()->Initialize();
+	ReloadEffectManager::GetInstance().Initialize();
 }
 
 void SceneTitle::Update()
 {
-	/*if (1){scene->ChangeState(new SceneGame);}*/
+	//弾
+	scene->playerBulletM.get()->Update();
+	//player
+	scene->player.get()->Update();
+	//敵
+	scene->enemyM.get()->Update();
+	//アイテム
+	scene->itemM.get()->Update();
+	//当たり判定
+	scene->colliderM.get()->Update(scene->player.get(), scene->enemyM.get(), scene->playerBulletM.get(), scene->itemM.get(), scene->stage.get(),
+		scene->camera.get());
+	//カメラ
+	Vec3 pos = scene->player.get()->GetWorldTransForm()->trans;
+	{
+		scene->camera->SetEye({ 0,pos.y - 10.0f,scene->camera->viewMat.eye.z });
+		scene->camera->SetTarget({ 0,pos.y - 10.0f,1.0f });
+	}
+	scene->camera->Update();
+	//ポイントライト
+	scene->lightManager->SetPointLightPos(0, { pos.x,pos.y,pos.z - 10.0f });
+	scene->lightManager->Update();
+
+	ParticleManager::GetInstance()->Update(&scene->camera->viewMat, &scene->camera->projectionMat);
+	ReloadEffectManager::GetInstance().Update();
+
+	scene->cartridgeEffectM->Update();
+	scene->breakEffectM->Update();
+
+	//シーン遷移
+	//マップステージに入ったら
+	if (scene->player->GetWorldPos().y <= -scene->stage.get()->stageBeginNumY * scene->stage->blockRadius * 2.0f)
+	{
+		scene->ChangeState(new SceneGame);
+	}
 }
 
 void SceneTitle::Draw()
 {
-
+	//player
+	scene->player.get()->Draw(scene->camera->viewMat, scene->camera->projectionMat);
+	//弾
+	scene->playerBulletM.get()->Draw(scene->camera->viewMat, scene->camera->projectionMat);
+	//敵
+	scene->enemyM.get()->Draw(scene->camera->viewMat, scene->camera->projectionMat);
+	//アイテム
+	scene->itemM.get()->Draw(scene->camera->viewMat, scene->camera->projectionMat);
+	//ステージ
+	scene->stage.get()->Draw(scene->camera->viewMat, scene->camera->projectionMat);
+	//パーティクル
+	ParticleManager::GetInstance()->Draw(scene->texhandle[1]);
+	//薬莢
+	scene->cartridgeEffectM->Draw(scene->camera->viewMat, scene->camera->projectionMat);
+	//
+	scene->breakEffectM->Draw(scene->camera->viewMat, scene->camera->projectionMat);
+	//
+	ReloadEffectManager::GetInstance().Draw(scene->camera->viewMat, scene->camera->projectionMat);
 }
 
 void SceneTitle::DrawSprite()
 {
+	/*scene->playerBulletM.get()->DrawSprite();
+	scene->player.get()->DrawSprite();*/
 }
-
 
 
 //---------------------------------------------------------------------------------------
 //ゲーム
 void SceneGame::Initialize()
 {
-	scene->player.get()->Initialize(scene->model[2], scene->model[3], scene->playerBulletM.get(), &scene->debugText, scene->camera.get());
-	//後で他のイニシャライズも追加
-
-
+	
 }
 
 void SceneGame::Update()
@@ -74,7 +143,16 @@ void SceneGame::Update()
 	scene->breakEffectM->Update();
 
 	//シーン遷移
-	//if (1) scene->ChangeState(new SceneEnd);
+	//マップの下限より下に行ったら
+	if (scene->player->GetWorldPos().y <= -scene->stage.get()->mapDownMaxNum * scene->stage->blockRadius * 2.0f + scene->stage->blockRadius
+		&& !scene->stage->isPlayerRoom)
+	{
+		scene->ChangeState(new SceneClear);
+	}
+	else if (scene->player->GetHP() <= 0)
+	{
+		scene->ChangeState(new SceneGameOver);
+	}
 }
 
 void SceneGame::Draw()
@@ -109,25 +187,54 @@ void SceneGame::DrawSprite()
 
 //---------------------------------------------------------------------------------------
 //終了画面
-void SceneEnd::Initialize()
+void SceneGameOver::Initialize()
+{
+	//
+	scene->camera->Initialize();
+}
+
+void SceneGameOver::Update()
+{
+
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		scene->ChangeState(new SceneTitle);
+	}
+}
+
+void SceneGameOver::Draw()
 {
 
 }
 
-void SceneEnd::Update()
-{
-	//if (1) scene->ChangeState(new SceneTitle);
-}
-
-void SceneEnd::Draw()
-{
-
-}
-
-void SceneEnd::DrawSprite()
+void SceneGameOver::DrawSprite()
 {
 }
 
+
+//----------------------------------------------------------------------------------------
+void SceneClear::Initialize()
+{
+	//
+	scene->camera->Initialize();
+}
+
+void SceneClear::Update()
+{
+
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		scene->ChangeState(new SceneTitle);
+	}
+}
+
+void SceneClear::Draw()
+{
+}
+
+void SceneClear::DrawSprite()
+{
+}
 
 
 //---------------------------------------------------------------------------------------
@@ -161,6 +268,7 @@ void Scene::ChangeState(SceneState* state)
 	}
 	this->state = state;
 	state->SetScene(this);
+	this->state->Initialize();
 }
 
 void Scene::Initialize()
@@ -185,8 +293,8 @@ void Scene::Initialize()
 	model[3] = Model::LoadFromOBJ("hanger");
 
 	//音
-	Sound::LoadWave("a.wav", true);
-	Sound::LoadWave("BGM.wav", false);//
+	//Sound::LoadWave("a.wav", true);
+	//Sound::LoadWave("BGM.wav", false);//
 
 	//imgui
 	imGuiManager = new ImGuiManager();
@@ -220,6 +328,7 @@ void Scene::Initialize()
 	}
 	//カメラ
 	camera = std::make_unique<Camera>();
+	camera->Initialize();
 	//薬莢
 	cartridgeEffectM = std::make_unique<CartridgeEffectManager>();
 	cartridgeEffectM->Initialize();
@@ -243,23 +352,19 @@ void Scene::Initialize()
 	breakEffectM.get()->Initialize();
 	//ステージ
 	stage = std::make_unique<Stage>();
-	stage.get()->Initialize(model[2], enemyM.get(), itemM.get(), lightManager, breakEffectM.get());
-	stage.get()->GenerateStage();
+	/*stage.get()->Initialize(model[2], enemyM.get(), itemM.get(), lightManager, breakEffectM.get());
+	stage.get()->GenerateStage();*/
 	//
 	ParticleManager::GetInstance()->Initialize();
 	ReloadEffectManager::GetInstance().Initialize();
 
 
-
 	//ステート変更
-	ChangeState(new SceneGame);
+	ChangeState(new SceneTitle);
 }
 
 void Scene::Update()
 {
-
-
-
 	//imgui
 	imGuiManager->Begin();
 
@@ -270,8 +375,6 @@ void Scene::Update()
 	}
 
 	state->Update();
-
-
 
 
 #ifdef _DEBUG
@@ -311,4 +414,3 @@ void Scene::DrawSprite()
 
 	debugText.DrawAll(debugTextHandle);
 }
-

@@ -31,6 +31,8 @@ public: // メンバ関数
 	/// </summary>
 	virtual ~Camera() = default;
 
+	virtual void Initialize();
+
 	/// <summary>
 	/// 毎フレーム更新
 	/// </summary>
