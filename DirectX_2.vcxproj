@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Async.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BreakEffectManager.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -197,6 +198,7 @@
     <ClCompile Include="WorldMat.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Async.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="BreakEffectManager.h" />
     <ClInclude Include="Camera.h" />

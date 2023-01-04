@@ -41,7 +41,17 @@ void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM, L
 	this->breakEffectM = breakEffectM;
 	rooms.clear();
 	roomNumY.clear();
+	//playerが0なので1からスタート
 	lightCount = 1;
+	isPlayerRoom = false;
+
+	blockLineNum = blockLineNumMax;
+	blockHardNum = blockHardNumMax;
+
+	blockMapChip[mapNumY][mapNumX] = { 0 };
+	enemyLineNum = enemyLineMax;
+
+	beforeRoomPos = { 0,0,0 };
 }
 
 void Stage::GenerateStage()
@@ -49,6 +59,7 @@ void Stage::GenerateStage()
 	//部屋を作る場所より上
 	for (int j = stageBeginNumY; j < mapDownMaxNum; j++)
 	{
+
 		if (j % 13 == 0)
 		{
 			//ブロック最大数をリセット
@@ -451,9 +462,9 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 		{
 			pos_.y += sign(velocity.y);//1ピクセル先にブロックがなければ1ピクセル進む
 
-			if (fabsf(pos_.y - oldPos.y) >= fabsf(velocity.y)) 
-			{ 
-  				break; 
+			if (fabsf(pos_.y - oldPos.y) >= fabsf(velocity.y))
+			{
+				break;
 			}
 
 			left = pos_.x - radius;

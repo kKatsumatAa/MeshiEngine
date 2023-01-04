@@ -9,6 +9,8 @@
 #include"ItemManager.h"
 #include"ParticleManager.h"
 #include"Camera.h"
+#include"Async.h"
+
 
 
 class Scene;
@@ -146,6 +148,21 @@ private:
 
 
 public:
+	void Initialize()override;
+	void Update() override;
+	void Draw() override;
+	void DrawSprite()override;
+};
+
+class SceneLoad : public SceneState
+{
+private:
+	int count = 0;
+	Async async;
+
+public:
+	void StageCreate();
+
 	void Initialize()override;
 	void Update() override;
 	void Draw() override;

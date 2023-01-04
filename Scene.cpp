@@ -14,28 +14,7 @@ void SceneState::SetScene(Scene* scene)
 //タイトル
 void SceneTitle::Initialize()
 {
-	//薬莢
-	scene->cartridgeEffectM->Initialize();
-	//
-	scene->camera->Initialize();
-	//プレイヤー弾
-	scene->playerBulletM.get()->Initialize(scene->model[2], scene->cartridgeEffectM.get(), scene->camera.get());
-	//player
-	scene->player.get()->Initialize(scene->model[2], scene->model[3], scene->playerBulletM.get(), &scene->debugText, scene->camera.get());
-	//敵
-	scene->enemyM.get()->Initialize(scene->model[2], scene->player.get());
-	//当たり判定クラス
-	scene->colliderM.get()->Initialize();
-	//アイテム
-	scene->itemM.get()->Initialize(scene->model[2]);
-	//
-	scene->breakEffectM.get()->Initialize();
-	//ステージ
-	scene->stage.get()->Initialize(scene->model[2], scene->enemyM.get(), scene->itemM.get(), scene->lightManager, scene->breakEffectM.get());
-	scene->stage.get()->GenerateStage();
-	//
-	ParticleManager::GetInstance()->Initialize();
-	ReloadEffectManager::GetInstance().Initialize();
+
 }
 
 void SceneTitle::Update()
@@ -109,7 +88,7 @@ void SceneTitle::DrawSprite()
 //ゲーム
 void SceneGame::Initialize()
 {
-	
+
 }
 
 void SceneGame::Update()
@@ -198,7 +177,7 @@ void SceneGameOver::Update()
 
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
 	{
-		scene->ChangeState(new SceneTitle);
+		scene->ChangeState(new SceneLoad);
 	}
 }
 
@@ -209,6 +188,7 @@ void SceneGameOver::Draw()
 
 void SceneGameOver::DrawSprite()
 {
+	scene->debugText.Print("GameOver", 100, 100, 114514, 5.0f);
 }
 
 
@@ -224,7 +204,7 @@ void SceneClear::Update()
 
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
 	{
-		scene->ChangeState(new SceneTitle);
+		scene->ChangeState(new SceneLoad);
 	}
 }
 
@@ -234,7 +214,68 @@ void SceneClear::Draw()
 
 void SceneClear::DrawSprite()
 {
+	scene->debugText.Print("GameClear", 100, 100, 114514, 5.0f);
 }
+
+
+//--------------------------------------------------------------------------------------
+void SceneLoad::StageCreate()
+{
+	scene->stage.get()->Initialize(scene->model[2], scene->enemyM.get(), scene->itemM.get(), scene->lightManager, scene->breakEffectM.get());
+	scene->stage.get()->GenerateStage();
+}
+
+void SceneLoad::Initialize()
+{
+	//薬莢
+	scene->cartridgeEffectM->Initialize();
+	//
+	scene->camera->Initialize();
+	//プレイヤー弾
+	scene->playerBulletM.get()->Initialize(scene->model[2], scene->cartridgeEffectM.get(), scene->camera.get());
+	//player
+	scene->player.get()->Initialize(scene->model[2], scene->model[3], scene->playerBulletM.get(), &scene->debugText, scene->camera.get());
+	//敵
+	scene->enemyM.get()->Initialize(scene->model[2], scene->player.get());
+	//当たり判定クラス
+	scene->colliderM.get()->Initialize();
+	//アイテム
+	scene->itemM.get()->Initialize(scene->model[2]);
+	//
+	scene->breakEffectM.get()->Initialize();
+
+	//
+	ParticleManager::GetInstance()->Initialize();
+	ReloadEffectManager::GetInstance().Initialize();
+
+
+	//非同期処理(ステージ作成中にもロード画面出す)
+	async.StartAsyncFunction([=]() { StageCreate(); });
+}
+
+void SceneLoad::Update()
+{
+	//ステージ作り終わったら
+	if (async.GetLockFlag())
+	{
+		async.EndThread();
+
+		//ステージ作り終わったら
+		scene->ChangeState(new SceneTitle);
+	}
+}
+
+void SceneLoad::Draw()
+{
+}
+
+void SceneLoad::DrawSprite()
+{
+	count++;
+
+	scene->debugText.Print("Loading", 100, 100.0f + sinf(count * 0.1f) * 10.0f, 114514, 5.0f);
+}
+
 
 
 //---------------------------------------------------------------------------------------
@@ -328,39 +369,39 @@ void Scene::Initialize()
 	}
 	//カメラ
 	camera = std::make_unique<Camera>();
-	camera->Initialize();
+	//camera->Initialize();
 	//薬莢
 	cartridgeEffectM = std::make_unique<CartridgeEffectManager>();
-	cartridgeEffectM->Initialize();
+	//cartridgeEffectM->Initialize();
 	//プレイヤー弾
 	playerBulletM = std::make_unique<PlayerBulletManager>();
-	playerBulletM.get()->Initialize(model[2], cartridgeEffectM.get(), camera.get());
+	//playerBulletM.get()->Initialize(model[2], cartridgeEffectM.get(), camera.get());
 	//player
 	player = std::make_unique<Player>();
-	player.get()->Initialize(model[2], model[3], playerBulletM.get(), &debugText, camera.get());
+	//player.get()->Initialize(model[2], model[3], playerBulletM.get(), &debugText, camera.get());
 	//敵
 	enemyM = std::make_unique<EnemyManager>();
-	enemyM.get()->Initialize(model[2], player.get());
+	//enemyM.get()->Initialize(model[2], player.get());
 	//当たり判定クラス
 	colliderM = std::make_unique<ColliderManager>();
-	colliderM.get()->Initialize();
+	//colliderM.get()->Initialize();
 	//アイテム
 	itemM = std::make_unique<ItemManager>();
-	itemM.get()->Initialize(model[2]);
+	//itemM.get()->Initialize(model[2]);
 	//
 	breakEffectM = std::make_unique<BreakEffectManager>();
-	breakEffectM.get()->Initialize();
+	//breakEffectM.get()->Initialize();
 	//ステージ
 	stage = std::make_unique<Stage>();
-	/*stage.get()->Initialize(model[2], enemyM.get(), itemM.get(), lightManager, breakEffectM.get());
-	stage.get()->GenerateStage();*/
+	//stage.get()->Initialize(model[2], enemyM.get(), itemM.get(), lightManager, breakEffectM.get());
+	//stage.get()->GenerateStage();
 	//
-	ParticleManager::GetInstance()->Initialize();
-	ReloadEffectManager::GetInstance().Initialize();
+	//ParticleManager::GetInstance()->Initialize();
+	//ReloadEffectManager::GetInstance().Initialize();
 
 
 	//ステート変更
-	ChangeState(new SceneTitle);
+	ChangeState(new SceneLoad);
 }
 
 void Scene::Update()
