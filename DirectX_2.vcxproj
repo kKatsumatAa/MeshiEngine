@@ -146,7 +146,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Async.cpp" />
-    <ClCompile Include="Block.cpp" />
     <ClCompile Include="BreakEffectManager.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CartridgeEffectManager.cpp" />
@@ -171,7 +170,6 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerBullet.cpp" />
@@ -199,7 +197,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Async.h" />
-    <ClInclude Include="Block.h" />
     <ClInclude Include="BreakEffectManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CartridgeEffectManager.h" />
@@ -224,7 +221,6 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerBullet.h" />

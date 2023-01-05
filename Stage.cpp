@@ -439,6 +439,11 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 		{
 			pos_.x += sign(velocity.x);//1ピクセル先にブロックがなければ1ピクセル進む
 
+			if (fabsf(pos_.x - oldPos.x) >= fabsf(velocity.x))
+			{
+				break;
+			}
+
 			left = pos_.x - radius;
 			right = pos_.x + radius;
 			down = pos_.y - radius;

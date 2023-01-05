@@ -16,6 +16,15 @@ Camera::Camera()
 
 void Camera::Initialize()
 {
+	//ビュー行列の計算
+	UpdateViewMatrix();
+
+	// 射影行列の計算
+	UpdateProjectionMatrix();
+
+	// ビュープロジェクションの合成
+	matViewProjection = viewMat.matView * projectionMat.matProjection;
+
 	shake.Initialize();
 }
 

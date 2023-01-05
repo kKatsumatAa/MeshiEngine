@@ -27,6 +27,13 @@ void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* p
 	this->isGround = false;
 	this->isJump = false;
 
+	{
+		//死亡フラグ
+		isDead = false;
+
+		velocity = { 0,0,0 };
+	}
+
 	this->audio = &Sound::GetInstance();
 
 	//this->tutorial = tutorial;
@@ -50,7 +57,6 @@ void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* p
 	//衝突属性
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	SetCollisionMask(kCollisionAttributeEnemy);
-
 
 	ChangeState(new NoAttackP);
 }
