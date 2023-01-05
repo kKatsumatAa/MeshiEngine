@@ -32,6 +32,8 @@ public:
 	const float blockRadius = 3.0f;
 
 private:
+	UINT64 texHandle[10];
+
 	//ŠO•”ƒNƒ‰ƒX
 	EnemyManager* enemyM;
 	ItemManager* itemM;
