@@ -31,7 +31,6 @@ void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM, L
 		for (int i = 0; i < mapNumX; i++)
 		{
 			DeleteBlock(i, j);
-			blockMapChip[j][i] = { 0 };
 		}
 	}
 	this->model = model;
@@ -55,7 +54,8 @@ void Stage::Initialize(Model* model, EnemyManager* enemyM, ItemManager* itemM, L
 	beforeRoomPos = { 0,0,0 };
 
 
-	if (texHandle[0] == NULL) { TextureManager::GetInstance().LoadGraph(L"Resources/image/block", texHandle[0]); }
+	if (texHandle[0] == NULL) { TextureManager::GetInstance().LoadGraph(L"Resources/image/block.png", texHandle[0]); }
+	if (texHandle[1] == NULL) { TextureManager::GetInstance().LoadGraph(L"Resources/image/block2.png", texHandle[1]); }
 }
 
 void Stage::GenerateStage()
@@ -598,7 +598,7 @@ void Stage::Draw(ViewMat& view, ProjectionMat& projection)
 				}
 				if (blockMapChip[j][i] == HARD)
 				{
-					blocks[j][i]->DrawCube3D(blocks[j][i]->worldMat, &view, &projection, { 1.0f,0,0,1.0f });
+					blocks[j][i]->DrawCube3D(blocks[j][i]->worldMat, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHandle[1]);
 					count++;
 				}
 			}
