@@ -13,7 +13,7 @@ void EnemyManager::GenerateEnemy(const Vec3& position)
 {
 	//球を生成、初期化
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
-	enemy->Initialize(model, player);
+	enemy->Initialize(model, 0.5f, player);
 	enemy.get()->SetWorldPos(position);
 	//球を登録
 	enemies.push_back(std::move(enemy));
@@ -28,9 +28,8 @@ void EnemyManager::Update()
 		if (enemy->GetIsDead())
 		{
 			//パーティクル
-			XMFLOAT4 color = enemy->draw->GetColor();
 			ParticleManager::GetInstance()->GenerateRandomParticle(10, 20, 1.0f, enemy->GetWorldPos(),
-				2.5f, 0.0f, color, { 0,0,0,0 });
+				2.5f, 0.0f, { 1.0f,0,0,1.0f }, { 0,0,0,0 });
 		}
 	}
 

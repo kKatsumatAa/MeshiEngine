@@ -207,7 +207,8 @@ void Stage::GenerateRoom()
 		rooms.push_back(room);
 
 		//ライト
-		PointLightSetPos(lightCount, MapChipTransVec3(roomPosX + hardWallNum - 1, roomPosY));
+		Vec3 pos = MapChipTransVec3(roomPosX + hardWallNum - 1, roomPosY);
+		PointLightSetPos(lightCount, { pos.x,pos.y,pos.z - 5.0f });
 		lightCount++;
 	}
 	//右
@@ -221,7 +222,8 @@ void Stage::GenerateRoom()
 		rooms.push_back(room);
 
 		//ライト
-		PointLightSetPos(lightCount, MapChipTransVec3(roomPosX + 1, roomPosY));
+		Vec3 pos = MapChipTransVec3(roomPosX + 1, roomPosY);
+		PointLightSetPos(lightCount, { pos.x,pos.y,pos.z - 5.0f });
 		lightCount++;
 	}
 
@@ -276,7 +278,8 @@ void Stage::GenerateRoomInternal()
 		}
 	}
 	//ライト
-	PointLightSetPos(lightCount, MapChipTransVec3(hardWallNum + 2, beginRoomY + 2));
+	Vec3 pos = MapChipTransVec3(hardWallNum + 2, beginRoomY + 2);
+	PointLightSetPos(lightCount, { pos.x,pos.y,pos.z - 5.0f });
 	lightCount++;
 
 
@@ -309,7 +312,8 @@ void Stage::GenerateRoomInternal()
 	}
 
 	//ライト
-	PointLightSetPos(lightCount, MapChipTransVec3(hardWallNum + 2, beginRoomYLeft + 2));
+	pos = MapChipTransVec3(hardWallNum + 2, beginRoomYLeft + 2);
+	PointLightSetPos(lightCount, { pos.x,pos.y,pos.z - 5.0f });
 	lightCount++;
 }
 

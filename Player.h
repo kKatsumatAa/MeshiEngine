@@ -58,6 +58,12 @@ private:
 	//hp
 	Object gauge[2];
 
+	//死亡後の演出用
+	bool isEnd = false;
+	int endCount = 0;
+	const int endCountTmp = 150;
+	XMFLOAT4 endColor = { 1.0f,1.0f,1.0f,1.0f };
+
 	/*Tutorial* tutorial;*/
 
 	//EffectManager* effectM_;
@@ -92,6 +98,8 @@ public:
 	float GetJumpPowerTmp() { return jumpPowerTmp; }
 	float& GetJumpPower() { return velocity.y; }
 	bool GetIsJump() { return isJump; }
+	bool GetIsEnd() { return isEnd; }
+	XMFLOAT4 GetEndColor() { return endColor; }
 
 	void SetZeroJumpPower() { velocity.y = 0; }
 
@@ -100,6 +108,8 @@ public:
 	void SetIsJump(bool isJump) { this->isJump = isJump; }
 
 	void SetJumpPower(float jumpPower) { if (jumpPower > velocityYMin) this->velocity.y = jumpPower; }
+	void SetIsEnd(bool is) { isEnd = is; }
+	void SetEndColor(XMFLOAT4 color) { endColor = color; }
 
 	//アイテムとの当たり判定時
 	void SetBulletType(const int itemType) { playerBulletM->SetBulletType(itemType); }

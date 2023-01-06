@@ -31,7 +31,7 @@ void BreakEffect::Update()
 
 void BreakEffect::Draw(ViewMat& view, ProjectionMat& projection, UINT64 texHandle)
 {
-	object.DrawBox(&worldTransform, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHandle);
+	object.DrawBox(&worldTransform, &view, &projection, { 0.2f,0.2f,0.2f,0.7f }, texHandle);
 }
 
 

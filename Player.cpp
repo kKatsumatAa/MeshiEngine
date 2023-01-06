@@ -32,6 +32,9 @@ void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* p
 		isDead = false;
 
 		velocity = { 0,0,0 };
+		isEnd = false;
+		endCount = 0;
+		endColor = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
 	this->audio = &Sound::GetInstance();
@@ -42,7 +45,7 @@ void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* p
 	input_ = &KeyboardInput::GetInstance();
 
 	worldTransform_.trans = { -50.0f,0.0f,0 };
-	worldTransform_.rot = { 0,0.0f,0 };
+	worldTransform_.rot = { 0,-pi / 2.0f,0 };
 	worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
 	worldTransform_.SetWorld();
 
@@ -63,42 +66,61 @@ void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* p
 
 void Player::Update()
 {
-	////チュートリアル
-	//if (tutorial != nullptr)
-	//{
-	//	isDead = false;
-	//}
-
-	//無敵時間
-	if (dmageCoolTime > 0)
+	if (!isDead)
 	{
-		dmageCoolTime--;
-
-		if (dmageCoolTime % 15 < 8)
+		//無敵時間
+		if (dmageCoolTime > 0)
 		{
-			worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
+			dmageCoolTime--;
+
+			if (dmageCoolTime % 15 < 8)
+			{
+				worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
+			}
+			else
+			{
+				worldTransform_.scale = { scaleTmp + 0.5f,scaleTmp + 0.5f,scaleTmp + 0.5f };
+			}
 		}
 		else
 		{
-			worldTransform_.scale = { scaleTmp + 0.5f,scaleTmp + 0.5f,scaleTmp + 0.5f };
+			worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
 		}
+
+		//入力
+		{
+			velocity.x = ((input_->KeyPush(DIK_RIGHTARROW) || input_->KeyPush(DIK_D)) - (input_->KeyPush(DIK_LEFTARROW) || input_->KeyPush(DIK_A))) * 0.5f;
+		}
+
+		state->Update();
+
+		//重力を加算していく
+		SetJumpPower(GetJumpPower() - GetGravityTmp());
+
+		worldTransform_.SetWorld();
 	}
+	//死亡後演出用
 	else
 	{
-		worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
+		endCount++;
+
+		if (endCount % 10 < 5)
+		{
+			endColor = { 1.0f,1.0f,1.0f,1.0f };
+		}
+		else
+		{
+			endColor = { 0.4f,0.4f,0.4f,0.4f };
+		}
+
+		//重力を加算していく
+		SetJumpPower(GetJumpPower() - GetGravityTmp() * 0.5f);
+
+		if (endCount >= endCountTmp)
+		{
+			isEnd = true;
+		}
 	}
-
-	//入力
-	{
-		velocity.x = ((input_->KeyPush(DIK_RIGHTARROW) || input_->KeyPush(DIK_D)) - (input_->KeyPush(DIK_LEFTARROW) || input_->KeyPush(DIK_A))) * 0.5f;
-	}
-
-	state->Update();
-
-	//重力を加算していく
-	SetJumpPower(GetJumpPower() - GetGravityTmp());
-
-	worldTransform_.SetWorld();
 }
 
 void Player::Draw(ViewMat& view, ProjectionMat& projection)
@@ -197,7 +219,7 @@ void NoAttackP::Update()
 
 void NoAttackP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack)
 {
-	player->draw[0].DrawModel(player->GetWorldTransForm(), &view, &projection, model);
+	player->draw[0].DrawModel(player->GetWorldTransForm(), &view, &projection, model, player->GetEndColor());
 }
 
 
@@ -233,7 +255,7 @@ void JumpP::Update()
 
 void JumpP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack)
 {
-	player->draw[0].DrawModel(player->GetWorldTransForm(), &view, &projection, model);
+	player->draw[0].DrawModel(player->GetWorldTransForm(), &view, &projection, model, player->GetEndColor());
 }
 
 
@@ -264,6 +286,6 @@ void JumpAttackP::Update()
 
 void JumpAttackP::Draw(ViewMat& view, ProjectionMat& projection, Model* model, Model* modelAttack)
 {
-	player->draw[1].DrawModel(player->GetWorldTransForm(), &view, &projection, model);
+	player->draw[1].DrawModel(player->GetWorldTransForm(), &view, &projection, model, player->GetEndColor());
 }
 

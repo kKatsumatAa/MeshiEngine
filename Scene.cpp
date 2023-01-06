@@ -112,7 +112,7 @@ void SceneGame::Update()
 	}
 	scene->camera->Update();
 	//ポイントライト
-	scene->lightManager->SetPointLightPos(0, { pos.x,pos.y,pos.z - 10.0f });
+	scene->lightManager->SetPointLightPos(0, { pos.x,pos.y,pos.z - 20.0f });
 	scene->lightManager->Update();
 
 	ParticleManager::GetInstance()->Update(&scene->camera->viewMat, &scene->camera->projectionMat);
@@ -128,7 +128,7 @@ void SceneGame::Update()
 	{
 		scene->ChangeState(new SceneClear);
 	}
-	else if (scene->player->GetHP() <= 0)
+	else if (scene->player->GetIsEnd())
 	{
 		scene->ChangeState(new SceneGameOver);
 	}
@@ -232,15 +232,15 @@ void SceneLoad::Initialize()
 	//
 	scene->camera->Initialize();
 	//プレイヤー弾
-	scene->playerBulletM.get()->Initialize(scene->model[2], scene->cartridgeEffectM.get(), scene->camera.get());
+	scene->playerBulletM.get()->Initialize(scene->model[3], scene->cartridgeEffectM.get(), scene->camera.get());
 	//player
 	scene->player.get()->Initialize(scene->model[2], scene->model[3], scene->playerBulletM.get(), &scene->debugText, scene->camera.get());
 	//敵
-	scene->enemyM.get()->Initialize(scene->model[2], scene->player.get());
+	scene->enemyM.get()->Initialize(scene->model[4], scene->player.get());
 	//当たり判定クラス
 	scene->colliderM.get()->Initialize();
 	//アイテム
-	scene->itemM.get()->Initialize(scene->model[2]);
+	scene->itemM.get()->Initialize(scene->model[3]);
 	//
 	scene->breakEffectM.get()->Initialize();
 
@@ -327,11 +327,9 @@ void Scene::Initialize()
 	Model::StaticInitialize();
 
 	model[1] = Model::LoadFromOBJ("ground");
-	draw[1].worldMat->scale = { 100.0f, 100.0f, 100.0f };
-	draw[1].worldMat->trans = { 0, 0, 10.0f };
-	draw[1].worldMat->rot = { (-pi / 2.0f), 0, 0 };
-	model[2] = Model::LoadFromOBJ("sphere", true);
-	model[3] = Model::LoadFromOBJ("hanger");
+	model[2] = Model::LoadFromOBJ("player");
+	model[3] = Model::LoadFromOBJ("sphere",true);
+	model[4] = Model::LoadFromOBJ("enemy1", true);
 
 	//音
 	//Sound::LoadWave("a.wav", true);

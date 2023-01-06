@@ -25,7 +25,7 @@ private:
 	DebugText* debugText_ = nullptr;
 
 	//à⁄ìÆêßå¿
-	const float movingMax = 25.0f;
+	const float movingMax = 20.0f;
 
 	float HPp;
 	const float hptmp = 3;
@@ -53,7 +53,7 @@ public:
 
 	void ChangeState(EnemyState* state);
 
-	void Initialize(Model* model, Player* player/* EffectManager* effectM_,*/
+	void Initialize(Model* model, float enemyRedRate, Player* player/* EffectManager* effectM_,*/
 	/*,Tutorial* tutorial = nullptr*/);
 	void Update();
 	void Draw(ViewMat& view, ProjectionMat& projection);

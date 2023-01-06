@@ -12,7 +12,7 @@ void Enemy::ChangeState(EnemyState* state)
 	state->SetEnemy(this);
 }
 
-void Enemy::Initialize(Model* model, Player* player/*, EffectManager* effectM*//*, Tutorial* tutorial*/)
+void Enemy::Initialize(Model* model, float enemyRedRate, Player* player/*, EffectManager* effectM*//*, Tutorial* tutorial*/)
 {
 	assert(model);
 
@@ -25,6 +25,7 @@ void Enemy::Initialize(Model* model, Player* player/*, EffectManager* effectM*//
 
 	//this->tutorial = tutorial;
 
+	this->enemyRedRate = enemyRedRate;
 
 	worldTransform_.trans = { 0,0.0f,0 };
 	worldTransform_.rot = { 0,0.0f,0 };
@@ -57,7 +58,7 @@ void Enemy::Update()
 	}
 	if (count == 0)
 	{
-		color = { 1.0f,0,0,1.0f };
+		color = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
 	//ˆÚ“®§ŒÀ
@@ -91,7 +92,7 @@ void Enemy::OnCollision(Collider& collider)
 	SetVelocity(collider.GetVelocity() * 3.0f);
 
 	//F•Ï‚¦‚é
-	color = { 1.0f,1.0f,1.0f,1.0f };
+	color = { 0.0f,0.0f,1.0f,1.0f };
 	count = countMax;
 
 	if (HPp <= 0)
