@@ -42,7 +42,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//キーボード情報の取得開始
 		KeyboardInput::GetInstance().Update();
 
-		Directx::GetInstance().DrawUpdate({ 0.1f,0.25f, 0.5f,0.0f });
+		Directx::GetInstance().DrawUpdate({ 0,0,0,0 });
 
 		//更新処理
 		scene->Update();

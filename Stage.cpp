@@ -217,7 +217,7 @@ void Stage::GenerateRoom()
 		GenerateHardBlock(roomPosX - 1, roomPosY + 3);
 		GenerateBlock(roomPosX - 2, roomPosY + 3);
 
-		room->Initialize(MapChipTransVec3(roomPosX + 2, roomPosY + 1), ROOM_TYPE::RIGHT_ROOM, 3.0f * blockRadius);
+		room->Initialize(MapChipTransVec3(roomPosX + 3, roomPosY + 1), ROOM_TYPE::RIGHT_ROOM, 3.0f * blockRadius);
 		rooms.push_back(room);
 
 		//ライト
@@ -443,7 +443,7 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 		{
 			pos_.x += sign(velocity.x);//1ピクセル先にブロックがなければ1ピクセル進む
 
-			if (fabsf(pos_.x - oldPos.x) >= fabsf(velocity.x))
+			if (fabsf(pos_.x - oldPos.x) > fabsf(velocity.x))
 			{
 				break;
 			}
@@ -471,7 +471,7 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 		{
 			pos_.y += sign(velocity.y);//1ピクセル先にブロックがなければ1ピクセル進む
 
-			if (fabsf(pos_.y - oldPos.y) >= fabsf(velocity.y))
+			if (fabsf(pos_.y - oldPos.y) > fabsf(velocity.y))
 			{
 				break;
 			}

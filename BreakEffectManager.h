@@ -21,13 +21,14 @@ public:
 
 	void Initialize(Vec3 pos, Vec3 velocity, float gravity);
 	void Update();
-	void Draw(ViewMat& view, ProjectionMat& projection);
+	void Draw(ViewMat& view, ProjectionMat& projection, UINT64 texHandle);
 };
 
 
 class BreakEffectManager
 {
 private:
+	UINT64 texHandle[10];
 
 public:
 	//

@@ -330,7 +330,7 @@ void Scene::Initialize()
 	draw[1].worldMat->scale = { 100.0f, 100.0f, 100.0f };
 	draw[1].worldMat->trans = { 0, 0, 10.0f };
 	draw[1].worldMat->rot = { (-pi / 2.0f), 0, 0 };
-	model[2] = Model::LoadFromOBJ("sphere");
+	model[2] = Model::LoadFromOBJ("sphere", true);
 	model[3] = Model::LoadFromOBJ("hanger");
 
 	//âπ
@@ -357,14 +357,15 @@ void Scene::Initialize()
 	for (int i = 0; i < LightManager::PointLightNum; i++)
 	{
 		lightManager->SetPointLightActive(i, true);
-		lightManager->SetPointLightAtten(i, { 0.005f,0.005f,0.005f });
 		if (i == 0)
 		{
-			lightManager->SetPointLightColor(i, { 0.8f,0.8f,0.01f });
+			lightManager->SetPointLightColor(i, { 1.0f,1.0f,1.0f });
+			lightManager->SetPointLightAtten(i, { 0.0005f,0.0005f,0.0005f });
 		}
 		else
 		{
-			lightManager->SetPointLightColor(i, { 0.3f,0.5f,0.8f });
+			lightManager->SetPointLightColor(i, { 1.0f,1.0f,0.2f });
+			lightManager->SetPointLightAtten(i, { 0.001f,0.001f,0.001f });
 		}
 	}
 	//ÉJÉÅÉâ

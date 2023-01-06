@@ -65,5 +65,95 @@ float4 main(VSOutput input) : SV_TARGET
 		}
 
 		// シェーディングによる色で描画
-		return shadecolor * texcolor * color;
+		float4 RGBA = (shadecolor * texcolor * color);
+		float4 RGBA2 = (shadecolor * color);
+		float3 RGB = RGBA.rgb;
+		float  A = RGBA.a;
+
+		float w, h, levels;
+		//ミップマップ、横幅、縦幅、ミップマップレベル
+		tex.GetDimensions(0, w, h, levels);
+
+		float dx = 1.0f / w;
+		float dy = 1.0f / h;
+		float4 ret = float4(0, 0, 0, 0);
+
+		//ぼかし
+		//ret += tex.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)); // 左上 
+		//ret += tex.Sample(smp, input.uv + float2(0, -2 * dy)); // 上 
+		//ret += tex.Sample(smp, input.uv + float2(2 * dx, -2 * dy));// 右 上 
+		//ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0)); // 左 
+		//ret += tex.Sample(smp, input.uv);                       // 自分 
+		//ret += tex.Sample(smp, input.uv + float2(2 * dx, 0)); // 右
+		//ret += tex.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)); // 左下 
+		//ret += tex.Sample(smp, input.uv + float2(0, 2 * dy));// 下 
+		//ret += tex.Sample(smp, input.uv + float2(2 * dx, 2 * dy)); // 右 下
+		//return ret / 9.0f * RGBA;
+
+		//シャープネス
+		//ret += tex.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)) * 0; // 左上 
+		//ret += tex.Sample(smp, input.uv + float2(0, -2 * dy)); // 上 
+		//ret += tex.Sample(smp, input.uv + float2(2 * dx, -2 * dy)) * 0;// 右 上 
+		//ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0)); // 左 
+		//ret += tex.Sample(smp, input.uv) * 5.0f;                       // 自分 
+		//ret += tex.Sample(smp, input.uv + float2(2 * dx, 0)); // 右
+		//ret += tex.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)) * 0; // 左下 
+		//ret += tex.Sample(smp, input.uv + float2(0, 2 * dy));// 下 
+		//ret += tex.Sample(smp, input.uv + float2(2 * dx, 2 * dy)) * 0; // 右 下
+		//return ret * RGBA;
+
+		//輪郭
+		//ret += tex.Sample(smp, input.uv + float2(0, -2 * dy)) * -1; // 上
+		//ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0)) * -1; // 左
+		//ret += tex.Sample(smp, input.uv) * 4; // 自分 
+		//ret += tex.Sample(smp, input.uv + float2(2 * dx, 0)) * -1; // 右 
+		//ret += tex.Sample(smp, input.uv + float2(0, 2 * dy)) * -1; // 下 
+		//// 反転 
+		//float Y = dot(ret.rgb * RGBA2.rgb, float3(0.299, 0.587, 0.114));
+		//Y = pow(1.0f - Y, 10.0f);
+		//Y = step(0.2, Y);
+		//return float4(Y, Y, Y, A);
+
+		//ガウシアン
+		{
+			float dx = 2.0f / w;
+			//float dy = 2.0f / h;
+			// 今 の ピクセル を 中心 に 縦横 5 つ ずつ に なる よう 加算 する 
+			// 最 上段 
+			ret += tex.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)) * 1 / 256;
+			ret += tex.Sample(smp, input.uv + float2(-1 * dx, 2 * dy)) * 4 / 256;
+			ret += tex.Sample(smp, input.uv + float2(0 * dx, 2 * dy)) * 6 / 256;
+			ret += tex.Sample(smp, input.uv + float2(1 * dx, 2 * dy)) * 4 / 256;
+			ret += tex.Sample(smp, input.uv + float2(2 * dx, 2 * dy)) * 1 / 256;
+			// 1 つ 上段 
+			ret += tex.Sample(smp, input.uv + float2(-2 * dx, 1 * dy)) * 4 / 256;
+			ret += tex.Sample(smp, input.uv + float2(-1 * dx, 1 * dy)) * 16 / 256;
+			ret += tex.Sample(smp, input.uv + float2(0 * dx, 1 * dy)) * 24 / 256;
+			ret += tex.Sample(smp, input.uv + float2(1 * dx, 1 * dy)) * 16 / 256;
+			ret += tex.Sample(smp, input.uv + float2(2 * dx, 1 * dy)) * 4 / 256;
+			// 中段 
+			ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0 * dy)) * 6 / 256;
+			ret += tex.Sample(smp, input.uv + float2(-1 * dx, 0 * dy)) * 24 / 256;
+			ret += tex.Sample(smp, input.uv + float2(0 * dx, 0 * dy)) * 36 / 256;
+			ret += tex.Sample(smp, input.uv + float2(1 * dx, 0 * dy)) * 24 / 256;
+			ret += tex.Sample(smp, input.uv + float2(2 * dx, 0 * dy)) * 6 / 256;
+			// 1 つ 下段 
+			ret += tex.Sample(smp, input.uv + float2(-2 * dx, -1 * dy)) * 4 / 256;
+			ret += tex.Sample(smp, input.uv + float2(-1 * dx, -1 * dy)) * 16 / 256;
+			ret += tex.Sample(smp, input.uv + float2(0 * dx, -1 * dy)) * 24 / 256;
+			ret += tex.Sample(smp, input.uv + float2(1 * dx, -1 * dy)) * 16 / 256;
+			ret += tex.Sample(smp, input.uv + float2(2 * dx, -1 * dy)) * 4 / 256;
+			// 最 下段 
+			ret += tex.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)) * 1 / 256;
+			ret += tex.Sample(smp, input.uv + float2(-1 * dx, -2 * dy)) * 4 / 256;
+			ret += tex.Sample(smp, input.uv + float2(0 * dx, -2 * dy)) * 6 / 256;
+			ret += tex.Sample(smp, input.uv + float2(1 * dx, -2 * dy)) * 4 / 256;
+			ret += tex.Sample(smp, input.uv + float2(2 * dx, -2 * dy)) * 1 / 256;
+
+			return ret * RGBA;
+		}
+
+
+		//諧調
+		//return float4(RGB - fmod(RGB, 0.25f), A);
 }

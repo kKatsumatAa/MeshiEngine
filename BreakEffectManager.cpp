@@ -29,9 +29,9 @@ void BreakEffect::Update()
 	}
 }
 
-void BreakEffect::Draw(ViewMat& view, ProjectionMat& projection)
+void BreakEffect::Draw(ViewMat& view, ProjectionMat& projection, UINT64 texHandle)
 {
-	object.DrawBox(&worldTransform, &view, &projection);
+	object.DrawBox(&worldTransform, &view, &projection, { 1.0f,1.0f,1.0f,1.0f }, texHandle);
 }
 
 
@@ -46,10 +46,12 @@ void BreakEffectManager::GenerateBreakEffect(Vec3 pos)
 {
 	//生成、初期化
 	std::unique_ptr<BreakEffect> breakEffect = std::make_unique<BreakEffect>();
-	breakEffect->Initialize(pos, { velocityRand(engine),velocityRand(engine),velocityRand(engine) }, 
+	breakEffect->Initialize(pos, { velocityRand(engine),velocityRand(engine),velocityRand(engine) },
 		0.01f);
 	//アイテムを登録
 	breakEffects_.push_back(std::move(breakEffect));
+
+	if (texHandle[0] == NULL) { TextureManager::GetInstance().LoadGraph(L"Resources/image/block.png", texHandle[0]); }
 }
 
 void BreakEffectManager::Update()
@@ -70,7 +72,7 @@ void BreakEffectManager::Draw(ViewMat& view, ProjectionMat& projection)
 {
 	for (std::unique_ptr<BreakEffect>& BreakEffect : breakEffects_)
 	{
-		BreakEffect->Draw(view, projection);
+		BreakEffect->Draw(view, projection,texHandle[0]);
 	}
 }
 

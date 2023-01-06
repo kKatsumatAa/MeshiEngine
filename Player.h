@@ -44,7 +44,7 @@ private:
 
 
 	float HPp;
-	const float hptmp = 1;
+	const float hptmp = 4;
 
 	//UŒ‚‚Ìó‘Ô
 	PlayerAttackState* state = nullptr;
