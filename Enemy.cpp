@@ -12,7 +12,7 @@ void Enemy::ChangeState(EnemyState* state)
 	state->SetEnemy(this);
 }
 
-void Enemy::Initialize(Model* model, float enemyRedRate, Player* player/*, EffectManager* effectM*//*, Tutorial* tutorial*/)
+void Enemy::Initialize(Model* model, float enemyRedRate, int hp, Player* player/*, EffectManager* effectM*//*, Tutorial* tutorial*/)
 {
 	assert(model);
 
@@ -28,11 +28,18 @@ void Enemy::Initialize(Model* model, float enemyRedRate, Player* player/*, Effec
 	this->enemyRedRate = enemyRedRate;
 
 	worldTransform_.trans = { 0,0.0f,0 };
-	worldTransform_.rot = { 0,0.0f,0 };
+	if (enemyRedRate >= 1.0f)
+	{
+		worldTransform_.rot = { 0,-pi,0 };
+	}
+	else
+	{
+		worldTransform_.rot = { 0,0.0f,0 };
+	}
 	worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
 	worldTransform_.SetWorld();
 
-	HPp = hptmp;
+	HPp = hp;
 	radius_ = scaleTmp;
 
 	velocity = { 0,0,0 };

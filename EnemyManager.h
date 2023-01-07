@@ -5,7 +5,7 @@
 class EnemyManager
 {
 private:
-	Model* model = nullptr;
+	Model** model = nullptr;
 	//sound
 	Sound* audio = nullptr;
 
@@ -16,9 +16,10 @@ public:
 	std::list< std::unique_ptr<Enemy>> enemies;
 
 
-	void Initialize(Model* model, Player* player);
+	void Initialize(Model** model, Player* player);
 
 	void GenerateEnemy(const Vec3& position);
+	void GenerateEnemy2(const Vec3& position);
 	void Update();
 	void Draw(ViewMat& view, ProjectionMat& projection);
 

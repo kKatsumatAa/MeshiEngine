@@ -38,7 +38,7 @@ public:
 	WorldMat cameraWorldMat;
 	const Vec3 cameraPos = { 0,0,-100 };
 
-	Model* model[5];
+	Model* model[20];
 
 	Object draw[10];
 

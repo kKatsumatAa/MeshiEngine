@@ -33,7 +33,11 @@ public:
 class BulletLayser : public PlayerBulletState
 {
 private:
-
+	bool isShot = false;
+	int time = 0;
+	const int timerTmp = 1;
+	int count = 0;
+	const int countTmp = 50;
 
 public:
 	void Shot(Vec3 pos, std::function<void()> p) override;

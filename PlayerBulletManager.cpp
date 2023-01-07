@@ -1,7 +1,7 @@
 #include "PlayerBulletManager.h"
 #include "ParticleManager.h"
 
-void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartridgeEffectManager,Camera* camera)
+void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartridgeEffectManager, Camera* camera)
 {
 	assert(model);
 
@@ -20,7 +20,7 @@ void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartr
 
 	isChange = false;
 
-	ChangeState(new BulletShotGun);
+	ChangeState(new BulletLayser);
 }
 
 void PlayerBulletManager::ChangeState(PlayerBulletState* state)
@@ -70,9 +70,9 @@ void PlayerBulletManager::Update()
 
 	if (isChange)
 	{
-		if      (bulletType == ITEM_TYPE::INORMAL)  { ChangeState(new BulletNormal); }
+		if (bulletType == ITEM_TYPE::INORMAL) { ChangeState(new BulletNormal); }
 		else if (bulletType == ITEM_TYPE::ISHOTGUN) { ChangeState(new BulletShotGun); }
-		else if (bulletType == ITEM_TYPE::ILASER)   { ChangeState(new BulletLayser); }
+		else if (bulletType == ITEM_TYPE::ILASER) { ChangeState(new BulletLayser); }
 
 		isChange = false;
 	}
@@ -137,17 +137,34 @@ void BulletLayser::Shot(Vec3 pos, std::function<void()> p)
 {
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) && playerBulletM->GetBulletNum() > 0)
 	{
-		playerBulletM->SetBulletNum(playerBulletM->GetBulletNum() - 5);
-		playerBulletM->GeneratePlayerBullet(pos, { 0,-1.0f,0 });
-
-		//重力を0にする
-		p();
-
-		//薬莢エフェクト
-		playerBulletM->cartridgeEffectM->GenerateCartridgeEffect(pos);
+		isShot = true;
+		count = 0;
 
 		//shake
 		playerBulletM->ShakeCamera();
+		playerBulletM->SetBulletNum(0);
+	}
+	if (isShot)
+	{
+		time--;
+
+		if (time <= 0)
+		{
+			playerBulletM->GeneratePlayerBullet(pos, { 0,-1.0f,0 });
+
+			//薬莢エフェクト
+			playerBulletM->cartridgeEffectM->GenerateCartridgeEffect(pos);
+			//重力を0にする
+			p();
+
+			time = timerTmp;
+			count++;
+
+			if (count >= countTmp)
+			{
+				isShot = false;
+			}
+		}
 	}
 }
 

@@ -1,6 +1,6 @@
 #include "EnemyManager.h"
 
-void EnemyManager::Initialize(Model* model, Player* player)
+void EnemyManager::Initialize(Model** model, Player* player)
 {
 	assert(model);
 
@@ -13,7 +13,17 @@ void EnemyManager::GenerateEnemy(const Vec3& position)
 {
 	//‹…‚ğ¶¬A‰Šú‰»
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
-	enemy->Initialize(model, 0.5f, player);
+	enemy->Initialize(model[4], 0.5f, 3, player);
+	enemy.get()->SetWorldPos(position);
+	//‹…‚ğ“o˜^
+	enemies.push_back(std::move(enemy));
+}
+
+void EnemyManager::GenerateEnemy2(const Vec3& position)
+{
+	//‹…‚ğ¶¬A‰Šú‰»
+	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+	enemy->Initialize(model[5], 1.5f, 5, player);
 	enemy.get()->SetWorldPos(position);
 	//‹…‚ğ“o˜^
 	enemies.push_back(std::move(enemy));

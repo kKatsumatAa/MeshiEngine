@@ -236,11 +236,11 @@ void SceneLoad::Initialize()
 	//player
 	scene->player.get()->Initialize(scene->model[2], scene->model[3], scene->playerBulletM.get(), &scene->debugText, scene->camera.get());
 	//敵
-	scene->enemyM.get()->Initialize(scene->model[4], scene->player.get());
+	scene->enemyM.get()->Initialize(scene->model, scene->player.get());
 	//当たり判定クラス
 	scene->colliderM.get()->Initialize();
 	//アイテム
-	scene->itemM.get()->Initialize(scene->model[3]);
+	scene->itemM.get()->Initialize(scene->model[6]);
 	//
 	scene->breakEffectM.get()->Initialize();
 
@@ -330,6 +330,8 @@ void Scene::Initialize()
 	model[2] = Model::LoadFromOBJ("player");
 	model[3] = Model::LoadFromOBJ("sphere",true);
 	model[4] = Model::LoadFromOBJ("enemy1", true);
+	model[5] = Model::LoadFromOBJ("enemy2", true);
+	model[6] = Model::LoadFromOBJ("item");
 
 	//音
 	//Sound::LoadWave("a.wav", true);

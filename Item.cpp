@@ -41,7 +41,7 @@ void Item::Draw(ViewMat& view, ProjectionMat& projection)
 	{
 		color = { 1.0f,1.0f,1.0f,1.0f };
 	}
-	draw.DrawCube3D(&worldTransform_, &view, &projection, color, TextureManager::whiteTexHandle);
+	draw.DrawModel(&worldTransform_, &view, &projection, model, color);
 }
 
 void Item::OnCollision(Collider& collider)

@@ -104,7 +104,14 @@ void Stage::GenerateStage()
 				if (enemyRand(engine) == 0 && enemyLineNum > 0 && j > stageBeginNumY * 2)
 				{
 					enemyLineNum--;
-					enemyM->GenerateEnemy(MapChipTransVec3(i, j));
+					if (enemyRand(engine) % 15 == 0)
+					{
+						enemyM->GenerateEnemy2(MapChipTransVec3(i, j));
+					}
+					else
+					{
+						enemyM->GenerateEnemy(MapChipTransVec3(i, j));
+					}
 				}
 			}
 			//‰ó‚ê‚éƒuƒƒbƒN

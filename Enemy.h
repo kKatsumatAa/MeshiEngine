@@ -53,7 +53,7 @@ public:
 
 	void ChangeState(EnemyState* state);
 
-	void Initialize(Model* model, float enemyRedRate, Player* player/* EffectManager* effectM_,*/
+	void Initialize(Model* model, float enemyRedRate,int hp, Player* player/* EffectManager* effectM_,*/
 	/*,Tutorial* tutorial = nullptr*/);
 	void Update();
 	void Draw(ViewMat& view, ProjectionMat& projection);

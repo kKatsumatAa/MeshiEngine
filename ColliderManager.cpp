@@ -23,7 +23,7 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 		{
 			//player‚ª“G‚ÌÔ‚¢‚Æ‚±‚ë‚æ‚èã‚É‚¢‚½‚ç
 			if (enemy.get()->GetWorldPos().y - enemy.get()->GetRadius() + (2.0f * enemy.get()->GetRadius() * enemy.get()->GetEnemyRedRate())
-				<= player->GetWorldPos().y)
+				< player->GetWorldPos().y)
 			{
 				//
 				player->LandingEffect();
