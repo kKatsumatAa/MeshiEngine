@@ -5,9 +5,13 @@ void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartr
 {
 	assert(model);
 
-	if (texhandle == NULL)
+	if (texhandle[0] == NULL)
 	{
-		TextureManager::LoadGraph(L"Resources/image/white.png", texhandle);
+		TextureManager::LoadGraph(L"Resources/image/amo.png", texhandle[0]);
+	}
+	if (texhandle[1] == NULL)
+	{
+		TextureManager::LoadGraph(L"Resources/image/amoBox.png", texhandle[1]);
 	}
 
 	this->cartridgeEffectM = cartridgeEffectManager;
@@ -88,10 +92,12 @@ void PlayerBulletManager::Draw(ViewMat& view, ProjectionMat& projection)
 
 void PlayerBulletManager::DrawSprite()
 {
-	gauge[1].DrawClippingBoxSprite({ 1100,100,0 }, 1.0f, { 0,0 }, { 0.5f,2.0f }, { 0.3f,0.3f,0.3f,1.0f },
-		texhandle);
-	gauge[0].DrawClippingBoxSprite({ 1100,100,0 }, 1.0f, { 0,0 }, { 0.5f,(float)bulletNum / (float)bulletNumMax * 2.0f }, { 0.7f,0.7f,0.7f,0.9f },
-		texhandle);
+	gauge.DrawBoxSprite({ 1100 - 1,100 - 1,0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, texhandle[1]);
+
+	for (int i = 0; i < bulletNum; i++)
+	{
+		amoGauge[i].DrawBoxSprite({ 1100, (float)(100 + 64 * i),0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, texhandle[0]);
+	}
 }
 
 void PlayerBulletManager::ShakeCamera()
@@ -140,8 +146,7 @@ void BulletLayser::Shot(Vec3 pos, std::function<void()> p)
 		isShot = true;
 		count = 0;
 
-		//shake
-		playerBulletM->ShakeCamera();
+
 		playerBulletM->SetBulletNum(0);
 	}
 	if (isShot)
@@ -150,6 +155,9 @@ void BulletLayser::Shot(Vec3 pos, std::function<void()> p)
 
 		if (time <= 0)
 		{
+			//shake
+			playerBulletM->ShakeCamera();
+
 			playerBulletM->GeneratePlayerBullet(pos, { 0,-1.0f,0 });
 
 			//薬莢エフェクト

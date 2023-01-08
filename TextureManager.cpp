@@ -138,8 +138,8 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 
 
 	//SRVヒープの先頭ハンドルを取得
-	if (count == 0)srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-	else srvHandle.ptr += Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type);
+	if (count == 0) { srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart(); }
+	else { srvHandle.ptr += Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type); }
 
 	//04_03
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
@@ -152,8 +152,6 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	Directx::GetInstance().GetDevice()->CreateShaderResourceView(TextureManager::GetInstance().texBuff[count].Get(), &srvDesc, srvHandle);
 
 	//04_02(画像貼る用のアドレスを引数に)
-	//SRVヒープの設定コマンド
-	Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
 	//SRVヒープのハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
 	textureHandle = srvGpuHandle.ptr + (Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type) * count);

@@ -46,6 +46,7 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 		{
 			//player‚É’e‚ÌŽí—Þ‚ðƒZƒbƒg
 			player->SetBulletType(item.get()->GetItemType());
+			player->SetHP(player->GetHP() + 1);
 			//item
 			item.get()->OnCollision(*player);
 		}

@@ -28,11 +28,11 @@ private:
 
 
 	//テクスチャハンドル
-	uint32_t* textureHandle_;
+	UINT64 textureHandle[10];
 
 
 	//移動制限
-	const float movingMax = 25.0f;
+	const float movingMax = 70.0f;
 
 	//ジャンプ系
 	const float gravityTmp = 0.05f;
@@ -41,10 +41,6 @@ private:
 	const float velocityYMin = -5.0f;
 	bool isJump = false;
 
-
-
-	float HPp;
-	const float hptmp = 4;
 
 	//攻撃の状態
 	PlayerAttackState* state = nullptr;
@@ -56,7 +52,8 @@ private:
 	const float scaleTmp = 1.8f;
 
 	//hp
-	Object gauge[2];
+	Object gauge;
+	Object hpGauges[4];
 
 	//死亡後の演出用
 	bool isEnd = false;
@@ -103,7 +100,7 @@ public:
 
 	void SetZeroJumpPower() { velocity.y = 0; }
 
-	int GetHP() { return HPp; }
+	int GetHP() { return HP; }
 
 	void SetIsJump(bool isJump) { this->isJump = isJump; }
 

@@ -158,6 +158,9 @@ void SceneGame::Draw()
 
 void SceneGame::DrawSprite()
 {
+	scene->draw[2].DrawBoxSprite({ -100,0 ,0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, scene->texhandle[2]);
+	scene->draw[3].DrawBoxSprite({ WindowsApp::GetInstance().window_width / 3.0f * 2.0f + 100,0 ,0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, scene->texhandle[3]);
+
 	scene->playerBulletM.get()->DrawSprite();
 	scene->player.get()->DrawSprite();
 }
@@ -322,13 +325,16 @@ void Scene::Initialize()
 	TextureManager::LoadGraph(L"Resources/image/white.png", texhandle[0]);
 
 	TextureManager::LoadGraph(L"Resources/image/effect1.png", texhandle[1]);
+	//ç∂âEï«
+	TextureManager::LoadGraph(L"Resources/image/wall1.png", texhandle[2]);
+	TextureManager::LoadGraph(L"Resources/image/wall2.png", texhandle[3]);
 
 	//model
 	Model::StaticInitialize();
 
 	model[1] = Model::LoadFromOBJ("ground");
 	model[2] = Model::LoadFromOBJ("player");
-	model[3] = Model::LoadFromOBJ("sphere",true);
+	model[3] = Model::LoadFromOBJ("sphere", true);
 	model[4] = Model::LoadFromOBJ("enemy1", true);
 	model[5] = Model::LoadFromOBJ("enemy2", true);
 	model[6] = Model::LoadFromOBJ("item");

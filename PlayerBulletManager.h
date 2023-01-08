@@ -64,12 +64,14 @@ private:
 	//sound
 	Sound* audio = nullptr;
 
-	const int bulletNumMax = 8;
+	static const int bulletNumMax = 8;
 	int bulletNum = bulletNumMax;
 
-	Object gauge[2];
+	Object gauge;
+	Object amoGauge[bulletNumMax];
 
-	UINT64 texhandle = NULL;
+
+	UINT64 texhandle[10] = { NULL };
 
 	int bulletType = ITEM_TYPE::INORMAL;
 

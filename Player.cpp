@@ -16,6 +16,15 @@ void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* p
 	assert(model);
 	assert(modelAttack);
 
+	if (textureHandle[0] == NULL)
+	{
+		TextureManager::LoadGraph(L"Resources/image/hp.png", textureHandle[0]);
+	}
+	if (textureHandle[1] == NULL)
+	{
+		TextureManager::LoadGraph(L"Resources/image/hpBox.png", textureHandle[1]);
+	}
+
 	model_ = model;
 	this->modelAttack = modelAttack;
 	this->playerBulletM = playerBulletM;
@@ -54,7 +63,8 @@ void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* p
 	//無敵時間
 	dmageCoolTime = 0;
 
-	HPp = hptmp;
+	hptmp = 4;
+	HP = hptmp;
 	radius_ = scaleTmp;
 
 	//衝突属性
@@ -98,6 +108,11 @@ void Player::Update()
 		SetJumpPower(GetJumpPower() - GetGravityTmp());
 
 		worldTransform_.SetWorld();
+
+
+		//移動制限
+		if (worldTransform_.trans.x <= -movingMax)worldTransform_.trans.x = -movingMax;
+		if (worldTransform_.trans.x >= movingMax)worldTransform_.trans.x = movingMax;
 	}
 	//死亡後演出用
 	else
@@ -134,8 +149,12 @@ void Player::Draw(ViewMat& view, ProjectionMat& projection)
 
 void Player::DrawSprite()
 {
-	gauge[1].DrawClippingBoxSprite({ 100,40,0 }, 1.0f, { 0,0 }, { 1.0f,0.2f }, { 0.3f,0.3f,0.3f,1.0f });
-	gauge[0].DrawClippingBoxSprite({ 100,40,0 }, 1.0f, { 0,0 }, { HPp / (float)hptmp ,0.2f }, { 1.0f,0.0f,0.0f,0.9f });
+	for (int i = 0; i < HP; i++)
+	{
+		hpGauges[i].DrawBoxSprite({ (float)100 + 1 + 46 * i,60 + 1,0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[0]);
+	}
+
+	gauge.DrawBoxSprite({ 100,60,0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[1]);
 }
 
 void Player::LandingEffect()
@@ -160,15 +179,15 @@ void Player::OnCollision(Collider& collider)
 {
 	if (dmageCoolTime <= 0)
 	{
-		HPp--;
+		HP--;
 		//無敵時間
 		dmageCoolTime = dmageCoolTimeTmp;
 		//
 		camera->CameraShake(60, 2.0f);
-		if (HPp <= 0)
+		if (HP <= 0)
 		{
 			isDead = true;
-			HPp = 0;
+			HP = 0;
 		}
 		//音
 

@@ -44,6 +44,7 @@ protected:
 	bool isPlayer = false;
 
 	int HP = 0;
+	int hptmp = 0;
 
 	//敵の赤い部分（ダメージ受ける部分）
 	float enemyRedRate = 0;
@@ -59,7 +60,7 @@ public:
 	void SetIsDead(bool isDead) { this->isDead = isDead; }
 
 	int GetHP() { return HP; }
-	void SetHP(int hp) { HP = hp; }
+	void SetHP(int hp) { if (hp <= hptmp) { HP = hp; } }
 	float GetRadius() { return radius_; };
 	bool GetIsPlayer() { return isPlayer; }
 	void SetRadius(const float& radius) { this->radius_ = radius; };
