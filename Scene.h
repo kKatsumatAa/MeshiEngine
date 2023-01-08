@@ -133,7 +133,8 @@ public:
 class SceneGameOver : public SceneState
 {
 private:
-
+	int count = 0;
+	const int countTmp = 150;
 
 public:
 	void Initialize()override;
@@ -145,6 +146,8 @@ public:
 class SceneClear : public SceneState
 {
 private:
+	int count = 0;
+	const int countTmp = 150;
 
 
 public:

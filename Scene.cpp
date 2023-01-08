@@ -57,6 +57,21 @@ void SceneTitle::Update()
 
 void SceneTitle::Draw()
 {
+	{
+		//タイトル
+		scene->draw[7].worldMat->trans = { 0,-45.0f,1.0f };
+		scene->draw[7].worldMat->scale = { 18.0f,18.0f,1.0f };
+		scene->draw[7].worldMat->SetWorld();
+		scene->draw[7].DrawBox(scene->draw[7].worldMat, &scene->camera->viewMat, &scene->camera->projectionMat,
+			{ 1.0f,1.0f,1.0f,1.0f }, scene->texhandle[7]);
+	
+		//説明画像
+		scene->draw[8].worldMat->trans = { -45,-45.0f,1.0f };
+		scene->draw[8].worldMat->scale = { 18.0f,18.0f,1.0f };
+		scene->draw[8].worldMat->SetWorld();
+		scene->draw[8].DrawBox(scene->draw[8].worldMat, &scene->camera->viewMat, &scene->camera->projectionMat,
+			{ 1.0f,1.0f,1.0f,1.0f }, scene->texhandle[8]);
+	}
 	//player
 	scene->player.get()->Draw(scene->camera->viewMat, scene->camera->projectionMat);
 	//弾
@@ -75,12 +90,13 @@ void SceneTitle::Draw()
 	scene->breakEffectM->Draw(scene->camera->viewMat, scene->camera->projectionMat);
 	//
 	ReloadEffectManager::GetInstance().Draw(scene->camera->viewMat, scene->camera->projectionMat);
+
+	
 }
 
 void SceneTitle::DrawSprite()
 {
-	/*scene->playerBulletM.get()->DrawSprite();
-	scene->player.get()->DrawSprite();*/
+
 }
 
 
@@ -191,7 +207,11 @@ void SceneGameOver::Draw()
 
 void SceneGameOver::DrawSprite()
 {
-	scene->debugText.Print("GameOver", 100, 100, 114514, 5.0f);
+	if (count < countTmp)
+	{
+		count++;
+	}
+	scene->draw[6].DrawBoxSprite({ 0,0,0 }, 1.0f, { 1.0f,1.0f,1.0f, (float)count / (float)countTmp }, scene->texhandle[6]);
 }
 
 
@@ -217,7 +237,11 @@ void SceneClear::Draw()
 
 void SceneClear::DrawSprite()
 {
-	scene->debugText.Print("GameClear", 100, 100, 114514, 5.0f);
+	if (count < countTmp)
+	{
+		count++;
+	}
+	scene->draw[5].DrawBoxSprite({ 0,0,0 }, 1.0f, { 1.0f,1.0f,1.0f, (float)count / (float)countTmp }, scene->texhandle[5]);
 }
 
 
@@ -276,7 +300,7 @@ void SceneLoad::DrawSprite()
 {
 	count++;
 
-	scene->debugText.Print("Loading", 100, 100.0f + sinf(count * 0.1f) * 10.0f, 114514, 5.0f);
+	scene->draw[4].DrawBoxSprite({ 265,320 + sinf(count * 0.1f) * 10.0f,0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, scene->texhandle[4]);
 }
 
 
@@ -328,6 +352,13 @@ void Scene::Initialize()
 	//左右壁
 	TextureManager::LoadGraph(L"Resources/image/wall1.png", texhandle[2]);
 	TextureManager::LoadGraph(L"Resources/image/wall2.png", texhandle[3]);
+	//シーン画像
+	TextureManager::LoadGraph(L"Resources/image/loading.png", texhandle[4]);
+	TextureManager::LoadGraph(L"Resources/image/gameClear.png", texhandle[5]);
+	TextureManager::LoadGraph(L"Resources/image/gameOver.png", texhandle[6]);
+	//タイトル
+	TextureManager::LoadGraph(L"Resources/image/title2.png", texhandle[7]);
+	TextureManager::LoadGraph(L"Resources/image/info.png", texhandle[8]);
 
 	//model
 	Model::StaticInitialize();
@@ -444,21 +475,23 @@ void Scene::Update()
 
 	//imgui
 	imGuiManager->End();
-}
+	}
 
 void Scene::Draw()
 {
 	draw[1].DrawModel(draw[1].worldMat, &camera->viewMat, &camera->projectionMat, model[1]);
 
 	state->Draw();
-
-	//imgui
-	imGuiManager->Draw();
 }
 
 void Scene::DrawSprite()
 {
 	state->DrawSprite();
 
+#ifdef _DEBUG
 	debugText.DrawAll(debugTextHandle);
+
+	//imgui
+	imGuiManager->Draw();
+#endif
 }

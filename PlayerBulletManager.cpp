@@ -24,7 +24,7 @@ void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartr
 
 	isChange = false;
 
-	ChangeState(new BulletLayser);
+	ChangeState(new BulletNormal);
 }
 
 void PlayerBulletManager::ChangeState(PlayerBulletState* state)
