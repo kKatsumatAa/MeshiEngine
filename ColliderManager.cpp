@@ -31,6 +31,9 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 				enemy.get()->SetIsDead(true);
 				//shake
 				camera->CameraShake(10, 1.2f);
+
+				//‰¹
+				Sound::GetInstance().PlayWave("step.wav",3.0f);
 			}
 			else
 			{
@@ -49,6 +52,9 @@ void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletM
 			player->SetHP(player->GetHP() + 1);
 			//item
 			item.get()->OnCollision(*player);
+
+			//‰¹
+			Sound::GetInstance().PlayWave("item.wav");
 		}
 	}
 

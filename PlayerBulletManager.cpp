@@ -136,6 +136,9 @@ void BulletNormal::Shot(Vec3 pos, std::function<void()> p)
 
 		//shake
 		playerBulletM->ShakeCamera();
+
+		//音
+		Sound::GetInstance().PlayWave("shot.wav");
 	}
 }
 
@@ -168,6 +171,9 @@ void BulletLayser::Shot(Vec3 pos, std::function<void()> p)
 			time = timerTmp;
 			count++;
 
+			//音
+			Sound::GetInstance().PlayWave("shot.wav");
+
 			if (count >= countTmp)
 			{
 				isShot = false;
@@ -193,6 +199,9 @@ void BulletShotGun::Shot(Vec3 pos, std::function<void()> p)
 
 			//薬莢エフェクト
 			playerBulletM->cartridgeEffectM->GenerateCartridgeEffect(pos);
+
+			//音
+			Sound::GetInstance().PlayWave("shot.wav");
 		}
 
 		coolTime = coolTimeTmp;

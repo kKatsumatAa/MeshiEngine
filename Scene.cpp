@@ -14,7 +14,9 @@ void SceneState::SetScene(Scene* scene)
 //タイトル
 void SceneTitle::Initialize()
 {
-
+	//音
+	scene->StopWaveAllScene();
+	Sound::GetInstance().PlayWave("titleBGM.wav", 1.0f, true);
 }
 
 void SceneTitle::Update()
@@ -64,7 +66,7 @@ void SceneTitle::Draw()
 		scene->draw[7].worldMat->SetWorld();
 		scene->draw[7].DrawBox(scene->draw[7].worldMat, &scene->camera->viewMat, &scene->camera->projectionMat,
 			{ 1.0f,1.0f,1.0f,1.0f }, scene->texhandle[7]);
-	
+
 		//説明画像
 		scene->draw[8].worldMat->trans = { -45,-45.0f,1.0f };
 		scene->draw[8].worldMat->scale = { 18.0f,18.0f,1.0f };
@@ -91,7 +93,7 @@ void SceneTitle::Draw()
 	//
 	ReloadEffectManager::GetInstance().Draw(scene->camera->viewMat, scene->camera->projectionMat);
 
-	
+
 }
 
 void SceneTitle::DrawSprite()
@@ -104,7 +106,9 @@ void SceneTitle::DrawSprite()
 //ゲーム
 void SceneGame::Initialize()
 {
-
+	//音
+	scene->StopWaveAllScene();
+	Sound::GetInstance().PlayWave("gameBGM.wav", 1.0f, true);
 }
 
 void SceneGame::Update()
@@ -189,6 +193,10 @@ void SceneGameOver::Initialize()
 {
 	//
 	scene->camera->Initialize();
+
+	//音
+	scene->StopWaveAllScene();
+	Sound::GetInstance().PlayWave("gameOverBGM.wav", 1.0f, true);
 }
 
 void SceneGameOver::Update()
@@ -196,6 +204,10 @@ void SceneGameOver::Update()
 
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
 	{
+		//音
+		scene->StopWaveAllScene();
+		Sound::GetInstance().PlayWave("select.wav", 2.0f);
+
 		scene->ChangeState(new SceneLoad);
 	}
 }
@@ -220,6 +232,10 @@ void SceneClear::Initialize()
 {
 	//
 	scene->camera->Initialize();
+
+	//音
+	scene->StopWaveAllScene();
+	Sound::GetInstance().PlayWave("gameClearBGM.wav", 1.0f, true);
 }
 
 void SceneClear::Update()
@@ -227,6 +243,10 @@ void SceneClear::Update()
 
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
 	{
+		//音
+		scene->StopWaveAllScene();
+		Sound::GetInstance().PlayWave("select.wav", 2.0f);
+
 		scene->ChangeState(new SceneLoad);
 	}
 }
@@ -274,6 +294,10 @@ void SceneLoad::Initialize()
 	//
 	ParticleManager::GetInstance()->Initialize();
 	ReloadEffectManager::GetInstance().Initialize();
+
+
+	//音
+	Sound::GetInstance().PlayWave("loadBGM.wav", 1.0f, true);
 
 
 	//非同期処理(ステージ作成中にもロード画面出す)
@@ -339,6 +363,23 @@ void Scene::ChangeState(SceneState* state)
 	this->state->Initialize();
 }
 
+void Scene::StopWaveAllScene()
+{
+	Sound::GetInstance().StopWave("gameBGM.wav");
+	Sound::GetInstance().StopWave("gameClearBGM.wav");
+	Sound::GetInstance().StopWave("gameOverBGM.wav");
+	Sound::GetInstance().StopWave("item.wav");
+	Sound::GetInstance().StopWave("jump.wav");
+	Sound::GetInstance().StopWave("loadBGM.wav");
+	Sound::GetInstance().StopWave("reload.wav");
+	Sound::GetInstance().StopWave("select.wav");
+	Sound::GetInstance().StopWave("shot.wav");
+	Sound::GetInstance().StopWave("shoted.wav");
+	Sound::GetInstance().StopWave("titleBGM.wav");
+	Sound::GetInstance().StopWave("damage.wav");
+	Sound::GetInstance().StopWave("step.wav");
+}
+
 void Scene::Initialize()
 {
 	//白い画像
@@ -359,6 +400,23 @@ void Scene::Initialize()
 	//タイトル
 	TextureManager::LoadGraph(L"Resources/image/title2.png", texhandle[7]);
 	TextureManager::LoadGraph(L"Resources/image/info.png", texhandle[8]);
+
+	//音
+	{
+		Sound::GetInstance().LoadWave("gameBGM.wav", false);
+		Sound::GetInstance().LoadWave("gameClearBGM.wav", false);
+		Sound::GetInstance().LoadWave("gameOverBGM.wav", false);
+		Sound::GetInstance().LoadWave("item.wav", false);
+		Sound::GetInstance().LoadWave("jump.wav", false);
+		Sound::GetInstance().LoadWave("loadBGM.wav", false);
+		Sound::GetInstance().LoadWave("reload.wav", false);
+		Sound::GetInstance().LoadWave("select.wav", false);
+		Sound::GetInstance().LoadWave("shot.wav", false);
+		Sound::GetInstance().LoadWave("shoted.wav", false);
+		Sound::GetInstance().LoadWave("titleBGM.wav", false);
+		Sound::GetInstance().LoadWave("damage.wav", false);
+		Sound::GetInstance().LoadWave("step.wav", false);
+	}
 
 	//model
 	Model::StaticInitialize();
@@ -475,7 +533,7 @@ void Scene::Update()
 
 	//imgui
 	imGuiManager->End();
-	}
+}
 
 void Scene::Draw()
 {

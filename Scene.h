@@ -104,6 +104,8 @@ public:
 	void Update();
 	void Draw();
 	void DrawSprite();
+
+	void StopWaveAllScene();
 };
 
 class SceneTitle : public SceneState

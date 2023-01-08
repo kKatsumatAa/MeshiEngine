@@ -87,7 +87,7 @@ public://メンバ関数
 	/// <param name="">wavファイル名</param>
 	/// <param name="volume">音量</param>
 	/// <param name="Loop">ループ再生</param>
-	static void PlayWave(const std::string& filename, const float& volume = 5.0f, const bool& Loop = false);
+	static void PlayWave(const std::string& filename, const float& volume = 1.0f, const bool& Loop = false);
 
 	static void StopWave(const std::string& filename);
 

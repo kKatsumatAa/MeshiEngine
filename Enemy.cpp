@@ -109,7 +109,7 @@ void Enemy::OnCollision(Collider& collider)
 	}
 
 	//‰¹
-
+	Sound::GetInstance().PlayWave("shoted.wav",2.0f);
 
 }
 

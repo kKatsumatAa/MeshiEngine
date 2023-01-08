@@ -170,6 +170,9 @@ void Player::LandingEffect()
 
 		ReloadEffectManager::GetInstance().GenerateReloadEffect({ pos.x,pos.y - GetRadius(),pos.z },
 			{ pos.x,pos.y + GetRadius() * 4.0f,pos.z }, 15, GetRadius() * 4.0f);
+
+		//音
+		Sound::GetInstance().PlayWave("reload.wav",2.0f);
 	}
 }
 
@@ -189,8 +192,9 @@ void Player::OnCollision(Collider& collider)
 			isDead = true;
 			HP = 0;
 		}
-		//音
 
+		//音
+		Sound::GetInstance().PlayWave("damage.wav", 2.0f);
 	}
 }
 
@@ -217,6 +221,7 @@ void NoAttackP::Update()
 	if (player->input_->KeyTrigger(DIK_SPACE))
 	{
 		//音
+		Sound::GetInstance().PlayWave("jump.wav");
 
 		//effect
 		ParticleManager::GetInstance()->GenerateRandomParticle(8, 10, 2.0f,
@@ -254,6 +259,9 @@ void JumpP::Update()
 		player->playerBulletM->SetBulletNum(player->playerBulletM->GetBulletNumMax());
 		player->SetIsJump(false);
 
+		//音
+		Sound::GetInstance().PlayWave("jump.wav");
+
 		player->ChangeState(new NoAttackP);
 	}
 	else
@@ -290,6 +298,9 @@ void JumpAttackP::Update()
 		//弾全回復
 		player->playerBulletM->SetBulletNum(player->playerBulletM->GetBulletNumMax());
 		player->SetIsJump(false);
+
+		//音
+		Sound::GetInstance().PlayWave("jump.wav");
 
 		player->ChangeState(new NoAttackP);
 	}

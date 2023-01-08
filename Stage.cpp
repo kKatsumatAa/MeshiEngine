@@ -351,8 +351,9 @@ void Stage::BreakBlock(const int X, const int Y)
 		blockMapChip[Y][X] = NONE;
 		DeleteBlock(X, Y);
 	}
-	//ââèoÇ»Ç«
 
+	//âπ
+	Sound::GetInstance().PlayWave("shoted.wav", 2.0f);
 }
 
 void Stage::PointLightSetPos(int count, Vec3 pos)
