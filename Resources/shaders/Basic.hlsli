@@ -49,3 +49,8 @@ cbuffer ConstBufferDataMaterial3 : register(b3)
 	DirLight   dirLights[DIRLIGHT_NUM];
 	PointLight pointLights[POINTLIGHT_NUM];
 }
+
+cbuffer Weight : register(b4)
+{
+	float4 bkweights[2];
+}

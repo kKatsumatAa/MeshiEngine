@@ -131,41 +131,52 @@ float4 main(VSOutput input) : SV_TARGET
 
 	//ガウシアン
 	{
-		float dx = 3.0f / w;
-		float dy = 3.0f / h;
-		// 今 の ピクセル を 中心 に 縦横 5 つ ずつ に なる よう 加算 する 
-		// 最 上段 
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)) * 1 / 256;
-		ret += tex.Sample(smp, input.uv + float2(-1 * dx, 2 * dy)) * 4 / 256;
-		ret += tex.Sample(smp, input.uv + float2(0 * dx, 2 * dy)) * 6 / 256;
-		ret += tex.Sample(smp, input.uv + float2(1 * dx, 2 * dy)) * 4 / 256;
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, 2 * dy)) * 1 / 256;
-		// 1 つ 上段 
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, 1 * dy)) * 4 / 256;
-		ret += tex.Sample(smp, input.uv + float2(-1 * dx, 1 * dy)) * 16 / 256;
-		ret += tex.Sample(smp, input.uv + float2(0 * dx, 1 * dy)) * 24 / 256;
-		ret += tex.Sample(smp, input.uv + float2(1 * dx, 1 * dy)) * 16 / 256;
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, 1 * dy)) * 4 / 256;
-		// 中段 
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0 * dy)) * 6 / 256;
-		ret += tex.Sample(smp, input.uv + float2(-1 * dx, 0 * dy)) * 24 / 256;
-		ret += tex.Sample(smp, input.uv + float2(0 * dx, 0 * dy)) * 36 / 256;
-		ret += tex.Sample(smp, input.uv + float2(1 * dx, 0 * dy)) * 24 / 256;
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, 0 * dy)) * 6 / 256;
-		// 1 つ 下段 
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, -1 * dy)) * 4 / 256;
-		ret += tex.Sample(smp, input.uv + float2(-1 * dx, -1 * dy)) * 16 / 256;
-		ret += tex.Sample(smp, input.uv + float2(0 * dx, -1 * dy)) * 24 / 256;
-		ret += tex.Sample(smp, input.uv + float2(1 * dx, -1 * dy)) * 16 / 256;
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, -1 * dy)) * 4 / 256;
-		// 最 下段 
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)) * 1 / 256;
-		ret += tex.Sample(smp, input.uv + float2(-1 * dx, -2 * dy)) * 4 / 256;
-		ret += tex.Sample(smp, input.uv + float2(0 * dx, -2 * dy)) * 6 / 256;
-		ret += tex.Sample(smp, input.uv + float2(1 * dx, -2 * dy)) * 4 / 256;
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, -2 * dy)) * 1 / 256;
+	//	float dx = 3.0f / w;
+	//	float dy = 3.0f / h;
+	//	// 今 の ピクセル を 中心 に 縦横 5 つ ずつ に なる よう 加算 する 
+	//	// 最 上段 
+	//	ret += tex.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)) * 1 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(-1 * dx, 2 * dy)) * 4 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(0 * dx, 2 * dy)) * 6 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(1 * dx, 2 * dy)) * 4 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(2 * dx, 2 * dy)) * 1 / 256;
+	//	// 1 つ 上段 
+	//	ret += tex.Sample(smp, input.uv + float2(-2 * dx, 1 * dy)) * 4 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(-1 * dx, 1 * dy)) * 16 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(0 * dx, 1 * dy)) * 24 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(1 * dx, 1 * dy)) * 16 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(2 * dx, 1 * dy)) * 4 / 256;
+	//	// 中段 
+	//	ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0 * dy)) * 6 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(-1 * dx, 0 * dy)) * 24 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(0 * dx, 0 * dy)) * 36 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(1 * dx, 0 * dy)) * 24 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(2 * dx, 0 * dy)) * 6 / 256;
+	//	// 1 つ 下段 
+	//	ret += tex.Sample(smp, input.uv + float2(-2 * dx, -1 * dy)) * 4 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(-1 * dx, -1 * dy)) * 16 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(0 * dx, -1 * dy)) * 24 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(1 * dx, -1 * dy)) * 16 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(2 * dx, -1 * dy)) * 4 / 256;
+	//	// 最 下段 
+	//	ret += tex.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)) * 1 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(-1 * dx, -2 * dy)) * 4 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(0 * dx, -2 * dy)) * 6 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(1 * dx, -2 * dy)) * 4 / 256;
+	//	ret += tex.Sample(smp, input.uv + float2(2 * dx, -2 * dy)) * 1 / 256;
 
-		return ret * RGBA;
+	//	return ret * RGBA;
+	}
+
+	//ガウシアン２
+	{
+		ret += bkweights[0] * RGBA;
+		for (int i = 1; i < 8; ++i)
+		{
+			ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, input.uv + float2(i * dx, 0));
+			ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, input.uv + float2(-i * dx, 0));
+		}
+		return float4(ret.rgb * RGBA.rgb, A);
 	}
 
 

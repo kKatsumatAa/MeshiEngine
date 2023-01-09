@@ -2,26 +2,26 @@
 
 int TextureManager::count = 0;
 //リソース設定
- D3D12_RESOURCE_DESC TextureManager::resDesc;
+D3D12_RESOURCE_DESC TextureManager::resDesc;
 //設定をもとにSRV用デスクリプタヒープを生成
- ComPtr < ID3D12DescriptorHeap> TextureManager::srvHeap;
- D3D12_CPU_DESCRIPTOR_HANDLE TextureManager::srvHandle;
+ComPtr < ID3D12DescriptorHeap> TextureManager::srvHeap;
+D3D12_CPU_DESCRIPTOR_HANDLE TextureManager::srvHandle;
 
- ComPtr<ID3D12Resource> TextureManager::texBuff[srvCount];
+ComPtr<ID3D12Resource> TextureManager::texBuff[srvCount];
 
 //SRVの最大個数
- const size_t TextureManager::kMaxSRVCount = 2056;
+const size_t TextureManager::kMaxSRVCount = 2056;
 //デスクリプタヒープの設定
- D3D12_DESCRIPTOR_HEAP_DESC TextureManager::srvHeapDesc;
+D3D12_DESCRIPTOR_HEAP_DESC TextureManager::srvHeapDesc;
 
- D3D12_DESCRIPTOR_RANGE TextureManager::descriptorRange;
+D3D12_DESCRIPTOR_RANGE TextureManager::descriptorRange;
 
- UINT64 TextureManager::whiteTexHandle = NULL;
+UINT64 TextureManager::whiteTexHandle = NULL;
 
- TextureManager::TextureManager()
- {
-	 
- }
+TextureManager::TextureManager()
+{
+
+}
 
 TextureManager::~TextureManager()
 {
@@ -38,7 +38,7 @@ void TextureManager::InitializeDescriptorHeap()
 {
 	//設定をもとにSRV用デスクリプタヒープを生成
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	srvHeapDesc.NumDescriptors = kMaxSRVCount;
+	srvHeapDesc.NumDescriptors = kMaxSRVCount + 2;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダーから見えるように
 													 //descは設定
 	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
@@ -51,6 +51,7 @@ void TextureManager::InitializeDescriptorHeap()
 	descriptorRange.BaseShaderRegister = 0;  //テクスチャレジスタ0番(t0)
 	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
+	srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
 
 	//白い画像
 	if (whiteTexHandle == NULL)
