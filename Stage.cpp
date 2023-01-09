@@ -451,9 +451,9 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 
 		isDead = true;
 
-		while (CollisionMapInternal(left + sign(velocity.x), right + sign(velocity.x), down, up, isBlockBreak) == NONE)
+		while (CollisionMapInternal(left + sign(velocity.x) * 0.01f, right + sign(velocity.x) * 0.01f, down, up, isBlockBreak) == NONE)
 		{
-			pos_.x += sign(velocity.x);//1ピクセル先にブロックがなければ1ピクセル進む
+			pos_.x += sign(velocity.x) * 0.01f;//1ピクセル先にブロックがなければ1ピクセル進む
 
 			if (fabsf(pos_.x - oldPos.x) > fabsf(velocity.x))
 			{
@@ -479,9 +479,9 @@ void Stage::CollisionMap(Collider* collider, bool& isGround, bool& isDead, bool 
 	//y
 	if (CollisionMapInternal(left, right, down + velocity.y, up + velocity.y) > 0)//仮に進んだとしてそこにブロックがあるか
 	{
-		while (CollisionMapInternal(left, right, down + sign(velocity.y), up + sign(velocity.y), isBlockBreak) == NONE)
+		while (CollisionMapInternal(left, right, down + sign(velocity.y) * 0.01f, up + sign(velocity.y) * 0.01f, isBlockBreak) == NONE)
 		{
-			pos_.y += sign(velocity.y);//1ピクセル先にブロックがなければ1ピクセル進む
+			pos_.y += sign(velocity.y) * 0.01f;//1ピクセル先にブロックがなければ1ピクセル進む
 
 			if (fabsf(pos_.y - oldPos.y) > fabsf(velocity.y))
 			{
