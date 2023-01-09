@@ -16,7 +16,7 @@ void SceneTitle::Initialize()
 {
 	//音
 	scene->StopWaveAllScene();
-	Sound::GetInstance().PlayWave("titleBGM.wav", 1.0f, true);
+	Sound::GetInstance().PlayWave("titleBGM.wav", 0.5f, true);
 }
 
 void SceneTitle::Update()
@@ -108,7 +108,7 @@ void SceneGame::Initialize()
 {
 	//音
 	scene->StopWaveAllScene();
-	Sound::GetInstance().PlayWave("gameBGM.wav", 1.0f, true);
+	Sound::GetInstance().PlayWave("gameBGM.wav", 0.5f, true);
 }
 
 void SceneGame::Update()
@@ -196,7 +196,7 @@ void SceneGameOver::Initialize()
 
 	//音
 	scene->StopWaveAllScene();
-	Sound::GetInstance().PlayWave("gameOverBGM.wav", 1.0f, true);
+	Sound::GetInstance().PlayWave("gameOverBGM.wav", 0.5f, true);
 }
 
 void SceneGameOver::Update()
@@ -235,7 +235,7 @@ void SceneClear::Initialize()
 
 	//音
 	scene->StopWaveAllScene();
-	Sound::GetInstance().PlayWave("gameClearBGM.wav", 1.0f, true);
+	Sound::GetInstance().PlayWave("gameClearBGM.wav", 0.5f, true);
 }
 
 void SceneClear::Update()
@@ -297,7 +297,7 @@ void SceneLoad::Initialize()
 
 
 	//音
-	Sound::GetInstance().PlayWave("loadBGM.wav", 1.0f, true);
+	Sound::GetInstance().PlayWave("loadBGM.wav", 0.5f, true);
 
 
 	//非同期処理(ステージ作成中にもロード画面出す)
