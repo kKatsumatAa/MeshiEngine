@@ -21,7 +21,7 @@ public:
 class BulletNormal : public PlayerBulletState
 {
 private:
-	const int coolTimeTmp = 10;
+	const int coolTimeTmp = 8;
 	int coolTime = 0;
 
 

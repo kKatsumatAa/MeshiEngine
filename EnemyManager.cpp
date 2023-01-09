@@ -23,7 +23,7 @@ void EnemyManager::GenerateEnemy2(const Vec3& position)
 {
 	//‹…‚ğ¶¬A‰Šú‰»
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
-	enemy->Initialize(model[5], 1.5f, 5, player);
+	enemy->Initialize(model[5], 1.5f, 4, player);
 	enemy.get()->SetWorldPos(position);
 	//‹…‚ğ“o˜^
 	enemies.push_back(std::move(enemy));
