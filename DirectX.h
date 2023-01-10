@@ -16,7 +16,6 @@ using namespace DirectX;
 using namespace Microsoft::WRL;
 #include<chrono>
 
-
 class Directx final
 {
 private:
@@ -100,6 +99,8 @@ public:
 	//getter
 	ID3D12Device* GetDevice() const { return device.Get(); }
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
+	ComPtr<ID3D12Resource> GetPeraResource() const { return _peraResource; }
+
 	//バックバッファの数を取得
 	size_t GetBackBufferCount() const { return backBuffers.size(); }
 };

@@ -321,9 +321,12 @@
   <ItemGroup>
     <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl" />
     <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl" />
+    <FxCompile Include="Resources\shaders\PeraVertexShader.hlsl" />
+    <FxCompile Include="Resources\shaders\PeraPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\OBJShaderHeader.hlsli" />
+    <None Include="Resources\shaders\PeraShaderHeader.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="imgui\LICENSE.txt" />

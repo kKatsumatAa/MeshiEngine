@@ -3,8 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <d3dx12.h>
-#include <d3dcompiler.h>
+#include "PostPera.h"
 
 //図形のクラス
 Primitive primitive;
@@ -71,8 +70,11 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 //static
 LightManager* Object::lightManager = nullptr;
 
-
+//
 ComPtr < ID3D12Resource> _bokehParamBuffer;
+
+PostPera postPera;
+
 
 struct weightMap
 {
@@ -81,6 +83,8 @@ struct weightMap
 
 void DrawInitialize()
 {
+
+
 	//テクスチャ用のデスクリプタヒープ初期化
 	TextureManager::GetInstance().InitializeDescriptorHeap();
 
@@ -153,7 +157,7 @@ void DrawInitialize()
 		pipelineSetM.rootSignature.GetAddressOf(), pipelineSetM.vsBlob,
 		pipelineSetM.psBlob, MODEL);
 
-
+	postPera.Initialize();
 
 	//ガウシアン
 	{
@@ -588,6 +592,9 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		//モデル用描画
 		model->Draw();
 	}
+
+	//ポストエフェクト用
+	postPera.Draw();
 }
 
 void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/

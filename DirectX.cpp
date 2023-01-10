@@ -228,7 +228,7 @@ Directx::Directx()
 	ComPtr < ID3D12Debug1> debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(debugController.GetAddressOf())))) {
 		debugController->EnableDebugLayer();
-		//debugController->SetEnableGPUBasedValidation(true);//重いので描画が変になった時のみ
+		debugController->SetEnableGPUBasedValidation(true);//重いので描画が変になった時のみ
 	}
 #endif
 	InitializeDevice();
@@ -266,8 +266,6 @@ Directx::Directx()
 	InitializeRendertargetView();
 	//深度バッファ
 	InitializeDepthBuffer();
-	//フェンス
-	InitializeFence();
 
 	//ポストエフェクト用
 	{
@@ -281,7 +279,7 @@ Directx::Directx()
 
 		//レンダリング時のクリア地と同じ値
 		float clsClr[4] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
-		D3D12_CLEAR_VALUE clearValue = 
+		D3D12_CLEAR_VALUE clearValue =
 			CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clsClr);
 
 		auto result = device->CreateCommittedResource(
@@ -332,24 +330,12 @@ Directx::Directx()
 			&srvDesc,
 			_peraSRVHeap->GetCPUDescriptorHandleForHeapStart()
 		);
-
-
-		// 1 パス 目 
-		auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-		commandList->OMSetRenderTargets(
-			1, &rtvHeapPointer, false, &dsvHandle
-		);
-
-
-		barrierDesc.Transition.pResource = _peraResource.Get(); // バックバッファを指定
-		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
-		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-		commandList->ResourceBarrier(
-			1, 
-			&barrierDesc
-		);
 	}
+
+	//フェンス
+	InitializeFence();
+
+	
 
 	Sound::Initialize();
 }
@@ -389,6 +375,24 @@ void Directx::DrawUpdate(const XMFLOAT4& winRGBA)
 	//深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
 	commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+
+	{
+		// 1 パス 目 
+		auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+		commandList->OMSetRenderTargets(
+			1, &rtvHeapPointer, false, &dsvHandle
+		);
+
+
+		barrierDesc.Transition.pResource = _peraResource.Get(); // バックバッファを指定
+		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
+		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
+		commandList->ResourceBarrier(
+			1,
+			&barrierDesc
+		);
+	}
 
 	// 3.画面クリア R G B A
 	clearColor[0] = winRGBA.x;
