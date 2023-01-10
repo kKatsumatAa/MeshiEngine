@@ -54,6 +54,12 @@ private:
 	//記録時間（FPS固定
 	std::chrono::steady_clock::time_point reference_;
 
+	FLOAT clearColor[4] = { 0,0,0,0 };
+
+	//ポストエフェクト用
+	ComPtr<ID3D12Resource> _peraResource;
+	ComPtr<ID3D12DescriptorHeap> _peraRTVHeap;//レンダーターゲット用
+	ComPtr<ID3D12DescriptorHeap> _peraSRVHeap;//テクスチャ用
 
 private:
 	Directx();

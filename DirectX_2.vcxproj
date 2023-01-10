@@ -175,6 +175,7 @@
     <ClCompile Include="PlayerBullet.cpp" />
     <ClCompile Include="PlayerBulletManager.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="PostPera.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="ProjectionMat.cpp" />
     <ClCompile Include="Quaternion.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="PlayerBullet.h" />
     <ClInclude Include="PlayerBulletManager.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="PostPera.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="ProjectionMat.h" />
     <ClInclude Include="Quaternion.h" />
