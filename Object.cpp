@@ -52,7 +52,7 @@ PipeLineSet pipelineSet;
 PipeLineSet pipelineSetM;
 
 //ルートパラメータの設定
-D3D12_ROOT_PARAMETER rootParams[6] = {};
+D3D12_ROOT_PARAMETER rootParams[7] = {};
 
 // パイプランステートの生成
 ComPtr < ID3D12PipelineState> pipelineState[3] = { nullptr };
@@ -73,7 +73,6 @@ LightManager* Object::lightManager = nullptr;
 
 
 ComPtr < ID3D12Resource> _bokehParamBuffer;
-ComPtr < ID3D12DescriptorHeap> srvHeap;
 
 struct weightMap
 {
@@ -87,53 +86,6 @@ void DrawInitialize()
 
 	//図形クラスの
 	primitive.Initialize();
-
-	//ガウシアン
-	{
-		std::vector<float> weights = GetGaussianWeights(8, 11.3f);
-
-		//ヒープ設定
-		D3D12_HEAP_PROPERTIES cbHeapProp{};
-		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
-		//リソース設定
-		D3D12_RESOURCE_DESC cbResourceDesc{};
-		ResourceProperties(cbResourceDesc, ((UINT)(sizeof(weights[0]) * weights.size()) + 0xff) & ~0xff/*256バイトアライメント*/);
-
-		//定数バッファの生成
-		BuffProperties(cbHeapProp, cbResourceDesc, _bokehParamBuffer.ReleaseAndGetAddressOf());
-
-		//定数バッファのマッピング
-		float* w;
-		Directx::GetInstance().result = _bokehParamBuffer->Map(0, nullptr, (void**)&w);
-		std::copy(weights.begin(), weights.end(), w);
-		_bokehParamBuffer->Unmap(0, nullptr);
-
-
-		////ぼけ定数バッファービュー設定 
-		D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
-		heapDesc.NumDescriptors = 2;
-		heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダーから見えるように
-														 //descは設定
-		Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
-		assert(SUCCEEDED(Directx::GetInstance().result));
-
-		////デスクリプタレンジの設定
-		//D3D12_DESCRIPTOR_RANGE descriptorRange;
-		//descriptorRange.NumDescriptors = 2;   //一度の描画に使うテクスチャの枚数
-		//descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-		//descriptorRange.BaseShaderRegister = 4;  //テクスチャレジスタ0番(t0)
-		//descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-		D3D12_CPU_DESCRIPTOR_HANDLE handle;
-		handle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-		handle.ptr += Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(heapDesc.Type);
-
-		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-		cbvDesc.BufferLocation = _bokehParamBuffer->GetGPUVirtualAddress();
-		cbvDesc.SizeInBytes = _bokehParamBuffer->GetDesc().Width;
-		Directx::GetInstance().GetDevice()->CreateConstantBufferView(&cbvDesc, handle);
-	}
 
 	//ルートパラメータの設定
 	//定数バッファ0番（色）
@@ -165,24 +117,22 @@ void DrawInitialize()
 		//ガウシアン用
 		D3D12_DESCRIPTOR_RANGE range[2] = {};
 		//range[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-		//range[0].BaseShaderRegister = 1;//0
+		//range[0].BaseShaderRegister = 4;//(t0)
 		//range[0].NumDescriptors = 1;
 
 		range[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//b
-		range[1].BaseShaderRegister = 4;//4
+		range[1].BaseShaderRegister = 4;//(b4)
 		range[1].NumDescriptors = 1;
-		range[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-		D3D12_ROOT_PARAMETER rp[2] = {};
-		/*rootParams[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-		rootParams[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-		rootParams[5].DescriptorTable.pDescriptorRanges = &range[0];
-		rootParams[5].DescriptorTable.NumDescriptorRanges = 1;*/
-
-		rootParams[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-		rootParams[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-		rootParams[5].DescriptorTable.pDescriptorRanges = &range[1];
-		rootParams[5].DescriptorTable.NumDescriptorRanges = 1;
+		//ガウシアン 1
+		//rootParams[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+		//rootParams[5].DescriptorTable.pDescriptorRanges = &range[0];
+		//rootParams[5].DescriptorTable.NumDescriptorRanges = 1;//〃数
+		//rootParams[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+		//〃 2
+		rootParams[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+		rootParams[5].Descriptor.ShaderRegister = 4;//定数バッファ番号(b3)
+		rootParams[5].Descriptor.RegisterSpace = 0;//デフォルト値
+		rootParams[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	}
 
 	// パイプランステートの生成
@@ -205,7 +155,32 @@ void DrawInitialize()
 
 
 
+	//ガウシアン
+	{
+		std::vector<float> weights = GetGaussianWeights(8, 15.0f);
 
+		//ヒープ設定
+		D3D12_HEAP_PROPERTIES cbHeapProp{};
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+		//リソース設定
+		D3D12_RESOURCE_DESC cbResourceDesc{};
+		ResourceProperties(cbResourceDesc, ((UINT)(sizeof(weights[0]) * weights.size()) + 0xff) & ~0xff/*256バイトアライメント*/);
+
+		//定数バッファの生成
+		BuffProperties(cbHeapProp, cbResourceDesc, &_bokehParamBuffer);
+
+		//定数バッファのマッピング
+		float *w;
+		Directx::GetInstance().result = _bokehParamBuffer->Map(0, nullptr, (void**)&w);
+		std::copy(weights.begin(), weights.end(), w);
+		_bokehParamBuffer->Unmap(0, nullptr);
+
+		////ぼけ定数バッファービュー設定 
+		//D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+		//cbvDesc.BufferLocation = _bokehParamBuffer->GetGPUVirtualAddress();
+		//cbvDesc.SizeInBytes = _bokehParamBuffer->GetDesc().Width;
+		//Directx::GetInstance().GetDevice()->CreateConstantBufferView(&cbvDesc, TextureManager::GetInstance().srvHandle);
+	}
 }
 
 Object::Object()
@@ -305,11 +280,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
-		auto handle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(5, handle);
-		handle.ptr = Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(6, handle);
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
 
 		lightManager->Draw(4);
 
@@ -358,11 +329,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
-		auto handle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(5, handle);
-		handle.ptr = Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(6, handle);
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
 
 		lightManager->Draw(4);
 
@@ -410,11 +377,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
-		auto handle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(5, handle);
-		handle.ptr = Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(6, handle);
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
 
 		lightManager->Draw(4);
 
@@ -462,11 +425,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
-		auto handle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(5, handle);
-		handle.ptr = Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(6, handle);
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
 
 		lightManager->Draw(4);
 
@@ -514,11 +473,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
-		auto handle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(5, handle);
-		handle.ptr = Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(6, handle);
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
 
 		lightManager->Draw(4);
 
@@ -567,11 +522,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
-		auto handle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(5, handle);
-		handle.ptr = Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(6, handle);
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
 
 		lightManager->Draw(4);
 
@@ -626,12 +577,8 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		//Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(_peraRS.Get());
-		Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
-		auto handle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(5, handle);
-		handle.ptr = Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(6, handle);
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
+
 
 		lightManager->Draw(4);
 
@@ -918,7 +865,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	// ルートシグネチャのシリアライズ
 	ComPtr<ID3DBlob> rootSigBlob = nullptr;
 	Directx::GetInstance().result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
-		rootSigBlob.ReleaseAndGetAddressOf(), &errorBlob);
+		&rootSigBlob, &errorBlob);
 	assert(SUCCEEDED(Directx::GetInstance().result));
 	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(rootSig));
@@ -935,7 +882,6 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 		pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;//小さければ合格
 	else
 		pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
-
 	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 
 	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(pipelineState));
