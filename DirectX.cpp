@@ -267,70 +267,70 @@ Directx::Directx()
 	//深度バッファ
 	InitializeDepthBuffer();
 
-	//ポストエフェクト用
-	{
-		// 作成 済み の ヒープ 情報 を 使っ て もう 1 枚 作る
-		auto heapDesc = rtvHeap->GetDesc();
-		// 使っ て いる バックバッファー の 情報 を 利用 する 
-		auto& bbuff = backBuffers[0];
-		auto resDesc = bbuff->GetDesc();
+	////ポストエフェクト用
+	//{
+	//	// 作成 済み の ヒープ 情報 を 使っ て もう 1 枚 作る
+	//	auto heapDesc = rtvHeap->GetDesc();
+	//	// 使っ て いる バックバッファー の 情報 を 利用 する 
+	//	auto& bbuff = backBuffers[0];
+	//	auto resDesc = bbuff->GetDesc();
 
-		D3D12_HEAP_PROPERTIES heapProp = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+	//	D3D12_HEAP_PROPERTIES heapProp = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 
-		//レンダリング時のクリア地と同じ値
-		float clsClr[4] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
-		D3D12_CLEAR_VALUE clearValue =
-			CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clsClr);
+	//	//レンダリング時のクリア地と同じ値
+	//	float clsClr[4] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
+	//	D3D12_CLEAR_VALUE clearValue =
+	//		CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clsClr);
 
-		auto result = device->CreateCommittedResource(
-			&heapProp,
-			D3D12_HEAP_FLAG_NONE,
-			&resDesc,
-			//D3D12_RESOURCE_STATE_RENDER_TARGETではない
-			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-			&clearValue,
-			IID_PPV_ARGS(_peraResource.ReleaseAndGetAddressOf())
-		);
+	//	auto result = device->CreateCommittedResource(
+	//		&heapProp,
+	//		D3D12_HEAP_FLAG_NONE,
+	//		&resDesc,
+	//		//D3D12_RESOURCE_STATE_RENDER_TARGETではない
+	//		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+	//		&clearValue,
+	//		IID_PPV_ARGS(_peraResource.ReleaseAndGetAddressOf())
+	//	);
 
-		// RTV 用 ヒープ を 作る 
-		heapDesc.NumDescriptors = 1;
-		result = device->CreateDescriptorHeap(
-			&heapDesc,
-			IID_PPV_ARGS(_peraRTVHeap.ReleaseAndGetAddressOf())
-		);
+	//	// RTV 用 ヒープ を 作る 
+	//	heapDesc.NumDescriptors = 1;
+	//	result = device->CreateDescriptorHeap(
+	//		&heapDesc,
+	//		IID_PPV_ARGS(_peraRTVHeap.ReleaseAndGetAddressOf())
+	//	);
 
-		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
-		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-		rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	//	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+	//	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+	//	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-		//rtvを作る
-		device->CreateRenderTargetView(
-			_peraResource.Get(),
-			&rtvDesc,
-			_peraRTVHeap->GetCPUDescriptorHandleForHeapStart()
-		);
-		//SRV用ヒープを作る
-		heapDesc.NumDescriptors = 1;
-		heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-		result = device->CreateDescriptorHeap(
-			&heapDesc,
-			IID_PPV_ARGS(_peraSRVHeap.ReleaseAndGetAddressOf())
-		);
+	//	//rtvを作る
+	//	device->CreateRenderTargetView(
+	//		_peraResource.Get(),
+	//		&rtvDesc,
+	//		_peraRTVHeap->GetCPUDescriptorHandleForHeapStart()
+	//	);
+	//	//SRV用ヒープを作る
+	//	heapDesc.NumDescriptors = 1;
+	//	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	//	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	//	result = device->CreateDescriptorHeap(
+	//		&heapDesc,
+	//		IID_PPV_ARGS(_peraSRVHeap.ReleaseAndGetAddressOf())
+	//	);
 
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Format = rtvDesc.Format;
-		srvDesc.Texture2D.MipLevels = 1;
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	//	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	//	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	//	srvDesc.Format = rtvDesc.Format;
+	//	srvDesc.Texture2D.MipLevels = 1;
+	//	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
-		// シェーダーリソースビュー（ SRV） を 作る 
-		device->CreateShaderResourceView(
-			_peraResource.Get(),
-			&srvDesc,
-			_peraSRVHeap->GetCPUDescriptorHandleForHeapStart()
-		);
-	}
+	//	// シェーダーリソースビュー（ SRV） を 作る 
+	//	device->CreateShaderResourceView(
+	//		_peraResource.Get(),
+	//		&srvDesc,
+	//		_peraSRVHeap->GetCPUDescriptorHandleForHeapStart()
+	//	);
+	//}
 
 	//フェンス
 	InitializeFence();
@@ -376,23 +376,24 @@ void Directx::DrawUpdate(const XMFLOAT4& winRGBA)
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
 	commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
 
-	{
-		// 1 パス 目 
-		auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-		commandList->OMSetRenderTargets(
-			1, &rtvHeapPointer, false, &dsvHandle
-		);
+	////ポストエフェクト
+	//{
+	//	// 1 パス 目 
+	//	auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
+	//	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	//	commandList->OMSetRenderTargets(
+	//		1, &rtvHeapPointer, false, &dsvHandle
+	//	);
 
 
-		barrierDesc.Transition.pResource = _peraResource.Get(); // バックバッファを指定
-		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
-		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-		commandList->ResourceBarrier(
-			1,
-			&barrierDesc
-		);
-	}
+	//	barrierDesc.Transition.pResource = _peraResource.Get(); // バックバッファを指定
+	//	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
+	//	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
+	//	commandList->ResourceBarrier(
+	//		1,
+	//		&barrierDesc
+	//	);
+	//}
 
 	// 3.画面クリア R G B A
 	clearColor[0] = winRGBA.x;
