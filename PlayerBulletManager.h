@@ -84,6 +84,12 @@ private:
 	const float shakeLength = 1.1f;
 	const int shakeTime = 7;
 
+	//撃ってるときのエフェクト
+	Object shotEffectObj;
+	Vec3 shotEffectPos;
+	int shotEffectCount = 0;
+	const int shotEffectCountMax = 7;
+
 public:
 	//薬莢エフェクト
 	CartridgeEffectManager* cartridgeEffectM;
@@ -111,6 +117,9 @@ public:
 	void DrawSprite();
 
 	void ShakeCamera();
+
+	//撃つときのエフェクト
+	void ShotEffect(Vec3 pos);
 
 	//弾打つ
 	void Shot(Vec3 pos, std::function<void()> p);

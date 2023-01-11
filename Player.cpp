@@ -76,13 +76,16 @@ void Player::Initialize(Model* model, Model* modelAttack, PlayerBulletManager* p
 
 void Player::Update()
 {
+	//無敵時間
+	if (dmageCoolTime > 0)
+	{
+		dmageCoolTime--;
+	}
 	if (!isDead)
 	{
 		//無敵時間
 		if (dmageCoolTime > 0)
 		{
-			dmageCoolTime--;
-
 			if (dmageCoolTime % 15 < 8)
 			{
 				worldTransform_.scale = { scaleTmp,scaleTmp,scaleTmp };
@@ -155,6 +158,12 @@ void Player::DrawSprite()
 	}
 
 	gauge.DrawBoxSprite({ 100,60,0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, textureHandle[1]);
+
+	//ダメージ受けた時一瞬白く
+	if (dmageCoolTime == dmageCoolTimeTmp)
+	{
+		damageHitObject.DrawBoxSprite({ 0,0,0 }, 15.0f, { 1.0f,1.0f,1.0f,1.0f });
+	}
 }
 
 void Player::LandingEffect()
@@ -180,7 +189,7 @@ void Player::LandingEffect()
 //--------------------------------------------------------------------------------------
 void Player::OnCollision(Collider& collider)
 {
-	if (dmageCoolTime <= 0)
+	if (dmageCoolTime <= 0 && !isDead)
 	{
 		HP--;
 		//無敵時間

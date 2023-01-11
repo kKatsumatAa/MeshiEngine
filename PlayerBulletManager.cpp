@@ -1,6 +1,10 @@
 #include "PlayerBulletManager.h"
 #include "ParticleManager.h"
 
+static std::uniform_real_distribution<float> vecDist(0.99f, 2.0f);
+static std::uniform_real_distribution<float> scaleDist(3.0f, 3.7f);
+
+
 void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartridgeEffectManager, Camera* camera)
 {
 	assert(model);
@@ -23,6 +27,8 @@ void PlayerBulletManager::Initialize(Model* model, CartridgeEffectManager* cartr
 	bulletNum = bulletNumMax;
 
 	isChange = false;
+
+	shotEffectCount = 0;
 
 	ChangeState(new BulletNormal);
 }
@@ -88,6 +94,19 @@ void PlayerBulletManager::Draw(ViewMat& view, ProjectionMat& projection)
 	{
 		bullet->Draw(view, projection);
 	}
+
+	//撃った時のエフェクトを描画
+	if (shotEffectCount > 0)
+	{
+		shotEffectCount--;
+
+		shotEffectObj.worldMat->trans = shotEffectPos;
+		float scale = scaleDist(engine) * (float)shotEffectCount / (float)shotEffectCountMax;
+		shotEffectObj.worldMat->scale = { scale ,scale ,scale };
+		shotEffectObj.worldMat->SetWorld();
+
+		shotEffectObj.DrawSphere(shotEffectObj.worldMat, &view, &projection, { 1.0f,0.8f,0.8f,0.9f });
+	}
 }
 
 void PlayerBulletManager::DrawSprite()
@@ -103,6 +122,12 @@ void PlayerBulletManager::DrawSprite()
 void PlayerBulletManager::ShakeCamera()
 {
 	camera->CameraShake(shakeTime, shakeLength);
+}
+
+void PlayerBulletManager::ShotEffect(Vec3 pos)
+{
+	shotEffectPos = pos;
+	shotEffectCount = shotEffectCountMax;
 }
 
 void PlayerBulletManager::Shot(Vec3 pos, std::function<void()> p)
@@ -136,6 +161,9 @@ void BulletNormal::Shot(Vec3 pos, std::function<void()> p)
 
 		//shake
 		playerBulletM->ShakeCamera();
+
+		//
+		playerBulletM->ShotEffect({ pos.x,pos.y - 3.0f,pos.z });
 
 		//音
 		Sound::GetInstance().PlayWave("shot.wav");
@@ -171,6 +199,9 @@ void BulletLayser::Shot(Vec3 pos, std::function<void()> p)
 			time = timerTmp;
 			count++;
 
+			//
+			playerBulletM->ShotEffect({ pos.x,pos.y - 3.0f,pos.z });
+
 			//音
 			Sound::GetInstance().PlayWave("shot.wav");
 
@@ -190,15 +221,20 @@ void BulletShotGun::Shot(Vec3 pos, std::function<void()> p)
 	{
 		for (int i = 0; i < num; i++)
 		{
-			float radian = pi / (float)(num + 1) * (i + 1);
+			//float radian = pi / (float)(num + 1) * (i + 1);
+			float radian = pi / 3.0f + pi / 3.0f / (float)(num + 1) * (i + 1);
 
 			Vec3 vec = { cosf(radian), -sinf(radian),0 };
+			vec *= vecDist(engine);
 
 			playerBulletM->SetBulletNum(playerBulletM->GetBulletNum() - 1);
 			playerBulletM->GeneratePlayerBullet(pos, vec);
 
 			//薬莢エフェクト
 			playerBulletM->cartridgeEffectM->GenerateCartridgeEffect(pos);
+
+			//
+			playerBulletM->ShotEffect({ pos.x,pos.y - 3.0f,pos.z });
 
 			//音
 			Sound::GetInstance().PlayWave("shot.wav");

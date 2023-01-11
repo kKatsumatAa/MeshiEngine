@@ -55,6 +55,9 @@ private:
 	Object gauge;
 	Object hpGauges[4];
 
+	//ダメージ受けたとき用の演出用
+	Object damageHitObject;
+
 	//死亡後の演出用
 	bool isEnd = false;
 	int endCount = 0;
