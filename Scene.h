@@ -2,11 +2,7 @@
 #include"Collision.h"
 #include"DebugText.h"
 #include"ImGuiManager.h"
-#include"EnemyManager.h"
-#include"PlayerBulletManager.h"
 #include"ColliderManager.h"
-#include"Stage.h"
-#include"ItemManager.h"
 #include"ParticleManager.h"
 #include"Camera.h"
 #include"Async.h"
@@ -42,10 +38,6 @@ public:
 
 	Object draw[10];
 
-
-	Sphere tama[2];
-	Plane plane;
-	Triangle triangle;
 	DebugText debugText;
 
 	//デバッグテキスト
@@ -58,17 +50,9 @@ public:
 	//数字の画像
 	UINT64 textureNumHundle[12];
 
-	//音データ
-	Sound::SoundData soundData[10];
 
 	//imgui
 	ImGuiManager* imGuiManager;
-
-	float pos[2] = { 100,100 };
-	float rot = 0;
-	float scale = 1.0f;
-	float uvwidth = 0;
-	float color = 0;//
 
 	//ライト
 	LightManager* lightManager = nullptr;
@@ -77,22 +61,7 @@ public:
 	float pointLightColor[3] = { 1.0f,1.0f,1.0f };
 	float pointLightAtten[3] = { 0.3f,0.1f,0.1f };
 
-	//player
-	std::unique_ptr<Player> player;
-
-	std::unique_ptr<EnemyManager> enemyM;
-
 	std::unique_ptr<ColliderManager> colliderM;
-
-	std::unique_ptr<PlayerBulletManager> playerBulletM;
-
-	std::unique_ptr<Stage> stage;
-
-	std::unique_ptr<ItemManager> itemM;
-
-	std::unique_ptr<CartridgeEffectManager> cartridgeEffectM;
-
-	std::unique_ptr<BreakEffectManager> breakEffectM;
 
 	std::unique_ptr<Camera> camera;
 

@@ -9,85 +9,10 @@ void ColliderManager::Initialize()
 	this->audio = &Sound::GetInstance();
 }
 
-void ColliderManager::Update(Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM, ItemManager* itemM, Stage* stage,
-	Camera* camera)
+void ColliderManager::Update(/*Player* player, EnemyManager* enemyM, PlayerBulletManager* playerBulletM, ItemManager* itemM, Stage* stage,
+	Camera* camera*/)
 {
-	//bullet‚Í‚»‚êŽ©‘Ì‚ªlist‚È‚Ì‚Å“Á•Ê
-	std::list<std::unique_ptr<Enemy>>& enemies = enemyM->enemies;
-	std::list<std::unique_ptr<PlayerBullet>>& bullets = playerBulletM->playerBullets_;
-
-	//“G‚Æplayer‚Ì‚Ý
-	for (std::unique_ptr<Enemy>& enemy : enemyM->enemies)
-	{
-		if (CollisionCircleCircle(player->GetWorldPos(), player->GetRadius(), enemy->GetWorldPos(), enemy->GetRadius()))
-		{
-			//player‚ª“G‚ÌÔ‚¢‚Æ‚±‚ë‚æ‚èã‚É‚¢‚½‚ç
-			if (enemy.get()->GetWorldPos().y - enemy.get()->GetRadius() + (2.0f * enemy.get()->GetRadius() * enemy.get()->GetEnemyRedRate())
-				< player->GetWorldPos().y)
-			{
-				//
-				player->LandingEffect();
-				player->OnCollision2(*enemy.get());
-				enemy.get()->SetIsDead(true);
-				//shake
-				camera->CameraShake(10, 1.2f);
-
-				//‰¹
-				Sound::GetInstance().PlayWave("step.wav",3.0f);
-			}
-			else
-			{
-				player->OnCollision(*enemy.get());
-			}
-		}
-	}
-
-	//ƒAƒCƒeƒ€‚Æplayer‚Ì‚Ý
-	for (std::unique_ptr<Item>& item : itemM->items_)
-	{
-		if (CollisionCircleCircle(player->GetWorldPos(), player->GetRadius(), item->GetWorldPos(), item->GetRadius()))
-		{
-			//player‚É’e‚ÌŽí—Þ‚ðƒZƒbƒg
-			player->SetBulletType(item.get()->GetItemType());
-			player->SetHP(player->GetHP() + 1);
-			//item
-			item.get()->OnCollision(*player);
-
-			//‰¹
-			Sound::GetInstance().PlayWave("item.wav");
-		}
-	}
-
-	//’e‚Æ‚©‚Æ‚Ì“–‚½‚è”»’è
-	ClearList();
-	for (std::unique_ptr<Enemy>& enemy : enemies)
-	{
-		SetListCollider(enemy.get());
-	}
-	for (std::unique_ptr<PlayerBullet>& bullet : bullets)
-	{
-		SetListCollider(bullet.get());
-	}
-
-	CheckAllCollisions();
-
-
-	//ƒXƒe[ƒW‚Æ‚Ì“–‚½‚è”»’è
-	{
-		bool demo;
-		//player
-		stage->CollisionMap(player, player->GetIsGround(), demo);
-		//“G
-		for (std::unique_ptr<Enemy>& enemy : enemies)
-		{
-			stage->CollisionMap(enemy.get(), demo, demo);
-		}
-		//’e
-		for (std::unique_ptr<PlayerBullet>& bullet : bullets)
-		{
-			stage->CollisionMap(bullet.get(), demo, bullet->GetIsDead(), true);
-		}
-	}
+	
 }
 
 //---------------------------------------------------------------------------------------------

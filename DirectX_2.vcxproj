@@ -146,9 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Async.cpp" />
-    <ClCompile Include="BreakEffectManager.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CartridgeEffectManager.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="ColliderManager.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -156,11 +154,7 @@
     <ClCompile Include="ConstBuffTransform.cpp" />
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DirectX.cpp" />
-    <ClCompile Include="Item.cpp" />
-    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="KeyboardInput.cpp" />
     <ClCompile Include="Light.cpp" />
@@ -171,22 +165,16 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerBullet.cpp" />
-    <ClCompile Include="PlayerBulletManager.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PostPera.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="ProjectionMat.cpp" />
     <ClCompile Include="Quaternion.cpp" />
-    <ClCompile Include="ReloadEffect.cpp" />
-    <ClCompile Include="Room.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shake.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteCommon.cpp" />
-    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Vec2.cpp" />
@@ -198,9 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Async.h" />
-    <ClInclude Include="BreakEffectManager.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="CartridgeEffectManager.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ColliderManager.h" />
     <ClInclude Include="Collision.h" />
@@ -209,11 +195,7 @@
     <ClInclude Include="ConstBuffTransform.h" />
     <ClInclude Include="DebugText.h" />
     <ClInclude Include="DirectX.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="ImGuiManager.h" />
-    <ClInclude Include="Item.h" />
-    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="KeyboardInput.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightManager.h" />
@@ -223,22 +205,16 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ParticleManager.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerBullet.h" />
-    <ClInclude Include="PlayerBulletManager.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PostPera.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="ProjectionMat.h" />
     <ClInclude Include="Quaternion.h" />
-    <ClInclude Include="ReloadEffect.h" />
-    <ClInclude Include="Room.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shake.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteCommon.h" />
-    <ClInclude Include="Stage.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Vec2.h" />
