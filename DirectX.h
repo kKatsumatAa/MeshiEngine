@@ -103,7 +103,7 @@ public:
 	//getter
 	ID3D12Device* GetDevice() const { return device.Get(); }
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
-	ComPtr<ID3D12Resource> GetPeraResource() const { return _peraResource; }
+	ComPtr<ID3D12DescriptorHeap> GetPeraSRVHeap() const { return _peraSRVHeap; }
 
 	//バックバッファの数を取得
 	size_t GetBackBufferCount() const { return backBuffers.size(); }

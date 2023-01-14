@@ -459,11 +459,11 @@ void Directx::PreDrawToPera() {
 		&barrierDesc
 	);
 
-	//クリアカラー		 R   G   B   A
-	float clsClr[4] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
-	commandList->ClearRenderTargetView(rtvHeapPointer, clsClr, 0, nullptr);
-	commandList->ClearDepthStencilView(dsvHandle,
-		D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	////クリアカラー		 R   G   B   A
+	//float clsClr[4] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
+	//commandList->ClearRenderTargetView(rtvHeapPointer, clsClr, 0, nullptr);
+	//commandList->ClearDepthStencilView(dsvHandle,
+	//	D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
 
 void Directx::PostDrawToPera()

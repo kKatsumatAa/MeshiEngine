@@ -51,7 +51,7 @@ PipeLineSet pipelineSet;
 PipeLineSet pipelineSetM;
 
 //ルートパラメータの設定
-D3D12_ROOT_PARAMETER rootParams[7] = {};
+D3D12_ROOT_PARAMETER rootParams[5] = {};
 
 // パイプランステートの生成
 ComPtr < ID3D12PipelineState> pipelineState[3] = { nullptr };
@@ -117,27 +117,6 @@ void DrawInitialize()
 	rootParams[4].Descriptor.ShaderRegister = 3;//定数バッファ番号(b3)
 	rootParams[4].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	{
-		//ガウシアン用
-		D3D12_DESCRIPTOR_RANGE range[2] = {};
-		//range[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-		//range[0].BaseShaderRegister = 4;//(t0)
-		//range[0].NumDescriptors = 1;
-
-		range[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//b
-		range[1].BaseShaderRegister = 4;//(b4)
-		range[1].NumDescriptors = 1;
-		//ガウシアン 1
-		//rootParams[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-		//rootParams[5].DescriptorTable.pDescriptorRanges = &range[0];
-		//rootParams[5].DescriptorTable.NumDescriptorRanges = 1;//〃数
-		//rootParams[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-		//〃 2
-		rootParams[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-		rootParams[5].Descriptor.ShaderRegister = 4;//定数バッファ番号(b3)
-		rootParams[5].Descriptor.RegisterSpace = 0;//デフォルト値
-		rootParams[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	}
 
 	// パイプランステートの生成
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob);
@@ -158,33 +137,6 @@ void DrawInitialize()
 		pipelineSetM.psBlob, MODEL);
 
 	postPera.Initialize();
-
-	//ガウシアン
-	{
-		std::vector<float> weights = GetGaussianWeights(8, 15.0f);
-
-		//ヒープ設定
-		D3D12_HEAP_PROPERTIES cbHeapProp{};
-		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
-		//リソース設定
-		D3D12_RESOURCE_DESC cbResourceDesc{};
-		ResourceProperties(cbResourceDesc, ((UINT)(sizeof(weights[0]) * weights.size()) + 0xff) & ~0xff/*256バイトアライメント*/);
-
-		//定数バッファの生成
-		BuffProperties(cbHeapProp, cbResourceDesc, &_bokehParamBuffer);
-
-		//定数バッファのマッピング
-		float *w;
-		Directx::GetInstance().result = _bokehParamBuffer->Map(0, nullptr, (void**)&w);
-		std::copy(weights.begin(), weights.end(), w);
-		_bokehParamBuffer->Unmap(0, nullptr);
-
-		////ぼけ定数バッファービュー設定 
-		//D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-		//cbvDesc.BufferLocation = _bokehParamBuffer->GetGPUVirtualAddress();
-		//cbvDesc.SizeInBytes = _bokehParamBuffer->GetDesc().Width;
-		//Directx::GetInstance().GetDevice()->CreateConstantBufferView(&cbvDesc, TextureManager::GetInstance().srvHandle);
-	}
 }
 
 Object::Object()
@@ -284,7 +236,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
+		
 
 		lightManager->Draw(4);
 
@@ -333,7 +285,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
+		
 
 		lightManager->Draw(4);
 
@@ -381,7 +333,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
+		
 
 		lightManager->Draw(4);
 
@@ -429,7 +381,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
+		
 
 		lightManager->Draw(4);
 
@@ -477,7 +429,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
+		
 
 		lightManager->Draw(4);
 
@@ -526,7 +478,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
+		
 
 		lightManager->Draw(4);
 
@@ -581,7 +533,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		//ガウシアン
-		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, _bokehParamBuffer->GetGPUVirtualAddress());
+		
 
 
 		lightManager->Draw(4);

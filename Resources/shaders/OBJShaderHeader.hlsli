@@ -48,11 +48,6 @@ cbuffer ConstBufferDataMaterial3 : register(b3)
 	PointLight pointLights[POINTLIGHT_NUM];
 }
 
-cbuffer Weight : register(b4)
-{
-	float4 bkweights[2];
-}
-
 //頂点シェーダからピクセルシェーダーへのやり取りに使用する構造体
 struct VSOutput
 {

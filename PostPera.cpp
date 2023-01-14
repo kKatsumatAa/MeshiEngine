@@ -28,7 +28,6 @@ void PostPera::Initialize()
 	std::copy(std::begin(pv), std::end(pv), mappedPera);
 	_peraVB->Unmap(0, nullptr);
 
-	//rootsig
 	GenerateRSPL();
 }
 
@@ -109,6 +108,27 @@ void PostPera::GenerateRSPL()
 	rsDesc.NumStaticSamplers = 0;
 	rsDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
+	//rootsig
+	{
+		D3D12_DESCRIPTOR_RANGE range = {};
+		range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+		range.BaseShaderRegister = 0;//0
+		range.NumDescriptors = 1;
+
+		D3D12_ROOT_PARAMETER rp = {};
+		rp.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+		rp.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		rp.DescriptorTable.pDescriptorRanges = &range;
+		rp.DescriptorTable.NumDescriptorRanges = 1;
+
+		D3D12_STATIC_SAMPLER_DESC sampler = CD3DX12_STATIC_SAMPLER_DESC(0); //s0
+
+		rsDesc.NumParameters = 1;
+		rsDesc.pParameters = &rp;
+		rsDesc.NumStaticSamplers = 1;
+		rsDesc.pStaticSamplers = &sampler;
+	}
+
 	ComPtr<ID3DBlob>rsBlob;
 	result = D3D12SerializeRootSignature(
 		&rsDesc,
@@ -139,6 +159,15 @@ void PostPera::Draw()
 {
 	Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(_peraRS.Get());
 	Directx::GetInstance().GetCommandList()->SetPipelineState(_peraPipeline.Get());
+
+	//ヒープをセット
+	Directx::GetInstance().GetCommandList()
+		->SetDescriptorHeaps(1, Directx::GetInstance().GetPeraSRVHeap().GetAddressOf());
+
+	auto handle = Directx::GetInstance().GetPeraSRVHeap()->GetGPUDescriptorHandleForHeapStart();
+	//パラメーター0番とヒープを関連付ける
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, handle);
+
 	Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(
 		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &_peraVBV);

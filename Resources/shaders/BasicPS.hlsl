@@ -170,13 +170,13 @@ float4 main(VSOutput input) : SV_TARGET
 
 	//ÉKÉEÉVÉAÉìÇQ
 	{
-		ret += bkweights[0] * RGBA;
-		for (int i = 1; i < 8; ++i)
-		{
-			ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, input.uv + float2(i * dx, 0));
-			ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, input.uv + float2(-i * dx, 0));
-		}
-		return float4(ret.rgb * RGBA.rgb, A);
+		//ret += bkweights[0] * RGBA;
+		//for (int i = 1; i < 8; ++i)
+		//{
+		//	ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, input.uv + float2(i * dx, 0));
+		//	ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, input.uv + float2(-i * dx, 0));
+		//}
+		//return float4(ret.rgb * RGBA.rgb, A);
 	}
 
 
@@ -184,5 +184,5 @@ float4 main(VSOutput input) : SV_TARGET
 	//return float4(RGB - fmod(RGB, 0.25f), A);
 
 
-	//return RGBA;
+	return RGBA;
 }
