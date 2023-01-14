@@ -70,9 +70,6 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 //static
 LightManager* Object::lightManager = nullptr;
 
-//
-ComPtr < ID3D12Resource> _bokehParamBuffer;
-
 PostPera postPera;
 
 
@@ -83,8 +80,6 @@ struct weightMap
 
 void DrawInitialize()
 {
-
-
 	//テクスチャ用のデスクリプタヒープ初期化
 	TextureManager::GetInstance().InitializeDescriptorHeap();
 
@@ -235,9 +230,6 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
-		//ガウシアン
-		
-
 		lightManager->Draw(4);
 
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewTriangle);
@@ -284,9 +276,6 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
-		//ガウシアン
-		
-
 		lightManager->Draw(4);
 
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewBox);
@@ -331,9 +320,6 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbCubeView);
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
-
-		//ガウシアン
-		
 
 		lightManager->Draw(4);
 
@@ -380,9 +366,6 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
-		//ガウシアン
-		
-
 		lightManager->Draw(4);
 
 		Directx::GetInstance().GetCommandList()->IASetIndexBuffer(&primitive.ibViewLine);
@@ -427,9 +410,6 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbCircleView);
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
-
-		//ガウシアン
-		
 
 		lightManager->Draw(4);
 
@@ -476,9 +456,6 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &primitive.vbViewSphere);
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
-
-		//ガウシアン
-		
 
 		lightManager->Draw(4);
 
@@ -531,10 +508,6 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
-
-		//ガウシアン
-		
-
 
 		lightManager->Draw(4);
 
