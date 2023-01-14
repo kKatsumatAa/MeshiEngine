@@ -109,7 +109,7 @@ void PostPera::GenerateRSPL()
 	rsDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	//rootsig
-	{
+	
 		D3D12_DESCRIPTOR_RANGE range = {};
 		range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
 		range.BaseShaderRegister = 0;//0
@@ -127,7 +127,7 @@ void PostPera::GenerateRSPL()
 		rsDesc.pParameters = &rp;
 		rsDesc.NumStaticSamplers = 1;
 		rsDesc.pStaticSamplers = &sampler;
-	}
+	
 
 	ComPtr<ID3DBlob>rsBlob;
 	result = D3D12SerializeRootSignature(

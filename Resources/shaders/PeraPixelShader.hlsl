@@ -61,7 +61,7 @@ float4 PS(Output input) : SV_TARGET
 	//ret += tex.Sample(smp, input.uv + float2(2 * dx, 0)) * -1; // ‰E 
 	//ret += tex.Sample(smp, input.uv + float2(0, 2 * dy)) * -1; // ‰º 
 	//// ”½“] 
-	//float Y = dot(ret.rgb * RGBA2.rgb, float3(0.299, 0.587, 0.114));
+	//float Y = dot(ret.rgb * RGBA.rgb, float3(0.299, 0.587, 0.114));
 	//Y = pow(1.0f - Y, 10.0f);
 	//Y = step(0.2, Y);
 	//return float4(Y, Y, Y, A);
@@ -116,7 +116,7 @@ float4 PS(Output input) : SV_TARGET
 		return float4(ret.rgb * RGBA.rgb, A);*/
 	}
 
-
+	//return RGBA;
 	//æ~’²
 	return float4(RGB - fmod(RGB, 0.25f), A);
 

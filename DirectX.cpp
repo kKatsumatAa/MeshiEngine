@@ -291,6 +291,7 @@ Directx::Directx()
 			&clearValue,
 			IID_PPV_ARGS(_peraResource.ReleaseAndGetAddressOf())
 		);
+		assert(SUCCEEDED(result));
 
 		// RTV 用 ヒープ を 作る 
 		heapDesc.NumDescriptors = 1;
@@ -298,6 +299,7 @@ Directx::Directx()
 			&heapDesc,
 			IID_PPV_ARGS(_peraRTVHeap.ReleaseAndGetAddressOf())
 		);
+		assert(SUCCEEDED(result));
 
 		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
 		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
@@ -317,6 +319,7 @@ Directx::Directx()
 			&heapDesc,
 			IID_PPV_ARGS(_peraSRVHeap.ReleaseAndGetAddressOf())
 		);
+		assert(SUCCEEDED(result));
 
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
@@ -443,6 +446,14 @@ void Directx::DrawUpdate2()
 
 void Directx::PreDrawToPera() {
 
+
+	// 1 パス 目 
+	auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	commandList->OMSetRenderTargets(
+		1, &rtvHeapPointer, false, &dsvHandle
+	);
+
 	//ポストエフェクト
 	barrierDesc.Transition.pResource = _peraResource.Get(); // バックバッファを指定
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
@@ -451,14 +462,9 @@ void Directx::PreDrawToPera() {
 		1,
 		&barrierDesc
 	); 
-		// 1 パス 目 
-	auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-	commandList->OMSetRenderTargets(
-		1, &rtvHeapPointer, false, &dsvHandle
-	);
 
-	//if (!isPeraClear)
+
+	if (!isPeraClear)
 	{
 		isPeraClear = true;
 
