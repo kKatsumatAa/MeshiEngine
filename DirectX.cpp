@@ -444,6 +444,13 @@ void Directx::DrawUpdate2()
 void Directx::PreDrawToPera() {
 
 	//ポストエフェクト
+	barrierDesc.Transition.pResource = _peraResource.Get(); // バックバッファを指定
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
+	commandList->ResourceBarrier(
+		1,
+		&barrierDesc
+	); 
 		// 1 パス 目 
 	auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
@@ -451,19 +458,16 @@ void Directx::PreDrawToPera() {
 		1, &rtvHeapPointer, false, &dsvHandle
 	);
 
-	barrierDesc.Transition.pResource = _peraResource.Get(); // バックバッファを指定
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-	commandList->ResourceBarrier(
-		1,
-		&barrierDesc
-	);
+	//if (!isPeraClear)
+	{
+		isPeraClear = true;
 
-	////クリアカラー		 R   G   B   A
-	//float clsClr[4] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
-	//commandList->ClearRenderTargetView(rtvHeapPointer, clsClr, 0, nullptr);
-	//commandList->ClearDepthStencilView(dsvHandle,
-	//	D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+		//クリアカラー		 R   G   B   A
+		float clsClr[4] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
+		commandList->ClearRenderTargetView(rtvHeapPointer, clsClr, 0, nullptr);
+		commandList->ClearDepthStencilView(dsvHandle,
+			D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	}
 }
 
 void Directx::PostDrawToPera()

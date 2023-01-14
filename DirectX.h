@@ -59,6 +59,7 @@ private:
 	ComPtr<ID3D12Resource> _peraResource;
 	ComPtr<ID3D12DescriptorHeap> _peraRTVHeap;//レンダーターゲット用
 	ComPtr<ID3D12DescriptorHeap> _peraSRVHeap;//テクスチャ用
+	bool isPeraClear = false;
 
 private:
 	Directx();
