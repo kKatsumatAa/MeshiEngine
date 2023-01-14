@@ -46,6 +46,8 @@ private:
 	void Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
 		Model* model = nullptr, const bool& primitiveMode = true);
 
+
+
 public://ïœêî
 	WorldMat* worldMat = new WorldMat();
 	ViewMat* view;
@@ -58,6 +60,7 @@ public:
 	//
 	Object();
 
+	void DrawPera();
 
 	void DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 		WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f },

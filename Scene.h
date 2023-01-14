@@ -72,6 +72,7 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
+	void DrawPostEffect();
 	void DrawSprite();
 
 	void StopWaveAllScene();

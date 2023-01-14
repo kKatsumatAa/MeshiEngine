@@ -592,7 +592,10 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		//モデル用描画
 		model->Draw();
 	}
+}
 
+void Object::DrawPera()
+{
 	//ポストエフェクト用
 	postPera.Draw();
 }

@@ -150,7 +150,7 @@ void SceneLoad::Draw()
 
 void SceneLoad::DrawSprite()
 {
-	
+
 }
 
 
@@ -228,7 +228,7 @@ void Scene::Initialize()
 	//カメラ
 	camera = std::make_unique<Camera>();
 	camera->Initialize();
-	
+
 	//ステート変更
 	ChangeState(new SceneLoad);
 }
@@ -270,8 +270,16 @@ void Scene::Update()
 
 void Scene::Draw()
 {
-
+	draw[0].DrawCube3D(draw[0].worldMat, &camera->viewMat, &camera->projectionMat);
+	draw[1].worldMat->scale = { 100,1.0f,100 };
+	draw[1].worldMat->trans.y = -1.0f;
+	draw[1].DrawCube3D(draw[1].worldMat, &camera->viewMat, &camera->projectionMat,{1.0f,1.0f,1.0f,0.5f});
 	state->Draw();
+}
+
+void Scene::DrawPostEffect()
+{
+	draw[2].DrawPera();
 }
 
 void Scene::DrawSprite()

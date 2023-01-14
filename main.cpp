@@ -41,23 +41,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//毎フレーム処理　ここから//
 		//キーボード情報の取得開始
 		KeyboardInput::GetInstance().Update();
+		{
+			Directx::GetInstance().DrawUpdate({ 1.0f,0.5,0.15f,0.5f });
 
-		Directx::GetInstance().DrawUpdate({0,0,0,0});
-
-		//更新処理
-		scene->Update();
-
-
-		// 4.描画コマンドここから　//-----------
-		scene->Draw();
+			//更新処理
+			scene->Update();
 
 
-		scene->DrawSprite();
+			// 4.描画コマンドここから　//-----------
+			scene->Draw();
 
-		// 4.描画コマンドここまで //
 
-		Directx::GetInstance().DrawUpdate2();
+			scene->DrawSprite();
 
+			//
+			Directx::GetInstance().DrawUpdate2();
+		}
+
+		//マルチパス
+		{
+			Directx::GetInstance().PreDrawToPera();
+
+			//
+			scene->DrawPostEffect();
+
+			// 4.描画コマンドここまで //
+			Directx::GetInstance().PostDrawToPera();
+		}
 		//毎フレーム処理　ここまで//
 
 
