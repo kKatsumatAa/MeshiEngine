@@ -55,16 +55,16 @@ float4 PS(Output input) : SV_TARGET
 	//return ret * RGBA;
 
 	//ó÷äs
-	//ret += tex.Sample(smp, input.uv + float2(0, -2 * dy)) * -1; // è„
-	//ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0)) * -1; // ç∂
-	//ret += tex.Sample(smp, input.uv) * 4; // é©ï™ 
-	//ret += tex.Sample(smp, input.uv + float2(2 * dx, 0)) * -1; // âE 
-	//ret += tex.Sample(smp, input.uv + float2(0, 2 * dy)) * -1; // â∫ 
-	//// îΩì] 
-	//float Y = dot(ret.rgb * RGBA.rgb, float3(0.299, 0.587, 0.114));
-	//Y = pow(1.0f - Y, 10.0f);
-	//Y = step(0.2, Y);
-	//return float4(Y, Y, Y, A);
+	ret += tex.Sample(smp, input.uv + float2(0, -2 * dy)) * -1; // è„
+	ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0)) * -1; // ç∂
+	ret += tex.Sample(smp, input.uv) * 4; // é©ï™ 
+	ret += tex.Sample(smp, input.uv + float2(2 * dx, 0)) * -1; // âE 
+	ret += tex.Sample(smp, input.uv + float2(0, 2 * dy)) * -1; // â∫ 
+	// îΩì] 
+	float Y = dot(ret.rgb * RGBA.rgb, float3(0.299, 0.587, 0.114));
+	Y = pow(1.0f - Y, 10.0f);
+	Y = step(0.2, Y);
+	return float4(Y, Y, Y, A);
 
 	//ÉKÉEÉVÉAÉì
 	{
@@ -118,7 +118,7 @@ float4 PS(Output input) : SV_TARGET
 
 	//return RGBA;
 	//Ê~í≤
-	return float4(RGB - fmod(RGB, 0.25f), A);
+	//return float4(RGB - fmod(RGB, 0.25f), A);
 
 
 

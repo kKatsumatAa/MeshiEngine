@@ -446,14 +446,6 @@ void Directx::DrawUpdate2()
 
 void Directx::PreDrawToPera() {
 
-
-	// 1 パス 目 
-	auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-	commandList->OMSetRenderTargets(
-		1, &rtvHeapPointer, false, &dsvHandle
-	);
-
 	//ポストエフェクト
 	barrierDesc.Transition.pResource = _peraResource.Get(); // バックバッファを指定
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
@@ -463,6 +455,13 @@ void Directx::PreDrawToPera() {
 		&barrierDesc
 	); 
 
+
+	// 1 パス 目 
+	auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	commandList->OMSetRenderTargets(
+		1, &rtvHeapPointer, false, &dsvHandle
+	);
 
 	if (!isPeraClear)
 	{
