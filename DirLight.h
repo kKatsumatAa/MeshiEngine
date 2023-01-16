@@ -6,7 +6,7 @@ using namespace Microsoft::WRL;
 /// <summary>
 /// 照明(様々なライトを作るときはポリモーフィズムで継承するといい)
 /// </summary>
-class Light
+class DirLight
 {
 private://エイリアス
 	//Microsoft::WRL::を省略

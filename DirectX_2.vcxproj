@@ -157,7 +157,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="KeyboardInput.cpp" />
-    <ClCompile Include="Light.cpp" />
+    <ClCompile Include="DirLight.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="M4.cpp" />
     <ClCompile Include="main.cpp" />
@@ -173,6 +173,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shake.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteCommon.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -197,7 +198,7 @@
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="KeyboardInput.h" />
-    <ClInclude Include="Light.h" />
+    <ClInclude Include="DirLight.h" />
     <ClInclude Include="LightManager.h" />
     <ClInclude Include="M4.h" />
     <ClInclude Include="Material.h" />
@@ -213,6 +214,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shake.h" />
     <ClInclude Include="Sound.h" />
+    <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteCommon.h" />
     <ClInclude Include="TextureManager.h" />

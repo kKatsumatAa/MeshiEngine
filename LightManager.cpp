@@ -80,6 +80,28 @@ void LightManager::TransferConstBuffer()
 				constMap->pointLights[i].active = 0;
 			}
 		}
+		//スポットライト
+		for (int i = 0; i < SpotLightNum; i++)
+		{
+			//ライトが有効なら設定を転送
+			if (spotLights[i].GetLightActive())
+			{
+				constMap->spotLights[i].active = 1;
+				constMap->spotLights[i].lightv = -spotLights[i].GetLightDir();
+				constMap->spotLights[i].lightpos = spotLights[i].GetLightPos();
+				constMap->spotLights[i].lightcolor =
+					spotLights[i].GetLightColor();
+				constMap->spotLights[i].lightatten =
+					spotLights[i].GetLightAtten();
+				constMap->spotLights[i].lightfactoranglecos = 
+					spotLights[i].GetLightFactorAngleCos();
+			}
+			//ライトが無効ならライト色を0に
+			else
+			{
+				constMap->spotLights[i].active = 0;
+			}
+		}
 
 		constBuff->Unmap(0, nullptr);
 	}
@@ -187,5 +209,53 @@ void LightManager::SetPointLightAtten(int index, const XMFLOAT3& atten)
 	assert(0 <= index && index < PointLightNum);
 	pointLights[index].SetLightAtten(atten);
 
+	dirty = true;
+}
+
+
+void LightManager::SetSpotLightActive(int index, bool active)
+{
+	assert(0 <= index && index < SpotLightNum);
+
+	spotLights[index].SetLightActive(active);
+}
+
+void LightManager::SetSpotLightDir(int index, const XMVECTOR& lightdir)
+{
+	assert(0 <= index && index < SpotLightNum);
+
+	spotLights[index].SetLightDir(lightdir);
+	dirty = true;
+}
+
+void LightManager::SetSpotLightPos(int index, const XMFLOAT3& lightpos)
+{
+	assert(0 <= index && index < SpotLightNum);
+
+	spotLights[index].SetLightPos(lightpos);
+	dirty = true;
+}
+
+void LightManager::SetSpotLightColor(int index, const XMFLOAT3& lightcolor)
+{
+	assert(0 <= index && index < SpotLightNum);
+
+	spotLights[index].SetLightColor(lightcolor);
+	dirty = true;
+}
+
+void LightManager::SetSpotLightAtten(int index, const XMFLOAT3& lightAtten)
+{
+	assert(0 <= index && index < SpotLightNum);
+
+	spotLights[index].SetLightAtten(lightAtten);
+	dirty = true;
+}
+
+void LightManager::SetSpotLightFactorAngle(int index, const XMFLOAT2& lightFactorAngle)
+{
+	assert(0 <= index && index < SpotLightNum);
+
+	spotLights[index].SetLightFactorAngleCos(lightFactorAngle);
 	dirty = true;
 }

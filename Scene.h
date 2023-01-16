@@ -61,6 +61,12 @@ public:
 	float pointLightColor[3] = { 1.0f,1.0f,1.0f };
 	float pointLightAtten[3] = { 0.01f,0.01f,0.01f };
 
+	float spotLightDir[3] = { 0,-1,0 };
+	float spotLightPos[3] = { 0,5,0 };
+	float spotLightColor[3] = { 1.0f,1.0f,1.0f };
+	float spotLightAtten[3] = { 0.0f,0.0f,0.0f };
+	float spotLightFactorAngle[2] = { 20.0f,30.0f };
+
 	std::unique_ptr<ColliderManager> colliderM;
 
 	std::unique_ptr<Camera> camera;

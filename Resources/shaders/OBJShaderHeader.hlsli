@@ -40,12 +40,24 @@ struct DirLight
 	uint   active;      //有効か
 };
 
+static const int SPOTLIGHT_NUM = 3;
+struct SpotLight
+{
+	float3 lightv;    // ライトへの方向の単位ベクトル
+	float3 lightpos;    // ライトの位置
+	float3 lightcolor;    // ライトの色(RGB)
+	float3 lightatten;    // ライトの減衰係数
+	float3 lightfactoranglecos;//ライト減衰角度のコサイン
+	uint   active;      //有効か
+};
+
 //LightManagerのConstBufferと同じ型を宣言
 cbuffer ConstBufferDataMaterial3 : register(b3)
 {
 	float3     ambientColor;
 	DirLight   dirLights[DIRLIGHT_NUM];
 	PointLight pointLights[POINTLIGHT_NUM];
+	SpotLight  spotLights[SPOTLIGHT_NUM];
 }
 
 //頂点シェーダからピクセルシェーダーへのやり取りに使用する構造体

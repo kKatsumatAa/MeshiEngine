@@ -205,7 +205,7 @@ void Scene::Initialize()
 	//model
 	Model::StaticInitialize();
 
-	model[0] = Model::LoadFromOBJ("skydome",true,true);
+	model[0] = Model::LoadFromOBJ("skydome", true, true);
 	draw[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[0].worldMat->SetWorld();
 	model[1] = Model::LoadFromOBJ("ground");
@@ -214,7 +214,7 @@ void Scene::Initialize()
 	draw[1].worldMat->SetWorld();
 	model[2] = Model::LoadFromOBJ("player");
 	draw[2].worldMat->scale = { 10.0f, 10.0f, 10.0f };
-	draw[2].worldMat->rot.y = { -pi/2.0f };
+	draw[2].worldMat->rot.y = { -pi / 2.0f };
 	draw[2].worldMat->trans = { 20.0f,10.0f,10.0f };
 	draw[2].worldMat->SetWorld();
 
@@ -238,17 +238,9 @@ void Scene::Initialize()
 	//“_ŒõŒ¹
 	for (int i = 0; i < 6; i++)
 	{
-		if (i == 0) {
-			lightManager->SetPointLightActive(0, true);
-		}
-		else
-		{
-			lightManager->SetPointLightActive(i, false);
-		}
+		lightManager->SetPointLightActive(i, false);
 	}
-	pointLightPos[0] = 0.5f;
-	pointLightPos[1] = 1.0f;
-	pointLightPos[2] = 0.0f;
+	lightManager->SetSpotLightActive(0, true);
 
 	//ƒJƒƒ‰
 	camera = std::make_unique<Camera>();
@@ -268,15 +260,20 @@ void Scene::Update()
 		ImGui::ShowDemoWindow();
 
 		//“_ŒõŒ¹
-		lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
-		lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
-		lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
+		lightManager->SetSpotLightDir(0,
+			XMVECTOR({ spotLightDir[0], spotLightDir[1], spotLightDir[2] }));
+		lightManager->SetSpotLightPos(0, XMFLOAT3(spotLightPos));
+		lightManager->SetSpotLightColor(0, XMFLOAT3(spotLightColor));
+		lightManager->SetSpotLightAtten(0, XMFLOAT3(spotLightAtten));
+		lightManager->SetSpotLightFactorAngle(0, XMFLOAT2(spotLightFactorAngle));
 
 		static bool a = true;
-		ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
-		ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
-		ImGui::InputFloat3("pointLightPos", pointLightPos);
-		ImGui::InputFloat3("pointLightAtten", pointLightAtten);
+		ImGui::Begin("spotLight", &a, ImGuiWindowFlags_MenuBar);
+		ImGui::InputFloat3("spotLightDir", spotLightDir);
+		ImGui::ColorEdit3("spotLightColor", spotLightColor, ImGuiColorEditFlags_Float);
+		ImGui::InputFloat3("spotLightPos", spotLightPos);
+		ImGui::InputFloat3("spotLightAtten", spotLightAtten);
+		ImGui::InputFloat3("spotLightFactorAngle", spotLightFactorAngle);
 		ImGui::End();
 		lightManager->Update();
 
@@ -310,7 +307,7 @@ void Scene::Draw()
 {
 	for (int i = 0; i < 3; i++)
 	{
-		draw[i].DrawModel(draw[i].worldMat, &camera->viewMat,&camera->projectionMat, model[i]);
+		draw[i].DrawModel(draw[i].worldMat, &camera->viewMat, &camera->projectionMat, model[i]);
 	}
 
 	state->Draw();
