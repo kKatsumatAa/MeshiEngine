@@ -205,7 +205,18 @@ void Scene::Initialize()
 	//model
 	Model::StaticInitialize();
 
-	/*model[1] = Model::LoadFromOBJ("ground");*/
+	model[0] = Model::LoadFromOBJ("skydome");
+	draw[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
+	draw[0].worldMat->SetWorld();
+	model[1] = Model::LoadFromOBJ("ground");
+	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
+	draw[1].worldMat->trans = { 10.0f, -10.0f, 0 };
+	draw[1].worldMat->SetWorld();
+	model[2] = Model::LoadFromOBJ("player");
+	draw[2].worldMat->scale = { 10.0f, 10.0f, 10.0f };
+	draw[2].worldMat->rot.y = { -pi/2.0f };
+	draw[2].worldMat->SetWorld();
+
 
 
 	//imgui
@@ -225,6 +236,11 @@ void Scene::Initialize()
 	lightManager->SetDirLightActive(0, false);
 	lightManager->SetDirLightActive(1, false);
 	lightManager->SetDirLightActive(2, false);
+	lightManager->SetPointLightActive(0, true);
+	pointLightPos[0] = 0.5f;
+	pointLightPos[1] = 1.0f;
+	pointLightPos[2] = 0.0f;
+
 	//ÉJÉÅÉâ
 	camera = std::make_unique<Camera>();
 	camera->Initialize();
@@ -241,6 +257,19 @@ void Scene::Update()
 	{
 		//ÉfÉÇ
 		ImGui::ShowDemoWindow();
+
+		//ì_åıåπ
+		lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
+		lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
+		lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
+
+		static bool a = true;
+		ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
+		ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
+		ImGui::InputFloat3("pointLightPos", pointLightPos);
+		ImGui::InputFloat3("pointLight", pointLightAtten);
+		ImGui::End();
+		lightManager->Update();
 
 	}
 
@@ -270,10 +299,10 @@ void Scene::Update()
 
 void Scene::Draw()
 {
-	draw[0].DrawCube3D(draw[0].worldMat, &camera->viewMat, &camera->projectionMat);
-	draw[1].worldMat->scale = { 100,1.0f,100 };
-	draw[1].worldMat->trans.y = -1.0f;
-	draw[1].DrawCube3D(draw[1].worldMat, &camera->viewMat, &camera->projectionMat,{1.0f,1.0f,1.0f,0.5f});
+	for (int i = 0; i < 3; i++)
+	{
+		draw[i].DrawModel(draw[i].worldMat, &camera->viewMat,&camera->projectionMat, model[i]);
+	}
 	state->Draw();
 }
 
