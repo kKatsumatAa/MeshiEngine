@@ -316,6 +316,9 @@ void Scene::Draw()
 	{
 		draw[i].DrawModel(draw[i].worldMat, &camera->viewMat, &camera->projectionMat, model[i]);
 	}
+	draw[3].worldMat->trans = { 0,-10,0 };
+	draw[3].worldMat->SetWorld();
+	draw[3].DrawCube3D(draw[3].worldMat, &camera->viewMat, &camera->projectionMat);
 
 	state->Draw();
 }
