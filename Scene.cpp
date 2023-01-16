@@ -212,7 +212,7 @@ void Scene::Initialize()
 	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[1].worldMat->trans = { 10.0f, -10.0f, 0 };
 	draw[1].worldMat->SetWorld();
-	model[2] = Model::LoadFromOBJ("player");
+	model[2] = Model::LoadFromOBJ("sphere");
 	draw[2].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[2].worldMat->rot.y = { -pi/2.0f };
 	draw[2].worldMat->SetWorld();
@@ -311,6 +311,12 @@ void Scene::Draw()
 	{
 		draw[i].DrawModel(draw[i].worldMat, &camera->viewMat,&camera->projectionMat, model[i]);
 	}
+
+	draw[4].worldMat->scale = { 100,1,100 };
+	draw[4].worldMat->trans = { 0,0,0 };
+	draw[4].worldMat->SetWorld();
+	draw[4].DrawCube3D(draw[4].worldMat, &camera->viewMat, &camera->projectionMat);
+
 	state->Draw();
 }
 

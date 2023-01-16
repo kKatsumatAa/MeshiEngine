@@ -65,5 +65,10 @@ float4 main(VSOutput input) : SV_TARGET
 		}
 
 		// シェーディングによる色で描画
-		return shadecolor * texcolor * color;
+		float4 RGBA = (shadecolor * texcolor * color);
+		float4 RGBA2 = (shadecolor * color);
+		float3 RGB = RGBA.rgb;
+		float  A = RGBA.a;
+
+		return RGBA;
 }
