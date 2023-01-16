@@ -210,12 +210,12 @@ void Scene::Initialize()
 	draw[0].worldMat->SetWorld();
 	model[1] = Model::LoadFromOBJ("ground");
 	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
-	draw[1].worldMat->trans = { 10.0f, -10.0f, 0 };
+	draw[1].worldMat->trans = { 0.0f, -10.0f, 0 };
 	draw[1].worldMat->SetWorld();
 	model[2] = Model::LoadFromOBJ("player");
-	draw[2].worldMat->scale = { 10.0f, 10.0f, 10.0f };
+	draw[2].worldMat->scale = { 5.0f, 5.0f, 5.0f };
 	draw[2].worldMat->rot.y = { -pi / 2.0f };
-	draw[2].worldMat->trans = { 20.0f,10.0f,10.0f };
+	draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
 	draw[2].worldMat->SetWorld();
 
 
@@ -232,7 +232,7 @@ void Scene::Initialize()
 	lightManager->SetDirLightColor(0, { 1,1,1 });
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
 	Object::SetLight(lightManager);
-	lightManager->SetDirLightActive(0, false);
+	lightManager->SetDirLightActive(0, true);
 	lightManager->SetDirLightActive(1, false);
 	lightManager->SetDirLightActive(2, false);
 	//点光源
@@ -240,8 +240,8 @@ void Scene::Initialize()
 	{
 		lightManager->SetPointLightActive(i, false);
 	}
-	//スポットライト
-	lightManager->SetSpotLightActive(0, true);
+	//丸影
+	lightManager->SetCircleShadowActive(0, true);
 
 	//カメラ
 	camera = std::make_unique<Camera>();
@@ -260,25 +260,31 @@ void Scene::Update()
 		//デモ
 		ImGui::ShowDemoWindow();
 
-		//点光源
-		lightManager->SetSpotLightDir(0,
-			XMVECTOR({ spotLightDir[0], spotLightDir[1], spotLightDir[2] }));
-		lightManager->SetSpotLightPos(0, XMFLOAT3(spotLightPos));
-		lightManager->SetSpotLightColor(0, XMFLOAT3(spotLightColor));
-		lightManager->SetSpotLightAtten(0, XMFLOAT3(spotLightAtten));
-		lightManager->SetSpotLightFactorAngle(0, XMFLOAT2(spotLightFactorAngle));
+		//丸影
+		lightManager->SetCircleShadowDir(0,
+			XMVECTOR({ circleShadowDir[0], circleShadowDir[1], circleShadowDir[2],0 }));
+		lightManager->SetCircleShadowCasterPos(0,
+			XMFLOAT3({ fighterPos[0],fighterPos[1],fighterPos[2] }));
+		lightManager->SetCircleShadowAtten(0, XMFLOAT3(circleShadowAtten));
+		lightManager->SetCircleShadowFactorAngle(0, XMFLOAT2(circleShadowFactorAngle));
+		lightManager->SetCircleShadowDistanceCasterLight(0, circleShadowDistance);
 
 		static bool a = true;
-		ImGui::Begin("spotLight", &a, ImGuiWindowFlags_MenuBar);
-		ImGui::InputFloat3("spotLightDir", spotLightDir);
-		ImGui::ColorEdit3("spotLightColor", spotLightColor, ImGuiColorEditFlags_Float);
-		ImGui::InputFloat3("spotLightPos", spotLightPos);
-		ImGui::InputFloat3("spotLightAtten", spotLightAtten);
-		ImGui::InputFloat3("spotLightFactorAngle", spotLightFactorAngle);
+		ImGui::Begin("circleShadow", &a, ImGuiWindowFlags_MenuBar);
+
+		ImGui::InputFloat3("circleShadowDir", circleShadowDir);
+		ImGui::InputFloat3("circleShadowAtten", circleShadowAtten);
+		ImGui::InputFloat2("circleShadowFactorAngle", circleShadowFactorAngle);
+		ImGui::InputFloat3("fihgterPos", fighterPos);
+		ImGui::InputFloat("distanceLight", &circleShadowDistance);
+
+
 		ImGui::End();
 		lightManager->Update();
 
 	}
+
+	draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
 
 	state->Update();
 

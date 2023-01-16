@@ -51,6 +51,18 @@ struct SpotLight
 	uint   active;      //有効か
 };
 
+//丸影
+static const int CIRCLESHADOW_NUM = 1;
+struct CircleShadow
+{
+	float3 dir; //投影方向の逆ベクトル
+	float3 casterPos; //キャスター座標
+	float distanceCasterLight; //キャスターとライトの距離
+	float3 atten; //距離減衰係数
+	float2 factorAngleCos; //減衰角度のコサイン
+	uint active;
+};
+
 //LightManagerのConstBufferと同じ型を宣言
 cbuffer ConstBufferDataMaterial3 : register(b3)
 {
@@ -58,6 +70,7 @@ cbuffer ConstBufferDataMaterial3 : register(b3)
 	DirLight   dirLights[DIRLIGHT_NUM];
 	PointLight pointLights[POINTLIGHT_NUM];
 	SpotLight  spotLights[SPOTLIGHT_NUM];
+	CircleShadow circleShadows[CIRCLESHADOW_NUM];
 }
 
 //頂点シェーダからピクセルシェーダーへのやり取りに使用する構造体

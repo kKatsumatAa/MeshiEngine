@@ -57,15 +57,13 @@ public:
 	//ƒ‰ƒCƒg
 	LightManager* lightManager = nullptr;
 
-	float pointLightPos[3] = { 0,0,0 };
-	float pointLightColor[3] = { 1.0f,1.0f,1.0f };
-	float pointLightAtten[3] = { 0.01f,0.01f,0.01f };
+	//ŠÛ‰e
+	float circleShadowDir[3] = { 0,-1,0 };
+	float circleShadowAtten[3] = { 0.5f,0.15f,0 };
+	float circleShadowFactorAngle[2] = { 0,5.0f };
+	float circleShadowDistance = 100.0f;
 
-	float spotLightDir[3] = { 0,-1,0 };
-	float spotLightPos[3] = { 0,5,0 };
-	float spotLightColor[3] = { 1.0f,1.0f,1.0f };
-	float spotLightAtten[3] = { 0.0f,0.0f,0.0f };
-	float spotLightFactorAngle[2] = { 20.0f,30.0f };
+	float fighterPos[3] = { 1.0f,0,0 };
 
 	std::unique_ptr<ColliderManager> colliderM;
 

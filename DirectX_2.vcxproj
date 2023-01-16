@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClCompile Include="Async.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CircleShadow.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="ColliderManager.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -188,6 +189,7 @@
   <ItemGroup>
     <ClInclude Include="Async.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CircleShadow.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ColliderManager.h" />
     <ClInclude Include="Collision.h" />

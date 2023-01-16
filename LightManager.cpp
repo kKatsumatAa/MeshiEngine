@@ -102,6 +102,28 @@ void LightManager::TransferConstBuffer()
 				constMap->spotLights[i].active = 0;
 			}
 		}
+		//丸影
+		for (int i = 0; i < CircleShadowNum; i++)
+		{
+			//ライトが有効なら設定を転送
+			if (circleShadows[i].GetLightActive())
+			{
+				constMap->circleShadows[i].active = 1;
+				constMap->circleShadows[i].dir = -circleShadows[i].GetDir();
+				constMap->circleShadows[i].casterPos = circleShadows[i].GetCasterPos();
+				constMap->circleShadows[i].distanceCasterLight =
+					circleShadows[i].GetDistanceCasterLight();
+				constMap->circleShadows[i].atten =
+					circleShadows[i].GetAtten();
+				constMap->circleShadows[i].factorAngleCos =
+					circleShadows[i].GetFactorAngleCos();
+			}
+			//ライトが無効ならライト色を0に
+			else
+			{
+				constMap->circleShadows[i].active = 0;
+			}
+		}
 
 		constBuff->Unmap(0, nullptr);
 	}
@@ -257,5 +279,54 @@ void LightManager::SetSpotLightFactorAngle(int index, const XMFLOAT2& lightFacto
 	assert(0 <= index && index < SpotLightNum);
 
 	spotLights[index].SetLightFactorAngleCos(lightFactorAngle);
+	dirty = true;
+}
+
+
+//--------------------------------------------------------------------------------------
+void LightManager::SetCircleShadowActive(int index, bool active)
+{
+	assert(0 <= index && index < CircleShadowNum);
+
+	circleShadows[index].SetLightActive(active);
+}
+
+void LightManager::SetCircleShadowCasterPos(int index, const XMFLOAT3& casterPos)
+{
+	assert(0 <= index && index < CircleShadowNum);
+
+	circleShadows[index].SetCasterPos(casterPos);
+	dirty = true;
+}
+
+void LightManager::SetCircleShadowDir(int index, const XMVECTOR& lightdir)
+{
+	assert(0 <= index && index < CircleShadowNum);
+
+	circleShadows[index].SetDir(lightdir);
+	dirty = true;
+}
+
+void LightManager::SetCircleShadowDistanceCasterLight(int index, float distanceCasterLight)
+{
+	assert(0 <= index && index < CircleShadowNum);
+
+	circleShadows[index].SetDistanceCasterLight(distanceCasterLight);
+	dirty = true;
+}
+
+void LightManager::SetCircleShadowAtten(int index, const XMFLOAT3& lightAtten)
+{
+	assert(0 <= index && index < CircleShadowNum);
+
+	circleShadows[index].SetAtten(lightAtten);
+	dirty = true;
+}
+
+void LightManager::SetCircleShadowFactorAngle(int index, const XMFLOAT2& lightFactorAngle)
+{
+	assert(0 <= index && index < CircleShadowNum);
+
+	circleShadows[index].SetFactorAngleCos(lightFactorAngle);
 	dirty = true;
 }
