@@ -212,7 +212,7 @@ void LightManager::SetPointLightAtten(int index, const XMFLOAT3& atten)
 	dirty = true;
 }
 
-
+//------------------------------------------------------------------------
 void LightManager::SetSpotLightActive(int index, bool active)
 {
 	assert(0 <= index && index < SpotLightNum);

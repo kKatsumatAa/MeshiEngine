@@ -83,14 +83,14 @@ float4 main(VSOutput input) : SV_TARGET
 				spotLights[i].lightfactoranglecos.x, cos);
 			//角度減衰を乗算
 			atten *= angleatten;
-			//ライトに向かうベクトルと法線の内積
+			// ライトに向かうベクトルと法線の内積
 			float3 dotlightnormal = dot(lightv, input.normal);
-			//反射光ベクトル　
+			// 反射光ベクトル
 			float3 reflect = normalize(-lightv + 2 * dotlightnormal * input.normal);
-			//拡散反射光
-			float3 diffuse = dotlightnormal * m_diffuse;
-			//鏡面反射光
-			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess) * m_specular;
+			// 拡散反射光
+			float3 diffuse = dotlightnormal * 0.8f;
+			// 鏡面反射光
+			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess) * 0.1f;
 			//全て加算する
 			shadecolor.rgb += atten * (diffuse + specular) * spotLights[i].lightcolor;
 		}

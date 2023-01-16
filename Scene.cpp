@@ -240,6 +240,7 @@ void Scene::Initialize()
 	{
 		lightManager->SetPointLightActive(i, false);
 	}
+	//スポットライト
 	lightManager->SetSpotLightActive(0, true);
 
 	//カメラ

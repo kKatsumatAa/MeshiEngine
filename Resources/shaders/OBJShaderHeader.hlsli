@@ -47,7 +47,7 @@ struct SpotLight
 	float3 lightpos;    // ライトの位置
 	float3 lightcolor;    // ライトの色(RGB)
 	float3 lightatten;    // ライトの減衰係数
-	float3 lightfactoranglecos;//ライト減衰角度のコサイン
+	float2 lightfactoranglecos;//ライト減衰角度のコサイン
 	uint   active;      //有効か
 };
 
