@@ -59,7 +59,7 @@ public:
 
 	float pointLightPos[3] = { 0,0,0 };
 	float pointLightColor[3] = { 1.0f,1.0f,1.0f };
-	float pointLightAtten[3] = { 0.3f,0.1f,0.1f };
+	float pointLightAtten[3] = { 0.01f,0.01f,0.01f };
 
 	std::unique_ptr<ColliderManager> colliderM;
 

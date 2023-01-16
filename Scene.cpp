@@ -231,12 +231,20 @@ void Scene::Initialize()
 	lightManager->SetDirLightColor(0, { 1,1,1 });
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
 	Object::SetLight(lightManager);
-
-	//点光源
 	lightManager->SetDirLightActive(0, false);
 	lightManager->SetDirLightActive(1, false);
 	lightManager->SetDirLightActive(2, false);
-	lightManager->SetPointLightActive(0, true);
+	//点光源
+	for (int i = 0; i < 6; i++)
+	{
+		if (i == 0) {
+			lightManager->SetPointLightActive(0, true);
+		}
+		else
+		{
+			lightManager->SetPointLightActive(i, false);
+		}
+	}
 	pointLightPos[0] = 0.5f;
 	pointLightPos[1] = 1.0f;
 	pointLightPos[2] = 0.0f;
@@ -267,7 +275,7 @@ void Scene::Update()
 		ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
 		ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
 		ImGui::InputFloat3("pointLightPos", pointLightPos);
-		ImGui::InputFloat3("pointLight", pointLightAtten);
+		ImGui::InputFloat3("pointLightAtten", pointLightAtten);
 		ImGui::End();
 		lightManager->Update();
 
