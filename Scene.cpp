@@ -205,16 +205,17 @@ void Scene::Initialize()
 	//model
 	Model::StaticInitialize();
 
-	model[0] = Model::LoadFromOBJ("skydome");
+	model[0] = Model::LoadFromOBJ("skydome",true,true);
 	draw[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[0].worldMat->SetWorld();
 	model[1] = Model::LoadFromOBJ("ground");
 	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[1].worldMat->trans = { 10.0f, -10.0f, 0 };
 	draw[1].worldMat->SetWorld();
-	model[2] = Model::LoadFromOBJ("sphere");
+	model[2] = Model::LoadFromOBJ("player");
 	draw[2].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[2].worldMat->rot.y = { -pi/2.0f };
+	draw[2].worldMat->trans = { 20.0f,10.0f,10.0f };
 	draw[2].worldMat->SetWorld();
 
 
@@ -311,11 +312,6 @@ void Scene::Draw()
 	{
 		draw[i].DrawModel(draw[i].worldMat, &camera->viewMat,&camera->projectionMat, model[i]);
 	}
-
-	draw[4].worldMat->scale = { 100,1,100 };
-	draw[4].worldMat->trans = { 0,0,0 };
-	draw[4].worldMat->SetWorld();
-	draw[4].DrawCube3D(draw[4].worldMat, &camera->viewMat, &camera->projectionMat);
 
 	state->Draw();
 }
