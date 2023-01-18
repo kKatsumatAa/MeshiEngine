@@ -40,3 +40,12 @@ public:
 	//法線ベクトル
 	DirectX::XMVECTOR normal;
 };
+
+
+struct Ray
+{
+	//視点座標
+	DirectX::XMVECTOR start = { 0,0,0,1.0f };
+	//方向
+	DirectX::XMVECTOR dir = { 1.0f,0,0,0 };
+};
