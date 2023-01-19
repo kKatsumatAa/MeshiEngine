@@ -247,6 +247,10 @@ void Scene::Initialize()
 	camera = std::make_unique<Camera>();
 	camera->Initialize();
 
+	//レイの初期値を設定
+	ray.start = XMVectorSet(0, 1, 0, 1);//原点やや上
+	ray.dir = XMVectorSet(0, -1, 0, 0);//下向き
+
 	//ステート変更
 	ChangeState(new SceneLoad);
 }
@@ -259,24 +263,6 @@ void Scene::Update()
 	{
 		//デモ
 		ImGui::ShowDemoWindow();
-
-		//丸影
-		lightManager->SetCircleShadowDir(0,
-			XMVECTOR({ circleShadowDir[0], circleShadowDir[1], circleShadowDir[2],0 }));
-		lightManager->SetCircleShadowCasterPos(0,
-			XMFLOAT3({ fighterPos[0],fighterPos[1],fighterPos[2] }));
-		lightManager->SetCircleShadowAtten(0, XMFLOAT3(circleShadowAtten));
-		lightManager->SetCircleShadowFactorAngle(0, XMFLOAT2(circleShadowFactorAngle));
-		lightManager->SetCircleShadowDistanceCasterLight(0, circleShadowDistance);
-
-		static bool a = true;
-		ImGui::Begin("circleShadow", &a, ImGuiWindowFlags_MenuBar);
-
-		ImGui::InputFloat3("circleShadowDir", circleShadowDir);
-		ImGui::InputFloat3("circleShadowAtten", circleShadowAtten);
-		ImGui::InputFloat2("circleShadowFactorAngle", circleShadowFactorAngle);
-		ImGui::InputFloat3("fihgterPos", fighterPos);
-		ImGui::InputFloat("distanceLight", &circleShadowDistance);
 
 
 		ImGui::End();

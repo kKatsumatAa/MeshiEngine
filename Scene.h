@@ -65,6 +65,9 @@ public:
 
 	float fighterPos[3] = { 1.0f,0,0 };
 
+	//“–‚½‚è”»’èƒŒƒC
+	Ray ray;
+
 	std::unique_ptr<ColliderManager> colliderM;
 
 	std::unique_ptr<Camera> camera;
