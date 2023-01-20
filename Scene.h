@@ -65,6 +65,8 @@ public:
 
 	float fighterPos[3] = { 1.0f,0,0 };
 
+	//
+	Plane plane;
 	//“–‚½‚è”»’èƒŒƒC
 	Ray ray;
 

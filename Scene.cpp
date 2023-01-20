@@ -219,7 +219,6 @@ void Scene::Initialize()
 	draw[2].worldMat->SetWorld();
 
 
-
 	//imgui
 	imGuiManager = new ImGuiManager();
 	imGuiManager->Initialize();
@@ -241,15 +240,24 @@ void Scene::Initialize()
 		lightManager->SetPointLightActive(i, false);
 	}
 	//丸影
-	lightManager->SetCircleShadowActive(0, true);
+	lightManager->SetCircleShadowActive(0, false);
 
 	//カメラ
 	camera = std::make_unique<Camera>();
 	camera->Initialize();
 
+	//
+	plane.distance = draw[1].worldMat->trans.y;
+	plane.normal = { 0,1,0 };
+
 	//レイの初期値を設定
-	ray.start = XMVectorSet(0, 1, 0, 1);//原点やや上
+	ray.start = XMVectorSet(0, 10, 0, 1);//原点やや上
 	ray.dir = XMVectorSet(0, -1, 0, 0);//下向き
+
+	//
+	draw[3].worldMat->trans = { ray.start.m128_f32[0],ray.start.m128_f32[1], ray.start.m128_f32[2] };
+	draw[3].worldMat->scale.y = 100;
+	draw[3].worldMat->SetWorld();
 
 	//ステート変更
 	ChangeState(new SceneLoad);
@@ -264,13 +272,53 @@ void Scene::Update()
 		//デモ
 		ImGui::ShowDemoWindow();
 
-
-		ImGui::End();
-		lightManager->Update();
-
 	}
 
-	draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
+	//レイ操作
+	{
+		XMVECTOR moveZ = XMVectorSet(0, 0, 0.01f, 0);
+		if (KeyboardInput::GetInstance().KeyPush(DIK_8)) { ray.start += moveZ*5; }
+		else if (KeyboardInput::GetInstance().KeyPush(DIK_2)) { ray.start -= moveZ*5; }
+
+		XMVECTOR moveX = XMVectorSet(0.01f, 0, 0, 0);
+		if (KeyboardInput::GetInstance().KeyPush(DIK_6)) { ray.start += moveX*5; }
+		else if (KeyboardInput::GetInstance().KeyPush(DIK_4)) { ray.start -= moveX*5; }
+	}
+
+	draw[3].worldMat->trans = { ray.start.m128_f32[0],ray.start.m128_f32[1], ray.start.m128_f32[2] };
+	draw[3].worldMat->scale.y = 100;
+	draw[3].worldMat->SetWorld();
+
+	std::ostringstream raystr;
+	raystr << "ray.start("
+		<< std::fixed << std::setprecision(2)
+		<< ray.start.m128_f32[0] << ","
+		<< ray.start.m128_f32[1] << ","
+		<< ray.start.m128_f32[2] << ")";
+
+	debugText.Print(raystr.str(), 50, 180);
+
+	//例と平面の当たり判定
+	XMVECTOR inter;
+	float distance;
+	bool hit = Collision::CheckRay2Plane(ray, plane, &distance, &inter);
+	if (hit) {
+		debugText.Print("HIT", 50, 260, 1.0f);
+		//stringstreamをリセットし、交点座標を埋め込む
+		raystr.str("");
+		raystr.clear();
+		raystr << "("
+			<< std::fixed << std::setprecision(2)
+			<< inter.m128_f32[0] << ","
+			<< inter.m128_f32[1] << ","
+			<< inter.m128_f32[2] << ")";
+	}
+
+	debugText.Print(raystr.str(), 50, 280);
+
+
+	lightManager->Update();
+
 
 	state->Update();
 
@@ -302,16 +350,15 @@ void Scene::Draw()
 	{
 		draw[i].DrawModel(draw[i].worldMat, &camera->viewMat, &camera->projectionMat, model[i]);
 	}
-	draw[3].worldMat->trans = { 0,-10,0 };
-	draw[3].worldMat->SetWorld();
 	draw[3].DrawCube3D(draw[3].worldMat, &camera->viewMat, &camera->projectionMat);
+
 
 	state->Draw();
 }
 
 void Scene::DrawPostEffect()
 {
-	draw[2].DrawPera();
+	//draw[2].DrawPera();
 }
 
 void Scene::DrawSprite()
