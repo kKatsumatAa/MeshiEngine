@@ -218,6 +218,10 @@ void Scene::Initialize()
 	draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
 	draw[2].worldMat->SetWorld();
 
+	draw[4].worldMat->scale = { 5.0f,5.0f,5.0f };
+	draw[4].worldMat->trans = { -20.0f,0,-10.0f };
+	draw[4].worldMat->SetWorld();
+
 
 	//imgui
 	imGuiManager = new ImGuiManager();
@@ -247,10 +251,8 @@ void Scene::Initialize()
 	camera->Initialize();
 
 	//
-	triangle.p0 = XMVectorSet(-5.0f, 0, -5.0f, 1);//左手前
-	triangle.p1 = XMVectorSet(0, 0, +5.0f, 1);//左手前
-	triangle.p2 = XMVectorSet(+5.0f, 0, -5.0f, 1);//左手前
-	triangle.ComputeNormal();
+	sphere.centor = { draw[4].worldMat->trans.x,draw[4].worldMat->trans.y,draw[4].worldMat->trans.z };
+	sphere.radius = draw[4].worldMat->scale.y;
 
 	//レイの初期値を設定
 	ray.start = XMVectorSet(0, 10, 0, 1);//原点やや上
@@ -279,12 +281,12 @@ void Scene::Update()
 	//レイ操作
 	{
 		XMVECTOR moveZ = XMVectorSet(0, 0, 0.01f, 0);
-		if (KeyboardInput::GetInstance().KeyPush(DIK_UPARROW)) { ray.start += moveZ * 5; }
-		else if (KeyboardInput::GetInstance().KeyPush(DIK_DOWNARROW)) { ray.start -= moveZ * 5; }
+		if (KeyboardInput::GetInstance().KeyPush(DIK_UPARROW)) { ray.start += moveZ * 15; }
+		else if (KeyboardInput::GetInstance().KeyPush(DIK_DOWNARROW)) { ray.start -= moveZ * 15; }
 
 		XMVECTOR moveX = XMVectorSet(0.01f, 0, 0, 0);
-		if (KeyboardInput::GetInstance().KeyPush(DIK_RIGHTARROW)) { ray.start += moveX * 5; }
-		else if (KeyboardInput::GetInstance().KeyPush(DIK_LEFTARROW)) { ray.start -= moveX * 5; }
+		if (KeyboardInput::GetInstance().KeyPush(DIK_RIGHTARROW)) { ray.start += moveX * 15; }
+		else if (KeyboardInput::GetInstance().KeyPush(DIK_LEFTARROW)) { ray.start -= moveX * 15; }
 	}
 
 	draw[3].worldMat->trans = { ray.start.m128_f32[0],ray.start.m128_f32[1], ray.start.m128_f32[2] };
@@ -303,7 +305,7 @@ void Scene::Update()
 	//レイと三角形の当たり判定
 	float distance;
 	XMVECTOR inter;
-	bool hit = Collision::CheckRay2Triangle(ray, triangle, &distance, &inter);
+	bool hit = Collision::CheckRay2Sphere(ray, sphere, &distance, &inter);
 	if (hit) {
 		debugText.Print("HIT", 50, 220);
 		//stringstreamをリセットし、交点座標を埋め込む
@@ -359,6 +361,7 @@ void Scene::Draw()
 		draw[i].DrawModel(draw[i].worldMat, &camera->viewMat, &camera->projectionMat, model[i]);
 	}
 	draw[3].DrawCube3D(draw[3].worldMat, &camera->viewMat, &camera->projectionMat);
+	draw[4].DrawSphere(draw[4].worldMat, &camera->viewMat, &camera->projectionMat);
 
 
 	state->Draw();

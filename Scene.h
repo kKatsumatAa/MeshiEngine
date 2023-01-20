@@ -66,7 +66,7 @@ public:
 	float fighterPos[3] = { 1.0f,0,0 };
 
 	//
-	Triangle triangle;
+	Sphere sphere;
 	//“–‚½‚è”»’èƒŒƒC
 	Ray ray;
 
