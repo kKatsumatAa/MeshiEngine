@@ -39,9 +39,17 @@ public:
 	DirectX::XMVECTOR p2;
 	//法線ベクトル
 	DirectX::XMVECTOR normal;
+
+public:
+	/// <summary>
+	/// 法線の計算
+	/// </summary>
+	void ComputeNormal();
 };
 
-
+/// <summary>
+/// レイ
+/// </summary>
 struct Ray
 {
 	//視点座標

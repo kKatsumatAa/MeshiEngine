@@ -53,5 +53,16 @@ public:
 	/// <returns></returns>
 	static bool CheckRay2Plane(const Ray& ray, const Plane& plane,
 		float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
+
+	/// <summary>
+	/// レイと法線付き三角形の当たり判定
+	/// </summary>
+	/// <param name="ray"></param>
+	/// <param name="triangle"></param>
+	/// <param name="distance"></param>
+	/// <param name="inter"></param>
+	/// <returns></returns>
+	static bool CheckRay2Triangle(const Ray& ray, const Triangle& triangle,
+		float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
 };
 
