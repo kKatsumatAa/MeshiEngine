@@ -21,21 +21,24 @@ public://関数
 
 
 	//積
-	Quaternion GetMultiply(const Quaternion& rhs);
+	Quaternion GetMultiply(const Quaternion& rhs) const;
 	//共役クォータニオンを返す
-	Quaternion GetConjugate();
+	Quaternion GetConjugate() const;
 	//クォータニオンのNormを返す
-	float GetLength();
+	float GetLength() const;
 	//正規化したクォータニオンを返す
-	Quaternion GetNormalize();
+	Quaternion GetNormalize() const;
 	//逆クォータニオンを返す
-	Quaternion GetInverse();
+	Quaternion GetInverse() const;
 
 
 	//ベクトルをクォータニオンで回転させた結果のベクトルを求める
-	Vec3 GetRotateVector(const Vec3& vector);
+	Vec3 GetRotateVector(const Vec3& vector) const;
 	//クォータニオンから回転行列を求める
-	M4 MakeRotateMatrix();
+	M4 MakeRotateMatrix() const;
+
+	//内積
+	float DotQuaternion(const Quaternion& rhs)const;
 
 
 public://静的メンバ関数
@@ -49,7 +52,7 @@ public://静的メンバ関数
 public://オバロ演算子
 	Quaternion  operator+();
 	Quaternion& operator+=(const Quaternion& other);
-	Quaternion  operator-();
+	 Quaternion  operator-()const;
 	Quaternion& operator-=(const Quaternion& other);
 	Quaternion  operator*(const float& other);
 	Quaternion& operator*=(const float& other);
@@ -68,4 +71,11 @@ const Quaternion operator -(const Quaternion& q1, const Quaternion& q2);
 const Quaternion operator *(const Quaternion& v, float s);
 const Quaternion operator *(float s, const Quaternion& v);
 const Quaternion operator /(const Quaternion& v, float s);
+
+
+
+//球面線形補完
+Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
+
+
 

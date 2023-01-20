@@ -1,7 +1,7 @@
 #include "Quaternion.h"
 #include <math.h>
 
-Quaternion Quaternion::GetMultiply(const Quaternion& rhs)
+Quaternion Quaternion::GetMultiply(const Quaternion& rhs) const
 {
 	Quaternion   ans;
 	float   d1, d2, d3, d4;
@@ -41,7 +41,7 @@ Quaternion Quaternion::GetIdentityQuaternion()
 	return Quaternion(ans);
 }
 
-Quaternion Quaternion::GetConjugate()
+Quaternion Quaternion::GetConjugate() const
 {
 	Quaternion ans;
 
@@ -53,12 +53,12 @@ Quaternion Quaternion::GetConjugate()
 	return Quaternion(ans);
 }
 
-float Quaternion::GetLength()
+float Quaternion::GetLength() const
 {
 	return sqrtf(w * w + x * x + y * y + z * z);
 }
 
-Quaternion Quaternion::GetNormalize()
+Quaternion Quaternion::GetNormalize() const
 {
 	Quaternion ans;
 
@@ -72,7 +72,7 @@ Quaternion Quaternion::GetNormalize()
 	return Quaternion(ans);
 }
 
-Quaternion Quaternion::GetInverse()
+Quaternion Quaternion::GetInverse() const
 {
 	Quaternion ans;
 
@@ -91,7 +91,7 @@ Quaternion Quaternion::MakeAxisAngle(const Vec3& axis, float angle)
 	return Quaternion(ans);
 }
 
-Vec3 Quaternion::GetRotateVector(const Vec3& vector)
+Vec3 Quaternion::GetRotateVector(const Vec3& vector) const
 {
 	Quaternion r = { vector.x,vector.y,vector.z,0 };
 	Quaternion q = *this;
@@ -101,7 +101,7 @@ Vec3 Quaternion::GetRotateVector(const Vec3& vector)
 	return Vec3(ans.x, ans.y, ans.z);
 }
 
-M4 Quaternion::MakeRotateMatrix()
+M4 Quaternion::MakeRotateMatrix() const
 {
 	M4 ans = {
 		w * w + x * x - y * y - z * z,2 * (x * y + w * z),2 * (x * z - w * y),0,
@@ -113,9 +113,16 @@ M4 Quaternion::MakeRotateMatrix()
 	return M4(ans);
 }
 
+float Quaternion::DotQuaternion(const Quaternion& rhs) const
+{
+	float ans = (this->w * rhs.w + this->x * rhs.x + this->y * rhs.y + this->z * rhs.z);
+
+	return ans;
+}
+
 
 //--------------------------------------------------------------
-Quaternion Quaternion::operator+()
+ Quaternion Quaternion::operator+()
 {
 	return Quaternion(*this);
 }
@@ -130,7 +137,7 @@ Quaternion& Quaternion::operator+=(const Quaternion& other)
 	return *this;
 }
 
-Quaternion Quaternion::operator-()
+Quaternion Quaternion::operator-()const
 {
 	return Quaternion({ -x,-y,-z,-w });
 }
@@ -145,7 +152,7 @@ Quaternion& Quaternion::operator-=(const Quaternion& other)
 	return *this;
 }
 
-Quaternion Quaternion::operator*(const float& other)
+ Quaternion Quaternion::operator*(const float& other)
 {
 	Quaternion ans = *this;
 	ans.x *= other;
@@ -166,7 +173,7 @@ Quaternion& Quaternion::operator*=(const float& other)
 	return *this;
 }
 
-Quaternion Quaternion::operator/(const float& other)
+ Quaternion Quaternion::operator/(const float& other)
 {
 	Quaternion ans = *this;
 	ans.x /= other;
@@ -187,7 +194,7 @@ Quaternion& Quaternion::operator/=(const float& other)
 	return *this;
 }
 
-Quaternion Quaternion::operator*(const Quaternion& other)
+ Quaternion Quaternion::operator*(const Quaternion& other)
 {
 	return Quaternion(this->GetMultiply(other));
 }
@@ -230,4 +237,28 @@ const Quaternion operator/(const Quaternion& q, float s)
 {
 	Quaternion ans(q);
 	return ans /= s;
+}
+
+
+Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
+{
+	float dot = q0.DotQuaternion(q1);
+
+	Quaternion q02;
+
+	if (dot < 0)
+	{
+		q02 = -q0; //‚à‚¤•Ð•û‚Ì‰ñ“]‚ð—˜—p‚·‚é
+		dot = -dot; //“àÏ‚à”½“]
+	}
+
+	//‚È‚·Šp‚ð‹‚ß‚é
+	float theta = acos(dot);
+
+	//theta‚Æsin‚ðŽg‚Á‚Ä•âŠÔŒW”scale0,scale1‚ð‹‚ß‚é
+	float scale0 = sinf((1 - t) * theta) / sinf(theta);
+	float scale1 = sinf(t * theta) / sinf(theta);
+
+	//‚»‚ê‚¼‚ê‚Ì•âŠÔŒW”‚ð—˜—p‚µ‚Ä•âŠÔŒã‚ÌQuaternion‚ð‹‚ß‚é
+	return scale0 * q0 + scale1 * q1;
 }
