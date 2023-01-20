@@ -9,6 +9,7 @@
 //自作
 void Vec4xM4(Vec4& v, const M4& m4);
 void Vec3xM4(Vec3& v, const M4& m4, const bool w);
+Vec3 GetVec3xM4(Vec3 v, const M4 m4, const bool w);
 void Vec3xM4andDivisionW(Vec3& v, const M4& m4, const bool w);
 
 //ラジアン系
@@ -20,6 +21,9 @@ float GetRadianVec3(const Vec3& v1, const Vec3& v2);
 //線形補完
 Vec3 LerpVec3(const Vec3& v1, const Vec3& v2, float t);
 Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t);
+
+//スプライン補間
+Vec3 SplinePosition(const std::vector<Vec3>& points, size_t startIndex, float t);
 
 float EaseIn(float t);
 

@@ -37,6 +37,24 @@ void Vec3xM4(Vec3& v, const M4& m4, const bool w)
 	v = { v4[1][0],v4[1][1] ,v4[1][2] };
 }
 
+Vec3 GetVec3xM4(Vec3 v, const M4 m4, const bool w)
+{
+	float v4[2][4] = {
+	{ v.x,v.y,v.z,(float)w },
+	{0,0,0,0}
+	};
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			v4[1][i] += v4[0][j] * (float)m4.m[j][i];
+		}
+	}
+
+	return { v4[1][0],v4[1][1] ,v4[1][2] };
+}
+
 void Vec3xM4andDivisionW(Vec3& v, const M4& m4, const bool w)
 {
 	float v4[2][4] = {
@@ -98,6 +116,31 @@ Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t)
 		(sinf((1 - t) * radian) / sinf(radian) * v1.GetNormalized() + sinf(t * radian) / sinf(radian) * v2.GetNormalized());
 
 	return v;
+}
+
+
+Vec3 SplinePosition(const std::vector<Vec3>& points, size_t startIndex, float t)
+{
+	//•âŠ®‚·‚×‚«“_‚Ì”
+	size_t n = points.size() - 2;
+
+	if (startIndex > n)return points[n];
+	if (startIndex < 1)return points[1];
+
+	//p0~p3‚Ì§Œä“_‚ðŽæ“¾@¦p1~p2‚ð•âŠÔ
+	Vec3 p0 = points[startIndex - 1];
+	Vec3 p1 = points[startIndex];
+	Vec3 p2 = points[startIndex + 1];
+	Vec3 p3 = points[startIndex + 2];
+
+	//catmull-rom
+	Vec3 position = (
+		2.0f * p1 + (-1.0f * p0 + p2) * t
+		+ (2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3) * powf(t, 2)
+		+ (-1.0f * p0 + 3.0f * p1 - 3.0f * p2 + p3) * powf(t, 3)
+		) / 2.0f;
+
+	return position;
 }
 
 float EaseIn(float t)
