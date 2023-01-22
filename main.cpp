@@ -36,7 +36,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{
 			break;
 		}
-		if (KeyboardInput::GetInstance().KeyPush(DIK_ESCAPE)) { break; }
 
 		//毎フレーム処理　ここから//
 		//キーボード情報の取得開始

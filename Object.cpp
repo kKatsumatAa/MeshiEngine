@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "PostPera.h"
+#include "BaseCollider.h"
 
 //図形のクラス
 Primitive primitive;
@@ -134,6 +135,35 @@ void DrawInitialize()
 	postPera.Initialize();
 }
 
+bool Object::Initialize()
+{
+	name = typeid(*this).name();
+	return true;
+}
+
+Object::~Object()
+{
+	if (collider)
+	{
+		delete collider;
+	}
+}
+
+void Object::Update()
+{
+	//当たり判定更新
+	if (collider)
+	{
+		collider->Update();
+	}
+}
+
+void Object::SetCollider(BaseCollider* collider)
+{
+	collider->SetObject(this);
+	this->collider = collider;
+}
+
 Object::Object()
 {
 	//行列
@@ -153,8 +183,6 @@ Object::Object()
 	Directx::GetInstance().result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
 	assert(SUCCEEDED(Directx::GetInstance().result));
 }
-
-
 
 void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
 	Model* model, const bool& primitiveMode)
@@ -565,6 +593,12 @@ void Object::DrawBoxSprite(const Vec3& pos, const float& scale,
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
+
+void Object::Draw()
+{
+}
+
+
 
 void Object::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, const bool& isReverseX, const bool& isReverseY,

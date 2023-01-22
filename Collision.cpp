@@ -4,7 +4,7 @@ using namespace DirectX;
 
 bool Collision::CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2)
 {
-	XMVECTOR length = sphere.centor - sphere2.centor;
+	XMVECTOR length = sphere.center - sphere2.center;
 	Vec3 vec = { length.m128_f32[0],length.m128_f32[1],length.m128_f32[2] };
 
 	if (vec.GetLength() <= sphere.radius + sphere2.radius)
@@ -16,7 +16,7 @@ bool Collision::CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2)
 bool Collision::CheckSphere2Plane(const Sphere& sphere, const Plane& plane, DirectX::XMVECTOR* inter)
 {
 	//"座標系の原点"から球の中心座標への距離
-	XMVECTOR distV = XMVector3Dot(sphere.centor, plane.normal);
+	XMVECTOR distV = XMVector3Dot(sphere.center, plane.normal);
 	//平面の原点距離を減算することで、平面と球の中心との距離が出る
 	float dist = distV.m128_f32[0] - plane.distance;
 	//距離の絶対値が半径より大きければ当たっていない
@@ -26,7 +26,7 @@ bool Collision::CheckSphere2Plane(const Sphere& sphere, const Plane& plane, Dire
 	if (inter)
 	{
 		//平面上の最近接点を、疑似交点とする
-		*inter = -dist * plane.normal + sphere.centor;
+		*inter = -dist * plane.normal + sphere.center;
 	}
 
 	return true;
@@ -110,9 +110,9 @@ bool Collision::CheckSphere2Triangle(const Sphere& sphere, const Triangle& trian
 {
 	XMVECTOR p;
 	//弾の中心に対する最近接点である三角形上にある点pを見つける
-	ClosestPtPoint2Triangle(sphere.centor, triangle, &p);
+	ClosestPtPoint2Triangle(sphere.center, triangle, &p);
 	//点pと球の中心の差分ベクトル
-	XMVECTOR v = p - sphere.centor;
+	XMVECTOR v = p - sphere.center;
 	//距離の二乗を求める
 	//（同じベクトル同士の内積は三平方の定理のルート内部の式と一致する）
 	v = XMVector3Dot(v, v);
@@ -199,7 +199,7 @@ bool Collision::CheckRay2Triangle(const Ray& ray, const Triangle& triangle, floa
 
 bool Collision::CheckRay2Sphere(const Ray& ray, const Sphere& sphere, float* distance, DirectX::XMVECTOR* inter)
 {
-	XMVECTOR m = ray.start - sphere.centor;
+	XMVECTOR m = ray.start - sphere.center;
 	float b = XMVector3Dot(m, ray.dir).m128_f32[0];
 	float c = XMVector3Dot(m, m).m128_f32[0] - sphere.radius * sphere.radius;
 	//レイの始点がsphereの外側にあり（c > 0）、レイがsphereから離れていく方向をさしている場合（b > 0）、当たらない

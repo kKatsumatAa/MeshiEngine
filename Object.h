@@ -3,6 +3,9 @@
 #include "Util.h"
 #include "Primitive.h"
 #include "LightManager.h"
+#include"CollisionInfo.h"
+
+class BaseCollider;
 
 
 /// <summary>
@@ -54,11 +57,37 @@ public://変数
 	ProjectionMat* projection;
 	bool isWireFrame = 0;
 
+protected://継承先まで公開
+	//クラス名(デバッグ用)
+	const char* name = nullptr;
+	//コライダー
+	BaseCollider* collider = nullptr;
+
+
 public:
-
-
-	//
+	//コンストラクタ
 	Object();
+
+	//デストラクタ
+	virtual ~Object();
+
+	//初期化
+	virtual bool Initialize();
+
+	virtual void Update();
+
+	virtual void Draw();
+
+	//ワールド行列の取得
+	const M4 GetMatWorld() { return worldMat->matWorld; }
+
+	//コライダーのセット
+	void SetCollider(BaseCollider* collider);
+
+	//衝突時コールバック関数
+	virtual void OnCollision(const CollisionInfo& info){}
+
+	//-------------
 
 	void DrawPera();
 

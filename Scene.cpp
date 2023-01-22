@@ -251,7 +251,7 @@ void Scene::Initialize()
 	camera->Initialize();
 
 	//
-	sphere.centor = { draw[4].worldMat->trans.x,draw[4].worldMat->trans.y,draw[4].worldMat->trans.z };
+	sphere.center = { draw[4].worldMat->trans.x,draw[4].worldMat->trans.y,draw[4].worldMat->trans.z };
 	sphere.radius = draw[4].worldMat->scale.y;
 
 	//ƒŒƒC‚Ì‰Šú’l‚ðÝ’è
