@@ -2,13 +2,21 @@
 #include "Vec3.h"
 using namespace DirectX;
 
-bool Collision::CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2)
+bool Collision::CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2, DirectX::XMVECTOR* inter)
 {
 	XMVECTOR length = sphere.center - sphere2.center;
 	Vec3 vec = { length.m128_f32[0],length.m128_f32[1],length.m128_f32[2] };
 
+	XMVECTOR Vec = sphere2.center - sphere.center;
+	if (inter)
+	{
+		*inter = sphere.center + Vec / 2.0f;
+	}
+
 	if (vec.GetLength() <= sphere.radius + sphere2.radius)
+	{
 		return true;
+	}
 
 	return false;
 }

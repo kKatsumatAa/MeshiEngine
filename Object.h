@@ -84,6 +84,11 @@ public:
 	//コライダーのセット
 	void SetCollider(BaseCollider* collider);
 
+	//判定を有効にするか
+	void SetIsValid(bool isValid);
+	//スプライトかどうか
+	void SetIs2D(bool is2D);
+
 	//衝突時コールバック関数
 	virtual void OnCollision(const CollisionInfo& info){}
 

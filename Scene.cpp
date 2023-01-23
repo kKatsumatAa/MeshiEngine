@@ -1,6 +1,9 @@
 #include "Scene.h"
 #include <sstream>
 #include <iomanip>
+#include "SphereCollider.h"
+#include "CollisionManager.h"
+#include "Player.h"
 
 void SceneState::SetScene(Scene* scene)
 {
@@ -218,6 +221,7 @@ void Scene::Initialize()
 	draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
 	draw[2].worldMat->SetWorld();
 
+	//球
 	draw[4].worldMat->scale = { 5.0f,5.0f,5.0f };
 	draw[4].worldMat->trans = { -20.0f,0,-10.0f };
 	draw[4].worldMat->SetWorld();
@@ -250,18 +254,15 @@ void Scene::Initialize()
 	camera = std::make_unique<Camera>();
 	camera->Initialize();
 
-	//
-	sphere.center = { draw[4].worldMat->trans.x,draw[4].worldMat->trans.y,draw[4].worldMat->trans.z };
-	sphere.radius = draw[4].worldMat->scale.y;
+	//コライダー
+	collisionManager = CollisionManager::GetInstance();
+	objPlayer = Player::Create();
+	//objPlayer->Initialize();
 
-	//レイの初期値を設定
-	ray.start = XMVectorSet(0, 10, 0, 1);//原点やや上
-	ray.dir = XMVectorSet(0, -1, 0, 0);//下向き
-
-	//
-	draw[3].worldMat->trans = { ray.start.m128_f32[0],ray.start.m128_f32[1], ray.start.m128_f32[2] };
-	draw[3].worldMat->scale.y = 100;
-	draw[3].worldMat->SetWorld();
+	draw[4].SetCollider(new SphereCollider);
+	/*draw[4].SetIsValid(false);*/
+	
+	ParticleManager::GetInstance()->Initialize();
 
 	//ステート変更
 	ChangeState(new SceneLoad);
@@ -278,57 +279,13 @@ void Scene::Update()
 
 	}
 
-	//レイ操作
-	{
-		XMVECTOR moveZ = XMVectorSet(0, 0, 0.01f, 0);
-		if (KeyboardInput::GetInstance().KeyPush(DIK_UPARROW)) { ray.start += moveZ * 15; }
-		else if (KeyboardInput::GetInstance().KeyPush(DIK_DOWNARROW)) { ray.start -= moveZ * 15; }
-
-		XMVECTOR moveX = XMVectorSet(0.01f, 0, 0, 0);
-		if (KeyboardInput::GetInstance().KeyPush(DIK_RIGHTARROW)) { ray.start += moveX * 15; }
-		else if (KeyboardInput::GetInstance().KeyPush(DIK_LEFTARROW)) { ray.start -= moveX * 15; }
-	}
-
-	draw[3].worldMat->trans = { ray.start.m128_f32[0],ray.start.m128_f32[1], ray.start.m128_f32[2] };
-	draw[3].worldMat->scale.y = 100;
-	draw[3].worldMat->SetWorld();
-
-	std::ostringstream raystr;
-	raystr << "ray.start("
-		<< std::fixed << std::setprecision(2)
-		<< ray.start.m128_f32[0] << ","
-		<< ray.start.m128_f32[1] << ","
-		<< ray.start.m128_f32[2] << ")";
-
-	debugText.Print(raystr.str(), 50, 180);
-
-	//レイと三角形の当たり判定
-	float distance;
-	XMVECTOR inter;
-	bool hit = Collision::CheckRay2Sphere(ray, sphere, &distance, &inter);
-	if (hit) {
-		debugText.Print("HIT", 50, 220);
-		//stringstreamをリセットし、交点座標を埋め込む
-		raystr.str("");
-		raystr.clear();
-		raystr << "inter:("
-			<< std::fixed << std::setprecision(2)
-			<< inter.m128_f32[0] << ","
-			<< inter.m128_f32[1] << ","
-			<< inter.m128_f32[2] << ")";
-	}
-
-	debugText.Print(raystr.str(), 50, 260);
-
-	raystr.str("");
-	raystr.clear();
-	raystr << "distance:(" << std::fixed << std::setprecision(2) << distance << ")";
-
-	debugText.Print(raystr.str(), 50, 300);
-
-
 	lightManager->Update();
 
+	objPlayer->Update();
+	draw[4].Update();
+
+	//全ての衝突をチェック
+	collisionManager->CheckAllCollisions();
 
 	state->Update();
 
@@ -350,21 +307,25 @@ void Scene::Update()
 	}
 #endif 
 
+	ParticleManager::GetInstance()->Update(&camera->viewMat, &camera->projectionMat);
+
 	//imgui
 	imGuiManager->End();
 }
 
 void Scene::Draw()
 {
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		draw[i].DrawModel(draw[i].worldMat, &camera->viewMat, &camera->projectionMat, model[i]);
 	}
-	draw[3].DrawCube3D(draw[3].worldMat, &camera->viewMat, &camera->projectionMat);
 	draw[4].DrawSphere(draw[4].worldMat, &camera->viewMat, &camera->projectionMat);
 
+	objPlayer->DrawModel(objPlayer->worldMat, &camera->viewMat, &camera->projectionMat, model[2]);
 
 	state->Draw();
+
+	ParticleManager::GetInstance()->Draw(texhandle[1]);
 }
 
 void Scene::DrawPostEffect()

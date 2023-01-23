@@ -15,5 +15,7 @@ void SphereCollider::Update()
 	(float)matWorld.m[3][2] + offset.m128_f32[2],
 	(float)matWorld.m[3][3] + offset.m128_f32[3],
 	};
-	Sphere::radius = radius;
+	//ワールド行列のスケールから半径
+	Sphere::radius =
+		(object->worldMat->scale.x + object->worldMat->scale.y + object->worldMat->scale.z) / 3.0f;
 }

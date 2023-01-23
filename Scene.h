@@ -7,6 +7,8 @@
 #include"Camera.h"
 #include"Async.h"
 
+class CollisionManager;
+class Player;
 
 
 class Scene;
@@ -65,14 +67,13 @@ public:
 
 	float fighterPos[3] = { 1.0f,0,0 };
 
-	//
-	Sphere sphere;
-	//当たり判定レイ
-	Ray ray;
-
 	std::unique_ptr<ColliderManager> colliderM;
 
 	std::unique_ptr<Camera> camera;
+
+	//コライダー
+	Player* objPlayer;
+	CollisionManager* collisionManager;
 
 public:
 	~Scene();

@@ -5,6 +5,7 @@
 #include <vector>
 #include "PostPera.h"
 #include "BaseCollider.h"
+#include "CollisionManager.h"
 
 //図形のクラス
 Primitive primitive;
@@ -135,6 +136,7 @@ void DrawInitialize()
 	postPera.Initialize();
 }
 
+//----------------------------------------------------------------
 bool Object::Initialize()
 {
 	name = typeid(*this).name();
@@ -145,12 +147,15 @@ Object::~Object()
 {
 	if (collider)
 	{
+		CollisionManager::GetInstance()->RemoveCollider(collider);
 		delete collider;
 	}
 }
 
 void Object::Update()
 {
+	//行列更新
+	worldMat->SetWorld();
 	//当たり判定更新
 	if (collider)
 	{
@@ -162,7 +167,30 @@ void Object::SetCollider(BaseCollider* collider)
 {
 	collider->SetObject(this);
 	this->collider = collider;
+	//コリジョンマネージャーに登録
+	CollisionManager::GetInstance()->AddCollider(collider);
+	//コライダーを更新
+	collider->Update();
 }
+
+void Object::SetIsValid(bool isValid)
+{
+	if (collider)
+	{
+		collider->SetIsValid(isValid);
+	}
+}
+
+void Object::SetIs2D(bool is2D)
+{
+	if (collider)
+	{
+		collider->SetIs2D(is2D);
+	}
+}
+
+
+//-------------------------------------------------------------------
 
 Object::Object()
 {

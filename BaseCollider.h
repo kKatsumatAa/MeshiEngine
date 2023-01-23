@@ -17,7 +17,7 @@ public:
 		this->object = object;
 	}
 
-	inline Object* GetObject() {
+	inline Object* GetObject3d() {
 		return object;
 	}
 
@@ -27,6 +27,14 @@ public:
 	virtual void Update() = 0;
 
 	inline CollisionShapeType GetShapeType() { return shapeType; }
+
+	//判定を有効にするかどうかのフラグ
+	inline void SetIsValid(bool isValid) { this->isValid = isValid; }
+	inline bool GetIsValid() { return isValid; }
+
+	//2dかどうか（スプライト用）
+	inline void SetIs2D(bool is2D) { this->is2D = is2D; }
+	inline bool GetIs2D() { return is2D; }
 
 	/// <summary>
 	/// 衝突時コールバック関数
@@ -41,5 +49,9 @@ protected:
 	Object* object = nullptr;
 	// 形状タイプ
 	CollisionShapeType shapeType = SHAPE_UNKNOWN;
+	//判定取るか取らないか
+	bool isValid = true;
+	//スプライト用の二次元かどうかフラグ
+	bool is2D = false;
 };
 
