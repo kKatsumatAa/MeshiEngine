@@ -122,7 +122,7 @@ float Quaternion::DotQuaternion(const Quaternion& rhs) const
 
 
 //--------------------------------------------------------------
- Quaternion Quaternion::operator+()
+Quaternion Quaternion::operator+()
 {
 	return Quaternion(*this);
 }
@@ -152,7 +152,7 @@ Quaternion& Quaternion::operator-=(const Quaternion& other)
 	return *this;
 }
 
- Quaternion Quaternion::operator*(const float& other)
+Quaternion Quaternion::operator*(const float& other)
 {
 	Quaternion ans = *this;
 	ans.x *= other;
@@ -173,7 +173,7 @@ Quaternion& Quaternion::operator*=(const float& other)
 	return *this;
 }
 
- Quaternion Quaternion::operator/(const float& other)
+Quaternion Quaternion::operator/(const float& other)
 {
 	Quaternion ans = *this;
 	ans.x /= other;
@@ -194,7 +194,7 @@ Quaternion& Quaternion::operator/=(const float& other)
 	return *this;
 }
 
- Quaternion Quaternion::operator*(const Quaternion& other)
+Quaternion Quaternion::operator*(const Quaternion& other)
 {
 	return Quaternion(this->GetMultiply(other));
 }
@@ -239,6 +239,14 @@ const Quaternion operator/(const Quaternion& q, float s)
 	return ans /= s;
 }
 
+Quaternion operator*(const Quaternion& q1, const Quaternion& q2)
+{
+	Quaternion ans = q1;
+	ans *= q2;
+
+	return Quaternion(ans);
+}
+
 
 Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
 {
@@ -251,14 +259,24 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
 		q02 = -q0; //‚à‚¤•Ğ•û‚Ì‰ñ“]‚ğ—˜—p‚·‚é
 		dot = -dot; //“àÏ‚à”½“]
 	}
+	else
+	{
+		q02 = q0;
+	}
 
 	//‚È‚·Šp‚ğ‹‚ß‚é
-	float theta = acos(dot);
+	float theta = acosf(dot);
 
 	//theta‚Æsin‚ğg‚Á‚Ä•âŠÔŒW”scale0,scale1‚ğ‹‚ß‚é
 	float scale0 = sinf((1 - t) * theta) / sinf(theta);
 	float scale1 = sinf(t * theta) / sinf(theta);
 
+	//0œZ‚É‚È‚ç‚È‚¢‰ü—Ç”Å
+	if (dot >= 1.0f - FLT_EPSILON)
+	{
+		return (1.0f - t) * q02 + t * q1;
+	}
+
 	//‚»‚ê‚¼‚ê‚Ì•âŠÔŒW”‚ğ—˜—p‚µ‚Ä•âŠÔŒã‚ÌQuaternion‚ğ‹‚ß‚é
-	return scale0 * q0 + scale1 * q1;
+	return scale0 * q02 + scale1 * q1;	
 }

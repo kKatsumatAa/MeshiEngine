@@ -72,6 +72,8 @@ const Quaternion operator *(const Quaternion& v, float s);
 const Quaternion operator *(float s, const Quaternion& v);
 const Quaternion operator /(const Quaternion& v, float s);
 
+Quaternion  operator*(const Quaternion& q1, const Quaternion& q2);
+
 
 
 //‹…–ÊüŒ`•âŠ®
