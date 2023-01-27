@@ -215,10 +215,10 @@ void Scene::Initialize()
 	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[1].worldMat->trans = { 0.0f, -10.0f, 0 };
 	draw[1].worldMat->SetWorld();
-	model[2] = Model::LoadFromOBJ("player");
-	draw[2].worldMat->scale = { 5.0f, 5.0f, 5.0f };
-	draw[2].worldMat->rot.y = { -pi / 2.0f };
-	draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
+	model[2] = Model::LoadFromOBJ("enemy2");
+	draw[2].worldMat->scale = { 5,5,5 };
+	/*draw[2].worldMat->rot.y = { -pi / 2.0f };
+	draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };*/
 	draw[2].worldMat->SetWorld();
 
 	//‹…
@@ -321,7 +321,7 @@ void Scene::Draw()
 	}
 	draw[4].DrawSphere(draw[4].worldMat, &camera->viewMat, &camera->projectionMat);
 
-	objPlayer->DrawModel(objPlayer->worldMat, &camera->viewMat, &camera->projectionMat, model[2]);
+	objPlayer->DrawModel(draw[2].worldMat, &camera->viewMat, &camera->projectionMat, model[2]);
 
 	state->Draw();
 
