@@ -103,21 +103,6 @@ void SceneBasic::DrawSprite()
 void Scene1::Initialize()
 {
 	Sound::GetInstance().PlayWave("Stage_BGM.wav", 0.4f, true);
-
-	scene->lightManager->SetDirLightActive(0, true);
-	scene->lightManager->SetDirLightActive(1, true);
-	scene->lightManager->SetDirLightActive(2, false);
-	scene->lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
-	scene->lightManager->SetDirLightDir(1, { 0, -1.0, 0 });
-	//点光源
-	for (int i = 0; i < 6; i++)
-	{
-		scene->lightManager->SetPointLightActive(i, false);
-	}
-	//丸影
-	scene->lightManager->SetCircleShadowActive(0, false);
-	scene->lightManager->SetSpotLightActive(0, false);
-
 }
 
 void Scene1::Update()
@@ -298,7 +283,7 @@ void Scene4::Update()
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
 	{
-		scene->ChangeState(new SceneBasic);
+		scene->ChangeState(new Scene5);
 	}
 }
 
@@ -318,6 +303,68 @@ void Scene4::DrawSprite()
 	scene->debugText.Print("[4]", 10, 10);
 }
 
+//----------------
+void Scene5::Initialize()
+{
+	scene->lightManager->SetDirLightActive(0, true);
+	scene->lightManager->SetDirLightActive(1, true);
+	scene->lightManager->SetDirLightActive(2, false);
+	scene->lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
+	scene->lightManager->SetDirLightDir(1, { 0, -1.0, 0 });
+	//点光源
+	for (int i = 0; i < 6; i++)
+	{
+		scene->lightManager->SetPointLightActive(i, false);
+	}
+	//丸影
+	scene->lightManager->SetCircleShadowActive(0, false);
+	scene->lightManager->SetSpotLightActive(0, false);
+
+	//コライダー
+	CollisionManager::GetInstance()->Initialize();
+	collisionManager = CollisionManager::GetInstance();
+	objPlayer = Player::Create();
+	objPlayer->worldMat->scale = { 2,2,2 };
+	obj.worldMat->scale = { 5,5,5 };
+	obj.SetCollider(new SphereCollider);
+}
+
+void Scene5::Update()
+{
+	objPlayer->Update();
+	obj.Update();
+	collisionManager->CheckAllCollisions();
+
+	ParticleManager::GetInstance()->Update(&scene->camera->viewMat, &scene->camera->projectionMat);
+
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		scene->ChangeState(new SceneBasic);
+	}
+}
+
+void Scene5::Draw()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+
+	objPlayer->DrawModel(objPlayer->worldMat,
+		&scene->camera->viewMat, &scene->camera->projectionMat, scene->model[3]);
+
+	obj.DrawSphere(obj.worldMat, &scene->camera->viewMat, &scene->camera->projectionMat);
+
+	ParticleManager::GetInstance()->Draw(scene->texhandle[1]);
+}
+
+void Scene5::DrawSprite()
+{
+	scene->debugText.Print("[5]", 10, 10);
+	scene->debugText.Print("WASD:move", 10, 10);
+}
 
 //---------------------------------------------------------------------------------------
 //デストラクタ
@@ -408,9 +455,7 @@ void Scene::Initialize()
 	camera = std::make_unique<Camera>();
 	camera->Initialize();
 
-	//コライダー
-	collisionManager = CollisionManager::GetInstance();
-	objPlayer = Player::Create();
+
 	//objPlayer->Initialize();
 
 	draw[4].SetCollider(new SphereCollider);
@@ -473,4 +518,5 @@ void Scene::DrawSprite()
 	//imgui
 	imGuiManager->Draw();
 }
+
 

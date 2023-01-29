@@ -41,5 +41,7 @@ public://ä÷êî
 
 
 	void CheckAllCollisions();
+
+	void Initialize();
 };
 

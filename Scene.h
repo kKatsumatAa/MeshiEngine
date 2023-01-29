@@ -71,9 +71,7 @@ public:
 
 	std::unique_ptr<Camera> camera;
 
-	//コライダー
-	Player* objPlayer;
-	CollisionManager* collisionManager;
+
 
 public:
 	~Scene();
@@ -169,6 +167,21 @@ private:
 	float circleShadowDistance = 100.0f;
 
 	float fighterPos[3] = { 1.0f,0,0 };
+
+public:
+	void Initialize()override;
+	void Update() override;
+	void Draw() override;
+	void DrawSprite()override;
+};
+
+class Scene5 : public SceneState
+{
+private:
+	//コライダー
+	Player* objPlayer;
+	CollisionManager* collisionManager;
+	Object obj;
 
 public:
 	void Initialize()override;
