@@ -20,7 +20,7 @@ void SceneTitle::Initialize()
 
 void SceneTitle::Update()
 {
-	////ƒV[ƒ“‘JˆÚ
+	////ƒV[ƒ“‘JˆÚ//
 	//if ()
 	//{
 	//	scene->ChangeState(new SceneGame);
