@@ -363,7 +363,7 @@ void Scene5::Draw()
 void Scene5::DrawSprite()
 {
 	scene->debugText.Print("[5]", 10, 10);
-	scene->debugText.Print("WASD:move", 10, 30);
+	scene->debugText.Print("ARROW:move", 10, 30);
 }
 
 //---------------------------------------------------------------------------------------
