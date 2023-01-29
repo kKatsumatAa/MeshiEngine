@@ -88,6 +88,22 @@ public:
 	void StopWaveAllScene();
 };
 
+class SceneLoad : public SceneState
+{
+private:
+	int count = 0;
+	Async async;
+	Object loadObj;
+
+public:
+	void Load();
+
+	void Initialize()override;
+	void Update() override;
+	void Draw() override;
+	void DrawSprite()override;
+};
+
 class SceneBasic : public SceneState
 {
 private:
@@ -100,7 +116,7 @@ public:
 	void DrawSprite()override;
 };
 
-class Scene1phong : public SceneState
+class Scene1 : public SceneState
 {
 private:
 
@@ -115,41 +131,6 @@ public:
 class Scene2 : public SceneState
 {
 private:
-
-public:
-	void Initialize()override;
-	void Update() override;
-	void Draw() override;
-	void DrawSprite()override;
-};
-
-class Scene3 : public SceneState
-{
-private:
-
-
-public:
-	void Initialize()override;
-	void Update() override;
-	void Draw() override;
-	void DrawSprite()override;
-};
-
-class Scene4 : public SceneState
-{
-private:
-
-
-public:
-	void Initialize()override;
-	void Update() override;
-	void Draw() override;
-	void DrawSprite()override;
-};
-
-class Scene5 : public SceneState
-{
-private:
 	float pointLightPos[3] = { 0,0,-10 };
 	float pointLightColor[3] = { 1.0f,1.0f,1.0f };
 	float pointLightAtten[3] = { 0.01f,0.01f,0.01f };
@@ -162,7 +143,7 @@ public:
 	void DrawSprite()override;
 };
 
-class Scene6 : public SceneState
+class Scene3 : public SceneState
 {
 private:
 	float spotLightDir[3] = { 0,-1,0 };
@@ -178,7 +159,7 @@ public:
 	void DrawSprite()override;
 };
 
-class Scene7 : public SceneState
+class Scene4 : public SceneState
 {
 private:
 	//ŠÛ‰e

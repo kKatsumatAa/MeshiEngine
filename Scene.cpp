@@ -11,11 +11,99 @@ void SceneState::SetScene(Scene* scene)
 	this->scene = scene;
 }
 
+//--------------------------------------------------------------------------------------
+void SceneLoad::Load()
+{
+	TextureManager::LoadGraph(L"Resources/image/loading.png", scene->texhandle[3]);
+	//白い画像
+	TextureManager::GetInstance().LoadGraph(L"Resources/image/white.png", TextureManager::GetInstance().whiteTexHandle);
 
+	//画像
+	TextureManager::LoadGraph(L"Resources/ascii.png", scene->debugTextHandle);
+
+	TextureManager::LoadGraph(L"Resources/image/effect1.png", scene->texhandle[1]);
+	TextureManager::LoadGraph(L"Resources/image/a.png", scene->texhandle[2]);
+
+
+	{
+		Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
+	}
+
+	scene->model[0] = Model::LoadFromOBJ("skydome", true, true);
+	scene->model[1] = Model::LoadFromOBJ("ground");
+	scene->model[2] = Model::LoadFromOBJ("player");
+	scene->model[4] = Model::LoadFromOBJ("MiG-25PD", true);
+	scene->model[3] = Model::LoadFromOBJ("player", true);
+}
+
+void SceneLoad::Initialize()
+{
+
+	//非同期処理(ステージ作成中にもロード画面出す的な)
+	async.StartAsyncFunction([=]() { this->Load(); });
+}
+
+void SceneLoad::Update()
+{
+
+
+	//シーン遷移
+	if (async.GetLockFlag())
+	{
+		async.EndThread();
+
+		//ステージ作り終わったら
+		scene->ChangeState(new SceneBasic);
+	}
+}
+
+void SceneLoad::Draw()
+{
+}
+
+void SceneLoad::DrawSprite()
+{
+	count++;
+	loadObj.DrawBoxSprite({ 0,0 + sinf(count * 0.1f) * 3.0f,0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, scene->texhandle[3]);
+}
 
 //---------------------------------------------------------------------------------------
 void SceneBasic::Initialize()
 {
+
+}
+
+void SceneBasic::Update()
+{
+
+
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		scene->ChangeState(new Scene1);
+	}
+}
+
+void SceneBasic::Draw()
+{
+}
+
+void SceneBasic::DrawSprite()
+{
+	scene->draw[0].DrawBoxSprite({ 0,WindowsApp::GetInstance().window_height / 2.0f,0 },
+		0.5f, { 1.0f,1.0f,1.0f,1.0f }, scene->texhandle[2]);
+	scene->draw[1].DrawBoxSprite({ WindowsApp::GetInstance().window_width - 300,
+		WindowsApp::GetInstance().window_height / 2.0f,0 },
+		1.0f, { 1.0f,1.0f,1.0f,1.0f }, scene->texhandle[1]);
+
+	scene->debugText.Print("[Basic]", 10, 10);
+}
+
+//---------------------------------------------------------------------------------------
+void Scene1::Initialize()
+{
+	Sound::GetInstance().PlayWave("Stage_BGM.wav", 0.4f, true);
+
 	scene->lightManager->SetDirLightActive(0, true);
 	scene->lightManager->SetDirLightActive(1, true);
 	scene->lightManager->SetDirLightActive(2, false);
@@ -29,43 +117,13 @@ void SceneBasic::Initialize()
 	//丸影
 	scene->lightManager->SetCircleShadowActive(0, false);
 	scene->lightManager->SetSpotLightActive(0, false);
-	
+
 }
 
-void SceneBasic::Update()
+void Scene1::Update()
 {
-
-
-	//シーン遷移
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
-	{
-		scene->ChangeState(new Scene1phong);
-	}
-}
-
-void SceneBasic::Draw()
-{
-	for (int i = 0; i < 2; i++)
-	{
-		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
-			&scene->camera->projectionMat, scene->model[i]);
-	}
-	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, scene->model[2]);
-}
-
-void SceneBasic::DrawSprite()
-{
-	scene->debugText.Print("[Basic]", 10, 10);
-}
-
-//---------------------------------------------------------------------------------------
-void Scene1phong::Initialize()
-{
-}
-
-void Scene1phong::Update()
-{
+	ImGui::ShowDemoWindow();
+	scene->imGuiManager->End();
 
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
@@ -74,7 +132,7 @@ void Scene1phong::Update()
 	}
 }
 
-void Scene1phong::Draw()
+void Scene1::Draw()
 {
 	for (int i = 0; i < 2; i++)
 	{
@@ -83,55 +141,42 @@ void Scene1phong::Draw()
 	}
 	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
 		&scene->camera->projectionMat, scene->model[2]);
-	scene->draw[3].DrawModel(scene->draw[3].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, scene->model[3]);
+	scene->draw[3].DrawSphere(scene->draw[3].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, { 1.0f,0.5f,0.2f,0.8f });
+	scene->draw[4].DrawCube3D(scene->draw[4].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, { 1.0f,0.2f,0.7f,1.0f });
 }
 
-void Scene1phong::DrawSprite()
+void Scene1::DrawSprite()
 {
-	scene->debugText.Print("[Phong&Smoosing]", 10, 10);
+	scene->debugText.Print("[1]", 10, 10);
 }
 
-//---------------------------------------------------------------------------------------
+//---------------
 void Scene2::Initialize()
-{	
+{
+	scene->StopWaveAllScene();
+
+	scene->lightManager->SetDirLightActive(0, false);
+	scene->lightManager->SetDirLightActive(1, false);
+
+	scene->lightManager->SetPointLightActive(0, true);
+
 }
 
 void Scene2::Update()
 {
-	//ライト
-			//光線方向初期化
-	static XMVECTOR lightDir = { 0,1,5,0 };
+	//点光源
+	scene->lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
+	scene->lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
+	scene->lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
 
-	if (KeyboardInput::GetInstance().KeyPush(DIK_UP)) { lightDir.m128_f32[1] += 1.0f; }
-	if (KeyboardInput::GetInstance().KeyPush(DIK_DOWN)) { lightDir.m128_f32[1] -= 1.0f; }
-	if (KeyboardInput::GetInstance().KeyPush(DIK_RIGHT)) { lightDir.m128_f32[0] += 1.0f; }
-	if (KeyboardInput::GetInstance().KeyPush(DIK_LEFT)) { lightDir.m128_f32[0] -= 1.0f; }
-
-	scene->lightManager->SetDirLightDir(0,lightDir);
-
-	std::ostringstream debugstr;
-	debugstr << "lightDirFactor("
-		<< std::fixed << std::setprecision(2)
-		<< lightDir.m128_f32[0] << ","
-		<< lightDir.m128_f32[1] << ","
-		<< lightDir.m128_f32[2] << ")";
-	scene->debugText.Print(debugstr.str(), 50, 50);
-
-	debugstr.str("");
-	debugstr.clear();
-
-	const XMFLOAT3& cameraPos = 
-	{ scene->camera->viewMat.eye.x,scene->camera->viewMat.eye.y,scene->camera->viewMat.eye.z };
-	debugstr << "cameraPos("
-		<< std::fixed << std::setprecision(2)
-		<< lightDir.m128_f32[0] << ","
-		<< lightDir.m128_f32[1] << ","
-		<< lightDir.m128_f32[2] << ")";
-	scene->debugText.Print(debugstr.str(), 50, 70);
-
-	scene->lightManager->Update();
-
+	static bool a = true;
+	ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
+	ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
+	ImGui::InputFloat3("pointLightPos", pointLightPos);
+	ImGui::InputFloat3("pointLightAtten", pointLightAtten);
+	ImGui::End();
 
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
@@ -149,131 +194,15 @@ void Scene2::Draw()
 	}
 	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
 		&scene->camera->projectionMat, scene->model[2]);
-	scene->draw[3].DrawModel(scene->draw[3].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, scene->model[3]);
 }
 
 void Scene2::DrawSprite()
 {
-	scene->debugText.Print("ARROW:pos", 10, 25);
-	scene->debugText.Print("[LightSeparate]", 10, 10);
+	scene->debugText.Print("[2]", 10, 10);
 }
 
-
-//----------------------------------------------------------------------------------------
+//---------------
 void Scene3::Initialize()
-{
-}
-
-void Scene3::Update()
-{
-	//シーン遷移
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
-	{
-		scene->ChangeState(new Scene4);
-	}
-}
-
-void Scene3::Draw()
-{
-	for (int i = 0; i < 2; i++)
-	{
-		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
-			&scene->camera->projectionMat, scene->model[i]);
-	}
-	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, scene->model[4]);
-}
-
-void Scene3::DrawSprite()
-{
-	scene->debugText.Print("[Phong]", 10, 10);
-}
-//---------------
-void Scene4::Initialize()
-{
-	Vec3 dir = { -1.0f,0,0.0f };
-	Vec3 dir2 = { 1.0f,0,0.0f };
-	dir.Normalized();
-	dir2.Normalized();
-	scene->lightManager->SetDirLightDir(0, { dir.x,dir.y,dir.z });
-	scene->lightManager->SetDirLightDir(1, { dir2.x,dir2.y,dir2.z });
-}
-
-void Scene4::Update()
-{
-	//シーン遷移
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
-	{
-		scene->ChangeState(new Scene5);
-	}
-}
-
-void Scene4::Draw()
-{
-	for (int i = 0; i < 2; i++)
-	{
-		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
-			&scene->camera->projectionMat, scene->model[i]);
-	}
-	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, scene->model[4]);
-}
-
-void Scene4::DrawSprite()
-{
-	scene->debugText.Print("[Lights]", 10, 10);
-}
-
-//---------------
-void Scene5::Initialize()
-{
-	scene->lightManager->SetDirLightActive(0, false);
-	scene->lightManager->SetDirLightActive(1, false);
-
-	scene->lightManager->SetPointLightActive(0, true);
-
-}
-
-void Scene5::Update()
-{
-	//点光源
-	scene->lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
-	scene->lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
-	scene->lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
-
-	static bool a = true;
-	ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
-	ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
-	ImGui::InputFloat3("pointLightPos", pointLightPos);
-	ImGui::InputFloat3("pointLightAtten", pointLightAtten);
-	ImGui::End();
-
-	//シーン遷移
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
-	{
-		scene->ChangeState(new Scene6);
-	}
-}
-
-void Scene5::Draw()
-{
-	for (int i = 0; i < 2; i++)
-	{
-		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
-			&scene->camera->projectionMat, scene->model[i]);
-	}
-	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, scene->model[2]);
-}
-
-void Scene5::DrawSprite()
-{
-	scene->debugText.Print("[PointLight]", 10, 10);
-}
-
-//---------------
-void Scene6::Initialize()
 {
 	//点光源
 	for (int i = 0; i < 6; i++)
@@ -284,7 +213,7 @@ void Scene6::Initialize()
 	scene->lightManager->SetSpotLightActive(0, true);
 }
 
-void Scene6::Update()
+void Scene3::Update()
 {
 	scene->lightManager->SetSpotLightDir(0,
 		XMVECTOR({ spotLightDir[0], spotLightDir[1], spotLightDir[2] }));
@@ -305,11 +234,11 @@ void Scene6::Update()
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
 	{
-		scene->ChangeState(new Scene7);
+		scene->ChangeState(new Scene4);
 	}
 }
 
-void Scene6::Draw()
+void Scene3::Draw()
 {
 	for (int i = 0; i < 2; i++)
 	{
@@ -320,13 +249,13 @@ void Scene6::Draw()
 		&scene->camera->projectionMat, scene->model[2]);
 }
 
-void Scene6::DrawSprite()
+void Scene3::DrawSprite()
 {
-	scene->debugText.Print("[SpotLight]", 10, 10);
+	scene->debugText.Print("[3]", 10, 10);
 }
 
 //---------------
-void Scene7::Initialize()
+void Scene4::Initialize()
 {
 	scene->lightManager->SetDirLightActive(0, true);
 	scene->lightManager->SetDirLightActive(1, false);
@@ -340,7 +269,7 @@ void Scene7::Initialize()
 	scene->lightManager->SetCircleShadowActive(0, true);
 }
 
-void Scene7::Update()
+void Scene4::Update()
 {
 	//丸影
 	scene->lightManager->SetCircleShadowDir(0,
@@ -373,7 +302,7 @@ void Scene7::Update()
 	}
 }
 
-void Scene7::Draw()
+void Scene4::Draw()
 {
 	for (int i = 0; i < 2; i++)
 	{
@@ -384,9 +313,9 @@ void Scene7::Draw()
 		&scene->camera->projectionMat, scene->model[2]);
 }
 
-void Scene7::DrawSprite()
+void Scene4::DrawSprite()
 {
-	scene->debugText.Print("[CircleShadow]", 10, 10);
+	scene->debugText.Print("[4]", 10, 10);
 }
 
 
@@ -419,43 +348,30 @@ void Scene::ChangeState(SceneState* state)
 
 void Scene::StopWaveAllScene()
 {
+	Sound::GetInstance().StopWave("Stage_BGM.wav");
 }
 
 void Scene::Initialize()
 {
-	//白い画像
-	TextureManager::GetInstance().LoadGraph(L"Resources/image/white.png", TextureManager::GetInstance().whiteTexHandle);
 
-	//画像
-	TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
-
-	TextureManager::LoadGraph(L"Resources/image/effect1.png", texhandle[1]);
-
-	{
-
-	}
 
 	//model
 	Model::StaticInitialize();
 
-	model[0] = Model::LoadFromOBJ("skydome", true, true);
 	draw[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[0].worldMat->SetWorld();
-	model[1] = Model::LoadFromOBJ("ground");
 	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[1].worldMat->trans = { 0.0f, -10.0f, 0 };
 	draw[1].worldMat->SetWorld();
-	model[2] = Model::LoadFromOBJ("player");
 	draw[2].worldMat->scale = { 5,5,5 };
 	draw[2].worldMat->rot.y = { -pi / 2.0f };
 	draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
 	draw[2].worldMat->SetWorld();
-	model[3] = Model::LoadFromOBJ("player", true);
 	draw[3].worldMat->scale = { 5,5,5 };
 	draw[3].worldMat->rot.y = { -pi / 2.0f };
 	draw[3].worldMat->trans = { 15.0f,0,0 };
 	draw[3].worldMat->SetWorld();
-	model[4] = Model::LoadFromOBJ("MiG-25PD",true);
+
 
 	//球
 	draw[4].worldMat->scale = { 5.0f,5.0f,5.0f };
@@ -478,8 +394,8 @@ void Scene::Initialize()
 	lightManager->SetDirLightActive(0, true);
 	lightManager->SetDirLightActive(1, true);
 	lightManager->SetDirLightActive(2, false);
-	lightManager->SetDirLightDir(0,{ 0, 0, 1.0 });
-	lightManager->SetDirLightDir(1,{ 0, -1.0, 0 });
+	lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
+	lightManager->SetDirLightDir(1, { 0, -1.0, 0 });
 	//点光源
 	for (int i = 0; i < 6; i++)
 	{
@@ -503,7 +419,7 @@ void Scene::Initialize()
 	ParticleManager::GetInstance()->Initialize();
 
 	//ステート変更
-	ChangeState(new SceneBasic);
+	ChangeState(new SceneLoad);
 }
 
 void Scene::Update()
@@ -517,8 +433,8 @@ void Scene::Update()
 	state->Update();
 
 
-//#ifdef _DEBUG
-	//if (KeyboardInput::GetInstance().KeyTrigger(DIK_E)) ChangeState(new SceneTitle);
+	//#ifdef _DEBUG
+		//if (KeyboardInput::GetInstance().KeyTrigger(DIK_E)) ChangeState(new SceneTitle);
 
 	{
 		cameraWorldMat.rot.y += (KeyboardInput::GetInstance().KeyPush(DIK_A) - KeyboardInput::GetInstance().KeyPush(DIK_D)) * 0.05f;
@@ -532,9 +448,9 @@ void Scene::Update()
 		Vec3xM4(camera->viewMat.eye, cameraWorldMat.matWorld, 0);
 		camera->UpdateViewMatrix();
 	}
-//#endif 
+	//#endif 
 
-	//imgui
+		//imgui
 	imGuiManager->End();
 }
 
