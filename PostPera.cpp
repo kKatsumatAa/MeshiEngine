@@ -3,6 +3,31 @@
 
 void PostPera::Initialize()
 {
+	//定数バッファ0番(画面効果フラグ)
+	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams[0].Descriptor.ShaderRegister = 0;//定数バッファ番号(b0)
+	rootParams[0].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+
+	//画面効果用
+	{
+		//ヒープ設定
+		D3D12_HEAP_PROPERTIES cbHeapProp{};
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+		//リソース設定
+		D3D12_RESOURCE_DESC cbResourceDesc{};
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+		//リソース設定
+		ResourceProperties(cbResourceDesc,
+			((UINT)sizeof(EffectConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
+		//定数バッファの生成
+		BuffProperties(cbHeapProp, cbResourceDesc, &effectFlagsBuff);
+		//定数バッファのマッピング
+		Directx::GetInstance().result = effectFlagsBuff->Map(0, nullptr, (void**)&mapEffectFlagsBuff);//マッピング
+		assert(SUCCEEDED(Directx::GetInstance().result));
+	}
+
+
 	//バッファ
 	auto resDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(pv));
 
@@ -104,30 +129,33 @@ void PostPera::GenerateRSPL()
 	gpsDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 
 	D3D12_ROOT_SIGNATURE_DESC rsDesc = {};
-	rsDesc.NumParameters = 0;
+	rsDesc.NumParameters = _countof(rootParams);//ルートパラメータ数;
 	rsDesc.NumStaticSamplers = 0;
 	rsDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	//rootsig
-	
-		D3D12_DESCRIPTOR_RANGE range = {};
-		range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-		range.BaseShaderRegister = 0;//0
-		range.NumDescriptors = 1;
 
-		D3D12_ROOT_PARAMETER rp = {};
-		rp.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-		rp.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-		rp.DescriptorTable.pDescriptorRanges = &range;
-		rp.DescriptorTable.NumDescriptorRanges = 1;
+	D3D12_DESCRIPTOR_RANGE range = {};
+	range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range.BaseShaderRegister = 0;//0
+	range.NumDescriptors = 1;
 
-		D3D12_STATIC_SAMPLER_DESC sampler = CD3DX12_STATIC_SAMPLER_DESC(0); //s0
+	D3D12_ROOT_PARAMETER rp[2] = {};
+	rp[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rp[0].DescriptorTable.pDescriptorRanges = &range;
+	rp[0].DescriptorTable.NumDescriptorRanges = 1;
+	rp[1] = rootParams[0];
 
-		rsDesc.NumParameters = 1;
-		rsDesc.pParameters = &rp;
-		rsDesc.NumStaticSamplers = 1;
-		rsDesc.pStaticSamplers = &sampler;
-	
+
+	D3D12_STATIC_SAMPLER_DESC sampler = CD3DX12_STATIC_SAMPLER_DESC(0); //s0
+
+	//デスクリプタテーブル+ルートパラメータ
+	rsDesc.NumParameters = 1 + _countof(rootParams);
+	rsDesc.pParameters = rp;
+	rsDesc.NumStaticSamplers = 1;
+	rsDesc.pStaticSamplers = &sampler;
+
 
 	ComPtr<ID3DBlob>rsBlob;
 	result = D3D12SerializeRootSignature(
@@ -155,11 +183,20 @@ void PostPera::GenerateRSPL()
 	assert(SUCCEEDED(result));
 }
 
-void PostPera::Draw()
+void PostPera::Draw(EffectConstBuffer effectFlags)
 {
+	this->mapEffectFlagsBuff->isEmboss = effectFlags.isEmboss;
+	this->mapEffectFlagsBuff->isFog = effectFlags.isFog;
+	this->mapEffectFlagsBuff->isGaussian = effectFlags.isGaussian;
+	this->mapEffectFlagsBuff->isGaussian2 = effectFlags.isGaussian2;
+	this->mapEffectFlagsBuff->isGradation = effectFlags.isGradation;
+	this->mapEffectFlagsBuff->isOutLine = effectFlags.isOutLine;
+	this->mapEffectFlagsBuff->isSharpness = effectFlags.isSharpness;
+
+
 	Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(_peraRS.Get());
 	Directx::GetInstance().GetCommandList()->SetPipelineState(_peraPipeline.Get());
-		//ヒープをセット
+	//ヒープをセット
 	Directx::GetInstance().GetCommandList()
 		->SetDescriptorHeaps(1, Directx::GetInstance().GetPeraSRVHeap().GetAddressOf());
 
@@ -170,5 +207,9 @@ void PostPera::Draw()
 	Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(
 		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &_peraVBV);
+
+	//index0はでスクリプタテーブル
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(1, effectFlagsBuff->GetGPUVirtualAddress());
+
 	Directx::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }

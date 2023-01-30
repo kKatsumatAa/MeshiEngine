@@ -16,9 +16,8 @@ void SceneState::SetScene(Scene* scene)
 //---------------------------------------------------------------------------------------
 void SceneBasic::Initialize()
 {
-	scene->draw[0].effectFlags.isFog = false;
-	scene->draw[1].effectFlags.isFog = false;
-	scene->draw[2].effectFlags.isFog = false;
+	Object::effectFlags.isFog = false;
+	Object::effectFlags.isOutLine = true;
 }
 
 void SceneBasic::Update()
@@ -51,7 +50,8 @@ void SceneBasic::DrawSprite()
 //---------------------------------------------------------------------------------------
 void Scene1phong::Initialize()
 {
-
+	Object::effectFlags.isOutLine = false;
+	Object::effectFlags.isEmboss = true;
 }
 
 void Scene1phong::Update()
@@ -85,6 +85,8 @@ void Scene1phong::DrawSprite()
 //---------------------------------------------------------------------------------------
 void Scene2::Initialize()
 {
+	Object::effectFlags.isSharpness = true;
+	Object::effectFlags.isEmboss = false;
 }
 
 void Scene2::Update()
@@ -153,6 +155,8 @@ void Scene2::DrawSprite()
 //----------------------------------------------------------------------------------------
 void Scene3::Initialize()
 {
+	Object::effectFlags.isSharpness = false;
+	Object::effectFlags.isGaussian = true;
 }
 
 void Scene3::Update()
@@ -188,6 +192,8 @@ void Scene4::Initialize()
 	dir2.Normalized();
 	scene->lightManager->SetDirLightDir(0, { dir.x,dir.y,dir.z });
 	scene->lightManager->SetDirLightDir(1, { dir2.x,dir2.y,dir2.z });
+
+	Object::effectFlags.isGaussian = false;
 }
 
 void Scene4::Update()
@@ -396,9 +402,7 @@ void Scene8::Initialize()
 	scene->lightManager->SetCircleShadowActive(0, false);
 	scene->lightManager->SetSpotLightActive(0, false);
 
-	scene->draw[0].effectFlags.isFog = true;
-	scene->draw[1].effectFlags.isFog = true;
-	scene->draw[2].effectFlags.isFog = true;
+	Object::effectFlags.isFog = true;
 }
 
 void Scene8::Update()

@@ -4,6 +4,7 @@
 #include "Primitive.h"
 #include "LightManager.h"
 #include"CollisionInfo.h"
+#include "PostPera.h"
 
 class BaseCollider;
 
@@ -21,25 +22,6 @@ enum indices
 	SPHERE,
 	SPRITE,
 	MODEL
-};
-
-//画面効果用のフラグ
-struct EffectConstBuffer
-{
-	//フォグ
-	unsigned int isFog = false;
-	//ぼかし
-	unsigned int isGaussian = false;
-	//ガウシアンぼかし
-	unsigned int isGaussian2 = false;
-	//エンボス
-	unsigned int isEmboss = false;
-	//シャープネス
-	unsigned int isSharpness = false;
-	//諧調
-	unsigned int isGradation = false;
-	//アウトライン
-	unsigned int isOutLine = false;
 };
 
 
@@ -63,9 +45,7 @@ private:
 	//ライト
 	static LightManager* lightManager;
 
-	//画面効果用
-	ComPtr <ID3D12Resource> effectFlagsBuff = nullptr;
-	EffectConstBuffer* mapEffectFlagsBuff = nullptr;
+
 
 private:
 	//--------------------
@@ -80,7 +60,10 @@ public://変数
 	ProjectionMat* projection;
 	bool isWireFrame = 0;
 	//画面効果用
-	EffectConstBuffer effectFlags;
+	static EffectConstBuffer effectFlags;
+	//画面効果用
+	static ComPtr <ID3D12Resource> effectFlagsBuff;
+	static EffectConstBuffer* mapEffectFlagsBuff;
 
 protected://継承先まで公開
 	//クラス名(デバッグ用)
