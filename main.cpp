@@ -62,7 +62,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Directx::GetInstance().PreDrawToPera();
 
 			//
-			//scene->DrawPostEffect();
+			scene->DrawPostEffect();
 
 			// 4.描画コマンドここまで //
 			Directx::GetInstance().PostDrawToPera();

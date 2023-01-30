@@ -88,7 +88,7 @@ public:
 	void StopWaveAllScene();
 };
 
-class SceneTitle : public SceneState
+class SceneBasic : public SceneState
 {
 private:
 
@@ -100,7 +100,7 @@ public:
 	void DrawSprite()override;
 };
 
-class SceneGame : public SceneState
+class Scene1phong : public SceneState
 {
 private:
 
@@ -112,11 +112,9 @@ public:
 	void DrawSprite()override;
 };
 
-class SceneGameOver : public SceneState
+class Scene2 : public SceneState
 {
 private:
-	int count = 0;
-	const int countTmp = 150;
 
 public:
 	void Initialize()override;
@@ -125,11 +123,9 @@ public:
 	void DrawSprite()override;
 };
 
-class SceneClear : public SceneState
+class Scene3 : public SceneState
 {
 private:
-	int count = 0;
-	const int countTmp = 150;
 
 
 public:
@@ -139,15 +135,72 @@ public:
 	void DrawSprite()override;
 };
 
-class SceneLoad : public SceneState
+class Scene4 : public SceneState
 {
 private:
-	int count = 0;
-	Async async;
+
 
 public:
-	void StageCreate();
+	void Initialize()override;
+	void Update() override;
+	void Draw() override;
+	void DrawSprite()override;
+};
 
+class Scene5 : public SceneState
+{
+private:
+	float pointLightPos[3] = { 0,0,-10 };
+	float pointLightColor[3] = { 1.0f,1.0f,1.0f };
+	float pointLightAtten[3] = { 0.01f,0.01f,0.01f };
+
+
+public:
+	void Initialize()override;
+	void Update() override;
+	void Draw() override;
+	void DrawSprite()override;
+};
+
+class Scene6 : public SceneState
+{
+private:
+	float spotLightDir[3] = { 0,-1,0 };
+	float spotLightPos[3] = { 0,30,0 };
+	float spotLightColor[3] = { 1.0f,1.0f,1.0f };
+	float spotLightAtten[3] = { 0.001f,0.001f,0.001f };
+	float spotLightFactorAngle[2] = { 10.0f,30.0f };
+
+public:
+	void Initialize()override;
+	void Update() override;
+	void Draw() override;
+	void DrawSprite()override;
+};
+
+class Scene7 : public SceneState
+{
+private:
+	//ŠÛ‰e
+	float circleShadowDir[3] = { 0,-1,0 };
+	float circleShadowAtten[3] = { 0.5f,0.15f,0 };
+	float circleShadowFactorAngle[2] = { 0,5.0f };
+	float circleShadowDistance = 100.0f;
+
+	float fighterPos[3] = { 1.0f,0,0 };
+
+public:
+	void Initialize()override;
+	void Update() override;
+	void Draw() override;
+	void DrawSprite()override;
+};
+
+class Scene8 : public SceneState
+{
+private:
+
+public:
 	void Initialize()override;
 	void Update() override;
 	void Draw() override;

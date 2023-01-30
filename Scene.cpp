@@ -14,148 +14,421 @@ void SceneState::SetScene(Scene* scene)
 
 
 //---------------------------------------------------------------------------------------
-//タイトル
-void SceneTitle::Initialize()
+void SceneBasic::Initialize()
 {
-	//音
-	scene->StopWaveAllScene();
+	Object::effectFlags.isFog = false;
+	Object::effectFlags.isOutLine = true;
 }
 
-void SceneTitle::Update()
-{
-	////シーン遷移
-	//if ()
-	//{
-	//	scene->ChangeState(new SceneGame);
-	//}
-}
-
-void SceneTitle::Draw()
-{
-}
-
-void SceneTitle::DrawSprite()
+void SceneBasic::Update()
 {
 
-}
 
-
-//---------------------------------------------------------------------------------------
-//ゲーム
-void SceneGame::Initialize()
-{
-	//音
-	scene->StopWaveAllScene();
-}
-
-void SceneGame::Update()
-{
-
-	////シーン遷移
-	//if ()
-	//{
-	//	scene->ChangeState(new SceneClear);
-	//}
-	//else if ()
-	//{
-	//	scene->ChangeState(new SceneGameOver);
-	//}
-}
-
-void SceneGame::Draw()
-{
-
-}
-
-void SceneGame::DrawSprite()
-{
-
-}
-
-
-
-//---------------------------------------------------------------------------------------
-//終了画面
-void SceneGameOver::Initialize()
-{
-
-	//音
-	scene->StopWaveAllScene();
-}
-
-void SceneGameOver::Update()
-{
-
-	/*if ()
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
 	{
-		scene->ChangeState(new SceneLoad);
-	}*/
+		scene->ChangeState(new Scene1phong);
+	}
 }
 
-void SceneGameOver::Draw()
+void SceneBasic::Draw()
 {
-
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[2]);
 }
 
-void SceneGameOver::DrawSprite()
+void SceneBasic::DrawSprite()
 {
+	scene->debugText.Print("[Basic]", 10, 10);
+}
+
+//---------------------------------------------------------------------------------------
+void Scene1phong::Initialize()
+{
+	Object::effectFlags.isOutLine = false;
+	Object::effectFlags.isEmboss = true;
+}
+
+void Scene1phong::Update()
+{
+
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		scene->ChangeState(new Scene2);
+	}
+}
+
+void Scene1phong::Draw()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[2]);
+	scene->draw[3].DrawModel(scene->draw[3].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[3]);
+}
+
+void Scene1phong::DrawSprite()
+{
+	scene->debugText.Print("[Phong&Smoosing]", 10, 10);
+}
+
+//---------------------------------------------------------------------------------------
+void Scene2::Initialize()
+{
+	Object::effectFlags.isSharpness = true;
+	Object::effectFlags.isEmboss = false;
+}
+
+void Scene2::Update()
+{
+	//ライト
+			//光線方向初期化
+	static XMVECTOR lightDir = { 0,1,5,0 };
+
+	if (KeyboardInput::GetInstance().KeyPush(DIK_UP)) { lightDir.m128_f32[1] += 1.0f; }
+	if (KeyboardInput::GetInstance().KeyPush(DIK_DOWN)) { lightDir.m128_f32[1] -= 1.0f; }
+	if (KeyboardInput::GetInstance().KeyPush(DIK_RIGHT)) { lightDir.m128_f32[0] += 1.0f; }
+	if (KeyboardInput::GetInstance().KeyPush(DIK_LEFT)) { lightDir.m128_f32[0] -= 1.0f; }
+
+	scene->lightManager->SetDirLightDir(0, lightDir);
+
+	std::ostringstream debugstr;
+	debugstr << "lightDirFactor("
+		<< std::fixed << std::setprecision(2)
+		<< lightDir.m128_f32[0] << ","
+		<< lightDir.m128_f32[1] << ","
+		<< lightDir.m128_f32[2] << ")";
+	scene->debugText.Print(debugstr.str(), 50, 50);
+
+	debugstr.str("");
+	debugstr.clear();
+
+	const XMFLOAT3& cameraPos =
+	{ scene->camera->viewMat.eye.x,scene->camera->viewMat.eye.y,scene->camera->viewMat.eye.z };
+	debugstr << "cameraPos("
+		<< std::fixed << std::setprecision(2)
+		<< lightDir.m128_f32[0] << ","
+		<< lightDir.m128_f32[1] << ","
+		<< lightDir.m128_f32[2] << ")";
+	scene->debugText.Print(debugstr.str(), 50, 70);
+
+	scene->lightManager->Update();
+
+
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		scene->ChangeState(new Scene3);
+	}
+}
+
+void Scene2::Draw()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[2]);
+	scene->draw[3].DrawModel(scene->draw[3].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[3]);
+}
+
+void Scene2::DrawSprite()
+{
+	scene->debugText.Print("ARROW:pos", 10, 25);
+	scene->debugText.Print("[LightSeparate]", 10, 10);
 }
 
 
 //----------------------------------------------------------------------------------------
-void SceneClear::Initialize()
+void Scene3::Initialize()
 {
-	//音
-	scene->StopWaveAllScene();
+	Object::effectFlags.isSharpness = false;
+	Object::effectFlags.isGaussian = true;
 }
 
-void SceneClear::Update()
+void Scene3::Update()
 {
-
-	/*if ()
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
 	{
-		scene->ChangeState(new SceneLoad);
-	}*/
+		scene->ChangeState(new Scene4);
+	}
 }
 
-void SceneClear::Draw()
+void Scene3::Draw()
 {
-}
-
-void SceneClear::DrawSprite()
-{
-
-}
-
-
-//--------------------------------------------------------------------------------------
-
-void SceneLoad::Initialize()
-{
-	//非同期処理
-	//async.StartAsyncFunction([=]() { func() });
-}
-
-void SceneLoad::Update()
-{
-
-	/*if (async.GetLockFlag())
+	for (int i = 0; i < 2; i++)
 	{
-		async.EndThread();
-
-		scene->ChangeState(new SceneTitle);
-	}*/
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[4]);
 }
 
-void SceneLoad::Draw()
+void Scene3::DrawSprite()
 {
+	scene->debugText.Print("[Phong]", 10, 10);
 }
-
-void SceneLoad::DrawSprite()
+//---------------
+void Scene4::Initialize()
 {
+	Vec3 dir = { -1.0f,0,0.0f };
+	Vec3 dir2 = { 1.0f,0,0.0f };
+	dir.Normalized();
+	dir2.Normalized();
+	scene->lightManager->SetDirLightDir(0, { dir.x,dir.y,dir.z });
+	scene->lightManager->SetDirLightDir(1, { dir2.x,dir2.y,dir2.z });
+
+	Object::effectFlags.isGaussian = false;
+}
+
+void Scene4::Update()
+{
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		scene->ChangeState(new Scene5);
+	}
+}
+
+void Scene4::Draw()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[4]);
+}
+
+void Scene4::DrawSprite()
+{
+	scene->debugText.Print("[Lights]", 10, 10);
+}
+
+//---------------
+void Scene5::Initialize()
+{
+	scene->lightManager->SetDirLightActive(0, false);
+	scene->lightManager->SetDirLightActive(1, false);
+
+	scene->lightManager->SetPointLightActive(0, true);
 
 }
 
+void Scene5::Update()
+{
+	//点光源
+	scene->lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
+	scene->lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
+	scene->lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
+
+	static bool a = true;
+	ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
+	ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
+	ImGui::InputFloat3("pointLightPos", pointLightPos);
+	ImGui::InputFloat3("pointLightAtten", pointLightAtten);
+	ImGui::End();
+
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		scene->ChangeState(new Scene6);
+	}
+}
+
+void Scene5::Draw()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[2]);
+}
+
+void Scene5::DrawSprite()
+{
+	scene->debugText.Print("[PointLight]", 10, 10);
+}
+
+//---------------
+void Scene6::Initialize()
+{
+	//点光源
+	for (int i = 0; i < 6; i++)
+	{
+		scene->lightManager->SetPointLightActive(i, false);
+	}
+	//スポットライト
+	scene->lightManager->SetSpotLightActive(0, true);
+}
+
+void Scene6::Update()
+{
+	scene->lightManager->SetSpotLightDir(0,
+		XMVECTOR({ spotLightDir[0], spotLightDir[1], spotLightDir[2] }));
+	scene->lightManager->SetSpotLightPos(0, XMFLOAT3(spotLightPos));
+	scene->lightManager->SetSpotLightColor(0, XMFLOAT3(spotLightColor));
+	scene->lightManager->SetSpotLightAtten(0, XMFLOAT3(spotLightAtten));
+	scene->lightManager->SetSpotLightFactorAngle(0, XMFLOAT2(spotLightFactorAngle));
+
+	static bool a = true;
+	ImGui::Begin("spotLight", &a, ImGuiWindowFlags_MenuBar);
+	ImGui::InputFloat3("spotLightDir", spotLightDir);
+	ImGui::ColorEdit3("spotLightColor", spotLightColor, ImGuiColorEditFlags_Float);
+	ImGui::InputFloat3("spotLightPos", spotLightPos);
+	ImGui::InputFloat3("spotLightAtten", spotLightAtten);
+	ImGui::InputFloat2("spotLightFactorAngle", spotLightFactorAngle);
+	ImGui::End();
+
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		scene->ChangeState(new Scene7);
+	}
+}
+
+void Scene6::Draw()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[2]);
+}
+
+void Scene6::DrawSprite()
+{
+	scene->debugText.Print("[SpotLight]", 10, 10);
+}
+
+//---------------
+void Scene7::Initialize()
+{
+	scene->lightManager->SetDirLightActive(0, true);
+	scene->lightManager->SetDirLightActive(1, false);
+	scene->lightManager->SetDirLightActive(2, false);
+	//点光源
+	for (int i = 0; i < 6; i++)
+	{
+		scene->lightManager->SetPointLightActive(i, false);
+	}
+	//丸影
+	scene->lightManager->SetCircleShadowActive(0, true);
+}
+
+void Scene7::Update()
+{
+	//丸影
+	scene->lightManager->SetCircleShadowDir(0,
+		XMVECTOR({ circleShadowDir[0], circleShadowDir[1], circleShadowDir[2],0 }));
+	scene->lightManager->SetCircleShadowCasterPos(0,
+		XMFLOAT3({ fighterPos[0],fighterPos[1],fighterPos[2] }));
+	scene->lightManager->SetCircleShadowAtten(0, XMFLOAT3(circleShadowAtten));
+	scene->lightManager->SetCircleShadowFactorAngle(0, XMFLOAT2(circleShadowFactorAngle));
+	scene->lightManager->SetCircleShadowDistanceCasterLight(0, circleShadowDistance);
+
+	static bool a = true;
+	ImGui::Begin("circleShadow", &a, ImGuiWindowFlags_MenuBar);
+
+	ImGui::InputFloat3("circleShadowDir", circleShadowDir);
+	ImGui::InputFloat3("circleShadowAtten", circleShadowAtten);
+	ImGui::InputFloat2("circleShadowFactorAngle", circleShadowFactorAngle);
+	ImGui::InputFloat3("fihgterPos", fighterPos);
+	ImGui::InputFloat("distanceLight", &circleShadowDistance);
+
+
+	ImGui::End();
+
+	scene->draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
+	scene->draw[2].worldMat->SetWorld();
+
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		scene->ChangeState(new Scene8);
+	}
+}
+
+void Scene7::Draw()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[2]);
+}
+
+void Scene7::DrawSprite()
+{
+	scene->debugText.Print("[CircleShadow]", 10, 10);
+}
+
+//----------------------------------------------------
+void Scene8::Initialize()
+{
+	scene->lightManager->SetDirLightActive(0, true);
+	scene->lightManager->SetDirLightActive(1, true);
+	scene->lightManager->SetDirLightActive(2, false);
+	scene->lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
+	scene->lightManager->SetDirLightDir(1, { 0, -1.0, 0 });
+	//点光源
+	for (int i = 0; i < 6; i++)
+	{
+		scene->lightManager->SetPointLightActive(i, false);
+	}
+	//丸影
+	scene->lightManager->SetCircleShadowActive(0, false);
+	scene->lightManager->SetSpotLightActive(0, false);
+
+	Object::effectFlags.isFog = true;
+}
+
+void Scene8::Update()
+{
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		scene->ChangeState(new SceneBasic);
+	}
+}
+
+void Scene8::Draw()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[2]);
+}
+
+void Scene8::DrawSprite()
+{
+	scene->debugText.Print("[Fog]", 10, 10);
+}
 
 
 //---------------------------------------------------------------------------------------
@@ -199,8 +472,6 @@ void Scene::Initialize()
 
 	TextureManager::LoadGraph(L"Resources/image/effect1.png", texhandle[1]);
 
-
-	//音
 	{
 
 	}
@@ -216,10 +487,16 @@ void Scene::Initialize()
 	draw[1].worldMat->trans = { 0.0f, -10.0f, 0 };
 	draw[1].worldMat->SetWorld();
 	model[2] = Model::LoadFromOBJ("player");
-	draw[2].worldMat->scale = { 5.0f, 5.0f, 5.0f };
+	draw[2].worldMat->scale = { 5,5,5 };
 	draw[2].worldMat->rot.y = { -pi / 2.0f };
 	draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
 	draw[2].worldMat->SetWorld();
+	model[3] = Model::LoadFromOBJ("player", true);
+	draw[3].worldMat->scale = { 5,5,5 };
+	draw[3].worldMat->rot.y = { -pi / 2.0f };
+	draw[3].worldMat->trans = { 15.0f,0,0 };
+	draw[3].worldMat->SetWorld();
+	model[4] = Model::LoadFromOBJ("MiG-25PD", true);
 
 	//球
 	draw[4].worldMat->scale = { 5.0f,5.0f,5.0f };
@@ -240,8 +517,10 @@ void Scene::Initialize()
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
 	Object::SetLight(lightManager);
 	lightManager->SetDirLightActive(0, true);
-	lightManager->SetDirLightActive(1, false);
+	lightManager->SetDirLightActive(1, true);
 	lightManager->SetDirLightActive(2, false);
+	lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
+	lightManager->SetDirLightDir(1, { 0, -1.0, 0 });
 	//点光源
 	for (int i = 0; i < 6; i++)
 	{
@@ -261,11 +540,11 @@ void Scene::Initialize()
 
 	draw[4].SetCollider(new SphereCollider);
 	/*draw[4].SetIsValid(false);*/
-	
+
 	ParticleManager::GetInstance()->Initialize();
 
 	//ステート変更
-	ChangeState(new SceneLoad);
+	ChangeState(new SceneBasic);
 }
 
 void Scene::Update()
@@ -273,25 +552,14 @@ void Scene::Update()
 	//imgui
 	imGuiManager->Begin();
 
-	{
-		//デモ
-		ImGui::ShowDemoWindow();
-
-	}
 
 	lightManager->Update();
-
-	objPlayer->Update();
-	draw[4].Update();
-
-	//全ての衝突をチェック
-	collisionManager->CheckAllCollisions();
 
 	state->Update();
 
 
-#ifdef _DEBUG
-	//if (KeyboardInput::GetInstance().KeyTrigger(DIK_E)) ChangeState(new SceneTitle);
+	//#ifdef _DEBUG
+		//if (KeyboardInput::GetInstance().KeyTrigger(DIK_E)) ChangeState(new SceneTitle);
 
 	{
 		cameraWorldMat.rot.y += (KeyboardInput::GetInstance().KeyPush(DIK_A) - KeyboardInput::GetInstance().KeyPush(DIK_D)) * 0.05f;
@@ -305,42 +573,30 @@ void Scene::Update()
 		Vec3xM4(camera->viewMat.eye, cameraWorldMat.matWorld, 0);
 		camera->UpdateViewMatrix();
 	}
-#endif 
+	//#endif 
 
-	ParticleManager::GetInstance()->Update(&camera->viewMat, &camera->projectionMat);
-
-	//imgui
+		//imgui
 	imGuiManager->End();
 }
 
 void Scene::Draw()
 {
-	for (int i = 0; i < 2; i++)
-	{
-		draw[i].DrawModel(draw[i].worldMat, &camera->viewMat, &camera->projectionMat, model[i]);
-	}
-	draw[4].DrawSphere(draw[4].worldMat, &camera->viewMat, &camera->projectionMat);
-
-	objPlayer->DrawModel(objPlayer->worldMat, &camera->viewMat, &camera->projectionMat, model[2]);
-
 	state->Draw();
-
-	ParticleManager::GetInstance()->Draw(texhandle[1]);
 }
 
 void Scene::DrawPostEffect()
 {
-	//draw[2].DrawPera();
+	draw[5].DrawPera();
 }
 
 void Scene::DrawSprite()
 {
 	state->DrawSprite();
 
-#ifdef _DEBUG
 	debugText.DrawAll(debugTextHandle);
 
 	//imgui
 	imGuiManager->Draw();
-#endif
 }
+
+

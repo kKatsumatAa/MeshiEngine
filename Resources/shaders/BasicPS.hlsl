@@ -135,5 +135,23 @@ float4 main(VSOutput input) : SV_TARGET
 	float3 RGB = RGBA.rgb;
 	float  A = RGBA.a;
 
+	if (isFog == true)
+	{
+		//フォグ
+		float4 m_FogColor = float4(1.0f, 1.0f, 1.0f, 1.0f);                  //フォグカラー
+		float  m_Near = 100.0f;             //フォグの開始位置
+		float  m_Far = 500.0f;             //フォグの終了位置
+		float  m_FogLen = m_Far - m_Near;             //m_Far - m_Nearの結果
+
+		//頂点と視点との距離を計算する
+		float d = distance(input.worldpos.xyz, cameraPos);
+
+		float f = (m_Far - d) / (m_Far - m_Near);
+		f = clamp(f, 0.0f, 1.0f);
+		//オブジェクトのランバート拡散照明の計算結果とフォグカラーを線形合成する
+
+		return RGBA * f + m_FogColor * (1.0f - f);
+	}
+
 	return RGBA;
 }

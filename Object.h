@@ -4,6 +4,7 @@
 #include "Primitive.h"
 #include "LightManager.h"
 #include"CollisionInfo.h"
+#include "PostPera.h"
 
 class BaseCollider;
 
@@ -32,7 +33,7 @@ private:
 	ConstBuffTransform cbt;//ここをどうにかすれば、インスタンス一つでも色々描画
 
 
-		//定数バッファの生成
+	//定数バッファの生成
 	ComPtr < ID3D12Resource> constBuffMaterial = nullptr;
 	//定数バッファ用データ構造体（マテリアル）
 	//定数バッファのマッピング
@@ -43,6 +44,8 @@ private:
 
 	//ライト
 	static LightManager* lightManager;
+
+
 
 private:
 	//--------------------
@@ -56,6 +59,11 @@ public://変数
 	ViewMat* view;
 	ProjectionMat* projection;
 	bool isWireFrame = 0;
+	//画面効果用
+	static EffectConstBuffer effectFlags;
+	//画面効果用
+	static ComPtr <ID3D12Resource> effectFlagsBuff;
+	static EffectConstBuffer* mapEffectFlagsBuff;
 
 protected://継承先まで公開
 	//クラス名(デバッグ用)
@@ -90,7 +98,7 @@ public:
 	void SetIs2D(bool is2D);
 
 	//衝突時コールバック関数
-	virtual void OnCollision(const CollisionInfo& info){}
+	virtual void OnCollision(const CollisionInfo& info) {}
 
 	//-------------
 
