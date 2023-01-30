@@ -18,16 +18,16 @@ float4 PS(Output input) : SV_TARGET
 
 	//エンボス
 	{
-		//ret += tex.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)) * 2; // 左上
-		//ret += tex.Sample(smp, input.uv + float2(0, -2 * dy)); // 上
-		//ret += tex.Sample(smp, input.uv + float2(2 * dx, -2 * dy)) * 0; // 右 上
-		//ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0)); // 左
-		//ret += tex.Sample(smp, input.uv); // 自分
-		//ret += tex.Sample(smp, input.uv + float2(2 * dx, 0)) * -1; // 右
-		//ret += tex.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)) * 0; // 左下
-		//ret += tex.Sample(smp, input.uv + float2(0, 2 * dy)) * -1;// 下 
-		//ret += tex.Sample(smp, input.uv + float2(2 * dx, 2 * dy)) * -2; // 右 下 
-		//return ret;
+		ret += tex.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)) * 2; // 左上
+		ret += tex.Sample(smp, input.uv + float2(0, -2 * dy)); // 上
+		ret += tex.Sample(smp, input.uv + float2(2 * dx, -2 * dy)) * 0; // 右 上
+		ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0)); // 左
+		ret += tex.Sample(smp, input.uv); // 自分
+		ret += tex.Sample(smp, input.uv + float2(2 * dx, 0)) * -1; // 右
+		ret += tex.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)) * 0; // 左下
+		ret += tex.Sample(smp, input.uv + float2(0, 2 * dy)) * -1;// 下 
+		ret += tex.Sample(smp, input.uv + float2(2 * dx, 2 * dy)) * -2; // 右 下 
+		return ret;
 	}
 
 	//ぼかし

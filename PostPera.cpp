@@ -96,7 +96,7 @@ void PostPera::GenerateRSPL()
 	gpsDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	gpsDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	gpsDesc.NumRenderTargets = 1;
-	gpsDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	gpsDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	gpsDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	gpsDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 	gpsDesc.SampleDesc.Count = 1;
@@ -159,8 +159,7 @@ void PostPera::Draw()
 {
 	Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(_peraRS.Get());
 	Directx::GetInstance().GetCommandList()->SetPipelineState(_peraPipeline.Get());
-
-	//ヒープをセット
+		//ヒープをセット
 	Directx::GetInstance().GetCommandList()
 		->SetDescriptorHeaps(1, Directx::GetInstance().GetPeraSRVHeap().GetAddressOf());
 

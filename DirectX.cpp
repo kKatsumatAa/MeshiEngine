@@ -363,35 +363,46 @@ void Directx::DrawInitialize()
 void Directx::DrawUpdate(const XMFLOAT4& winRGBA)
 {
 	// バックバッファの番号を取得(2つなので0番か1番)
-	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
+	//UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
 	//1.リソースバリアで書き込み可能に変更
-	barrierDesc.Transition.pResource = backBuffers[bbIndex].Get(); // バックバッファを指定
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; // 表示状態から
+	//barrierDesc.Transition.pResource = backBuffers[bbIndex].Get(); // バックバッファを指定
+	//barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; // 表示状態から
+	//barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
+	//commandList->ResourceBarrier(1, &barrierDesc);
+	//ポストエフェクト
+	barrierDesc.Transition.pResource = _peraResource.Get(); // バックバッファを指定
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-	commandList->ResourceBarrier(1, &barrierDesc);
+	commandList->ResourceBarrier(
+		1,
+		&barrierDesc
+	);
 
 	// 2.描画先の変更
-	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
-	// レンダーターゲットビューのハンドルを取得
-	rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
-	//06_01(dsv)
-	//深度ステンシルビュー用デスクリプタヒープのハンドルを取得
+	// 1 パス 目 
+	auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-	commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+	commandList->OMSetRenderTargets(
+		1, &rtvHeapPointer, false, &dsvHandle
+	);
+
+	//rtvHandle = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
+	//// レンダーターゲットビューのハンドルを取得
+	//rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
+	////06_01(dsv)
+	////深度ステンシルビュー用デスクリプタヒープのハンドルを取得
+	//D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	//commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
 
 	// 3.画面クリア R G B A
-	clearColor[0] = winRGBA.x;
-	clearColor[1] = winRGBA.y;
-	clearColor[2] = winRGBA.z;
-	clearColor[3] = winRGBA.w;
-	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+	commandList->ClearRenderTargetView(rtvHeapPointer, clearColor, 0, nullptr);
 	//06_01(dsv)
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH,
 		1.0f, 0, 0, nullptr);
 	//毎フレーム深度バッファの値が描画範囲で最も奥(1.0)にリセットされる
 
 	// ビューポート設定コマンドを、コマンドリストに積む
-	commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
+	//commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
 
 	// シザー矩形
 	D3D12_RECT scissorRect{};
@@ -401,6 +412,8 @@ void Directx::DrawUpdate(const XMFLOAT4& winRGBA)
 	scissorRect.bottom = (LONG)(scissorRect.top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
 	// シザー矩形設定コマンドを、コマンドリストに積む
 	commandList->RSSetScissorRects(1, &scissorRect);
+
+
 }
 
 void Directx::DrawUpdate2()
@@ -410,7 +423,7 @@ void Directx::DrawUpdate2()
 
 	// 5.リソースバリアを戻す
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT; // 表示状態へ
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態へ
 	commandList->ResourceBarrier(1, &barrierDesc);
 
 	//// 命令のクローズ
@@ -445,41 +458,51 @@ void Directx::DrawUpdate2()
 }
 
 void Directx::PreDrawToPera() {
+	// バックバッファの番号を取得(2つなので0番か1番)
+	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
 
-	////ポストエフェクト
-	//barrierDesc.Transition.pResource = _peraResource.Get(); // バックバッファを指定
-	//barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
-	//barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-	//commandList->ResourceBarrier(
-	//	1,
-	//	&barrierDesc
-	//); 
+	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
+	// レンダーターゲットビューのハンドルを取得
+	rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
+
+	// 2 パス 目 
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	commandList->OMSetRenderTargets(
+		1, &rtvHandle, false, &dsvHandle
+	);
 
 
-	//// 1 パス 目 
-	//auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	//D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-	//commandList->OMSetRenderTargets(
-	//	1, &rtvHeapPointer, false, &dsvHandle
-	//);
+	//1.リソースバリアで書き込み可能に変更
+	barrierDesc.Transition.pResource = backBuffers[bbIndex].Get(); // バックバッファを指定
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; // 表示状態から
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
+	commandList->ResourceBarrier(1, &barrierDesc);
 
-	//if (!isPeraClear)
-	//{
-	//	isPeraClear = true;
+	// 3.画面クリア R G B A
+	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+	//06_01(dsv)
+	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH,
+		1.0f, 0, 0, nullptr);
+	//毎フレーム深度バッファの値が描画範囲で最も奥(1.0)にリセットされる
 
-	//	//クリアカラー		 R   G   B   A
-	//	float clsClr[4] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
-	//	commandList->ClearRenderTargetView(rtvHeapPointer, clsClr, 0, nullptr);
-	//	commandList->ClearDepthStencilView(dsvHandle,
-	//		D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-	//}
+	// ビューポート設定コマンドを、コマンドリストに積む
+	commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
+
+	// シザー矩形
+	D3D12_RECT scissorRect{};
+	scissorRect.left = 0; // 切り抜き座標左
+	scissorRect.right = (LONG)(scissorRect.left + WindowsApp::GetInstance().window_width); // 切り抜き座標右
+	scissorRect.top = 0; // 切り抜き座標上
+	scissorRect.bottom = (LONG)(scissorRect.top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
+	// シザー矩形設定コマンドを、コマンドリストに積む
+	commandList->RSSetScissorRects(1, &scissorRect);
 }
 
 void Directx::PostDrawToPera()
 {
-	//barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
-	//barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT; // 表示状態へ
-	//commandList->ResourceBarrier(1, &barrierDesc);
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT; // 表示状態へ
+	commandList->ResourceBarrier(1, &barrierDesc);
 
 	// 命令のクローズ
 	result = commandList->Close();

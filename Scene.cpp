@@ -15,9 +15,10 @@ void SceneState::SetScene(Scene* scene)
 
 //---------------------------------------------------------------------------------------
 void SceneBasic::Initialize()
-{	
+{
 	scene->draw[0].effectFlags.isFog = false;
 	scene->draw[1].effectFlags.isFog = false;
+	scene->draw[2].effectFlags.isFog = false;
 }
 
 void SceneBasic::Update()
@@ -50,7 +51,7 @@ void SceneBasic::DrawSprite()
 //---------------------------------------------------------------------------------------
 void Scene1phong::Initialize()
 {
-	
+
 }
 
 void Scene1phong::Update()
@@ -83,7 +84,7 @@ void Scene1phong::DrawSprite()
 
 //---------------------------------------------------------------------------------------
 void Scene2::Initialize()
-{	
+{
 }
 
 void Scene2::Update()
@@ -97,7 +98,7 @@ void Scene2::Update()
 	if (KeyboardInput::GetInstance().KeyPush(DIK_RIGHT)) { lightDir.m128_f32[0] += 1.0f; }
 	if (KeyboardInput::GetInstance().KeyPush(DIK_LEFT)) { lightDir.m128_f32[0] -= 1.0f; }
 
-	scene->lightManager->SetDirLightDir(0,lightDir);
+	scene->lightManager->SetDirLightDir(0, lightDir);
 
 	std::ostringstream debugstr;
 	debugstr << "lightDirFactor("
@@ -110,7 +111,7 @@ void Scene2::Update()
 	debugstr.str("");
 	debugstr.clear();
 
-	const XMFLOAT3& cameraPos = 
+	const XMFLOAT3& cameraPos =
 	{ scene->camera->viewMat.eye.x,scene->camera->viewMat.eye.y,scene->camera->viewMat.eye.z };
 	debugstr << "cameraPos("
 		<< std::fixed << std::setprecision(2)
@@ -397,6 +398,7 @@ void Scene8::Initialize()
 
 	scene->draw[0].effectFlags.isFog = true;
 	scene->draw[1].effectFlags.isFog = true;
+	scene->draw[2].effectFlags.isFog = true;
 }
 
 void Scene8::Update()
@@ -490,7 +492,7 @@ void Scene::Initialize()
 	draw[3].worldMat->rot.y = { -pi / 2.0f };
 	draw[3].worldMat->trans = { 15.0f,0,0 };
 	draw[3].worldMat->SetWorld();
-	model[4] = Model::LoadFromOBJ("MiG-25PD",true);
+	model[4] = Model::LoadFromOBJ("MiG-25PD", true);
 
 	//‹…
 	draw[4].worldMat->scale = { 5.0f,5.0f,5.0f };
@@ -513,8 +515,8 @@ void Scene::Initialize()
 	lightManager->SetDirLightActive(0, true);
 	lightManager->SetDirLightActive(1, true);
 	lightManager->SetDirLightActive(2, false);
-	lightManager->SetDirLightDir(0,{ 0, 0, 1.0 });
-	lightManager->SetDirLightDir(1,{ 0, -1.0, 0 });
+	lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
+	lightManager->SetDirLightDir(1, { 0, -1.0, 0 });
 	//“_ŒõŒ¹
 	for (int i = 0; i < 6; i++)
 	{
@@ -552,8 +554,8 @@ void Scene::Update()
 	state->Update();
 
 
-//#ifdef _DEBUG
-	//if (KeyboardInput::GetInstance().KeyTrigger(DIK_E)) ChangeState(new SceneTitle);
+	//#ifdef _DEBUG
+		//if (KeyboardInput::GetInstance().KeyTrigger(DIK_E)) ChangeState(new SceneTitle);
 
 	{
 		cameraWorldMat.rot.y += (KeyboardInput::GetInstance().KeyPush(DIK_A) - KeyboardInput::GetInstance().KeyPush(DIK_D)) * 0.05f;
@@ -567,9 +569,9 @@ void Scene::Update()
 		Vec3xM4(camera->viewMat.eye, cameraWorldMat.matWorld, 0);
 		camera->UpdateViewMatrix();
 	}
-//#endif 
+	//#endif 
 
-	//imgui
+		//imgui
 	imGuiManager->End();
 }
 
@@ -580,7 +582,7 @@ void Scene::Draw()
 
 void Scene::DrawPostEffect()
 {
-	//draw[2].DrawPera();
+	draw[5].DrawPera();
 }
 
 void Scene::DrawSprite()

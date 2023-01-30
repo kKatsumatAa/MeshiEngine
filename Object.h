@@ -27,19 +27,19 @@ enum indices
 struct EffectConstBuffer
 {
 	//フォグ
-	bool isFog = false;
+	unsigned int isFog = false;
 	//ぼかし
-	bool isGaussian = false;
+	unsigned int isGaussian = false;
 	//ガウシアンぼかし
-	bool isGaussian2 = false;
+	unsigned int isGaussian2 = false;
 	//エンボス
-	bool isEmboss = false;
+	unsigned int isEmboss = false;
 	//シャープネス
-	bool isSharpness = false;
+	unsigned int isSharpness = false;
 	//諧調
-	bool isGradation = false;
+	unsigned int isGradation = false;
 	//アウトライン
-	bool isOutLine = false;
+	unsigned int isOutLine = false;
 };
 
 
