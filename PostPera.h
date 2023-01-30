@@ -5,6 +5,7 @@
 struct PeraVertex
 {
 	XMFLOAT3 pos;
+	float pad1 = 1.0f;
 	XMFLOAT2 uv;
 };
 
@@ -12,10 +13,10 @@ class PostPera
 {
 private:
 	PeraVertex pv[4] = {
-		{{-1, -1,0.1f},{0,1}},//左下
-		{{-1, 1,0.1f},{0,0}},//左上
-		{{1, -1,0.1f},{1,1}},//右下
-		{{1, 1,0.1f},{1,0}}//右上
+		{{-1, -1,0.1f},1,{0,1}},//左下
+		{{-1, 1,0.1f},1,{0,0}},//左上
+		{{1, -1,0.1f},1,{1,1}},//右下
+		{{1, 1,0.1f},1,{1,0}}//右上
 	};
 
 	ComPtr<ID3D12Resource> _peraVB;
@@ -26,7 +27,7 @@ private:
 	ComPtr<ID3DBlob> errBlob;
 
 	ComPtr<ID3D12RootSignature> _peraRS;
-	ComPtr<ID3D12PipelineState> _peraPipeline=NULL;
+	ComPtr<ID3D12PipelineState> _peraPipeline = NULL;
 
 public:
 	void Initialize();

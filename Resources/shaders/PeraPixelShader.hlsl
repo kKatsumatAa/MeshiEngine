@@ -16,6 +16,8 @@ float4 PS(Output input) : SV_TARGET
 	float dy = 1.0f / h;
 	float4 ret = float4(0, 0, 0, 0);
 
+	//return RGBA;
+
 	//ƒGƒ“ƒ{ƒX
 	{
 		ret += tex.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)) * 2; // ¶ã

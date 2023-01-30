@@ -280,7 +280,7 @@ Directx::Directx()
 		//レンダリング時のクリア地と同じ値
 		float clsClr[4] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
 		D3D12_CLEAR_VALUE clearValue =
-			CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clsClr);
+			CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clsClr);
 
 		auto result = device->CreateCommittedResource(
 			&heapProp,
@@ -303,7 +303,7 @@ Directx::Directx()
 
 		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
 		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-		rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 
 		//rtvを作る
 		device->CreateRenderTargetView(
@@ -402,7 +402,7 @@ void Directx::DrawUpdate(const XMFLOAT4& winRGBA)
 	//毎フレーム深度バッファの値が描画範囲で最も奥(1.0)にリセットされる
 
 	// ビューポート設定コマンドを、コマンドリストに積む
-	//commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
+	commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
 
 	// シザー矩形
 	D3D12_RECT scissorRect{};
@@ -465,18 +465,17 @@ void Directx::PreDrawToPera() {
 	// レンダーターゲットビューのハンドルを取得
 	rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
 
-	// 2 パス 目 
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-	commandList->OMSetRenderTargets(
-		1, &rtvHandle, false, &dsvHandle
-	);
-
-
 	//1.リソースバリアで書き込み可能に変更
 	barrierDesc.Transition.pResource = backBuffers[bbIndex].Get(); // バックバッファを指定
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; // 表示状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
 	commandList->ResourceBarrier(1, &barrierDesc);
+
+	// 2 パス 目 
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	commandList->OMSetRenderTargets(
+		1, &rtvHandle, false, &dsvHandle
+	);
 
 	// 3.画面クリア R G B A
 	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
