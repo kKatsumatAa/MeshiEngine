@@ -15,21 +15,9 @@ void SceneState::SetScene(Scene* scene)
 
 //---------------------------------------------------------------------------------------
 void SceneBasic::Initialize()
-{
-	scene->lightManager->SetDirLightActive(0, true);
-	scene->lightManager->SetDirLightActive(1, true);
-	scene->lightManager->SetDirLightActive(2, false);
-	scene->lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
-	scene->lightManager->SetDirLightDir(1, { 0, -1.0, 0 });
-	//“_ŒõŒ¹
-	for (int i = 0; i < 6; i++)
-	{
-		scene->lightManager->SetPointLightActive(i, false);
-	}
-	//ŠÛ‰e
-	scene->lightManager->SetCircleShadowActive(0, false);
-	scene->lightManager->SetSpotLightActive(0, false);
-	
+{	
+	scene->draw[0].effectFlags.isFog = false;
+	scene->draw[1].effectFlags.isFog = false;
 }
 
 void SceneBasic::Update()
@@ -62,6 +50,7 @@ void SceneBasic::DrawSprite()
 //---------------------------------------------------------------------------------------
 void Scene1phong::Initialize()
 {
+	
 }
 
 void Scene1phong::Update()
@@ -369,7 +358,7 @@ void Scene7::Update()
 	//ƒV[ƒ“‘JˆÚ
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
 	{
-		scene->ChangeState(new SceneBasic);
+		scene->ChangeState(new Scene8);
 	}
 }
 
@@ -387,6 +376,52 @@ void Scene7::Draw()
 void Scene7::DrawSprite()
 {
 	scene->debugText.Print("[CircleShadow]", 10, 10);
+}
+
+//----------------------------------------------------
+void Scene8::Initialize()
+{
+	scene->lightManager->SetDirLightActive(0, true);
+	scene->lightManager->SetDirLightActive(1, true);
+	scene->lightManager->SetDirLightActive(2, false);
+	scene->lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
+	scene->lightManager->SetDirLightDir(1, { 0, -1.0, 0 });
+	//“_ŒõŒ¹
+	for (int i = 0; i < 6; i++)
+	{
+		scene->lightManager->SetPointLightActive(i, false);
+	}
+	//ŠÛ‰e
+	scene->lightManager->SetCircleShadowActive(0, false);
+	scene->lightManager->SetSpotLightActive(0, false);
+
+	scene->draw[0].effectFlags.isFog = true;
+	scene->draw[1].effectFlags.isFog = true;
+}
+
+void Scene8::Update()
+{
+	//ƒV[ƒ“‘JˆÚ
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		scene->ChangeState(new SceneBasic);
+	}
+}
+
+void Scene8::Draw()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[2]);
+}
+
+void Scene8::DrawSprite()
+{
+	scene->debugText.Print("[Fog]", 10, 10);
 }
 
 
@@ -557,4 +592,5 @@ void Scene::DrawSprite()
 	//imgui
 	imGuiManager->Draw();
 }
+
 

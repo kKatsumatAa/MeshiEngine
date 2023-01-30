@@ -195,3 +195,14 @@ public:
 	void Draw() override;
 	void DrawSprite()override;
 };
+
+class Scene8 : public SceneState
+{
+private:
+
+public:
+	void Initialize()override;
+	void Update() override;
+	void Draw() override;
+	void DrawSprite()override;
+};

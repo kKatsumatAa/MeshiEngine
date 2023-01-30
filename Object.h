@@ -23,6 +23,25 @@ enum indices
 	MODEL
 };
 
+//画面効果用のフラグ
+struct EffectConstBuffer
+{
+	//フォグ
+	bool isFog = false;
+	//ぼかし
+	bool isGaussian = false;
+	//ガウシアンぼかし
+	bool isGaussian2 = false;
+	//エンボス
+	bool isEmboss = false;
+	//シャープネス
+	bool isSharpness = false;
+	//諧調
+	bool isGradation = false;
+	//アウトライン
+	bool isOutLine = false;
+};
+
 
 class Object
 {
@@ -32,7 +51,7 @@ private:
 	ConstBuffTransform cbt;//ここをどうにかすれば、インスタンス一つでも色々描画
 
 
-		//定数バッファの生成
+	//定数バッファの生成
 	ComPtr < ID3D12Resource> constBuffMaterial = nullptr;
 	//定数バッファ用データ構造体（マテリアル）
 	//定数バッファのマッピング
@@ -43,6 +62,10 @@ private:
 
 	//ライト
 	static LightManager* lightManager;
+
+	//画面効果用
+	ComPtr <ID3D12Resource> effectFlagsBuff = nullptr;
+	EffectConstBuffer* mapEffectFlagsBuff = nullptr;
 
 private:
 	//--------------------
@@ -56,6 +79,8 @@ public://変数
 	ViewMat* view;
 	ProjectionMat* projection;
 	bool isWireFrame = 0;
+	//画面効果用
+	EffectConstBuffer effectFlags;
 
 protected://継承先まで公開
 	//クラス名(デバッグ用)
@@ -90,7 +115,7 @@ public:
 	void SetIs2D(bool is2D);
 
 	//衝突時コールバック関数
-	virtual void OnCollision(const CollisionInfo& info){}
+	virtual void OnCollision(const CollisionInfo& info) {}
 
 	//-------------
 
