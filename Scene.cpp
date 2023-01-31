@@ -340,7 +340,7 @@ void Scene5::Update()
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
 	{
-		scene->ChangeState(new SceneBasic);
+		scene->ChangeState(new Scene6);
 	}
 }
 
@@ -365,6 +365,77 @@ void Scene5::DrawSprite()
 	scene->debugText.Print("[5]", 10, 10);
 	scene->debugText.Print("ARROW:move", 10, 30);
 }
+
+//-----------------------------------------------------------------------------------
+void Scene6::Initialize()
+{
+	Object::effectFlags.isFog = true;
+}
+
+void Scene6::Update()
+{
+	count++;
+
+	if (count >= countMax)
+	{
+		if (Object::effectFlags.isFog) { 
+			Object::effectFlags.isFog = false;
+			Object::effectFlags.isEmboss = true;
+		}
+		else if (Object::effectFlags.isEmboss) {
+			Object::effectFlags.isEmboss = false;
+			Object::effectFlags.isGaussian2 = true;
+		}
+		else if (Object::effectFlags.isGaussian2) {
+			Object::effectFlags.isGaussian2 = false;
+			Object::effectFlags.isGradation = true;
+		}
+		else if (Object::effectFlags.isGradation) {
+			Object::effectFlags.isGradation = false;
+			Object::effectFlags.isOutLine = true;
+		}
+		else if (Object::effectFlags.isOutLine) {
+			Object::effectFlags.isOutLine = false;
+			Object::effectFlags.isSharpness = true;
+		}
+		else if (Object::effectFlags.isSharpness) {
+			Object::effectFlags.isSharpness = false;
+			Object::effectFlags.isFog = true;
+		}
+
+		count = 0;
+	}
+
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	{
+		Object::effectFlags.isFog = false;
+		Object::effectFlags.isEmboss = false;
+		Object::effectFlags.isGaussian2 = false;
+		Object::effectFlags.isGradation = false;
+		Object::effectFlags.isOutLine = false;
+		Object::effectFlags.isSharpness = false;
+
+		scene->ChangeState(new SceneBasic);
+	}
+}
+
+void Scene6::Draw()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->model[2]);
+}
+
+void Scene6::DrawSprite()
+{
+	scene->debugText.Print("[6]", 10, 10);
+}
+
 
 //---------------------------------------------------------------------------------------
 //デストラクタ
@@ -506,7 +577,7 @@ void Scene::Draw()
 
 void Scene::DrawPostEffect()
 {
-	//draw[2].DrawPera();
+	Object::DrawPera();
 }
 
 void Scene::DrawSprite()

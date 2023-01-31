@@ -9,7 +9,6 @@ using namespace DirectX;
 
 Player* Player::Create()
 {
-
     Player* instance = new Player();
     if (instance == nullptr)
     {

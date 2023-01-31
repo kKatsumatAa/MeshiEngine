@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include "PostPera.h"
+
 #include "BaseCollider.h"
 #include "CollisionManager.h"
 
@@ -53,7 +53,7 @@ PipeLineSet pipelineSet;
 PipeLineSet pipelineSetM;
 
 //ルートパラメータの設定
-D3D12_ROOT_PARAMETER rootParams[5] = {};
+D3D12_ROOT_PARAMETER rootParams[6] = {};
 
 // パイプランステートの生成
 ComPtr < ID3D12PipelineState> pipelineState[3] = { nullptr };
@@ -73,6 +73,10 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 LightManager* Object::lightManager = nullptr;
 
 PostPera postPera;
+
+ComPtr <ID3D12Resource> Object::effectFlagsBuff = nullptr;
+EffectConstBuffer* Object::mapEffectFlagsBuff = nullptr;
+EffectConstBuffer Object::effectFlags;
 
 
 struct weightMap
@@ -114,6 +118,11 @@ void DrawInitialize()
 	rootParams[4].Descriptor.ShaderRegister = 3;//定数バッファ番号(b3)
 	rootParams[4].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//定数バッファ4番(画面効果フラグ)
+	rootParams[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams[5].Descriptor.ShaderRegister = 4;//定数バッファ番号(b4)
+	rootParams[5].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 
 	// パイプランステートの生成
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob);
@@ -134,6 +143,24 @@ void DrawInitialize()
 		pipelineSetM.psBlob, MODEL);
 
 	postPera.Initialize();
+
+	//画面効果用
+	{
+		//ヒープ設定
+		D3D12_HEAP_PROPERTIES cbHeapProp{};
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+		//リソース設定
+		D3D12_RESOURCE_DESC cbResourceDesc{};
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+		//リソース設定
+		ResourceProperties(cbResourceDesc,
+			((UINT)sizeof(EffectConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
+		//定数バッファの生成
+		BuffProperties(cbHeapProp, cbResourceDesc, &Object::effectFlagsBuff);
+		//定数バッファのマッピング
+		Directx::GetInstance().result = Object::effectFlagsBuff->Map(0, nullptr, (void**)&Object::mapEffectFlagsBuff);//マッピング
+		assert(SUCCEEDED(Directx::GetInstance().result));
+	}
 }
 
 //----------------------------------------------------------------
@@ -247,7 +274,17 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		cbt.constMapTransform->cameraPos = cPos;
 	}
 
-
+	//画面効果用
+	{
+		mapEffectFlagsBuff->isEmboss = this->effectFlags.isEmboss;
+		mapEffectFlagsBuff->isFog = this->effectFlags.isFog;
+		mapEffectFlagsBuff->isGaussian = this->effectFlags.isGaussian;
+		mapEffectFlagsBuff->isGaussian2 = this->effectFlags.isGaussian2;
+		mapEffectFlagsBuff->isGradation = this->effectFlags.isGradation;
+		mapEffectFlagsBuff->isOutLine = this->effectFlags.isOutLine;
+		mapEffectFlagsBuff->isSharpness = this->effectFlags.isSharpness;
+	}
+	
 	//テクスチャを設定していなかったら
 	UINT64 textureHandle_;
 
@@ -303,6 +340,8 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		//定数バッファビュー(CBV)の設定コマンド
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
+
 		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesTriangle), 1, 0, 0, 0); // 全ての頂点を使って描画
 
 	}
@@ -349,6 +388,8 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		//定数バッファビュー(CBV)の設定コマンド
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
+
 		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesBox), 1, 0, 0, 0); // 全ての頂点を使って描画
 	}
 	else if (indexNum == CUBE)
@@ -393,6 +434,8 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		}
 		//定数バッファビュー(CBV)の設定コマンド
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
 
 		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesCube), 1, 0, 0, 0); // 全ての頂点を使って描画
 	}
@@ -439,6 +482,8 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		//定数バッファビュー(CBV)の設定コマンド
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
+
 		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesLine), 1, 0, 0, 0); // 全ての頂点を使って描画
 	}
 	else if (indexNum == CIRCLE)
@@ -483,6 +528,8 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		}
 		//定数バッファビュー(CBV)の設定コマンド
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
 
 		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(indicesCircle), 1, 0, 0, 0); // 全ての頂点を使って描画
 	}
@@ -530,6 +577,8 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		//定数バッファビュー(CBV)の設定コマンド
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
+
 		Directx::GetInstance().GetCommandList()->DrawIndexedInstanced(_countof(primitive.indicesSphere), 1, 0, 0, 0); // 全ての頂点を使って描画
 	}
 	else if (indexNum == SPRITE)
@@ -570,6 +619,8 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		//定数バッファビュー(CBV)の設定コマンド
 		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
+		Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
+
 		//モデル用描画
 		model->Draw();
 	}
@@ -578,7 +629,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 void Object::DrawPera()
 {
 	//ポストエフェクト用
-	postPera.Draw();
+	postPera.Draw(effectFlags);
 }
 
 void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/

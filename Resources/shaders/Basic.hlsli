@@ -75,3 +75,21 @@ cbuffer ConstBufferDataMaterial3 : register(b3)
 	SpotLight  spotLights[SPOTLIGHT_NUM];
 	CircleShadow circleShadows[CIRCLESHADOW_NUM];
 }
+
+cbuffer ConstBufferEffectFlags : register(b4)
+{
+	//フォグ
+	uint isFog;
+	//ぼかし
+	uint isGaussian;
+	//ガウシアンぼかし
+	uint isGaussian2;
+	//エンボス
+	uint isEmboss;
+	//シャープネス
+	uint isSharpness;
+	//諧調
+	uint isGradation;
+	//アウトライン
+	uint isOutLine;
+}

@@ -189,3 +189,16 @@ public:
 	void Draw() override;
 	void DrawSprite()override;
 };
+
+class Scene6 : public SceneState
+{
+private:
+	int count = 0;
+	const int countMax = 60;
+
+public:
+	void Initialize()override;
+	void Update() override;
+	void Draw() override;
+	void DrawSprite()override;
+};
