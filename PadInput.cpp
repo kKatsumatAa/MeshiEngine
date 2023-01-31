@@ -1,15 +1,23 @@
 #include "PadInput.h"
 
-PadInput::PadInput()
+// デバイス発見時に実行される
+BOOL CALLBACK DeviceFindCallBack(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef)
 {
-	//// デバイスの列挙
-	//result= Input::GetInstance().GetDirectInput()->EnumDevices(
-	//	DI8DEVTYPE_JOYSTICK,
-	//	DeviceFindCallBack,
-	//	&parameter,
-	//	DIEDFL_ATTACHEDONLY
-	//);
-	//assert(SUCCEEDED(result));
+	PadInput::GetInstance().CreateDevice();
+
+	return DIENUM_STOP;
+}
+
+void PadInput::CreateDevice()
+{
+	//つながってたら呼ばれる関数なのでフラグはオンに
+	isActive = true;
+
+	//すでに中身があれば新たに生成しない
+	if (gamePad)
+	{
+		return;
+	}
 
 	//パッドデバイスの生成
 	result = Input::GetInstance().GetDirectInput()->CreateDevice(GUID_Joystick, &gamePad, NULL);
@@ -54,17 +62,49 @@ PadInput::PadInput()
 	diprg.diph.dwObj = DIJOFS_Y;
 	result = gamePad->SetProperty(DIPROP_RANGE, &diprg.diph);
 	assert(SUCCEEDED(result));
+
+}
+
+void PadInput::PadConnectSearch()
+{
+	searchCount++;
+
+	//舞フレーム接続確認すると重いので
+	if (searchCount % searchCountMax == 0)
+	{
+		searchCount = 0;
+		//いったんここでfalseにすることで接続されてないときはそのまま、されていたらtrue
+		isActive = false;
+
+		// デバイスの列挙（接続されてるかを確認）
+		result = Input::GetInstance().GetDirectInput()->EnumDevices(
+			DI8DEVTYPE_GAMEPAD,
+			DeviceFindCallBack,//接続されていればこの関数が呼ばれる
+			NULL,
+			DIEDFL_ATTACHEDONLY
+		);
+		assert(SUCCEEDED(result));
+
+		//パッドが接続されてないかつ、前までされていたら削除
+		if (gamePad && !isActive)
+		{
+			gamePad.Reset();
+		}
+	}
+}
+
+PadInput::PadInput()
+{
+
+	//Initialize();
+
 }
 
 PadInput::~PadInput()
 {
 }
 
-// デバイス発見時に実行される
-BOOL CALLBACK DeviceFindCallBack(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef)
-{
-	return DIENUM_CONTINUE;
-}
+
 
 PadInput& PadInput::GetInstance()
 {
@@ -74,15 +114,20 @@ PadInput& PadInput::GetInstance()
 
 void PadInput::Update()
 {
-	//前回のキー情報
-	oldPadData = padData;
+	//接続を確認
+	PadConnectSearch();
 
-	//キーボード情報の取得開始
-	gamePad->Acquire();
-	//全キーの入力情報を取得
-	result = gamePad->GetDeviceState(sizeof(padData), &padData);
+	if (gamePad != NULL)
+	{
+		//前回のキー情報
+		oldPadData = padData;
 
-	//assert(SUCCEEDED(result));
+		//キーボード情報の取得開始
+		gamePad->Acquire();
+		//全キーの入力情報を取得
+		result = gamePad->GetDeviceState(sizeof(padData), &padData);
+		//assert(SUCCEEDED(result));
+	}
 }
 
 bool PadInput::GetJoyStickActive()

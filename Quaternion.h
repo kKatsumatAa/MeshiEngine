@@ -48,6 +48,9 @@ public://静的メンバ関数
 	//任意軸回転を表すクォータニオンを返す
 	static Quaternion MakeAxisAngle(const Vec3& axis, float angle);
 
+	//uからvへの回転を生成
+	static Quaternion DirectionToDirection(const Vec3& u, const Vec3& v);
+
 
 public://オバロ演算子
 	Quaternion  operator+();
