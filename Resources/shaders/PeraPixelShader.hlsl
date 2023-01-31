@@ -86,8 +86,8 @@ float4 PS(Output input) : SV_TARGET
 	//ガウシアン
 	if (isGaussian2 == true)
 	{
-		float dx = 3.0f / w;
-		float dy = 3.0f / h;
+		float dx = 2.0f / w;
+		float dy = 2.0f / h;
 		// 今 の ピクセル を 中心 に 縦横 5 つ ずつ に なる よう 加算 する 
 		// 最 上段 
 		ret += tex.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)) * 1 / 256;
@@ -138,6 +138,8 @@ float4 PS(Output input) : SV_TARGET
 	if (isGradation)
 	{
 		ret = float4(RGB - fmod(RGB, 0.25f), A);
+
+		isEffect = true;
 	}
 
 	if (isEffect)
