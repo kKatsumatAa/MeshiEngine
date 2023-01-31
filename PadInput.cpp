@@ -81,7 +81,7 @@ void PadInput::PadConnectSearch()
 			DI8DEVTYPE_GAMEPAD,
 			DeviceFindCallBack,//Ú‘±‚³‚ê‚Ä‚¢‚ê‚Î‚±‚ÌŠÖ”‚ªŒÄ‚Î‚ê‚é
 			NULL,
-			DIEDFL_ATTACHEDONLY
+			DIEDFL_ATTACHEDONLY//
 		);
 		assert(SUCCEEDED(result));
 
