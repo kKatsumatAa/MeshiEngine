@@ -40,6 +40,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//毎フレーム処理　ここから//
 		//キーボード情報の取得開始
 		KeyboardInput::GetInstance().Update();
+		PadInput::GetInstance().Update();
 		{
 			Directx::GetInstance().DrawUpdate();
 

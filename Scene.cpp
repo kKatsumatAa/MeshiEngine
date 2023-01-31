@@ -5,6 +5,7 @@
 #include "CollisionManager.h"
 #include "Player.h"
 
+
 void SceneState::SetScene(Scene* scene)
 {
 	//stateではなくSceneクラスのインスタンス//
@@ -78,7 +79,7 @@ void SceneBasic::Update()
 
 
 	//シーン遷移
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
 	{
 		scene->ChangeState(new Scene1);
 	}
@@ -111,7 +112,7 @@ void Scene1::Update()
 	scene->imGuiManager->End();
 
 	//シーン遷移
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
 	{
 		scene->ChangeState(new Scene2);
 	}
@@ -164,7 +165,7 @@ void Scene2::Update()
 	ImGui::End();
 
 	//シーン遷移
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
 	{
 		scene->ChangeState(new Scene3);
 	}
@@ -217,7 +218,7 @@ void Scene3::Update()
 	ImGui::End();
 
 	//シーン遷移
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
 	{
 		scene->ChangeState(new Scene4);
 	}
@@ -281,7 +282,7 @@ void Scene4::Update()
 	scene->draw[2].worldMat->SetWorld();
 
 	//シーン遷移
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
 	{
 		scene->ChangeState(new Scene5);
 	}
@@ -338,7 +339,7 @@ void Scene5::Update()
 	ParticleManager::GetInstance()->Update(&scene->camera->viewMat, &scene->camera->projectionMat);
 
 	//シーン遷移
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
 	{
 		scene->ChangeState(new Scene6);
 	}
@@ -362,6 +363,14 @@ void Scene5::Draw()
 
 void Scene5::DrawSprite()
 {
+	Vec2 v = PadInput::GetInstance().GetRightStickTilt();
+	Vec2 v2 = PadInput::GetInstance().GetLeftStickTilt();
+
+	scene->debugText.Printf("RX:", 100, 10, v.x);
+	scene->debugText.Printf("RY:", 100, 30, v.y);
+	scene->debugText.Printf("LX:", 100, 60, v2.x);
+	scene->debugText.Printf("LY:", 100, 90, v2.y);
+
 	scene->debugText.Print("[5]", 10, 10);
 	scene->debugText.Print("ARROW:move", 10, 30);
 }
@@ -378,7 +387,7 @@ void Scene6::Update()
 
 	if (count >= countMax)
 	{
-		if (Object::effectFlags.isFog) { 
+		if (Object::effectFlags.isFog) {
 			Object::effectFlags.isFog = false;
 			Object::effectFlags.isEmboss = true;
 		}
@@ -407,7 +416,7 @@ void Scene6::Update()
 	}
 
 	//シーン遷移
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
 	{
 		Object::effectFlags.isFog = false;
 		Object::effectFlags.isEmboss = false;

@@ -1,13 +1,5 @@
 #pragma once
-#define DIRECTINPUT_VERSION 0x0800
-#include <dinput.h>
-#include <DirectXMath.h>
-#include "WindowsApp.h"
-
-#pragma comment(lib,"dinput8.lib")
-#pragma comment(lib,"dxguid.lib")
-
-#include <wrl.h>
+#include"Input.h"
 
 
 class KeyboardInput final
@@ -21,8 +13,6 @@ private:
 	BYTE oldkey[256] = {};
 	HRESULT result;
 
-	//DirectInputの初期化
-	ComPtr<IDirectInput8> directInput = nullptr;
 	//キーボードデバイスの生成
 	ComPtr<IDirectInputDevice8> keyboard = nullptr;
 

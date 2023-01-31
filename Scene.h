@@ -6,6 +6,7 @@
 #include"ParticleManager.h"
 #include"Camera.h"
 #include"Async.h"
+#include "PadInput.h"
 
 class CollisionManager;
 class Player;
