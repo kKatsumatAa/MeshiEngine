@@ -91,6 +91,21 @@ Quaternion Quaternion::MakeAxisAngle(const Vec3& axis, float angle)
 	return Quaternion(ans);
 }
 
+Quaternion Quaternion::DirectionToDirection(const Vec3& u, const Vec3& v)
+{
+	//uとvを正規化して内積を求める
+	float dot = u.GetNormalized().Dot(v.GetNormalized());
+	//u,vの外積をとる
+	Vec3 cross = u.GetNormalized().Cross(v.GetNormalized());
+	//軸は単位ベクトルである必要があるので正規化
+	//uとvが単位ベクトルあっても、外積が単位ベクトルとは限らないのでここの正規化は必須
+	Vec3 axis = cross.GetNormalized();
+	//単位ベクトルで内積をとっているのでacosで角度を求める
+	float theta = acosf(dot);
+	//axisとthetaで任意軸回転を作って返す
+	return MakeAxisAngle(axis, theta);
+}
+
 Vec3 Quaternion::GetRotateVector(const Vec3& vector) const
 {
 	Quaternion r = { vector.x,vector.y,vector.z,0 };
