@@ -1,7 +1,7 @@
 #pragma once
 #include"Input.h"
 #include"Util.h"
-#include<Xinput.h>
+
 
 #define GAMEPAD_A                0
 #define GAMEPAD_B                1
@@ -36,7 +36,15 @@ private:
 	const float stickRange = 1000;
 	const float stickRRange = 65535 / 2.0f;
 
+	const int searchCountMax = 120;
+	int searchCount = 0;
+
+	bool isActive = false;
+
 private:
+	//接続されているか調べる(デバイス生成したりする)
+	void PadConnectSearch();
+
 	PadInput();
 
 	~PadInput();
@@ -49,6 +57,8 @@ public:
 
 
 	static PadInput& GetInstance();
+
+	void CreateDevice();
 
 	void Update();
 

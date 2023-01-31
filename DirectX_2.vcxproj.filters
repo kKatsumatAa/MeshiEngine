@@ -293,6 +293,9 @@
     <ClInclude Include="Input.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="RaycastHit.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="PadInput.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

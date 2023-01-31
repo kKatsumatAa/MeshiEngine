@@ -54,7 +54,7 @@ void SceneLoad::Update()
 		async.EndThread();
 
 		//ステージ作り終わったら
-		scene->ChangeState(new SceneBasic);
+		scene->ChangeState(new Scene5);
 	}
 }
 
@@ -337,6 +337,27 @@ void Scene5::Update()
 	collisionManager->CheckAllCollisions();
 
 	ParticleManager::GetInstance()->Update(&scene->camera->viewMat, &scene->camera->projectionMat);
+
+
+	Ray ray;
+	ray.start = { 50.0f, 0.5f, 0.0f, 1 };
+	ray.dir = { -1,0,0,0 };
+	RaycastHit raycastHit;
+
+	if (collisionManager->Raycast(ray, &raycastHit)) {
+		scene->debugText.Print("Raycast Hit.", 10, 90);
+
+		for (int i = 0; i < 1; ++i) {
+
+			const float rnd_vel = 1.1f;
+			XMFLOAT3 vel{};
+			vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+			ParticleManager::GetInstance()->Add(10, XMFLOAT3(raycastHit.inter.m128_f32), vel, XMFLOAT3(), 0.0f, 1.0f);
+		}
+	}
 
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
