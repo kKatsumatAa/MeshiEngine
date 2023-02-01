@@ -80,16 +80,4 @@ cbuffer ConstBufferEffectFlags : register(b4)
 {
 	//フォグ
 	uint isFog;
-	//ぼかし
-	uint isGaussian;
-	//ガウシアンぼかし
-	uint isGaussian2;
-	//エンボス
-	uint isEmboss;
-	//シャープネス
-	uint isSharpness;
-	//諧調
-	uint isGradation;
-	//アウトライン
-	uint isOutLine;
 }
