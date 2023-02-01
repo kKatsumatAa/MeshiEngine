@@ -283,6 +283,8 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		mapEffectFlagsBuff->isGradation = this->effectFlags.isGradation;
 		mapEffectFlagsBuff->isOutLine = this->effectFlags.isOutLine;
 		mapEffectFlagsBuff->isSharpness = this->effectFlags.isSharpness;
+		mapEffectFlagsBuff->isVignette = this->effectFlags.isVignette;
+		mapEffectFlagsBuff->isBarrelCurve = this->effectFlags.isBarrelCurve;
 	}
 	
 	//テクスチャを設定していなかったら

@@ -564,6 +564,8 @@ void Scene::Initialize()
 
 	ParticleManager::GetInstance()->Initialize();
 
+	Object::effectFlags.isVignette = true;
+
 	//ステート変更
 	ChangeState(new SceneLoad);
 }
