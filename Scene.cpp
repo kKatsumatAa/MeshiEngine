@@ -54,7 +54,7 @@ void SceneLoad::Update()
 		async.EndThread();
 
 		//ステージ作り終わったら
-		scene->ChangeState(new Scene5);
+		scene->ChangeState(new SceneBasic);
 	}
 }
 
@@ -71,12 +71,31 @@ void SceneLoad::DrawSprite()
 //---------------------------------------------------------------------------------------
 void SceneBasic::Initialize()
 {
+	plane.distance = scene->draw[1].worldMat->trans.y;
+	plane.normal = XMVectorSet(0, 1, 0, 0);
+	tama.radius = scene->draw[2].worldMat->scale.x;
 
+	scene->draw[2].worldMat->trans = { scene->fighterPos[0],scene->fighterPos[1],scene->fighterPos[2] };
 }
 
 void SceneBasic::Update()
 {
+	count++;
 
+	scene->draw[2].worldMat->trans.y = 10.0f + sinf(count * 0.03f) * 20.0f;
+	scene->draw[2].worldMat->SetWorld();
+
+	tama.center =
+	{ scene->draw[2].worldMat->trans.x,scene->draw[2].worldMat->trans.y,scene->draw[2].worldMat->trans.z };
+
+	if (Collision::CheckSphere2Plane(tama, plane))
+	{
+		tamaColor = { 1.0f,0,0,1.0f };
+	}
+	else
+	{
+		tamaColor = { 1.0f,1.0f,1.0f,1.0f };
+	}
 
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
@@ -87,29 +106,59 @@ void SceneBasic::Update()
 
 void SceneBasic::Draw()
 {
+
+
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+	scene->draw[2].DrawSphere(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, tamaColor);
 }
 
 void SceneBasic::DrawSprite()
 {
-	scene->draw[0].DrawBoxSprite({ 0,WindowsApp::GetInstance().window_height / 2.0f,0 },
-		0.5f, { 1.0f,1.0f,1.0f,1.0f }, scene->texhandle[2]);
-	scene->draw[1].DrawBoxSprite({ WindowsApp::GetInstance().window_width - 300,
-		WindowsApp::GetInstance().window_height / 2.0f,0 },
-		1.0f, { 1.0f,1.0f,1.0f,1.0f }, scene->texhandle[1]);
-
 	scene->debugText.Print("[Basic]", 10, 10);
 }
 
 //---------------------------------------------------------------------------------------
 void Scene1::Initialize()
 {
-	Sound::GetInstance().PlayWave("Stage_BGM.wav", 0.4f, true);
+	float angle = pi * 2.0f + pi * 2.0f / 3.0f * 2.0f;
+	float angle2 = pi * 2.0f;
+	float angle3 = pi * 2.0f + pi * 2.0f / 3.0f;
+
+	float rad = scene->draw[3].worldMat->scale.x;
+
+	triangle.p0 = { sinf(angle) * rad,cosf(angle) * rad,0 };
+	triangle.p1 = { 0,cosf(angle2) * rad,0 };
+	triangle.p2 = { sinf(angle3) * rad,cosf(angle3) * rad,0 };
+	triangle.ComputeNormal();
+
+	tama.radius = scene->draw[2].worldMat->scale.x;
+
+	scene->draw[2].worldMat->trans = { scene->fighterPos[0],scene->fighterPos[1],scene->fighterPos[2] };
 }
 
 void Scene1::Update()
 {
-	ImGui::ShowDemoWindow();
-	scene->imGuiManager->End();
+	count++;
+
+	scene->draw[2].worldMat->trans.z = -10.0f + sinf(count * 0.03f) * 20.0f;
+	scene->draw[2].worldMat->SetWorld();
+
+	tama.center =
+	{ scene->draw[2].worldMat->trans.x,scene->draw[2].worldMat->trans.y,scene->draw[2].worldMat->trans.z };
+
+	if (Collision::CheckSphere2Triangle(tama, triangle))
+	{
+		tamaColor = { 1.0f,0,0,1.0f };
+	}
+	else
+	{
+		tamaColor = { 1.0f,1.0f,1.0f,1.0f };
+	}
 
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
@@ -125,12 +174,10 @@ void Scene1::Draw()
 		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
 			&scene->camera->projectionMat, scene->model[i]);
 	}
-	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, scene->model[2]);
-	scene->draw[3].DrawSphere(scene->draw[3].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, { 1.0f,0.5f,0.2f,0.8f });
-	scene->draw[4].DrawCube3D(scene->draw[4].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, { 1.0f,0.2f,0.7f,1.0f });
+	scene->draw[2].DrawSphere(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, tamaColor);
+	scene->draw[3].DrawTriangle(scene->draw[3].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, { 0.2,0,0.2f,1.0f });
 }
 
 void Scene1::DrawSprite()
@@ -141,32 +188,46 @@ void Scene1::DrawSprite()
 //---------------
 void Scene2::Initialize()
 {
-	scene->StopWaveAllScene();
+	ray.dir = { 0,-1.0f,0 };
+	ray.start = { 0,20,0 };
+	//床
+	plane.distance = scene->draw[1].worldMat->trans.y;
+	plane.normal = XMVectorSet(0, 1, 0, 0);
 
-	scene->lightManager->SetDirLightActive(0, false);
-	scene->lightManager->SetDirLightActive(1, false);
-
-	scene->lightManager->SetPointLightActive(0, true);
-
+	scene->draw[1].worldMat->trans.z = scene->draw[1].worldMat->scale.z*100.0f;
 }
 
 void Scene2::Update()
 {
-	//点光源
-	scene->lightManager->SetPointLightPos(0, XMFLOAT3(pointLightPos));
-	scene->lightManager->SetPointLightColor(0, XMFLOAT3(pointLightColor));
-	scene->lightManager->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
+	if (Collision::CheckRay2Plane(ray, plane, &distance, &inter))
+	{
+		tamaColor = { 1.0f,0,0,1.0f };
+	}
+	else
+	{
+		distance = 100;
+		tamaColor = { 1.0f,1.0f,1.0f,1.0f };
+	}
 
-	static bool a = true;
-	ImGui::Begin("PointLight", &a, ImGuiWindowFlags_MenuBar);
-	ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
-	ImGui::InputFloat3("pointLightPos", pointLightPos);
-	ImGui::InputFloat3("pointLightAtten", pointLightAtten);
-	ImGui::End();
+	count++;
+
+	ray.start.m128_f32[1] = -10.0f + sinf(count * 0.03f) * 20.0f;
+
+	//モデルの位置と長さ
+	scene->draw[4].worldMat->trans = { ray.start.m128_f32[0] + ray.dir.m128_f32[0] * distance / 2.0f,
+		ray.start.m128_f32[1] + ray.dir.m128_f32[1] * distance / 2.0f,
+	ray.start.m128_f32[2] + ray.dir.m128_f32[2] * distance / 2.0f };
+
+	scene->draw[4].worldMat->scale = { 1.0f,distance / 2.0f,1.0f };
+
+	scene->draw[4].worldMat->SetWorld();
+
 
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
 	{
+		scene->draw[1].worldMat->trans.z = 0;
+
 		scene->ChangeState(new Scene3);
 	}
 }
@@ -178,8 +239,9 @@ void Scene2::Draw()
 		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
 			&scene->camera->projectionMat, scene->model[i]);
 	}
-	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, scene->model[2]);
+
+	scene->draw[4].DrawCube3D(scene->draw[4].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, tamaColor);
 }
 
 void Scene2::DrawSprite()
@@ -243,43 +305,45 @@ void Scene3::DrawSprite()
 //---------------
 void Scene4::Initialize()
 {
-	scene->lightManager->SetDirLightActive(0, true);
-	scene->lightManager->SetDirLightActive(1, false);
-	scene->lightManager->SetDirLightActive(2, false);
-	//点光源
-	for (int i = 0; i < 6; i++)
-	{
-		scene->lightManager->SetPointLightActive(i, false);
-	}
-	//丸影
-	scene->lightManager->SetCircleShadowActive(0, true);
+	ray.dir = { 0,-1.0f,0 };
+	ray.start = { 0,20,0 };
+	tama.radius = scene->draw[2].worldMat->scale.x;
+
+	tama.center =
+	{ scene->draw[2].worldMat->trans.x,scene->draw[2].worldMat->trans.y,scene->draw[2].worldMat->trans.z };
+	scene->draw[2].worldMat->trans = { 0,0,0 };
 }
 
 void Scene4::Update()
 {
-	//丸影
-	scene->lightManager->SetCircleShadowDir(0,
-		XMVECTOR({ circleShadowDir[0], circleShadowDir[1], circleShadowDir[2],0 }));
-	scene->lightManager->SetCircleShadowCasterPos(0,
-		XMFLOAT3({ fighterPos[0],fighterPos[1],fighterPos[2] }));
-	scene->lightManager->SetCircleShadowAtten(0, XMFLOAT3(circleShadowAtten));
-	scene->lightManager->SetCircleShadowFactorAngle(0, XMFLOAT2(circleShadowFactorAngle));
-	scene->lightManager->SetCircleShadowDistanceCasterLight(0, circleShadowDistance);
+	if (Collision::CheckRay2Sphere(ray, tama, &distance, &inter))
+	{
+		tamaColor = { 1.0f,0,0,1.0f };
+	}
+	else
+	{
+		distance = 100;
+		tamaColor = { 1.0f,1.0f,1.0f,1.0f };
+	}
 
-	static bool a = true;
-	ImGui::Begin("circleShadow", &a, ImGuiWindowFlags_MenuBar);
+	count++;
 
-	ImGui::InputFloat3("circleShadowDir", circleShadowDir);
-	ImGui::InputFloat3("circleShadowAtten", circleShadowAtten);
-	ImGui::InputFloat2("circleShadowFactorAngle", circleShadowFactorAngle);
-	ImGui::InputFloat3("fihgterPos", fighterPos);
-	ImGui::InputFloat("distanceLight", &circleShadowDistance);
+	ray.start.m128_f32[0] = -10.0f + sinf(count * 0.03f) * 20.0f;
+
+	//モデルの位置と長さ
+	scene->draw[4].worldMat->trans = { ray.start.m128_f32[0] + ray.dir.m128_f32[0] * distance / 2.0f,
+		ray.start.m128_f32[1] + ray.dir.m128_f32[1] * distance / 2.0f,
+	ray.start.m128_f32[2] + ray.dir.m128_f32[2] * distance / 2.0f };
+
+	scene->draw[4].worldMat->scale = { 1.0f,distance / 2.0f,1.0f };
+
+	scene->draw[4].worldMat->SetWorld();
+
+	//玉
+	tama.center =
+	{ scene->draw[2].worldMat->trans.x,scene->draw[2].worldMat->trans.y,scene->draw[2].worldMat->trans.z };
 
 
-	ImGui::End();
-
-	scene->draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
-	scene->draw[2].worldMat->SetWorld();
 
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
@@ -290,13 +354,17 @@ void Scene4::Update()
 
 void Scene4::Draw()
 {
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
 			&scene->camera->projectionMat, scene->model[i]);
 	}
-	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, scene->model[2]);
+
+	scene->draw[2].DrawSphere(scene->draw[2].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, tamaColor);
+
+	scene->draw[4].DrawCube3D(scene->draw[4].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, tamaColor);
 }
 
 void Scene4::DrawSprite()
@@ -516,15 +584,9 @@ void Scene::Initialize()
 	draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
 	draw[2].worldMat->SetWorld();
 	draw[3].worldMat->scale = { 5,5,5 };
-	draw[3].worldMat->rot.y = { -pi / 2.0f };
-	draw[3].worldMat->trans = { 15.0f,0,0 };
+	//draw[3].worldMat->rot.y = { -pi / 2.0f };
+	//draw[3].worldMat->trans = { 15.0f,0,0 };
 	draw[3].worldMat->SetWorld();
-
-
-	//球
-	draw[4].worldMat->scale = { 5.0f,5.0f,5.0f };
-	draw[4].worldMat->trans = { -20.0f,0,-10.0f };
-	draw[4].worldMat->SetWorld();
 
 
 	//imgui
@@ -564,7 +626,7 @@ void Scene::Initialize()
 
 	ParticleManager::GetInstance()->Initialize();
 
-	Object::effectFlags.isVignette = true;
+	//Object::effectFlags.isVignette = true;
 
 	//ステート変更
 	ChangeState(new SceneLoad);

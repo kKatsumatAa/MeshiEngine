@@ -106,7 +106,10 @@ public:
 class SceneBasic : public SceneState
 {
 private:
-
+	int count;
+	Sphere tama;
+	Plane plane;
+	XMFLOAT4 tamaColor = { 1,1,1,1 };
 
 public:
 	void Initialize()override;
@@ -118,6 +121,10 @@ public:
 class Scene1 : public SceneState
 {
 private:
+	Triangle triangle;
+	Sphere tama;
+	int count;
+	XMFLOAT4 tamaColor = { 1,1,1,1 };
 
 
 public:
@@ -130,10 +137,12 @@ public:
 class Scene2 : public SceneState
 {
 private:
-	float pointLightPos[3] = { 0,0,-10 };
-	float pointLightColor[3] = { 1.0f,1.0f,1.0f };
-	float pointLightAtten[3] = { 0.01f,0.01f,0.01f };
-
+	Ray ray;
+	Plane plane;
+	int count;
+	XMFLOAT4 tamaColor = { 1,1,1,1 };
+	XMVECTOR inter;
+	float distance;
 
 public:
 	void Initialize()override;
@@ -161,13 +170,13 @@ public:
 class Scene4 : public SceneState
 {
 private:
-	//ŠÛ‰e
-	float circleShadowDir[3] = { 0,-1,0 };
-	float circleShadowAtten[3] = { 0.5f,0.15f,0 };
-	float circleShadowFactorAngle[2] = { 0,5.0f };
-	float circleShadowDistance = 100.0f;
-
-	float fighterPos[3] = { 1.0f,0,0 };
+	Ray ray;
+	Sphere tama;
+	int count;
+	XMFLOAT4 tamaColor = { 1,1,1,1 };
+	XMVECTOR inter;
+	float distance;
+	XMVECTOR start;
 
 public:
 	void Initialize()override;
