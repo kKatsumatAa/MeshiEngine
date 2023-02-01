@@ -219,6 +219,17 @@ void Directx::UpdateFixFPS()
 
 Directx::Directx()
 {
+
+}
+
+Directx::~Directx()
+{
+}
+
+
+
+void Directx::Initialize()
+{
 	//FPSŒÅ’è‰Šú‰»
 	InitializeFixFPS();
 
@@ -228,7 +239,7 @@ Directx::Directx()
 	ComPtr < ID3D12Debug1> debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(debugController.GetAddressOf())))) {
 		debugController->EnableDebugLayer();
-		debugController->SetEnableGPUBasedValidation(true);//d‚¢‚Ì‚Å•`‰æ‚ª•Ï‚É‚È‚Á‚½‚Ì‚İ
+		//debugController->SetEnableGPUBasedValidation(true);//d‚¢‚Ì‚Å•`‰æ‚ª•Ï‚É‚È‚Á‚½‚Ì‚İ
 	}
 #endif
 	InitializeDevice();
@@ -342,12 +353,6 @@ Directx::Directx()
 
 	Sound::Initialize();
 }
-
-Directx::~Directx()
-{
-}
-
-
 
 Directx& Directx::GetInstance()
 {

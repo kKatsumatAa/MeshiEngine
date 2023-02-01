@@ -2,8 +2,28 @@
 
 KeyboardInput::KeyboardInput()
 {
+	
+}
+
+KeyboardInput::~KeyboardInput()
+{
+}
+
+KeyboardInput& KeyboardInput::GetInstance()
+{
+	static KeyboardInput inst; // private なコンストラクタを呼び出す。
+	return inst;
+}
+
+void KeyboardInput::Initialize()
+{
+	result = DirectInput8Create(
+		WindowsApp::GetInstance().Getw().hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
+		(void**)&directInput, nullptr);
+	assert(SUCCEEDED(result));
+
 	//キーボードデバイスの生成
-	result = Input::GetInstance().GetDirectInput()->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
+	result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
 	assert(SUCCEEDED(result));
 
 	//入力データ形式のセット
@@ -15,16 +35,6 @@ KeyboardInput::KeyboardInput()
 		WindowsApp::GetInstance().Gethwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	//画面が手前にあるとき入力受付｜デバイスをこのアプリだけで専有しない｜Windowsキーを無効
 	assert(SUCCEEDED(result));
-}
-
-KeyboardInput::~KeyboardInput()
-{
-}
-
-KeyboardInput& KeyboardInput::GetInstance()
-{
-	static KeyboardInput inst; // private なコンストラクタを呼び出す。
-	return inst;
 }
 
 void KeyboardInput::Update()

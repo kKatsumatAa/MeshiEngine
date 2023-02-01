@@ -35,6 +35,8 @@ public:
 
 	static WindowsApp& GetInstance();
 
+	void Initialize();
+
 	bool MessegeRoop(MSG msg);
 
 	void UnregisterClassA()

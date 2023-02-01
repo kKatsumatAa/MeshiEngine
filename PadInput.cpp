@@ -132,10 +132,13 @@ void PadInput::Update()
 
 bool PadInput::GetJoyStickActive()
 {
-	//ジョイスティック
-	if (padData.lX < 0 || padData.lX > 0 || padData.lY < 0 || padData.lY > 0)
+	if (gamePad != NULL)
 	{
-		return true;
+		//ジョイスティック
+		if (padData.lX < 0 || padData.lX > 0 || padData.lY < 0 || padData.lY > 0)
+		{
+			return true;
+		}
 	}
 
 	return false;
@@ -143,42 +146,49 @@ bool PadInput::GetJoyStickActive()
 
 Vec2 PadInput::GetLeftStickTilt()
 {
-	// スティックの方向判定
-// 無反応範囲
-	long unresponsive_range = this->stickRange / 5.0f;
-
-	if (padData.lX< -unresponsive_range || padData.lX > unresponsive_range
-		|| padData.lY < -unresponsive_range || padData.lY > unresponsive_range)
+	if (gamePad != NULL)
 	{
+		// スティックの方向判定
+	// 無反応範囲
+		long unresponsive_range = this->stickRange / 5.0f;
 
-		float x;
-		float y;
+		if (padData.lX< -unresponsive_range || padData.lX > unresponsive_range
+			|| padData.lY < -unresponsive_range || padData.lY > unresponsive_range)
+		{
 
-		x = (padData.lX) / (this->stickRange);
-		y = (padData.lY) / (this->stickRange);
+			float x;
+			float y;
 
-		return Vec2(x, y);
+			x = (padData.lX) / (this->stickRange);
+			y = (padData.lY) / (this->stickRange);
+
+			return Vec2(x, y);
+		}
 	}
 
 	return Vec2(0, 0);
+
 }
 
 Vec2 PadInput::GetRightStickTilt()
 {
-	// 無反応範囲
-	long unresponsive_range = this->stickRRange / 5.0f;
-
-	if (padData.lRx - stickRRange<-unresponsive_range || padData.lRx - stickRRange > unresponsive_range
-		|| padData.lRy - stickRRange<-unresponsive_range || padData.lRy - stickRRange > unresponsive_range)
+	if (gamePad != NULL)
 	{
+		// 無反応範囲
+		long unresponsive_range = this->stickRRange / 5.0f;
 
-		float x;
-		float y;
+		if (padData.lRx - stickRRange<-unresponsive_range || padData.lRx - stickRRange > unresponsive_range
+			|| padData.lRy - stickRRange<-unresponsive_range || padData.lRy - stickRRange > unresponsive_range)
+		{
 
-		x = (padData.lRx - stickRRange) / (this->stickRRange);
-		y = (padData.lRy - stickRRange) / (this->stickRRange);
+			float x;
+			float y;
 
-		return Vec2(x, y);
+			x = (padData.lRx - stickRRange) / (this->stickRRange);
+			y = (padData.lRy - stickRRange) / (this->stickRRange);
+
+			return Vec2(x, y);
+		}
 	}
 
 	return Vec2(0, 0);
@@ -186,9 +196,12 @@ Vec2 PadInput::GetRightStickTilt()
 
 bool PadInput::GetPushButton(BYTE button)
 {
-	if (padData.rgbButtons[button])
-	{
-		return true;
+	if (gamePad != NULL) {
+
+		if (padData.rgbButtons[button])
+		{
+			return true;
+		}
 	}
 
 	return false;
@@ -196,9 +209,11 @@ bool PadInput::GetPushButton(BYTE button)
 
 bool PadInput::GetTriggerButton(BYTE button)
 {
-	if (padData.rgbButtons[button] && !oldPadData.rgbButtons[button])
-	{
-		return true;
+	if (gamePad != NULL) {
+		if (padData.rgbButtons[button] && !oldPadData.rgbButtons[button])
+		{
+			return true;
+		}
 	}
 
 	return false;
@@ -206,10 +221,13 @@ bool PadInput::GetTriggerButton(BYTE button)
 
 bool PadInput::GetReleaseTrigger(BYTE button)
 {
-	if (!padData.rgbButtons[button] && oldPadData.rgbButtons[button])
+	if (gamePad != NULL)
 	{
-		return true;
-	}
 
+		if (!padData.rgbButtons[button] && oldPadData.rgbButtons[button])
+		{
+			return true;
+		}
+	}
 	return false;
 }

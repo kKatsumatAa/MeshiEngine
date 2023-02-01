@@ -30,6 +30,17 @@ LRESULT WindowsApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
 
 WindowsApp::WindowsApp()
 {
+	
+}
+
+WindowsApp& WindowsApp::GetInstance()
+{
+	static WindowsApp inst; // private なコンストラクタを呼び出す。
+	return inst;
+}
+
+void WindowsApp::Initialize()
+{
 	//システムタイマーの分解能を上げる
 	timeBeginPeriod(1);
 
@@ -50,7 +61,7 @@ WindowsApp::WindowsApp()
 	//ウィンドウオブジェクトの生成
 	hwnd = CreateWindow(
 		w.lpszClassName,		//クラス名
-		L"フォールガイ",			//タイトルバーの文字
+		L"2304_マブダチコネクション",			//タイトルバーの文字
 		WS_OVERLAPPEDWINDOW,	//標準的なウィンドウスタイル
 		CW_USEDEFAULT,			//表示X座標(OSに任せる)
 		CW_USEDEFAULT,			//表示Y座標(OSに任せる)
@@ -66,12 +77,6 @@ WindowsApp::WindowsApp()
 	ShowWindow(hwnd, SW_SHOW);
 
 	viewport = { 0, 0, window_width, window_height, 0.0f, 1.0f };
-}
-
-WindowsApp& WindowsApp::GetInstance()
-{
-	static WindowsApp inst; // private なコンストラクタを呼び出す。
-	return inst;
 }
 
 bool WindowsApp::MessegeRoop(MSG msg)

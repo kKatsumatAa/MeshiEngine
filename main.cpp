@@ -9,8 +9,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	OutputDebugStringA("Hello,DirectX!!\n");
 
 	//初期化
-	WindowsApp::GetInstance();
-	Directx::GetInstance();
+	WindowsApp::GetInstance().Initialize();
+	Directx::GetInstance().Initialize();
 
 	DrawInitialize();
 
@@ -19,7 +19,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	MSG msg{};	//メッセージ
 
 	//キーボード入力初期化
-	KeyboardInput::GetInstance();
+	KeyboardInput::GetInstance().Initialize();
 
 	//シーン
 	Scene* scene = new Scene();

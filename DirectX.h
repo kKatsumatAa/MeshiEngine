@@ -89,6 +89,8 @@ public:
 	Directx& operator=(const Directx& obj) = delete;
 
 	//ä÷êî
+	void Initialize();
+
 	static Directx& GetInstance();
 
 	void DrawInitialize();
