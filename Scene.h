@@ -154,11 +154,12 @@ public:
 class Scene3 : public SceneState
 {
 private:
-	float spotLightDir[3] = { 0,-1,0 };
-	float spotLightPos[3] = { 0,30,0 };
-	float spotLightColor[3] = { 1.0f,1.0f,1.0f };
-	float spotLightAtten[3] = { 0.001f,0.001f,0.001f };
-	float spotLightFactorAngle[2] = { 10.0f,30.0f };
+	Triangle triangle;
+	Ray ray;
+	XMFLOAT4 tamaColor = { 1,1,1,1 };
+	int count;
+	XMVECTOR inter;
+	float distance;
 
 public:
 	void Initialize()override;

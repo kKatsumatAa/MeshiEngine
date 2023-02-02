@@ -88,9 +88,12 @@ void SceneBasic::Update()
 	tama.center =
 	{ scene->draw[2].worldMat->trans.x,scene->draw[2].worldMat->trans.y,scene->draw[2].worldMat->trans.z };
 
-	if (Collision::CheckSphere2Plane(tama, plane))
+	XMVECTOR inter;
+	if (Collision::CheckSphere2Plane(tama, plane, &inter))
 	{
 		tamaColor = { 1.0f,0,0,1.0f };
+		ParticleManager::GetInstance()->GenerateRandomParticle(2, 40, 1.0f, { inter.m128_f32[0],inter.m128_f32[1],inter.m128_f32[2] },
+			1.0f, 0, { 1,1,1,1 }, { 0,0,0,0 });
 	}
 	else
 	{
@@ -129,11 +132,22 @@ void Scene1::Initialize()
 	float angle2 = pi * 2.0f;
 	float angle3 = pi * 2.0f + pi * 2.0f / 3.0f;
 
-	float rad = scene->draw[3].worldMat->scale.x;
 
-	triangle.p0 = { sinf(angle) * rad,cosf(angle) * rad,0 };
-	triangle.p1 = { 0,cosf(angle2) * rad,0 };
-	triangle.p2 = { sinf(angle3) * rad,cosf(angle3) * rad,0 };
+	scene->draw[3].worldMat->rot = { pi / 4.0f,-pi * 0.2f,0 };
+	scene->draw[3].worldMat->scale = { 10.0f,10.0f,10.0f };
+	scene->draw[3].worldMat->SetWorld();
+
+	Vec3 p0 = { sinf(angle) ,cosf(angle) ,0 };
+	Vec3 p1 = { 0,cosf(angle2) ,0 };
+	Vec3 p2 = { sinf(angle3) ,cosf(angle3) ,0 };
+
+	Vec3xM4(p0, scene->draw[3].worldMat->matWorld, 1);
+	Vec3xM4(p1, scene->draw[3].worldMat->matWorld, 1);
+	Vec3xM4(p2, scene->draw[3].worldMat->matWorld, 1);
+
+	triangle.p0 = { p0.x,p0.y,p0.z };
+	triangle.p1 = { p1.x,p1.y,p1.z };
+	triangle.p2 = { p2.x,p2.y,p2.z };
 	triangle.ComputeNormal();
 
 	tama.radius = scene->draw[2].worldMat->scale.x;
@@ -151,9 +165,12 @@ void Scene1::Update()
 	tama.center =
 	{ scene->draw[2].worldMat->trans.x,scene->draw[2].worldMat->trans.y,scene->draw[2].worldMat->trans.z };
 
-	if (Collision::CheckSphere2Triangle(tama, triangle))
+	XMVECTOR inter;
+	if (Collision::CheckSphere2Triangle(tama, triangle, &inter))
 	{
 		tamaColor = { 1.0f,0,0,1.0f };
+		ParticleManager::GetInstance()->GenerateRandomParticle(2, 40, 1.0f, { inter.m128_f32[0],inter.m128_f32[1],inter.m128_f32[2] },
+			1.0f, 0, { 1,1,1,1 }, { 0,0,0,0 });
 	}
 	else
 	{
@@ -194,14 +211,20 @@ void Scene2::Initialize()
 	plane.distance = scene->draw[1].worldMat->trans.y;
 	plane.normal = XMVectorSet(0, 1, 0, 0);
 
-	scene->draw[1].worldMat->trans.z = scene->draw[1].worldMat->scale.z*100.0f;
+	scene->draw[1].worldMat->trans.z = scene->draw[1].worldMat->scale.z * 100.0f;
 }
 
 void Scene2::Update()
 {
+	count++;
+
+	ray.start.m128_f32[1] = -10.0f + sinf(count * 0.03f) * 20.0f;
+
 	if (Collision::CheckRay2Plane(ray, plane, &distance, &inter))
 	{
 		tamaColor = { 1.0f,0,0,1.0f };
+		ParticleManager::GetInstance()->GenerateRandomParticle(2, 40, 1.0f, { inter.m128_f32[0],inter.m128_f32[1],inter.m128_f32[2] },
+			1.0f, 0, { 1,1,1,1 }, { 0,0,0,0 });
 	}
 	else
 	{
@@ -209,9 +232,6 @@ void Scene2::Update()
 		tamaColor = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
-	count++;
-
-	ray.start.m128_f32[1] = -10.0f + sinf(count * 0.03f) * 20.0f;
 
 	//モデルの位置と長さ
 	scene->draw[4].worldMat->trans = { ray.start.m128_f32[0] + ray.dir.m128_f32[0] * distance / 2.0f,
@@ -252,32 +272,60 @@ void Scene2::DrawSprite()
 //---------------
 void Scene3::Initialize()
 {
-	//点光源
-	for (int i = 0; i < 6; i++)
-	{
-		scene->lightManager->SetPointLightActive(i, false);
-	}
-	//スポットライト
-	scene->lightManager->SetSpotLightActive(0, true);
+	float angle = pi * 2.0f + pi * 2.0f / 3.0f * 2.0f;
+	float angle2 = pi * 2.0f;
+	float angle3 = pi * 2.0f + pi * 2.0f / 3.0f;
+
+
+	scene->draw[3].worldMat->rot = { pi / 4.0f,-pi * 0.2f,0 };
+	scene->draw[3].worldMat->scale = { 10.0f,10.0f,10.0f };
+	scene->draw[3].worldMat->SetWorld();
+
+	Vec3 p0 = { sinf(angle) ,cosf(angle) ,0 };
+	Vec3 p1 = { 0,cosf(angle2) ,0 };
+	Vec3 p2 = { sinf(angle3) ,cosf(angle3) ,0 };
+
+	Vec3xM4(p0, scene->draw[3].worldMat->matWorld, 1);
+	Vec3xM4(p1, scene->draw[3].worldMat->matWorld, 1);
+	Vec3xM4(p2, scene->draw[3].worldMat->matWorld, 1);
+
+	triangle.p0 = { p0.x,p0.y,p0.z };
+	triangle.p1 = { p1.x,p1.y,p1.z };
+	triangle.p2 = { p2.x,p2.y,p2.z };
+	triangle.ComputeNormal();
+
+
+	ray.dir = { 0,-1.0f,0 };
+	ray.start = { 0,20,0 };
 }
 
 void Scene3::Update()
 {
-	scene->lightManager->SetSpotLightDir(0,
-		XMVECTOR({ spotLightDir[0], spotLightDir[1], spotLightDir[2] }));
-	scene->lightManager->SetSpotLightPos(0, XMFLOAT3(spotLightPos));
-	scene->lightManager->SetSpotLightColor(0, XMFLOAT3(spotLightColor));
-	scene->lightManager->SetSpotLightAtten(0, XMFLOAT3(spotLightAtten));
-	scene->lightManager->SetSpotLightFactorAngle(0, XMFLOAT2(spotLightFactorAngle));
+	count++;
 
-	static bool a = true;
-	ImGui::Begin("spotLight", &a, ImGuiWindowFlags_MenuBar);
-	ImGui::InputFloat3("spotLightDir", spotLightDir);
-	ImGui::ColorEdit3("spotLightColor", spotLightColor, ImGuiColorEditFlags_Float);
-	ImGui::InputFloat3("spotLightPos", spotLightPos);
-	ImGui::InputFloat3("spotLightAtten", spotLightAtten);
-	ImGui::InputFloat2("spotLightFactorAngle", spotLightFactorAngle);
-	ImGui::End();
+	ray.start.m128_f32[0] = -10.0f + sinf(count * 0.03f) * 20.0f;
+
+	if (Collision::CheckRay2Triangle(ray, triangle, &distance, &inter))
+	{
+		tamaColor = { 1.0f,0,0,1.0f };
+		ParticleManager::GetInstance()->GenerateRandomParticle(2, 40, 1.0f, { inter.m128_f32[0],inter.m128_f32[1],inter.m128_f32[2] },
+			1.0f, 0, { 1,1,1,1 }, { 0,0,0,0 });
+	}
+	else
+	{
+		distance = 100;
+		tamaColor = { 1.0f,1.0f,1.0f,1.0f };
+	}
+
+
+	//モデルの位置と長さ
+	scene->draw[4].worldMat->trans = { ray.start.m128_f32[0] + ray.dir.m128_f32[0] * distance / 2.0f,
+		ray.start.m128_f32[1] + ray.dir.m128_f32[1] * distance / 2.0f,
+	ray.start.m128_f32[2] + ray.dir.m128_f32[2] * distance / 2.0f };
+
+	scene->draw[4].worldMat->scale = { 1.0f,distance / 2.0f,1.0f };
+
+	scene->draw[4].worldMat->SetWorld();
 
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
@@ -288,13 +336,15 @@ void Scene3::Update()
 
 void Scene3::Draw()
 {
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
 			&scene->camera->projectionMat, scene->model[i]);
 	}
-	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, scene->model[2]);
+	scene->draw[3].DrawTriangle(scene->draw[3].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, tamaColor);
+	scene->draw[4].DrawCube3D(scene->draw[4].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, tamaColor);
 }
 
 void Scene3::DrawSprite()
@@ -316,19 +366,21 @@ void Scene4::Initialize()
 
 void Scene4::Update()
 {
+	count++;
+
+	ray.start.m128_f32[0] = -10.0f + sinf(count * 0.03f) * 20.0f;
+
 	if (Collision::CheckRay2Sphere(ray, tama, &distance, &inter))
 	{
 		tamaColor = { 1.0f,0,0,1.0f };
+		ParticleManager::GetInstance()->GenerateRandomParticle(2, 40, 1.0f, { inter.m128_f32[0],inter.m128_f32[1],inter.m128_f32[2] },
+			1.0f, 0, { 1,1,1,1 }, { 0,0,0,0 });
 	}
 	else
 	{
 		distance = 100;
 		tamaColor = { 1.0f,1.0f,1.0f,1.0f };
 	}
-
-	count++;
-
-	ray.start.m128_f32[0] = -10.0f + sinf(count * 0.03f) * 20.0f;
 
 	//モデルの位置と長さ
 	scene->draw[4].worldMat->trans = { ray.start.m128_f32[0] + ray.dir.m128_f32[0] * distance / 2.0f,
@@ -569,7 +621,7 @@ void Scene::StopWaveAllScene()
 
 void Scene::Initialize()
 {
-
+	TextureManager::GetInstance().LoadGraph(L"Resources/image/effect1.png", texhandle[1]);
 
 	//model
 	Model::StaticInitialize();
@@ -662,11 +714,14 @@ void Scene::Update()
 
 		//imgui
 	imGuiManager->End();
+
+	ParticleManager::GetInstance()->Update(&camera->viewMat, &camera->projectionMat);
 }
 
 void Scene::Draw()
 {
 	state->Draw();
+	ParticleManager::GetInstance()->Draw(texhandle[1]);
 }
 
 void Scene::DrawPostEffect()
