@@ -160,7 +160,7 @@ float4 PS(Output input) : SV_TARGET
 	{
 		float2 samplePoint = input.uv;
 		samplePoint -= float2(0.5, 0.5);
-		float distPower = pow(length(samplePoint), 0.03);
+		float distPower = pow(length(samplePoint), 0.5);
 		samplePoint *= float2(distPower, distPower);
 		samplePoint += float2(0.5, 0.5);
 		float4 Tex = tex.Sample(smp, samplePoint);

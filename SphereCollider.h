@@ -33,5 +33,11 @@ private:
 	XMVECTOR offset;
 	// 半径
 	float radius;
+
+	//dynamic_cast用にBaseColliderと合わせる
+	//判定取るか取らないか
+	bool isValid = true;
+	//スプライト用の二次元かどうかフラグ
+	bool is2D = false;
 };
 

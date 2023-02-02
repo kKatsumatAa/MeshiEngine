@@ -7,6 +7,11 @@
 #include"Camera.h"
 #include"Async.h"
 #include "PadInput.h"
+#include "SphereCollider.h"
+#include "CollisionManager.h"
+#include "Player.h"
+
+
 
 class CollisionManager;
 class Player;
@@ -202,6 +207,24 @@ public:
 };
 
 class Scene6 : public SceneState
+{
+private:
+	//コライダー
+	Player* objPlayer;
+	CollisionManager* collisionManager;
+	Object obj;
+	XMFLOAT4 tamaColor = { 1,1,1,1 };
+	Ray ray;
+	RaycastHit raycastHit;
+
+public:
+	void Initialize()override;
+	void Update() override;
+	void Draw() override;
+	void DrawSprite()override;
+};
+
+class Scene7 : public SceneState
 {
 private:
 	int count = 0;

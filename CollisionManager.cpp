@@ -33,10 +33,14 @@ bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDis
 			XMVECTOR tempInter;
 
 			//ìñÇΩÇÁÇ»ÇØÇÍÇŒèúäO
-			if (!Collision::CheckRay2Sphere(ray, *sphere, &tempDistance, &tempInter)) continue;
+			if (!Collision::CheckRay2Sphere(ray, *sphere, &tempDistance, &tempInter))
+			{
+				continue;
+			}
 			//ãóó£Ç™ç≈è¨Ç≈Ç»ÇØÇÍÇŒèúäO
-			if (tempDistance >= distance) continue;
-
+			if (tempDistance >= distance) {
+				continue;
+			}
 			//ç°Ç‹Ç≈Ç≈ç≈Ç‡ãﬂÇ¢ÇÃÇ≈ãLò^Ç∑ÇÈ
 			result = true;
 			distance = tempDistance;

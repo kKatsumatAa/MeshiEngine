@@ -1,9 +1,7 @@
 #include "Scene.h"
 #include <sstream>
 #include <iomanip>
-#include "SphereCollider.h"
-#include "CollisionManager.h"
-#include "Player.h"
+
 
 
 void SceneState::SetScene(Scene* scene)
@@ -355,13 +353,15 @@ void Scene3::DrawSprite()
 //---------------
 void Scene4::Initialize()
 {
-	ray.dir = { 0,-1.0f,0 };
-	ray.start = { 0,20,0 };
+	ray.dir = { 0,-1.0f,0,1 };
+	ray.start = { 0,20,0,1 };
 	tama.radius = scene->draw[2].worldMat->scale.x;
+
+	scene->draw[2].worldMat->trans = { 0,0,0 };
+	scene->draw[2].worldMat->SetWorld();
 
 	tama.center =
 	{ scene->draw[2].worldMat->trans.x,scene->draw[2].worldMat->trans.y,scene->draw[2].worldMat->trans.z };
-	scene->draw[2].worldMat->trans = { 0,0,0 };
 }
 
 void Scene4::Update()
@@ -427,20 +427,6 @@ void Scene4::DrawSprite()
 //----------------
 void Scene5::Initialize()
 {
-	scene->lightManager->SetDirLightActive(0, true);
-	scene->lightManager->SetDirLightActive(1, true);
-	scene->lightManager->SetDirLightActive(2, false);
-	scene->lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
-	scene->lightManager->SetDirLightDir(1, { 0, -1.0, 0 });
-	//点光源
-	for (int i = 0; i < 6; i++)
-	{
-		scene->lightManager->SetPointLightActive(i, false);
-	}
-	//丸影
-	scene->lightManager->SetCircleShadowActive(0, false);
-	scene->lightManager->SetSpotLightActive(0, false);
-
 	//コライダー
 	CollisionManager::GetInstance()->Initialize();
 	collisionManager = CollisionManager::GetInstance();
@@ -455,29 +441,6 @@ void Scene5::Update()
 	objPlayer->Update();
 	obj.Update();
 	collisionManager->CheckAllCollisions();
-
-	ParticleManager::GetInstance()->Update(&scene->camera->viewMat, &scene->camera->projectionMat);
-
-
-	Ray ray;
-	ray.start = { 50.0f, 0.5f, 0.0f, 1 };
-	ray.dir = { -1,0,0,0 };
-	RaycastHit raycastHit;
-
-	if (collisionManager->Raycast(ray, &raycastHit)) {
-		scene->debugText.Print("Raycast Hit.", 10, 90);
-
-		for (int i = 0; i < 1; ++i) {
-
-			const float rnd_vel = 1.1f;
-			XMFLOAT3 vel{};
-			vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-			vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-			vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-
-			ParticleManager::GetInstance()->Add(10, XMFLOAT3(raycastHit.inter.m128_f32), vel, XMFLOAT3(), 0.0f, 1.0f);
-		}
-	}
 
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
@@ -498,8 +461,6 @@ void Scene5::Draw()
 		&scene->camera->viewMat, &scene->camera->projectionMat, scene->model[3]);
 
 	obj.DrawSphere(obj.worldMat, &scene->camera->viewMat, &scene->camera->projectionMat);
-
-	ParticleManager::GetInstance()->Draw(scene->texhandle[1]);
 }
 
 void Scene5::DrawSprite()
@@ -516,13 +477,109 @@ void Scene5::DrawSprite()
 	scene->debugText.Print("ARROW:move", 10, 30);
 }
 
-//-----------------------------------------------------------------------------------
+
+//----------------
 void Scene6::Initialize()
+{
+	//コライダー
+	CollisionManager::GetInstance()->Initialize();
+	collisionManager = CollisionManager::GetInstance();
+	objPlayer = Player::Create();
+	objPlayer->worldMat->scale = { 2,2,2 };
+	objPlayer->worldMat->SetWorld();
+	obj.worldMat->scale = { 5,5,5 };
+	obj.SetCollider(new SphereCollider({ 0,0,0,1 }));
+
+	ray.start = { 50.0f, 0,0,1 };
+	ray.dir = { -1.0f,0,0,1 };
+
+	scene->draw[4].worldMat->trans = { ray.start.m128_f32[0],ray.start.m128_f32[1],ray.start.m128_f32[2] };
+	scene->draw[4].worldMat->SetWorld();
+}
+
+void Scene6::Update()
+{
+	objPlayer->Update();
+	obj.Update();
+	collisionManager->CheckAllCollisions();
+
+
+
+	if (collisionManager->Raycast(ray, &raycastHit)) {
+		scene->debugText.Print("Raycast Hit.", 10, 90);
+
+		for (int i = 0; i < 1; ++i) {
+
+			const float rnd_vel = 1.1f;
+			XMFLOAT3 vel{};
+			vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+			ParticleManager::GetInstance()->Add(10, XMFLOAT3(raycastHit.inter.m128_f32), vel, XMFLOAT3(), 0.0f, 1.0f);
+		}
+
+		tamaColor = { 1.0f,0,0,1.0f };
+	}
+	else
+	{
+		tamaColor = { 1,1,1,1 };
+	}
+
+	//モデルの位置と長さ
+	scene->draw[4].worldMat->trans = { ray.start.m128_f32[0] + ray.dir.m128_f32[0] * raycastHit.distance / 2.0f,
+		ray.start.m128_f32[1] + ray.dir.m128_f32[1] * raycastHit.distance / 2.0f,
+	ray.start.m128_f32[2] + ray.dir.m128_f32[2] * raycastHit.distance / 2.0f };
+
+	scene->draw[4].worldMat->scale = { raycastHit.distance / 2.0f,1.0f,1.0f };
+
+	scene->draw[4].worldMat->SetWorld();
+
+	//シーン遷移
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
+	{
+		scene->ChangeState(new Scene7);
+	}
+}
+
+void Scene6::Draw()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		scene->draw[i].DrawModel(scene->draw[i].worldMat, &scene->camera->viewMat,
+			&scene->camera->projectionMat, scene->model[i]);
+	}
+
+	objPlayer->DrawModel(objPlayer->worldMat,
+		&scene->camera->viewMat, &scene->camera->projectionMat, scene->model[3]);
+
+	obj.DrawSphere(obj.worldMat, &scene->camera->viewMat, &scene->camera->projectionMat);
+
+	scene->draw[4].DrawCube3D(scene->draw[4].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, tamaColor);
+}
+
+void Scene6::DrawSprite()
+{
+	Vec2 v = PadInput::GetInstance().GetRightStickTilt();
+	Vec2 v2 = PadInput::GetInstance().GetLeftStickTilt();
+
+	scene->debugText.Printf("RX:", 100, 10, v.x);
+	scene->debugText.Printf("RY:", 100, 30, v.y);
+	scene->debugText.Printf("LX:", 100, 60, v2.x);
+	scene->debugText.Printf("LY:", 100, 90, v2.y);
+
+	scene->debugText.Print("[6]", 10, 10);
+	scene->debugText.Print("ARROW:move", 10, 30);
+}
+
+//-----------------------------------------------------------------------------------
+void Scene7::Initialize()
 {
 	Object::effectFlags.isFog = true;
 }
 
-void Scene6::Update()
+void Scene7::Update()
 {
 	count++;
 
@@ -550,6 +607,14 @@ void Scene6::Update()
 		}
 		else if (Object::effectFlags.isSharpness) {
 			Object::effectFlags.isSharpness = false;
+			Object::effectFlags.isVignette = true;
+		}
+		else if (Object::effectFlags.isVignette) {
+			Object::effectFlags.isVignette = false;
+			Object::effectFlags.isBarrelCurve = true;
+		}
+		else if (Object::effectFlags.isBarrelCurve) {
+			Object::effectFlags.isBarrelCurve = false;
 			Object::effectFlags.isFog = true;
 		}
 
@@ -570,7 +635,7 @@ void Scene6::Update()
 	}
 }
 
-void Scene6::Draw()
+void Scene7::Draw()
 {
 	for (int i = 0; i < 2; i++)
 	{
@@ -581,9 +646,9 @@ void Scene6::Draw()
 		&scene->camera->projectionMat, scene->model[2]);
 }
 
-void Scene6::DrawSprite()
+void Scene7::DrawSprite()
 {
-	scene->debugText.Print("[6]", 10, 10);
+	scene->debugText.Print("[7]", 10, 10);
 }
 
 
@@ -673,7 +738,7 @@ void Scene::Initialize()
 
 	//objPlayer->Initialize();
 
-	draw[4].SetCollider(new SphereCollider);
+	//draw[4].SetCollider(new SphereCollider);
 	/*draw[4].SetIsValid(false);*/
 
 	ParticleManager::GetInstance()->Initialize();
