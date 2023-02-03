@@ -225,4 +225,6 @@ bool Collision::CheckRay2Sphere(const Ray& ray, const Sphere& sphere, float* dis
 	if (distance) { *distance = t; }
 
 	if (inter) { *inter = ray.start + t * ray.dir; }
+
+	return true;
 }
