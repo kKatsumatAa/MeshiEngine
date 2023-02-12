@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "KeyboardInput.h"
 #include "DebugText.h"
-#include "SphereCollider.h"
+
 #include "ParticleManager.h"
 #include "PadInput.h"
 
@@ -37,6 +37,7 @@ bool Player::Initialize()
 	float radius = 0.6f;
 	//”¼Œa•ª‚¾‚¯‘«Œ³‚©‚ç•‚‚¢‚½À•W‚ğ‹…‚Ì’†S‚É‚·‚é
 	SetCollider(new SphereCollider(XMVECTOR({ 0,radius,0,0 }), radius));
+	//SetCollider(new PlaneCollider(XMVECTOR({ 0,radius,0,0 }), radius));
 
 	return true;
 }

@@ -108,6 +108,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="PadInput.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
+    <ClCompile Include="PlaneCollider.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PostPera.cpp" />
@@ -122,6 +123,7 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteCommon.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="TriangleCollider.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vec3.cpp" />
@@ -157,6 +159,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="PadInput.h" />
     <ClInclude Include="ParticleManager.h" />
+    <ClInclude Include="PlaneCollider.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PostPera.h" />
@@ -172,6 +175,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteCommon.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="TriangleCollider.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />

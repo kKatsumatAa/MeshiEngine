@@ -327,7 +327,7 @@ void Scene5::Initialize()
 	objPlayer = Player::Create();
 	objPlayer->worldMat->scale = { 2,2,2 };
 	obj.worldMat->scale = { 5,5,5 };
-	obj.SetCollider(new SphereCollider);
+	obj.SetCollider(new TriangleCollider());
 }
 
 void Scene5::Update()
@@ -339,7 +339,7 @@ void Scene5::Update()
 	ParticleManager::GetInstance()->Update(&scene->camera->viewMat, &scene->camera->projectionMat);
 
 
-	Ray ray;
+	/*Ray ray;
 	ray.start = { 50.0f, 0.5f, 0.0f, 1 };
 	ray.dir = { -1,0,0,0 };
 	RaycastHit raycastHit;
@@ -357,7 +357,7 @@ void Scene5::Update()
 
 			ParticleManager::GetInstance()->Add(10, XMFLOAT3(raycastHit.inter.m128_f32), vel, XMFLOAT3(), 0.0f, 1.0f);
 		}
-	}
+	}*/
 
 	//ƒV[ƒ“‘JˆÚ
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
@@ -559,7 +559,7 @@ void Scene::Initialize()
 
 	//objPlayer->Initialize();
 
-	draw[4].SetCollider(new SphereCollider);
+	//draw[4].SetCollider(new PlaneCollider);
 	/*draw[4].SetIsValid(false);*/
 
 	ParticleManager::GetInstance()->Initialize();

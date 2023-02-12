@@ -17,9 +17,13 @@ void Primitive::Initialize()
 
 void Primitive::InitializeTriangle()
 {
-	verticesTriangle[0] = { {-1.0,-1.0,0},{verticesTriangle[0].normal},{0.0f,1.0f} };//左下
-	verticesTriangle[1] = { {0,1.0,0},{verticesTriangle[1].normal},{0.5f,0.0f} };//上
-	verticesTriangle[2] = { {1.0,-1.0,0},{verticesTriangle[2].normal},{1.0f,1.0f} };//右下
+	float angle = pi * 2.0f + pi * 2.0f / 3.0f * 2.0f;
+	float angle2 = pi * 2.0f;
+	float angle3 = pi * 2.0f + pi * 2.0f / 3.0f;
+
+	verticesTriangle[0] = { {sinf(angle),cosf(angle),0},{verticesTriangle[0].normal},{0.0f,1.0f} };//左下
+	verticesTriangle[1] = { {0,cosf(angle2),0},{verticesTriangle[1].normal},{0.5f,0.0f} };//上
+	verticesTriangle[2] = { {sinf(angle3),cosf(angle3),0},{verticesTriangle[2].normal},{1.0f,1.0f} };//右下
 
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数

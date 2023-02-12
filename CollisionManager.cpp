@@ -72,6 +72,9 @@ void CollisionManager::CheckAllCollisions()
 			BaseCollider* colA = *itA;
 			BaseCollider* colB = *itB;
 
+			CollisionShapeType typeA = colA->GetShapeType();
+			CollisionShapeType typeB = colB->GetShapeType();
+
 			//‚Æ‚à‚É‹…‚Ìê‡
 			if ((colA->GetShapeType() == COLLISIONSHAPE_SPHERE &&
 				colB->GetShapeType() == COLLISIONSHAPE_SPHERE)
@@ -89,6 +92,67 @@ void CollisionManager::CheckAllCollisions()
 					colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
 				}
 			}
+
+			//‹…‚Æ–Ê‚Ìê‡
+			if ((typeA == COLLISIONSHAPE_PLANE || typeB == COLLISIONSHAPE_PLANE)
+				&&
+				(colA->GetIsValid() && colB->GetIsValid())
+				&&
+				(!colA->GetIs2D() && !colB->GetIs2D()))
+			{
+				Sphere* SphereA = dynamic_cast<Sphere*>(colA);
+				Plane* PlaneB = dynamic_cast<Plane*>(colB);
+				DirectX::XMVECTOR inter;
+
+				//A‚ª‹…‚ÌŽž
+				if (typeA == COLLISIONSHAPE_SPHERE && typeB == COLLISIONSHAPE_PLANE)
+				{
+					SphereA = dynamic_cast<Sphere*>(colA);
+					PlaneB = dynamic_cast<Plane*>(colB);
+				}
+				//A‚ªŽOŠpŒ`‚ÌŽž
+				else if (typeA == COLLISIONSHAPE_PLANE && typeB == COLLISIONSHAPE_SPHERE)
+				{
+					SphereA = dynamic_cast<Sphere*>(colB);
+					PlaneB = dynamic_cast<Plane*>(colA);
+				}
+				if (Collision::CheckSphere2Plane(*SphereA, *PlaneB, &inter))
+				{
+					colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
+					colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
+				}
+			}
+
+			//‹…‚ÆŽOŠpŒ`‚Ìê‡
+			if ((typeA == COLLISIONSHAPE_TRIANGLE || typeB == COLLISIONSHAPE_TRIANGLE)
+				&& 
+				(colA->GetIsValid() && colB->GetIsValid())
+				&&
+				(!colA->GetIs2D() && !colB->GetIs2D()))
+			{
+				Sphere* SphereA = dynamic_cast<Sphere*>(colA);
+				Triangle* TriangleB = dynamic_cast<Triangle*>(colB);
+				DirectX::XMVECTOR inter;
+
+				//A‚ª‹…‚ÌŽž
+				if (typeA == COLLISIONSHAPE_SPHERE && typeB == COLLISIONSHAPE_TRIANGLE)
+				{
+					SphereA = dynamic_cast<Sphere*>(colA);
+					TriangleB = dynamic_cast<Triangle*>(colB);
+				}
+				//A‚ªŽOŠpŒ`‚ÌŽž
+				else if (typeA == COLLISIONSHAPE_TRIANGLE && typeB == COLLISIONSHAPE_SPHERE)
+				{
+					SphereA = dynamic_cast<Sphere*>(colB);
+					TriangleB = dynamic_cast<Triangle*>(colA);
+				}
+				if (Collision::CheckSphere2Triangle(*SphereA, *TriangleB, &inter))
+				{
+					colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
+					colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
+				}
+			}
+
 		}
 	}
 }

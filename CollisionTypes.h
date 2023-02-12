@@ -9,4 +9,8 @@ enum CollisionShapeType
 	SHAPE_UNKNOWN = -1, // ñ¢ê›íË
 
 	COLLISIONSHAPE_SPHERE, // ãÖ
+
+	COLLISIONSHAPE_PLANE, // ïΩñ 
+
+	COLLISIONSHAPE_TRIANGLE, // éOäpå`
 };

@@ -1,5 +1,8 @@
 #pragma once
 #include "Object.h"
+#include "SphereCollider.h"
+#include "TriangleCollider.h"
+#include "PlaneCollider.h"
 
 class Player :
     public Object

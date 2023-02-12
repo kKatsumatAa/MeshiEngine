@@ -30,9 +30,8 @@ struct Plane
 /// <summary>
 /// 法線付き三角形（時計回りが表面）
 /// </summary>
-class Triangle
+struct Triangle
 {
-public:
 	//頂点座標3つ
 	DirectX::XMVECTOR p0;
 	DirectX::XMVECTOR p1;
