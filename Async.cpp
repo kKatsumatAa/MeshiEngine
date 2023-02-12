@@ -1,9 +1,9 @@
 #include "Async.h"
 
-void Async::SetLockFlag(bool _)
+void Async::SetLockFlag(bool islock)
 {
     std::lock_guard<std::mutex>  lock(isLoadedMutex);
-    isLoaded = _;
+    isLoaded = islock;
 }
 
 bool Async::GetLockFlag()

@@ -530,7 +530,7 @@ void ParticleManager::GenerateRandomParticle(int num, int lifeTime, float vecPow
 
 		//重力に見立ててYのみ[-0.001f~0]でランダムに
 		XMFLOAT3 acc{};
-		const float md_acc = 0.1f;
+		const float md_acc = vecPower * 0.05f;
 		acc.y = -(float)rand() / RAND_MAX * md_acc;
 
 		ParticleManager::GetInstance()->Add(lifeTime, { pos.x,pos.y,pos.z }, vel, acc, start_scale, end_scale
