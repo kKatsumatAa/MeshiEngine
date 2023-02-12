@@ -17,7 +17,7 @@ public:
 	PlaneCollider(XMVECTOR normal = { 0,0,0,0 }, float distance = 1.0f) :
 		normal(normal), distance(distance)
 	{
-		// 球形状をセット
+		// 形状をセット
 		shapeType = COLLISIONSHAPE_PLANE;
 	}
 

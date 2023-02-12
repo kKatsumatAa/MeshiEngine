@@ -26,7 +26,7 @@ bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDis
 	for (; it != colliders.end(); ++it) {
 		BaseCollider* colA = *it;
 		//球の場合
-		if (colA->GetShapeType() == COLLISIONSHAPE_SPHERE) {
+		if (colA->GetShapeType() == COLLISIONSHAPE_SPHERE && colA->GetIsValid() && !colA->GetIs2D()) {
 			Sphere* sphere = dynamic_cast<Sphere*>(colA);
 
 			float tempDistance;
@@ -34,6 +34,44 @@ bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDis
 
 			//当たらなければ除外
 			if (!Collision::CheckRay2Sphere(ray, *sphere, &tempDistance, &tempInter)) continue;
+			//距離が最小でなければ除外
+			if (tempDistance >= distance) continue;
+
+			//今までで最も近いので記録する
+			result = true;
+			distance = tempDistance;
+			inter = tempInter;
+			it_hit = it;
+		}
+
+		//面の場合
+		if (colA->GetShapeType() == COLLISIONSHAPE_PLANE && colA->GetIsValid() && !colA->GetIs2D()) {
+			Plane* plane = dynamic_cast<Plane*>(colA);
+
+			float tempDistance;
+			XMVECTOR tempInter;
+
+			//当たらなければ除外
+			if (!Collision::CheckRay2Plane(ray, *plane, &tempDistance, &tempInter)) continue;
+			//距離が最小でなければ除外
+			if (tempDistance >= distance) continue;
+
+			//今までで最も近いので記録する
+			result = true;
+			distance = tempDistance;
+			inter = tempInter;
+			it_hit = it;
+		}
+
+		//三角の場合
+		if (colA->GetShapeType() == COLLISIONSHAPE_TRIANGLE && colA->GetIsValid() && !colA->GetIs2D()) {
+			Triangle* triangle = dynamic_cast<Triangle*>(colA);
+
+			float tempDistance;
+			XMVECTOR tempInter;
+
+			//当たらなければ除外
+			if (!Collision::CheckRay2Triangle(ray, *triangle, &tempDistance, &tempInter)) continue;
 			//距離が最小でなければ除外
 			if (tempDistance >= distance) continue;
 
@@ -125,7 +163,7 @@ void CollisionManager::CheckAllCollisions()
 
 			//球と三角形の場合
 			if ((typeA == COLLISIONSHAPE_TRIANGLE || typeB == COLLISIONSHAPE_TRIANGLE)
-				&& 
+				&&
 				(colA->GetIsValid() && colB->GetIsValid())
 				&&
 				(!colA->GetIs2D() && !colB->GetIs2D()))

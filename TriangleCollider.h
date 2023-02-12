@@ -17,7 +17,7 @@ public:
 	TriangleCollider(DirectX::XMVECTOR p0 = { 0,0,0,0 }, DirectX::XMVECTOR p1 = { 0,0,0,0 }, DirectX::XMVECTOR p2 = { 0,0,0,0 }, XMVECTOR normal = { 0, 0, 0, 0 }) :
 		p0(p0), p1(p1), p2(p2), normal(normal)
 	{
-		// 球形状をセット
+		// 形状をセット
 		shapeType = COLLISIONSHAPE_TRIANGLE;
 	}
 

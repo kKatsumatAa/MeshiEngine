@@ -4,9 +4,6 @@ using namespace DirectX;
 
 void TriangleCollider::Update()
 {
-	// ワールド行列から座標を抽出
-	const M4& matWorld = object->GetMatWorld();
-
 	// 面のメンバ変数を更新
 	float angle = pi * 2.0f + pi * 2.0f / 3.0f * 2.0f;
 	float angle2 = pi * 2.0f;
