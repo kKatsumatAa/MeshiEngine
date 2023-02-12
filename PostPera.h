@@ -20,6 +20,16 @@ struct EffectConstBuffer
 	unsigned int isGradation = false;
 	//アウトライン
 	unsigned int isOutLine = false;
+	//ビネット
+	unsigned int isVignette = false;
+	//樽状湾曲
+	unsigned int isBarrelCurve = false;
+	//走査線
+	unsigned int isScanningLine = false;
+	//グレースケール
+	unsigned int isGrayScale = false;
+	//時間
+	unsigned int time = 0;
 };
 
 struct PeraVertex
@@ -50,11 +60,11 @@ private:
 	ComPtr<ID3D12PipelineState> _peraPipeline = NULL;
 
 	//画面効果用
-	 ComPtr <ID3D12Resource> effectFlagsBuff;
-	 EffectConstBuffer* mapEffectFlagsBuff;
+	ComPtr <ID3D12Resource> effectFlagsBuff;
+	EffectConstBuffer* mapEffectFlagsBuff;
 
-	 //ルートパラメータの設定
-	 D3D12_ROOT_PARAMETER rootParams[1] = {};
+	//ルートパラメータの設定
+	D3D12_ROOT_PARAMETER rootParams[1] = {};
 
 public:
 	void Initialize();

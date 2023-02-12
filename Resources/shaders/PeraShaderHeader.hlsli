@@ -19,6 +19,16 @@ cbuffer ConstBufferEffectFlags : register(b0)
 	uint isGradation;
 	//アウトライン
 	uint isOutLine;
+	//ビネット
+	uint isVignette;
+	//樽状湾曲
+	uint isBarrelCurve;
+	//走査線
+	uint isScanningLine;
+	//グレースケール
+	uint isGrayScale;
+	//時間
+	uint time;
 }
 
 //vsからpsに送る

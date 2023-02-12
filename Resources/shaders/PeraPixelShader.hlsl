@@ -1,6 +1,5 @@
 #include"PeraShaderHeader.hlsli"
 
-
 float4 PS(Output input) : SV_TARGET
 {
 	// シェーディングによる色で描画
@@ -140,6 +139,69 @@ float4 PS(Output input) : SV_TARGET
 		ret = float4(RGB - fmod(RGB, 0.25f), A);
 
 		isEffect = true;
+	}
+
+	//ビネット
+	if (isVignette)
+	{
+		float2 samplePoint = input.uv;
+		float4 Tex = tex.Sample(smp, input.uv);
+		float vignette = length(float2(0.5f, 0.5f) - input.uv);
+		vignette = clamp(vignette - 0.4f, 0, 1);
+		Tex.rgb -= vignette;
+		ret = Tex;
+
+		isEffect = true;
+	}
+
+	//樽状
+	if (isBarrelCurve)
+	{
+		float2 samplePoint = input.uv;
+		samplePoint -= float2(0.5, 0.5);
+		float distPower = pow(length(samplePoint), 0.02);
+		samplePoint *= float2(distPower, distPower);
+		samplePoint += float2(0.5, 0.5);
+		float4 Tex = tex.Sample(smp, samplePoint);
+		ret = Tex;
+
+		isEffect = true;
+	}
+
+	//走査線
+	if (isScanningLine)
+	{
+		float extend = 0.1f;
+		float2 samplePoint = input.uv;
+		float4 Tex = tex.Sample(smp, samplePoint);
+		float sinv = sin(input.uv.y * 2 + time * extend * -0.1);
+		float steped = step(0.99, sinv * sinv);
+		Tex.rgb -= (1 - steped) * abs(sin(input.uv.y * 50.0 + time * extend * 1.0)) * 0.05;
+		Tex.rgb -= (1 - steped) * abs(sin(input.uv.y * 100.0 - time * extend * 2.0)) * 0.08;
+		Tex.rgb += steped * 0.1;
+		ret = Tex;
+
+		isEffect = true;
+	}
+
+	//グレー
+	if (isGrayScale)
+	{
+		// テクスチャから画素値取得
+		float4 tcolor = RGBA;
+
+			float y, u, v;
+			y = tcolor.x * 0.199 + tcolor.y * 0.487 + tcolor.z * 0.014;
+
+			// グレースケール変換
+			tcolor.x = y;
+			tcolor.y = y;
+			tcolor.z = y;
+
+			// 出力するピクセル色
+			ret = tcolor;
+
+			isEffect = true;
 	}
 
 	if (isEffect)

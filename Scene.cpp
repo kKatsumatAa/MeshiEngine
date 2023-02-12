@@ -501,7 +501,7 @@ void Scene::StopWaveAllScene()
 
 void Scene::Initialize()
 {
-
+	Object::effectFlags.isScanningLine = true;
 
 	//model
 	Model::StaticInitialize();

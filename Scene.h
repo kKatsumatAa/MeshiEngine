@@ -2,7 +2,6 @@
 #include"Collision.h"
 #include"DebugText.h"
 #include"ImGuiManager.h"
-#include"ColliderManager.h"
 #include"ParticleManager.h"
 #include"Camera.h"
 #include"Async.h"
@@ -68,7 +67,6 @@ public:
 
 	float fighterPos[3] = { 1.0f,0,0 };
 
-	std::unique_ptr<ColliderManager> colliderM;
 
 	std::unique_ptr<Camera> camera;
 

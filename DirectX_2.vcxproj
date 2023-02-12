@@ -86,15 +86,15 @@
   <ItemGroup>
     <ClCompile Include="Async.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="CircleShadow.cpp" />
-    <ClCompile Include="Collider.cpp" />
-    <ClCompile Include="ColliderManager.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="CollisionPrimitive.cpp" />
     <ClCompile Include="ConstBuffTransform.cpp" />
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="DrawIntNumImage.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
@@ -134,11 +134,9 @@
     <ClInclude Include="Async.h" />
     <ClInclude Include="BaseCollider.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraManager.h" />
     <ClInclude Include="CircleShadow.h" />
-    <ClInclude Include="Collider.h" />
-    <ClInclude Include="ColliderManager.h" />
     <ClInclude Include="Collision.h" />
-    <ClInclude Include="CollisionConfig.h" />
     <ClInclude Include="CollisionInfo.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CollisionPrimitive.h" />
@@ -146,6 +144,7 @@
     <ClInclude Include="ConstBuffTransform.h" />
     <ClInclude Include="DebugText.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="DrawIntNumImage.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="KeyboardInput.h" />

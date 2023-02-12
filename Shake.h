@@ -1,5 +1,11 @@
 #pragma once
 #include"Util.h"
+#include<random>
+
+//乱数シード生成器
+static std::random_device seed_gen;
+//メルセンヌツイスター
+static std::mt19937_64 engine(seed_gen());
 
 class Shake
 {
@@ -17,6 +23,8 @@ private:
 public:
 	void SetShake(int time, float length);
 	float GetShake();
+
+	bool GetIsShaking();
 
 	void Initialize();
 
