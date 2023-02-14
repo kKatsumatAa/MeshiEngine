@@ -91,6 +91,8 @@ public:
 	//関数
 	static Directx& GetInstance();
 
+	void CommandReset();
+
 	void DrawInitialize();
 
 	void DrawUpdate(const XMFLOAT4& winRGBA = { 0.1f,0.25f,0.5f,0.0f });
@@ -105,6 +107,9 @@ public:
 	ID3D12Device* GetDevice() const { return device.Get(); }
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
 	ComPtr<ID3D12DescriptorHeap> GetPeraSRVHeap() const { return _peraSRVHeap; }
+	ID3D12CommandQueue* GetCommandQueue()const { return commandQueue.Get(); }
+	UINT64& GetFenceVal() { return fenceVal; }
+	ID3D12Fence* GetFence() { return fence.Get(); }
 
 	//バックバッファの数を取得
 	size_t GetBackBufferCount() const { return backBuffers.size(); }

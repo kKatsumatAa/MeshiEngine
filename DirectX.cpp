@@ -355,6 +355,16 @@ Directx& Directx::GetInstance()
 	return inst;
 }
 
+void Directx::CommandReset()
+{
+	// キューをクリア
+	result = commandAllocator->Reset();
+	assert(SUCCEEDED(result));
+	// 再びコマンドリストを貯める準備
+	result = commandList->Reset(commandAllocator.Get(), nullptr);
+	assert(SUCCEEDED(result));
+}
+
 void Directx::DrawInitialize()
 {
 
@@ -522,12 +532,8 @@ void Directx::PostDrawToPera()
 	//FPS固定
 	UpdateFixFPS();
 
-	// キューをクリア
-	result = commandAllocator->Reset();
-	assert(SUCCEEDED(result));
-	// 再びコマンドリストを貯める準備
-	result = commandList->Reset(commandAllocator.Get(), nullptr);
-	assert(SUCCEEDED(result));
+	//リセット
+	CommandReset();
 
 	// 画面に表示するバッファをフリップ(裏表の入替え)
 	result = swapChain->Present(1, 0);

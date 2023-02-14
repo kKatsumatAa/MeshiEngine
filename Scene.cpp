@@ -15,26 +15,7 @@ void SceneState::SetScene(Scene* scene)
 //--------------------------------------------------------------------------------------
 void SceneLoad::Load()
 {
-	TextureManager::LoadGraph(L"Resources/image/loading.png", scene->texhandle[3]);
-	//白い画像
-	TextureManager::GetInstance().LoadGraph(L"Resources/image/white.png", TextureManager::GetInstance().whiteTexHandle);
-
-	//画像
-	TextureManager::LoadGraph(L"Resources/ascii.png", scene->debugTextHandle);
-
-	TextureManager::LoadGraph(L"Resources/image/effect1.png", scene->texhandle[1]);
-	TextureManager::LoadGraph(L"Resources/image/a.png", scene->texhandle[2]);
-
-
-	{
-		Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
-	}
-
-	scene->model[0] = Model::LoadFromOBJ("skydome", true, true);
-	scene->model[1] = Model::LoadFromOBJ("ground");
-	scene->model[2] = Model::LoadFromOBJ("player");
-	scene->model[4] = Model::LoadFromOBJ("MiG-25PD", true);
-	scene->model[3] = Model::LoadFromOBJ("player", true);
+	
 }
 
 void SceneLoad::Initialize()
@@ -502,6 +483,27 @@ void Scene::StopWaveAllScene()
 
 void Scene::Initialize()
 {
+	TextureManager::LoadGraph(L"Resources/image/loading.png", texhandle[3]);
+	//白い画像
+	TextureManager::LoadGraph(L"Resources/image/white.png", TextureManager::GetInstance().whiteTexHandle);
+
+	//画像
+	TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
+
+	TextureManager::LoadGraph(L"Resources/image/effect1.png", texhandle[1]);
+	TextureManager::LoadGraph(L"Resources/image/a.png", texhandle[2]);
+
+
+	{
+		Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
+	}
+
+	model[0] = Model::LoadFromOBJ("skydome", true, true);
+	model[1] = Model::LoadFromOBJ("ground");
+	model[2] = Model::LoadFromOBJ("player");
+	model[4] = Model::LoadFromOBJ("MiG-25PD", true);
+	model[3] = Model::LoadFromOBJ("player", true);
+
 	Object::effectFlags.isScanningLine = true;
 
 	//model
@@ -566,7 +568,7 @@ void Scene::Initialize()
 	ParticleManager::GetInstance()->Initialize();
 
 	//ステート変更
-	ChangeState(new SceneLoad);
+	ChangeState(new Scene1);
 }
 
 void Scene::Update()
