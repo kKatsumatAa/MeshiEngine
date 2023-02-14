@@ -150,15 +150,18 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 		//Upload Buffer への書き込み。
 		void* ptr = nullptr;
 		result = iUploadBuffer->Map(0, nullptr, &ptr);
-		memcpy(reinterpret_cast<unsigned char*>(ptr) + footprint.Offset,
-			(scratchImg.GetPixels()), metadata.width * metadata.height * sizeof(DWORD));
-		assert(SUCCEEDED(result));
+		//memcpy(reinterpret_cast<unsigned char*>(ptr) + footprint.Offset,
+		//	(scratchImg.GetPixels()), metadata.width * metadata.height * sizeof(DWORD));
+		//assert(SUCCEEDED(result));
 
-		//for (UINT y = 0; y < metadata.height; y++)
-		//{
-		//	memcpy(reinterpret_cast<unsigned char*>(ptr) + footprint.Offset,
-		//		&(scratchImg.GetPixels()[y /** metadata.width * metadata.height*/]), sizeof(DWORD) * metadata.width * metadata.height);
-		//}
+		for (UINT y = 0; y < metadata.height; y++)
+		{
+			//ミップマップレベルを指定してイメージを取得
+			const Image* img = scratchImg.GetImage(y, 0, 0);
+
+			memcpy(reinterpret_cast<unsigned char*>(ptr) + footprint.Offset + y * img->rowPitch,
+				&(scratchImg.GetPixels()[y * metadata.width /** metadata.height*/]), sizeof(DWORD) * metadata.width/* * metadata.height*/);
+		}
 
 		//for (UINT y = 0; y < metadata.mipLevels; y++)
 		//{
