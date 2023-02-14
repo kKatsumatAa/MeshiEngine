@@ -150,15 +150,46 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 		//Upload Buffer への書き込み。
 		void* ptr = nullptr;
 		result = iUploadBuffer->Map(0, nullptr, &ptr);
-		//memcpy(reinterpret_cast<unsigned char*>(ptr) + footprint.Offset, 
-		//	&(scratchImg.GetPixels()[y * bitmapWidth]), sizeof(DWORD) * bitmapWidth);
-		//assert(SUCCEEDED(result));
+		memcpy(reinterpret_cast<unsigned char*>(ptr) + footprint.Offset,
+			(scratchImg.GetPixels()), metadata.width * metadata.height * sizeof(DWORD));
+		assert(SUCCEEDED(result));
 
-		for (UINT y = 0; y < metadata.height; y++)
-		{
-			memcpy(reinterpret_cast<unsigned char*>(ptr) + footprint.Offset,
-				&(scratchImg.GetPixels()[y * metadata.width]), sizeof(DWORD) * metadata.width);
-		}
+		//for (UINT y = 0; y < metadata.height; y++)
+		//{
+		//	memcpy(reinterpret_cast<unsigned char*>(ptr) + footprint.Offset,
+		//		&(scratchImg.GetPixels()[y /** metadata.width * metadata.height*/]), sizeof(DWORD) * metadata.width * metadata.height);
+		//}
+
+		//for (UINT y = 0; y < metadata.mipLevels; y++)
+		//{
+		//	//ミップマップレベルを指定してイメージを取得
+		//	const Image* img = scratchImg.GetImage(y, 0, 0);
+
+		//	UINT8* pScan = reinterpret_cast<unsigned char*>(ptr)
+		//		+ footprint.Offset + y * img->rowPitch;
+		//	memcpy(pScan, (&img->pixels + img->rowPitch), sizeof(img->rowPitch));
+		//}
+
+		//04_03
+		// 全ミップマップについて
+		//for (size_t i = 0; i < metadata.mipLevels; i++)
+		//{
+		//	//ミップマップレベルを指定してイメージを取得
+		//	const Image* img = scratchImg.GetImage(i, 0, 0);
+		//	//テクスチャバッファにデータ転送
+		//	Directx::GetInstance().result = iUploadBuffer->WriteToSubresource(
+		//		(UINT)i,
+		//		nullptr,//全領域へコピー
+		//		img->pixels,//元データアドレス
+		//		(UINT)img->rowPitch,//1ラインサイズ
+		//		(UINT)img->slicePitch//全サイズ
+		//	);
+
+		//	memcpy(reinterpret_cast<unsigned char*>(ptr) + footprint.Offset,
+		//		img->pixels, sizeof(img->width));
+
+		//	assert(SUCCEEDED(Directx::GetInstance().result));
+		//}
 
 		//Copy コマンド作成
 		D3D12_TEXTURE_COPY_LOCATION  dest;
@@ -198,26 +229,9 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 		//コマンドリセット
 		Directx::GetInstance().CommandReset();
 		//
-		iUploadBuffer->Release();
+		//iUploadBuffer->Release();
 	}
 
-
-	////04_03
-	//// 全ミップマップについて
-	//for (size_t i = 0; i < metadata.mipLevels; i++)
-	//{
-	//	//ミップマップレベルを指定してイメージを取得
-	//	const Image* img = scratchImg.GetImage(i, 0, 0);
-	//	//テクスチャバッファにデータ転送
-	//	Directx::GetInstance().result = texBuff[count]->WriteToSubresource(
-	//		(UINT)i,
-	//		nullptr,//全領域へコピー
-	//		img->pixels,//元データアドレス
-	//		(UINT)img->rowPitch,//1ラインサイズ
-	//		(UINT)img->slicePitch//全サイズ
-	//	);
-	//	assert(SUCCEEDED(Directx::GetInstance().result));
-	//}
 	////元データ解放
 	//delete[] imageData;
 
