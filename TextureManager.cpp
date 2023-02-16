@@ -1,4 +1,6 @@
 #include "TextureManager.h"
+#include <d3dx12.h>
+using namespace DirectX;
 
 int TextureManager::count = 0;
 //リソース設定
@@ -93,120 +95,82 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 
 	HRESULT result;
 
-	//アップロード用
+	//コピー先用
+	// ヒープの設定
+	CD3DX12_HEAP_PROPERTIES textureHeapProp =
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 
-	const Image* img = scratchImg.GetImage(0, 0, 0); // 生 データ 抽出
+	// リソース設定
+	CD3DX12_RESOURCE_DESC textureResourceDesc =
+		CD3DX12_RESOURCE_DESC::Tex2D(
+			metadata.format,
+			(UINT64)metadata.width,
+			(UINT)metadata.height,
+			(UINT16)metadata.arraySize,
+			(UINT16)metadata.mipLevels,
+			1);
 
-	//中間バッファーとしてのアップロードヒープ設定
-	D3D12_HEAP_PROPERTIES uploadHeapProp = {};
-	//マップ可能にするため、UPLOADにする
+	// テクスチャバッファの生成
+	result = Directx::GetInstance().GetDevice()->
+		CreateCommittedResource(
+			&textureHeapProp,
+			D3D12_HEAP_FLAG_NONE,
+			&textureResourceDesc,
+			D3D12_RESOURCE_STATE_COPY_DEST,
+			nullptr,
+			IID_PPV_ARGS(&texBuff[count]));
+	assert(SUCCEEDED(result));
+
+
+	//アップロードバッファ
+	// ヒープの設定
+	uint64_t uploadSize = GetRequiredIntermediateSize(texBuff[count].Get(), 0, metadata.mipLevels);
+
+	D3D12_HEAP_PROPERTIES uploadHeapProp{};
 	uploadHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
-	//アップロード用に使用すること前提なのでUNKNOWNでよい
-	uploadHeapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-	uploadHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+	CD3DX12_RESOURCE_DESC resDesc =
+		CD3DX12_RESOURCE_DESC::Buffer(uploadSize);
 
-	uploadHeapProp.CreationNodeMask = 0; // 単一 アダプター の ため 0
-	uploadHeapProp.VisibleNodeMask = 0; // 単一 アダプター の ため 0
+	Microsoft::WRL::ComPtr<ID3D12Resource> uploadBuff;
 
-	D3D12_RESOURCE_DESC resDesc = {};
+	// テクスチャバッファの生成
+	result = Directx::GetInstance().GetDevice()->
+		CreateCommittedResource(
+			&uploadHeapProp,
+			D3D12_HEAP_FLAG_NONE,
+			&resDesc,
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&uploadBuff));
+	assert(SUCCEEDED(result));
 
-	resDesc.Format = DXGI_FORMAT_UNKNOWN;//単なるデータの塊なのでUNKNOWN
-	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;//単なるバッファーとして指定
-	resDesc.Width = AligmentSize(img->slicePitch, D3D12_TEXTURE_DATA_PITCH_ALIGNMENT)
-		* img->height;//データサイズ
-	resDesc.Height = 1;
-	resDesc.DepthOrArraySize = 1;
-	resDesc.MipLevels = 1;
-	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;//連続したデータ
-	resDesc.Flags = D3D12_RESOURCE_FLAG_NONE;//特にフラグなし
-	resDesc.SampleDesc.Count = 1;//通常テクスチャなのでアンチエイリアシングしない
-	resDesc.SampleDesc.Quality = 0;
 
-	// 中間 バッファー 作成 
-	ComPtr <ID3D12Resource> uploadbuff = nullptr;
-	result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
-		&uploadHeapProp,
-		D3D12_HEAP_FLAG_NONE,//特に指定なし
-		&resDesc,
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&uploadbuff)
+	//サブリソース生成
+	std::vector<D3D12_SUBRESOURCE_DATA> subResourcesDatas{};
+	subResourcesDatas.resize(metadata.mipLevels);
+
+	for (size_t i = 0; i < subResourcesDatas.size(); i++)
+	{
+		// 全ミップマップレベルを指定してイメージを取得
+		const Image* img = scratchImg.GetImage(i, 0, 0);
+
+		subResourcesDatas[i].pData = img->pixels;
+		subResourcesDatas[i].RowPitch = img->rowPitch;
+		subResourcesDatas[i].SlicePitch = img->slicePitch;
+	}
+
+	//サブリソースを転送
+	UpdateSubresources(
+		Directx::GetInstance().GetCommandList(),
+		texBuff[count].Get(),
+		uploadBuff.Get(),
+		0,
+		0,
+		metadata.mipLevels,
+		subResourcesDatas.data()
 	);
 
-
-	//コピー先用
-		// テクスチャ の ため の ヒープ 設定 
-	D3D12_HEAP_PROPERTIES texHeapProp = {};
-	texHeapProp.Type = D3D12_HEAP_TYPE_DEFAULT;//テクスチャ用
-	texHeapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-	texHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-	texHeapProp.CreationNodeMask = 0;//単一アダプターのため0
-	texHeapProp.VisibleNodeMask = 0;//単一アダプターのため0
-
-	//リソース設定（変数は使いまわし）
-	resDesc.Format = metadata.format;
-	resDesc.Width = metadata.width;//幅
-	resDesc.Height = metadata.height;//高さ
-	resDesc.DepthOrArraySize = metadata.arraySize;//2Dで配列でもないので1
-	resDesc.MipLevels = metadata.mipLevels;//ミップマップしないのでミップ数は1つ
-	resDesc.Dimension = static_cast<D3D12_RESOURCE_DIMENSION>(metadata.dimension);
-	resDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-
-	// テクスチャバッファー の 作成 
-	//ID3D12Resource* texbuff = nullptr;
-	result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
-		&texHeapProp, D3D12_HEAP_FLAG_NONE,//特に指定なし
-		&resDesc, D3D12_RESOURCE_STATE_COPY_DEST,//コピー先
-		nullptr, IID_PPV_ARGS(&texBuff[count]));
-
-	//マップ
-	uint8_t* mapforImg = nullptr;//image->pixelsと同じ型にする
-	result = uploadbuff->Map(0, nullptr, (void**)&mapforImg);//マップ
-
-	uint8_t* srcAddress = img->pixels;
-	auto rowPitch = AligmentSize(img->rowPitch, D3D12_TEXTURE_DATA_PITCH_ALIGNMENT);
-
-	for (int y = 0; y < img->height; ++y) {
-		std::copy_n(srcAddress, rowPitch, mapforImg);//コピー
-		//1行ごとのつじつまを合わせる
-		srcAddress += img->rowPitch;
-		mapforImg += rowPitch;
-	}
-	uploadbuff->Unmap(0, nullptr);//アンマップ
-
-	//
-	D3D12_TEXTURE_COPY_LOCATION src = {};
-	//コピー元（アップロード側）設定
-	src.pResource = uploadbuff.Get();//中間バッファー
-	src.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;//フットプリント指定
-	src.PlacedFootprint.Offset = 0;
-	src.PlacedFootprint.Footprint.Width = metadata.width;
-	src.PlacedFootprint.Footprint.Height = metadata.height;
-	src.PlacedFootprint.Footprint.Depth = metadata.depth;
-	//src.PlacedFootprint.Footprint.RowPitch = img->rowPitch;
-	src.PlacedFootprint.Footprint.Format = img->format;
-	D3D12_TEXTURE_COPY_LOCATION dst = {};
-	//コピー先設定
-	dst.pResource = texBuff[count].Get();
-	dst.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-	dst.SubresourceIndex = 0;
-
-	//256バイトアライメント
-	src.PlacedFootprint.Footprint.RowPitch =
-		AligmentSize(img->rowPitch, D3D12_TEXTURE_DATA_PITCH_ALIGNMENT);
-
-	//
-	Directx::GetInstance().GetCommandList()->CopyTextureRegion(&dst, 0, 0, 0, &src, nullptr);
-
-	//バリアとフェンス
-	D3D12_RESOURCE_BARRIER BarrierDesc = {};
-	BarrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	BarrierDesc.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	BarrierDesc.Transition.pResource = texBuff[count].Get();
-	BarrierDesc.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	BarrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;//ここが重要
-	BarrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;//ここも重要
-
+	//SRV
 	{
 		//SRVヒープの先頭ハンドルを取得
 		if (count == 0) { srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart(); }
@@ -228,11 +192,18 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 		textureHandle = srvGpuHandle.ptr + (Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type) * count);
 
 
-		count++;
-
-		////元データ解放
+		//元データ解放
 		scratchImg.Release();
 	}
+
+	//バリアとフェンス
+	D3D12_RESOURCE_BARRIER BarrierDesc = {};
+	BarrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	BarrierDesc.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	BarrierDesc.Transition.pResource = texBuff[count].Get();
+	BarrierDesc.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	BarrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;//ここが重要
+	BarrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;//ここも重要
 
 	Directx::GetInstance().GetCommandList()->ResourceBarrier(1, &BarrierDesc);
 	Directx::GetInstance().GetCommandList()->Close();
@@ -254,8 +225,13 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	}
 
 	//バッファ解放
-	uploadbuff->Release();
+	/*uploadBuff->Release();
+	uploadBuff.Reset();*/
 
 	//コマンドリセット
 	Directx::GetInstance().CommandReset();
+
+
+	//バッファ用のカウント
+	count++;
 }
