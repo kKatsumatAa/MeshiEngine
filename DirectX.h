@@ -120,3 +120,6 @@ void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size);
 
 void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource,
 	ID3D12Resource** buff);
+
+//アライメントにそろえたサイズを返す
+size_t AligmentSize(size_t size, size_t aligment);

@@ -564,4 +564,7 @@ void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, 
 	assert(SUCCEEDED(Directx::GetInstance().result));
 }
 
-
+size_t AligmentSize(size_t size, size_t aligment)
+{
+	return size + aligment - size % aligment;
+}
