@@ -95,7 +95,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 
 	//アップロード用
 
-	auto img = scratchImg.GetImage(0, 0, 0); // 生 データ 抽出
+	const Image* img = scratchImg.GetImage(0, 0, 0); // 生 データ 抽出
 
 	//中間バッファーとしてのアップロードヒープ設定
 	D3D12_HEAP_PROPERTIES uploadHeapProp = {};
@@ -123,7 +123,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	resDesc.SampleDesc.Quality = 0;
 
 	// 中間 バッファー 作成 
-	ID3D12Resource* uploadbuff = nullptr;
+	ComPtr <ID3D12Resource> uploadbuff = nullptr;
 	result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
 		&uploadHeapProp,
 		D3D12_HEAP_FLAG_NONE,//特に指定なし
@@ -177,7 +177,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	//
 	D3D12_TEXTURE_COPY_LOCATION src = {};
 	//コピー元（アップロード側）設定
-	src.pResource = uploadbuff;//中間バッファー
+	src.pResource = uploadbuff.Get();//中間バッファー
 	src.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;//フットプリント指定
 	src.PlacedFootprint.Offset = 0;
 	src.PlacedFootprint.Footprint.Width = metadata.width;
@@ -207,6 +207,33 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	BarrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;//ここが重要
 	BarrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;//ここも重要
 
+	{
+		//SRVヒープの先頭ハンドルを取得
+		if (count == 0) { srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart(); }
+		else { srvHandle.ptr += Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type); }
+
+		//04_03
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
+		srvDesc.Format = resDesc.Format;
+		srvDesc.Shader4ComponentMapping =
+			D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+		srvDesc.Texture2D.MipLevels = 1;
+		//ハンドルのさす位置にシェーダーリソースビュー作成
+		Directx::GetInstance().GetDevice()->CreateShaderResourceView(TextureManager::GetInstance().texBuff[count].Get(), &srvDesc, srvHandle);
+
+		//04_02(画像貼る用のアドレスを引数に)
+		//SRVヒープのハンドルを取得
+		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+		textureHandle = srvGpuHandle.ptr + (Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type) * count);
+
+
+		count++;
+
+		////元データ解放
+		scratchImg.Release();
+	}
+
 	Directx::GetInstance().GetCommandList()->ResourceBarrier(1, &BarrierDesc);
 	Directx::GetInstance().GetCommandList()->Close();
 
@@ -226,34 +253,9 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 		CloseHandle(event);
 	}
 
+	//バッファ解放
 	uploadbuff->Release();
 
-	////元データ解放
-	scratchImg.Release();
-
+	//コマンドリセット
 	Directx::GetInstance().CommandReset();
-
-
-
-	//SRVヒープの先頭ハンドルを取得
-	if (count == 0) { srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart(); }
-	else { srvHandle.ptr += Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type); }
-
-	//04_03
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
-	srvDesc.Format = resDesc.Format;
-	srvDesc.Shader4ComponentMapping =
-		D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-	srvDesc.Texture2D.MipLevels = 1;
-	//ハンドルのさす位置にシェーダーリソースビュー作成
-	Directx::GetInstance().GetDevice()->CreateShaderResourceView(TextureManager::GetInstance().texBuff[count].Get(), &srvDesc, srvHandle);
-
-	//04_02(画像貼る用のアドレスを引数に)
-	//SRVヒープのハンドルを取得
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	textureHandle = srvGpuHandle.ptr + (Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type) * count);
-
-
-	count++;
 }
