@@ -1,5 +1,9 @@
 #include"PeraShaderHeader.hlsli"
 
+Texture2D<float4> tex : register(t0);
+
+SamplerState smp : register(s0);
+
 float4 PS(Output input) : SV_TARGET
 {
 	// シェーディングによる色で描画
@@ -131,6 +135,7 @@ float4 PS(Output input) : SV_TARGET
 			ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, input.uv + float2(i * dx, 0));
 			ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, input.uv + float2(-i * dx, 0));
 		}
+
 		isEffect = true;
 	}
 

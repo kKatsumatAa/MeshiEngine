@@ -636,6 +636,12 @@ void Object::DrawPera()
 	postPera.Draw(effectFlags);
 }
 
+void Object::DrawPera2()
+{
+	//ポストエフェクト用
+	postPera.Draw2();
+}
+
 void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 	WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {

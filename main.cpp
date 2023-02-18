@@ -57,15 +57,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//マルチパス
 		{
+		//2枚目--------------------
 			Directx::GetInstance().PreDrawToPera();
 
 			//
 			scene->DrawPostEffect();
 
+			Directx::GetInstance().PostDrawToPera();
+
+		//実際に描画----------------
+			Directx::GetInstance().PreDrawToPera2();
+
+			//
+			scene->DrawPostEffect2();
+
 			scene->DrawSprite();
 
 			// 4.描画コマンドここまで //
-			Directx::GetInstance().PostDrawToPera();
+			Directx::GetInstance().PostDrawToPera2();
 		}
 		//毎フレーム処理　ここまで//
 

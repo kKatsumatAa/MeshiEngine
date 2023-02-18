@@ -80,6 +80,7 @@ public:
 	void Update();
 	void Draw();
 	void DrawPostEffect();
+	void DrawPostEffect2();
 	void DrawSprite();
 
 	void StopWaveAllScene();

@@ -613,6 +613,11 @@ void Scene::DrawPostEffect()
 	Object::DrawPera();
 }
 
+void Scene::DrawPostEffect2()
+{
+	Object::DrawPera2();
+}
+
 void Scene::DrawSprite()
 {
 	state->DrawSprite();

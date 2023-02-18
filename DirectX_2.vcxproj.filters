@@ -320,6 +320,7 @@
     <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl" />
     <FxCompile Include="Resources\shaders\PeraVertexShader.hlsl" />
     <FxCompile Include="Resources\shaders\PeraPixelShader.hlsl" />
+    <FxCompile Include="Resources\shaders\PeraPixelShader2.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\OBJShaderHeader.hlsli" />

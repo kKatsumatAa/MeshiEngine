@@ -68,3 +68,5 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, const XMMATRIX& view, const XMMATRIX& projection);
 
 
+//アライメントにそろえたサイズを返す
+size_t AligmentSize(size_t size, size_t aligment);

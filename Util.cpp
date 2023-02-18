@@ -316,3 +316,8 @@ float sign(float num)
 	}
 	return 0.0f;
 }
+
+size_t AligmentSize(size_t size, size_t aligment)
+{
+	return size + aligment - size % aligment;
+}

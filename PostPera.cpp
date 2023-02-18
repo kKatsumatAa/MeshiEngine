@@ -145,23 +145,24 @@ void PostPera::GenerateRSPL()
 
 	//実際に使うルートパラメータ
 	D3D12_ROOT_PARAMETER rp[3] = {};
+	//SRV
 	rp[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rp[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rp[0].DescriptorTable.pDescriptorRanges = &range[0];
 	rp[0].DescriptorTable.NumDescriptorRanges = 1;
-	
-	rp[1] = rootParams[0];//フラグのやつ
+	//ボケ定数用
+	rp[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[1].DescriptorTable.pDescriptorRanges = &range[1];
+	rp[1].DescriptorTable.NumDescriptorRanges = 1;
 
-	rp[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rp[2].DescriptorTable.pDescriptorRanges = &range[1];
-	rp[2].DescriptorTable.NumDescriptorRanges = 1;
+	rp[2] = rootParams[0];//フラグのやつ
 
 
 	D3D12_STATIC_SAMPLER_DESC sampler = CD3DX12_STATIC_SAMPLER_DESC(0); //s0
 
 	//デスクリプタテーブル+フラグのやつ
-	rsDesc.NumParameters = _countof(range) + _countof(rootParams);
+	rsDesc.NumParameters = _countof(rp);
 	rsDesc.pParameters = rp;
 	rsDesc.NumStaticSamplers = 1;
 	rsDesc.pStaticSamplers = &sampler;
@@ -185,12 +186,35 @@ void PostPera::GenerateRSPL()
 	assert(SUCCEEDED(result));
 
 	//パイプラインステート
+	//一枚目
 	gpsDesc.pRootSignature = _peraRS.Get();
 	result = Directx::GetInstance().GetDevice()->CreateGraphicsPipelineState(
 		&gpsDesc,
 		IID_PPV_ARGS(_peraPipeline.GetAddressOf())
 	);
 	assert(SUCCEEDED(result));
+
+
+	//二枚目
+	result = D3DCompileFromFile(
+		L"Resources/shaders/PeraPixelShader2.hlsl",
+		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		"PS2",
+		"ps_5_0",
+		0,
+		0,
+		ps.ReleaseAndGetAddressOf(),
+		errBlob.ReleaseAndGetAddressOf()
+	);
+	assert(SUCCEEDED(result));
+
+	gpsDesc.PS = CD3DX12_SHADER_BYTECODE(ps.Get());
+	//2枚目用パイプライン生成
+	result=Directx::GetInstance().GetDevice()->CreateGraphicsPipelineState(
+		&gpsDesc,
+		IID_PPV_ARGS(_peraPipeline2.ReleaseAndGetAddressOf())
+	);
 }
 
 void PostPera::Draw(EffectConstBuffer effectFlags)
@@ -221,14 +245,43 @@ void PostPera::Draw(EffectConstBuffer effectFlags)
 	//ボケ定数
 	handle.ptr += Directx::GetInstance().GetDevice()->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(2, handle);
+	handle.ptr += Directx::GetInstance().GetDevice()->
+		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, handle);
 
+	//図形とか
 	Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(
 		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &_peraVBV);
 
-	//index0はでスクリプタテーブル
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(1, effectFlagsBuff->GetGPUVirtualAddress());
+	//ポストエフェクトフラグなのでrp[2]
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, effectFlagsBuff->GetGPUVirtualAddress());
+
+	Directx::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
+}
+
+void PostPera::Draw2()
+{
+	//Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(_peraRS.Get());
+	Directx::GetInstance().GetCommandList()->SetPipelineState(_peraPipeline2.Get());
+	//ヒープをセット
+	Directx::GetInstance().GetCommandList()
+		->SetDescriptorHeaps(1, Directx::GetInstance().GetPeraSRVHeap().GetAddressOf());
+
+	auto handle = Directx::GetInstance().GetPeraSRVHeap()->GetGPUDescriptorHandleForHeapStart();
+
+	//二枚目
+	handle.ptr += Directx::GetInstance().GetDevice()->
+		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, handle);//SRVなのでrp[0]
+
+	//図形とか
+	Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &_peraVBV);
+
+	//ポストエフェクトフラグなのでrp[2]
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, effectFlagsBuff->GetGPUVirtualAddress());
 
 	Directx::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }

@@ -47,9 +47,8 @@ private:
 	ComPtr<ID3D12DescriptorHeap> _peraSRVHeap;//テクスチャ用
 	bool isPeraClear = false;
 
-	std::vector<float> weights;
+	GausianBuffer gausianBuff;
 
-	ComPtr <ID3D12Resource> buff;
 
 private:
 	Directx();
@@ -87,13 +86,18 @@ public:
 
 	void DrawInitialize();
 
+	//1枚目のテクスチャに描画
 	void DrawUpdate(const XMFLOAT4& winRGBA = { 0.1f,0.25f,0.5f,0.0f });
-
 	void DrawUpdate2();
 
+	//2枚目のテクスチャに描画
+	void PreDrawToPera();
 	void PostDrawToPera();
 
-	void PreDrawToPera();
+	//実際に描画
+	void PreDrawToPera2();
+	void PostDrawToPera2();
+
 
 	//getter
 	ID3D12Device* GetDevice() const { return device.Get(); }
@@ -113,5 +117,4 @@ void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size);
 void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource,
 	ID3D12Resource** buff);
 
-//アライメントにそろえたサイズを返す
-size_t AligmentSize(size_t size, size_t aligment);
+

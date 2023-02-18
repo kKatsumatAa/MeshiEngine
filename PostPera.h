@@ -58,6 +58,7 @@ private:
 
 	ComPtr<ID3D12RootSignature> _peraRS;
 	ComPtr<ID3D12PipelineState> _peraPipeline = NULL;
+	ComPtr<ID3D12PipelineState> _peraPipeline2 = NULL;
 
 	//‰æ–ÊŒø‰Ê—p
 	ComPtr <ID3D12Resource> effectFlagsBuff;
@@ -70,5 +71,6 @@ public:
 	void Initialize();
 	void GenerateRSPL();
 	void Draw(EffectConstBuffer effectFlags);
+	void Draw2();
 };
 

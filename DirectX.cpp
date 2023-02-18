@@ -292,9 +292,20 @@ void Directx::Initialize()
 			IID_PPV_ARGS(_peraResource[0].ReleaseAndGetAddressOf())
 		);
 		assert(SUCCEEDED(result));
+		//二枚目
+		result = device->CreateCommittedResource(
+			&heapProp,
+			D3D12_HEAP_FLAG_NONE,
+			&resDesc,
+			//D3D12_RESOURCE_STATE_RENDER_TARGETではない
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+			&clearValue,
+			IID_PPV_ARGS(_peraResource[1].ReleaseAndGetAddressOf())
+		);
+		assert(SUCCEEDED(result));
 
 		// RTV 用 ヒープ を 作る 
-		heapDesc.NumDescriptors = 1;
+		heapDesc.NumDescriptors = 2;//二枚分
 		result = device->CreateDescriptorHeap(
 			&heapDesc,
 			IID_PPV_ARGS(_peraRTVHeap.ReleaseAndGetAddressOf())
@@ -305,16 +316,26 @@ void Directx::Initialize()
 		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 		rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 
+
 		//rtvを作る
+		D3D12_CPU_DESCRIPTOR_HANDLE handleRH = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
+
 		device->CreateRenderTargetView(
 			_peraResource[0].Get(),
 			&rtvDesc,
-			_peraRTVHeap->GetCPUDescriptorHandleForHeapStart()
+			handleRH
+		);
+		//二枚目
+		handleRH.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+		device->CreateRenderTargetView(
+			_peraResource[1].Get(),
+			&rtvDesc,
+			handleRH
 		);
 
-		//SRV用ヒープを作る
 
-		heapDesc.NumDescriptors = 2;
+		//SRV用ヒープを作る
+		heapDesc.NumDescriptors = 3;//ガウシアンパラメータ、二枚分で３
 		heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 		heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 		result = device->CreateDescriptorHeap(
@@ -329,52 +350,26 @@ void Directx::Initialize()
 		srvDesc.Texture2D.MipLevels = 1;
 		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
-		D3D12_CPU_DESCRIPTOR_HANDLE handle = _peraSRVHeap->GetCPUDescriptorHandleForHeapStart();
-
 		// シェーダーリソースビュー（ SRV） を 作る 
+		D3D12_CPU_DESCRIPTOR_HANDLE handle = _peraSRVHeap->GetCPUDescriptorHandleForHeapStart();
+		//一枚目
 		device->CreateShaderResourceView(
 			_peraResource[0].Get(),
 			&srvDesc,
 			handle
 		);
+		//二枚目
+		//インクリメント
+		handle.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+		device->CreateShaderResourceView(
+			_peraResource[1].Get(),
+			&srvDesc,
+			handle
+		);
 
 
-		//ガウシアン用のバッファ
-		{
-			HRESULT result;
-
-			//ヒープ設定
-			D3D12_HEAP_PROPERTIES cbHeapProp{};
-			cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
-			//リソース設定
-			D3D12_RESOURCE_DESC cbResourceDesc{};
-
-			weights = std::move(GetGaussianWeights(8, 10.0f));
-
-			//リソース設定
-			ResourceProperties(cbResourceDesc,
-				(AligmentSize(sizeof(weights[0])* weights.size(), 256)));
-			//定数バッファの生成
-			BuffProperties(cbHeapProp, cbResourceDesc, &buff);
-
-			//定数バッファのマッピング
-			float* mappedWeight = nullptr;
-			result = buff->Map(0, nullptr, (void**)&mappedWeight);
-
-			std::copy(weights.begin(), weights.end(), mappedWeight);
-
-			buff->Unmap(0, nullptr);
-		}
-		
-		//ボケ定数バッファビュー設定
-		handle.ptr += device->GetDescriptorHandleIncrementSize(heapDesc.Type);
-
-		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-		cbvDesc.BufferLocation = buff->GetGPUVirtualAddress();
-		cbvDesc.SizeInBytes = buff->GetDesc().Width;
-
-		device->CreateConstantBufferView(&cbvDesc, handle);
-
+		//ガウシアンパラメータ(3つ目)
+		gausianBuff.Initialize(handle, *device.Get(), heapDesc);
 	}
 
 	//フェンス
@@ -416,6 +411,7 @@ void Directx::DrawInitialize()
 
 }
 
+//一枚目のテクスチャに描画
 void Directx::DrawUpdate(const XMFLOAT4& winRGBA)
 {
 	//ポストエフェクト
@@ -453,22 +449,71 @@ void Directx::DrawUpdate(const XMFLOAT4& winRGBA)
 	scissorRect.bottom = (LONG)(scissorRect.top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
 	// シザー矩形設定コマンドを、コマンドリストに積む
 	commandList->RSSetScissorRects(1, &scissorRect);
-
-
 }
 
 void Directx::DrawUpdate2()
 {
-	// バックバッファの番号を取得(2つなので0番か1番)
-	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
-
 	// 5.リソースバリアを戻す
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態へ
 	commandList->ResourceBarrier(1, &barrierDesc);
 }
 
+
+//二枚目のテクスチャに描画
 void Directx::PreDrawToPera() {
+
+	//状態をレンダーターゲットに遷移
+	barrierDesc.Transition.pResource = _peraResource[1].Get(); // 二枚目のリソースを指定
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
+	commandList->ResourceBarrier(
+		1,
+		&barrierDesc
+	);
+
+	rtvHandle = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
+	//二枚目なので進める
+	rtvHandle.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+	// 2 パス 目 
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	commandList->OMSetRenderTargets(
+		1, &rtvHandle, false, &dsvHandle
+	);
+
+
+	// 3.画面クリア R G B A
+	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+	//06_01(dsv)
+	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH,
+		1.0f, 0, 0, nullptr);
+	//毎フレーム深度バッファの値が描画範囲で最も奥(1.0)にリセットされる
+
+	// ビューポート設定コマンドを、コマンドリストに積む
+	commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
+
+	// シザー矩形
+	D3D12_RECT scissorRect{};
+	scissorRect.left = 0; // 切り抜き座標左
+	scissorRect.right = (LONG)(scissorRect.left + WindowsApp::GetInstance().window_width); // 切り抜き座標右
+	scissorRect.top = 0; // 切り抜き座標上
+	scissorRect.bottom = (LONG)(scissorRect.top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
+	// シザー矩形設定コマンドを、コマンドリストに積む
+	commandList->RSSetScissorRects(1, &scissorRect);
+}
+
+void Directx::PostDrawToPera()
+{
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態へ
+	commandList->ResourceBarrier(1, &barrierDesc);
+}
+
+
+//実際に描画
+void Directx::PreDrawToPera2()
+{
 	// バックバッファの番号を取得(2つなので0番か1番)
 	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
 
@@ -482,7 +527,7 @@ void Directx::PreDrawToPera() {
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
 	commandList->ResourceBarrier(1, &barrierDesc);
 
-	// 2 パス 目 
+	// 3 パス 目 
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
 	commandList->OMSetRenderTargets(
 		1, &rtvHandle, false, &dsvHandle
@@ -508,7 +553,7 @@ void Directx::PreDrawToPera() {
 	commandList->RSSetScissorRects(1, &scissorRect);
 }
 
-void Directx::PostDrawToPera()
+void Directx::PostDrawToPera2()
 {
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT; // 表示状態へ
@@ -565,7 +610,4 @@ void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, 
 	assert(SUCCEEDED(Directx::GetInstance().result));
 }
 
-size_t AligmentSize(size_t size, size_t aligment)
-{
-	return size + aligment - size % aligment;
-}
+
