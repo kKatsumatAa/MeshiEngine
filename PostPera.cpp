@@ -135,23 +135,33 @@ void PostPera::GenerateRSPL()
 
 	//rootsig
 
-	D3D12_DESCRIPTOR_RANGE range = {};
-	range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range.BaseShaderRegister = 0;//0
-	range.NumDescriptors = 1;
+	D3D12_DESCRIPTOR_RANGE range[2] = {};
+	range[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range[0].BaseShaderRegister = 0;//0
+	range[0].NumDescriptors = 1;
+	range[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//b
+	range[1].BaseShaderRegister = 1;//フラグを送るのがb0なので1
+	range[1].NumDescriptors = 1;
 
-	D3D12_ROOT_PARAMETER rp[2] = {};
+	//実際に使うルートパラメータ
+	D3D12_ROOT_PARAMETER rp[3] = {};
 	rp[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	rp[0].DescriptorTable.pDescriptorRanges = &range;
+	rp[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[0].DescriptorTable.pDescriptorRanges = &range[0];
 	rp[0].DescriptorTable.NumDescriptorRanges = 1;
-	rp[1] = rootParams[0];
+	
+	rp[1] = rootParams[0];//フラグのやつ
+
+	rp[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[2].DescriptorTable.pDescriptorRanges = &range[1];
+	rp[2].DescriptorTable.NumDescriptorRanges = 1;
 
 
 	D3D12_STATIC_SAMPLER_DESC sampler = CD3DX12_STATIC_SAMPLER_DESC(0); //s0
 
-	//デスクリプタテーブル+ルートパラメータ
-	rsDesc.NumParameters = 1 + _countof(rootParams);
+	//デスクリプタテーブル+フラグのやつ
+	rsDesc.NumParameters = _countof(range) + _countof(rootParams);
 	rsDesc.pParameters = rp;
 	rsDesc.NumStaticSamplers = 1;
 	rsDesc.pStaticSamplers = &sampler;
@@ -207,6 +217,11 @@ void PostPera::Draw(EffectConstBuffer effectFlags)
 	auto handle = Directx::GetInstance().GetPeraSRVHeap()->GetGPUDescriptorHandleForHeapStart();
 	//パラメーター0番とヒープを関連付ける
 	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, handle);
+
+	//ボケ定数
+	handle.ptr += Directx::GetInstance().GetDevice()->
+		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(2, handle);
 
 	Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(
 		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);

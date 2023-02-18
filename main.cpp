@@ -10,7 +10,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//初期化
 	WindowsApp::GetInstance();
-	Directx::GetInstance();
+	Directx::GetInstance().Initialize();
 
 	DrawInitialize();
 
@@ -51,9 +51,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// 4.描画コマンドここから　//-----------
 			scene->Draw();
 
-
-			scene->DrawSprite();
-
 			//
 			Directx::GetInstance().DrawUpdate2();
 		}
@@ -64,6 +61,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//
 			scene->DrawPostEffect();
+
+			scene->DrawSprite();
 
 			// 4.描画コマンドここまで //
 			Directx::GetInstance().PostDrawToPera();

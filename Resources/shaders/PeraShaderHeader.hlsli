@@ -31,6 +31,11 @@ cbuffer ConstBufferEffectFlags : register(b0)
 	uint time;
 }
 
+cbuffer PostEffect : register(b1)
+{
+	float4 bkweights[2];
+}
+
 //vs‚©‚çps‚É‘—‚é
 struct Output
 {

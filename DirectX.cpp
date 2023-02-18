@@ -217,7 +217,7 @@ void Directx::UpdateFixFPS()
 	reference_ = std::chrono::steady_clock::now();
 }
 
-Directx::Directx()
+void Directx::Initialize()
 {
 	//FPS固定初期化
 	InitializeFixFPS();
@@ -289,7 +289,7 @@ Directx::Directx()
 			//D3D12_RESOURCE_STATE_RENDER_TARGETではない
 			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 			&clearValue,
-			IID_PPV_ARGS(_peraResource.ReleaseAndGetAddressOf())
+			IID_PPV_ARGS(_peraResource[0].ReleaseAndGetAddressOf())
 		);
 		assert(SUCCEEDED(result));
 
@@ -307,12 +307,14 @@ Directx::Directx()
 
 		//rtvを作る
 		device->CreateRenderTargetView(
-			_peraResource.Get(),
+			_peraResource[0].Get(),
 			&rtvDesc,
 			_peraRTVHeap->GetCPUDescriptorHandleForHeapStart()
 		);
+
 		//SRV用ヒープを作る
-		heapDesc.NumDescriptors = 1;
+
+		heapDesc.NumDescriptors = 2;
 		heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 		heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 		result = device->CreateDescriptorHeap(
@@ -327,12 +329,52 @@ Directx::Directx()
 		srvDesc.Texture2D.MipLevels = 1;
 		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
+		D3D12_CPU_DESCRIPTOR_HANDLE handle = _peraSRVHeap->GetCPUDescriptorHandleForHeapStart();
+
 		// シェーダーリソースビュー（ SRV） を 作る 
 		device->CreateShaderResourceView(
-			_peraResource.Get(),
+			_peraResource[0].Get(),
 			&srvDesc,
-			_peraSRVHeap->GetCPUDescriptorHandleForHeapStart()
+			handle
 		);
+
+
+		//ガウシアン用のバッファ
+		{
+			HRESULT result;
+
+			//ヒープ設定
+			D3D12_HEAP_PROPERTIES cbHeapProp{};
+			cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
+			//リソース設定
+			D3D12_RESOURCE_DESC cbResourceDesc{};
+
+			weights = std::move(GetGaussianWeights(8, 10.0f));
+
+			//リソース設定
+			ResourceProperties(cbResourceDesc,
+				(AligmentSize(sizeof(weights[0])* weights.size(), 256)));
+			//定数バッファの生成
+			BuffProperties(cbHeapProp, cbResourceDesc, &buff);
+
+			//定数バッファのマッピング
+			float* mappedWeight = nullptr;
+			result = buff->Map(0, nullptr, (void**)&mappedWeight);
+
+			std::copy(weights.begin(), weights.end(), mappedWeight);
+
+			buff->Unmap(0, nullptr);
+		}
+		
+		//ボケ定数バッファビュー設定
+		handle.ptr += device->GetDescriptorHandleIncrementSize(heapDesc.Type);
+
+		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+		cbvDesc.BufferLocation = buff->GetGPUVirtualAddress();
+		cbvDesc.SizeInBytes = buff->GetDesc().Width;
+
+		device->CreateConstantBufferView(&cbvDesc, handle);
+
 	}
 
 	//フェンス
@@ -341,6 +383,10 @@ Directx::Directx()
 
 
 	Sound::Initialize();
+}
+
+Directx::Directx()
+{
 }
 
 Directx::~Directx()
@@ -372,15 +418,8 @@ void Directx::DrawInitialize()
 
 void Directx::DrawUpdate(const XMFLOAT4& winRGBA)
 {
-	// バックバッファの番号を取得(2つなので0番か1番)
-	//UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
-	//1.リソースバリアで書き込み可能に変更
-	//barrierDesc.Transition.pResource = backBuffers[bbIndex].Get(); // バックバッファを指定
-	//barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; // 表示状態から
-	//barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-	//commandList->ResourceBarrier(1, &barrierDesc);
 	//ポストエフェクト
-	barrierDesc.Transition.pResource = _peraResource.Get(); // バックバッファを指定
+	barrierDesc.Transition.pResource = _peraResource[0].Get(); // バックバッファを指定
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
 	commandList->ResourceBarrier(
@@ -395,14 +434,6 @@ void Directx::DrawUpdate(const XMFLOAT4& winRGBA)
 	commandList->OMSetRenderTargets(
 		1, &rtvHeapPointer, false, &dsvHandle
 	);
-
-	//rtvHandle = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	//// レンダーターゲットビューのハンドルを取得
-	//rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
-	////06_01(dsv)
-	////深度ステンシルビュー用デスクリプタヒープのハンドルを取得
-	//D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-	//commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
 
 	// 3.画面クリア R G B A
 	commandList->ClearRenderTargetView(rtvHeapPointer, clearColor, 0, nullptr);
@@ -435,36 +466,6 @@ void Directx::DrawUpdate2()
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態へ
 	commandList->ResourceBarrier(1, &barrierDesc);
-
-	//// 命令のクローズ
-	//result = commandList->Close();
-	//assert(SUCCEEDED(result));
-	//// コマンドリストの実行
-	//ID3D12CommandList* commandLists[] = { commandList.Get() };
-	//commandQueue->ExecuteCommandLists(1, commandLists);
-
-	//// コマンドの実行完了を待つ
-	//commandQueue->Signal(fence.Get(), ++fenceVal);
-	//if (fence->GetCompletedValue() != fenceVal) {
-	//	HANDLE event = CreateEvent(nullptr, false, false, nullptr);
-	//	fence->SetEventOnCompletion(fenceVal, event);
-	//	WaitForSingleObject(event, INFINITE);
-	//	CloseHandle(event);
-	//}
-
-	////FPS固定
-	//UpdateFixFPS();
-
-	//// キューをクリア
-	//result = commandAllocator->Reset();
-	//assert(SUCCEEDED(result));
-	//// 再びコマンドリストを貯める準備
-	//result = commandList->Reset(commandAllocator.Get(), nullptr);
-	//assert(SUCCEEDED(result));
-
-	//// 画面に表示するバッファをフリップ(裏表の入替え)
-	//result = swapChain->Present(1, 0);
-	//assert(SUCCEEDED(result));
 }
 
 void Directx::PreDrawToPera() {

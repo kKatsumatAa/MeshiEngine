@@ -77,25 +77,3 @@ public: // メンバ関数
 };
 
 
-//ガウシアンぼかし
-static std::vector<float> GetGaussianWeights(size_t count, float s) 
-{
-	std::vector<float> weights(count); // ウェイト 配列 返却 用 
-	float x = 0.0f;
-	float total = 0.0f;
-	for (auto& wgt : weights)
-	{
-		wgt = expf(-(x * x) / (2.0f * s * s));
-		total += wgt; 
-		x += 1.0f;
-	}
-	total = total * 2.0f - 1.0f;
-
-	// 足し て 1 に なる よう に する 
-	for (auto& wgt : weights) 
-	{ 
-		wgt /= total;
-	}
-
-	return weights;
-}

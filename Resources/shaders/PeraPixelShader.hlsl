@@ -17,21 +17,21 @@ float4 PS(Output input) : SV_TARGET
 	bool isEffect = false;
 
 	//ぼかし
-	if (isGaussian == true)
-	{
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)); // 左上 
-		ret += tex.Sample(smp, input.uv + float2(0, -2 * dy)); // 上 
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, -2 * dy));// 右 上 
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0)); // 左 
-		ret += tex.Sample(smp, input.uv);                       // 自分 
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, 0)); // 右
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)); // 左下 
-		ret += tex.Sample(smp, input.uv + float2(0, 2 * dy));// 下 
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, 2 * dy)); // 右 下
-		ret /= 9.0f;
+	//if (isGaussian == true)
+	//{
+	//	ret += tex.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)); // 左上 
+	//	ret += tex.Sample(smp, input.uv + float2(0, -2 * dy)); // 上 
+	//	ret += tex.Sample(smp, input.uv + float2(2 * dx, -2 * dy));// 右 上 
+	//	ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0)); // 左 
+	//	ret += tex.Sample(smp, input.uv);                       // 自分 
+	//	ret += tex.Sample(smp, input.uv + float2(2 * dx, 0)); // 右
+	//	ret += tex.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)); // 左下 
+	//	ret += tex.Sample(smp, input.uv + float2(0, 2 * dy));// 下 
+	//	ret += tex.Sample(smp, input.uv + float2(2 * dx, 2 * dy)); // 右 下
+	//	ret /= 9.0f;
 
-		isEffect = true;
-	}
+	//	isEffect = true;
+	//}
 
 	//エンボス
 	if (isEmboss == true)
@@ -83,7 +83,7 @@ float4 PS(Output input) : SV_TARGET
 	}
 
 	//ガウシアン
-	if (isGaussian2 == true)
+	if (isGaussian == true)
 	{
 		float dx = 2.0f / w;
 		float dy = 2.0f / h;
@@ -123,14 +123,15 @@ float4 PS(Output input) : SV_TARGET
 	}
 
 	//ガウシアン２
+	if (isGaussian2 == true)
 	{
-		/*ret += bkweights[0] * RGBA;
+		ret += bkweights[0] * RGBA;
 		for (int i = 1; i < 8; ++i)
 		{
 			ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, input.uv + float2(i * dx, 0));
 			ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, input.uv + float2(-i * dx, 0));
 		}
-		return float4(ret.rgb * RGBA.rgb, A);*/
+		isEffect = true;
 	}
 
 	//諧調

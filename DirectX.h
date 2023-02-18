@@ -1,20 +1,6 @@
 #pragma once
-#include <dxgi1_6.h>
-#include <vector>
-#include <string>
-#include "WindowsApp.h"
-#include <DirectXMath.h>
-#include <DirectXTex.h>
-#include "KeyboardInput.h"
-using namespace DirectX;
-#include <d3dcompiler.h>
-#pragma comment(lib, "d3dcompiler.lib")
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
-#include"Sound.h"
-#include <wrl.h>
-using namespace Microsoft::WRL;
-#include<chrono>
+#include "GausianBuffer.h"
+
 
 class Directx final
 {
@@ -56,10 +42,14 @@ private:
 	FLOAT clearColor[4] = { 0.1f,0.25f, 0.5f,0.0f };
 
 	//ポストエフェクト用
-	ComPtr<ID3D12Resource> _peraResource;
+	ComPtr<ID3D12Resource> _peraResource[2];
 	ComPtr<ID3D12DescriptorHeap> _peraRTVHeap;//レンダーターゲット用
 	ComPtr<ID3D12DescriptorHeap> _peraSRVHeap;//テクスチャ用
 	bool isPeraClear = false;
+
+	std::vector<float> weights;
+
+	ComPtr <ID3D12Resource> buff;
 
 private:
 	Directx();
@@ -81,6 +71,8 @@ private:
 public:
 	//
 	HRESULT result;
+
+	void Initialize();
 
 
 	//コピーコンストラクタを無効

@@ -95,6 +95,7 @@
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="DrawIntNumImage.cpp" />
+    <ClCompile Include="GausianBuffer.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="DebugText.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="DrawIntNumImage.h" />
+    <ClInclude Include="GausianBuffer.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="KeyboardInput.h" />
