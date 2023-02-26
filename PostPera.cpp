@@ -209,9 +209,10 @@ void PostPera::GenerateRSPL()
 	);
 	assert(SUCCEEDED(result));
 
+	//vs等は同じのを使って、psのみ二枚目
 	gpsDesc.PS = CD3DX12_SHADER_BYTECODE(ps.Get());
 	//2枚目用パイプライン生成
-	result=Directx::GetInstance().GetDevice()->CreateGraphicsPipelineState(
+	result = Directx::GetInstance().GetDevice()->CreateGraphicsPipelineState(
 		&gpsDesc,
 		IID_PPV_ARGS(_peraPipeline2.ReleaseAndGetAddressOf())
 	);
