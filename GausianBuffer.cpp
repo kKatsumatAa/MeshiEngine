@@ -9,7 +9,7 @@ GausianBuffer::GausianBuffer()
 
 }
 
-void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& handle, ID3D12Device& device,
+void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle, ID3D12Device& device,
 	D3D12_DESCRIPTOR_HEAP_DESC heapDesc)
 {
 	//ガウシアン用のバッファ
@@ -40,13 +40,13 @@ void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& handle, ID3D12Device
 	}
 
 	//ボケ定数バッファビュー設定
-	handle.ptr += device.GetDescriptorHandleIncrementSize(heapDesc.Type);
+	peraHandle.ptr += device.GetDescriptorHandleIncrementSize(heapDesc.Type);
 
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 	cbvDesc.BufferLocation = buff->GetGPUVirtualAddress();
 	cbvDesc.SizeInBytes = buff->GetDesc().Width;
 
-	device.CreateConstantBufferView(&cbvDesc, handle);
+	device.CreateConstantBufferView(&cbvDesc, peraHandle);
 }
 
 

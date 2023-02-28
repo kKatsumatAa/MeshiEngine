@@ -1,7 +1,7 @@
 #pragma once
 #include"TextureManager.h"
 #include "Directx.h"
-
+#include "GlassFilter.h"
 
 //‰æ–ÊŒø‰Ê—p‚Ìƒtƒ‰ƒO
 struct EffectConstBuffer
@@ -68,7 +68,7 @@ private:
 	D3D12_ROOT_PARAMETER rootParams[1] = {};
 
 public:
-	void Initialize();
+	void Initialize(const wchar_t* nomalImageFileName);
 	void GenerateRSPL();
 	void Draw(EffectConstBuffer effectFlags);
 	void Draw2();

@@ -142,7 +142,8 @@ void DrawInitialize()
 		pipelineSetM.rootSignature.GetAddressOf(), pipelineSetM.vsBlob,
 		pipelineSetM.psBlob, MODEL);
 
-	postPera.Initialize();
+	//ポストエフェクト初期化
+	postPera.Initialize(L"Resources/image/normalImage.jpg");
 
 	//画面効果用
 	{

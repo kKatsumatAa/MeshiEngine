@@ -40,7 +40,7 @@ void TextureManager::InitializeDescriptorHeap()
 {
 	//設定をもとにSRV用デスクリプタヒープを生成
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	srvHeapDesc.NumDescriptors = kMaxSRVCount + 2;
+	srvHeapDesc.NumDescriptors = kMaxSRVCount;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダーから見えるように
 	//descは設定
 	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));

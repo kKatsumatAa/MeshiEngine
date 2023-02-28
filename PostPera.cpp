@@ -1,8 +1,11 @@
 #include "PostPera.h"
 #include <d3dx12.h>
 
-void PostPera::Initialize()
+void PostPera::Initialize(const wchar_t* nomalImageFileName)
 {
+	//ガラスフィルター
+	Directx::GetInstance().GlassFilterBuffGenerate(nomalImageFileName);
+
 	//定数バッファ0番(画面効果フラグ)
 	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
 	rootParams[0].Descriptor.ShaderRegister = 0;//定数バッファ番号(b0)
@@ -135,16 +138,20 @@ void PostPera::GenerateRSPL()
 
 	//rootsig
 
-	D3D12_DESCRIPTOR_RANGE range[2] = {};
+	D3D12_DESCRIPTOR_RANGE range[3] = {};
 	range[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
 	range[0].BaseShaderRegister = 0;//0
 	range[0].NumDescriptors = 1;
 	range[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//b
 	range[1].BaseShaderRegister = 1;//フラグを送るのがb0なので1
 	range[1].NumDescriptors = 1;
+	//ガラス
+	range[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range[2].BaseShaderRegister = 1;//1
+	range[2].NumDescriptors = 1;
 
 	//実際に使うルートパラメータ
-	D3D12_ROOT_PARAMETER rp[3] = {};
+	D3D12_ROOT_PARAMETER rp[4] = {};
 	//SRV
 	rp[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rp[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -157,6 +164,11 @@ void PostPera::GenerateRSPL()
 	rp[1].DescriptorTable.NumDescriptorRanges = 1;
 
 	rp[2] = rootParams[0];//フラグのやつ
+	//ガラスフィルタ
+	rp[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[3].DescriptorTable.pDescriptorRanges = &range[2];
+	rp[3].DescriptorTable.NumDescriptorRanges = 1;
 
 
 	D3D12_STATIC_SAMPLER_DESC sampler = CD3DX12_STATIC_SAMPLER_DESC(0); //s0
@@ -239,16 +251,21 @@ void PostPera::Draw(EffectConstBuffer effectFlags)
 	Directx::GetInstance().GetCommandList()
 		->SetDescriptorHeaps(1, Directx::GetInstance().GetPeraSRVHeap().GetAddressOf());
 
-	auto handle = Directx::GetInstance().GetPeraSRVHeap()->GetGPUDescriptorHandleForHeapStart();
+	auto peraHandle = Directx::GetInstance().GetPeraSRVHeap()->GetGPUDescriptorHandleForHeapStart();
 	//パラメーター0番とヒープを関連付ける
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, handle);
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);
 
 	//ボケ定数
-	handle.ptr += Directx::GetInstance().GetDevice()->
+	peraHandle.ptr += Directx::GetInstance().GetDevice()->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	handle.ptr += Directx::GetInstance().GetDevice()->
+	peraHandle.ptr += Directx::GetInstance().GetDevice()->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, handle);
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, peraHandle);
+
+	//ガラスフィルター
+	peraHandle.ptr += Directx::GetInstance().GetDevice()->
+		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(3, peraHandle);
 
 	//図形とか
 	Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(
@@ -269,12 +286,12 @@ void PostPera::Draw2()
 	Directx::GetInstance().GetCommandList()
 		->SetDescriptorHeaps(1, Directx::GetInstance().GetPeraSRVHeap().GetAddressOf());
 
-	auto handle = Directx::GetInstance().GetPeraSRVHeap()->GetGPUDescriptorHandleForHeapStart();
+	auto peraHandle = Directx::GetInstance().GetPeraSRVHeap()->GetGPUDescriptorHandleForHeapStart();
 
 	//二枚目
-	handle.ptr += Directx::GetInstance().GetDevice()->
+	peraHandle.ptr += Directx::GetInstance().GetDevice()->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, handle);//SRVなのでrp[0]
+	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);//SRVなのでrp[0]
 
 	//図形とか
 	Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(

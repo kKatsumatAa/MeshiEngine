@@ -335,7 +335,7 @@ void Directx::Initialize()
 
 
 		//SRV用ヒープを作る
-		heapDesc.NumDescriptors = 3;//ガウシアンパラメータ、二枚分で３
+		heapDesc.NumDescriptors = 4;//ガウシアンパラメータ、二枚分,ガラス用で4枚
 		heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 		heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 		result = device->CreateDescriptorHeap(
@@ -351,25 +351,24 @@ void Directx::Initialize()
 		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
 		// シェーダーリソースビュー（ SRV） を 作る 
-		D3D12_CPU_DESCRIPTOR_HANDLE handle = _peraSRVHeap->GetCPUDescriptorHandleForHeapStart();
+		peraHandle = _peraSRVHeap->GetCPUDescriptorHandleForHeapStart();
 		//一枚目
 		device->CreateShaderResourceView(
 			_peraResource[0].Get(),
 			&srvDesc,
-			handle
+			peraHandle
 		);
 		//二枚目
 		//インクリメント
-		handle.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+		peraHandle.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 		device->CreateShaderResourceView(
 			_peraResource[1].Get(),
 			&srvDesc,
-			handle
+			peraHandle
 		);
 
-
 		//ガウシアンパラメータ(3つ目)
-		gausianBuff.Initialize(handle, *device.Get(), heapDesc);
+		gausianBuff.Initialize(peraHandle, *device.Get(), heapDesc);
 	}
 
 	//フェンス
@@ -584,6 +583,175 @@ void Directx::PostDrawToPera2()
 	// 画面に表示するバッファをフリップ(裏表の入替え)
 	result = swapChain->Present(1, 0);
 	assert(SUCCEEDED(result));
+}
+
+void Directx::GlassFilterBuffGenerate(const wchar_t* fileName)
+{
+	//ガラスフィルター（4つ目）
+	//インクリメント
+	peraHandle.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	this->CreateEffectBufferAndView(fileName);
+}
+
+bool Directx::CreateEffectBufferAndView(const wchar_t* fileName)
+{
+	//法線マップをロード
+	LoadPictureFromFile(fileName, this->_effectTexBuffer);
+
+	//ポストエフェクト用テクスチャビューを作る
+	auto desc = _effectTexBuffer->GetDesc();
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Format = desc.Format;
+	srvDesc.Texture2D.MipLevels = 1;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	GetDevice()->CreateShaderResourceView(_effectTexBuffer.Get(), &srvDesc, this->peraHandle);
+
+	return true;
+}
+
+void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuff)
+{
+	// 04_03
+	TexMetadata metadata{};
+	ScratchImage scratchImg{};
+	//WICのテクスチャのロード
+	Directx::GetInstance().result = LoadFromWICFile(
+		fileName,
+		WIC_FLAGS_NONE,
+		&metadata, scratchImg
+	);
+
+	assert(SUCCEEDED(Directx::GetInstance().result));
+
+	ScratchImage mipChain{};
+	//mipmap生成
+	Directx::GetInstance().result = GenerateMipMaps(
+		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
+		TEX_FILTER_DEFAULT, 0, mipChain);
+	if (SUCCEEDED(Directx::GetInstance().result))
+	{
+		scratchImg = std::move(mipChain);
+		metadata = scratchImg.GetMetadata();
+	}
+	//読み込んだディフューズテクスチャをSRGBとして扱う
+	metadata.format = MakeSRGB(metadata.format);
+
+
+	HRESULT result;
+
+	//コピー先用
+	// ヒープの設定
+	CD3DX12_HEAP_PROPERTIES textureHeapProp =
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+
+	// リソース設定
+	CD3DX12_RESOURCE_DESC textureResourceDesc =
+		CD3DX12_RESOURCE_DESC::Tex2D(
+			metadata.format,
+			(UINT64)metadata.width,
+			(UINT)metadata.height,
+			(UINT16)metadata.arraySize,
+			(UINT16)metadata.mipLevels,
+			1);
+
+	// テクスチャバッファの生成
+	result = Directx::GetInstance().GetDevice()->
+		CreateCommittedResource(
+			&textureHeapProp,
+			D3D12_HEAP_FLAG_NONE,
+			&textureResourceDesc,
+			D3D12_RESOURCE_STATE_COPY_DEST,
+			nullptr,
+			IID_PPV_ARGS(texBuff.GetAddressOf()));
+	assert(SUCCEEDED(result));
+
+
+	//アップロードバッファ
+	// ヒープの設定
+	uint64_t uploadSize = GetRequiredIntermediateSize(texBuff.Get(), 0, metadata.mipLevels);
+
+	D3D12_HEAP_PROPERTIES uploadHeapProp{};
+	uploadHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
+	CD3DX12_RESOURCE_DESC resDesc =
+		CD3DX12_RESOURCE_DESC::Buffer(uploadSize);
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> uploadBuff;
+
+	// テクスチャバッファの生成
+	result = Directx::GetInstance().GetDevice()->
+		CreateCommittedResource(
+			&uploadHeapProp,
+			D3D12_HEAP_FLAG_NONE,
+			&resDesc,
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&uploadBuff));
+	assert(SUCCEEDED(result));
+
+
+	//サブリソース生成
+	std::vector<D3D12_SUBRESOURCE_DATA> subResourcesDatas{};
+	subResourcesDatas.resize(metadata.mipLevels);
+
+	for (size_t i = 0; i < subResourcesDatas.size(); i++)
+	{
+		// 全ミップマップレベルを指定してイメージを取得
+		const Image* img = scratchImg.GetImage(i, 0, 0);
+
+		subResourcesDatas[i].pData = img->pixels;
+		subResourcesDatas[i].RowPitch = img->rowPitch;
+		subResourcesDatas[i].SlicePitch = img->slicePitch;
+	}
+
+	//サブリソースを転送
+	UpdateSubresources(
+		Directx::GetInstance().GetCommandList(),
+		texBuff.Get(),
+		uploadBuff.Get(),
+		0,
+		0,
+		metadata.mipLevels,
+		subResourcesDatas.data()
+	);
+
+	//元データ解放
+	scratchImg.Release();
+
+	//バリアとフェンス
+	D3D12_RESOURCE_BARRIER BarrierDesc = {};
+	BarrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	BarrierDesc.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	BarrierDesc.Transition.pResource = texBuff.Get();
+	BarrierDesc.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	BarrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;//ここが重要
+	BarrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;//ここも重要
+
+	Directx::GetInstance().GetCommandList()->ResourceBarrier(1, &BarrierDesc);
+	Directx::GetInstance().GetCommandList()->Close();
+
+	//コマンドリストの実行
+	ID3D12CommandList* cmdlists[] = { Directx::GetInstance().GetCommandList() };
+	Directx::GetInstance().GetCommandQueue()->ExecuteCommandLists(1, cmdlists);
+
+	//コマンド閉じる
+	Directx::GetInstance().GetCommandQueue()->Signal(Directx::GetInstance().GetFence(),
+		++Directx::GetInstance().GetFenceVal());
+
+	if (Directx::GetInstance().GetFence()->GetCompletedValue() != Directx::GetInstance().GetFenceVal())
+	{
+		auto event = CreateEvent(nullptr, false, false, nullptr);
+		Directx::GetInstance().GetFence()->SetEventOnCompletion(Directx::GetInstance().GetFenceVal(), event);
+		WaitForSingleObject(event, INFINITE);
+		CloseHandle(event);
+	}
+
+	//バッファ解放
+	/*uploadBuff->Release();
+	uploadBuff.Reset();*/
+
+	//コマンドリセット
+	Directx::GetInstance().CommandReset();
 }
 
 //------------------------------------------------------------------------------

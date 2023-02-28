@@ -1,6 +1,8 @@
 #include"PeraShaderHeader.hlsli"
 
 Texture2D<float4> tex : register(t0);
+//ガラスフィルター
+Texture2D<float4> effectTex : register(t1);
 
 SamplerState smp : register(s0);
 
@@ -32,6 +34,17 @@ float4 PS2(Output input) : SV_TARGET
 
 		isEffect = true;
 	}
+
+	//法線マップ
+	{
+		float2 nmTex = effectTex.Sample(smp, input.uv).xy;
+		nmTex = nmTex * 2.0f - 1.0f;
+
+		//nmTexの範囲は-1～1だが、幅1がテクスチャ1枚の
+		//大きさであり-1～1では歪みすぎるため0.1を乗算している
+		return tex.Sample(smp, input.uv + nmTex * 0.1f);
+	}
+
 
 	if (isEffect)
 	{

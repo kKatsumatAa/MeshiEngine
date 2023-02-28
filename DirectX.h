@@ -42,12 +42,16 @@ private:
 	FLOAT clearColor[4] = { 0.1f,0.25f, 0.5f,0.0f };
 
 	//ポストエフェクト用
+	D3D12_CPU_DESCRIPTOR_HANDLE peraHandle;
 	ComPtr<ID3D12Resource> _peraResource[2];
 	ComPtr<ID3D12DescriptorHeap> _peraRTVHeap;//レンダーターゲット用
 	ComPtr<ID3D12DescriptorHeap> _peraSRVHeap;//テクスチャ用
 	bool isPeraClear = false;
 
 	GausianBuffer gausianBuff;
+
+	//ガラス
+	ComPtr<ID3D12Resource>_effectTexBuffer;
 
 
 private:
@@ -66,6 +70,9 @@ private:
 	void InitializeFixFPS();
 	//FPS固定更新
 	void UpdateFixFPS();
+
+	//ガラス
+	bool CreateEffectBufferAndView(const wchar_t* fileName);
 
 public:
 	//
@@ -109,8 +116,12 @@ public:
 
 	//バックバッファの数を取得
 	size_t GetBackBufferCount() const { return backBuffers.size(); }
-};
 
+	//ガラスフィルターのバッファ生成
+	void GlassFilterBuffGenerate(const wchar_t* fileName);
+};
+//画像のロード（引数にバッファ設定）
+void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuff);
 
 void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size);
 
