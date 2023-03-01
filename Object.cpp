@@ -143,7 +143,7 @@ void DrawInitialize()
 		pipelineSetM.psBlob, MODEL);
 
 	//ポストエフェクト初期化
-	postPera.Initialize(L"Resources/image/normalImage2.jpg");
+	postPera.Initialize(L"Resources/image/normalImage.jpg");
 
 	//画面効果用
 	{
