@@ -43,7 +43,7 @@ float4 PS2(Output input) : SV_TARGET
 
 		//nmTexの範囲は-1～1だが、幅1がテクスチャ1枚の
 		//大きさであり-1～1では歪みすぎるため0.1を乗算している
-		return tex.Sample(smp, clamp(input.uv + nmTex, 0.0f, 1.0f) * 0.1f);
+		return tex.Sample(smp, clamp(input.uv + nmTex * 0.1f,0.0f,1.0f));
 	}
 
 
