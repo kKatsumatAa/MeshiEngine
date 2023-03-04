@@ -388,7 +388,7 @@ void Scene6::Update()
 {
 	count++;
 
-	if (count >= countMax)
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_Z))
 	{
 		if (Object::effectFlags.isFog) {
 			Object::effectFlags.isFog = false;
@@ -412,6 +412,14 @@ void Scene6::Update()
 		}
 		else if (Object::effectFlags.isSharpness) {
 			Object::effectFlags.isSharpness = false;
+			Object::effectFlags.isBarrelCurve = true;
+		}
+		else if (Object::effectFlags.isBarrelCurve) {
+			Object::effectFlags.isBarrelCurve = false;
+			Object::effectFlags.isGlassFilter = true;
+		}
+		else if (Object::effectFlags.isGlassFilter) {
+			Object::effectFlags.isGlassFilter = false;
 			Object::effectFlags.isFog = true;
 		}
 
@@ -504,7 +512,7 @@ void Scene::Initialize()
 	model[4] = Model::LoadFromOBJ("MiG-25PD", true);
 	model[3] = Model::LoadFromOBJ("player", true);
 
-	Object::effectFlags.isGlassFilter = true;
+	//Object::effectFlags.isGlassFilter = true;
 
 	//model
 	Model::StaticInitialize();
