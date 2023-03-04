@@ -242,6 +242,7 @@ void PostPera::Draw(EffectConstBuffer effectFlags)
 	this->mapEffectFlagsBuff->isBarrelCurve = effectFlags.isBarrelCurve;
 	this->mapEffectFlagsBuff->isScanningLine = effectFlags.isScanningLine;
 	this->mapEffectFlagsBuff->isGrayScale = effectFlags.isGrayScale;
+	this->mapEffectFlagsBuff->isGlassFilter = effectFlags.isGlassFilter;
 	this->mapEffectFlagsBuff->time++;
 
 

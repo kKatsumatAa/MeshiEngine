@@ -288,6 +288,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		mapEffectFlagsBuff->isBarrelCurve = this->effectFlags.isBarrelCurve;
 		mapEffectFlagsBuff->isScanningLine = this->effectFlags.isScanningLine;
 		mapEffectFlagsBuff->isGrayScale = this->effectFlags.isGrayScale;
+		mapEffectFlagsBuff->isGlassFilter = this->effectFlags.isGlassFilter;
 	}
 	
 	//テクスチャを設定していなかったら

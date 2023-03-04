@@ -28,6 +28,8 @@ struct EffectConstBuffer
 	unsigned int isScanningLine = false;
 	//グレースケール
 	unsigned int isGrayScale = false;
+	//ガラスフィルター
+	unsigned int isGlassFilter = false;
 	//時間
 	unsigned int time = 0;
 };

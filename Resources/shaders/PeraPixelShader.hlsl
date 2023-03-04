@@ -95,35 +95,35 @@ float4 PS(Output input) : SV_TARGET
 		float dy = 2.0f / h;
 		// 今 の ピクセル を 中心 に 縦横 5 つ ずつ に なる よう 加算 する 
 		// 最 上段 
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)) * 1 / 256;
-		ret += tex.Sample(smp, input.uv + float2(-1 * dx, 2 * dy)) * 4 / 256;
-		ret += tex.Sample(smp, input.uv + float2(0 * dx, 2 * dy)) * 6 / 256;
-		ret += tex.Sample(smp, input.uv + float2(1 * dx, 2 * dy)) * 4 / 256;
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, 2 * dy)) * 1 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(-2 * dx, 2 * dy),0,1.0f)) * 1 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(-1 * dx, 2 * dy),0,1.0f)) * 4 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(0 * dx, 2 * dy),0,1.0f)) * 6 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(1 * dx, 2 * dy),0,1.0f)) * 4 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(2 * dx, 2 * dy),0,1.0f)) * 1 / 256;
 		// 1 つ 上段 
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, 1 * dy)) * 4 / 256;
-		ret += tex.Sample(smp, input.uv + float2(-1 * dx, 1 * dy)) * 16 / 256;
-		ret += tex.Sample(smp, input.uv + float2(0 * dx, 1 * dy)) * 24 / 256;
-		ret += tex.Sample(smp, input.uv + float2(1 * dx, 1 * dy)) * 16 / 256;
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, 1 * dy)) * 4 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(-2 * dx, 1 * dy),0,1.0f)) * 4 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(-1 * dx, 1 * dy),0,1.0f)) * 16 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(0 * dx, 1 * dy),0,1.0f)) * 24 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(1 * dx, 1 * dy),0,1.0f)) * 16 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(2 * dx, 1 * dy),0,1.0f)) * 4 / 256;
 		// 中段 
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, 0 * dy)) * 6 / 256;
-		ret += tex.Sample(smp, input.uv + float2(-1 * dx, 0 * dy)) * 24 / 256;
-		ret += tex.Sample(smp, input.uv + float2(0 * dx, 0 * dy)) * 36 / 256;
-		ret += tex.Sample(smp, input.uv + float2(1 * dx, 0 * dy)) * 24 / 256;
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, 0 * dy)) * 6 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(-2 * dx, 0 * dy),0,1.0f)) * 6 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(-1 * dx, 0 * dy),0,1.0f)) * 24 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(0 * dx, 0 * dy),0,1.0f)) * 36 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(1 * dx, 0 * dy),0,1.0f)) * 24 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(2 * dx, 0 * dy),0,1.0f)) * 6 / 256;
 		// 1 つ 下段 
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, -1 * dy)) * 4 / 256;
-		ret += tex.Sample(smp, input.uv + float2(-1 * dx, -1 * dy)) * 16 / 256;
-		ret += tex.Sample(smp, input.uv + float2(0 * dx, -1 * dy)) * 24 / 256;
-		ret += tex.Sample(smp, input.uv + float2(1 * dx, -1 * dy)) * 16 / 256;
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, -1 * dy)) * 4 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(-2 * dx, -1 * dy),0,1.0f)) * 4 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(-1 * dx, -1 * dy),0,1.0f)) * 16 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(0 * dx, -1 * dy),0,1.0f)) * 24 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(1 * dx, -1 * dy),0,1.0f)) * 16 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(2 * dx, -1 * dy),0,1.0f)) * 4 / 256;
 		// 最 下段 
-		ret += tex.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)) * 1 / 256;
-		ret += tex.Sample(smp, input.uv + float2(-1 * dx, -2 * dy)) * 4 / 256;
-		ret += tex.Sample(smp, input.uv + float2(0 * dx, -2 * dy)) * 6 / 256;
-		ret += tex.Sample(smp, input.uv + float2(1 * dx, -2 * dy)) * 4 / 256;
-		ret += tex.Sample(smp, input.uv + float2(2 * dx, -2 * dy)) * 1 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(-2 * dx, -2 * dy),0,1.0f)) * 1 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(-1 * dx, -2 * dy),0,1.0f)) * 4 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(0 * dx, -2 * dy),0,1.0f)) * 6 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(1 * dx, -2 * dy),0,1.0f)) * 4 / 256;
+		ret += tex.Sample(smp, clamp(input.uv + float2(2 * dx, -2 * dy),0,1.0f)) * 1 / 256;
 
 		isEffect = true;
 	}
@@ -134,8 +134,8 @@ float4 PS(Output input) : SV_TARGET
 		ret += bkweights[0] * RGBA;
 		for (int i = 1; i < 8; ++i)
 		{
-			ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, input.uv + float2(i * dx, 0));
-			ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, input.uv + float2(-i * dx, 0));
+			ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, clamp(input.uv + float2(i * dx, 0),0,1.0f));
+			ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, clamp(input.uv + float2(-i * dx, 0),0,1.0f));
 		}
 
 		isEffect = true;

@@ -25,6 +25,8 @@ cbuffer ConstBufferEffectFlags : register(b0)
 	uint isScanningLine;
 	//グレースケール
 	uint isGrayScale;
+	//ガラスフィルター
+	uint isGlassFilter;
 	//時間
 	uint time;
 }

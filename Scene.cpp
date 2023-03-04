@@ -504,7 +504,7 @@ void Scene::Initialize()
 	model[4] = Model::LoadFromOBJ("MiG-25PD", true);
 	model[3] = Model::LoadFromOBJ("player", true);
 
-	Object::effectFlags.isGaussian2 = true;
+	Object::effectFlags.isGlassFilter = true;
 
 	//model
 	Model::StaticInitialize();
