@@ -1,5 +1,6 @@
 #pragma once
 #include "GausianBuffer.h"
+#include <array>
 
 
 class Directx final
@@ -43,7 +44,8 @@ private:
 
 	//ポストエフェクト用
 	D3D12_CPU_DESCRIPTOR_HANDLE peraHandle;
-	ComPtr<ID3D12Resource> _peraResource[2];
+	std::array<ComPtr<ID3D12Resource>, 2> _peraResource;
+	ComPtr<ID3D12Resource> _peraResource2;
 	ComPtr<ID3D12DescriptorHeap> _peraRTVHeap;//レンダーターゲット用
 	ComPtr<ID3D12DescriptorHeap> _peraSRVHeap;//テクスチャ用
 	bool isPeraClear = false;

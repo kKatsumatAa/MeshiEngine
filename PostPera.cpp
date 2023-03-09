@@ -123,8 +123,9 @@ void PostPera::GenerateRSPL()
 
 	gpsDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	gpsDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	gpsDesc.NumRenderTargets = 1;
+	gpsDesc.NumRenderTargets = 2;//peraResource1は二つレンダーターゲット
 	gpsDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	gpsDesc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	gpsDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	gpsDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 	gpsDesc.SampleDesc.Count = 1;
@@ -256,11 +257,12 @@ void PostPera::Draw(EffectConstBuffer effectFlags)
 	//パラメーター0番とヒープを関連付ける
 	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);
 
-	//ボケ定数
-	peraHandle.ptr += Directx::GetInstance().GetDevice()->
-		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	peraHandle.ptr += Directx::GetInstance().GetDevice()->
-		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//ボケ定数(一枚目の二つと二枚目の一つを飛ばす)
+	for (int i = 0; i < 3; i++)
+	{
+		peraHandle.ptr += Directx::GetInstance().GetDevice()->
+			GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	}
 	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, peraHandle);
 
 	//ガラスフィルター
@@ -290,8 +292,11 @@ void PostPera::Draw2()
 	auto peraHandle = Directx::GetInstance().GetPeraSRVHeap()->GetGPUDescriptorHandleForHeapStart();
 
 	//二枚目
-	peraHandle.ptr += Directx::GetInstance().GetDevice()->
-		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	for (int i = 0; i < 2; i++)
+	{
+		peraHandle.ptr += Directx::GetInstance().GetDevice()->
+			GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	}
 	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);//SRVなのでrp[0]
 
 	//図形とか
