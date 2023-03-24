@@ -6,7 +6,7 @@ Texture2D<float4> effectTex : register(t1);
 
 SamplerState smp : register(s0);
 
-float4 PS(Output input) : SV_TARGET
+PixelOutput PS(Output input) : SV_TARGET
 {
 	// シェーディングによる色で描画
 	float4 RGBA = tex.Sample(smp, input.uv);
@@ -212,10 +212,19 @@ float4 PS(Output input) : SV_TARGET
 			isEffect = true;
 	}
 
+	//ブルーム用（複数出力）
+	PixelOutput output;
+	output.normal.rgb = float3((input.normal.xyz + 1.0f) / 2.0f);
+	output.normal.a = 1;
+
+	//ポストエフェクトない場合
+	output.col = RGBA;
+
+	//ある場合
 	if (isEffect)
 	{
-		return ret;
+		output.col = ret;
 	}
 
-	return RGBA;
+	return output;
 }

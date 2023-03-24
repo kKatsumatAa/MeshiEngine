@@ -40,5 +40,14 @@ cbuffer PostEffect : register(b1)
 struct Output
 {
 	float4 svpos : SV_POSITION;
+	float3 normal : NORMAL;
 	float2 uv : TEXCOORD;
+};
+
+
+//ブルーム用
+struct PixelOutput//(sv_targetは8つまで指定できる)
+{
+	float4 col : SV_TARGET0;    //カラー値を出力
+	float4 normal : SV_TARGET1; //法線を出力
 };
