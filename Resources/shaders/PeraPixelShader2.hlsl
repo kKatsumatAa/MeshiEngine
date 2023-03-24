@@ -1,9 +1,5 @@
 #include"PeraShaderHeader.hlsli"
 
-Texture2D<float4> tex : register(t0);
-//ガラスフィルター
-Texture2D<float4> effectTex : register(t1);
-
 SamplerState smp : register(s0);
 
 float4 PS2(Output input) : SV_TARGET

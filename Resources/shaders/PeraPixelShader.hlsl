@@ -1,12 +1,8 @@
 #include"PeraShaderHeader.hlsli"
 
-Texture2D<float4> tex : register(t0);
-//ガラスフィルター
-Texture2D<float4> effectTex : register(t1);
-
 SamplerState smp : register(s0);
 
-PixelOutput PS(Output input) : SV_TARGET
+float4 PS(Output input) : SV_TARGET
 {
 	// シェーディングによる色で描画
 	float4 RGBA = tex.Sample(smp, input.uv);
@@ -212,19 +208,10 @@ PixelOutput PS(Output input) : SV_TARGET
 			isEffect = true;
 	}
 
-	//ブルーム用（複数出力）
-	PixelOutput output;
-	output.normal.rgb = float3((input.normal.xyz + 1.0f) / 2.0f);
-	output.normal.a = 1;
-
-	//ポストエフェクトない場合
-	output.col = RGBA;
-
-	//ある場合
 	if (isEffect)
 	{
-		output.col = ret;
+		return ret;
 	}
 
-	return output;
+	return RGBA;
 }

@@ -40,7 +40,6 @@ cbuffer PostEffect : register(b1)
 struct Output
 {
 	float4 svpos : SV_POSITION;
-	float3 normal : NORMAL;
 	float2 uv : TEXCOORD;
 };
 
@@ -51,3 +50,13 @@ struct PixelOutput//(sv_targetは8つまで指定できる)
 	float4 col : SV_TARGET0;    //カラー値を出力
 	float4 normal : SV_TARGET1; //法線を出力
 };
+
+
+
+Texture2D<float4> tex : register(t0);
+//ガラスフィルター
+Texture2D<float4> effectTex : register(t1);
+//通常カラー
+Texture2D<float4> texNormal : register(t2);
+//法線
+Texture2D<float4> distTex : register(t3);
