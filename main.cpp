@@ -1,5 +1,6 @@
 ﻿#include"Scene.h"
 #include"DebugText.h"
+#include"fbxsdk.h"
 
 
 
@@ -7,6 +8,8 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//コンソールへの文字入力
 	OutputDebugStringA("Hello,DirectX!!\n");
+
+	FbxManager* fbxM = FbxManager::Create();
 
 	//初期化
 	WindowsApp::GetInstance();
