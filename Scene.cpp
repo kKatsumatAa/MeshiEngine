@@ -4,6 +4,7 @@
 #include "SphereCollider.h"
 #include "CollisionManager.h"
 #include "Player.h"
+#include "FbxLoader.h"
 
 
 void SceneState::SetScene(Scene* scene)
@@ -491,16 +492,20 @@ void Scene::StopWaveAllScene()
 
 void Scene::Initialize()
 {
-	TextureManager::LoadGraph(L"Resources/image/loading.png", texhandle[3]);
-	//”’‚¢‰æ‘œ
-	TextureManager::LoadGraph(L"Resources/image/white.png", TextureManager::GetInstance().whiteTexHandle);
+	{
+		TextureManager::LoadGraph(L"Resources/image/loading.png", texhandle[3]);
+		//”’‚¢‰æ‘œ
+		TextureManager::LoadGraph(L"Resources/image/white.png", TextureManager::GetInstance().whiteTexHandle);
 
-	//‰æ‘œ
-	TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
+		//‰æ‘œ
+		TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
 
-	TextureManager::LoadGraph(L"Resources/image/effect1.png", texhandle[1]);
-	TextureManager::LoadGraph(L"Resources/image/a.png", texhandle[2]);
+		TextureManager::LoadGraph(L"Resources/image/effect1.png", texhandle[1]);
+		TextureManager::LoadGraph(L"Resources/image/a.png", texhandle[2]);
+	}
 
+	//fbx“Ç‚Ýž‚Ý
+	FbxLoader::GetInstance()->LoadModelFromFile("cube");
 
 	{
 		Sound::GetInstance().LoadWave("Stage_BGM.wav", false);

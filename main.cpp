@@ -1,5 +1,6 @@
 ﻿#include"Scene.h"
 #include"DebugText.h"
+#include"FbxLoader.h"
 
 
 
@@ -7,6 +8,9 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//コンソールへの文字入力
 	OutputDebugStringA("Hello,DirectX!!\n");
+
+	//FBX
+	FbxLoader::GetInstance()->Initialize();
 
 	//初期化
 	WindowsApp::GetInstance();
@@ -82,6 +86,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 	delete scene;
+
+	//FBX
+	FbxLoader::GetInstance()->Finalize();
 
 
 	//ウィンドウクラスを登録解除

@@ -99,6 +99,7 @@
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="DrawIntNumImage.cpp" />
+    <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="GausianBuffer.cpp" />
     <ClCompile Include="GlassFilter.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="DebugText.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="DrawIntNumImage.h" />
+    <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="GausianBuffer.h" />
     <ClInclude Include="GlassFilter.h" />
     <ClInclude Include="ImGuiManager.h" />
