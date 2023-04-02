@@ -321,3 +321,15 @@ size_t AligmentSize(size_t size, size_t aligment)
 {
 	return size + aligment - size % aligment;
 }
+
+void ConstCharToWcharT(const char* string, wchar_t(&wString)[128])
+{
+	size_t size = _countof(wString);
+	mbstowcs_s(&size, wString, string, size);
+}
+
+void ConstWCharTToChar(const wchar_t* wString, char(&string)[128])
+{
+	size_t size = _countof(string);
+	wcstombs_s(&size, string, wString, size);
+}

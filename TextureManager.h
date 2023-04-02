@@ -1,5 +1,6 @@
 #pragma once
 #include "DirectX.h"
+#include <map>
 
 
 class TextureManager
@@ -7,7 +8,8 @@ class TextureManager
 private:
 	static int count;
 
-
+	//テクスチャデータの連想配列
+	static std::map < std::string, UINT64> textureDatas_;
 
 	TextureManager();
 

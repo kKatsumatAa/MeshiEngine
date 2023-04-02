@@ -70,3 +70,10 @@ void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, 
 
 //アライメントにそろえたサイズを返す
 size_t AligmentSize(size_t size, size_t aligment);
+
+//文字変換系
+//char* を const wchar_t* に変換
+void ConstCharToWcharT(const char* string, wchar_t(&wString)[128]);
+
+//const wchar_t* を char* に変換
+void ConstWCharTToChar(const wchar_t* wString, char(&string)[128]);

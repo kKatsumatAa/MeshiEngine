@@ -2,6 +2,7 @@
 #include <DirectXTex.h>
 #include <cassert>
 #include "TextureManager.h"
+#include "Util.h"
 
 using namespace DirectX;
 using namespace std;
@@ -70,8 +71,7 @@ void Material::LoadTexture(const std::string& directoryPath, CD3DX12_CPU_DESCRIP
 
 	const char* name = filepath.c_str();
 	wchar_t wchar[128];
-	size_t size = _countof(wchar);
-	mbstowcs_s(&size, wchar, name, size);
+	ConstCharToWcharT(name, wchar);
 	TextureManager::LoadGraph(wchar, textureHandle);
 }
 

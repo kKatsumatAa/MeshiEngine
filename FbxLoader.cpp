@@ -119,3 +119,7 @@ void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* pare
 		ParseNodeRecursive(model, fbxNode->GetChild(i), &node);
 	}
 }
+
+void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode)
+{
+}

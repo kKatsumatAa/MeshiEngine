@@ -1,5 +1,6 @@
 #include "TextureManager.h"
 #include <d3dx12.h>
+#include "Util.h"
 using namespace DirectX;
 
 int TextureManager::count = 0;
@@ -18,7 +19,9 @@ D3D12_DESCRIPTOR_HEAP_DESC TextureManager::srvHeapDesc;
 
 D3D12_DESCRIPTOR_RANGE TextureManager::descriptorRange;
 
-UINT64 TextureManager::whiteTexHandle = NULL;
+UINT64 TextureManager::whiteTexHandle = 114514;
+
+std::map < std::string, UINT64> TextureManager::textureDatas_;
 
 TextureManager::TextureManager()
 {
@@ -54,18 +57,27 @@ void TextureManager::InitializeDescriptorHeap()
 	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-
-	//白い画像
-	if (whiteTexHandle == NULL)
-	{
-		LoadGraph(L"Resources/image/white.png", whiteTexHandle);
-	}
 }
 
 
 void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 {
 	assert(count <= srvCount - 1);
+
+	//読み込まれているかどうか
+	char namec[128];
+	ConstWCharTToChar(name, namec);
+	std::string fileName = namec;
+	{
+		//ファイル名から探す
+		std::map<std::string, UINT64>::iterator it = textureDatas_.find(fileName);
+		//すでに読み込まれていたらそのハンドルを返す
+		if (it != textureDatas_.end())
+		{
+			textureHandle = it->second;
+			return;
+		}
+	}
 
 	// 04_03
 	TexMetadata metadata{};
@@ -191,6 +203,11 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
 		textureHandle = srvGpuHandle.ptr + (Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type) * count);
 
+		{
+			//名前とデータを紐づけて保存
+			//サウンドデータを連想配列に格納(複製してセットでマップに格納)
+			textureDatas_.insert(std::make_pair(fileName, textureHandle));
+		}
 
 		//元データ解放
 		scratchImg.Release();
@@ -234,4 +251,6 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 
 	//バッファ用のカウント
 	count++;
+
+
 }
