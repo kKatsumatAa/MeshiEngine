@@ -251,6 +251,4 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 
 	//バッファ用のカウント
 	count++;
-
-
 }

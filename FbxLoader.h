@@ -72,15 +72,15 @@ public:
 	/// <param name="fbxNode">解析対象のノード</param>
 	void ParseMesh(ModelFBX* model, FbxNode* fbxNode);
 
-	////頂点座標読み取り
-	//void ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh);
+	//頂点座標読み取り
+	void ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh);
 
-	////面情報読み取り
-	//void ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh);
+	//面情報読み取り
+	void ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh);
 
-	////マテリアル読み取り
-	//void ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh);
+	//マテリアル読み取り
+	void ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh);
 
-	////テクスチャ読み込み
-	//void ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh);
+	//テクスチャ読み込み
+	void ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh);
 };
