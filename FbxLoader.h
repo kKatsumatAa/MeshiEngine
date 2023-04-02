@@ -3,6 +3,7 @@
 #include "fbxsdk.h"
 #include "DirectX.h"
 #include <string>
+#include "ModelFBX.h"
 
 
 class FbxLoader final
@@ -12,7 +13,7 @@ private://エイリアス
 	using string = std::string;
 
 private://変数
-	
+
 	//fbxマネージャー(sdkを使うのに必要)
 	FbxManager* fbxManager = nullptr;
 	//fbxインポーター(.fbxを読み込むのに必要)
@@ -56,4 +57,11 @@ public:
 	/// </summary>
 	/// <param name="modelName"></param>
 	void LoadModelFromFile(const string& modelName);
+
+	/// <summary>
+	/// 再帰的にノード攻勢を解析
+	/// </summary>
+	/// <param name="model">読み込み先モデルオブジェクト</param>
+	/// <param name="fbxNode">解析対象のノード</param>
+	void ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* parent = nullptr);
 };

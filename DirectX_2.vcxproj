@@ -103,6 +103,7 @@
     <ClCompile Include="GausianBuffer.cpp" />
     <ClCompile Include="GlassFilter.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="ModelFBX.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="KeyboardInput.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelFBX.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="PadInput.h" />
     <ClInclude Include="ParticleManager.h" />
