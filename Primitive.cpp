@@ -271,7 +271,7 @@ void Primitive::InitializeCube()
 		verticesCube[5] = { {-1.0f,1.0f, 1.0f},{verticesCube[5].normal},{0.0f,0.0f} };//左上
 		verticesCube[6] = { {1.0f,-1.0f, 1.0f},{verticesCube[6].normal},{1.0f,1.0f} };//右下
 		verticesCube[7] = { {1.0f,1.0f,  1.0f},{verticesCube[7].normal},{1.0f,0.0f} };//右上
-			//上
+		//上
 		verticesCube[8] = { {1.0f,1.0f,-1.0f},{verticesCube[8].normal},{0.0f,1.0f} };//左下
 		verticesCube[9] = { {1.0f,1.0f, 1.0f},{verticesCube[9].normal},{0.0f,0.0f} };//左上
 		verticesCube[10] = { {-1.0f,1.0f, -1.0f},{verticesCube[10].normal},{1.0f,1.0f} };//右下
@@ -637,6 +637,86 @@ void Primitive::InitializeSphere()
 			}
 		}
 	}
+}
+
+void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, size_t vertexCount, Vertex* vertex, D3D12_PRIMITIVE_TOPOLOGY primitiveTopology,
+	D3D12_VERTEX_BUFFER_VIEW buffView, D3D12_INDEX_BUFFER_VIEW ibView, size_t indicesCount,
+	std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+{
+	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
+	Vertex* vertMap = nullptr;
+	DirectXWrapper::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+	// 全頂点に対して
+	for (int i = 0; i < vertexCount; i++) {
+
+		vertMap[i] = vertex[i]; // 座標をコピー
+
+	}
+	// 繋がりを解除
+	vertBuff->Unmap(0, nullptr);
+
+	// パイプラインステートとルートシグネチャの設定コマンド
+	setRootParam();
+
+	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(primitiveTopology);
+
+	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &buffView);
+
+	DirectXWrapper::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView);
+
+	//マテリアルとかテクスチャ
+	setMaterialLightTex();
+
+	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced(indicesCount, 1, 0, 0, 0); // 全ての頂点を使って描画
+}
+
+void Primitive::TriangleDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+{
+	DrawCommandPrimitive(vertBuffTriangle.Get(), _countof(verticesTriangle), verticesTriangle, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		this->vbTriangleView, this->ibViewTriangle,
+		_countof(indicesTriangle),
+		setRootParam, setMaterialLightTex);
+}
+
+void Primitive::BoxDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+{
+	DrawCommandPrimitive(vertBuffBox.Get(), _countof(verticesBox), verticesBox, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		this->vbBoxView, this->ibViewBox,
+		_countof(indicesBox),
+		setRootParam, setMaterialLightTex);
+}
+
+void Primitive::CircleDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+{
+	DrawCommandPrimitive(vertBuffCircle.Get(), _countof(verticesCircle), verticesCircle, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		this->vbCircleView, this->ibViewCircle,
+		_countof(indicesCircle),
+		setRootParam, setMaterialLightTex);
+}
+
+void Primitive::CubeDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+{
+	DrawCommandPrimitive(vertBuffCube.Get(), _countof(verticesCube), verticesCube, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		this->vbCubeView, this->ibViewCube,
+		_countof(indicesCube),
+		setRootParam, setMaterialLightTex);
+}
+
+void Primitive::LineDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+{
+	DrawCommandPrimitive(vertBuffLine.Get(), _countof(verticesLine), verticesLine, D3D_PRIMITIVE_TOPOLOGY_LINELIST,
+		this->vbLineView, this->ibViewLine,
+		_countof(indicesLine),
+		setRootParam, setMaterialLightTex);
+}
+
+void Primitive::SphereDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+{
+	DrawCommandPrimitive(vertBuffSphere.Get(), _countof(verticesSphere), verticesSphere, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		this->vbViewSphere, this->ibViewSphere,
+		_countof(indicesSphere),
+		setRootParam, setMaterialLightTex);
 }
 
 

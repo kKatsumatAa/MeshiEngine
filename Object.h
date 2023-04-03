@@ -52,6 +52,13 @@ private:
 	void Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
 		Model* model = nullptr, const bool& primitiveMode = true);
 
+	//行列送信
+	void SendingMat(int indexNum);
+
+	//ルートシグネチャ系のコマンド
+	void SetRootPipe(ID3D12PipelineState* pipelineState, int pipelineNum, ID3D12RootSignature* rootSignature);
+	//マテリアル、ライト、テクスチャ系のコマンド
+	void SetMaterialLightMTex(UINT64 textureHandle_, ConstBuffTransform cbt);
 
 
 public://変数
@@ -125,9 +132,9 @@ public:
 		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 
 	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */WorldMat* world, ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color
-		, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+		= { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL);
 
-	void DrawCircle(float radius, WorldMat* world, ViewMat* view, ProjectionMat* projection,
+	void DrawCircle( WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 
 	void DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,

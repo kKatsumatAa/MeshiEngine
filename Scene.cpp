@@ -360,7 +360,7 @@ void Scene5::Draw()
 	objPlayer->DrawModel(objPlayer->worldMat,
 		&scene->camera->viewMat, &scene->camera->projectionMat, scene->model[3]);
 
-	obj.DrawBox(obj.worldMat, &scene->camera->viewMat, &scene->camera->projectionMat);
+	obj.DrawCircle(obj.worldMat, &scene->camera->viewMat, &scene->camera->projectionMat);
 
 	ParticleManager::GetInstance()->Draw(scene->texhandle[1]);
 }

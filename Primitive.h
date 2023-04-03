@@ -62,11 +62,12 @@ public:
 	Vertex verticesLine[2] = {};
 	//球体
 	Vertex verticesSphere[2 + 34 * 36];
-	
+
 	unsigned short indicesSphere[PAPA * 36];
-	
+
 
 public:
+	//初期化系
 	void Initialize();
 
 	void InitializeTriangle();
@@ -76,6 +77,17 @@ public:
 	void InitializeLine();
 	void InitializeSphere();
 
+	//Drawに必要なコマンド
+	void DrawCommandPrimitive(ID3D12Resource* vertBuff, size_t vertexCount, Vertex* vertex, D3D12_PRIMITIVE_TOPOLOGY primitiveTopology,
+		D3D12_VERTEX_BUFFER_VIEW buffView, D3D12_INDEX_BUFFER_VIEW ibView, size_t indicesCount,
+		std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
+
+	void TriangleDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
+	void BoxDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
+	void CircleDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
+	void CubeDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
+	void LineDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
+	void SphereDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
 };
 
 
