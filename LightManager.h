@@ -1,5 +1,5 @@
 #pragma once
-#include "DirectX.h"
+#include "DirectXWrapper.h"
 #include "PointLight.h"
 #include "DirLight.h"
 #include "SpotLight.h"

@@ -4,7 +4,7 @@
 void PostPera::Initialize(const wchar_t* nomalImageFileName)
 {
 	//ガラスフィルター
-	Directx::GetInstance().GlassFilterBuffGenerate(nomalImageFileName);
+	DirectXWrapper::GetInstance().GlassFilterBuffGenerate(nomalImageFileName);
 
 	//定数バッファ0番(画面効果フラグ)
 	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
@@ -26,8 +26,8 @@ void PostPera::Initialize(const wchar_t* nomalImageFileName)
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &effectFlagsBuff);
 		//定数バッファのマッピング
-		Directx::GetInstance().result = effectFlagsBuff->Map(0, nullptr, (void**)&mapEffectFlagsBuff);//マッピング
-		assert(SUCCEEDED(Directx::GetInstance().result));
+		DirectXWrapper::GetInstance().result = effectFlagsBuff->Map(0, nullptr, (void**)&mapEffectFlagsBuff);//マッピング
+		assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
 	}
 
 
@@ -36,7 +36,7 @@ void PostPera::Initialize(const wchar_t* nomalImageFileName)
 
 	D3D12_HEAP_PROPERTIES heapProp = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 
-	auto result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
+	auto result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
 		&heapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&resDesc,
@@ -190,7 +190,7 @@ void PostPera::GenerateRSPL()
 	);
 	assert(SUCCEEDED(result));
 
-	result = Directx::GetInstance().GetDevice()->CreateRootSignature(
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(
 		0,
 		rsBlob.Get()->GetBufferPointer(),
 		rsBlob.Get()->GetBufferSize(),
@@ -201,7 +201,7 @@ void PostPera::GenerateRSPL()
 	//パイプラインステート
 	//一枚目
 	gpsDesc.pRootSignature = _peraRS.Get();
-	result = Directx::GetInstance().GetDevice()->CreateGraphicsPipelineState(
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(
 		&gpsDesc,
 		IID_PPV_ARGS(_peraPipeline.GetAddressOf())
 	);
@@ -225,7 +225,7 @@ void PostPera::GenerateRSPL()
 	//vs等は同じのを使って、psのみ二枚目
 	gpsDesc.PS = CD3DX12_SHADER_BYTECODE(ps.Get());
 	//2枚目用パイプライン生成
-	result = Directx::GetInstance().GetDevice()->CreateGraphicsPipelineState(
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(
 		&gpsDesc,
 		IID_PPV_ARGS(_peraPipeline2.ReleaseAndGetAddressOf())
 	);
@@ -247,65 +247,65 @@ void PostPera::Draw(EffectConstBuffer effectFlags)
 	this->mapEffectFlagsBuff->time++;
 
 
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(_peraRS.Get());
-	Directx::GetInstance().GetCommandList()->SetPipelineState(_peraPipeline.Get());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(_peraRS.Get());
+	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(_peraPipeline.Get());
 	//ヒープをセット
-	Directx::GetInstance().GetCommandList()
-		->SetDescriptorHeaps(1, Directx::GetInstance().GetPeraSRVHeap().GetAddressOf());
+	DirectXWrapper::GetInstance().GetCommandList()
+		->SetDescriptorHeaps(1, DirectXWrapper::GetInstance().GetPeraSRVHeap().GetAddressOf());
 
-	auto peraHandle = Directx::GetInstance().GetPeraSRVHeap()->GetGPUDescriptorHandleForHeapStart();
+	auto peraHandle = DirectXWrapper::GetInstance().GetPeraSRVHeap()->GetGPUDescriptorHandleForHeapStart();
 	//パラメーター0番とヒープを関連付ける
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);
 
 	//ボケ定数(一枚目の二つと二枚目の一つを飛ばす)
 	for (int i = 0; i < 3; i++)
 	{
-		peraHandle.ptr += Directx::GetInstance().GetDevice()->
+		peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 			GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	}
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, peraHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, peraHandle);
 
 	//ガラスフィルター
-	peraHandle.ptr += Directx::GetInstance().GetDevice()->
+	peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(3, peraHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(3, peraHandle);
 
 	//図形とか
-	Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(
+	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(
 		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &_peraVBV);
+	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &_peraVBV);
 
 	//ポストエフェクトフラグなのでrp[2]
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, effectFlagsBuff->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, effectFlagsBuff->GetGPUVirtualAddress());
 
-	Directx::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
+	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }
 
 void PostPera::Draw2()
 {
-	//Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(_peraRS.Get());
-	Directx::GetInstance().GetCommandList()->SetPipelineState(_peraPipeline2.Get());
+	//DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(_peraRS.Get());
+	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(_peraPipeline2.Get());
 	//ヒープをセット
-	Directx::GetInstance().GetCommandList()
-		->SetDescriptorHeaps(1, Directx::GetInstance().GetPeraSRVHeap().GetAddressOf());
+	DirectXWrapper::GetInstance().GetCommandList()
+		->SetDescriptorHeaps(1, DirectXWrapper::GetInstance().GetPeraSRVHeap().GetAddressOf());
 
-	auto peraHandle = Directx::GetInstance().GetPeraSRVHeap()->GetGPUDescriptorHandleForHeapStart();
+	auto peraHandle = DirectXWrapper::GetInstance().GetPeraSRVHeap()->GetGPUDescriptorHandleForHeapStart();
 
 	//二枚目
 	for (int i = 0; i < 2; i++)
 	{
-		peraHandle.ptr += Directx::GetInstance().GetDevice()->
+		peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 			GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	}
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);//SRVなのでrp[0]
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);//SRVなのでrp[0]
 
 	//図形とか
-	Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(
+	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(
 		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &_peraVBV);
+	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &_peraVBV);
 
 	//ポストエフェクトフラグなのでrp[2]
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, effectFlagsBuff->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, effectFlagsBuff->GetGPUVirtualAddress());
 
-	Directx::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
+	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }

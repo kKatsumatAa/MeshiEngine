@@ -15,8 +15,8 @@ void ImGuiManager::Initialize()
 
 	//directx12用初期化
 	ImGui_ImplDX12_Init(
-		Directx::GetInstance().GetDevice(),
-		static_cast<int>(Directx::GetInstance().GetBackBufferCount()),
+		DirectXWrapper::GetInstance().GetDevice(),
+		static_cast<int>(DirectXWrapper::GetInstance().GetBackBufferCount()),
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, TextureManager::GetInstance().srvHeap.Get(),
 		TextureManager::GetInstance().srvHeap->GetCPUDescriptorHandleForHeapStart(),
 		TextureManager::GetInstance().srvHeap->GetGPUDescriptorHandleForHeapStart()
@@ -53,7 +53,7 @@ void ImGuiManager::End()
 
 void ImGuiManager::Draw()
 {
-	ID3D12GraphicsCommandList* commandlist = Directx::GetInstance().GetCommandList();
+	ID3D12GraphicsCommandList* commandlist = DirectXWrapper::GetInstance().GetCommandList();
 
 	//デスクリプタヒープの配列をセットするコマンド
 	ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetInstance().srvHeap.Get() };

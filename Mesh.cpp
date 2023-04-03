@@ -84,16 +84,16 @@ void Mesh::CreateBuffers()
 	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeVB);
 
 	// 頂点バッファ生成
-	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
+	DirectXWrapper::GetInstance().result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
 		&heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
 		IID_PPV_ARGS(&vertBuff));
-	assert(SUCCEEDED(Directx::GetInstance().result));
+	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
 
 
 	// 頂点バッファへのデータ転送
 	VertexPosNormalUv* vertMap = nullptr;
-	Directx::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	if (SUCCEEDED(Directx::GetInstance().result)) {
+	DirectXWrapper::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	if (SUCCEEDED(DirectXWrapper::GetInstance().result)) {
 		std::copy(vertices.begin(), vertices.end(), vertMap);
 		vertBuff->Unmap(0, nullptr);
 	}
@@ -111,8 +111,8 @@ void Mesh::CreateBuffers()
 
 	// インデックスバッファへのデータ転送
 	unsigned short* indexMap = nullptr;
-	Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-	if (SUCCEEDED(Directx::GetInstance().result)) {
+	DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+	if (SUCCEEDED(DirectXWrapper::GetInstance().result)) {
 
 		std::copy(indices.begin(), indices.end(), indexMap);
 

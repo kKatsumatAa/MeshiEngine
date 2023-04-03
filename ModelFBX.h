@@ -28,6 +28,13 @@ public:
 	//フレンドクラス
 	friend class FbxLoader;
 
+public://サブクラス
+	//頂点データ構造体
+	struct VertecPosNormalUv
+	{
+		DirectX::XMFLOAT3 pos;
+	};
+
 #pragma region 変数
 private:
 	//モデル名

@@ -58,7 +58,7 @@ void Primitive::InitializeTriangle()
 		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
-		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
 		for (int i = 0; i < _countof(indicesTriangle); i++)
 		{
@@ -133,7 +133,7 @@ void Primitive::InitializeBox()
 		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
-		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
 		for (int i = 0; i < _countof(indicesBox); i++)
 		{
@@ -217,7 +217,7 @@ void Primitive::InitializeCircle()
 		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
-		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
 		for (int i = 0; i < _countof(indicesCircle); i++)
 		{
@@ -325,7 +325,7 @@ void Primitive::InitializeCube()
 		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
-		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
 		for (int i = 0; i < _countof(indicesCube); i++)
 		{
@@ -386,7 +386,7 @@ void Primitive::InitializeLine()
 		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
-		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
 		for (int i = 0; i < _countof(indicesLine); i++)
 		{
@@ -596,7 +596,7 @@ void Primitive::InitializeSphere()
 		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
-		Directx::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
 		for (int i = 0; i < _countof(indicesSphere); i++)
 		{

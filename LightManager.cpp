@@ -8,9 +8,9 @@ void LightManager::StaticInitialize()
 	//再初期化をチェック
 	assert(!LightManager::device_);
 	//nullptrチェック
-	assert(Directx::GetInstance().GetDevice());
+	assert(DirectXWrapper::GetInstance().GetDevice());
 	//セット
-	LightManager::device_ = Directx::GetInstance().GetDevice();
+	LightManager::device_ = DirectXWrapper::GetInstance().GetDevice();
 }
 
 void LightManager::Initialize()
@@ -163,7 +163,7 @@ void LightManager::Update()
 void LightManager::Draw(UINT rootParamaterIndex)
 {
 	//定数バッファビューをセット
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(
 		rootParamaterIndex, constBuff->GetGPUVirtualAddress()
 	);
 }

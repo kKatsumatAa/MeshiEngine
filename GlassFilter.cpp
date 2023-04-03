@@ -13,7 +13,7 @@
 //	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 //	heapDesc.NumDescriptors = 1;
 //	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-//	auto result = Directx::GetInstance().GetDevice()->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&_effectSRVHeap));
+//	auto result = DirectXWrapper::GetInstance().GetDevice()->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&_effectSRVHeap));
 //	assert(SUCCEEDED(result));
 //	//ポストエフェクト用テクスチャビューを作る
 //	auto desc = _effectTexBuffer->GetDesc();
@@ -22,7 +22,7 @@
 //	srvDesc.Format = desc.Format;
 //	srvDesc.Texture2D.MipLevels = 1;
 //	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-//	Directx::GetInstance().GetDevice()->CreateShaderResourceView(_effectTexBuffer.Get(), &srvDesc, _effectSRVHeap->GetCPUDescriptorHandleForHeapStart());
+//	DirectXWrapper::GetInstance().GetDevice()->CreateShaderResourceView(_effectTexBuffer.Get(), &srvDesc, _effectSRVHeap->GetCPUDescriptorHandleForHeapStart());
 //
 //
 //	return true;

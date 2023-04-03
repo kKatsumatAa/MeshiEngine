@@ -377,7 +377,7 @@ Model::~Model()
 
 void Model::StaticInitialize()
 {
-	Mesh::StaticInitialize(Directx::GetInstance().GetDevice());
+	Mesh::StaticInitialize(DirectXWrapper::GetInstance().GetDevice());
 }
 
 void Model::Initialize(const std::string& foldername, bool smoothing)
@@ -420,11 +420,11 @@ void Model::Draw(const int indexNum)
 	// デスクリプタヒープの配列
 	if (TextureManager::GetInstance().srvHeap) {
 		ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetInstance().srvHeap.Get() };
-		Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(indexNum, ppHeaps);
+		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(indexNum, ppHeaps);
 	}
 
 	// 全メッシュを描画
 	for (auto& mesh : meshes) {
-		mesh->Draw(Directx::GetInstance().GetCommandList());
+		mesh->Draw(DirectXWrapper::GetInstance().GetCommandList());
 	}
 }

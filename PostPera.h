@@ -1,6 +1,6 @@
 #pragma once
 #include"TextureManager.h"
-#include "Directx.h"
+#include "DirectXWrapper.h"
 #include "GlassFilter.h"
 
 //‰æ–ÊŒø‰Ê—p‚Ìƒtƒ‰ƒO

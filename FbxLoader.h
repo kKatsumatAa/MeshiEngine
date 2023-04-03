@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "fbxsdk.h"
-#include "DirectX.h"
+#include "DirectXWrapper.h"
 #include <string>
 #include "ModelFBX.h"
 
@@ -79,8 +79,5 @@ public:
 	void ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh);
 
 	//マテリアル読み取り
-	void ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh);
-
-	//テクスチャ読み込み
-	void ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh);
+	void ParseMaterial(ModelFBX* model, FbxMesh* fbxMesh);
 };

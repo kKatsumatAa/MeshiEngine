@@ -1,11 +1,11 @@
 #include "ConstBuffTransform.h"
 
-ConstBuffTransform::ConstBuffTransform(/*D3D12_RESOURCE_DESC& resDesc,*//* Directx& directx*/)
+ConstBuffTransform::ConstBuffTransform(/*D3D12_RESOURCE_DESC& resDesc,*//* DirectXWrapper& directx*/)
 {
 
 }
 
-void ConstBuffTransform::Initialize(Directx& directx)
+void ConstBuffTransform::Initialize(DirectXWrapper& directx)
 {
 	//05_02
 	{

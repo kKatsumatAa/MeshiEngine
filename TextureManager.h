@@ -1,5 +1,5 @@
 #pragma once
-#include "DirectX.h"
+#include "DirectXWrapper.h"
 #include <map>
 
 

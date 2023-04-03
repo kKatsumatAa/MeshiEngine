@@ -46,8 +46,8 @@ void TextureManager::InitializeDescriptorHeap()
 	srvHeapDesc.NumDescriptors = kMaxSRVCount;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダーから見えるように
 	//descは設定
-	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
-	assert(SUCCEEDED(Directx::GetInstance().result));
+	DirectXWrapper::GetInstance().result = DirectXWrapper::GetInstance().GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
+	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
 
 
 	//デスクリプタレンジの設定
@@ -83,20 +83,20 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 	//WICのテクスチャのロード
-	Directx::GetInstance().result = LoadFromWICFile(
+	DirectXWrapper::GetInstance().result = LoadFromWICFile(
 		name,
 		WIC_FLAGS_NONE,
 		&metadata, scratchImg
 	);
 
-	assert(SUCCEEDED(Directx::GetInstance().result));
+	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
 
 	ScratchImage mipChain{};
 	//mipmap生成
-	Directx::GetInstance().result = GenerateMipMaps(
+	DirectXWrapper::GetInstance().result = GenerateMipMaps(
 		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
 		TEX_FILTER_DEFAULT, 0, mipChain);
-	if (SUCCEEDED(Directx::GetInstance().result))
+	if (SUCCEEDED(DirectXWrapper::GetInstance().result))
 	{
 		scratchImg = std::move(mipChain);
 		metadata = scratchImg.GetMetadata();
@@ -123,7 +123,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 			1);
 
 	// テクスチャバッファの生成
-	result = Directx::GetInstance().GetDevice()->
+	result = DirectXWrapper::GetInstance().GetDevice()->
 		CreateCommittedResource(
 			&textureHeapProp,
 			D3D12_HEAP_FLAG_NONE,
@@ -146,7 +146,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	Microsoft::WRL::ComPtr<ID3D12Resource> uploadBuff;
 
 	// テクスチャバッファの生成
-	result = Directx::GetInstance().GetDevice()->
+	result = DirectXWrapper::GetInstance().GetDevice()->
 		CreateCommittedResource(
 			&uploadHeapProp,
 			D3D12_HEAP_FLAG_NONE,
@@ -173,7 +173,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 
 	//サブリソースを転送
 	UpdateSubresources(
-		Directx::GetInstance().GetCommandList(),
+		DirectXWrapper::GetInstance().GetCommandList(),
 		texBuff[count].Get(),
 		uploadBuff.Get(),
 		0,
@@ -186,7 +186,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	{
 		//SRVヒープの先頭ハンドルを取得
 		if (count == 0) { srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart(); }
-		else { srvHandle.ptr += Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type); }
+		else { srvHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type); }
 
 		//04_03
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
@@ -196,12 +196,12 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
 		srvDesc.Texture2D.MipLevels = 1;
 		//ハンドルのさす位置にシェーダーリソースビュー作成
-		Directx::GetInstance().GetDevice()->CreateShaderResourceView(TextureManager::GetInstance().texBuff[count].Get(), &srvDesc, srvHandle);
+		DirectXWrapper::GetInstance().GetDevice()->CreateShaderResourceView(TextureManager::GetInstance().texBuff[count].Get(), &srvDesc, srvHandle);
 
 		//04_02(画像貼る用のアドレスを引数に)
 		//SRVヒープのハンドルを取得
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-		textureHandle = srvGpuHandle.ptr + (Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type) * count);
+		textureHandle = srvGpuHandle.ptr + (DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type) * count);
 
 		{
 			//名前とデータを紐づけて保存
@@ -222,21 +222,21 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	BarrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;//ここが重要
 	BarrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;//ここも重要
 
-	Directx::GetInstance().GetCommandList()->ResourceBarrier(1, &BarrierDesc);
-	Directx::GetInstance().GetCommandList()->Close();
+	DirectXWrapper::GetInstance().GetCommandList()->ResourceBarrier(1, &BarrierDesc);
+	DirectXWrapper::GetInstance().GetCommandList()->Close();
 
 	//コマンドリストの実行
-	ID3D12CommandList* cmdlists[] = { Directx::GetInstance().GetCommandList() };
-	Directx::GetInstance().GetCommandQueue()->ExecuteCommandLists(1, cmdlists);
+	ID3D12CommandList* cmdlists[] = { DirectXWrapper::GetInstance().GetCommandList() };
+	DirectXWrapper::GetInstance().GetCommandQueue()->ExecuteCommandLists(1, cmdlists);
 
 	//コマンド閉じる
-	Directx::GetInstance().GetCommandQueue()->Signal(Directx::GetInstance().GetFence(),
-		++Directx::GetInstance().GetFenceVal());
+	DirectXWrapper::GetInstance().GetCommandQueue()->Signal(DirectXWrapper::GetInstance().GetFence(),
+		++DirectXWrapper::GetInstance().GetFenceVal());
 
-	if (Directx::GetInstance().GetFence()->GetCompletedValue() != Directx::GetInstance().GetFenceVal())
+	if (DirectXWrapper::GetInstance().GetFence()->GetCompletedValue() != DirectXWrapper::GetInstance().GetFenceVal())
 	{
 		auto event = CreateEvent(nullptr, false, false, nullptr);
-		Directx::GetInstance().GetFence()->SetEventOnCompletion(Directx::GetInstance().GetFenceVal(), event);
+		DirectXWrapper::GetInstance().GetFence()->SetEventOnCompletion(DirectXWrapper::GetInstance().GetFenceVal(), event);
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
@@ -246,7 +246,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	uploadBuff.Reset();*/
 
 	//コマンドリセット
-	Directx::GetInstance().CommandReset();
+	DirectXWrapper::GetInstance().CommandReset();
 
 
 	//バッファ用のカウント

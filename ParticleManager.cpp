@@ -176,29 +176,29 @@ void ParticleManager::Draw(UINT64 texHandle)
 	}
 
 	// パイプラインステートの設定
-	Directx::GetInstance().GetCommandList()->SetPipelineState(pipelinestate.Get());
+	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(pipelinestate.Get());
 	// ルートシグネチャの設定
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootsignature.Get());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootsignature.Get());
 	// プリミティブ形状を設定
-	Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 
 	// 頂点バッファの設定
-	Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
+	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
 
 	// デスクリプタヒープの配列
 	ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetInstance().srvHeap.Get() };
-	Directx::GetInstance().GetCommandList()->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
 	// 定数バッファビューをセット
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
 	// シェーダリソースビューをセット
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 	srvGpuHandle.ptr = texHandle;
 	//(インスタンスで読み込んだテクスチャ用のSRVを指定)
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 	// 描画コマンド
-	Directx::GetInstance().GetCommandList()->DrawInstanced(drawNum, 1, 0, 0);
+	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(drawNum, 1, 0, 0);
 }
 
 void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale
@@ -387,7 +387,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 	// バージョン自動判定のシリアライズ
 	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
 	// ルートシグネチャの生成
-	result = Directx::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootsignature));
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootsignature));
 	if (FAILED(result)) {
 		assert(0);
 	}
@@ -395,7 +395,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 	gpipeline.pRootSignature = rootsignature.Get();
 
 	// グラフィックスパイプラインの生成
-	result = Directx::GetInstance().GetDevice()->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate));
 
 	if (FAILED(result)) {
 		assert(0);

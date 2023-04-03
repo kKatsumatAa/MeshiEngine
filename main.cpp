@@ -14,7 +14,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//初期化
 	WindowsApp::GetInstance();
-	Directx::GetInstance().Initialize();
+	DirectXWrapper::GetInstance().Initialize();
 
 	DrawInitialize();
 
@@ -46,7 +46,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		KeyboardInput::GetInstance().Update();
 		PadInput::GetInstance().Update();
 		{
-			Directx::GetInstance().DrawUpdate();
+			DirectXWrapper::GetInstance().DrawUpdate();
 
 			//更新処理
 			scene->Update();
@@ -56,21 +56,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			scene->Draw();
 
 			//
-			Directx::GetInstance().DrawUpdate2();
+			DirectXWrapper::GetInstance().DrawUpdate2();
 		}
 
 		//マルチパス
 		{
 		//2枚目--------------------
-			Directx::GetInstance().PreDrawToPera();
+			DirectXWrapper::GetInstance().PreDrawToPera();
 
 			//
 			scene->DrawPostEffect();
 
-			Directx::GetInstance().PostDrawToPera();
+			DirectXWrapper::GetInstance().PostDrawToPera();
 
 		//実際に描画----------------
-			Directx::GetInstance().PreDrawToPera2();
+			DirectXWrapper::GetInstance().PreDrawToPera2();
 
 			//
 			scene->DrawPostEffect2();
@@ -78,7 +78,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			scene->DrawSprite();
 
 			// 4.描画コマンドここまで //
-			Directx::GetInstance().PostDrawToPera2();
+			DirectXWrapper::GetInstance().PostDrawToPera2();
 		}
 		//毎フレーム処理　ここまで//
 

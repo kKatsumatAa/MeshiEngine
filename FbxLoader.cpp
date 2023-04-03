@@ -123,3 +123,15 @@ void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* pare
 void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode)
 {
 }
+
+void FbxLoader::ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh)
+{
+}
+
+void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh)
+{
+}
+
+void FbxLoader::ParseMaterial(ModelFBX* model, FbxMesh* fbxMesh)
+{
+}

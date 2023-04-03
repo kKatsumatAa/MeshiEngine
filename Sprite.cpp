@@ -30,19 +30,19 @@ void Sprite::Initialize()
 
 void SpriteCommonBeginDraw(PipeLineSet* pipelineSet)
 {
-	Directx::GetInstance().GetCommandList()->SetPipelineState(pipelineSet->pipelineState.Get());
+	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(pipelineSet->pipelineState.Get());
 
-	Directx::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSet->rootSignature.Get());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSet->rootSignature.Get());
 
-	Directx::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 }
 
 void Sprite::SpriteDraw()
 {
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 	VertexSprite* vertMap = nullptr;
-	Directx::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	assert(SUCCEEDED(Directx::GetInstance().result));
+	DirectXWrapper::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
 	// 全頂点に対して
 	for (int i = 0; i < 4; i++) {
 		vertMap[i] = vertices[i]; // 座標をコピー
@@ -50,9 +50,9 @@ void Sprite::SpriteDraw()
 	// 繋がりを解除
 	vertBuff->Unmap(0, nullptr);
 
-	Directx::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
+	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
 
-	Directx::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
+	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }
 
 void Sprite::Update(const Vec3& pos, const float& scale,
@@ -74,7 +74,7 @@ void Sprite::Update(const Vec3& pos, const float& scale,
 
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetInstance().srvHeap->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = TextureManager::GetInstance().texBuff[(textureHandle_ - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type)]->GetDesc();
+	resDesc = TextureManager::GetInstance().texBuff[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type)]->GetDesc();
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
@@ -144,7 +144,7 @@ void Sprite::UpdateClipping(const Vec3& leftTop, const float& scale, const XMFLO
 
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetInstance().srvHeap->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = TextureManager::GetInstance().texBuff[(textureHandle_ - srvGpuHandle.ptr) / Directx::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type)]->GetDesc();
+	resDesc = TextureManager::GetInstance().texBuff[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type)]->GetDesc();
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 

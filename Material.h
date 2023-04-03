@@ -5,7 +5,7 @@
 #include <DirectXMath.h>
 #include <wrl.h>
 #include <string>
-#include "DirectX.h"
+#include "DirectXWrapper.h"
 
 /// <summary>
 /// ƒ}ƒeƒŠƒAƒ‹

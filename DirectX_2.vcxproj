@@ -97,7 +97,7 @@
     <ClCompile Include="CollisionPrimitive.cpp" />
     <ClCompile Include="ConstBuffTransform.cpp" />
     <ClCompile Include="DebugText.cpp" />
-    <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="DirectXWrapper.cpp" />
     <ClCompile Include="DrawIntNumImage.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="GausianBuffer.cpp" />
@@ -153,7 +153,7 @@
     <ClInclude Include="CollisionTypes.h" />
     <ClInclude Include="ConstBuffTransform.h" />
     <ClInclude Include="DebugText.h" />
-    <ClInclude Include="DirectX.h" />
+    <ClInclude Include="DirectXWrapper.h" />
     <ClInclude Include="DrawIntNumImage.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="GausianBuffer.h" />

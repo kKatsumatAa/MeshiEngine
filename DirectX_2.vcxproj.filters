@@ -33,7 +33,7 @@
     <ClCompile Include="Vec4.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="DirectX.cpp">
+    <ClCompile Include="DirectXWrapper.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ViewMat.cpp">
@@ -176,7 +176,7 @@
     <ClInclude Include="WindowsApp.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="DirectX.h">
+    <ClInclude Include="DirectXWrapper.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="M4.h">

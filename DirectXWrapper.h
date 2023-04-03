@@ -3,7 +3,7 @@
 #include <array>
 
 
-class Directx final
+class DirectXWrapper final
 {
 private:
 	//成果物系
@@ -57,8 +57,8 @@ private:
 
 
 private:
-	Directx();
-	~Directx();
+	DirectXWrapper();
+	~DirectXWrapper();
 
 	//初期化系
 	void InitializeDevice();
@@ -84,12 +84,12 @@ public:
 
 
 	//コピーコンストラクタを無効
-	Directx(const Directx& obj) = delete;
+	DirectXWrapper(const DirectXWrapper& obj) = delete;
 	//代入演算子も
-	Directx& operator=(const Directx& obj) = delete;
+	DirectXWrapper& operator=(const DirectXWrapper& obj) = delete;
 
 	//関数
-	static Directx& GetInstance();
+	static DirectXWrapper& GetInstance();
 
 	void CommandReset();
 

@@ -1,9 +1,9 @@
-#include "DirectX.h"
+#include "DirectXWrapper.h"
 #include <thread>
 #include <d3dx12.h>
 
 
-void Directx::InitializeDevice()
+void DirectXWrapper::InitializeDevice()
 {
 	// DXGIファクトリーの生成
 	result = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
@@ -58,7 +58,7 @@ void Directx::InitializeDevice()
 	}
 }
 
-void Directx::InitializeCommand()
+void DirectXWrapper::InitializeCommand()
 {
 	// コマンドアロケータを生成
 	result = device->CreateCommandAllocator(
@@ -79,7 +79,7 @@ void Directx::InitializeCommand()
 	assert(SUCCEEDED(result));
 }
 
-void Directx::InitializeSwapchain()
+void DirectXWrapper::InitializeSwapchain()
 {
 	//スワップチェーン設定
 	swapChainDesc.Width = WindowsApp::GetInstance().window_width;
@@ -101,7 +101,7 @@ void Directx::InitializeSwapchain()
 	swapChain1.As(&swapChain);
 }
 
-void Directx::InitializeRendertargetView()
+void DirectXWrapper::InitializeRendertargetView()
 {
 	//デスクリプタヒープの設定
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
@@ -133,7 +133,7 @@ void Directx::InitializeRendertargetView()
 
 }
 
-void Directx::InitializeDepthBuffer()
+void DirectXWrapper::InitializeDepthBuffer()
 {
 
 	//06_01
@@ -178,19 +178,19 @@ void Directx::InitializeDepthBuffer()
 	);
 }
 
-void Directx::InitializeFence()
+void DirectXWrapper::InitializeFence()
 {
 	//フェンス生成
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 }
 
-void Directx::InitializeFixFPS()
+void DirectXWrapper::InitializeFixFPS()
 {
 	//現在時間を記録
 	reference_ = std::chrono::steady_clock::now();
 }
 
-void Directx::UpdateFixFPS()
+void DirectXWrapper::UpdateFixFPS()
 {
 	//1/60(s)ぴったりの時間
 	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
@@ -217,7 +217,7 @@ void Directx::UpdateFixFPS()
 	reference_ = std::chrono::steady_clock::now();
 }
 
-void Directx::Initialize()
+void DirectXWrapper::Initialize()
 {
 	//FPS固定初期化
 	InitializeFixFPS();
@@ -399,23 +399,23 @@ void Directx::Initialize()
 	Sound::Initialize();
 }
 
-Directx::Directx()
+DirectXWrapper::DirectXWrapper()
 {
 }
 
-Directx::~Directx()
+DirectXWrapper::~DirectXWrapper()
 {
 }
 
 
 
-Directx& Directx::GetInstance()
+DirectXWrapper& DirectXWrapper::GetInstance()
 {
-	static Directx inst; // private なコンストラクタを呼び出す。
+	static DirectXWrapper inst; // private なコンストラクタを呼び出す。
 	return inst;
 }
 
-void Directx::CommandReset()
+void DirectXWrapper::CommandReset()
 {
 	// キューをクリア
 	result = commandAllocator->Reset();
@@ -425,13 +425,13 @@ void Directx::CommandReset()
 	assert(SUCCEEDED(result));
 }
 
-void Directx::DrawInitialize()
+void DirectXWrapper::DrawInitialize()
 {
 
 }
 
 //一枚目のテクスチャに描画
-void Directx::DrawUpdate(const XMFLOAT4& winRGBA)
+void DirectXWrapper::DrawUpdate(const XMFLOAT4& winRGBA)
 {
 	//ポストエフェクト
 	for (ComPtr< ID3D12Resource>& res : _peraResource)
@@ -488,7 +488,7 @@ void Directx::DrawUpdate(const XMFLOAT4& winRGBA)
 	commandList->RSSetScissorRects(1, &scissorRect);
 }
 
-void Directx::DrawUpdate2()
+void DirectXWrapper::DrawUpdate2()
 {
 	// 5.リソースバリアを戻す
 	for (ComPtr< ID3D12Resource>& res : _peraResource)
@@ -502,7 +502,7 @@ void Directx::DrawUpdate2()
 
 
 //二枚目のテクスチャに描画
-void Directx::PreDrawToPera() {
+void DirectXWrapper::PreDrawToPera() {
 
 	//状態をレンダーターゲットに遷移
 	barrierDesc.Transition.pResource = _peraResource2.Get(); // 二枚目のリソースを指定
@@ -545,7 +545,7 @@ void Directx::PreDrawToPera() {
 	commandList->RSSetScissorRects(1, &scissorRect);
 }
 
-void Directx::PostDrawToPera()
+void DirectXWrapper::PostDrawToPera()
 {
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態へ
@@ -554,7 +554,7 @@ void Directx::PostDrawToPera()
 
 
 //実際に描画
-void Directx::PreDrawToPera2()
+void DirectXWrapper::PreDrawToPera2()
 {
 	// バックバッファの番号を取得(2つなので0番か1番)
 	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
@@ -595,7 +595,7 @@ void Directx::PreDrawToPera2()
 	commandList->RSSetScissorRects(1, &scissorRect);
 }
 
-void Directx::PostDrawToPera2()
+void DirectXWrapper::PostDrawToPera2()
 {
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT; // 表示状態へ
@@ -628,7 +628,7 @@ void Directx::PostDrawToPera2()
 	assert(SUCCEEDED(result));
 }
 
-void Directx::GlassFilterBuffGenerate(const wchar_t* fileName)
+void DirectXWrapper::GlassFilterBuffGenerate(const wchar_t* fileName)
 {
 	//ガラスフィルター（4つ目）
 	//インクリメント
@@ -636,7 +636,7 @@ void Directx::GlassFilterBuffGenerate(const wchar_t* fileName)
 	this->CreateEffectBufferAndView(fileName);
 }
 
-bool Directx::CreateEffectBufferAndView(const wchar_t* fileName)
+bool DirectXWrapper::CreateEffectBufferAndView(const wchar_t* fileName)
 {
 	//法線マップをロード
 	LoadPictureFromFile(fileName, this->_effectTexBuffer);
@@ -659,20 +659,20 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 	//WICのテクスチャのロード
-	Directx::GetInstance().result = LoadFromWICFile(
+	DirectXWrapper::GetInstance().result = LoadFromWICFile(
 		fileName,
 		WIC_FLAGS_NONE,
 		&metadata, scratchImg
 	);
 
-	assert(SUCCEEDED(Directx::GetInstance().result));
+	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
 
 	ScratchImage mipChain{};
 	//mipmap生成
-	Directx::GetInstance().result = GenerateMipMaps(
+	DirectXWrapper::GetInstance().result = GenerateMipMaps(
 		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
 		TEX_FILTER_DEFAULT, 0, mipChain);
-	if (SUCCEEDED(Directx::GetInstance().result))
+	if (SUCCEEDED(DirectXWrapper::GetInstance().result))
 	{
 		scratchImg = std::move(mipChain);
 		metadata = scratchImg.GetMetadata();
@@ -699,7 +699,7 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 			1);
 
 	// テクスチャバッファの生成
-	result = Directx::GetInstance().GetDevice()->
+	result = DirectXWrapper::GetInstance().GetDevice()->
 		CreateCommittedResource(
 			&textureHeapProp,
 			D3D12_HEAP_FLAG_NONE,
@@ -722,7 +722,7 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 	Microsoft::WRL::ComPtr<ID3D12Resource> uploadBuff;
 
 	// テクスチャバッファの生成
-	result = Directx::GetInstance().GetDevice()->
+	result = DirectXWrapper::GetInstance().GetDevice()->
 		CreateCommittedResource(
 			&uploadHeapProp,
 			D3D12_HEAP_FLAG_NONE,
@@ -749,7 +749,7 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 
 	//サブリソースを転送
 	UpdateSubresources(
-		Directx::GetInstance().GetCommandList(),
+		DirectXWrapper::GetInstance().GetCommandList(),
 		texBuff.Get(),
 		uploadBuff.Get(),
 		0,
@@ -770,21 +770,21 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 	BarrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;//ここが重要
 	BarrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;//ここも重要
 
-	Directx::GetInstance().GetCommandList()->ResourceBarrier(1, &BarrierDesc);
-	Directx::GetInstance().GetCommandList()->Close();
+	DirectXWrapper::GetInstance().GetCommandList()->ResourceBarrier(1, &BarrierDesc);
+	DirectXWrapper::GetInstance().GetCommandList()->Close();
 
 	//コマンドリストの実行
-	ID3D12CommandList* cmdlists[] = { Directx::GetInstance().GetCommandList() };
-	Directx::GetInstance().GetCommandQueue()->ExecuteCommandLists(1, cmdlists);
+	ID3D12CommandList* cmdlists[] = { DirectXWrapper::GetInstance().GetCommandList() };
+	DirectXWrapper::GetInstance().GetCommandQueue()->ExecuteCommandLists(1, cmdlists);
 
 	//コマンド閉じる
-	Directx::GetInstance().GetCommandQueue()->Signal(Directx::GetInstance().GetFence(),
-		++Directx::GetInstance().GetFenceVal());
+	DirectXWrapper::GetInstance().GetCommandQueue()->Signal(DirectXWrapper::GetInstance().GetFence(),
+		++DirectXWrapper::GetInstance().GetFenceVal());
 
-	if (Directx::GetInstance().GetFence()->GetCompletedValue() != Directx::GetInstance().GetFenceVal())
+	if (DirectXWrapper::GetInstance().GetFence()->GetCompletedValue() != DirectXWrapper::GetInstance().GetFenceVal())
 	{
 		auto event = CreateEvent(nullptr, false, false, nullptr);
-		Directx::GetInstance().GetFence()->SetEventOnCompletion(Directx::GetInstance().GetFenceVal(), event);
+		DirectXWrapper::GetInstance().GetFence()->SetEventOnCompletion(DirectXWrapper::GetInstance().GetFenceVal(), event);
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
@@ -794,7 +794,7 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 	uploadBuff.Reset();*/
 
 	//コマンドリセット
-	Directx::GetInstance().CommandReset();
+	DirectXWrapper::GetInstance().CommandReset();
 }
 
 //------------------------------------------------------------------------------
@@ -811,14 +811,14 @@ void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size)
 
 void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, ID3D12Resource** buff)
 {
-	Directx::GetInstance().result = Directx::GetInstance().GetDevice()->CreateCommittedResource(
+	DirectXWrapper::GetInstance().result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
 		&heap,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&resource,//リソース設定
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(buff));
-	assert(SUCCEEDED(Directx::GetInstance().result));
+	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
 }
 
 
