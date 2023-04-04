@@ -13,11 +13,13 @@ private://エイリアス
 	using string = std::string;
 
 private://変数
-
 	//fbxマネージャー(sdkを使うのに必要)
 	FbxManager* fbxManager = nullptr;
 	//fbxインポーター(.fbxを読み込むのに必要)
 	FbxImporter* fbxImporter = nullptr;
+
+	//テクスチャがない場合の標準テクスチャファイル名
+	static const string defaultTexFileName;
 
 public://定数
 	//モデル格納ルートパス
@@ -79,5 +81,11 @@ public:
 	void ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh);
 
 	//マテリアル読み取り
-	void ParseMaterial(ModelFBX* model, FbxMesh* fbxMesh);
+	void ParseMaterial(ModelFBX* model, FbxNode* fbxNode);
+
+	//テクスチャ読み込み
+	void LoadTexture(ModelFBX* model, const std::string& fullpath);
+
+	//ディレクトリを含んだファイルパスからファイル名(***.pmg)を抽出する
+	std::string ExtractFileName(const std::string& path);
 };
