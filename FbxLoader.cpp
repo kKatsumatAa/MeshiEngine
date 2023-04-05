@@ -1,8 +1,11 @@
 ﻿#include "FbxLoader.h"
+#include"TextureManager.h"
 
 using namespace DirectX;
 
 const std::string FbxLoader::defaultTexFileName = "white.png";
+
+
 
 /// <summary>
 /// 静的メンバ変数の実体
@@ -67,6 +70,9 @@ void FbxLoader::LoadModelFromFile(const string& modelName)
 	ParseNodeRecursive(model, fbxScene->GetRootNode());
 	//fbxシーン開放
 	fbxScene->Destroy();
+
+	//バッファ生成
+	model->CreateBuffers();
 }
 
 void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* parent)
@@ -122,7 +128,7 @@ void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* pare
 		if (fbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh)
 		{
 			//ノードからメッシュ情報を読み取る
-			model->mashNode = &node;
+			model->meshNode = &node;
 			ParseMesh(model, fbxNode);
 		}
 	}
@@ -281,7 +287,7 @@ void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
 			//ディフューズテクスチャを取り出す
 			const FbxProperty diffuseProperty =
 				material->FindProperty(FbxSurfaceMaterial::sDiffuse);
-			
+
 			if (diffuseProperty.IsValid())
 			{
 				const FbxFileTexture* tex = diffuseProperty.GetSrcObject<FbxFileTexture>();
@@ -307,25 +313,12 @@ void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
 
 void FbxLoader::LoadTexture(ModelFBX* model, const std::string& fullpath)
 {
-	HRESULT result = S_FALSE;
-
-	//WICテクスチャのロード
-	TexMetadata& metaData = model->metaData;
-	ScratchImage& scratchImg = model->scratchImg;
-
 	//ユニコード文字列に変換
 	wchar_t wfilepath[128];
 	MultiByteToWideChar(CP_ACP, 0, fullpath.c_str(), -1, wfilepath, _countof(wfilepath));
 
-	result = LoadFromWICFile(
-		wfilepath, WIC_FLAGS_NONE,
-		&metaData, scratchImg
-	);
+	TextureManager::GetInstance().LoadGraph(wfilepath, model->texhandle);
 
-	if (FAILED(result))
-	{
-		assert(0);
-	}
 }
 
 std::string FbxLoader::ExtractFileName(const std::string& path)
