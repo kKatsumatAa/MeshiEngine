@@ -3,7 +3,7 @@
 
 void ModelFBX::CreateBuffers()
 {
-	HRESULT result;
+	HRESULT result;//
 
 	//頂点データ全体のサイズ
 	UINT sizeVB =
