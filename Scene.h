@@ -40,6 +40,8 @@ public:
 
 	Object draw[10];
 
+	ModelFBX* modelFBX;
+
 	DebugText debugText;
 
 	//デバッグテキスト

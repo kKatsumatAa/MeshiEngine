@@ -38,7 +38,7 @@ void FbxLoader::Finalize()
 	fbxManager->Destroy();
 }
 
-void FbxLoader::LoadModelFromFile(const string& modelName)
+ModelFBX* FbxLoader::LoadModelFromFile(const string& modelName)
 {
 	//モデルと同じ名前のフォルダから読み込む
 	const string directoryPath = baseDirectory + modelName + "/";
@@ -73,6 +73,8 @@ void FbxLoader::LoadModelFromFile(const string& modelName)
 
 	//バッファ生成
 	model->CreateBuffers();
+
+	return model;
 }
 
 void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* parent)
@@ -176,6 +178,7 @@ void FbxLoader::ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh)
 		vertex.pos.y = (float)pCoord[i][1];
 		vertex.pos.z = (float)pCoord[i][2];
 	}
+
 }
 
 void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh)

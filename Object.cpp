@@ -52,6 +52,9 @@ PipeLineSet pipelineSet;
 //al4_02_02
 PipeLineSet pipelineSetM;
 
+//FBX用
+PipeLineSet pipelineSetFBX;
+
 //ルートパラメータの設定
 D3D12_ROOT_PARAMETER rootParams[6] = {};
 
@@ -141,6 +144,11 @@ void DrawInitialize()
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetM.pipelineState.GetAddressOf(),
 		pipelineSetM.rootSignature.GetAddressOf(), pipelineSetM.vsBlob,
 		pipelineSetM.psBlob, MODEL);
+
+	//FBX用
+	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetFBX.pipelineState.GetAddressOf(),
+		pipelineSetFBX.rootSignature.GetAddressOf(), pipelineSetFBX.vsBlob,
+		pipelineSetFBX.psBlob, FBX);
 
 	//ポストエフェクト初期化
 	postPera.Initialize(L"Resources/image/normalImage.jpg");
@@ -297,7 +305,7 @@ void Object::SetMaterialLightMTex(UINT64 textureHandle_, ConstBuffTransform cbt)
 }
 
 void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
-	Model* model, const bool& primitiveMode)
+	Model* model, ModelFBX* fbx, const bool& primitiveMode)
 {
 	//行列送信
 	SendingMat(indexNum);
@@ -399,6 +407,14 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		//モデル用描画
 		model->Draw();
 	}
+	else if (indexNum == FBX)
+	{
+		//ラムダ式でコマンド関数
+		std::function<void()>SetRootPipeR = [=]() {SetRootPipe(pipelineSetFBX.pipelineState.Get(), 0, pipelineSetFBX.rootSignature.Get()); };
+		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTex(fbx->texhandle, constBuffTransform); };
+
+		fbx->Draw(SetRootPipeR, SetMaterialTex);
+	}
 }
 
 void Object::DrawPera()
@@ -496,7 +512,7 @@ void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/ WorldMat* world, V
 
 	constMapMaterial->color = color;
 
-	Update(LINE, 2, textureHandle, cbt, nullptr, false);
+	Update(LINE, 2, textureHandle, cbt, nullptr, nullptr, false);
 }
 
 void Object::DrawCircle(WorldMat* world, ViewMat* view, ProjectionMat* projection,
@@ -533,6 +549,17 @@ void Object::DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection
 	constMapMaterial->color = color;
 
 	Update(MODEL, pipelineNum, NULL, cbt, model);
+}
+
+void Object::DrawFBX(WorldMat* world, ViewMat* view, ProjectionMat* projection, ModelFBX* modelFbx, XMFLOAT4 color, const int& pipelineNum)
+{
+	this->worldMat = world;
+	this->view = view;
+	this->projection = projection;
+
+	constMapMaterial->color = color;
+
+	Update(FBX, pipelineNum, NULL, cbt, nullptr, modelFbx);
 }
 
 void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
@@ -594,6 +621,34 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 		// エラーなら
 		Error(FAILED(DirectXWrapper::GetInstance().result));
 	}
+	//else if (indexNum == FBX)
+	//{
+	//	// 頂点シェーダの読み込みとコンパイル
+	//	DirectXWrapper::GetInstance().result = D3DCompileFromFile(
+	//		L"Resources/shaders/FBXVS.hlsl", // シェーダファイル名
+	//		nullptr,
+	//		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
+	//		"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
+	//		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
+	//		0,
+	//		&vsBlob, &errorBlob);
+
+	//	// エラーなら
+	//	Error(FAILED(DirectXWrapper::GetInstance().result));
+
+	//	// ピクセルシェーダの読み込みとコンパイル
+	//	DirectXWrapper::GetInstance().result = D3DCompileFromFile(
+	//		L"Resources/shaders/FBXPS.hlsl", // シェーダファイル名
+	//		nullptr,
+	//		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
+	//		"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
+	//		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
+	//		0,
+	//		&psBlob, &errorBlob);
+
+	//	// エラーなら
+	//	Error(FAILED(DirectXWrapper::GetInstance().result));
+	//}
 	else
 	{
 		// 頂点シェーダの読み込みとコンパイル

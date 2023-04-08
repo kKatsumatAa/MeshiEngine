@@ -5,6 +5,7 @@
 #include "LightManager.h"
 #include"CollisionInfo.h"
 #include "PostPera.h"
+#include "ModelFBX.h"
 
 class BaseCollider;
 
@@ -21,7 +22,8 @@ enum indices
 	CIRCLE,
 	SPHERE,
 	SPRITE,
-	MODEL
+	MODEL,
+	FBX
 };
 
 
@@ -50,7 +52,7 @@ private:
 private:
 	//--------------------
 	void Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
-		Model* model = nullptr, const bool& primitiveMode = true);
+		Model* model = nullptr, ModelFBX* fbx = nullptr, const bool& primitiveMode = true);
 
 	//s—ñ‘—M
 	void SendingMat(int indexNum);
@@ -134,7 +136,7 @@ public:
 	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */WorldMat* world, ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color
 		= { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL);
 
-	void DrawCircle( WorldMat* world, ViewMat* view, ProjectionMat* projection,
+	void DrawCircle(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
 
 	void DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
@@ -142,6 +144,9 @@ public:
 
 	void DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
 		Model* model, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const int& pipelineNum = 0);
+
+	void DrawFBX(WorldMat* world, ViewMat* view, ProjectionMat* projection,
+		ModelFBX* modelFbx, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const int& pipelineNum = 0);
 
 	//F‚ð•Ô‚·
 	XMFLOAT4 GetColor() { return constMapMaterial->color; }

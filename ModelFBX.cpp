@@ -53,6 +53,19 @@ void ModelFBX::CreateBuffers()
 	ibView.Format = DXGI_FORMAT_R16_UINT;
 }
 
-void ModelFBX::Draw()
+void ModelFBX::Draw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
 {
+	// パイプラインステートとルートシグネチャの設定コマンド
+	setRootParam();
+
+	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &this->vbView);
+
+	DirectXWrapper::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView);
+
+	setMaterialLightTex();
+
+	// 描画コマンド
+	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
 }

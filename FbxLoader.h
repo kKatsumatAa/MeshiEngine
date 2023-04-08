@@ -58,7 +58,7 @@ public:
 	/// ファイルからfbxモデル読み込み
 	/// </summary>
 	/// <param name="modelName"></param>
-	void LoadModelFromFile(const string& modelName);
+	ModelFBX* LoadModelFromFile(const string& modelName);
 
 	/// <summary>
 	/// 再帰的にノード攻勢を解析

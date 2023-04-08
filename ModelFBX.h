@@ -105,7 +105,7 @@ public:
 	void CreateBuffers();
 
 	//•`‰æ
-	void Draw();
+	void Draw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
 
 #pragma endregion
 };

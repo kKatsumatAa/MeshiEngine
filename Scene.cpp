@@ -16,7 +16,7 @@ void SceneState::SetScene(Scene* scene)
 //--------------------------------------------------------------------------------------
 void SceneLoad::Load()
 {
-	
+
 }
 
 void SceneLoad::Initialize()
@@ -109,10 +109,13 @@ void Scene1::Draw()
 	}
 	scene->draw[2].DrawModel(scene->draw[2].worldMat, &scene->camera->viewMat,
 		&scene->camera->projectionMat, scene->model[2]);
-	scene->draw[3].DrawSphere(scene->draw[3].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, { 1.0f,0.5f,0.2f,0.8f });
-	scene->draw[4].DrawCube3D(scene->draw[4].worldMat, &scene->camera->viewMat,
-		&scene->camera->projectionMat, { 1.0f,0.2f,0.7f,1.0f });
+	//scene->draw[3].DrawSphere(scene->draw[3].worldMat, &scene->camera->viewMat,
+	//	&scene->camera->projectionMat, { 1.0f,0.5f,0.2f,0.8f });
+	//scene->draw[4].DrawCube3D(scene->draw[4].worldMat, &scene->camera->viewMat,
+	//	&scene->camera->projectionMat, { 1.0f,0.2f,0.7f,1.0f });
+
+	scene->draw[5].DrawFBX(scene->draw[5].worldMat, &scene->camera->viewMat,
+		&scene->camera->projectionMat, scene->modelFBX, { 1.0f,0.2f,0.7f,1.0f });
 }
 
 void Scene1::DrawSprite()
@@ -309,7 +312,7 @@ void Scene5::Initialize()
 	objPlayer = Player::Create();
 	objPlayer->worldMat->scale = { 2,2,2 };
 	obj.worldMat->scale = { 5,5,5 };
-	obj.worldMat->rot = { 0,-pi/4.0f,0 };
+	obj.worldMat->rot = { 0,-pi / 4.0f,0 };
 	obj.SetCollider(new PlaneCollider());
 }
 
@@ -505,7 +508,7 @@ void Scene::Initialize()
 	}
 
 	//fbx“Ç‚İ‚İ
-	FbxLoader::GetInstance()->LoadModelFromFile("cube");
+	modelFBX = FbxLoader::GetInstance()->LoadModelFromFile("cube");
 
 	{
 		Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
@@ -541,6 +544,10 @@ void Scene::Initialize()
 	draw[4].worldMat->scale = { 5.0f,5.0f,5.0f };
 	draw[4].worldMat->trans = { -20.0f,0,-10.0f };
 	draw[4].worldMat->SetWorld();
+
+	draw[5].worldMat->scale = { 0.1f,0.1f,0.1f };
+	draw[5].worldMat->trans = { -20.0f,0,0 };
+	draw[5].worldMat->SetWorld();
 
 
 	//imgui
