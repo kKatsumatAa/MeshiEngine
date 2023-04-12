@@ -1,28 +1,24 @@
 #pragma once
-#include"Scene.h"
-#include"DebugText.h"
-#include"FbxLoader.h"
+#include"Framework.h"
 
 
 //ゲーム全体
-class MyGame
+class MyGame : public Framework
 {
 private:
-	Scene* scene;
 
-	MSG msg{};	//メッセージ
 
 public:
 	//初期化
-	void Initialize();
+	void Initialize() override;
 
 	//終了
-	void Finalize();
+	void Finalize() override;
 
 	//毎フレーム更新
-	bool Update();
+	bool Update() override;
 
 	//描画
-	void Draw();
+	void Draw() override;
 };
 

@@ -2,52 +2,33 @@
 
 void MyGame::Initialize()
 {
-	//コンソールへの文字入力
-	OutputDebugStringA("Hello,DirectX!!\n");
+	//基底クラスの初期化処理
+	Framework::Initialize();
+	
+	//ゲーム固有の初期化
 
-	//FBX
-	FbxLoader::GetInstance()->Initialize();
 
-	//初期化
-	WindowsApp::GetInstance();
-	DirectXWrapper::GetInstance().Initialize();
-
-	DrawInitialize();	
-
-	//キーボード入力初期化
-	KeyboardInput::GetInstance();
-
-	//シーン
-	scene = new Scene();
-	scene->Initialize();
 }
 
 void MyGame::Finalize()
 {
-	delete scene;
-
-	//FBX
-	FbxLoader::GetInstance()->Finalize();
+	//ゲーム固有の終了処理
 
 
-	//ウィンドウクラスを登録解除
-	WindowsApp::GetInstance().UnregisterClassA();
+	//基底クラスの終了処理
+	Framework::Finalize();
 }
 
 bool MyGame::Update()
 {
-	if (WindowsApp::GetInstance().MessegeRoop(msg))
+	//基底クラスの更新処理
+	if (Framework::Update())
 	{
 		return true;
 	}
 
-	//毎フレーム処理　ここから//
-	//キーボード情報の取得開始
-	KeyboardInput::GetInstance().Update();
-	PadInput::GetInstance().Update();
+	//ゲーム固有の更新処理
 
-	//更新処理
-	scene->Update();
 
 
 	return false;
