@@ -10,7 +10,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	game.Initialize();
 
 
-   //ゲームループ
+   //ゲームループ//
 	while (true) {
 
 		//ゲームの更新
