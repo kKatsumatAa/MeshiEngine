@@ -104,7 +104,7 @@ public:
 	void DrawSprite()override;
 };
 
-class SceneBasic : public SceneState
+class SceneTitle : public SceneState
 {
 private:
 
@@ -116,7 +116,7 @@ public:
 	void DrawSprite()override;
 };
 
-class Scene1 : public SceneState
+class SceneGame : public SceneState
 {
 private:
 
@@ -125,82 +125,5 @@ public:
 	void Initialize()override;
 	void Update()override;
 	void Draw()override;
-	void DrawSprite()override;
-};
-
-class Scene2 : public SceneState
-{
-private:
-	float pointLightPos[3] = { 0,0,-10 };
-	float pointLightColor[3] = { 1.0f,1.0f,1.0f };
-	float pointLightAtten[3] = { 0.01f,0.01f,0.01f };
-
-
-public:
-	void Initialize()override;
-	void Update() override;
-	void Draw() override;
-	void DrawSprite()override;
-};
-
-class Scene3 : public SceneState
-{
-private:
-	float spotLightDir[3] = { 0,-1,0 };
-	float spotLightPos[3] = { 0,30,0 };
-	float spotLightColor[3] = { 1.0f,1.0f,1.0f };
-	float spotLightAtten[3] = { 0.001f,0.001f,0.001f };
-	float spotLightFactorAngle[2] = { 10.0f,30.0f };
-
-public:
-	void Initialize()override;
-	void Update() override;
-	void Draw() override;
-	void DrawSprite()override;
-};
-
-class Scene4 : public SceneState
-{
-private:
-	//丸影
-	float circleShadowDir[3] = { 0,-1,0 };
-	float circleShadowAtten[3] = { 0.5f,0.15f,0 };
-	float circleShadowFactorAngle[2] = { 0,5.0f };
-	float circleShadowDistance = 100.0f;
-
-	float fighterPos[3] = { 1.0f,0,0 };
-
-public:
-	void Initialize()override;
-	void Update() override;
-	void Draw() override;
-	void DrawSprite()override;
-};
-
-class Scene5 : public SceneState
-{
-private:
-	//コライダー
-	Player* objPlayer;
-	CollisionManager* collisionManager;
-	Object obj;
-
-public:
-	void Initialize()override;
-	void Update() override;
-	void Draw() override;
-	void DrawSprite()override;
-};
-
-class Scene6 : public SceneState
-{
-private:
-	int count = 0;
-	const int countMax = 60;
-
-public:
-	void Initialize()override;
-	void Update() override;
-	void Draw() override;
 	void DrawSprite()override;
 };
