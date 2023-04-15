@@ -6,27 +6,15 @@
 #include"Camera.h"
 #include"Async.h"
 #include "PadInput.h"
+#include "SceneState.h"
+#include "SceneTitle.h"
+#include "SceneGame.h"
+#include "SceneLoad.h"
 
 class CollisionManager;
 class Player;
 
-
-class Scene;
-
-class SceneState
-{
-protected:
-	Scene* scene;
-
-public:
-	virtual void Initialize() = 0;
-	void SetScene(Scene* scene);
-	virtual void Update() = 0;
-	virtual void Draw() = 0;
-	virtual void DrawSprite() = 0;
-};
-
-class Scene
+class SceneManager final
 {
 private:
 	//状態（行動）
@@ -74,8 +62,19 @@ public:
 
 
 
+private:
+	~SceneManager();
+	SceneManager() { ; }
+
 public:
-	~Scene();
+	static SceneManager& GetInstance() { static SceneManager inst; return inst; }
+	//コピーコンストラクタを無効
+	SceneManager(const SceneManager& obj) = delete;
+	//代入演算子も
+	SceneManager& operator=(const SceneManager& obj) = delete;
+
+public:
+	//ステート変更
 	void ChangeState(SceneState* state);
 
 	void Initialize();
@@ -86,44 +85,4 @@ public:
 	void DrawSprite();
 
 	void StopWaveAllScene();
-};
-
-class SceneLoad : public SceneState
-{
-private:
-	int count = 0;
-	Async async;
-	Object loadObj;
-
-public:
-	void Load();
-
-	void Initialize()override;
-	void Update() override;
-	void Draw() override;
-	void DrawSprite()override;
-};
-
-class SceneTitle : public SceneState
-{
-private:
-
-
-public:
-	void Initialize()override;
-	void Update()override;
-	void Draw()override;
-	void DrawSprite()override;
-};
-
-class SceneGame : public SceneState
-{
-private:
-
-
-public:
-	void Initialize()override;
-	void Update()override;
-	void Draw()override;
-	void DrawSprite()override;
 };

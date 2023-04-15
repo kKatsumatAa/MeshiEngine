@@ -101,6 +101,7 @@
     <ClCompile Include="DrawIntNumImage.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="Framework.cpp" />
+    <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="GausianBuffer.cpp" />
     <ClCompile Include="GlassFilter.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -125,7 +126,10 @@
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="ProjectionMat.cpp" />
     <ClCompile Include="Quaternion.cpp" />
-    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneLoad.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SceneState.cpp" />
+    <ClCompile Include="SceneTitle.cpp" />
     <ClCompile Include="Shake.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
@@ -159,6 +163,7 @@
     <ClInclude Include="DrawIntNumImage.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="Framework.h" />
+    <ClInclude Include="SceneGame.h" />
     <ClInclude Include="GausianBuffer.h" />
     <ClInclude Include="GlassFilter.h" />
     <ClInclude Include="ImGuiManager.h" />
@@ -183,7 +188,10 @@
     <ClInclude Include="ProjectionMat.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="RaycastHit.h" />
-    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneLoad.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SceneState.h" />
+    <ClInclude Include="SceneTitle.h" />
     <ClInclude Include="Shake.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SphereCollider.h" />

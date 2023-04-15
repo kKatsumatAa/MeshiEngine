@@ -7,6 +7,8 @@ void MyGame::Initialize()
 	
 	//ゲーム固有の初期化
 
+	//シーン
+	sceneM->ChangeState(new SceneTitle);
 
 }
 
@@ -40,7 +42,7 @@ void MyGame::Draw()
 		DirectXWrapper::GetInstance().DrawUpdate();
 
 		// 4.描画コマンドここから　//-----------
-		scene->Draw();
+		sceneM->Draw();
 
 		//
 		DirectXWrapper::GetInstance().DrawUpdate2();
@@ -52,7 +54,7 @@ void MyGame::Draw()
 		DirectXWrapper::GetInstance().PreDrawToPera();
 
 		//
-		scene->DrawPostEffect();
+		sceneM->DrawPostEffect();
 
 		DirectXWrapper::GetInstance().PostDrawToPera();
 
@@ -62,9 +64,9 @@ void MyGame::Draw()
 		DirectXWrapper::GetInstance().PreDrawToPera2();
 
 		//
-		scene->DrawPostEffect2();
+		sceneM->DrawPostEffect2();
 
-		scene->DrawSprite();
+		sceneM->DrawSprite();
 
 		// 4.描画コマンドここまで //
 		DirectXWrapper::GetInstance().PostDrawToPera2();

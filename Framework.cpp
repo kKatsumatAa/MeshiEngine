@@ -17,15 +17,21 @@ void Framework::Initialize()
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
 
+	ParticleManager::GetInstance()->Initialize();
+
+	//Light
+	LightManager::StaticInitialize();
+
+	//model
+	Model::StaticInitialize();
+
 	//シーン
-	scene = new Scene();
-	scene->Initialize();
+	sceneM = &SceneManager::GetInstance();
+	sceneM->Initialize();
 }
 
 void Framework::Finalize()
 {
-	delete scene;
-
 	//FBX
 	FbxLoader::GetInstance()->Finalize();
 
@@ -46,7 +52,7 @@ bool Framework::Update()
 	PadInput::GetInstance().Update();
 
 	//更新処理
-	scene->Update();
+	sceneM->Update();
 
     return false;
 }

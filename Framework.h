@@ -1,5 +1,5 @@
 #pragma once
-#include"Scene.h"
+#include"SceneManager.h"
 #include"DebugText.h"
 #include"FbxLoader.h"
 
@@ -8,7 +8,7 @@
 class Framework
 {
 protected:
-	Scene* scene;
+	SceneManager* sceneM = nullptr;
 
 	MSG msg{};	//メッセージ
 
