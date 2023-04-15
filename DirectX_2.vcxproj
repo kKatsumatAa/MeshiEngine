@@ -101,6 +101,7 @@
     <ClCompile Include="DrawIntNumImage.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="Framework.cpp" />
+    <ClCompile Include="SceneFactory.cpp" />
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="GausianBuffer.cpp" />
     <ClCompile Include="GlassFilter.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="WorldMat.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbstractSceneFactory.h" />
     <ClInclude Include="Async.h" />
     <ClInclude Include="BaseCollider.h" />
     <ClInclude Include="Camera.h" />
@@ -163,6 +165,7 @@
     <ClInclude Include="DrawIntNumImage.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="Framework.h" />
+    <ClInclude Include="SceneFactory.h" />
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="GausianBuffer.h" />
     <ClInclude Include="GlassFilter.h" />

@@ -2,6 +2,7 @@
 #include"SceneManager.h"
 #include"DebugText.h"
 #include"FbxLoader.h"
+#include"AbstractSceneFactory.h"
 
 
 //ゲーム全体（共通処理）
@@ -11,6 +12,9 @@ protected:
 	SceneManager* sceneM = nullptr;
 
 	MSG msg{};	//メッセージ
+
+	//シーンファクトリー
+	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 
 public:

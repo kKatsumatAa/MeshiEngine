@@ -24,15 +24,18 @@ SceneManager::~SceneManager()
 
 }
 
-void SceneManager::ChangeState(SceneState* state)
+void SceneManager::ChangeScene(std::string sceneName)
 {
-	if (this->state) {
-		this->state->Finalize();
-		delete this->state;
-	}
-	this->state = state;
-	state->SetScene(this);
-	this->state->Initialize();
+	assert(sceneFactory_);
+
+	 if (this->state) {
+		 this->state->Finalize();
+		 delete this->state;
+	 }
+	 //シーンファクトリーでシーン生成
+	 this->state = sceneFactory_->CreateScene(sceneName);
+	 state->SetScene(this);
+	 this->state->Initialize();
 }
 
 void SceneManager::StopWaveAllScene()

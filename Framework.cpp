@@ -32,9 +32,11 @@ void Framework::Initialize()
 
 void Framework::Finalize()
 {
+	//シーンファクトリ解放
+	delete sceneFactory_;
+
 	//FBX
 	FbxLoader::GetInstance()->Finalize();
-
 
 	//ウィンドウクラスを登録解除
 	WindowsApp::GetInstance().UnregisterClassA();

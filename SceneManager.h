@@ -7,9 +7,8 @@
 #include"Async.h"
 #include "PadInput.h"
 #include "SceneState.h"
-#include "SceneTitle.h"
-#include "SceneGame.h"
-#include "SceneLoad.h"
+#include "AbstractSceneFactory.h"
+
 
 class CollisionManager;
 class Player;
@@ -17,8 +16,10 @@ class Player;
 class SceneManager final
 {
 private:
-	//状態（行動）
+	//シーンの状態（行動）
 	SceneState* state = nullptr;
+	//シーンファクトリー（ポインタを借りる）
+	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 public:
 	WorldMat cameraWorldMat;
@@ -74,8 +75,11 @@ public:
 	SceneManager& operator=(const SceneManager& obj) = delete;
 
 public:
-	//ステート変更
-	void ChangeState(SceneState* state);
+	//シーンステート変更
+	void ChangeScene(std::string sceneName);
+
+	//シーンファクトリーのセッター
+	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { this->sceneFactory_ = sceneFactory; }
 
 	void Initialize();
 	void Update();

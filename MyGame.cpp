@@ -1,4 +1,6 @@
 #include "MyGame.h"
+#include"SceneFactory.h"
+
 
 void MyGame::Initialize()
 {
@@ -7,9 +9,10 @@ void MyGame::Initialize()
 	
 	//ゲーム固有の初期化
 
-	//シーン
-	sceneM->ChangeState(new SceneTitle);
-
+	//シーンファクトリーを生成し、マネージャーにセット
+	sceneFactory_ = new SceneFactory();
+	sceneM->SetSceneFactory(sceneFactory_);
+	sceneM->ChangeScene("TITLE");
 }
 
 void MyGame::Finalize()

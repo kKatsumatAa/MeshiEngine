@@ -20,7 +20,7 @@ void SceneGame::Update()
 	//ƒV[ƒ“‘JˆÚ
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
 	{
-		sceneM->ChangeState(new SceneTitle);
+		sceneM->ChangeScene("TITLE");
 	}
 }
 
