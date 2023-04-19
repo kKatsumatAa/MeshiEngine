@@ -58,7 +58,7 @@ void SceneManager::Initialize()
 	}
 
 	//fbx“Ç‚Ýž‚Ý
-	modelFBX = FbxLoader::GetInstance()->LoadModelFromFile("cube");
+	modelFBX = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 
 	{
 		Sound::GetInstance().LoadWave("Stage_BGM.wav", false);

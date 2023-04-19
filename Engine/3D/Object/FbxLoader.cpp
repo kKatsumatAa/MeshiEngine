@@ -3,7 +3,7 @@
 
 using namespace DirectX;
 
-const std::string FbxLoader::defaultTexFileName = "white.png";
+const std::string FbxLoader::defaultTexFileName = "image/white.png";
 
 
 

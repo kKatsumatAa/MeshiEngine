@@ -37,7 +37,6 @@ void Material::Initialize()
 
 void Material::CreateConstantBuffer()
 {
-	HRESULT result;
 	// 定数バッファの生成
 	//ヒープ設定
 	D3D12_HEAP_PROPERTIES cbHeapProp{};

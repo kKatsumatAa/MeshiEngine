@@ -32,9 +32,6 @@ void LightManager::Initialize()
 
 	//定数バッファへデータ転送
 	TransferConstBuffer();
-
-	//点光源
-	PointLight::ConstBufferData pointLights[PointLightNum];
 }
 
 void LightManager::TransferConstBuffer()

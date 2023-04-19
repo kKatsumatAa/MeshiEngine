@@ -106,7 +106,7 @@ void Sound::LoadWave(const std::string& filename, const bool& isConvert)
 	ChunkHeader data;
 	file.read((char*)&data, sizeof(data));
 	//junkチャンクを検出したら
-	if (strncmp(data.id, "JUNK", 4) != isConvert)//引数によって変えられる
+	if ((strncmp(data.id, "JUNK", 4) > 0) != isConvert)//引数によって変えられる
 	{
 		//junkチャンクの最後まで読み飛ばす(読み取りヘッドを動かす)
 		file.seekg(data.size, std::ios_base::cur);
@@ -206,7 +206,7 @@ void Sound::StopWave(const std::string& filename)
 		}
 
 		//vectorを空にする
- 		soundData_.pSourceVoice.clear();
+		soundData_.pSourceVoice.clear();
 	}
 }
 Sound& Sound::GetInstance()

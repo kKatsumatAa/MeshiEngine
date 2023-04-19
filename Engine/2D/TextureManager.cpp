@@ -65,8 +65,9 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	assert(count <= srvCount - 1);
 
 	//読み込まれているかどうか
-	char namec[128];
+	char namec[128] = {};
 	ConstWCharTToChar(name, namec);
+
 	std::string fileName = namec;
 	{
 		//ファイル名から探す
@@ -136,7 +137,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 
 	//アップロードバッファ
 	// ヒープの設定
-	uint64_t uploadSize = GetRequiredIntermediateSize(texBuff[count].Get(), 0, metadata.mipLevels);
+	uint64_t uploadSize = GetRequiredIntermediateSize(texBuff[count].Get(), 0, (UINT)metadata.mipLevels);
 
 	D3D12_HEAP_PROPERTIES uploadHeapProp{};
 	uploadHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -178,7 +179,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 		uploadBuff.Get(),
 		0,
 		0,
-		metadata.mipLevels,
+		(UINT)metadata.mipLevels,
 		subResourcesDatas.data()
 	);
 
