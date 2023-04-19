@@ -106,6 +106,12 @@
     <Filter Include="ヘッダー ファイル\Engine\PostEffect">
       <UniqueIdentifier>{06310e1f-70bb-4773-8867-d21016d4fdad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\3D\Assimp">
+      <UniqueIdentifier>{db463434-2f88-4178-82f5-3b1f811d3713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\3D\Assimp">
+      <UniqueIdentifier>{d1a202a8-3aef-44d7-8270-435847bd333e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -525,5 +531,6 @@
     <None Include="Resources\shaders\Sprite.hlsli">
       <Filter>リソース ファイル\shaders</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
