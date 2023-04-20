@@ -7,7 +7,7 @@ void ModelFBX::CreateBuffers()
 
 	//頂点データ全体のサイズ
 	UINT sizeVB =
-		static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
+		static_cast<UINT>(sizeof(VertexPosNormalUvSkin) * vertices.size());
 	//頂点バッファ生成
 	D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
 	//頂点バッファの設定		//ヒープ設定
@@ -19,7 +19,7 @@ void ModelFBX::CreateBuffers()
 	BuffProperties(heapProp, resDesc, vertBuff.GetAddressOf());
 
 	//頂点バッファへのデータ転送
-	VertexPosNormalUv* vertMap = nullptr;
+	VertexPosNormalUvSkin* vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	if (SUCCEEDED(result))
 	{

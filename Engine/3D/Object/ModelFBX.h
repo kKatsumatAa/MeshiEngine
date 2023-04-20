@@ -7,6 +7,7 @@
 #include <wrl.h>
 #include <d3d12.h>
 #include <d3dx12.h>
+#include <fbxsdk.h>
 
 
 struct Node
@@ -47,13 +48,35 @@ public:
 	//フレンドクラス
 	friend class FbxLoader;
 
+public://定数
+	//ボーンインデックス（影響を受けるボーン）の最大数
+	static const int MAX_BONE_INDICES = 4;//hlslのfloat4に対応するため"4"
+
 public://サブクラス
 	//頂点データ構造体
-	struct VertexPosNormalUv
+	struct VertexPosNormalUvSkin
 	{
 		DirectX::XMFLOAT3 pos;//座標
 		DirectX::XMFLOAT3 normal;//法線ベクトル
 		DirectX::XMFLOAT2 uv;//uv座標
+		UINT bonIndex[MAX_BONE_INDICES];//影響を受けるボーン　番号
+		float bonWeight[MAX_BONE_INDICES];//ボーン　重み
+	};
+
+	//ボーン構造体
+	struct Bone
+	{
+		//名前
+		std::string name;
+		//初期姿勢の逆行列
+		DirectX::XMMATRIX invInitialPose;
+		//クラスター(FBX側のボーン情報)
+		FbxCluster* fbxCluster;
+		//コンストラクタ
+		Bone(const std::string& name)
+		{
+			this->name = name;
+		}
 	};
 
 #pragma region 変数
@@ -65,7 +88,7 @@ private:
 	//メッシュを持つノード
 	Node* meshNode = nullptr;
 	//頂点データ配列
-	std::vector<VertexPosNormalUv> vertices;
+	std::vector<VertexPosNormalUvSkin> vertices;
 	//頂点インデックス配列
 	std::vector<unsigned short> indices;
 
@@ -87,9 +110,13 @@ private:
 	//SRV用デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeapSRV;
 
+	//ボーン配列
+	std::vector<Bone> bones;
+
 public:
 	//テクスチャ
 	UINT64 texhandle = NULL;
+
 
 #pragma endregion
 
@@ -106,6 +133,10 @@ public:
 
 	//描画
 	void Draw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
+
+public:
+	//getter
+	std::vector<Bone>& GetBones() { return bones; }
 
 #pragma endregion
 };

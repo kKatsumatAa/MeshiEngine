@@ -94,7 +94,7 @@ void SceneManager::Initialize()
 	draw[4].worldMat->trans = { -20.0f,0,-10.0f };
 	draw[4].worldMat->SetWorld();
 
-	draw[5].worldMat->scale = { 0.1f,0.1f,0.1f };
+	draw[5].worldMat->scale = { 2.0f,2.0f,2.0f };
 	draw[5].worldMat->trans = { -20.0f,0,0 };
 	draw[5].worldMat->SetWorld();
 

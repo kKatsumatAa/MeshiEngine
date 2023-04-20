@@ -153,17 +153,19 @@ void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode)
 	ParseMeshFaces(model, fbxMesh);
 	//マテリアルの読み取り
 	ParseMaterial(model, fbxNode);
+	//スキニング情報の読み取り
+	PerseSkin(model, fbxMesh);
 }
 
 void FbxLoader::ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh)
 {
-	std::vector<ModelFBX::VertexPosNormalUv>& vertices = model->vertices;
+	std::vector<ModelFBX::VertexPosNormalUvSkin>& vertices = model->vertices;
 
 	//頂点座標データの数(コントロールポイントとは、1つ分の頂点データのこと)
 	const int controlPointsCount =
 		fbxMesh->GetControlPointsCount();
 	//必要数だけ頂点データ配列を確保
-	ModelFBX::VertexPosNormalUv vert{};
+	ModelFBX::VertexPosNormalUvSkin vert{};
 	model->vertices.resize(controlPointsCount, vert);
 
 	//FBXメッシュの頂点座標配列を取得
@@ -172,7 +174,7 @@ void FbxLoader::ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh)
 	//fbxメッシュの全頂点座標をモデル内の配列にコピーする
 	for (int i = 0; i < controlPointsCount; i++)
 	{
-		ModelFBX::VertexPosNormalUv& vertex = vertices[i];
+		ModelFBX::VertexPosNormalUvSkin& vertex = vertices[i];
 		//座標のコピー
 		vertex.pos.x = (float)pCoord[i][0];
 		vertex.pos.y = (float)pCoord[i][1];
@@ -183,7 +185,7 @@ void FbxLoader::ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh)
 
 void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh)
 {
-	std::vector<ModelFBX::VertexPosNormalUv>& vertices = model->vertices;
+	std::vector<ModelFBX::VertexPosNormalUvSkin>& vertices = model->vertices;
 	std::vector<unsigned short>& indices = model->indices;
 
 	//1ファイルに複数メッシュのモデルは非対応
@@ -211,7 +213,7 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh)
 			assert(index >= 0);
 
 			//頂点法線読み込み
-			ModelFBX::VertexPosNormalUv& vertex = vertices[index];
+			ModelFBX::VertexPosNormalUvSkin& vertex = vertices[index];
 			FbxVector4 normal;
 			//取得できれば
 			if (fbxMesh->GetPolygonVertexNormal(i, j, normal))
@@ -343,4 +345,55 @@ std::string FbxLoader::ExtractFileName(const std::string& path)
 	}
 
 	return path;
+}
+
+void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src)
+{
+	//行
+	for (int i = 0; i < 4; i++)
+	{
+		//列
+		for (int j = 0; j < 4; j++)
+		{
+			//1要素コピー
+			dst->r[i].m128_f32[j] = (float)src.Get(i, j);
+		}
+	}
+}
+
+void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
+{
+	//(今は１スキンのみの前提で実装)
+
+	//スキニング情報
+	FbxSkin* fbxSkin =
+		static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
+	//スキニング情報がなければ終了
+	if (fbxSkin == nullptr)
+	{
+		return;
+	}
+
+	//ボーン配列の参照
+	std::vector<ModelFBX::Bone>& bones = model->bones;
+
+	//ボーンの数
+	int clusterCount = fbxSkin->GetClusterCount();
+	bones.reserve(clusterCount);
+
+	//全てのボーンについて
+	for (int i = 0; i < clusterCount; i++)
+	{
+		//fbxボーン情報
+		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
+
+		//ボーン事態のノードの名前を取得
+		const char* boneName = fbxCluster->GetLink()->GetName();
+
+		//詳しくボーンを追加し、追加したボーンの参照を得る
+		bones.emplace_back(ModelFBX::Bone(boneName));
+		ModelFBX::Bone& bone = bones.back();
+		//自作ボーンとfbxのボーンを紐づける
+		bone.fbxCluster = fbxCluster;
+	}
 }
