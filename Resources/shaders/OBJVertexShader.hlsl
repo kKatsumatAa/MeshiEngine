@@ -58,8 +58,8 @@ VSOutput main(float4 pos : POSITION, float3 normal : NORMAL,
 {
 	SkinOutput input = { pos,normal,boneIndices ,boneWeights };
 	//スキニング計算
-	//SkinOutput skinned = ComputeSkin(input);
-	SkinOutput skinned = input;
+	SkinOutput skinned = ComputeSkin(input);
+	//SkinOutput skinned = input;
 
 	//法線にワールド行列によるスケーリング・回転を適用
 	float4 wnormal = normalize(mul(world, float4(skinned.normal, 0)));
