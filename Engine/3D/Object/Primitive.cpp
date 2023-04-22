@@ -668,7 +668,7 @@ void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, size_t vertexCoun
 	//マテリアルとかテクスチャ
 	setMaterialLightTex();
 
-	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced(indicesCount, 1, 0, 0, 0); // 全ての頂点を使って描画
+	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((UINT)indicesCount, 1, 0, 0, 0); // 全ての頂点を使って描画
 }
 
 void Primitive::TriangleDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)

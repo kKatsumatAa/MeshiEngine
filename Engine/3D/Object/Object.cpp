@@ -3,7 +3,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
 #include "BaseCollider.h"
 #include "CollisionManager.h"
 
@@ -14,7 +13,7 @@ Primitive primitive;
 //テクスチャ
 
 // 頂点レイアウト
-D3D12_INPUT_ELEMENT_DESC inputLayout[3] = {
+D3D12_INPUT_ELEMENT_DESC inputLayout[5] = {
 {//xyz座標
  "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
  D3D12_APPEND_ALIGNED_ELEMENT,
@@ -31,7 +30,19 @@ D3D12_INPUT_ELEMENT_DESC inputLayout[3] = {
  "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
  D3D12_APPEND_ALIGNED_ELEMENT,
  D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-} // (1行で書いたほうが見やすい)
+}, // (1行で書いたほうが見やすい)
+
+{//影響を受けるボーン番号
+ "BONEINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0,
+ D3D12_APPEND_ALIGNED_ELEMENT,
+ D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+},
+
+{//ボーンのスキンウェイト（4つ）
+ "BONEWEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
+ D3D12_APPEND_ALIGNED_ELEMENT,
+ D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+}
 };
 
 //sprite
@@ -56,7 +67,7 @@ PipeLineSet pipelineSetM;
 PipeLineSet pipelineSetFBX;
 
 //ルートパラメータの設定
-D3D12_ROOT_PARAMETER rootParams[6] = {};
+D3D12_ROOT_PARAMETER rootParams[7] = {};
 
 // パイプランステートの生成
 ComPtr < ID3D12PipelineState> pipelineState[3] = { nullptr };
@@ -126,6 +137,11 @@ void DrawInitialize()
 	rootParams[5].Descriptor.ShaderRegister = 4;//定数バッファ番号(b4)
 	rootParams[5].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//定数バッファ5番（スキニング用）
+	rootParams[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams[6].Descriptor.ShaderRegister = 5;//定数バッファ番号(b5)
+	rootParams[6].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 
 	// パイプランステートの生成
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob);
@@ -181,6 +197,11 @@ bool Object::Initialize()
 
 Object::~Object()
 {
+	delete this->sprite;
+	//delete& this->cbt;
+	constBuffMaterial.Reset();
+	constBuffSkin.Reset();
+
 	if (collider)
 	{
 		CollisionManager::GetInstance()->RemoveCollider(collider);
@@ -230,10 +251,12 @@ void Object::SetIs2D(bool is2D)
 
 Object::Object()
 {
-	//行列
+	Object::Initialize();
+
+	//トランスフォーム行列
 	cbt.Initialize(DirectXWrapper::GetInstance());
 
-	//03_02
+	//マテリアルバッファ（色）
 	//ヒープ設定
 	D3D12_HEAP_PROPERTIES cbHeapProp{};
 	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
@@ -246,6 +269,27 @@ Object::Object()
 	//定数バッファのマッピング
 	DirectXWrapper::GetInstance().result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
 	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+
+	//if (this->constBuffSkin.Get() == nullptr)
+	{
+		//スキンのバッファ
+		//ヒープ設定
+		D3D12_RESOURCE_DESC cbResourceDesc{}; D3D12_HEAP_PROPERTIES cbHeapProp{};
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+		//リソース設定
+		ResourceProperties(cbResourceDesc,
+			((UINT)sizeof(ConstBufferDataSkin) + 0xff) & ~0xff/*256バイトアライメント*/);
+		//定数バッファの生成
+		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffSkin);
+		//マッピング
+		ConstBufferDataSkin* constMapSkin = nullptr;
+		constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
+		for (UINT i = 0; i < MAX_BONES; i++)
+		{
+			constMapSkin->bones[i] = XMMatrixIdentity();
+		}
+		constBuffSkin->Unmap(0, nullptr);
+	}
 }
 
 void Object::SendingMat(int indexNum)
@@ -273,6 +317,31 @@ void Object::SendingMat(int indexNum)
 	}
 }
 
+void Object::SendingBoneData(ModelFBX* model)
+{
+	HRESULT result = {};
+
+	//モデルのボーン配列
+	std::vector<ModelFBX::Bone>& bones = model->GetBones();
+
+	//定数バッファへデータ転送
+	ConstBufferDataSkin* constMapSkin = nullptr;
+	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
+	for (int i = 0; i < bones.size(); i++)
+	{
+		//今の姿勢行列
+		XMMATRIX matCurrentPose;
+		//今の姿勢行列を取得
+		FbxAMatrix fbxCurrentPose =
+			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
+		//xmmatrixに変換
+		FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+		//初期姿勢の逆行列と今の姿勢行列を合成してスキニング行列に
+		constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
+	}
+	constBuffSkin->Unmap(0, nullptr);
+}
+
 void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int pipelineNum, ID3D12RootSignature* rootSignature)
 {
 	// パイプラインステートとルートシグネチャの設定コマンド
@@ -281,7 +350,7 @@ void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int pipelineNum, ID
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature);
 }
 
-void Object::SetMaterialLightMTex(UINT64 textureHandle_, ConstBuffTransform cbt)
+void Object::SetMaterialLightMTexSkin(UINT64 textureHandle_, ConstBuffTransform cbt)
 {
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
@@ -301,7 +370,22 @@ void Object::SetMaterialLightMTex(UINT64 textureHandle_, ConstBuffTransform cbt)
 	//定数バッファビュー(CBV)の設定コマンド
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, cbt.constBuffTransform->GetGPUVirtualAddress());
 
+	//演出フラグ
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
+}
+
+void Object::SetMaterialLightMTexSkinModel(UINT64 textureHandle_, ConstBuffTransform cbt, Material* material)
+{
+	SetMaterialLightMTexSkin(textureHandle_, cbt);
+
+	//アンビエントとか
+	material->Update();
+	ID3D12Resource* constBuff = material->GetConstantBuffer();
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, constBuff->GetGPUVirtualAddress());
+
+	//スキニング用
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(6, constBuffSkin->GetGPUVirtualAddress());
+
 }
 
 void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
@@ -340,7 +424,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 
 	//ラムダ式でコマンド関数
 	std::function<void()>SetRootPipeR = [=]() {SetRootPipe(pipelineState->Get(), pipelineNum, rootSignature.Get()); };
-	std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTex(textureHandle_, constBuffTransform); };
+	std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkin(textureHandle_, constBuffTransform); };
 
 	if (indexNum == TRIANGLE)
 	{
@@ -404,14 +488,19 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
 
+		//スキニング用
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(6, constBuffSkin->GetGPUVirtualAddress());
+
 		//モデル用描画
 		model->Draw();
 	}
 	else if (indexNum == FBX)
 	{
+		SendingBoneData(fbx);
+
 		//ラムダ式でコマンド関数
 		std::function<void()>SetRootPipeR = [=]() {SetRootPipe(pipelineSetFBX.pipelineState.Get(), 0, pipelineSetFBX.rootSignature.Get()); };
-		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTex(fbx->texhandle, constBuffTransform); };
+		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(fbx->material->textureHandle, constBuffTransform, fbx->material); };
 
 		fbx->Draw(SetRootPipeR, SetMaterialTex);
 	}
@@ -593,7 +682,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 		// エラーなら
 		Error(FAILED(DirectXWrapper::GetInstance().result));
 	}
-	else if (indexNum == MODEL)
+	else if (indexNum == MODEL || indexNum == FBX)
 	{
 		// 頂点シェーダの読み込みとコンパイル
 		DirectXWrapper::GetInstance().result = D3DCompileFromFile(
@@ -621,34 +710,6 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 		// エラーなら
 		Error(FAILED(DirectXWrapper::GetInstance().result));
 	}
-	//else if (indexNum == FBX)
-	//{
-	//	// 頂点シェーダの読み込みとコンパイル
-	//	DirectXWrapper::GetInstance().result = D3DCompileFromFile(
-	//		L"Resources/shaders/FBXVS.hlsl", // シェーダファイル名
-	//		nullptr,
-	//		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-	//		"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
-	//		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-	//		0,
-	//		&vsBlob, &errorBlob);
-
-	//	// エラーなら
-	//	Error(FAILED(DirectXWrapper::GetInstance().result));
-
-	//	// ピクセルシェーダの読み込みとコンパイル
-	//	DirectXWrapper::GetInstance().result = D3DCompileFromFile(
-	//		L"Resources/shaders/FBXPS.hlsl", // シェーダファイル名
-	//		nullptr,
-	//		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-	//		"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
-	//		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-	//		0,
-	//		&psBlob, &errorBlob);
-
-	//	// エラーなら
-	//	Error(FAILED(DirectXWrapper::GetInstance().result));
-	//}
 	else
 	{
 		// 頂点シェーダの読み込みとコンパイル

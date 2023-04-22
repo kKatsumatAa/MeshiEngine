@@ -53,8 +53,8 @@ void PadInput::CreateDevice()
 	diprg.diph.dwHeaderSize = sizeof(diprg.diph);
 	diprg.diph.dwHow = DIPH_BYOFFSET;
 	diprg.diph.dwObj = DIJOFS_X;
-	diprg.lMin = -stickRange;
-	diprg.lMax = stickRange;
+	diprg.lMin = (LONG)-stickRange;
+	diprg.lMax = (LONG)stickRange;
 	result = gamePad->SetProperty(DIPROP_RANGE, &diprg.diph);
 	assert(SUCCEEDED(result));
 
@@ -151,7 +151,7 @@ Vec2 PadInput::GetLeftStickTilt()
 	{
 		// スティックの方向判定
 	// 無反応範囲
-		long unresponsive_range = this->stickRange / 5.0f;
+		long unresponsive_range = (long)(this->stickRange / 5.0f);
 
 		if (padData.lX< -unresponsive_range || padData.lX > unresponsive_range
 			|| padData.lY < -unresponsive_range || padData.lY > unresponsive_range)
@@ -175,7 +175,7 @@ Vec2 PadInput::GetRightStickTilt()
 	if (gamePad != NULL)
 	{
 		// 無反応範囲
-		long unresponsive_range = this->stickRRange / 5.0f;
+		long unresponsive_range = (long)(this->stickRRange / 5.0f);
 
 		if (padData.lRx - stickRRange<-unresponsive_range || padData.lRx - stickRRange > unresponsive_range
 			|| padData.lRy - stickRRange<-unresponsive_range || padData.lRy - stickRRange > unresponsive_range)

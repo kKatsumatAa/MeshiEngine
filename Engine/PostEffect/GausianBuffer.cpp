@@ -26,7 +26,7 @@ void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle, ID3D12De
 
 		//リソース設定
 		ResourceProperties(cbResourceDesc,
-			(AligmentSize(sizeof(weights[0]) * weights.size(), 256)));
+			(UINT)AligmentSize(sizeof(weights[0]) * weights.size(), 256));
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &buff);
 
@@ -44,7 +44,7 @@ void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle, ID3D12De
 
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 	cbvDesc.BufferLocation = buff->GetGPUVirtualAddress();
-	cbvDesc.SizeInBytes = buff->GetDesc().Width;
+	cbvDesc.SizeInBytes = (UINT)buff->GetDesc().Width;
 
 	device.CreateConstantBufferView(&cbvDesc, peraHandle);
 }

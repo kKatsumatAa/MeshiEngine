@@ -77,8 +77,6 @@ ParticleManager* ParticleManager::GetInstance()
 
 void ParticleManager::Initialize()
 {
-	HRESULT result;
-
 	// パイプライン初期化
 	InitializeGraphicsPipeline();
 

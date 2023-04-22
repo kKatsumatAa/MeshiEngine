@@ -276,17 +276,27 @@ void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
 			{
 				FbxSurfaceLambert* lambert = static_cast<FbxSurfaceLambert*>(material);
 
+				if (model->material == nullptr)
+				{
+					model->material = Material::Create();
+				}
 				//環境光係数
 				FbxPropertyT<FbxDouble3> ambient = lambert->Ambient;
-				model->ambient.x = (float)ambient.Get()[0];
-				model->ambient.y = (float)ambient.Get()[1];
-				model->ambient.z = (float)ambient.Get()[2];
+				model->material->ambient.x = 0.06f;
+				model->material->ambient.y = 0.06f;
+				model->material->ambient.z = 0.06f;
 
 				//拡散反射光係数
 				FbxPropertyT<FbxDouble3> diffuse = lambert->Diffuse;
-				model->diffuse.x = (float)diffuse.Get()[0];
-				model->diffuse.y = (float)diffuse.Get()[1];
-				model->diffuse.z = (float)diffuse.Get()[2];
+				model->material->diffuse.x = (float)diffuse.Get()[0];
+				model->material->diffuse.y = (float)diffuse.Get()[1];
+				model->material->diffuse.z = (float)diffuse.Get()[2];
+
+				//alpha
+				model->material->alpha = 1.0f;
+
+				//specular
+				model->material->specular = XMFLOAT3{ 0.1f,0.1f,0.1f };
 			}
 
 			//ディフューズテクスチャを取り出す
@@ -322,7 +332,7 @@ void FbxLoader::LoadTexture(ModelFBX* model, const std::string& fullpath)
 	wchar_t wfilepath[128];
 	MultiByteToWideChar(CP_ACP, 0, fullpath.c_str(), -1, wfilepath, _countof(wfilepath));
 
-	TextureManager::GetInstance().LoadGraph(wfilepath, model->texhandle);
+	TextureManager::GetInstance().LoadGraph(wfilepath, model->material->textureHandle);
 
 }
 

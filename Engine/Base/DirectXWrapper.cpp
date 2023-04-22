@@ -82,8 +82,8 @@ void DirectXWrapper::InitializeCommand()
 void DirectXWrapper::InitializeSwapchain()
 {
 	//スワップチェーン設定
-	swapChainDesc.Width = WindowsApp::GetInstance().window_width;
-	swapChainDesc.Height = WindowsApp::GetInstance().window_height;
+	swapChainDesc.Width = (UINT)WindowsApp::GetInstance().window_width;
+	swapChainDesc.Height = (UINT)WindowsApp::GetInstance().window_height;
 	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 色情報の書式
 	swapChainDesc.SampleDesc.Count = 1; // マルチサンプルしない
 	swapChainDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER; // バックバッファ用
@@ -712,7 +712,7 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 
 	//アップロードバッファ
 	// ヒープの設定
-	uint64_t uploadSize = GetRequiredIntermediateSize(texBuff.Get(), 0, metadata.mipLevels);
+	uint64_t uploadSize = GetRequiredIntermediateSize(texBuff.Get(), 0, (UINT)metadata.mipLevels);
 
 	D3D12_HEAP_PROPERTIES uploadHeapProp{};
 	uploadHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -754,7 +754,7 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 		uploadBuff.Get(),
 		0,
 		0,
-		metadata.mipLevels,
+		(UINT)metadata.mipLevels,
 		subResourcesDatas.data()
 	);
 

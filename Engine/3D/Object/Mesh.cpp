@@ -73,7 +73,7 @@ void Mesh::SetMaterial(Material* material)
 
 void Mesh::CreateBuffers()
 {
-	HRESULT result;
+	HRESULT result = {};
 
 	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
 	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
@@ -84,10 +84,10 @@ void Mesh::CreateBuffers()
 	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeVB);
 
 	// 頂点バッファ生成
-	DirectXWrapper::GetInstance().result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
 		&heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
 		IID_PPV_ARGS(&vertBuff));
-	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+	assert(SUCCEEDED(result));
 
 
 	// 頂点バッファへのデータ転送

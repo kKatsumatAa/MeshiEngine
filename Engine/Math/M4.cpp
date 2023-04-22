@@ -120,7 +120,6 @@ void M4::SetTranslationMatrix(const Vec3& v3)
 void M4::SetInverseMatrix()
 {
 	double inv[16], det;
-	int i;
 	double m[16];
 
 	for (int i = 0; i < 4; i++)
@@ -325,7 +324,7 @@ void M4::PutinXMMATRIX(const XMMATRIX& xM)
 
 Vec3 operator*(const Vec3& v, const M4& m2)
 {
-	float w = v.x * m2.m[0][3] + v.y * m2.m[1][3] + v.z * m2.m[2][3] + m2.m[3][3];
+	float w = (float)(v.x * m2.m[0][3] + v.y * m2.m[1][3] + v.z * m2.m[2][3] + m2.m[3][3]);
 
 	Vec3 result
 	{

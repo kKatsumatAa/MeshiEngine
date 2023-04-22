@@ -8,6 +8,7 @@
 #include <d3d12.h>
 #include <d3dx12.h>
 #include <fbxsdk.h>
+#include "Material.h"
 
 
 struct Node
@@ -92,11 +93,6 @@ private:
 	//頂点インデックス配列
 	std::vector<unsigned short> indices;
 
-	// アンビエント影響度
-	XMFLOAT3 ambient;	
-	// ディフューズ影響度
-	XMFLOAT3 diffuse;	
-
 	//頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
 	//インデックスバッファ
@@ -117,8 +113,8 @@ private:
 	FbxScene* fbxScene = nullptr;
 
 public:
-	//テクスチャ
-	UINT64 texhandle = NULL;
+	//アンビエントなど
+	Material* material;
 
 
 #pragma endregion

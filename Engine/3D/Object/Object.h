@@ -5,7 +5,7 @@
 #include "LightManager.h"
 #include"CollisionInfo.h"
 #include "PostPera.h"
-#include "ModelFBX.h"
+#include <FbxLoader.h>
 
 class BaseCollider;
 
@@ -41,27 +41,11 @@ private:
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
 
-
+	//スプライト
 	Sprite* sprite;
 
 	//ライト
 	static LightManager* lightManager;
-
-
-
-private:
-	//--------------------
-	void Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
-		Model* model = nullptr, ModelFBX* fbx = nullptr, const bool& primitiveMode = true);
-
-	//行列送信
-	void SendingMat(int indexNum);
-
-	//ルートシグネチャ系のコマンド
-	void SetRootPipe(ID3D12PipelineState* pipelineState, int pipelineNum, ID3D12RootSignature* rootSignature);
-	//マテリアル、ライト、テクスチャ系のコマンド
-	void SetMaterialLightMTex(UINT64 textureHandle_, ConstBuffTransform cbt);
-
 
 public://変数
 	WorldMat* worldMat = new WorldMat();
@@ -74,11 +58,41 @@ public://変数
 	static ComPtr <ID3D12Resource> effectFlagsBuff;
 	static EffectConstBuffer* mapEffectFlagsBuff;
 
+	//ボーンの最大数
+	static const int MAX_BONES = 32;
+	//定数バッファ（スキン）
+	ComPtr<ID3D12Resource> constBuffSkin = nullptr;
+
+public:
+	//定数バッファ用データ構造体（スキニング）
+	struct ConstBufferDataSkin
+	{
+		XMMATRIX bones[MAX_BONES];
+	};
+
 protected://継承先まで公開
 	//クラス名(デバッグ用)
 	const char* name = nullptr;
 	//コライダー
 	BaseCollider* collider = nullptr;
+
+
+private:
+	//--------------------
+	void Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
+		Model* model = nullptr, ModelFBX* fbx = nullptr, const bool& primitiveMode = true);
+
+	//行列送信
+	void SendingMat(int indexNum);
+
+	//ボーンのデータ転送
+	void SendingBoneData(ModelFBX* model);
+
+	//ルートシグネチャ系のコマンド
+	void SetRootPipe(ID3D12PipelineState* pipelineState, int pipelineNum, ID3D12RootSignature* rootSignature);
+	//マテリアル、ライト、テクスチャ系のコマンド
+	void SetMaterialLightMTexSkin(UINT64 textureHandle_, ConstBuffTransform cbt);
+	void SetMaterialLightMTexSkinModel(UINT64 textureHandle_, ConstBuffTransform cbt, Material* material);
 
 
 public:
