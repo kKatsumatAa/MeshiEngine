@@ -68,8 +68,8 @@ ModelFBX* FbxLoader::LoadModelFromFile(const string& modelName)
 	model->nodes.reserve(nodeCount);
 	//ルートノートから順に解析してモデルに流し込む
 	ParseNodeRecursive(model, fbxScene->GetRootNode());
-	//fbxシーン開放
-	fbxScene->Destroy();
+	//fbxシーンをモデルに持たせて、モデルごとに解放
+	model->fbxScene = fbxScene;
 
 	//バッファ生成
 	model->CreateBuffers();
@@ -387,13 +387,98 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 		//fbxボーン情報
 		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
 
-		//ボーン事態のノードの名前を取得
+		//ボーン自体のノードの名前を取得
 		const char* boneName = fbxCluster->GetLink()->GetName();
 
-		//詳しくボーンを追加し、追加したボーンの参照を得る
+		//新しくボーンを追加し、追加したボーンの参照を得る
 		bones.emplace_back(ModelFBX::Bone(boneName));
 		ModelFBX::Bone& bone = bones.back();
 		//自作ボーンとfbxのボーンを紐づける
 		bone.fbxCluster = fbxCluster;
+
+		//fbxから初期姿勢行列を取得
+		FbxAMatrix fbxMat;
+		fbxCluster->GetTransformLinkMatrix(fbxMat);
+
+		//XMMatrix型に変換
+		XMMATRIX initialPose;
+		ConvertMatrixFromFbx(&initialPose, fbxMat);
+
+		//初期姿勢行列の逆行列を得る(スキニング処理に使うのは逆行列)
+		bone.invInitialPose = XMMatrixInverse(nullptr, initialPose);
+	}
+
+	//ボーン番号とスキンウェイとのペア
+	struct WeightSet
+	{
+		UINT index;
+		float weight;
+	};
+
+	//二次元配列（ジャグ配列）
+	//list  :頂点が影響を受けるボーンの全リスト
+	//vector:それを全頂点分
+	std::vector<std::list<WeightSet>> weightLists(model->vertices.size());
+	
+	//全てのボーンについて
+	for (int i = 0; i < clusterCount; i++)
+	{
+		//fbxボーン情報
+		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
+		//このボーンに影響を受ける頂点の数
+		int controlPointIndicesCount = fbxCluster->GetControlPointIndicesCount();
+		//このボーンに影響を受ける頂点の配列
+		int* controlPointIndices = fbxCluster->GetControlPointIndices();
+		double* controlPointWeights = fbxCluster->GetControlPointWeights();
+
+		//影響を受ける全頂点について
+		for (int j = 0; j < controlPointIndicesCount; j++)
+		{
+			//頂点番号
+			int vertIndex = controlPointIndices[j];
+			//スキンウェイト
+			float weight = (float)controlPointWeights[j];
+			//その頂点の影響を受けるボーンリストに、ボーンとウェイトのペアを追加
+			weightLists[vertIndex].emplace_back(WeightSet{ (UINT)i,weight });
+		}
+	}
+
+	//頂点配列書き換え用の参照
+	auto& vertices = model->vertices;
+	//各頂点について処理
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		//頂点のウェイトから最も大きい4つを選択
+		auto& weightList = weightLists[i];
+		//大小比較用のラムダ式を指定して降順にソート
+		weightList.sort(
+			[](auto const& lhs, auto const& rhs)
+			{
+				//左の要素の方が大きければtrue,そうでなければfalse
+				return lhs.weight > rhs.weight;
+			}
+		);
+
+		int weightArrayIndex = 0;
+		//降順ソート済みのウェイトリストから
+		for (auto& weightSet : weightList)
+		{
+			//頂点データに書き込み
+			vertices[i].bonIndex[weightArrayIndex] = weightSet.index;
+			vertices[i].bonWeight[weightArrayIndex] = weightSet.weight;
+			//4つに達したら終了
+			if (++weightArrayIndex >= ModelFBX::MAX_BONE_INDICES)
+			{
+				float weight = 0.0f;
+				//2番目以降のウェイトを合計
+				for (int j = 1; j < ModelFBX::MAX_BONE_INDICES; j++)
+				{
+					weight += vertices[i].bonWeight[i];
+				}
+				//合計で1.0f(100%)になるように調整
+				vertices[i].bonWeight[0] = 1.0f - weight;
+				break;
+			}
+		}
 	}
 }

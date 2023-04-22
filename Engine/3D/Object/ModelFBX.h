@@ -113,6 +113,9 @@ private:
 	//ボーン配列
 	std::vector<Bone> bones;
 
+	//FBXシーン
+	FbxScene* fbxScene = nullptr;
+
 public:
 	//テクスチャ
 	UINT64 texhandle = NULL;
@@ -125,6 +128,8 @@ private:
 
 
 public:
+	~ModelFBX();
+
 	//モデルの変形行列を取得
 	const XMMATRIX& GetModelFBXTransform() { return meshNode->globalTransform; }
 
@@ -137,6 +142,8 @@ public:
 public:
 	//getter
 	std::vector<Bone>& GetBones() { return bones; }
+
+	FbxScene* GetFbxScene() { return fbxScene; }
 
 #pragma endregion
 };

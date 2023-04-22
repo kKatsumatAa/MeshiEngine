@@ -1,6 +1,12 @@
 #include "ModelFBX.h"
 #include "DirectXWrapper.h"
 
+ModelFBX::~ModelFBX()
+{
+	//fbxƒV[ƒ“‚Ì‰ð•ú
+	fbxScene->Destroy();
+}
+
 void ModelFBX::CreateBuffers()
 {
 	HRESULT result;//
