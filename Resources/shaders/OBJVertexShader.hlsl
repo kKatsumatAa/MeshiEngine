@@ -13,13 +13,6 @@ struct SkinOutput
 //スキニング計算
 SkinOutput ComputeSkin(SkinOutput input)
 {
-	//うまくウェイトが入ってなかったら
-	if ((input.boneWeights.x + input.boneWeights.y + input.boneWeights.z +
-		input.boneWeights.w) != 1.0f)
-	{
-		return input;
-	}
-
 	//ゼロクリア
 	SkinOutput output = (SkinOutput)0;
 

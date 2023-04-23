@@ -47,6 +47,26 @@ private:
 	//ライト
 	static LightManager* lightManager;
 
+	//ボーンの最大数
+	static const int MAX_BONES = 32;
+	//定数バッファ（スキン）
+	ComPtr<ID3D12Resource> constBuffSkin = nullptr;
+
+	//1フレームの時間
+	FbxTime frameTime;
+	//アニメーション開始時間
+	FbxTime startTime;
+	//アニメーション終了時間
+	FbxTime endTime;
+	//アニメーション現在時間
+	FbxTime currentTime;
+	//アニメーションフラグ
+	bool isPlay = false;
+	//ループ
+	bool isLoop = false;
+	//逆再生
+	bool isReverse = false;
+
 public://変数
 	WorldMat* worldMat = new WorldMat();
 	ViewMat* view;
@@ -57,11 +77,6 @@ public://変数
 	//画面効果用
 	static ComPtr <ID3D12Resource> effectFlagsBuff;
 	static EffectConstBuffer* mapEffectFlagsBuff;
-
-	//ボーンの最大数
-	static const int MAX_BONES = 32;
-	//定数バッファ（スキン）
-	ComPtr<ID3D12Resource> constBuffSkin = nullptr;
 
 public:
 	//定数バッファ用データ構造体（スキニング）
@@ -122,6 +137,12 @@ public:
 
 	//衝突時コールバック関数
 	virtual void OnCollision(const CollisionInfo& info) {}
+
+	//アニメーション開始
+	void PlayAnimationInternal(ModelFBX* model, FbxTime& sTime, FbxTime& eTime,
+		bool isLoop = false, bool isReverse = false);
+	void PlayAnimation(ModelFBX* model, bool isLoop = false);
+	void PlayReverseAnimation(ModelFBX* model, bool isLoop = false);
 
 	//-------------
 

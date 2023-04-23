@@ -35,7 +35,7 @@ public://サブクラス
 		DirectX::XMFLOAT3 normal;//法線ベクトル
 		DirectX::XMFLOAT2 uv;//uv座標
 		UINT boneIndex[MAX_BONE_INDICES] = { 0 };//影響を受けるボーン　番号
-		float boneWeight[MAX_BONE_INDICES] = { 0 };//ボーン　重み
+		float boneWeight[MAX_BONE_INDICES] = { 1.0f,0,0,0 };//ボーン　重み
 	};
 
 public: // 静的メンバ関数

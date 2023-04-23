@@ -10,6 +10,8 @@ void SceneGame::Finalize()
 void SceneGame::Initialize()
 {
 	Sound::GetInstance().PlayWave("Stage_BGM.wav", 0.4f, true);
+
+	sceneM->draw[5].PlayReverseAnimation(sceneM->modelFBX, true);
 }
 
 void SceneGame::Update()
