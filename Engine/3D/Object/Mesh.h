@@ -23,13 +23,19 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 
-public: // サブクラス
-	// 頂点データ構造体（テクスチャあり）
-	struct VertexPosNormalUv
+public://定数
+	//ボーンインデックス（影響を受けるボーン）の最大数
+	static const int MAX_BONE_INDICES = 4;//hlslのfloat4に対応するため"4"
+
+public://サブクラス
+	//頂点データ構造体
+	struct VertexPosNormalUvSkin
 	{
-		XMFLOAT3 pos; // xyz座標
-		XMFLOAT3 normal; // 法線ベクトル
-		XMFLOAT2 uv;  // uv座標
+		DirectX::XMFLOAT3 pos;//座標
+		DirectX::XMFLOAT3 normal;//法線ベクトル
+		DirectX::XMFLOAT2 uv;//uv座標
+		UINT boneIndex[MAX_BONE_INDICES] = { 0 };//影響を受けるボーン　番号
+		float boneWeight[MAX_BONE_INDICES] = { 0 };//ボーン　重み
 	};
 
 public: // 静的メンバ関数
@@ -62,7 +68,7 @@ public: // メンバ関数
 	/// 頂点データの追加
 	/// </summary>
 	/// <param name="vertex">頂点データ</param>
-	void AddVertex(const VertexPosNormalUv& vertex);
+	void AddVertex(const VertexPosNormalUvSkin& vertex);
 
 	/// <summary>
 	/// 頂点インデックスの追加
@@ -137,7 +143,7 @@ private: // メンバ変数
 	// インデックスバッファビュー
 	D3D12_INDEX_BUFFER_VIEW ibView = {};
 	// 頂点データ配列
-	std::vector<VertexPosNormalUv> vertices;
+	std::vector<VertexPosNormalUvSkin> vertices;
 	// 頂点インデックス配列
 	std::vector<unsigned short> indices;
 	// 頂点法線スムージング用データ

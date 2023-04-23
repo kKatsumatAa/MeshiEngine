@@ -27,7 +27,7 @@ void Mesh::SetName(const std::string& name)
 	this->name = name;
 }
 
-void Mesh::AddVertex(const VertexPosNormalUv& vertex)
+void Mesh::AddVertex(const VertexPosNormalUvSkin& vertex)
 {
 	vertices.emplace_back(vertex);
 }
@@ -75,7 +75,7 @@ void Mesh::CreateBuffers()
 {
 	HRESULT result = {};
 
-	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
+	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUvSkin) * vertices.size());
 	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
 
 	// ヒーププロパティ
@@ -91,7 +91,7 @@ void Mesh::CreateBuffers()
 
 
 	// 頂点バッファへのデータ転送
-	VertexPosNormalUv* vertMap = nullptr;
+	VertexPosNormalUvSkin* vertMap = nullptr;
 	DirectXWrapper::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	if (SUCCEEDED(DirectXWrapper::GetInstance().result)) {
 		std::copy(vertices.begin(), vertices.end(), vertMap);
@@ -101,7 +101,7 @@ void Mesh::CreateBuffers()
 	// 頂点バッファビューの作成
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	vbView.SizeInBytes = sizeVB;
-	vbView.StrideInBytes = sizeof(VertexPosNormalUv);
+	vbView.StrideInBytes = sizeof(VertexPosNormalUvSkin);
 
 	// リソース設定
 	resourceDesc.Width = sizeIB;

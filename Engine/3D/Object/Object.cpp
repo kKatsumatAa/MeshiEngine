@@ -270,7 +270,7 @@ Object::Object()
 	DirectXWrapper::GetInstance().result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
 	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
 
-	//if (this->constBuffSkin.Get() == nullptr)
+	if (this->constBuffSkin.Get() == nullptr)
 	{
 		//スキンのバッファ
 		//ヒープ設定
@@ -485,7 +485,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 
 		//定数バッファビュー(CBV)の設定コマンド
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
-
+		//ポストエフェクトフラグ用
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
 
 		//スキニング用

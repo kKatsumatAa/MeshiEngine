@@ -60,8 +60,8 @@ public://サブクラス
 		DirectX::XMFLOAT3 pos;//座標
 		DirectX::XMFLOAT3 normal;//法線ベクトル
 		DirectX::XMFLOAT2 uv;//uv座標
-		UINT bonIndex[MAX_BONE_INDICES];//影響を受けるボーン　番号
-		float bonWeight[MAX_BONE_INDICES];//ボーン　重み
+		UINT boneIndex[MAX_BONE_INDICES] = {0};//影響を受けるボーン　番号
+		float boneWeight[MAX_BONE_INDICES] = {0};//ボーン　重み
 	};
 
 	//ボーン構造体

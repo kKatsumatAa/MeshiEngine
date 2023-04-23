@@ -13,6 +13,13 @@ struct SkinOutput
 //スキニング計算
 SkinOutput ComputeSkin(SkinOutput input)
 {
+	//うまくウェイトが入ってなかったら
+	if ((input.boneWeights.x + input.boneWeights.y + input.boneWeights.z +
+		input.boneWeights.w) != 1.0f)
+	{
+		return input;
+	}
+
 	//ゼロクリア
 	SkinOutput output = (SkinOutput)0;
 
@@ -59,7 +66,6 @@ VSOutput main(float4 pos : POSITION, float3 normal : NORMAL,
 	SkinOutput input = { pos,normal,boneIndices ,boneWeights };
 	//スキニング計算
 	SkinOutput skinned = ComputeSkin(input);
-	//SkinOutput skinned = input;
 
 	//法線にワールド行列によるスケーリング・回転を適用
 	float4 wnormal = normalize(mul(world, float4(skinned.normal, 0)));

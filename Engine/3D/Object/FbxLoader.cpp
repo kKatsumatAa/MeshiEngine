@@ -474,8 +474,8 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 		for (auto& weightSet : weightList)
 		{
 			//頂点データに書き込み
-			vertices[i].bonIndex[weightArrayIndex] = weightSet.index;
-			vertices[i].bonWeight[weightArrayIndex] = weightSet.weight;
+			vertices[i].boneIndex[weightArrayIndex] = weightSet.index;
+			vertices[i].boneWeight[weightArrayIndex] = weightSet.weight;
 			//4つに達したら終了
 			if (++weightArrayIndex >= ModelFBX::MAX_BONE_INDICES)
 			{
@@ -483,10 +483,10 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 				//2番目以降のウェイトを合計
 				for (int j = 1; j < ModelFBX::MAX_BONE_INDICES; j++)
 				{
-					weight += vertices[i].bonWeight[i];
+					weight += vertices[i].boneWeight[j];
 				}
 				//合計で1.0f(100%)になるように調整
-				vertices[i].bonWeight[0] = 1.0f - weight;
+				vertices[i].boneWeight[0] = 1.0f - weight;
 				break;
 			}
 		}
