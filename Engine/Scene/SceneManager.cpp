@@ -94,8 +94,9 @@ void SceneManager::Initialize()
 	draw[4].worldMat->trans = { -20.0f,0,-10.0f };
 	draw[4].worldMat->SetWorld();
 
-	draw[5].worldMat->scale = { 2.0f,2.0f,2.0f };
-	draw[5].worldMat->trans = { -20.0f,0,0 };
+	draw[5].worldMat->scale = { 1.3f,1.3f,1.3f };
+	draw[5].worldMat->trans = { fighterPos[0],fighterPos[1]-1.0f,fighterPos[2] };
+	draw[5].worldMat->rot = { -3.14f / 2.0f,0,0 };
 	draw[5].worldMat->SetWorld();
 
 

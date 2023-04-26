@@ -12,11 +12,28 @@ void SceneGame::Initialize()
 	Sound::GetInstance().PlayWave("Stage_BGM.wav", 0.4f, true);
 
 	sceneM->draw[5].PlayReverseAnimation(sceneM->modelFBX, true);
+
+	Object::effectFlags.isGrayScale = true;
 }
 
 void SceneGame::Update()
 {
 	ImGui::ShowDemoWindow();
+
+	ImGui::BeginPopupContextWindow("PostEffect");
+	ImGui::SliderInt("GrayScale", (int*)&Object::effectFlags.isGrayScale, 0, 1);
+	ImGui::SliderInt("Emboss", (int*)&Object::effectFlags.isEmboss, 0, 1);
+	ImGui::SliderInt("Gaussian", (int*)&Object::effectFlags.isGaussian, 0, 1);
+	ImGui::SliderInt("GlassFilter", (int*)&Object::effectFlags.isGlassFilter, 0, 1);
+	ImGui::SliderInt("ScanningLine", (int*)&Object::effectFlags.isScanningLine, 0, 1);
+	ImGui::SliderInt("Fog", (int*)&Object::effectFlags.isFog, 0, 1);
+	ImGui::SliderInt("BarrelCurve", (int*)&Object::effectFlags.isBarrelCurve, 0, 1);
+	ImGui::SliderInt("Gradation", (int*)&Object::effectFlags.isGradation, 0, 1);
+	ImGui::SliderInt("Outline", (int*)&Object::effectFlags.isOutLine, 0, 1);
+	ImGui::SliderInt("Sharpness", (int*)&Object::effectFlags.isSharpness, 0, 1);
+	ImGui::SliderInt("Vignette", (int*)&Object::effectFlags.isVignette, 0, 1);
+
+
 	sceneM->imGuiManager->End();
 
 	//ƒV[ƒ“‘JˆÚ
