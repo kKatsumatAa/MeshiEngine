@@ -12,7 +12,7 @@ void MyGame::Initialize()
 	//シーンファクトリーを生成し、マネージャーにセット
 	sceneFactory_ = new SceneFactory();
 	sceneM->SetSceneFactory(sceneFactory_);
-	sceneM->ChangeScene("TITLE");
+	sceneM->ChangeScene("GAME");
 }
 
 void MyGame::Finalize()

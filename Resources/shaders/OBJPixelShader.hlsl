@@ -31,9 +31,9 @@ float4 main(VSOutput input) : SV_TARGET
 				// 反射光ベクトル
 				float3 reflect = normalize(-dirLights[i].lightv + 2 * dotlightnormal * input.normal);
 				// 拡散反射光
-				float3 diffuse = dotlightnormal * m_diffuse;
+				float3 diffuse = smoothstep(0.5f, 0.55f, dotlightnormal) * m_diffuse;
 				// 鏡面反射光
-				float3 specular = pow(saturate(dot(reflect, eyedir)), shininess) * m_specular;
+				float3 specular = smoothstep(0.5f, 0.55f, pow(saturate(dot(reflect, eyedir)), shininess)) * m_specular;
 
 				// 全て加算する
 				shadecolor.rgb += (diffuse + specular) * dirLights[i].lightcolor;
@@ -57,9 +57,9 @@ float4 main(VSOutput input) : SV_TARGET
 				// 反射光ベクトル
 				float3 reflect = normalize(-lightv + 2 * dotlightnormal * input.normal);
 				// 拡散反射光
-				float3 diffuse = dotlightnormal * m_diffuse;
+				float3 diffuse = smoothstep(0.5f, 0.55f, dotlightnormal) * m_diffuse;
 				// 鏡面反射光
-				float3 specular = pow(saturate(dot(reflect, eyedir)), shininess) * m_specular;
+				float3 specular = smoothstep(0.5f, 0.55f, pow(saturate(dot(reflect, eyedir)), shininess)) * m_specular;
 
 				// 全て加算する
 				shadecolor.rgb += atten * (diffuse + specular) * pointLights[i].lightcolor;
@@ -90,10 +90,10 @@ float4 main(VSOutput input) : SV_TARGET
 				float3 dotlightnormal = dot(lightv, input.normal);
 				//反射光ベクトル　
 				float3 reflect = normalize(-lightv + 2 * dotlightnormal * input.normal);
-				//拡散反射光
-				float3 diffuse = dotlightnormal * m_diffuse;
-				//鏡面反射光
-				float3 specular = pow(saturate(dot(reflect, eyedir)), shininess) * m_specular;
+				// 拡散反射光
+				float3 diffuse = smoothstep(0.5f, 0.55f, dotlightnormal) * m_diffuse;
+				// 鏡面反射光
+				float3 specular = smoothstep(0.5f, 0.55f, pow(saturate(dot(reflect, eyedir)), shininess)) * m_specular;
 				//全て加算する
 				shadecolor.rgb += atten * (diffuse + specular) * spotLights[i].lightcolor;
 			}
@@ -132,9 +132,15 @@ float4 main(VSOutput input) : SV_TARGET
 			}
 		}
 
+		//リムライト
+		//内積
+		float dotL = smoothstep(0.5f, 0.55f, dot(eyedir, input.normal));
+
 		// シェーディングによる色で描画
-		float4 RGBA = (shadecolor * texcolor * color);
-		float4 RGBA2 = (shadecolor * color);
+		float4 DSC = dotL * shadecolor;
+		float4 RIM = float4(1.0f, 1.0f, 0.0f, 1.0f) * (1.0f - dotL);
+		float4 RGBA = (DSC * texcolor * color) + RIM;
+		float4 RGBA2 = (DSC * color) + RIM;
 		float3 RGB = RGBA.rgb;
 		float  A = RGBA.a;
 
