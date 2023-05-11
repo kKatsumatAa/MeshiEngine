@@ -86,6 +86,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 //static
 LightManager* Object::lightManager = nullptr;
 
+//ポストエフェクトのクラス
 PostPera postPera;
 
 ComPtr <ID3D12Resource> Object::effectFlagsBuff = nullptr;
