@@ -417,11 +417,9 @@ void PostPera::Update()
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------
+//一枚目を描画
 void PostPera::Draw()
 {
-
-
-
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(_peraRS.Get());
 	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(_peraPipeline.Get());
 	//ヒープをセット
@@ -456,6 +454,7 @@ void PostPera::Draw()
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }
 
+//実際に描画
 void PostPera::Draw2()
 {
 	//DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(_peraRS.Get());
@@ -559,6 +558,7 @@ void PostPera::PostDraw()
 	}
 }
 
+//-----------------------------
 //二枚目に描画
 void PostPera::PreDraw2()
 {
@@ -613,6 +613,8 @@ void PostPera::PostDraw2()
 	DirectXWrapper::GetInstance().GetCommandList()->ResourceBarrier(1, &barrierDesc);
 }
 
+
+//---------------------------------------------------------------------
 //二枚目の描画をまとめた
 void PostPera::Draw2All()
 {
@@ -621,4 +623,24 @@ void PostPera::Draw2All()
 	Draw();
 
 	PostDraw2();
+}
+
+//一枚目と二枚目を描画する(引数の描画関数を一枚目に描画)
+void PostPera::DrawToPostpera(std::function<void()> f)
+{
+	//一枚目
+	{
+		PreDraw();
+
+		//ペラにオブジェクトなど描画させる
+		f();
+
+		PostDraw();
+	}
+
+	//------------
+	//二枚目
+	{
+		Draw2All();
+	}
 }

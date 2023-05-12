@@ -2,6 +2,8 @@
 #include"TextureManager.h"
 #include "DirectXWrapper.h"
 #include "GlassFilter.h"
+#include <functional>
+
 
 //画面効果用のフラグ
 struct EffectConstBuffer
@@ -94,16 +96,6 @@ private://関数
 	void GlassFilterBuffGenerate(const wchar_t* fileName);
 	bool CreateEffectBufferAndView(const wchar_t* fileName);
 
-public:
-	void Initialize(const wchar_t* nomalImageFileName);
-
-	void Update();
-
-	//二回目のエフェクトかける
-	void Draw();
-	//エフェクトかけ終わって実際に描画する
-	void Draw2();
-
 	//一枚目に描画
 	void PreDraw();
 	void PostDraw();
@@ -111,8 +103,21 @@ public:
 	//二枚目に描画
 	void PreDraw2();
 	void PostDraw2();
+	//二回目のエフェクトかける
+	void Draw();
 
 	//二回目のエフェクトかける用の描画
 	void Draw2All();
+
+public:
+	void Initialize(const wchar_t* nomalImageFileName);
+
+	void Update();
+
+	//エフェクトかけ終わって実際に描画する
+	void Draw2();
+
+	//一枚目と二枚目を描画する(引数の描画関数を一枚目に描画)
+	void DrawToPostpera(std::function<void()> f);
 };
 

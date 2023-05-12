@@ -6,7 +6,7 @@ void MyGame::Initialize()
 {
 	//基底クラスの初期化処理
 	Framework::Initialize();
-	
+
 	//ゲーム固有の初期化
 
 	//シーンファクトリーを生成し、マネージャーにセット
@@ -42,19 +42,9 @@ void MyGame::Draw()
 {
 	//1枚目に描画
 	{
-		postPera->PreDraw();
-
-		// 4.描画コマンドここから　//-----------
-		sceneM->Draw();
-
-		//
-		postPera->PostDraw();
-	}
-
-	//マルチパス
-	{
-		//2枚目--------------------
-		postPera->Draw2All();
+		std::function<void()>f = [=]() {sceneM->Draw(); };
+		//一枚目に描画結果、二枚目も描画する
+		postPera->DrawToPostpera(f);
 	}
 
 	//実際に描画
