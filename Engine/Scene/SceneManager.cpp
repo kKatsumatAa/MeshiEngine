@@ -16,8 +16,6 @@ SceneManager::~SceneManager()
 	{
 		delete model[i];
 	}
-	imGuiManager->Finalize();
-	delete imGuiManager;
 	delete lightManager;
 	camera.reset();
 	//音データ解放
@@ -100,11 +98,6 @@ void SceneManager::Initialize()
 	draw[5].worldMat->SetWorld();
 
 
-	//imgui
-	imGuiManager = new ImGuiManager();
-	imGuiManager->Initialize();
-
-
 	//インスタンス生成
 	lightManager = LightManager::Create();
 	//ライト色を設定
@@ -139,10 +132,6 @@ void SceneManager::Initialize()
 
 void SceneManager::Update()
 {
-	//imgui
-	imGuiManager->Begin();
-
-
 	lightManager->Update();
 
 	state->Update();
@@ -164,9 +153,6 @@ void SceneManager::Update()
 		camera->UpdateViewMatrix();
 	}
 	//#endif 
-
-		//imgui
-	imGuiManager->End();
 }
 
 void SceneManager::Draw()
@@ -176,12 +162,12 @@ void SceneManager::Draw()
 
 void SceneManager::DrawPostEffect()
 {
-	Object::DrawPera();
+	state->DrawPostEffect();
 }
 
 void SceneManager::DrawPostEffect2()
 {
-	Object::DrawPera2();
+	state->DrawPostEffect2();
 }
 
 void SceneManager::DrawSprite()
@@ -189,9 +175,11 @@ void SceneManager::DrawSprite()
 	state->DrawSprite();
 
 	debugText.DrawAll(debugTextHandle);
+}
 
-	//imgui
-	imGuiManager->Draw();
+void SceneManager::DrawImgui()
+{
+	state->DrawImgui();
 }
 
 

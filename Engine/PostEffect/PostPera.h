@@ -6,8 +6,6 @@
 //画面効果用のフラグ
 struct EffectConstBuffer
 {
-	//フォグ
-	unsigned int isFog = false;
 	//ぼかし
 	unsigned int isGaussian = false;
 	//ガウシアンぼかし
@@ -69,10 +67,52 @@ private:
 	//ルートパラメータの設定
 	D3D12_ROOT_PARAMETER rootParams[1] = {};
 
+	//ポストエフェクト用
+	D3D12_CPU_DESCRIPTOR_HANDLE peraHandle;
+	std::array<ComPtr<ID3D12Resource>, 2> _peraResource;
+	ComPtr<ID3D12Resource> _peraResource2;
+	ComPtr<ID3D12DescriptorHeap> _peraRTVHeap;//レンダーターゲット用
+	ComPtr<ID3D12DescriptorHeap> _peraSRVHeap;//テクスチャ用
+	bool isPeraClear = false;
+
+	GausianBuffer gausianBuff;
+
+	//ガラス
+	ComPtr<ID3D12Resource>_effectTexBuffer;
+
+	D3D12_RESOURCE_BARRIER barrierDesc{};
+
+public:
+	//画面効果用
+	EffectConstBuffer effectFlags;
+
+
+
+private://関数
+	void InitializeBuffRTV();
+	void GenerateRSPL();
+	void GlassFilterBuffGenerate(const wchar_t* fileName);
+	bool CreateEffectBufferAndView(const wchar_t* fileName);
+
 public:
 	void Initialize(const wchar_t* nomalImageFileName);
-	void GenerateRSPL();
-	void Draw(EffectConstBuffer effectFlags);
+
+	void Update();
+
+	//二回目のエフェクトかける
+	void Draw();
+	//エフェクトかけ終わって実際に描画する
 	void Draw2();
+
+	//一枚目に描画
+	void PreDraw();
+	void PostDraw();
+
+	//二枚目に描画
+	void PreDraw2();
+	void PostDraw2();
+
+	//二回目のエフェクトかける用の描画
+	void Draw2All();
 };
 

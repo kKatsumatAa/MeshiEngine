@@ -12,7 +12,13 @@ void Framework::Initialize()
 	WindowsApp::GetInstance();
 	DirectXWrapper::GetInstance().Initialize();
 
+	Sound::Initialize();
+
 	DrawInitialize();
+
+	//ポストエフェクト
+	postPera = new PostPera();
+	postPera->Initialize(L"Resources/image/normalImage.jpg");
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
@@ -28,6 +34,9 @@ void Framework::Initialize()
 	//シーン
 	sceneM = &SceneManager::GetInstance();
 	sceneM->Initialize();
+
+	imguiM = new ImGuiManager();
+	imguiM->Initialize();
 }
 
 void Framework::Finalize()
@@ -40,6 +49,9 @@ void Framework::Finalize()
 
 	//ウィンドウクラスを登録解除
 	WindowsApp::GetInstance().UnregisterClassA();
+
+	imguiM->Finalize();
+	delete imguiM;
 }
 
 bool Framework::Update()
@@ -56,13 +68,25 @@ bool Framework::Update()
 	//更新処理
 	sceneM->Update();
 
-    return false;
+	//imgui
+	imguiM->Begin();
+
+	//ポストエフェクト(imgui)
+	postPera->Update();
+	//(imgui)
+	Object::StaticUpdate();
+	//(imgui)
+	sceneM->DrawImgui();
+
+	imguiM->End();
+
+	return false;
 }
 
 void Framework::Run()
 {
-    //ゲームの初期化
-    Initialize();
+	//ゲームの初期化
+	Initialize();
 
 	//ゲームループ
 	while (true) {

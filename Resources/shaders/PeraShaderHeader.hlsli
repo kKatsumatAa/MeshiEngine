@@ -3,8 +3,6 @@
 
 cbuffer ConstBufferEffectFlags : register(b0)
 {
-	//フォグ
-	uint isFog;
 	//ぼかし
 	uint isGaussian;
 	//ガウシアンぼかし

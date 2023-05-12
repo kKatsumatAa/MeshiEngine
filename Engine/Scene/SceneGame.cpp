@@ -13,28 +13,15 @@ void SceneGame::Initialize()
 
 	sceneM->draw[5].PlayReverseAnimation(sceneM->modelFBX, true);
 
-	Object::effectFlags.isGrayScale = true;
+	//ポストエフェクト初期化
+	//postPera.Initialize(L"Resources/image/normalImage.jpg");
 }
 
 void SceneGame::Update()
 {
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
-	ImGui::BeginPopupContextWindow("PostEffect");
-	ImGui::SliderInt("GrayScale", (int*)&Object::effectFlags.isGrayScale, 0, 1);
-	ImGui::SliderInt("Emboss", (int*)&Object::effectFlags.isEmboss, 0, 1);
-	ImGui::SliderInt("Gaussian", (int*)&Object::effectFlags.isGaussian, 0, 1);
-	ImGui::SliderInt("GlassFilter", (int*)&Object::effectFlags.isGlassFilter, 0, 1);
-	ImGui::SliderInt("ScanningLine", (int*)&Object::effectFlags.isScanningLine, 0, 1);
-	ImGui::SliderInt("Fog", (int*)&Object::effectFlags.isFog, 0, 1);
-	ImGui::SliderInt("BarrelCurve", (int*)&Object::effectFlags.isBarrelCurve, 0, 1);
-	ImGui::SliderInt("Gradation", (int*)&Object::effectFlags.isGradation, 0, 1);
-	ImGui::SliderInt("Outline", (int*)&Object::effectFlags.isOutLine, 0, 1);
-	ImGui::SliderInt("Sharpness", (int*)&Object::effectFlags.isSharpness, 0, 1);
-	ImGui::SliderInt("Vignette", (int*)&Object::effectFlags.isVignette, 0, 1);
-
-
-	sceneM->imGuiManager->End();
+	//postPera.Update();
 
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
@@ -64,4 +51,18 @@ void SceneGame::Draw()
 void SceneGame::DrawSprite()
 {
 	sceneM->debugText.Print("[1]", 10, 10);
+}
+
+void SceneGame::DrawImgui()
+{
+}
+
+void SceneGame::DrawPostEffect()
+{
+	//postPera.Draw();
+}
+
+void SceneGame::DrawPostEffect2()
+{
+	//postPera.Draw2All();
 }

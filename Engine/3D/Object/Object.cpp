@@ -5,6 +5,7 @@
 #include <vector>
 #include "BaseCollider.h"
 #include "CollisionManager.h"
+#include "ImguiManager.h"
 
 //図形のクラス
 Primitive primitive;
@@ -86,13 +87,10 @@ D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 //static
 LightManager* Object::lightManager = nullptr;
 
-//ポストエフェクトのクラス
-PostPera postPera;
-
+//演出用
 ComPtr <ID3D12Resource> Object::effectFlagsBuff = nullptr;
-EffectConstBuffer* Object::mapEffectFlagsBuff = nullptr;
-EffectConstBuffer Object::effectFlags;
-
+EffectOConstBuffer* Object::mapEffectFlagsBuff = nullptr;
+EffectOConstBuffer Object::effectFlags;
 
 struct weightMap
 {
@@ -167,8 +165,6 @@ void DrawInitialize()
 		pipelineSetFBX.rootSignature.GetAddressOf(), pipelineSetFBX.vsBlob,
 		pipelineSetFBX.psBlob, FBX);
 
-	//ポストエフェクト初期化
-	postPera.Initialize(L"Resources/image/normalImage.jpg");
 
 	//画面効果用
 	{
@@ -218,6 +214,18 @@ void Object::Update()
 	if (collider)
 	{
 		collider->Update();
+	}
+}
+
+void Object::StaticUpdate()
+{
+	effectFlags.time++;
+	ImGui::SliderInt("Fog", (int*)&effectFlags.isFog, 0, 1);
+
+	//画面効果用
+	{
+		mapEffectFlagsBuff->isFog = effectFlags.isFog;
+		mapEffectFlagsBuff->time = effectFlags.time;
 	}
 }
 
@@ -473,21 +481,6 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 	//行列送信
 	SendingMat(indexNum);
 
-	//画面効果用
-	{
-		mapEffectFlagsBuff->isEmboss = this->effectFlags.isEmboss;
-		mapEffectFlagsBuff->isFog = this->effectFlags.isFog;
-		mapEffectFlagsBuff->isGaussian = this->effectFlags.isGaussian;
-		mapEffectFlagsBuff->isGaussian2 = this->effectFlags.isGaussian2;
-		mapEffectFlagsBuff->isGradation = this->effectFlags.isGradation;
-		mapEffectFlagsBuff->isOutLine = this->effectFlags.isOutLine;
-		mapEffectFlagsBuff->isSharpness = this->effectFlags.isSharpness;
-		mapEffectFlagsBuff->isVignette = this->effectFlags.isVignette;
-		mapEffectFlagsBuff->isBarrelCurve = this->effectFlags.isBarrelCurve;
-		mapEffectFlagsBuff->isScanningLine = this->effectFlags.isScanningLine;
-		mapEffectFlagsBuff->isGrayScale = this->effectFlags.isGrayScale;
-		mapEffectFlagsBuff->isGlassFilter = this->effectFlags.isGlassFilter;
-	}
 
 	//テクスチャを設定していなかったら
 	UINT64 textureHandle_;
@@ -583,18 +576,6 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 
 		fbx->Draw(SetRootPipeR, SetMaterialTex);
 	}
-}
-
-void Object::DrawPera()
-{
-	//ポストエフェクト用
-	postPera.Draw(effectFlags);
-}
-
-void Object::DrawPera2()
-{
-	//ポストエフェクト用
-	postPera.Draw2();
 }
 
 void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/

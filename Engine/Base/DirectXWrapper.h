@@ -42,19 +42,6 @@ private:
 
 	FLOAT clearColor[4] = { 0.1f,0.25f, 0.5f,0.0f };
 
-	//ポストエフェクト用
-	D3D12_CPU_DESCRIPTOR_HANDLE peraHandle;
-	std::array<ComPtr<ID3D12Resource>, 2> _peraResource;
-	ComPtr<ID3D12Resource> _peraResource2;
-	ComPtr<ID3D12DescriptorHeap> _peraRTVHeap;//レンダーターゲット用
-	ComPtr<ID3D12DescriptorHeap> _peraSRVHeap;//テクスチャ用
-	bool isPeraClear = false;
-
-	GausianBuffer gausianBuff;
-
-	//ガラス
-	ComPtr<ID3D12Resource>_effectTexBuffer;
-
 
 private:
 	DirectXWrapper();
@@ -96,31 +83,24 @@ public:
 	void DrawInitialize();
 
 	//1枚目のテクスチャに描画
-	void DrawUpdate(const XMFLOAT4& winRGBA = { 0.1f,0.25f,0.5f,0.0f });
-	void DrawUpdate2();
-
-	//2枚目のテクスチャに描画
-	void PreDrawToPera();
-	void PostDrawToPera();
-
-	//実際に描画
-	void PreDrawToPera2();
-	void PostDrawToPera2();
+	void PreDraw(const XMFLOAT4& winRGBA = { 0.1f,0.25f,0.5f,0.0f });
+	void PostDraw();
 
 
 	//getter
 	ID3D12Device* GetDevice() const { return device.Get(); }
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
-	ComPtr<ID3D12DescriptorHeap> GetPeraSRVHeap() const { return _peraSRVHeap; }
+	//ComPtr<ID3D12DescriptorHeap> GetPeraSRVHeap() const { return _peraSRVHeap; }
 	ID3D12CommandQueue* GetCommandQueue()const { return commandQueue.Get(); }
 	UINT64& GetFenceVal() { return fenceVal; }
 	ID3D12Fence* GetFence() { return fence.Get(); }
+	ID3D12DescriptorHeap* GetRtvheap() { return rtvHeap.Get(); }
+	FLOAT* GetClearColor() { return clearColor; }
+	std::vector< ComPtr <ID3D12Resource>>& GetBackBuffer() { return backBuffers; }
+	ID3D12DescriptorHeap* GetDSVHeap() { return dsvHeap.Get(); }
 
 	//バックバッファの数を取得
 	size_t GetBackBufferCount() const { return backBuffers.size(); }
-
-	//ガラスフィルターのバッファ生成
-	void GlassFilterBuffGenerate(const wchar_t* fileName);
 };
 //画像のロード（引数にバッファ設定）
 void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuff);

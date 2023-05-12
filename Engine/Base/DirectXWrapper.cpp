@@ -266,137 +266,8 @@ void DirectXWrapper::Initialize()
 	InitializeRendertargetView();
 	//深度バッファ
 	InitializeDepthBuffer();
-
-	//ポストエフェクト用
-	{
-		// 作成 済み の ヒープ 情報 を 使っ て もう 1 枚 作る
-		auto heapDesc = rtvHeap->GetDesc();
-		// 使っ て いる バックバッファー の 情報 を 利用 する 
-		auto& bbuff = backBuffers[0];
-		auto resDesc = bbuff->GetDesc();
-
-		D3D12_HEAP_PROPERTIES heapProp = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-
-		//レンダリング時のクリア地と同じ値
-		float clsClr[4] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
-		D3D12_CLEAR_VALUE clearValue =
-			CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clsClr);
-
-		HRESULT result;
-
-		//リソース作成
-		//一枚目
-		for (ComPtr< ID3D12Resource>& res : _peraResource)
-		{
-			result = device->CreateCommittedResource(
-				&heapProp,
-				D3D12_HEAP_FLAG_NONE,
-				&resDesc,
-				//D3D12_RESOURCE_STATE_RENDER_TARGETではない
-				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-				&clearValue,
-				IID_PPV_ARGS(res.ReleaseAndGetAddressOf())
-			);
-			assert(SUCCEEDED(result));
-		}
-
-		//二枚目
-		result = device->CreateCommittedResource(
-			&heapProp,
-			D3D12_HEAP_FLAG_NONE,
-			&resDesc,
-			//D3D12_RESOURCE_STATE_RENDER_TARGETではない
-			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-			&clearValue,
-			IID_PPV_ARGS(_peraResource2.ReleaseAndGetAddressOf())
-		);
-		assert(SUCCEEDED(result));
-
-		// RTV 用 ヒープ を 作る 
-		heapDesc.NumDescriptors = 3;//二枚分(一枚目の二つ+二枚目の一つ)
-		result = device->CreateDescriptorHeap(
-			&heapDesc,
-			IID_PPV_ARGS(_peraRTVHeap.ReleaseAndGetAddressOf())
-		);
-		assert(SUCCEEDED(result));
-
-		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
-		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-		rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-
-		//rtvを作る
-		D3D12_CPU_DESCRIPTOR_HANDLE handleRH = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
-		//1枚目
-		for (ComPtr< ID3D12Resource>& res : _peraResource)
-		{
-			device->CreateRenderTargetView(
-				res.Get(),
-				&rtvDesc,
-				handleRH
-			);
-			//インクリメント
-			handleRH.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-		}
-
-		//二枚目
-		//handleRH.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-		device->CreateRenderTargetView(
-			_peraResource2.Get(),
-			&rtvDesc,
-			handleRH
-		);
-
-
-		//SRV用ヒープを作る
-		heapDesc.NumDescriptors = 5;//ガウシアンパラメータ、一枚目の二つ、二枚目の一つ,ガラス用で4枚
-		heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-		result = device->CreateDescriptorHeap(
-			&heapDesc,
-			IID_PPV_ARGS(_peraSRVHeap.ReleaseAndGetAddressOf())
-		);
-		assert(SUCCEEDED(result));
-
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Format = rtvDesc.Format;
-		srvDesc.Texture2D.MipLevels = 1;
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-
-		// シェーダーリソースビュー（ SRV） を 作る 
-		peraHandle = _peraSRVHeap->GetCPUDescriptorHandleForHeapStart();
-		//1枚目
-		for (ComPtr< ID3D12Resource>& res : _peraResource)
-		{
-			device->CreateShaderResourceView(
-				res.Get(),
-				&srvDesc,
-				peraHandle
-			);
-
-			//インクリメント
-			peraHandle.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		}
-
-		//二枚目(3つ目)
-		//インクリメント
-		//peraHandle.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		device->CreateShaderResourceView(
-			_peraResource2.Get(),
-			&srvDesc,
-			peraHandle
-		);
-
-		//ガウシアンパラメータ(4つ目)
-		gausianBuff.Initialize(peraHandle, *device.Get(), heapDesc);
-	}
-
 	//フェンス
 	InitializeFence();
-
-
-
-	Sound::Initialize();
 }
 
 DirectXWrapper::DirectXWrapper()
@@ -431,130 +302,7 @@ void DirectXWrapper::DrawInitialize()
 }
 
 //一枚目のテクスチャに描画
-void DirectXWrapper::DrawUpdate(const XMFLOAT4& winRGBA)
-{
-	//ポストエフェクト
-	for (ComPtr< ID3D12Resource>& res : _peraResource)
-	{
-		barrierDesc.Transition.pResource = res.Get(); // バックバッファを指定
-		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
-		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-		commandList->ResourceBarrier(
-			1,
-			&barrierDesc
-		);
-	}
-
-	// 2.描画先の変更
-	// 1 パス 目 
-	//auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-	/*commandList->OMSetRenderTargets(
-		1, &rtvHeapPointer, false, &dsvHandle
-	);*/
-
-
-	auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	rtvHeapPointer.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvs[2] = {
-		_peraRTVHeap->GetCPUDescriptorHandleForHeapStart(),
-		rtvHeapPointer
-	};
-	commandList->OMSetRenderTargets(2, rtvs, false, &dsvHandle);
-
-
-	// 3.画面クリア R G B A
-	//commandList->ClearRenderTargetView(rtvHeapPointer, clearColor, 0, nullptr);
-	for (auto& rt : rtvs) 
-	{ 
-		commandList->ClearRenderTargetView(rt, clearColor, 0, nullptr);
-	}
-
-	//06_01(dsv)
-	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH,
-		1.0f, 0, 0, nullptr);
-	//毎フレーム深度バッファの値が描画範囲で最も奥(1.0)にリセットされる
-
-	// ビューポート設定コマンドを、コマンドリストに積む
-	commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
-
-	// シザー矩形
-	D3D12_RECT scissorRect{};
-	scissorRect.left = 0; // 切り抜き座標左
-	scissorRect.right = (LONG)(scissorRect.left + WindowsApp::GetInstance().window_width); // 切り抜き座標右
-	scissorRect.top = 0; // 切り抜き座標上
-	scissorRect.bottom = (LONG)(scissorRect.top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
-	// シザー矩形設定コマンドを、コマンドリストに積む
-	commandList->RSSetScissorRects(1, &scissorRect);
-}
-
-void DirectXWrapper::DrawUpdate2()
-{
-	// 5.リソースバリアを戻す
-	for (ComPtr< ID3D12Resource>& res : _peraResource)
-	{
-		barrierDesc.Transition.pResource = res.Get(); // バックバッファを指定
-		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
-		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態へ
-		commandList->ResourceBarrier(1, &barrierDesc);
-	}
-}
-
-
-//二枚目のテクスチャに描画
-void DirectXWrapper::PreDrawToPera() {
-
-	//状態をレンダーターゲットに遷移
-	barrierDesc.Transition.pResource = _peraResource2.Get(); // 二枚目のリソースを指定
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-	commandList->ResourceBarrier(
-		1,
-		&barrierDesc
-	);
-
-	rtvHandle = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	//3個目(一枚目の二つの後)なので進める
-	rtvHandle.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	rtvHandle.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-	// 2 パス 目 
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-	commandList->OMSetRenderTargets(
-		1, &rtvHandle, false, &dsvHandle
-	);
-
-
-	// 3.画面クリア R G B A
-	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
-	//06_01(dsv)
-	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH,
-		1.0f, 0, 0, nullptr);
-	//毎フレーム深度バッファの値が描画範囲で最も奥(1.0)にリセットされる
-
-	// ビューポート設定コマンドを、コマンドリストに積む
-	commandList->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
-
-	// シザー矩形
-	D3D12_RECT scissorRect{};
-	scissorRect.left = 0; // 切り抜き座標左
-	scissorRect.right = (LONG)(scissorRect.left + WindowsApp::GetInstance().window_width); // 切り抜き座標右
-	scissorRect.top = 0; // 切り抜き座標上
-	scissorRect.bottom = (LONG)(scissorRect.top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
-	// シザー矩形設定コマンドを、コマンドリストに積む
-	commandList->RSSetScissorRects(1, &scissorRect);
-}
-
-void DirectXWrapper::PostDrawToPera()
-{
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態へ
-	commandList->ResourceBarrier(1, &barrierDesc);
-}
-
-
-//実際に描画
-void DirectXWrapper::PreDrawToPera2()
+void DirectXWrapper::PreDraw(const XMFLOAT4& winRGBA)
 {
 	// バックバッファの番号を取得(2つなので0番か1番)
 	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
@@ -595,7 +343,7 @@ void DirectXWrapper::PreDrawToPera2()
 	commandList->RSSetScissorRects(1, &scissorRect);
 }
 
-void DirectXWrapper::PostDrawToPera2()
+void DirectXWrapper::PostDraw()
 {
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT; // 表示状態へ
@@ -626,31 +374,6 @@ void DirectXWrapper::PostDrawToPera2()
 	// 画面に表示するバッファをフリップ(裏表の入替え)
 	result = swapChain->Present(1, 0);
 	assert(SUCCEEDED(result));
-}
-
-void DirectXWrapper::GlassFilterBuffGenerate(const wchar_t* fileName)
-{
-	//ガラスフィルター（4つ目）
-	//インクリメント
-	peraHandle.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	this->CreateEffectBufferAndView(fileName);
-}
-
-bool DirectXWrapper::CreateEffectBufferAndView(const wchar_t* fileName)
-{
-	//法線マップをロード
-	LoadPictureFromFile(fileName, this->_effectTexBuffer);
-
-	//ポストエフェクト用テクスチャビューを作る
-	auto desc = _effectTexBuffer->GetDesc();
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Format = desc.Format;
-	srvDesc.Texture2D.MipLevels = 1;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	GetDevice()->CreateShaderResourceView(_effectTexBuffer.Get(), &srvDesc, this->peraHandle);
-
-	return true;
 }
 
 void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuff)

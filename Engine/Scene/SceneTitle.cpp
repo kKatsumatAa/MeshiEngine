@@ -38,3 +38,15 @@ void SceneTitle::DrawSprite()
 	sceneM->debugText.Print("[Basic]", 10, 10);
 }
 
+void SceneTitle::DrawImgui()
+{
+}
+
+void SceneTitle::DrawPostEffect()
+{
+}
+
+void SceneTitle::DrawPostEffect2()
+{
+}
+

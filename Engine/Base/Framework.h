@@ -16,6 +16,10 @@ protected:
 	//シーンファクトリー
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 
+	PostPera* postPera = nullptr;
+
+	ImGuiManager* imguiM;
+
 
 public:
 	//仮想デストラクタ(派生クラスのデストラクタを呼べるように)

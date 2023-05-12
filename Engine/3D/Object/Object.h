@@ -26,6 +26,14 @@ enum indices
 	FBX
 };
 
+//画面効果用のフラグ
+struct EffectOConstBuffer
+{
+	//フォグ
+	unsigned int isFog = false;
+	//時間
+	unsigned int time = 0;
+};
 
 class Object
 {
@@ -73,10 +81,10 @@ public://変数
 	ProjectionMat* projection;
 	bool isWireFrame = 0;
 	//画面効果用
-	static EffectConstBuffer effectFlags;
+	static EffectOConstBuffer effectFlags;
 	//画面効果用
 	static ComPtr <ID3D12Resource> effectFlagsBuff;
-	static EffectConstBuffer* mapEffectFlagsBuff;
+	static EffectOConstBuffer* mapEffectFlagsBuff;
 
 public:
 	//定数バッファ用データ構造体（スキニング）
@@ -122,6 +130,8 @@ public:
 
 	virtual void Update();
 
+	static void StaticUpdate();
+
 	virtual void Draw();
 
 	//ワールド行列の取得
@@ -145,9 +155,6 @@ public:
 	void PlayReverseAnimation(ModelFBX* model, bool isLoop = false);
 
 	//-------------
-
-	static void DrawPera();
-	static void DrawPera2();
 
 	void DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 		WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f },

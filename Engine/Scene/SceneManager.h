@@ -43,10 +43,6 @@ public:
 	//”š‚Ì‰æ‘œ
 	UINT64 textureNumHundle[12];
 
-
-	//imgui
-	ImGuiManager* imGuiManager;
-
 	//ƒ‰ƒCƒg
 	LightManager* lightManager = nullptr;
 
@@ -87,6 +83,8 @@ public:
 	void DrawPostEffect();
 	void DrawPostEffect2();
 	void DrawSprite();
+
+	void DrawImgui();
 
 	void StopWaveAllScene();
 };

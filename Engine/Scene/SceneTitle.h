@@ -13,4 +13,9 @@ public:
 	void Update()override;
 	void Draw()override;
 	void DrawSprite()override;
+
+	void DrawImgui()override;
+
+	void DrawPostEffect()override;
+	void DrawPostEffect2()override;
 };

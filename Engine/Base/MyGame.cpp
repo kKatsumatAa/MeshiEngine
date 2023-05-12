@@ -12,7 +12,7 @@ void MyGame::Initialize()
 	//シーンファクトリーを生成し、マネージャーにセット
 	sceneFactory_ = new SceneFactory();
 	sceneM->SetSceneFactory(sceneFactory_);
-	sceneM->ChangeScene("TITLE");
+	sceneM->ChangeScene("GAME");
 }
 
 void MyGame::Finalize()
@@ -35,43 +35,43 @@ bool MyGame::Update()
 	//ゲーム固有の更新処理
 
 
-
 	return false;
 }
 
 void MyGame::Draw()
 {
+	//1枚目に描画
 	{
-		DirectXWrapper::GetInstance().DrawUpdate();
+		postPera->PreDraw();
 
 		// 4.描画コマンドここから　//-----------
 		sceneM->Draw();
 
 		//
-		DirectXWrapper::GetInstance().DrawUpdate2();
+		postPera->PostDraw();
 	}
 
 	//マルチパス
 	{
 		//2枚目--------------------
-		DirectXWrapper::GetInstance().PreDrawToPera();
-
-		//
-		sceneM->DrawPostEffect();
-
-		DirectXWrapper::GetInstance().PostDrawToPera();
-
+		postPera->Draw2All();
 	}
+
+	//実際に描画
 	{
 		//実際に描画----------------
-		DirectXWrapper::GetInstance().PreDrawToPera2();
+		DirectXWrapper::GetInstance().PreDraw();
 
 		//
-		sceneM->DrawPostEffect2();
+		//sceneM->DrawPostEffect2();
+		//実際に描画
+		postPera->Draw2();
 
 		sceneM->DrawSprite();
 
+		imguiM->Draw();
+
 		// 4.描画コマンドここまで //
-		DirectXWrapper::GetInstance().PostDrawToPera2();
+		DirectXWrapper::GetInstance().PostDraw();
 	}
 }

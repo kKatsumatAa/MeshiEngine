@@ -42,3 +42,15 @@ void SceneLoad::DrawSprite()
 	count++;
 	loadObj.DrawBoxSprite({ 0,0 + sinf(count * 0.1f) * 3.0f,0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, sceneM->texhandle[3]);
 }
+
+void SceneLoad::DrawImgui()
+{
+}
+
+void SceneLoad::DrawPostEffect()
+{
+}
+
+void SceneLoad::DrawPostEffect2()
+{
+}
