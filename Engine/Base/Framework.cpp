@@ -16,7 +16,7 @@ void Framework::Initialize()
 
 	DrawInitialize();
 
-	//ポストエフェクト
+	//ポストエフェクト//
 	postPera = new PostPera();
 	postPera->Initialize(L"Resources/image/normalImage.jpg");
 
