@@ -77,6 +77,12 @@ cbuffer ConstBufferEffectFlags : register(b4)
 {
 	//フォグ
 	uint isFog;
+	//トゥーン
+	uint isToon;
+	//リムライト
+	uint isRimLight;
+	//リムカラー
+	float3 rimColor;
 	//時間
 	uint time;
 }

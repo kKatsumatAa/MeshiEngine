@@ -91,6 +91,8 @@ LightManager* Object::lightManager = nullptr;
 ComPtr <ID3D12Resource> Object::effectFlagsBuff = nullptr;
 EffectOConstBuffer* Object::mapEffectFlagsBuff = nullptr;
 EffectOConstBuffer Object::effectFlags;
+float Object::rimColorF3[3] = { 1.0f,1.0f,1.0f };
+
 
 struct weightMap
 {
@@ -220,11 +222,19 @@ void Object::Update()
 void Object::StaticUpdate()
 {
 	effectFlags.time++;
+	//imgui
 	ImGui::SliderInt("Fog", (int*)&effectFlags.isFog, 0, 1);
+	ImGui::SliderInt("Toon", (int*)&effectFlags.isToon, 0, 1);
+	ImGui::SliderInt("RimLight", (int*)&effectFlags.isRimLight, 0, 1);
+	ImGui::ColorEdit3("RimColor", rimColorF3);
+	effectFlags.rimColor = { rimColorF3[0],rimColorF3[1],rimColorF3[2] };
 
 	//画面効果用
 	{
 		mapEffectFlagsBuff->isFog = effectFlags.isFog;
+		mapEffectFlagsBuff->isToon = effectFlags.isToon;
+		mapEffectFlagsBuff->isRimLight = effectFlags.isRimLight;
+		mapEffectFlagsBuff->rimColor = effectFlags.rimColor;
 		mapEffectFlagsBuff->time = effectFlags.time;
 	}
 }

@@ -27,10 +27,17 @@ float4 main(VSOutput input) : SV_TARGET
 			float3 dotlightnormal = dot(dirLights[i].lightv, input.normal);
 			// 反射光ベクトル
 			float3 reflect = normalize(-dirLights[i].lightv + 2 * dotlightnormal * input.normal);
+			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess);
+			//トゥーン
+			if (isToon) {
+				dotlightnormal = smoothstep(0.5f, 0.55f, dotlightnormal);
+				specular = smoothstep(0.5f, 0.55f, specular);
+			}
+
 			// 拡散反射光
 			float3 diffuse = dotlightnormal * 0.8f;
 			// 鏡面反射光
-			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess) * 0.1f;
+			specular = specular * 0.1f;
 
 			// 全て加算する
 			shadecolor.rgb += (diffuse + specular) * dirLights[i].lightcolor;
@@ -53,10 +60,17 @@ float4 main(VSOutput input) : SV_TARGET
 			float3 dotlightnormal = dot(lightv, input.normal);
 			// 反射光ベクトル
 			float3 reflect = normalize(-lightv + 2 * dotlightnormal * input.normal);
+			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess);
+			//トゥーン
+			if (isToon) {
+				dotlightnormal = smoothstep(0.5f, 0.55f, dotlightnormal);
+				specular = smoothstep(0.5f, 0.55f, specular);
+			}
+
 			// 拡散反射光
 			float3 diffuse = dotlightnormal * 0.8f;
 			// 鏡面反射光
-			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess) * 0.1f;
+			specular = specular * 0.1f;
 
 			// 全て加算する
 			shadecolor.rgb += atten * (diffuse + specular) * pointLights[i].lightcolor;
@@ -87,10 +101,18 @@ float4 main(VSOutput input) : SV_TARGET
 			float3 dotlightnormal = dot(lightv, input.normal);
 			// 反射光ベクトル
 			float3 reflect = normalize(-lightv + 2 * dotlightnormal * input.normal);
+			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess);
+			//トゥーン
+			if (isToon) {
+				dotlightnormal = smoothstep(0.5f, 0.55f, dotlightnormal);
+				specular = smoothstep(0.5f, 0.55f, specular);
+			}
+
 			// 拡散反射光
 			float3 diffuse = dotlightnormal * 0.8f;
 			// 鏡面反射光
-			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess) * 0.1f;
+			specular = specular * 0.1f;
+
 			//全て加算する
 			shadecolor.rgb += atten * (diffuse + specular) * spotLights[i].lightcolor;
 		}
@@ -129,29 +151,39 @@ float4 main(VSOutput input) : SV_TARGET
 		}
 	}
 
-	// シェーディングによる色で描画
-	float4 RGBA = (shadecolor * texcolor * color);
-	float4 RGBA2 = (shadecolor * color);
-	float3 RGB = RGBA.rgb;
-	float  A = RGBA.a;
+	//リムライト
+		//内積
+		float dotL = 1.0f;
+		if (isRimLight)
+		{
+			dotL = smoothstep(0.5f, 0.55f, dot(eyedir, input.normal));
+		}
 
-	if (isFog == true)
-	{
-		//フォグ
-		float4 m_FogColor = float4(1.0f, 1.0f, 1.0f, 1.0f);                  //フォグカラー
-		float  m_Near = 100.0f;             //フォグの開始位置
-		float  m_Far = 500.0f;             //フォグの終了位置
-		float  m_FogLen = m_Far - m_Near;             //m_Far - m_Nearの結果
+		// シェーディングによる色で描画
+		float4 DSC = dotL * shadecolor;
+		float4 RIM = float4(rimColor.rgb, 1.0f) * (1.0f - dotL);
+		float4 RGBA = (DSC * texcolor * color) + RIM;
+		float4 RGBA2 = (DSC * color) + RIM;
+		float3 RGB = RGBA.rgb;
+		float  A = RGBA.a;
 
-		//頂点と視点との距離を計算する
-		float d = distance(input.worldpos.xyz, cameraPos);
+		if (isFog == true)
+		{
+			//フォグ
+			float4 m_FogColor = float4(1.0f, 1.0f, 1.0f, 1.0f);                  //フォグカラー
+			float  m_Near = 100.0f;             //フォグの開始位置
+			float  m_Far = 500.0f;             //フォグの終了位置
+			float  m_FogLen = m_Far - m_Near;             //m_Far - m_Nearの結果
 
-		float f = (m_Far - d) / (m_Far - m_Near);
-		f = clamp(f, 0.0f, 1.0f);
-		//オブジェクトのランバート拡散照明の計算結果とフォグカラーを線形合成する
+			//頂点と視点との距離を計算する
+			float d = distance(input.worldpos.xyz, cameraPos);
 
-		return RGBA * f + m_FogColor * (1.0f - f);
-	}
+			float f = (m_Far - d) / (m_Far - m_Near);
+			f = clamp(f, 0.0f, 1.0f);
+			//オブジェクトのランバート拡散照明の計算結果とフォグカラーを線形合成する
 
-	return RGBA;
+			return RGBA * f + m_FogColor * (1.0f - f);
+		}
+
+		return RGBA;
 }

@@ -26,14 +26,14 @@ void SceneManager::ChangeScene(std::string sceneName)
 {
 	assert(sceneFactory_);
 
-	 if (this->state) {
-		 this->state->Finalize();
-		 delete this->state;
-	 }
-	 //シーンファクトリーでシーン生成
-	 this->state = sceneFactory_->CreateScene(sceneName);
-	 state->SetScene(this);
-	 this->state->Initialize();
+	if (this->state) {
+		this->state->Finalize();
+		delete this->state;
+	}
+	//シーンファクトリーでシーン生成
+	this->state = sceneFactory_->CreateScene(sceneName);
+	state->SetScene(this);
+	this->state->Initialize();
 }
 
 void SceneManager::StopWaveAllScene()
@@ -53,6 +53,7 @@ void SceneManager::Initialize()
 
 		TextureManager::LoadGraph(L"Resources/image/effect1.png", texhandle[1]);
 		TextureManager::LoadGraph(L"Resources/image/a.png", texhandle[2]);
+		TextureManager::LoadGraph(L"Resources/image/test.jpg", texhandle[4]);
 	}
 
 	//fbx読み込み
@@ -64,9 +65,9 @@ void SceneManager::Initialize()
 
 	model[0] = Model::LoadFromOBJ("skydome", true, true);
 	model[1] = Model::LoadFromOBJ("ground");
-	model[2] = Model::LoadFromOBJ("player");
+	model[2] = Model::LoadFromOBJ("sphere", true);
 	model[4] = Model::LoadFromOBJ("MiG-25PD", true);
-	model[3] = Model::LoadFromOBJ("player", true);
+	model[3] = Model::LoadFromOBJ("chr_sword", true);
 
 	//Object::effectFlags.isGlassFilter = true;
 
@@ -77,13 +78,13 @@ void SceneManager::Initialize()
 	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
 	draw[1].worldMat->trans = { 0.0f, -10.0f, 0 };
 	draw[1].worldMat->SetWorld();
-	draw[2].worldMat->scale = { 5,5,5 };
-	draw[2].worldMat->rot.y = { -pi / 2.0f };
+	draw[2].worldMat->scale = { 10,10,10 };
+	draw[2].worldMat->rot.y = { -pi };
 	draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
 	draw[2].worldMat->SetWorld();
-	draw[3].worldMat->scale = { 5,5,5 };
+	draw[3].worldMat->scale = { 10,10,10 };
 	draw[3].worldMat->rot.y = { -pi / 2.0f };
-	draw[3].worldMat->trans = { 15.0f,0,0 };
+	draw[3].worldMat->trans = { 30.0f,0,0 };
 	draw[3].worldMat->SetWorld();
 
 
@@ -93,7 +94,7 @@ void SceneManager::Initialize()
 	draw[4].worldMat->SetWorld();
 
 	draw[5].worldMat->scale = { 1.3f,1.3f,1.3f };
-	draw[5].worldMat->trans = { fighterPos[0],fighterPos[1]-1.0f,fighterPos[2] };
+	draw[5].worldMat->trans = { fighterPos[0],fighterPos[1] - 1.0f,fighterPos[2] };
 	draw[5].worldMat->rot = { -3.14f / 2.0f,0,0 };
 	draw[5].worldMat->SetWorld();
 
@@ -105,7 +106,7 @@ void SceneManager::Initialize()
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
 	Object::SetLight(lightManager);
 	lightManager->SetDirLightActive(0, true);
-	lightManager->SetDirLightActive(1, true);
+	lightManager->SetDirLightActive(1, false);
 	lightManager->SetDirLightActive(2, false);
 	lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
 	lightManager->SetDirLightDir(1, { 0, -1.0, 0 });

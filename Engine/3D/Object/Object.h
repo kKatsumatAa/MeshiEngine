@@ -31,6 +31,14 @@ struct EffectOConstBuffer
 {
 	//フォグ
 	unsigned int isFog = false;
+	//トゥーン
+	unsigned int isToon = false;
+	//リムライト
+	unsigned int isRimLight = false;
+	float pad1;
+	//リムの色
+	XMFLOAT3 rimColor = { 1.0f,1.0f,1.0f };
+	float pad2;
 	//時間
 	unsigned int time = 0;
 };
@@ -74,6 +82,9 @@ private:
 	bool isLoop = false;
 	//逆再生
 	bool isReverse = false;
+
+	//
+	static float rimColorF3[3];
 
 public://変数
 	WorldMat* worldMat = new WorldMat();
