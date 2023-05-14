@@ -29,13 +29,6 @@ void SceneTitle::Draw()
 
 void SceneTitle::DrawSprite()
 {
-	sceneM->draw[0].DrawBoxSprite({ 0,WindowsApp::GetInstance().window_height / 2.0f,0 },
-		0.5f, { 1.0f,1.0f,1.0f,1.0f }, sceneM->texhandle[2]);
-	sceneM->draw[1].DrawBoxSprite({ WindowsApp::GetInstance().window_width - 300,
-		WindowsApp::GetInstance().window_height / 2.0f,0 },
-		1.0f, { 1.0f,1.0f,1.0f,1.0f }, sceneM->texhandle[1]);
-
-	sceneM->debugText.Print("[Basic]", 10, 10);
 }
 
 void SceneTitle::DrawImgui()

@@ -44,6 +44,8 @@ void LightManager::TransferConstBuffer()
 	{
 		//ŠÂ‹«Œõ
 		constMap->ambientColor = ambientColor;
+		constMap->diffuseColor = diffuseColor;
+		constMap->specularColor = specularColor;
 
 		for (int i = 0; i < DirLightNum; i++) {
 
@@ -144,6 +146,18 @@ void LightManager::DefaultLightSetting()
 void LightManager::SetAmbientColor(const XMFLOAT3& color)
 {
 	ambientColor = color;
+	dirty = true;
+}
+
+void LightManager::SetDiffuseColor(const XMFLOAT3& color)
+{
+	diffuseColor = color;
+	dirty = true;
+}
+
+void LightManager::SetSpecularColor(const XMFLOAT3& color)
+{
+	specularColor = color;
 	dirty = true;
 }
 

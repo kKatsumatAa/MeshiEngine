@@ -43,6 +43,8 @@ private://メンバ変数
 	bool dirty = false;
 	// 環境光の色
 	XMFLOAT3 ambientColor = { 1,1,1 };
+	XMFLOAT3 diffuseColor = { 1,1,1 };
+	XMFLOAT3 specularColor = { 1,1,1 };
 	//点光源の配列
 	PointLight pointLights[PointLightNum];
 	// 平行光源の配列
@@ -59,6 +61,12 @@ public://サブクラス
 		// 環境光の色
 		XMFLOAT3 ambientColor;
 		float pad1;
+		// diffuseの色
+		XMFLOAT3 diffuseColor;
+		float pad2;
+		// specularの色
+		XMFLOAT3 specularColor;
+		float pad3;
 
 		// 平行光源の配列
 		DirLight::ConstBufferData dirLights[DirLightNum];
@@ -104,6 +112,10 @@ public:
 	/// </summary>
 	/// <param name="color">ライト色</param>
 	void SetAmbientColor(const XMFLOAT3& color);
+
+	void SetDiffuseColor(const XMFLOAT3& color);
+	
+	void SetSpecularColor(const XMFLOAT3& color);
 
 	/// <summary>
 	/// インスタンス生成

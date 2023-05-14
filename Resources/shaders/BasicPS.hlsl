@@ -15,10 +15,11 @@ float4 main(VSOutput input) : SV_TARGET
 	float3 eyedir = normalize(cameraPos - input.worldpos.xyz);
 
 	// 環境反射光
-	float3 ambient = 0.06f;
+	float3 ambient = ambientColor * 0.06f;
 
 	// シェーディングによる色
-	float4 shadecolor = float4(ambientColor * ambient, 1.0f);
+	float4 shadecolor = { 0,0,0, 1.0f };
+
 
 	//平行光源
 	for (int i = 0; i < DIRLIGHT_NUM; i++) {
@@ -30,14 +31,15 @@ float4 main(VSOutput input) : SV_TARGET
 			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess);
 			//トゥーン
 			if (isToon) {
-				dotlightnormal = smoothstep(0.5f, 0.55f, dotlightnormal);
 				specular = smoothstep(0.5f, 0.55f, specular);
+				dotlightnormal = (1.0f - specular) * smoothstep(0.5f, 0.55f, dotlightnormal);
+				ambient = (1.0f - dotlightnormal - specular) * ambient;
 			}
 
 			// 拡散反射光
-			float3 diffuse = dotlightnormal * 0.8f;
+			float3 diffuse = dotlightnormal * 0.8f * diffuseColor;
 			// 鏡面反射光
-			specular = specular * 0.1f;
+			specular = specular * 0.9f * specularColor;
 
 			// 全て加算する
 			shadecolor.rgb += (diffuse + specular) * dirLights[i].lightcolor;
@@ -63,14 +65,15 @@ float4 main(VSOutput input) : SV_TARGET
 			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess);
 			//トゥーン
 			if (isToon) {
-				dotlightnormal = smoothstep(0.5f, 0.55f, dotlightnormal);
 				specular = smoothstep(0.5f, 0.55f, specular);
+				dotlightnormal = (1.0f - specular) * smoothstep(0.5f, 0.55f, dotlightnormal);
+				ambient = (1.0f - dotlightnormal - specular) * ambient;
 			}
 
 			// 拡散反射光
-			float3 diffuse = dotlightnormal * 0.8f;
+			float3 diffuse = dotlightnormal * 0.8f * diffuseColor;
 			// 鏡面反射光
-			specular = specular * 0.1f;
+			specular = specular * 0.9f * specularColor;
 
 			// 全て加算する
 			shadecolor.rgb += atten * (diffuse + specular) * pointLights[i].lightcolor;
@@ -104,14 +107,15 @@ float4 main(VSOutput input) : SV_TARGET
 			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess);
 			//トゥーン
 			if (isToon) {
-				dotlightnormal = smoothstep(0.5f, 0.55f, dotlightnormal);
 				specular = smoothstep(0.5f, 0.55f, specular);
+				dotlightnormal = (1.0f - specular) * smoothstep(0.5f, 0.55f, dotlightnormal);
+				ambient = (1.0f - dotlightnormal - specular) * ambient;
 			}
 
 			// 拡散反射光
-			float3 diffuse = dotlightnormal * 0.8f;
+			float3 diffuse = dotlightnormal * 0.8f * diffuseColor;
 			// 鏡面反射光
-			specular = specular * 0.1f;
+			specular = specular * 0.9f * specularColor;
 
 			//全て加算する
 			shadecolor.rgb += atten * (diffuse + specular) * spotLights[i].lightcolor;
@@ -150,6 +154,10 @@ float4 main(VSOutput input) : SV_TARGET
 			shadecolor.rgb -= atten;
 		}
 	}
+
+	//環境光
+	shadecolor.rgb += ambient;
+
 
 	//リムライト
 		//内積

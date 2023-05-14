@@ -9,7 +9,7 @@ void SceneGame::Finalize()
 //---------------------------------------------------------------------------------------
 void SceneGame::Initialize()
 {
-	Sound::GetInstance().PlayWave("Stage_BGM.wav", 0.4f, true);
+	//Sound::GetInstance().PlayWave("Stage_BGM.wav", 0.4f, true);
 
 	sceneM->draw[5].PlayReverseAnimation(sceneM->modelFBX, true);
 
@@ -26,7 +26,7 @@ void SceneGame::Update()
 	//ƒV[ƒ“‘JˆÚ
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
 	{
-		sceneM->ChangeScene("TITLE");
+		//sceneM->ChangeScene("TITLE");
 	}
 }
 
@@ -37,9 +37,9 @@ void SceneGame::Draw()
 		sceneM->draw[i].DrawModel(sceneM->draw[i].worldMat, &sceneM->camera->viewMat,
 			&sceneM->camera->projectionMat, sceneM->model[i]);
 	}*/
+	sceneM->draw[3].DrawSphere(sceneM->draw[3].worldMat, &sceneM->camera->viewMat,
+		&sceneM->camera->projectionMat);
 	sceneM->draw[2].DrawModel(sceneM->draw[2].worldMat, &sceneM->camera->viewMat,
-		&sceneM->camera->projectionMat, sceneM->model[3]);
-	sceneM->draw[3].DrawModel(sceneM->draw[3].worldMat, &sceneM->camera->viewMat,
 		&sceneM->camera->projectionMat, sceneM->model[2], { 1,1,1,1 });
 	//sceneM->draw[4].DrawCube3D(sceneM->draw[4].worldMat, &sceneM->camera->viewMat,
 	//	&sceneM->camera->projectionMat, { 1.0f,0.2f,0.7f,1.0f });

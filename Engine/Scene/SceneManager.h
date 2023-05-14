@@ -46,6 +46,10 @@ public:
 	//ƒ‰ƒCƒg
 	LightManager* lightManager = nullptr;
 
+	float ambientColor[3] = { 0,0,1 };
+	float diffuseColor[3] = { 1,0,0 };
+	float specularColor[3] = { 0,1,0 };
+
 	//ŠÛ‰e
 	float circleShadowDir[3] = { 0,-1,0 };
 	float circleShadowAtten[3] = { 0.5f,0.15f,0 };

@@ -16,12 +16,10 @@ float4 main(VSOutput input) : SV_TARGET
 		float3 eyedir = normalize(cameraPos - input.worldpos.xyz);
 
 		// ŠÂ‹«”½ËŒõ
-		float3 ambient = m_ambient;
+		float3 ambient = float3(ambientColor * m_ambient);
 
 		// ƒVƒF[ƒfƒBƒ“ƒO‚É‚æ‚éF
-		float4 shadecolor = float4(ambientColor * ambient, m_alpha);
-
-
+		float4 shadecolor = {0,0,0, m_alpha };
 
 		//•½sŒõŒ¹
 		for (int i = 0; i < DIRLIGHT_NUM; i++) {
@@ -33,14 +31,15 @@ float4 main(VSOutput input) : SV_TARGET
 				float3 specular = pow(saturate(dot(reflect, eyedir)), shininess);
 				//ƒgƒD[ƒ“
 				if (isToon) {
-					dotlightnormal = smoothstep(0.5f, 0.55f, dotlightnormal);
 					specular = smoothstep(0.5f, 0.55f, specular);
+					dotlightnormal = (1.0f - specular) * smoothstep(0.5f, 0.55f, dotlightnormal);
+					ambient = (1.0f - dotlightnormal - specular) * ambient;
 				}
 
 				// ŠgU”½ËŒõ
-				float3 diffuse = dotlightnormal * m_diffuse;
+				float3 diffuse = dotlightnormal * m_diffuse * diffuseColor;
 				// ‹¾–Ê”½ËŒõ
-				specular = specular * m_specular;
+				specular = specular * m_specular * specularColor;
 
 				// ‘S‚Ä‰ÁZ‚·‚é
 				shadecolor.rgb += (diffuse + specular) * dirLights[i].lightcolor;
@@ -66,14 +65,15 @@ float4 main(VSOutput input) : SV_TARGET
 				float3 specular = pow(saturate(dot(reflect, eyedir)), shininess);
 				//ƒgƒD[ƒ“
 				if (isToon) {
-					dotlightnormal = smoothstep(0.5f, 0.55f, dotlightnormal);
 					specular = smoothstep(0.5f, 0.55f, specular);
+					dotlightnormal = (1.0f - specular) * smoothstep(0.5f, 0.55f, dotlightnormal);
+					ambient = (1.0f - dotlightnormal - specular) * ambient;
 				}
 
 				// ŠgU”½ËŒõ
-				float3 diffuse = dotlightnormal * m_diffuse;
+				float3 diffuse = dotlightnormal * m_diffuse * diffuseColor;
 				// ‹¾–Ê”½ËŒõ
-				specular = specular * m_specular;
+				specular = specular * m_specular * specularColor;
 
 				// ‘S‚Ä‰ÁZ‚·‚é
 				shadecolor.rgb += atten * (diffuse + specular) * pointLights[i].lightcolor;
@@ -107,14 +107,15 @@ float4 main(VSOutput input) : SV_TARGET
 				float3 specular = pow(saturate(dot(reflect, eyedir)), shininess);
 				//ƒgƒD[ƒ“
 				if (isToon) {
-					dotlightnormal = smoothstep(0.5f, 0.55f, dotlightnormal);
 					specular = smoothstep(0.5f, 0.55f, specular);
+					dotlightnormal = (1.0f - specular) * smoothstep(0.5f, 0.55f, dotlightnormal);
+					ambient = (1.0f - dotlightnormal - specular) * ambient;
 				}
 
 				// ŠgU”½ËŒõ
-				float3 diffuse = dotlightnormal * m_diffuse;
+				float3 diffuse = dotlightnormal * m_diffuse * diffuseColor;
 				// ‹¾–Ê”½ËŒõ
-				specular = specular * m_specular;
+				specular = specular * m_specular * specularColor;
 				//‘S‚Ä‰ÁZ‚·‚é
 				shadecolor.rgb += atten * (diffuse + specular) * spotLights[i].lightcolor;
 			}
@@ -152,6 +153,9 @@ float4 main(VSOutput input) : SV_TARGET
 				shadecolor.rgb -= atten;
 			}
 		}
+
+		//ŠÂ‹«Œõ
+		shadecolor.rgb += ambient;
 
 		//ƒŠƒ€ƒ‰ƒCƒg
 		//“àÏ

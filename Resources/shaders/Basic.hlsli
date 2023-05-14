@@ -70,6 +70,8 @@ struct CircleShadow
 cbuffer ConstBufferDataMaterial3 : register(b3)
 {
 	float3     ambientColor;
+	float3     diffuseColor;
+	float3     specularColor;
 	DirLight   dirLights[DIRLIGHT_NUM];
 	PointLight pointLights[POINTLIGHT_NUM];
 	SpotLight  spotLights[SPOTLIGHT_NUM];

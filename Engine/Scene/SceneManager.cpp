@@ -60,14 +60,14 @@ void SceneManager::Initialize()
 	modelFBX = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 
 	{
-		Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
+		//Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
 	}
 
 	model[0] = Model::LoadFromOBJ("skydome", true, true);
 	model[1] = Model::LoadFromOBJ("ground");
 	model[2] = Model::LoadFromOBJ("sphere", true);
 	model[4] = Model::LoadFromOBJ("MiG-25PD", true);
-	model[3] = Model::LoadFromOBJ("chr_sword", true);
+	model[3] = Model::LoadFromOBJ("sphere");
 
 	//Object::effectFlags.isGlassFilter = true;
 
@@ -109,7 +109,6 @@ void SceneManager::Initialize()
 	lightManager->SetDirLightActive(1, false);
 	lightManager->SetDirLightActive(2, false);
 	lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
-	lightManager->SetDirLightDir(1, { 0, -1.0, 0 });
 	//“_ŒõŒ¹
 	for (int i = 0; i < 6; i++)
 	{
@@ -153,7 +152,11 @@ void SceneManager::Update()
 		Vec3xM4(camera->viewMat.eye, cameraWorldMat.matWorld, 0);
 		camera->UpdateViewMatrix();
 	}
-	//#endif 
+	//#endif
+
+	lightManager->SetAmbientColor({ ambientColor[0],ambientColor[1], ambientColor[2] });
+	lightManager->SetDiffuseColor({ diffuseColor[0],diffuseColor[1], diffuseColor[2] });
+	lightManager->SetSpecularColor({ specularColor[0],specularColor[1], specularColor[2] });
 }
 
 void SceneManager::Draw()
@@ -180,6 +183,14 @@ void SceneManager::DrawSprite()
 
 void SceneManager::DrawImgui()
 {
+	ImGui::Begin("LightColor");
+
+	ImGui::SliderFloat3("ambientColor", ambientColor, 0, 1.0f);
+	ImGui::SliderFloat3("diffuseColor", diffuseColor, 0, 1.0f);
+	ImGui::SliderFloat3("specularColor", specularColor, 0, 1.0f);
+
+	ImGui::End();
+
 	state->DrawImgui();
 }
 
