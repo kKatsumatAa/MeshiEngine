@@ -30,6 +30,12 @@ struct EffectConstBuffer
 	unsigned int isGrayScale = false;
 	//ガラスフィルター
 	unsigned int isGlassFilter = false;
+	//モザイク
+	unsigned int isMosaic = false;
+	//ネガポジ
+	unsigned int isNega = false;
+	//ネガポジ
+	unsigned int isRGBShift = false;
 	//時間
 	unsigned int time = 0;
 };

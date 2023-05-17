@@ -208,6 +208,36 @@ float4 PS(Output input) : SV_TARGET
 			isEffect = true;
 	}
 
+	//モザイク
+	if (isMosaic)
+	{
+		float density = 50.0f;
+		ret = tex.Sample(smp, floor(input.uv * density) / density);
+
+		isEffect = true;
+	}
+
+	//ネガポジ
+	if (isNega)
+	{
+		ret = float4(1.0f - RGBA.r, 1.0f - RGBA.g, 1.0f - RGBA.b, 1.0f);
+
+		isEffect = true;
+	}
+
+	//ネガポジ
+	if (isRGBShift)
+	{
+		float shift = 0.005f;
+		float r = tex.Sample(smp, input.uv + float2(-shift, 0)).r;
+		float g = tex.Sample(smp, input.uv + float2(0, 0)).g;
+		float b = tex.Sample(smp, input.uv + float2(shift, 0)).b;
+
+		ret = float4(r,g,b, 1.0f);
+
+		isEffect = true;
+	}
+
 	if (isEffect)
 	{
 		return ret;

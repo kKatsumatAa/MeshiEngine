@@ -390,18 +390,21 @@ bool PostPera::CreateEffectBufferAndView(const wchar_t* fileName)
 
 void PostPera::Update()
 {
-	//ImGui::Begin("PostEffect");
-	//ImGui::SliderInt("GrayScale", (int*)&effectFlags.isGrayScale, 0, 1);
-	//ImGui::SliderInt("Emboss", (int*)&effectFlags.isEmboss, 0, 1);
-	//ImGui::SliderInt("Gaussian", (int*)&effectFlags.isGaussian, 0, 1);
-	//ImGui::SliderInt("GlassFilter", (int*)&effectFlags.isGlassFilter, 0, 1);
-	//ImGui::SliderInt("ScanningLine", (int*)&effectFlags.isScanningLine, 0, 1);
-	//ImGui::SliderInt("BarrelCurve", (int*)&effectFlags.isBarrelCurve, 0, 1);
-	//ImGui::SliderInt("Gradation", (int*)&effectFlags.isGradation, 0, 1);
-	//ImGui::SliderInt("Outline", (int*)&effectFlags.isOutLine, 0, 1);
-	//ImGui::SliderInt("Sharpness", (int*)&effectFlags.isSharpness, 0, 1);
-	//ImGui::SliderInt("Vignette", (int*)&effectFlags.isVignette, 0, 1);
-	//ImGui::End();
+	ImGui::Begin("PostEffect");
+	ImGui::SliderInt("GrayScale", (int*)&effectFlags.isGrayScale, 0, 1);
+	ImGui::SliderInt("Emboss", (int*)&effectFlags.isEmboss, 0, 1);
+	ImGui::SliderInt("Gaussian", (int*)&effectFlags.isGaussian, 0, 1);
+	ImGui::SliderInt("GlassFilter", (int*)&effectFlags.isGlassFilter, 0, 1);
+	ImGui::SliderInt("ScanningLine", (int*)&effectFlags.isScanningLine, 0, 1);
+	ImGui::SliderInt("BarrelCurve", (int*)&effectFlags.isBarrelCurve, 0, 1);
+	ImGui::SliderInt("Gradation", (int*)&effectFlags.isGradation, 0, 1);
+	ImGui::SliderInt("Outline", (int*)&effectFlags.isOutLine, 0, 1);
+	ImGui::SliderInt("Sharpness", (int*)&effectFlags.isSharpness, 0, 1);
+	ImGui::SliderInt("Vignette", (int*)&effectFlags.isVignette, 0, 1);
+	ImGui::SliderInt("Mosaic", (int*)&effectFlags.isMosaic, 0, 1);
+	ImGui::SliderInt("NegaPosi", (int*)&effectFlags.isNega, 0, 1);
+	ImGui::SliderInt("RGBShift", (int*)&effectFlags.isRGBShift, 0, 1);
+	ImGui::End();
 
 	this->mapEffectFlagsBuff->isEmboss = effectFlags.isEmboss;
 	this->mapEffectFlagsBuff->isGaussian = effectFlags.isGaussian;
@@ -414,6 +417,9 @@ void PostPera::Update()
 	this->mapEffectFlagsBuff->isScanningLine = effectFlags.isScanningLine;
 	this->mapEffectFlagsBuff->isGrayScale = effectFlags.isGrayScale;
 	this->mapEffectFlagsBuff->isGlassFilter = effectFlags.isGlassFilter;
+	this->mapEffectFlagsBuff->isMosaic = effectFlags.isMosaic;
+	this->mapEffectFlagsBuff->isNega = effectFlags.isNega;
+	this->mapEffectFlagsBuff->isRGBShift = effectFlags.isRGBShift;
 	this->mapEffectFlagsBuff->time++;
 }
 

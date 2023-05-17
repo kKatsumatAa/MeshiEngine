@@ -25,6 +25,12 @@ cbuffer ConstBufferEffectFlags : register(b0)
 	uint isGrayScale;
 	//ガラスフィルター
 	uint isGlassFilter;
+	//モザイク
+	uint isMosaic;
+	//ネガポジ反転
+	uint isNega;
+	//ネガポジ反転
+	uint isRGBShift;
 	//時間
 	uint time;
 }
