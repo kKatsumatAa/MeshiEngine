@@ -163,7 +163,7 @@ float4 PS(Output input) : SV_TARGET
 	{
 		float2 samplePoint = input.uv;
 		samplePoint -= float2(0.5, 0.5);
-		float distPower = pow(length(samplePoint), 0.02);
+		float distPower = pow(length(samplePoint), 0.1);
 		samplePoint *= float2(distPower, distPower);
 		samplePoint += float2(0.5, 0.5);
 		float4 Tex = tex.Sample(smp, samplePoint);
@@ -225,7 +225,7 @@ float4 PS(Output input) : SV_TARGET
 		isEffect = true;
 	}
 
-	//ÉlÉKÉ|ÉW
+	//RGBÇ∏ÇÁÇµ
 	if (isRGBShift)
 	{
 		float shift = 0.005f;
