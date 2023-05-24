@@ -352,7 +352,7 @@ void Model::LoadTextures()
 }
 
 
-Model* Model::LoadFromOBJ(const std::string& folderName, const bool smoothing, const bool& modelType)
+Model* Model::LoadFromOBJ(const std::string& folderName, bool smoothing, bool modelType)
 {
 	//新たなModel型のインスタンスのメモリを確保
 	Model* model = new Model;

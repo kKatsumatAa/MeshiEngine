@@ -8,6 +8,8 @@
 #include "PadInput.h"
 #include "SceneState.h"
 #include "AbstractSceneFactory.h"
+#include "ModelManager.h"
+
 
 
 class CollisionManager;

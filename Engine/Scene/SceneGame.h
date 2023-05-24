@@ -1,12 +1,16 @@
 #pragma once
 #include"SceneState.h"
 #include"PostPera.h"
+#include"Model.h"
+#include"Object.h"
 
 
 class SceneGame : public SceneState
 {
 private:
 	PostPera postPera;
+
+	std::map<Object*, Model*> objAndModels;
 
 public:
 	void Finalize()override;

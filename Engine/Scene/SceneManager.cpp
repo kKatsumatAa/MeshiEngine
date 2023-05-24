@@ -5,6 +5,8 @@
 #include "CollisionManager.h"
 #include "Player.h"
 #include "FbxLoader.h"
+#include "JsonLevelLoader.h"
+
 
 //---------------------------------------------------------------------------------------
 //デストラクタ
@@ -43,6 +45,10 @@ void SceneManager::StopWaveAllScene()
 
 void SceneManager::Initialize()
 {
+	//json
+	JsonLevelLoader::Getinstance().Initialize();
+	JsonLevelLoader::Getinstance().LoadJsonFile("untitled");
+
 	{
 		TextureManager::LoadGraph(L"Resources/image/loading.png", texhandle[3]);
 		//白い画像
@@ -57,17 +63,17 @@ void SceneManager::Initialize()
 	}
 
 	//fbx読み込み
-	modelFBX = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+	modelFBX = ModelManager::GetInstance().LoadModelFBX("boneTest");
 
 	{
 		//Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
 	}
 
-	model[0] = Model::LoadFromOBJ("skydome", true, true);
-	model[1] = Model::LoadFromOBJ("ground");
-	model[2] = Model::LoadFromOBJ("sphere", true);
-	model[4] = Model::LoadFromOBJ("MiG-25PD", true);
-	model[3] = Model::LoadFromOBJ("sphere");
+	model[0] = ModelManager::GetInstance().LoadModel("skydome", true, true);
+	model[1] = ModelManager::GetInstance().LoadModel("ground");
+	model[2] = ModelManager::GetInstance().LoadModel("chr_sword", true);
+	model[4] = ModelManager::GetInstance().LoadModel("MiG-25PD", true);
+	model[3] = ModelManager::GetInstance().LoadModel("sphere");
 
 	//Object::effectFlags.isGlassFilter = true;
 

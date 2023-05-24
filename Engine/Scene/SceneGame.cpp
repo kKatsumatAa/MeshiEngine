@@ -1,5 +1,6 @@
 #include "SceneGame.h"
 #include "SceneManager.h"
+#include "JsonLevelLoader.h"
 
 
 void SceneGame::Finalize()
@@ -15,6 +16,26 @@ void SceneGame::Initialize()
 
 	//ポストエフェクト初期化
 	//postPera.Initialize(L"Resources/image/normalImage.jpg");
+
+	//initializeの度,毎回やっちゃうとおかしくなる
+	{
+		objAndModels.clear();
+
+		//レベルデータからオブジェクトを生成、配置
+		for (auto& objData : JsonLevelLoader::Getinstance().levelData->objects)
+		{
+			//ファイル名から登録済みモデルを検索
+			Model* model = ModelManager::GetInstance().LoadModel(objData.fileName);
+			//モデルを指定して3Dオブジェクトを生成
+			Object* newObj = new Object;
+			//worldmat
+			newObj->worldMat = objData.worldMat;
+
+			//セットで登録
+			objAndModels.insert(std::make_pair(newObj, model));
+		}
+	}
+
 }
 
 void SceneGame::Update()
@@ -32,20 +53,13 @@ void SceneGame::Update()
 
 void SceneGame::Draw()
 {
-	/*for (int i = 0; i < 2; i++)
+	for (std::map<Object*, Model*>::iterator it = objAndModels.begin(); it != objAndModels.end(); it++)
 	{
-		sceneM->draw[i].DrawModel(sceneM->draw[i].worldMat, &sceneM->camera->viewMat,
-			&sceneM->camera->projectionMat, sceneM->model[i]);
-	}*/
-	sceneM->draw[3].DrawSphere(sceneM->draw[3].worldMat, &sceneM->camera->viewMat,
-		&sceneM->camera->projectionMat);
-	sceneM->draw[2].DrawModel(sceneM->draw[2].worldMat, &sceneM->camera->viewMat,
-		&sceneM->camera->projectionMat, sceneM->model[2], { 1,1,1,1 });
-	//sceneM->draw[4].DrawCube3D(sceneM->draw[4].worldMat, &sceneM->camera->viewMat,
-	//	&sceneM->camera->projectionMat, { 1.0f,0.2f,0.7f,1.0f });
+		Object* obj = it->first;
+		Model* model = it->second;
 
-	//sceneM->draw[5].DrawFBX(sceneM->draw[5].worldMat, &sceneM->camera->viewMat,
-	//	&sceneM->camera->projectionMat, sceneM->modelFBX, { 1.0f,0.2f,0.7f,1.0f });
+		obj->DrawModel(obj->worldMat, &sceneM->camera->viewMat, &sceneM->camera->projectionMat, model);
+	}
 }
 
 void SceneGame::DrawSprite()

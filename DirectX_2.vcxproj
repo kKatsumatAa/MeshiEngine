@@ -45,14 +45,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)External\DirectXTex;$(ProjectDir)External\imgui;$(ProjectDir)External\lib\fbx_sdk\include</IncludePath>
+    <IncludePath>$(ProjectDir)External\DirectXTex;$(ProjectDir)External\imgui;$(ProjectDir)External\lib\fbx_sdk\include;$(ProjectDir)External\nlohman</IncludePath>
     <LibraryPath>$(ProjectDir)External\lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)..\Generated\Obj\$(ProjectName)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)..\Generated\Outputs\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)External\DirectXTex;$(ProjectDir)External\imgui;$(ProjectDir)External\lib\fbx_sdk\include</IncludePath>
+    <IncludePath>$(ProjectDir)External\DirectXTex;$(ProjectDir)External\imgui;$(ProjectDir)External\lib\fbx_sdk\include;$(ProjectDir)External\nlohman</IncludePath>
     <LibraryPath>$(ProjectDir)External\lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)..\Generated\Obj\$(ProjectName)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)..\Generated\Outputs\$(Configuration)\</OutDir>
@@ -116,6 +116,7 @@
     <ClCompile Include="Engine\3D\Object\Mesh.cpp" />
     <ClCompile Include="Engine\3D\Object\Model.cpp" />
     <ClCompile Include="Engine\3D\Object\ModelFBX.cpp" />
+    <ClCompile Include="Engine\3D\Object\ModelManager.cpp" />
     <ClCompile Include="Engine\3D\Object\Object.cpp" />
     <ClCompile Include="Engine\3D\Object\ParticleManager.cpp" />
     <ClCompile Include="Engine\3D\Object\Primitive.cpp" />
@@ -125,6 +126,7 @@
     <ClCompile Include="Engine\Base\DirectXWrapper.cpp" />
     <ClCompile Include="Engine\Base\Framework.cpp" />
     <ClCompile Include="Engine\Base\ImGuiManager.cpp" />
+    <ClCompile Include="Engine\Base\JsonLevelLoader.cpp" />
     <ClCompile Include="Engine\Base\MyGame.cpp" />
     <ClCompile Include="Engine\Base\ProjectionMat.cpp" />
     <ClCompile Include="Engine\Base\ViewMat.cpp" />
@@ -176,6 +178,7 @@
     <ClInclude Include="Engine\3D\Object\Mesh.h" />
     <ClInclude Include="Engine\3D\Object\Model.h" />
     <ClInclude Include="Engine\3D\Object\ModelFBX.h" />
+    <ClInclude Include="Engine\3D\Object\ModelManager.h" />
     <ClInclude Include="Engine\3D\Object\Object.h" />
     <ClInclude Include="Engine\3D\Object\ParticleManager.h" />
     <ClInclude Include="Engine\3D\Object\Primitive.h" />
@@ -190,6 +193,7 @@
     <ClInclude Include="Engine\Base\ViewMat.h" />
     <ClInclude Include="Engine\Base\WindowsApp.h" />
     <ClInclude Include="Engine\Base\WorldMat.h" />
+    <ClInclude Include="Engine\Base\JsonLevelLoader.h" />
     <ClInclude Include="Engine\Collision\BaseCollider.h" />
     <ClInclude Include="Engine\Collision\Collision.h" />
     <ClInclude Include="Engine\Collision\CollisionInfo.h" />
