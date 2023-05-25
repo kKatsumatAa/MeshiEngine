@@ -303,7 +303,9 @@ void PostPera::GenerateRSPL()
 	rp[3].DescriptorTable.NumDescriptorRanges = 1;
 
 
-	D3D12_STATIC_SAMPLER_DESC sampler = CD3DX12_STATIC_SAMPLER_DESC(0); //s0
+	D3D12_STATIC_SAMPLER_DESC sampler = CD3DX12_STATIC_SAMPLER_DESC(0,D3D12_FILTER_MIN_LINEAR_MAG_MIP_POINT); //s0
+	sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;//タイリングすると反対側からとってきたりしておかしくなるので
 
 	//デスクリプタテーブル+フラグのやつ
 	rsDesc.NumParameters = _countof(rp);
