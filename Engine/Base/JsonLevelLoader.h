@@ -47,5 +47,5 @@ public:
 	void LoadJsonFile(std::string fileName);
 
 	//Ä‹A“I‚Éq‹Ÿ‚ğ“Ç‚İ‚İ
-	void LoadRecursiveChildrenData(const nlohmann::json& object, WorldMat* worldMat = nullptr);
+	void LoadRecursiveChildrenData(nlohmann::json::iterator object, WorldMat* worldMat = nullptr);
 };

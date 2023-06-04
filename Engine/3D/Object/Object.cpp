@@ -321,14 +321,10 @@ Object::Object()
 
 void Object::SendingMat(int indexNum)
 {
-	worldMat->SetWorld();
-
+	
 	//変換行列をGPUに送信
-	if (worldMat->parent != nullptr && indexNum != SPRITE)//親がいる場合
-	{
-		worldMat->matWorld *= worldMat->parent->matWorld;
-	}
-	//親がいない場合
+	worldMat->SetWorld();
+	//スプライトじゃない場合
 	if (indexNum != SPRITE)
 	{
 		XMMATRIX matW;

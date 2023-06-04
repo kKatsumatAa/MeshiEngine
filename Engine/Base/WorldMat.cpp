@@ -3,7 +3,7 @@
 
 WorldMat::WorldMat()
 {
-	matWorld = 
+	matWorld =
 	{ 1,0,0,0,
 	  0,1,0,0,
 	  0,0,1,0,
@@ -81,4 +81,41 @@ void WorldMat::SetWorld()
 	SetScale();
 	SetRot();
 	SetTrans();
+
+	//親がいたら
+	if (parent)
+	{
+		//親の行列も計算(重いかも)
+		SetParentWorld(parent);
+		//親の行列を自分の行列にかけていく
+		RecursiveCulcParentMat(parent, matWorld);
+	}
+}
+
+void WorldMat::SetParentWorld(WorldMat* parent)
+{
+	//親の行列計算
+	parent->matWorld = normalM;
+
+	parent->SetScale();
+	parent->SetRot();
+	parent->SetTrans();
+
+	//親に親があったら
+	if (parent->parent)
+	{
+		SetParentWorld(parent->parent);
+	}
+}
+
+void WorldMat::RecursiveCulcParentMat(WorldMat* parent, M4& childMat)
+{
+	//子の行列に親の行列をかける
+	childMat *= parent->matWorld;
+
+	//まだ親がいれば
+	if (parent->parent)
+	{
+		RecursiveCulcParentMat(parent->parent, childMat);
+	}
 }

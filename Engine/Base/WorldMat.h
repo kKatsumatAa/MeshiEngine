@@ -14,6 +14,13 @@ private:
 	M4 matRot;
 	M4 matTrans;
 
+
+private:
+	//親の行列も計算
+	void SetParentWorld(WorldMat* parent);
+	//再帰,親があれば行列を掛ける
+	void RecursiveCulcParentMat(WorldMat* parent, M4& childMat);
+
 public:
 	M4 matWorld;
 	Vec3 scale = { 1.0f,1.0f,1.0f };
