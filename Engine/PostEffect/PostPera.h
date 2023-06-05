@@ -43,7 +43,6 @@ struct EffectConstBuffer
 struct PeraVertex
 {
 	XMFLOAT3 pos;
-	float pad1 = 1.0f;
 	XMFLOAT2 uv;
 };
 
@@ -51,10 +50,10 @@ class PostPera
 {
 private:
 	PeraVertex pv[4] = {
-		{{-1, -1,0.1f},1, {0,1}},//左下
-		{{-1, 1,0.1f},1,{0,0}},//左上
-		{{1, -1,0.1f},1,{1,1}},//右下
-		{{1, 1,0.1f},1,{1,0}}//右上
+		{{-0.95f, -0.95f,0},{0,1.0f}},//左下
+		{{-0.95f, +0.95f,0},{0,0}},//左上
+		{{+0.95f, -0.95f,0},{1.0f,1.0f}},//右下
+		{{+0.95f, +0.95f,0},{1.0f,0}}//右上
 	};
 
 	ComPtr<ID3D12Resource> _peraVB;

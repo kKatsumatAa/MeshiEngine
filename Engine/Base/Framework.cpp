@@ -17,8 +17,10 @@ void Framework::Initialize()
 	DrawInitialize();
 
 	//ポストエフェクト//
-	postPera = new PostPera();
-	postPera->Initialize(L"Resources/image/normalImage.jpg");
+	postPera[0] = std::make_unique<PostPera>();
+	postPera[1] = std::make_unique<PostPera>();
+	postPera[0]->Initialize(L"Resources/image/normalImage.jpg");
+	postPera[1]->Initialize(L"Resources/image/normalImage.jpg");
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
@@ -72,7 +74,10 @@ bool Framework::Update()
 	imguiM->Begin();
 
 	//ポストエフェクト(imgui)
-	postPera->Update();
+	for (std::unique_ptr<PostPera>& postpera : postPera)
+	{
+		postpera->Update();
+	}
 	//(imgui)
 	Object::StaticUpdate();
 	//(imgui)

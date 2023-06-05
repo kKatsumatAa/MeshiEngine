@@ -35,32 +35,40 @@ void PostPera::Initialize(const wchar_t* nomalImageFileName)
 		assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
 	}
 
+	//頂点バッファ
+	UINT sizeVB;
+	D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
+	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
+	sizeVB = static_cast<UINT>(sizeof(pv[0]) * _countof(pv));
+	//頂点バッファの設定		//ヒープ設定
+	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	//バッファ
-	auto resDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(pv));
+	ResourceProperties(resDesc, sizeVB);
+	resDesc.Format = DXGI_FORMAT_UNKNOWN;
+	//頂点バッファの生成
+	BuffProperties(heapProp, resDesc, this->_peraVB.GetAddressOf());
 
-	D3D12_HEAP_PROPERTIES heapProp = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-
-	auto result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
-		&heapProp,
-		D3D12_HEAP_FLAG_NONE,
-		&resDesc,
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(_peraVB.ReleaseAndGetAddressOf())
-	);
-
-	//ビュー
-	_peraVBV.BufferLocation = _peraVB->GetGPUVirtualAddress();
-	_peraVBV.SizeInBytes = sizeof(pv);
-	_peraVBV.StrideInBytes = sizeof(PeraVertex);
+	// 頂点バッファビューの作成
+	// GPU仮想アドレス
+	this->_peraVBV.BufferLocation = _peraVB.Get()->GetGPUVirtualAddress();
+	// 頂点バッファのサイズ
+	_peraVBV.SizeInBytes = sizeVB;
+	// 頂点1つ分のデータサイズ
+	_peraVBV.StrideInBytes = sizeof(pv[0]);
 
 	//マップ
-	PeraVertex* mappedPera = nullptr;
-	_peraVB->Map(0, nullptr, (void**)&mappedPera);
-	std::copy(std::begin(pv), std::end(pv), mappedPera);
+		// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
+	PeraVertex* vertMap = nullptr;
+	DirectXWrapper::GetInstance().result = _peraVB->Map(0, nullptr, (void**)&vertMap);
+	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+	// 全頂点に対して
+	for (int i = 0; i < _countof(pv); i++) {
+		vertMap[i] = pv[i]; // 座標をコピー
+	}
+	// 繋がりを解除
 	_peraVB->Unmap(0, nullptr);
 
+	//ルートシグネチャ、パイプライン
 	GenerateRSPL();
 }
 
@@ -197,7 +205,7 @@ void PostPera::GenerateRSPL()
 		{
 			"POSITION",
 			0,
-			DXGI_FORMAT_R32G32B32A32_FLOAT,
+			DXGI_FORMAT_R32G32B32_FLOAT,
 			0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
@@ -303,7 +311,7 @@ void PostPera::GenerateRSPL()
 	rp[3].DescriptorTable.NumDescriptorRanges = 1;
 
 
-	D3D12_STATIC_SAMPLER_DESC sampler = CD3DX12_STATIC_SAMPLER_DESC(0,D3D12_FILTER_MIN_LINEAR_MAG_MIP_POINT); //s0
+	D3D12_STATIC_SAMPLER_DESC sampler = CD3DX12_STATIC_SAMPLER_DESC(0, D3D12_FILTER_MIN_LINEAR_MAG_MIP_POINT); //s0
 	sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 	sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;//タイリングすると反対側からとってきたりしておかしくなるので
 
