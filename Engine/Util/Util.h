@@ -1,0 +1,79 @@
+#pragma once
+
+#include "Vec3.h"
+#include "Vec2.h"
+#include "Vec4.h"
+#include "M4.h"
+#include"TextureManager.h"
+
+//自作
+void Vec4xM4(Vec4& v, const M4& m4);
+void Vec3xM4(Vec3& v, const M4& m4, const bool w);
+Vec3 GetVec3xM4(Vec3 v, const M4 m4, const bool w);
+void Vec3xM4andDivisionW(Vec3& v, const M4& m4, const bool w);
+
+//ラジアン系
+const float pi = 3.141592f;
+float AngletoRadi(const float& angle);
+float RaditoAngle(const float& radian);
+float GetRadianVec3(const Vec3& v1, const Vec3& v2);
+
+//線形補完
+Vec3 LerpVec3(const Vec3& v1, const Vec3& v2, float t);
+Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t);
+
+//スプライン補間
+Vec3 SplinePosition(const std::vector<Vec3>& points, size_t startIndex, float t);
+
+float EaseIn(float t);
+
+float EaseOut(float t);
+
+//衝突
+bool CollisionCircleCircle(const Vec3& pos1, const float& r1,
+	const Vec3& pos2, const float& r2);
+
+bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, const float r, const Vec3& pos, const float r2);
+
+bool CollisionBox(const int x1, const int y1, const int x2, const int y2, const int r1, const int r2);
+
+
+//便利
+/// <summary>
+/// 1か‐1で返す（0は0）
+/// </summary>
+/// <returns></returns>
+float sign(float num);
+
+//変換
+Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection);
+/// <summary>
+/// distanceは、projectionのnearPosからの位置!!
+/// </summary>
+/// <param name="v"></param>
+/// <param name="view"></param>
+/// <param name="projection"></param>
+/// <param name="distance"></param>
+/// <returns></returns>
+Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection, const float distance);
+
+/// <summary>
+/// スクリーン座標をprojectionのnear,farの位置に変換してreturn...Posに代入
+/// </summary>
+/// <param name="v"></param>
+/// <param name="returnNearPos"></param>
+/// <param name="returnFarPos"></param>
+/// <param name="view"></param>
+/// <param name="projection"></param>
+void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, const XMMATRIX& view, const XMMATRIX& projection);
+
+
+//アライメントにそろえたサイズを返す
+size_t AligmentSize(size_t size, size_t aligment);
+
+//文字変換系
+//char* を const wchar_t* に変換
+void ConstCharToWcharT(const char* string, wchar_t(&wString)[128]);
+
+//const wchar_t* を char* に変換
+void ConstWCharTToChar(const wchar_t* wString, char(&string)[128]);

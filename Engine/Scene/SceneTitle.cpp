@@ -1,0 +1,45 @@
+#include "SceneTitle.h"
+#include "SceneManager.h"
+
+
+void SceneTitle::Finalize()
+{
+}
+
+//---------------------------------------------------------------------------------------
+void SceneTitle::Initialize()
+{
+	sceneM->StopWaveAllScene();
+}
+
+void SceneTitle::Update()
+{
+
+
+	//ƒV[ƒ“‘JˆÚ
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
+	{
+		sceneM->ChangeScene("GAME");
+	}
+}
+
+void SceneTitle::Draw()
+{
+}
+
+void SceneTitle::DrawSprite()
+{
+}
+
+void SceneTitle::DrawImgui()
+{
+}
+
+void SceneTitle::DrawPostEffect()
+{
+}
+
+void SceneTitle::DrawPostEffect2()
+{
+}
+
