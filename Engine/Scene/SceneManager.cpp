@@ -72,7 +72,7 @@ void SceneManager::Initialize()
 	model[0] = ModelManager::GetInstance().LoadModel("skydome", true, true);
 	model[1] = ModelManager::GetInstance().LoadModel("ground");
 	model[2] = ModelManager::GetInstance().LoadModel("chr_sword", true);
-	model[4] = ModelManager::GetInstance().LoadModel("MiG-25PD", true);
+	//model[4] = ModelManager::GetInstance().LoadModel("MiG-25PD", true);
 	model[3] = ModelManager::GetInstance().LoadModel("sphere");
 
 	//Object::effectFlags.isGlassFilter = true;
