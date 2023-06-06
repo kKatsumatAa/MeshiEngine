@@ -172,18 +172,15 @@ void PostPera::InitializeBuffRTV()
 
 	// シェーダーリソースビュー（ SRV） を 作る 
 	peraHandle = _peraSRVHeap->GetCPUDescriptorHandleForHeapStart();
-	//1枚目
-	for (ComPtr< ID3D12Resource>& res : _peraResource)
-	{
+	//1枚目（1つ目しかSRV作らない）
 		DirectXWrapper::GetInstance().GetDevice()->CreateShaderResourceView(
-			res.Get(),
+			_peraResource[0].Get(),
 			&srvDesc,
 			peraHandle
 		);
 
 		//インクリメント
 		peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	}
 
 	//二枚目(3つ目)
 	//インクリメント
@@ -447,8 +444,8 @@ void PostPera::Draw()
 	//パラメーター0番とヒープを関連付ける
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);
 
-	//ボケ定数(一枚目の二つと二枚目の一つを飛ばす)
-	for (int i = 0; i < 3; i++)
+	//ボケ定数(一枚目の1つ(1つ目しかSRV作らない)と二枚目の1つを飛ばす)
+	for (int i = 0; i < 2; i++)
 	{
 		peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 			GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -482,8 +479,8 @@ void PostPera::Draw2()
 
 	auto peraHandle = _peraSRVHeap->GetGPUDescriptorHandleForHeapStart();
 
-	//二枚目
-	for (int i = 0; i < 2; i++)
+	//二枚目（1枚目の1つ目しかSRV使わないので一つだけ飛ばす）
+	for (int i = 0; i < 1; i++)
 	{
 		peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 			GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
