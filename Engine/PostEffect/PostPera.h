@@ -89,6 +89,8 @@ private:
 
 	D3D12_RESOURCE_BARRIER barrierDesc{};
 
+	size_t tex = 0;
+
 public:
 	//‰æ–ÊŒø‰Ê—p
 	EffectConstBuffer effectFlags;

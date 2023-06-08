@@ -3,9 +3,16 @@
 Texture2D<float4> tex : register(t0); //0番スロットに設定されたテクスチャ
 SamplerState smp : register(s0);      //0番スロットに設定されたサンプラー
 
-
-float4 main(VSOutput input) : SV_TARGET
+struct PSOutput
 {
+	float4 target0 : SV_TARGET0;
+	float4 target1 : SV_TARGET1;
+};
+
+PSOutput main(VSOutput input)
+{
+	PSOutput output;
+
 	// テクスチャマッピング
 	float4 texcolor = tex.Sample(smp, input.uv);
 
@@ -161,37 +168,42 @@ float4 main(VSOutput input) : SV_TARGET
 
 	//リムライト
 		//内積
-		float dotL = 1.0f;
-		if (isRimLight)
-		{
-			dotL = smoothstep(0.5f, 0.55f, dot(eyedir, input.normal));
-		}
+	float dotL = 1.0f;
+	if (isRimLight)
+	{
+		dotL = smoothstep(0.5f, 0.55f, dot(eyedir, input.normal));
+	}
 
-		// シェーディングによる色で描画
-		float4 DSC = dotL * shadecolor;
-		float4 RIM = float4(rimColor.rgb, 1.0f) * (1.0f - dotL);
-		float4 RGBA = (DSC * texcolor * color) + RIM;
-		float4 RGBA2 = (DSC * color) + RIM;
-		float3 RGB = RGBA.rgb;
-		float  A = RGBA.a;
+	// シェーディングによる色で描画
+	float4 DSC = dotL * shadecolor;
+	float4 RIM = float4(rimColor.rgb, 1.0f) * (1.0f - dotL);
+	float4 RGBA = (DSC * texcolor * color) + RIM;
+	float4 RGBA2 = (DSC * color) + RIM;
+	float3 RGB = RGBA.rgb;
+	float  A = RGBA.a;
 
-		if (isFog == true)
-		{
-			//フォグ
-			float4 m_FogColor = float4(1.0f, 1.0f, 1.0f, 1.0f);                  //フォグカラー
-			float  m_Near = 100.0f;             //フォグの開始位置
-			float  m_Far = 500.0f;             //フォグの終了位置
-			float  m_FogLen = m_Far - m_Near;             //m_Far - m_Nearの結果
+	if (isFog == true)
+	{
+		//フォグ
+		float4 m_FogColor = float4(1.0f, 1.0f, 1.0f, 1.0f);                  //フォグカラー
+		float  m_Near = 100.0f;             //フォグの開始位置
+		float  m_Far = 500.0f;             //フォグの終了位置
+		float  m_FogLen = m_Far - m_Near;             //m_Far - m_Nearの結果
 
-			//頂点と視点との距離を計算する
-			float d = distance(input.worldpos.xyz, cameraPos);
+		//頂点と視点との距離を計算する
+		float d = distance(input.worldpos.xyz, cameraPos);
 
-			float f = (m_Far - d) / (m_Far - m_Near);
-			f = clamp(f, 0.0f, 1.0f);
-			//オブジェクトのランバート拡散照明の計算結果とフォグカラーを線形合成する
+		float f = (m_Far - d) / (m_Far - m_Near);
+		f = clamp(f, 0.0f, 1.0f);
+		//オブジェクトのランバート拡散照明の計算結果とフォグカラーを線形合成する
 
-			return RGBA * f + m_FogColor * (1.0f - f);
-		}
+		RGBA = RGBA * f + m_FogColor * (1.0f - f);
+	}
 
-		return RGBA;
+	//一枚目の一つ目
+	output.target0 = RGBA;
+	//〃二つ目
+	output.target1 = float4(1 - (RGBA).rgb, 1);
+
+	return output;
 }

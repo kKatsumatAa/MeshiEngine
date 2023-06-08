@@ -45,8 +45,8 @@ void MyGame::Draw()
 		std::function<void()>f = [=]() {sceneM->Draw(); };
 		//ˆê–‡–Ú‚É•`‰æŒ‹‰ÊA“ñ–‡–Ú‚à•`‰æ‚·‚é
 		postPera[0]->DrawToPostpera(f);
-		std::function<void()>f2 = [=]() {postPera[0]->Draw2(); };
-		postPera[1]->DrawToPostpera(f2);
+		//std::function<void()>f2 = [=]() {postPera[0]->Draw2(); };
+		//postPera[1]->DrawToPostpera(f2);
 	}
 
 	//ŽÀÛ‚É•`‰æ
@@ -57,7 +57,7 @@ void MyGame::Draw()
 		//
 		//sceneM->DrawPostEffect2();
 		//ŽÀÛ‚É•`‰æ
-		postPera[1]->Draw2();
+		postPera[0]->Draw2();
 
 		sceneM->DrawSprite();
 

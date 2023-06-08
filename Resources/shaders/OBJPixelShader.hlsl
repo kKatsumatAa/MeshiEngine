@@ -4,9 +4,16 @@
 Texture2D<float4> tex : register(t0); //0番スロットに設定されたテクスチャ
 SamplerState smp : register(s0);      //0番スロットに設定されたサンプラー
 
-
-float4 main(VSOutput input) : SV_TARGET
+struct PSOutput
 {
+	float4 target0 : SV_TARGET0;
+	float4 target1 : SV_TARGET1;
+};
+
+PSOutput main(VSOutput input)
+{
+	PSOutput output;
+
 	// テクスチャマッピング
 		float4 texcolor = tex.Sample(smp, input.uv);
 
@@ -188,8 +195,13 @@ float4 main(VSOutput input) : SV_TARGET
 			f = clamp(f, 0.0f, 1.0f);
 			//オブジェクトのランバート拡散照明の計算結果とフォグカラーを線形合成する
 
-			return RGBA * f + m_FogColor * (1.0f - f);
+			RGBA = RGBA * f + m_FogColor * (1.0f - f);
 		}
 
-		return RGBA;
+		//一枚目の一つ目
+		output.target0 = RGBA;
+		//〃二つ目
+		output.target1 = float4(1 - (RGBA).rgb, 1);
+
+		return output;
 }

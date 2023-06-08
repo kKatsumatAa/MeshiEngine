@@ -173,14 +173,14 @@ void PostPera::InitializeBuffRTV()
 	// シェーダーリソースビュー（ SRV） を 作る 
 	peraHandle = _peraSRVHeap->GetCPUDescriptorHandleForHeapStart();
 	//1枚目（1つ目しかSRV作らない）
-		DirectXWrapper::GetInstance().GetDevice()->CreateShaderResourceView(
-			_peraResource[0].Get(),
-			&srvDesc,
-			peraHandle
-		);
+	DirectXWrapper::GetInstance().GetDevice()->CreateShaderResourceView(
+		_peraResource[0].Get(),
+		&srvDesc,
+		peraHandle
+	);
 
-		//インクリメント
-		peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//インクリメント
+	peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	//二枚目(3つ目)
 	//インクリメント
@@ -434,6 +434,24 @@ void PostPera::Update()
 //一枚目を描画
 void PostPera::Draw()
 {
+	//マルチレンダーターゲットを切り替え
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_0))
+	{
+		//テクスチャ番号を0と1で切り替え
+		if (tex == 0) { tex = 1; }
+		else { tex = 0; }
+
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+		srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = 1;
+		DirectXWrapper::GetInstance().GetDevice()->CreateShaderResourceView(_peraResource[tex].Get(),
+			&srvDesc,
+			this->_peraSRVHeap->GetCPUDescriptorHandleForHeapStart()
+		);
+	}
+
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(_peraRS.Get());
 	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(_peraPipeline.Get());
 	//ヒープをセット
@@ -507,7 +525,7 @@ void PostPera::PreDraw()
 	for (ComPtr< ID3D12Resource>& res : _peraResource)
 	{
 		barrierDesc.Transition.pResource = res.Get(); // バックバッファを指定
-		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態から
+		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // シェーダリソースから
 		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
 		DirectXWrapper::GetInstance().GetCommandList()->ResourceBarrier(
 			1,
@@ -523,13 +541,14 @@ void PostPera::PreDraw()
 		1, &rtvHeapPointer, false, &dsvHandle
 	);*/
 
-
+	//レンダーターゲットビュー用ディスクリプタヒープのハンドルを取得
 	auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
 	rtvHeapPointer.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvs[2] = {
-		_peraRTVHeap->GetCPUDescriptorHandleForHeapStart(),
-		rtvHeapPointer
+		_peraRTVHeap->GetCPUDescriptorHandleForHeapStart(),//一つ目
+		rtvHeapPointer//二つ目
 	};
+	//レンダーターゲットをセット
 	DirectXWrapper::GetInstance().GetCommandList()->OMSetRenderTargets(2, rtvs, false, &dsvHandle);
 
 
@@ -548,16 +567,21 @@ void PostPera::PreDraw()
 	//毎フレーム深度バッファの値が描画範囲で最も奥(1.0)にリセットされる
 
 	// ビューポート設定コマンドを、コマンドリストに積む
-	DirectXWrapper::GetInstance().GetCommandList()->RSSetViewports(1, &WindowsApp::GetInstance().viewport);
+	D3D12_VIEWPORT viewPorts[2];
+	viewPorts[0] = {0, 0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0f, 1.0f};
+	viewPorts[1] = viewPorts[0];
 
-	// シザー矩形
-	D3D12_RECT scissorRect{};
-	scissorRect.left = 0; // 切り抜き座標左
-	scissorRect.right = (LONG)(scissorRect.left + WindowsApp::GetInstance().window_width); // 切り抜き座標右
-	scissorRect.top = 0; // 切り抜き座標上
-	scissorRect.bottom = (LONG)(scissorRect.top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
+	DirectXWrapper::GetInstance().GetCommandList()->RSSetViewports(2, viewPorts);
+
+
+	CD3DX12_RECT scissorRects[2];
+	scissorRects[0].left = 0; // 切り抜き座標左
+	scissorRects[0].right = (LONG)(scissorRects[0].left + WindowsApp::GetInstance().window_width); // 切り抜き座標右
+	scissorRects[0].top = 0; // 切り抜き座標上
+	scissorRects[0].bottom = (LONG)(scissorRects[0].top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
+	scissorRects[1] = scissorRects[0];
 	// シザー矩形設定コマンドを、コマンドリストに積む
-	DirectXWrapper::GetInstance().GetCommandList()->RSSetScissorRects(1, &scissorRect);
+	DirectXWrapper::GetInstance().GetCommandList()->RSSetScissorRects(2, scissorRects);
 }
 
 void PostPera::PostDraw()
@@ -567,7 +591,7 @@ void PostPera::PostDraw()
 	{
 		barrierDesc.Transition.pResource = res.Get(); // バックバッファを指定
 		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
-		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 表示状態へ
+		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // シェーダリソース
 		DirectXWrapper::GetInstance().GetCommandList()->ResourceBarrier(1, &barrierDesc);
 	}
 }

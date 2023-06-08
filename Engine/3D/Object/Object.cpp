@@ -229,7 +229,7 @@ void Object::StaticUpdate()
 	ImGui::SliderInt("RimLight", (int*)&effectFlags.isRimLight, 0, 1);
 	ImGui::ColorEdit3("RimColor", rimColorF3);
 	ImGui::End();
-	
+
 	effectFlags.rimColor = { rimColorF3[0],rimColorF3[1],rimColorF3[2] };
 
 
@@ -321,7 +321,7 @@ Object::Object()
 
 void Object::SendingMat(int indexNum)
 {
-	
+
 	//変換行列をGPUに送信
 	worldMat->SetWorld();
 	//スプライトじゃない場合
@@ -853,8 +853,9 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 		pipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 	// その他の設定
-	pipelineDesc.NumRenderTargets = 1; // 描画対象は1つ
+	pipelineDesc.NumRenderTargets = 2; // 描画対象は2つ（ポストエフェクトの一枚目の二つ）
 	pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
+	pipelineDesc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
 	pipelineDesc.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
 
 	//04_02
@@ -929,6 +930,9 @@ void Blend(const D3D12_BLEND_OP& blendMode, const bool& Inversion, const bool& T
 		blendDesc.SrcBlend = D3D12_BLEND_ONE;//ソースの値を100%使う
 		blendDesc.DestBlend = D3D12_BLEND_ONE;//デストの値を100%使う
 	}
+
+	//ポストエフェクトの一枚目の二つ目用に
+	pipelineDesc.BlendState.RenderTarget[1] = blendDesc;
 }
 
 void Object::constBuffTransfer(const XMFLOAT4& plusRGBA)

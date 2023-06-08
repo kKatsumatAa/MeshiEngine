@@ -3,7 +3,18 @@
 Texture2D<float4> tex : register(t0);  // 0番スロットに設定されたテクスチャ
 SamplerState smp : register(s0);      // 0番スロットに設定されたサンプラー
 
-float4 main(GSOutput input) : SV_TARGET
+struct PSOutput
 {
-	return tex.Sample(smp, input.uv) * input.color;
+	float4 target0 : SV_TARGET0;
+	float4 target1 : SV_TARGET1;
+};
+
+PSOutput main(GSOutput input)
+{
+	PSOutput output;
+
+	output.target0 = tex.Sample(smp, input.uv) * input.color;
+	output.target1 = output.target0;
+
+	return output;
 }

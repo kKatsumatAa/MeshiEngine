@@ -73,7 +73,7 @@ void SceneManager::Initialize()
 	model[1] = ModelManager::GetInstance().LoadModel("ground");
 	model[2] = ModelManager::GetInstance().LoadModel("chr_sword", true);
 	//model[4] = ModelManager::GetInstance().LoadModel("MiG-25PD", true);
-	model[3] = ModelManager::GetInstance().LoadModel("sphere");
+	//model[3] = ModelManager::GetInstance().LoadModel("sphere");
 
 	//Object::effectFlags.isGlassFilter = true;
 
@@ -141,7 +141,6 @@ void SceneManager::Update()
 	lightManager->Update();
 
 	state->Update();
-
 
 	//#ifdef _DEBUG
 		//if (KeyboardInput::GetInstance().KeyTrigger(DIK_E)) ChangeState(new SceneTitle);
