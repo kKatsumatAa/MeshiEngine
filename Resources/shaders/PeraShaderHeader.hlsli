@@ -56,11 +56,13 @@ struct PixelOutput//(sv_targetは8つまで指定できる)
 };
 
 
-
-Texture2D<float4> tex : register(t0);
+//一枚目の一つ目
+Texture2D<float4> tex0 : register(t0);
+//一枚目の二つ目
+Texture2D<float4> tex1 : register(t1);
 //ガラスフィルター
-Texture2D<float4> effectTex : register(t1);
-//通常カラー
-Texture2D<float4> texNormal : register(t2);
-//法線
-Texture2D<float4> distTex : register(t3);
+Texture2D<float4> effectTex : register(t2);
+//法線(?)
+Texture2D<float4> texNormal : register(t3);
+//深度（？）
+Texture2D<float4> distTex : register(t4);
