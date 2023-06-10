@@ -69,6 +69,7 @@ private:
 
 	//画面効果用
 	ComPtr <ID3D12Resource> effectFlagsBuff;
+	//マッピング用
 	EffectConstBuffer* mapEffectFlagsBuff;
 
 	//ルートパラメータの設定
@@ -89,7 +90,9 @@ private:
 
 	D3D12_RESOURCE_BARRIER barrierDesc{};
 
-	size_t tex = 0;
+	//ブルームバッファー
+	std::array<ComPtr<ID3D12Resource>, 2>_bloomBuffer;
+
 
 public:
 	//画面効果用
@@ -98,10 +101,15 @@ public:
 
 
 private://関数
-	void InitializeBuffRTV();
+	void InitializeBuffRTV(const wchar_t* nomalImageFileName);
 	void GenerateRSPL();
 	void GlassFilterBuffGenerate(const wchar_t* fileName);
+	//ガラス用のバッファとビュー作成
 	bool CreateEffectBufferAndView(const wchar_t* fileName);
+	//ブルーム用のバッファ作成
+	bool CreateBloomBuffer();
+	//ブルーム用のバッファ作成
+	bool CreateBloomBuffView();
 
 	//一枚目に描画
 	void PreDraw();

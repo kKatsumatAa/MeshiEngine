@@ -5,8 +5,9 @@ SamplerState smp : register(s0);      //0番スロットに設定されたサンプラー
 
 struct PSOutput
 {
-	float4 target0 : SV_TARGET0;
-	float4 target1 : SV_TARGET1;
+	float4 col : SV_TARGET0;//通常のレンダリング
+	float4 col2 : SV_TARGET1;//法線
+	float4 highLumi : SV_TARGET2;//高輝度
 };
 
 PSOutput main(VSOutput input)
@@ -201,9 +202,12 @@ PSOutput main(VSOutput input)
 	}
 
 	//一枚目の一つ目
-	output.target0 = RGBA;
+	output.col = RGBA;
 	//〃二つ目
-	output.target1 = float4(1 - (RGBA).rgb, 1);
+	output.col2 = float4(1 - (RGBA).rgb, 1);
+	//三つ目
+	float y = dot(float3(0.299f, 0.587f, 0.114f), output.col);
+	output.highLumi = y > 0.99f ? output.col : 0.0f;
 
 	return output;
 }

@@ -47,22 +47,11 @@ struct Output
 	float2 uv : TEXCOORD;
 };
 
-
-//ブルーム用
-struct PixelOutput//(sv_targetは8つまで指定できる)
-{
-	float4 col : SV_TARGET0;    //カラー値を出力
-	float4 normal : SV_TARGET1; //法線を出力
-};
-
-
-//一枚目の一つ目
+//一枚目の一つ目(通常カラー)
 Texture2D<float4> tex0 : register(t0);
-//一枚目の二つ目
+//一枚目の二つ目(違うカラー（法線←まだ）)
 Texture2D<float4> tex1 : register(t1);
+//一枚目の三つ目(高輝度用)
+Texture2D<float4> tex2 : register(t2);
 //ガラスフィルター
-Texture2D<float4> effectTex : register(t2);
-//法線(?)
-Texture2D<float4> texNormal : register(t3);
-//深度（？）
-Texture2D<float4> distTex : register(t4);
+Texture2D<float4> effectTex : register(t3);

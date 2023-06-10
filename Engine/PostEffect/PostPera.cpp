@@ -6,10 +6,7 @@
 void PostPera::Initialize(const wchar_t* nomalImageFileName)
 {
 	//rtvなど作る
-	InitializeBuffRTV();
-
-	//ガラスフィルター
-	GlassFilterBuffGenerate(nomalImageFileName);
+	InitializeBuffRTV(nomalImageFileName);
 
 	//定数バッファ0番(画面効果フラグ)
 	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
@@ -73,7 +70,7 @@ void PostPera::Initialize(const wchar_t* nomalImageFileName)
 }
 
 //directxのバックバッファなど生成した後に呼び出す
-void PostPera::InitializeBuffRTV()
+void PostPera::InitializeBuffRTV(const wchar_t* nomalImageFileName)
 {
 	// 作成 済み の ヒープ 情報 を 使っ て もう 1 枚 作る
 	auto heapDesc = DirectXWrapper::GetInstance().GetRtvheap()->GetDesc();
@@ -107,6 +104,9 @@ void PostPera::InitializeBuffRTV()
 		assert(SUCCEEDED(result));
 	}
 
+	//ブルーム(一枚目の三つ目)
+	CreateBloomBuffer();
+
 	//二枚目
 	result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
 		&heapProp,
@@ -120,7 +120,7 @@ void PostPera::InitializeBuffRTV()
 	assert(SUCCEEDED(result));
 
 	// RTV 用 ヒープ を 作る 
-	heapDesc.NumDescriptors = 3;//二枚分(一枚目の二つ+二枚目の一つ)
+	heapDesc.NumDescriptors = 4;//二枚分(一枚目の3つ(通常、違う色、ブルーム)+二枚目の一つ)
 	result = DirectXWrapper::GetInstance().GetDevice()->CreateDescriptorHeap(
 		&heapDesc,
 		IID_PPV_ARGS(_peraRTVHeap.ReleaseAndGetAddressOf())
@@ -145,8 +145,15 @@ void PostPera::InitializeBuffRTV()
 		handleRH.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	}
 
+	//(一枚目三つ目)ブルーム
+	DirectXWrapper::GetInstance().GetDevice()->CreateRenderTargetView(
+		_bloomBuffer[0].Get(),
+		&rtvDesc,
+		handleRH
+	);
+
 	//二枚目
-	//handleRH.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	handleRH.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	DirectXWrapper::GetInstance().GetDevice()->CreateRenderTargetView(
 		_peraResource2.Get(),
 		&rtvDesc,
@@ -155,7 +162,7 @@ void PostPera::InitializeBuffRTV()
 
 
 	//SRV用ヒープを作る
-	heapDesc.NumDescriptors = 5;//ガウシアンパラメータ、一枚目の二つ、二枚目の一つ,ガラス用で4枚
+	heapDesc.NumDescriptors = 6;//一枚目の三つ(通常、違う色、ブルーム)、二枚目の一つ,ガウシアンパラメータ、ガラス用,ブルーム用で6枚
 	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	result = DirectXWrapper::GetInstance().GetDevice()->CreateDescriptorHeap(
@@ -186,20 +193,23 @@ void PostPera::InitializeBuffRTV()
 		peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	}
 
-	//インクリメント
-	//peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	//ブルーム（(一枚目の)3つ目）
+	CreateBloomBuffView();
 
-	//二枚目(3つ目)
+	//二枚目(4つ目)
 	//インクリメント
-	//peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	DirectXWrapper::GetInstance().GetDevice()->CreateShaderResourceView(
 		_peraResource2.Get(),
 		&srvDesc,
 		peraHandle
 	);
 
-	//ガウシアンパラメータ(4つ目)
+	//ガウシアンパラメータ(5つ目)
 	gausianBuff.Initialize(peraHandle, *DirectXWrapper::GetInstance().GetDevice(), heapDesc);
+
+	//ガラスフィルター(6つ目)
+	GlassFilterBuffGenerate(nomalImageFileName);
 }
 
 void PostPera::GenerateRSPL()
@@ -266,9 +276,10 @@ void PostPera::GenerateRSPL()
 
 	gpsDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	gpsDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	gpsDesc.NumRenderTargets = 2;//peraResource1は二つレンダーターゲット
+	gpsDesc.NumRenderTargets = 3;//peraResource1は3つレンダーターゲット(ブルーム用)
 	gpsDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	gpsDesc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	gpsDesc.RTVFormats[2] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	gpsDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	gpsDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 	gpsDesc.SampleDesc.Count = 1;
@@ -282,55 +293,65 @@ void PostPera::GenerateRSPL()
 
 	//rootsig
 
-	D3D12_DESCRIPTOR_RANGE range[4] = {};
-	//一枚目の一つ目
+	D3D12_DESCRIPTOR_RANGE range[5] = {};
+	//一枚目の1～3つ目(通常カラー、違うカラー、高輝度)
 	range[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[0].BaseShaderRegister = 0;//0
+	range[0].BaseShaderRegister = 0;//0～2
 	range[0].NumDescriptors = 1;
-	//一枚目の二つ目
+	//一枚目の1～3つ目(通常カラー、違うカラー、高輝度)
 	range[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[1].BaseShaderRegister = 1;//1
+	range[1].BaseShaderRegister = 1;//0～2
 	range[1].NumDescriptors = 1;
-
-	range[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//b
-	range[2].BaseShaderRegister = 1;//フラグを送るのがb0なので1
+	//一枚目の1～3つ目(通常カラー、違うカラー、高輝度)
+	range[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range[2].BaseShaderRegister = 2;//0～2
 	range[2].NumDescriptors = 1;
-	//ガラス
-	range[3].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[3].BaseShaderRegister = 2;//2
+
+	range[3].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//b
+	range[3].BaseShaderRegister = 1;//フラグを送るのがb0なので1
 	range[3].NumDescriptors = 1;
+	//ガラス
+	range[4].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range[4].BaseShaderRegister = 3;//3
+	range[4].NumDescriptors = 1;
+
 
 	//実際に使うルートパラメータ
-	D3D12_ROOT_PARAMETER rp[5] = {};
-	//SRV(一枚目の一つ目)
+	D3D12_ROOT_PARAMETER rp[6] = {};
+	//SRV(一枚目の3つ(通常カラー、違うカラー、ブルーム用))
 	rp[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rp[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rp[0].DescriptorTable.pDescriptorRanges = &range[0];
 	rp[0].DescriptorTable.NumDescriptorRanges = 1;
-	//SRV(一枚目の二つ目)
+	//SRV(一枚目の3つ(通常カラー、違うカラー、ブルーム用))
 	rp[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rp[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rp[1].DescriptorTable.pDescriptorRanges = &range[1];
 	rp[1].DescriptorTable.NumDescriptorRanges = 1;
-	//ボケ定数用
+	//SRV(一枚目の3つ(通常カラー、違うカラー、ブルーム用))
 	rp[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rp[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rp[2].DescriptorTable.pDescriptorRanges = &range[2];
 	rp[2].DescriptorTable.NumDescriptorRanges = 1;
+	//ボケ定数用
+	rp[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[3].DescriptorTable.pDescriptorRanges = &range[3];
+	rp[3].DescriptorTable.NumDescriptorRanges = 1;
 	//フラグのやつ
-	rp[3] = rootParams[0];
+	rp[4] = rootParams[0];
 	//ガラスフィルタ
-	rp[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rp[4].DescriptorTable.pDescriptorRanges = &range[3];
-	rp[4].DescriptorTable.NumDescriptorRanges = 1;
+	rp[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[5].DescriptorTable.pDescriptorRanges = &range[4];
+	rp[5].DescriptorTable.NumDescriptorRanges = 1;
 
 
 	D3D12_STATIC_SAMPLER_DESC sampler = CD3DX12_STATIC_SAMPLER_DESC(0, D3D12_FILTER_MIN_LINEAR_MAG_MIP_POINT); //s0
 	sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 	sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;//タイリングすると反対側からとってきたりしておかしくなるので
 
-	//デスクリプタテーブル+フラグのやつ
+	//デスクリプタテーブル+フラグのやつ+ガラス
 	rsDesc.NumParameters = _countof(rp);
 	rsDesc.pParameters = rp;
 	rsDesc.NumStaticSamplers = 1;
@@ -390,7 +411,7 @@ void PostPera::GenerateRSPL()
 
 void PostPera::GlassFilterBuffGenerate(const wchar_t* fileName)
 {
-	//ガラスフィルター（5つ目）
+	//ガラスフィルター（6つ目）
 	//インクリメント
 	peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	this->CreateEffectBufferAndView(fileName);
@@ -411,6 +432,58 @@ bool PostPera::CreateEffectBufferAndView(const wchar_t* fileName)
 	DirectXWrapper::GetInstance().GetDevice()->CreateShaderResourceView(_effectTexBuffer.Get(), &srvDesc, this->peraHandle);
 
 	return true;
+}
+
+bool PostPera::CreateBloomBuffer()
+{
+	// 使っ て いる バックバッファー の 情報 を 利用 する 
+	auto& bbuff = DirectXWrapper::GetInstance().GetBackBuffer()[0];
+	auto resDesc = bbuff->GetDesc();
+
+	D3D12_HEAP_PROPERTIES heapProp = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+
+	//レンダリング時のクリア地と同じ値
+	float clsClr[4] = { DirectXWrapper::GetInstance().GetClearColor()[0],DirectXWrapper::GetInstance().GetClearColor()[1],
+		DirectXWrapper::GetInstance().GetClearColor()[2],DirectXWrapper::GetInstance().GetClearColor()[3] };
+	D3D12_CLEAR_VALUE clearValue =
+		CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clsClr);
+
+	//バッファー作成
+	for (auto& res : _bloomBuffer)
+	{
+		auto result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
+			&heapProp,
+			D3D12_HEAP_FLAG_NONE,
+			&resDesc,
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+			&clearValue,
+			IID_PPV_ARGS(res.ReleaseAndGetAddressOf())
+		);
+		resDesc.Width >>= 1;
+	}
+
+	return true;
+}
+
+bool PostPera::CreateBloomBuffView()
+{
+	//ビュー作成
+	//インクリメント
+	//peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Format = rtvDesc.Format;
+	srvDesc.Texture2D.MipLevels = 1;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+
+	DirectXWrapper::GetInstance().GetDevice()->CreateShaderResourceView(_bloomBuffer[0].Get(), &srvDesc, peraHandle);
+
+	return false;
 }
 
 void PostPera::Update()
@@ -459,29 +532,28 @@ void PostPera::Draw()
 		->SetDescriptorHeaps(1, _peraSRVHeap.GetAddressOf());
 
 	auto peraHandle = _peraSRVHeap->GetGPUDescriptorHandleForHeapStart();
-	//パラメーター0番とヒープを関連付ける(一枚目の一つ目)
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);
-	peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
-		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	//(一枚目の二つ目)
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, peraHandle);
-
-	//ボケ定数(一枚目の2つ目と二枚目の1つを飛ばす)
-	for (int i = 0; i < 2; i++)
+	//パラメーター0番とヒープを関連付ける(一枚目の3つ(通常カラー、違うカラー、ブルーム用))
+	for (uint32_t i = 0; i < 3; i++)
 	{
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(i, peraHandle);
 		peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 			GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	}
-	//ボケ定数
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(2, peraHandle);
 
-	//ポストエフェクトの「フラグ」なのでrp[3]
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, effectFlagsBuff->GetGPUVirtualAddress());
+	//二枚目飛ばす
+		peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
+			GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+	//ボケ定数
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(3, peraHandle);
+	
+	//ポストエフェクトの「フラグ」なのでrp[4]
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(4, effectFlagsBuff->GetGPUVirtualAddress());
 
 	//ガラスフィルター
 	peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(4, peraHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(5, peraHandle);
 
 	//図形とか
 	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(
@@ -502,16 +574,17 @@ void PostPera::Draw2()
 
 	auto peraHandle = _peraSRVHeap->GetGPUDescriptorHandleForHeapStart();
 
-	//二枚目（1枚目の2つ飛ばす）
-	for (int i = 0; i < 2; i++)
+	//（1枚目の3つセット飛ばす(通常カラー、違うカラー、ブルーム用)）
+	for (size_t i = 0; i < 3; i++)
 	{
 		peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 			GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	}
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);//SRVなのでrp[0](とりあえず一枚目の一つ目)
+	//二枚目
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);//SRVなのでrp[0](とりあえず一枚目)
 
-	//ポストエフェクトフラグなのでrp[3]
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, effectFlagsBuff->GetGPUVirtualAddress());
+	//ポストエフェクトフラグなのでrp[4]
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(4, effectFlagsBuff->GetGPUVirtualAddress());
 
 	//図形とか
 	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(
@@ -538,23 +611,33 @@ void PostPera::PreDraw()
 		);
 	}
 
+	//ブルーム
+	barrierDesc.Transition.pResource = _bloomBuffer[0].Get(); // バックバッファを指定
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // シェーダリソースから
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
+	DirectXWrapper::GetInstance().GetCommandList()->ResourceBarrier(
+		1,
+		&barrierDesc
+	);
+
 	// 2.描画先の変更
 	// 1 パス 目 
-	//auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = DirectXWrapper::GetInstance().GetDSVHeap()->GetCPUDescriptorHandleForHeapStart();
-	/*DirectXWrapper::GetInstance().GetCommandList()->OMSetRenderTargets(
-		1, &rtvHeapPointer, false, &dsvHandle
-	);*/
 
 	//レンダーターゲットビュー用ディスクリプタヒープのハンドルを取得
-	auto rtvHeapPointer = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	rtvHeapPointer.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvs[2] = {
-		_peraRTVHeap->GetCPUDescriptorHandleForHeapStart(),//一つ目
-		rtvHeapPointer//二つ目
-	};
+	//一枚目の3つ(通常カラー、違うカラー、ブルーム用)
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvs[3] = {};
+	D3D12_CPU_DESCRIPTOR_HANDLE baseHandle = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
+	auto incSize = DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	uint32_t offset = 0;
+	for (auto& handle : rtvs)
+	{
+		handle.InitOffsetted(baseHandle, offset);
+		offset += incSize;
+	}
+	
 	//レンダーターゲットをセット
-	DirectXWrapper::GetInstance().GetCommandList()->OMSetRenderTargets(2, rtvs, false, &dsvHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->OMSetRenderTargets(3, rtvs, false, &dsvHandle);
 
 
 	// 3.画面クリア R G B A
@@ -572,19 +655,21 @@ void PostPera::PreDraw()
 	//毎フレーム深度バッファの値が描画範囲で最も奥(1.0)にリセットされる
 
 	// ビューポート設定コマンドを、コマンドリストに積む
-	D3D12_VIEWPORT viewPorts[2];
-	viewPorts[0] = {0, 0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0f, 1.0f};
+	D3D12_VIEWPORT viewPorts[3];
+	viewPorts[0] = { 0, 0, WindowsApp::GetInstance().window_width, WindowsApp::GetInstance().window_height, 0.0f, 1.0f };
 	viewPorts[1] = viewPorts[0];
+	viewPorts[2] = viewPorts[0];
 
 	DirectXWrapper::GetInstance().GetCommandList()->RSSetViewports(2, viewPorts);
 
 
-	CD3DX12_RECT scissorRects[2];
+	CD3DX12_RECT scissorRects[3];
 	scissorRects[0].left = 0; // 切り抜き座標左
 	scissorRects[0].right = (LONG)(scissorRects[0].left + WindowsApp::GetInstance().window_width); // 切り抜き座標右
 	scissorRects[0].top = 0; // 切り抜き座標上
 	scissorRects[0].bottom = (LONG)(scissorRects[0].top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
 	scissorRects[1] = scissorRects[0];
+	scissorRects[2] = scissorRects[0];
 	// シザー矩形設定コマンドを、コマンドリストに積む
 	DirectXWrapper::GetInstance().GetCommandList()->RSSetScissorRects(2, scissorRects);
 }
@@ -599,6 +684,15 @@ void PostPera::PostDraw()
 		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // シェーダリソース
 		DirectXWrapper::GetInstance().GetCommandList()->ResourceBarrier(1, &barrierDesc);
 	}
+
+	//ブルーム
+	barrierDesc.Transition.pResource = _bloomBuffer[0].Get(); // バックバッファを指定
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // シェーダリソース
+	DirectXWrapper::GetInstance().GetCommandList()->ResourceBarrier(
+		1,
+		&barrierDesc
+	);
 }
 
 //-----------------------------
@@ -616,10 +710,11 @@ void PostPera::PreDraw2()
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 	rtvHandle = _peraRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	//3個目(一枚目の二つの後)なので進める
-	rtvHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	rtvHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
+	//3個目(一枚目の3つの後)なので進める
+	for (uint32_t i = 0; i < 3; i++)
+	{
+		rtvHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	}
 	// 2 パス 目 
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = DirectXWrapper::GetInstance().GetDSVHeap()->GetCPUDescriptorHandleForHeapStart();
 	DirectXWrapper::GetInstance().GetCommandList()->OMSetRenderTargets(
