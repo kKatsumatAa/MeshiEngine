@@ -49,6 +49,11 @@ void MyGame::Draw()
 		//postPera[1]->DrawToPostpera(f2);
 	}
 
+	//ÉuÉãÅ[ÉÄóp
+	{
+		postPera[0]->DrawShrinkTextureForBlur();
+	}
+
 	//é¿ç€Ç…ï`âÊ
 	{
 		//é¿ç€Ç…ï`âÊ----------------

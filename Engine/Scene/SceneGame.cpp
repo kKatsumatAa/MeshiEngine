@@ -40,8 +40,8 @@ void SceneGame::Initialize()
 
 void SceneGame::Update()
 {
-	ParticleManager::GetInstance()->GenerateRandomParticle(2, 30, 1.0f, { 0,30,0 }, 100.0f, 0);
-	ParticleManager::GetInstance()->Update(&sceneM->camera->viewMat, &sceneM->camera->projectionMat);
+	//ParticleManager::GetInstance()->GenerateRandomParticle(2, 30, 1.0f, { 0,30,0 }, 100.0f, 0);
+	//ParticleManager::GetInstance()->Update(&sceneM->camera->viewMat, &sceneM->camera->projectionMat);
 
 	//ImGui::ShowDemoWindow();
 
@@ -65,7 +65,7 @@ void SceneGame::Draw()
 	}
 
 	//ÅŒã‚É•`‰æ‚µ‚È‚¢‚Æ‰f‚ç‚È‚¢
-	ParticleManager::GetInstance()->Draw(sceneM->texhandle[1]);
+	//ParticleManager::GetInstance()->Draw(sceneM->texhandle[1]);
 }
 
 void SceneGame::DrawSprite()

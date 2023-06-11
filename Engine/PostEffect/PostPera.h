@@ -36,6 +36,8 @@ struct EffectConstBuffer
 	unsigned int isNega = false;
 	//ネガポジ
 	unsigned int isRGBShift = false;
+	//ブルーム
+	unsigned int isBloom = false;
 	//時間
 	unsigned int time = 0;
 };
@@ -88,11 +90,10 @@ private:
 	//ガラス
 	ComPtr<ID3D12Resource>_effectTexBuffer;
 
-	D3D12_RESOURCE_BARRIER barrierDesc{};
-
 	//ブルームバッファー
 	std::array<ComPtr<ID3D12Resource>, 2>_bloomBuffer;
-
+	//画面全体ぼかし用パイプライン(ブルーム)
+	ComPtr<ID3D12PipelineState> _blurPipeline;
 
 public:
 	//画面効果用
@@ -128,6 +129,9 @@ public:
 	void Initialize(const wchar_t* nomalImageFileName);
 
 	void Update();
+
+	//縮小バッファ書き込み
+	void DrawShrinkTextureForBlur();
 
 	//エフェクトかけ終わって実際に描画する
 	void Draw2();

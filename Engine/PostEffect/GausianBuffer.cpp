@@ -57,8 +57,8 @@ std::vector<float> GetGaussianWeights(size_t count, float s)
 	float total = 0.0f;
 	for (auto& wgt : weights)
 	{
-		wgt = expf(-(x * x) / (2.0f * s * s));
-		total += wgt;
+		wgt = expf(-0.5f * (x * x) / s);
+		total += wgt * 2.0f;
 		x += 1.0f;
 	}
 	total = total * 2.0f - 1.0f;

@@ -40,7 +40,7 @@ private:
 	//記録時間（FPS固定
 	std::chrono::steady_clock::time_point reference_;
 
-	FLOAT clearColor[4] = { 0.1f,0.25f, 0.5f,0.0f };
+	FLOAT clearColor[4] = { 0,0,0,0 };
 
 
 private:
@@ -83,7 +83,7 @@ public:
 	void DrawInitialize();
 
 	//1枚目のテクスチャに描画
-	void PreDraw(const XMFLOAT4& winRGBA = { 0.1f,0.25f,0.5f,0.0f });
+	void PreDraw(const XMFLOAT4& winRGBA = { 0,0,0,0 });
 	void PostDraw();
 
 

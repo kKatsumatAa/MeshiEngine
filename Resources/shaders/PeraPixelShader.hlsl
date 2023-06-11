@@ -245,18 +245,9 @@ float4 PS(Output input) : SV_TARGET
 
 	//マルチテクスチャ
 	{
-		/*float4 colortex0 = tex0.Sample(smp, input.uv);
-		float4 colortex1 = tex1.Sample(smp, input.uv);
-
-		float4 color = colortex0;
-		if (fmod(input.uv.y, 0.1f) < 0.05f)
-		{
-			color = colortex1;
-		}
-		return float4(color.rgb, 1);*/
 		//輝度だけ
-		return tex2.Sample(smp, input.uv);
+		//return tex2.Sample(smp, input.uv);
 	}
 
-	//return RGBA;
+	return RGBA;
 }
