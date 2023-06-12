@@ -58,20 +58,18 @@ float4 PS2(Output input) : SV_TARGET
 		float2 uvSize = float2(1.0f, 0.5f);
 		float2 uvOfst = float2(0, 0);
 
-		for (int i = 0; i < 8; ++i) {
+		//iの上限を変えると強さが変わる（8にすると細かすぎておかしくなる）
+		for (int i = 0; i < 6; ++i) {
 			bloomAccum += Get5x5GaussianBlur(
-				tex3, smp, input.uv * uvSize + uvOfst, dx, dy, float4(0, 0,1,1));
+				tex3, smp, input.uv * uvSize + uvOfst, dx, dy, float4(uvOfst, uvOfst + uvSize));
 			uvOfst.y += uvSize.y;
 			uvSize *= 0.5f;
 		}
 
-		//return tex0.Sample(smp, input.uv)//通常テクスチャ
-		//	+ tex3.Sample(smp, input.uv);
-
 		//元の画像とぼかした高輝度の部分を足す
 		return tex0.Sample(smp, input.uv)//通常テクスチャ
-			+ tex2.Sample(smp, input.uv)//縮小ぼかし済み
-			+ saturate(bloomAccum);
+			+ Get5x5GaussianBlur(tex2,smp,input.uv,dx,dy,(0,0,1,1))//高輝度をぼかす
+			+ saturate(bloomAccum) / 1.1f;//縮小ぼかし済み(/ で強さ調整)
 	}
 
 

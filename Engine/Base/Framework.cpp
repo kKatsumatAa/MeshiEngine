@@ -74,10 +74,8 @@ bool Framework::Update()
 	imguiM->Begin();
 
 	//ポストエフェクト(imgui)
-	for (std::unique_ptr<PostPera>& postpera : postPera)
-	{
-		postpera->Update();
-	}
+	postPera[0]->Update();
+
 	//(imgui)
 	Object::StaticUpdate();
 	//(imgui)
