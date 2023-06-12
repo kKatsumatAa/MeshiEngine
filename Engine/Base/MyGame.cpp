@@ -13,6 +13,8 @@ void MyGame::Initialize()
 	sceneFactory_ = new SceneFactory();
 	sceneM->SetSceneFactory(sceneFactory_);
 	sceneM->ChangeScene("GAME");
+
+	postPera[0]->effectFlags.isBloom = true;
 }
 
 void MyGame::Finalize()
