@@ -1,23 +1,23 @@
 #include "SceneFactory.h"
 
 
-SceneState* SceneFactory::CreateScene(const std::string& sceneName)
+std::unique_ptr<SceneState> SceneFactory::CreateScene(const std::string& sceneName)
 {
     //éüÇÃÉVÅ[ÉìÇÃì¸ÇÍï®
-    SceneState* newScene = nullptr;
+    std::unique_ptr<SceneState> newScene;
 
     if (sceneName == "TITLE")
     {
-        newScene = new SceneTitle();
+        newScene = std::make_unique<SceneTitle>();
     }
     else if (sceneName == "GAME")
     {
-        newScene = new SceneGame();
+        newScene = std::make_unique<SceneGame>();
     }
     else if (sceneName == "LOAD")
     {
-        newScene = new SceneLoad();
+        newScene = std::make_unique<SceneLoad>();
     }
 
-    return newScene;
+    return std::move(newScene);
 }

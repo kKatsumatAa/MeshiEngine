@@ -37,15 +37,12 @@ void Framework::Initialize()
 	sceneM = &SceneManager::GetInstance();
 	sceneM->Initialize();
 
-	imguiM = new ImGuiManager();
+	imguiM = std::make_unique<ImGuiManager>();
 	imguiM->Initialize();
 }
 
 void Framework::Finalize()
 {
-	//シーンファクトリ解放
-	delete sceneFactory_;
-
 	//FBX
 	FbxLoader::GetInstance()->Finalize();
 
@@ -53,7 +50,6 @@ void Framework::Finalize()
 	WindowsApp::GetInstance().UnregisterClassA();
 
 	imguiM->Finalize();
-	delete imguiM;
 }
 
 bool Framework::Update()

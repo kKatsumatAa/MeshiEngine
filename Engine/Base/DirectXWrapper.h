@@ -10,6 +10,7 @@ private:
 	ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
 	ComPtr < ID3D12CommandAllocator> commandAllocator = nullptr;
 	ComPtr < ID3D12CommandQueue> commandQueue = nullptr;
+	ComPtr<ID3D12Resource> depthBuff;
 	// スワップチェーンの設定
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 	ComPtr<IDXGISwapChain4> swapChain = nullptr;

@@ -202,6 +202,7 @@ Object::~Object()
 
 	//object毎に消えるのでいらないかも
 	if (collider_.get())
+	if (collider_.get())
 	{
 		CollisionManager::GetInstance()->RemoveCollider(collider_.get());
 	}

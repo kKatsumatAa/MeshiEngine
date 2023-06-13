@@ -114,7 +114,7 @@ private:
 
 public:
 	//アンビエントなど
-	Material* material;
+	std::unique_ptr<Material> material;
 
 
 #pragma endregion

@@ -30,8 +30,9 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 	name = folderName;
 
 	// メッシュ生成
-	meshes.emplace_back(new Mesh);
-	Mesh* mesh = meshes.back();
+	meshes_.emplace_back(std::move(std::make_unique < Mesh>()));
+	//所有権をいったん与える
+	std::unique_ptr<Mesh> mesh = std::move(meshes_.back());
 	int indexCountTex = 0;
 	int indexCountNoTex = 0;
 
@@ -67,9 +68,12 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 				if (smoothing) {
 					mesh->CalculateSmoothedVertexNormals();
 				}
+				//所有権戻す
+				meshes_[meshes_.size() - 1] = std::move(mesh);
+
 				// 次のメッシュ生成
-				meshes.emplace_back(new Mesh);
-				mesh = meshes.back();
+				meshes_.emplace_back(std::move(std::make_unique<Mesh>()));
+				mesh = std::move(meshes_.back());
 				indexCountTex = 0;
 			}
 
@@ -122,7 +126,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 				// マテリアル名で検索し、マテリアルを割り当てる
 				auto itr = materials.find(materialName);
 				if (itr != materials.end()) {
-					mesh->SetMaterial(itr->second);
+					mesh->SetMaterial(itr->second.get());
 				}
 			}
 		}
@@ -227,6 +231,9 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 	if (smoothing) {
 		mesh->CalculateSmoothedVertexNormals();
 	}
+
+	//所有権戻す
+	meshes_[meshes_.size() - 1] = std::move(mesh);
 }
 
 void Model::LoadMaterial(const std::string& directoryPath, const std::string& filename)
@@ -240,7 +247,7 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 		assert(0);
 	}
 
-	Material* material = nullptr;
+	std::unique_ptr<Material> material;
 
 	// 1行ずつ読み込む
 	std::string line;
@@ -262,9 +269,9 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 		if (key == "newmtl") {
 
 			// 既にマテリアルがあれば
-			if (material) {
+			if (material.get()) {
 				// マテリアルをコンテナに登録
-				AddMaterial(material);
+				AddMaterial(std::move(material));
 			}
 
 			// 新しいマテリアルを生成
@@ -312,16 +319,16 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 	// ファイルを閉じる
 	file.close();
 
-	if (material) {
-		// マテリアルを登録
-		AddMaterial(material);
+	if (material.get()) {
+		// マテリアルを登録（所有権を渡す）
+		AddMaterial(std::move(material));
 	}
 }
 
-void Model::AddMaterial(Material* material)
+void Model::AddMaterial(std::unique_ptr<Material> material)
 {
 	// コンテナに登録
-	materials.emplace(material->name, material);
+	materials.emplace(material->name, std::move(material));
 }
 
 void Model::LoadTextures()
@@ -331,7 +338,7 @@ void Model::LoadTextures()
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 
 	for (auto& m : materials) {
-		Material* material = m.second;
+		Material* material = m.second.get();
 		srvGpuHandle.ptr = material->textureHandle;
 
 		// テクスチャあり
@@ -352,26 +359,20 @@ void Model::LoadTextures()
 }
 
 
-Model* Model::LoadFromOBJ(const std::string& folderName, bool smoothing, bool modelType)
+std::unique_ptr<Model> Model::LoadFromOBJ(const std::string& folderName, bool smoothing, bool modelType)
 {
 	//新たなModel型のインスタンスのメモリを確保
-	Model* model = new Model;
+	std::unique_ptr<Model> model = std::make_unique<Model>();
 	model->Initialize(folderName, smoothing);
 
-	return model;
+	//所有権渡す
+	return std::move(model);
 }
 
 
 Model::~Model()
 {
-	for (auto m : meshes) {
-		delete m;
-	}
-	meshes.clear();
-
-	for (auto m : materials) {
-		delete m.second;
-	}
+	meshes_.clear();
 	materials.clear();
 }
 
@@ -386,22 +387,27 @@ void Model::Initialize(const std::string& foldername, bool smoothing)
 	LoadFromOBJInternal(foldername.c_str(), smoothing);
 
 	// メッシュのマテリアルチェック
-	for (Mesh* m : meshes) {
+	for (auto& m : meshes_) {
 		// マテリアルの割り当てがない
 		if (m && m->GetMaterial() == nullptr) {
 			if (defaultMaterial == nullptr) {
 				// デフォルトマテリアルを生成
 				defaultMaterial = Material::Create();
 				defaultMaterial->name = "no material";
-				materials.emplace(defaultMaterial->name, defaultMaterial);
+
+				// デフォルトマテリアルをセット(メッシュに渡すのはポインタのみ（所有権は渡さない）)
+				m->SetMaterial(defaultMaterial.get());
+
+				//追加（所有権渡す）
+				materials.emplace(defaultMaterial->name, std::move(defaultMaterial));
 			}
-			// デフォルトマテリアルをセット
-			m->SetMaterial(defaultMaterial);
+			//// デフォルトマテリアルをセット(メッシュに渡すのはポインタのみ（所有権は渡さない）)
+			//m->SetMaterial(defaultMaterial.get());
 		}
 	}
 
 	// メッシュのバッファ生成
-	for (auto& m : meshes) {
+	for (auto& m : meshes_) {
 		if (m) {
 			m->CreateBuffers();
 		}
@@ -424,7 +430,7 @@ void Model::Draw(const int indexNum)
 	}
 
 	// 全メッシュを描画
-	for (auto& mesh : meshes) {
+	for (auto& mesh : meshes_) {
 		mesh->Draw(DirectXWrapper::GetInstance().GetCommandList());
 	}
 }

@@ -19,7 +19,7 @@ class SceneManager final
 {
 private:
 	//シーンの状態（行動）
-	SceneState* state = nullptr;
+	std::unique_ptr<SceneState> state_;
 	//シーンファクトリー（ポインタを借りる）
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 
@@ -27,7 +27,7 @@ public:
 	WorldMat cameraWorldMat;
 	const Vec3 cameraPos = { 0,0,-100 };
 
-	Model* model[20];
+	//Model* model[20];
 
 	Object draw[10];
 
@@ -46,7 +46,7 @@ public:
 	UINT64 textureNumHundle[12];
 
 	//ライト
-	LightManager* lightManager = nullptr;
+	std::unique_ptr<LightManager> lightManager;
 
 	float ambientColor[3] = { 1,1,1 };
 	float diffuseColor[3] = { 1,1,1 };
@@ -58,7 +58,7 @@ public:
 	float circleShadowFactorAngle[2] = { 0,5.0f };
 	float circleShadowDistance = 100.0f;
 
-	float fighterPos[3] = { 1.0f,0,0 };
+	float fighterPos[3] = { -10.0f,0,0 };
 
 
 	std::unique_ptr<Camera> camera;

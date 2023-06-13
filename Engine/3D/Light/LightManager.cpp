@@ -92,7 +92,7 @@ void LightManager::TransferConstBuffer()
 					spotLights[i].GetLightColor();
 				constMap->spotLights[i].lightatten =
 					spotLights[i].GetLightAtten();
-				constMap->spotLights[i].lightfactoranglecos = 
+				constMap->spotLights[i].lightfactoranglecos =
 					spotLights[i].GetLightFactorAngleCos();
 			}
 			//ライトが無効ならライト色を0に
@@ -179,14 +179,14 @@ void LightManager::Draw(UINT rootParamaterIndex)
 	);
 }
 
-LightManager* LightManager::Create()
+std::unique_ptr<LightManager> LightManager::Create()
 {
 	//3Dオブジェクトのインスタンスを生成
-	LightManager* instance = new LightManager();
+	std::unique_ptr<LightManager> instance = std::make_unique< LightManager>();
 	//初期化
 	instance->Initialize();
 	//生成したインスタンスを返す
-	return instance;
+	return std::move(instance);
 }
 
 //-----------------------------------------------------------

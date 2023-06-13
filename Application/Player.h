@@ -13,7 +13,7 @@ public:
     /// </summary>
     /// <param name="model"></param>
     /// <returns></returns>
-    static Player* Create();
+    static std::unique_ptr<Player> Create();
 
 public:
 

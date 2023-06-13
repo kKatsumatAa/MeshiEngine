@@ -34,7 +34,7 @@ public:
 class CameraManager
 {
 private:
-	UsingCameraState* state = nullptr;
+	std::unique_ptr<UsingCameraState> state_;
 
 public:
 	//ここにいろんなカメラのポインタを入れて、描画時に使う
@@ -65,7 +65,7 @@ public://関数
 	CameraManager();
 	~CameraManager();
 
-	void ChangeUsingCameraState(UsingCameraState* state);
+	void ChangeUsingCameraState(std::unique_ptr<UsingCameraState> state);
 
 	void Initialize();
 

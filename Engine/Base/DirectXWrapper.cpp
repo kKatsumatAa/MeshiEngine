@@ -153,7 +153,6 @@ void DirectXWrapper::InitializeDepthBuffer()
 	depthClearValue.DepthStencil.Depth = 1.0f;//深度値1.0f(最大値)でクリア
 	depthClearValue.Format = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 	//リソース生成
-	ID3D12Resource* depthBuff = nullptr;
 	result = device->CreateCommittedResource(
 		&depthHeapProp,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
@@ -172,7 +171,7 @@ void DirectXWrapper::InitializeDepthBuffer()
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	device->CreateDepthStencilView(
-		depthBuff,
+		depthBuff.Get(),
 		&dsvDesc,//深度ビュー
 		dsvHeap->GetCPUDescriptorHandleForHeapStart()//ヒープの先頭に作る
 	);
@@ -238,6 +237,7 @@ void DirectXWrapper::Initialize()
 	{
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);//やばいエラー時止まる
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);//エラー時止まる
+		//infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);//警告時止まる
 		infoQueue->Release();
 	}
 

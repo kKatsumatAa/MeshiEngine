@@ -20,13 +20,13 @@ void Material::StaticInitialize(ID3D12Device* device)
 	Material::device = device;
 }
 
-Material* Material::Create()
+std::unique_ptr<Material> Material::Create()
 {
-	Material* instance = new Material;
+	std::unique_ptr<Material> instance = std::make_unique<Material>();
 
 	instance->Initialize();
 
-	return instance;
+	return std::move(instance);
 }
 
 void Material::Initialize()
@@ -47,6 +47,11 @@ void Material::CreateConstantBuffer()
 		((UINT)sizeof(Material::ConstBufferDataMaterial2) + 0xff) & ~0xff/*256バイトアライメント*/);
 	//定数バッファの生成
 	BuffProperties(cbHeapProp, cbResourceDesc, &constBuff);
+}
+
+Material::~Material()
+{
+
 }
 
 void Material::LoadTexture(const std::string& directoryPath, CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHandle, CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle)

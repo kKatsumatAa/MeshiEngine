@@ -14,11 +14,11 @@ protected:
 	MSG msg{};	//メッセージ
 
 	//シーンファクトリー
-	AbstractSceneFactory* sceneFactory_ = nullptr;
+	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 
 	std::unique_ptr<PostPera> postPera[2];
 
-	ImGuiManager* imguiM;
+	std::unique_ptr <ImGuiManager> imguiM;
 
 
 public:

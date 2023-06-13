@@ -120,7 +120,7 @@ public:
 	/// <summary>
 	/// インスタンス生成
 	/// </summary>
-	static LightManager* Create();
+	static std::unique_ptr<LightManager> Create();
 
 	/// <summary>
 		/// 平行光源の有効フラグをセット

@@ -12,30 +12,23 @@
 //デストラクタ
 SceneManager::~SceneManager()
 {
-	state->Finalize();
-	delete state;
-	for (int i = 0; i < _countof(model); i++)
-	{
-		delete model[i];
-	}
-	delete lightManager;
+	state_->Finalize();
 	camera.reset();
 	//音データ解放
-
 }
 
 void SceneManager::ChangeScene(std::string sceneName)
 {
 	assert(sceneFactory_);
 
-	if (this->state) {
-		this->state->Finalize();
-		delete this->state;
+	if (state_) {
+		state_->Finalize();
+		state_.reset();
 	}
 	//シーンファクトリーでシーン生成
-	this->state = sceneFactory_->CreateScene(sceneName);
-	state->SetScene(this);
-	this->state->Initialize();
+	state_ = sceneFactory_->CreateScene(sceneName);
+	state_->SetScene(this);
+	state_->Initialize();
 }
 
 void SceneManager::StopWaveAllScene()
@@ -45,6 +38,8 @@ void SceneManager::StopWaveAllScene()
 
 void SceneManager::Initialize()
 {
+	Sound::GetInstance().LoadWave("Stage_BGM.wav",false);
+
 	//json
 	JsonLevelLoader::Getinstance().Initialize();
 	JsonLevelLoader::Getinstance().LoadJsonFile("untitled");
@@ -65,52 +60,17 @@ void SceneManager::Initialize()
 	//fbx読み込み
 	modelFBX = ModelManager::GetInstance().LoadModelFBX("boneTest");
 
-	{
-		//Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
-	}
-
-	model[0] = ModelManager::GetInstance().LoadModel("skydome", true, true);
-	model[1] = ModelManager::GetInstance().LoadModel("ground");
-	model[2] = ModelManager::GetInstance().LoadModel("chr_sword", true);
-	//model[4] = ModelManager::GetInstance().LoadModel("MiG-25PD", true);
-	//model[3] = ModelManager::GetInstance().LoadModel("sphere");
-
-	//Object::effectFlags.isGlassFilter = true;
-
-
-
-	draw[0].worldMat->scale = { 10.0f, 10.0f, 10.0f };
-	draw[0].worldMat->SetWorld();
-	draw[1].worldMat->scale = { 10.0f, 10.0f, 10.0f };
-	draw[1].worldMat->trans = { 0.0f, -10.0f, 0 };
-	draw[1].worldMat->SetWorld();
-	draw[2].worldMat->scale = { 10,10,10 };
-	draw[2].worldMat->rot.y = { -pi };
-	draw[2].worldMat->trans = { fighterPos[0],fighterPos[1],fighterPos[2] };
-	draw[2].worldMat->SetWorld();
-	draw[3].worldMat->scale = { 10,10,10 };
-	draw[3].worldMat->rot.y = { -pi / 2.0f };
-	draw[3].worldMat->trans = { 30.0f,0,0 };
-	draw[3].worldMat->SetWorld();
-
-
-	//球
-	draw[4].worldMat->scale = { 5.0f,5.0f,5.0f };
-	draw[4].worldMat->trans = { -20.0f,0,-10.0f };
-	draw[4].worldMat->SetWorld();
-
-	draw[5].worldMat->scale = { 1.3f,1.3f,1.3f };
-	draw[5].worldMat->trans = { fighterPos[0],fighterPos[1] - 1.0f,fighterPos[2] };
-	draw[5].worldMat->rot = { -3.14f / 2.0f,0,0 };
-	draw[5].worldMat->SetWorld();
-
-
+	draw[5].SetScale({ 1.3f,1.3f,1.3f });
+	draw[5].SetTrans({ fighterPos[0],fighterPos[1] - 1.0f,fighterPos[2] });
+	draw[5].SetRot({ -3.14f / 2.0f,0,0 });
+	draw[5].SetWorldMat();
+	
 	//インスタンス生成
-	lightManager = LightManager::Create();
+	lightManager = std::move(LightManager::Create());
 	//ライト色を設定
 	lightManager->SetDirLightColor(0, { 1,1,1 });
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
-	Object::SetLight(lightManager);
+	Object::SetLight(lightManager.get());
 	lightManager->SetDirLightActive(0, true);
 	lightManager->SetDirLightActive(1, false);
 	lightManager->SetDirLightActive(2, false);
@@ -127,24 +87,16 @@ void SceneManager::Initialize()
 	camera = std::make_unique<Camera>();
 	camera->Initialize();
 
-
-	//objPlayer->Initialize();
-
-	//draw[4].SetCollider(new PlaneCollider);
-	/*draw[4].SetIsValid(false);*/
-
-
+	Sound::GetInstance().PlayWave("Stage_BGM.wav");
 }
 
 void SceneManager::Update()
 {
 	lightManager->Update();
 
-	state->Update();
+	state_->Update();
 
 	//#ifdef _DEBUG
-		//if (KeyboardInput::GetInstance().KeyTrigger(DIK_E)) ChangeState(new SceneTitle);
-
 	{
 		cameraWorldMat.rot.y += (KeyboardInput::GetInstance().KeyPush(DIK_A) - KeyboardInput::GetInstance().KeyPush(DIK_D)) * 0.05f;
 
@@ -166,22 +118,22 @@ void SceneManager::Update()
 
 void SceneManager::Draw()
 {
-	state->Draw();
+	state_->Draw();
 }
 
 void SceneManager::DrawPostEffect()
 {
-	state->DrawPostEffect();
+	state_->DrawPostEffect();
 }
 
 void SceneManager::DrawPostEffect2()
 {
-	state->DrawPostEffect2();
+	state_->DrawPostEffect2();
 }
 
 void SceneManager::DrawSprite()
 {
-	state->DrawSprite();
+	state_->DrawSprite();
 
 	debugText.DrawAll(debugTextHandle);
 }
@@ -196,7 +148,7 @@ void SceneManager::DrawImgui()
 
 	ImGui::End();
 
-	state->DrawImgui();
+	state_->DrawImgui();
 }
 
 
