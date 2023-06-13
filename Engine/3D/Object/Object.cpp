@@ -196,26 +196,25 @@ bool Object::Initialize()
 
 Object::~Object()
 {
-	delete this->sprite;
 	//delete& this->cbt;
 	constBuffMaterial.Reset();
 	constBuffSkin.Reset();
 
-	if (collider)
+	//object毎に消えるのでいらないかも
+	if (collider_.get())
 	{
-		CollisionManager::GetInstance()->RemoveCollider(collider);
-		delete collider;
+		CollisionManager::GetInstance()->RemoveCollider(collider_.get());
 	}
 }
 
 void Object::Update()
 {
 	//行列更新
-	worldMat->SetWorld();
+	worldMat_->SetWorld();
 	//当たり判定更新
-	if (collider)
+	if (collider_.get())
 	{
-		collider->Update();
+		collider_->Update();
 	}
 }
 
@@ -244,29 +243,29 @@ void Object::StaticUpdate()
 	}
 }
 
-void Object::SetCollider(BaseCollider* collider)
+void Object::SetCollider(std::unique_ptr<BaseCollider> collider)
 {
 	collider->SetObject(this);
-	this->collider = collider;
+	collider_ = std::move(collider);
 	//コリジョンマネージャーに登録
-	CollisionManager::GetInstance()->AddCollider(collider);
+	CollisionManager::GetInstance()->AddCollider(collider_.get());
 	//コライダーを更新
-	collider->Update();
+	collider_->Update();
 }
 
 void Object::SetIsValid(bool isValid)
 {
-	if (collider)
+	if (collider_)
 	{
-		collider->SetIsValid(isValid);
+		collider_->SetIsValid(isValid);
 	}
 }
 
 void Object::SetIs2D(bool is2D)
 {
-	if (collider)
+	if (collider_)
 	{
-		collider->SetIs2D(is2D);
+		collider_->SetIs2D(is2D);
 	}
 }
 
@@ -323,15 +322,15 @@ void Object::SendingMat(int indexNum)
 {
 
 	//変換行列をGPUに送信
-	worldMat->SetWorld();
+	worldMat_->SetWorld();
 	//スプライトじゃない場合
 	if (indexNum != SPRITE)
 	{
 		XMMATRIX matW;
-		matW = { (float)worldMat->matWorld.m[0][0],(float)worldMat->matWorld.m[0][1],(float)worldMat->matWorld.m[0][2],(float)worldMat->matWorld.m[0][3],
-				 (float)worldMat->matWorld.m[1][0],(float)worldMat->matWorld.m[1][1],(float)worldMat->matWorld.m[1][2],(float)worldMat->matWorld.m[1][3],
-				 (float)worldMat->matWorld.m[2][0],(float)worldMat->matWorld.m[2][1],(float)worldMat->matWorld.m[2][2],(float)worldMat->matWorld.m[2][3],
-				 (float)worldMat->matWorld.m[3][0],(float)worldMat->matWorld.m[3][1],(float)worldMat->matWorld.m[3][2],(float)worldMat->matWorld.m[3][3] };
+		matW = { (float)worldMat_->matWorld.m[0][0],(float)worldMat_->matWorld.m[0][1],(float)worldMat_->matWorld.m[0][2],(float)worldMat_->matWorld.m[0][3],
+				 (float)worldMat_->matWorld.m[1][0],(float)worldMat_->matWorld.m[1][1],(float)worldMat_->matWorld.m[1][2],(float)worldMat_->matWorld.m[1][3],
+				 (float)worldMat_->matWorld.m[2][0],(float)worldMat_->matWorld.m[2][1],(float)worldMat_->matWorld.m[2][2],(float)worldMat_->matWorld.m[2][3],
+				 (float)worldMat_->matWorld.m[3][0],(float)worldMat_->matWorld.m[3][1],(float)worldMat_->matWorld.m[3][2],(float)worldMat_->matWorld.m[3][3] };
 
 		cbt.constMapTransform->world = matW;
 		cbt.constMapTransform->viewproj = view->matView * projection->matProjection;
@@ -553,7 +552,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 		//定数バッファビュー(CBV)の設定コマンド
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 
-		sprite->SpriteDraw();
+		sprite_->SpriteDraw();
 	}
 	else if (indexNum == MODEL)
 	{
@@ -583,17 +582,15 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 
 		//ラムダ式でコマンド関数
 		std::function<void()>SetRootPipeR = [=]() {SetRootPipe(pipelineSetFBX.pipelineState.Get(), 0, pipelineSetFBX.rootSignature.Get()); };
-		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(fbx->material->textureHandle, constBuffTransform, fbx->material); };
+		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(fbx->material->textureHandle, constBuffTransform, fbx->material.get()); };
 
 		fbx->Draw(SetRootPipeR, SetMaterialTex);
 	}
 }
 
 void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-	WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+	ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	//constBuffTransfer({ 0.01f,0.05f,0.1f,0 });
-	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
 
@@ -602,11 +599,9 @@ void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 	Update(TRIANGLE, pipelineNum, textureHandle, cbt);
 }
 
-void Object::DrawBox(WorldMat* world, ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
+void Object::DrawBox(ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	//constBuffTransfer({ 0.01f,0.05f,0.1f,0 });
-	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
 
@@ -619,13 +614,13 @@ void Object::DrawBoxSprite(const Vec3& pos, const float& scale,
 	XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV, const bool& isReverseX, const bool& isReverseY,
 	float rotation, const int& pipelineNum)
 {
-	if (sprite == nullptr)
+	if (sprite_.get() == nullptr)
 	{
-		sprite = new Sprite();
+		sprite_ = std::make_unique<Sprite>();
 		//スプライトクラスの初期化
-		sprite->Initialize();
+		sprite_->Initialize();
 	}
-	sprite->Update(pos, scale, color, textureHandle, ancorUV, isReverseX, isReverseY, rotation, &cbt, constMapMaterial);
+	sprite_->Update(pos, scale, color, textureHandle, ancorUV, isReverseX, isReverseY, rotation, &cbt, constMapMaterial);
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
@@ -640,21 +635,20 @@ void Object::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, cons
 	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, const bool& isReverseX, const bool& isReverseY,
 	float rotation, const int& pipelineNum)
 {
-	if (sprite == nullptr)
+	if (sprite_.get() == nullptr)
 	{
-		sprite = new Sprite();
+		sprite_ = std::make_unique <Sprite>();
 		//スプライトクラスの初期化
-		sprite->Initialize();
+		sprite_->Initialize();
 	}
-	sprite->UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle,
+	sprite_->UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle,
 		isPosLeftTop, isReverseX, isReverseY, rotation, &cbt, constMapMaterial);
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
 
-void Object::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+void Object::DrawCube3D(ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
 
@@ -663,10 +657,9 @@ void Object::DrawCube3D(WorldMat* world, ViewMat* view, ProjectionMat* projectio
 	Update(CUBE, pipelineNum, textureHandle, cbt);
 }
 
-void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/ WorldMat* world, ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,
+void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,
 	const UINT64 textureHandle)
 {
-	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
 
@@ -675,10 +668,9 @@ void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/ WorldMat* world, V
 	Update(LINE, 2, textureHandle, cbt, nullptr, nullptr, false);
 }
 
-void Object::DrawCircle(WorldMat* world, ViewMat* view, ProjectionMat* projection,
+void Object::DrawCircle(ViewMat* view, ProjectionMat* projection,
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
 
@@ -687,10 +679,9 @@ void Object::DrawCircle(WorldMat* world, ViewMat* view, ProjectionMat* projectio
 	Update(CIRCLE, pipelineNum, textureHandle, cbt);
 }
 
-void Object::DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projection,
+void Object::DrawSphere(ViewMat* view, ProjectionMat* projection,
 	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
 {
-	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
 
@@ -699,10 +690,9 @@ void Object::DrawSphere(WorldMat* world, ViewMat* view, ProjectionMat* projectio
 	Update(SPHERE, pipelineNum, textureHandle, cbt);
 }
 
-void Object::DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection,
+void Object::DrawModel(ViewMat* view, ProjectionMat* projection,
 	Model* model, XMFLOAT4 color, const int& pipelineNum)
 {
-	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
 
@@ -711,9 +701,8 @@ void Object::DrawModel(WorldMat* world, ViewMat* view, ProjectionMat* projection
 	Update(MODEL, pipelineNum, NULL, cbt, model);
 }
 
-void Object::DrawFBX(WorldMat* world, ViewMat* view, ProjectionMat* projection, ModelFBX* modelFbx, XMFLOAT4 color, const int& pipelineNum)
+void Object::DrawFBX(ViewMat* view, ProjectionMat* projection, ModelFBX* modelFbx, XMFLOAT4 color, const int& pipelineNum)
 {
-	this->worldMat = world;
 	this->view = view;
 	this->projection = projection;
 
