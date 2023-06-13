@@ -56,7 +56,7 @@ void Player::Update()
 
 	//移動ベクトルをY軸周りの角度で回転
 	Vec3 move = { 0,0,1.0f };
-	SetWorldMat();
+	CulcWorldMat();
 	Vec3xM4(move, GetMatWorld(), 0);
 
 	//向いてる方向に移動

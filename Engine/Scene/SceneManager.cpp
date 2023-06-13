@@ -63,7 +63,7 @@ void SceneManager::Initialize()
 	draw[5].SetScale({ 1.3f,1.3f,1.3f });
 	draw[5].SetTrans({ fighterPos[0],fighterPos[1] - 1.0f,fighterPos[2] });
 	draw[5].SetRot({ -3.14f / 2.0f,0,0 });
-	draw[5].SetWorldMat();
+	draw[5].CulcWorldMat();
 	
 	//インスタンス生成
 	lightManager = std::move(LightManager::Create());
