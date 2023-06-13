@@ -10,8 +10,8 @@ void MyGame::Initialize()
 	//ゲーム固有の初期化
 
 	//シーンファクトリーを生成し、マネージャーにセット
-	sceneFactory_ = new SceneFactory();
-	sceneM->SetSceneFactory(sceneFactory_);
+	sceneFactory_ = std::make_unique<SceneFactory>();
+	sceneM->SetSceneFactory(sceneFactory_.get());
 	sceneM->ChangeScene("GAME");
 }
 

@@ -6,16 +6,16 @@ class ModelManager final
 {
 private:
 	//ƒ‚ƒfƒ‹–¼‚Æobj
-	std::map<std::string, Model*>nameAndModels;
+	std::map<std::string, std::unique_ptr<Model>>nameAndModels;
 	//ƒ‚ƒfƒ‹–¼‚Æfbx
-	std::map<std::string, ModelFBX*>nameAndModelFBXs;
+	std::map<std::string, std::unique_ptr<ModelFBX>>nameAndModelFBXs;
 
 public:
 
 
 private:
 	ModelManager() { ; }
-	~ModelManager() { ; }
+	~ModelManager();
 
 	ModelManager& operator=(const ModelManager& inst) = delete;
 	ModelManager(const ModelManager& inst) = delete;

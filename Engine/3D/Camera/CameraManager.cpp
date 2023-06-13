@@ -2,18 +2,18 @@
 
 CameraManager::CameraManager()
 {
-	usingCamera = new Camera();
 	stageSelectCamera = std::make_unique<Camera>();
 	gameMainCamera = std::make_unique<Camera>();
 	gameTurnCamera = std::make_unique<Camera>();
 	goalEffectCamera = std::make_unique<Camera>();
 
-	usingCamera->Initialize();
 	stageSelectCamera->Initialize();
 	gameMainCamera->Initialize();
 	gameTurnCamera->Initialize();
 	goalEffectCamera->Initialize();
 
+	//何かしらカメラのポインタ入れる
+	usingCamera = gameMainCamera.get();
 }
 
 CameraManager::~CameraManager()
@@ -24,11 +24,11 @@ CameraManager::~CameraManager()
 	goalEffectCamera.reset();
 }
 
-void CameraManager::ChangeUsingCameraState(UsingCameraState* state)
+void CameraManager::ChangeUsingCameraState(std::unique_ptr<UsingCameraState> state)
 {
-	delete this->state;
-	this->state = state;
-	this->state->SetCameraM(this);
+	state_.reset();
+	state_ = std::move(state);
+	state_->SetCameraM(this);
 }
 
 void CameraManager::Initialize()
@@ -40,12 +40,12 @@ void CameraManager::Initialize()
 	isLerpMoving = false;
 	isLerpEnd = false;
 
-	ChangeUsingCameraState(new UsingCameraNormalState);
+	ChangeUsingCameraState(std::make_unique<UsingCameraNormalState>());
 }
 
 void CameraManager::Update()
 {
-	state->Update();
+	state_->Update();
 
 	usingCamera->Update();
 
@@ -73,7 +73,7 @@ void CameraManager::BegineLerpUsingCamera(Vec3 startEye, Vec3 endEye, Vec3 start
 	isLerpMoving = true;
 	isLerpEnd = false;
 
-	ChangeUsingCameraState(new UsingCameraLerpMoveState);
+	ChangeUsingCameraState(std::make_unique<UsingCameraLerpMoveState>());
 
 	Update();
 }
@@ -82,7 +82,7 @@ CameraManager& CameraManager::operator=(const CameraManager& obj)
 {
 	this->Initialize();
 
-	*this->state = *obj.state;//ステートなど、ポインタは削除される可能性があるので中身のみコピー
+	*this->state_ = *obj.state_;//ステートなど、ポインタは削除される可能性があるので中身のみコピー
 	this->usingCamera = obj.usingCamera;
 	*this->stageSelectCamera.get() = *obj.stageSelectCamera.get();
 	*this->gameMainCamera.get() = *obj.gameMainCamera.get();
@@ -116,7 +116,7 @@ void UsingCameraNormalState::Update()
 {
 	if (cameraM->isLerpMoving)
 	{
-		cameraM->ChangeUsingCameraState(new UsingCameraLerpMoveState);
+		cameraM->ChangeUsingCameraState(std::make_unique<UsingCameraLerpMoveState>());
 	}
 }
 
@@ -155,7 +155,7 @@ void UsingCameraLerpMoveState::Update()
 
 
 
-			cameraM->ChangeUsingCameraState(new UsingCameraNormalState);
+			cameraM->ChangeUsingCameraState(std::make_unique<UsingCameraNormalState>());
 		}
 	}
 }

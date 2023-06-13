@@ -2,6 +2,7 @@
 
 #include "SceneState.h"
 #include <string>
+#include <memory>
 
 
 /// <summary>
@@ -14,6 +15,6 @@ public:
 	virtual ~AbstractSceneFactory() = default;
 
 	//ÉVÅ[Éìê∂ê¨
-	virtual SceneState* CreateScene(const std::string& sceneName) = 0;
+	virtual std::unique_ptr<SceneState> CreateScene(const std::string& sceneName) = 0;
 };
 

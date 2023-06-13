@@ -10,7 +10,7 @@ class SceneGame : public SceneState
 private:
 	PostPera postPera;
 
-	std::map<Object*, Model*> objAndModels;
+	std::map<std::unique_ptr<Object>, std::unique_ptr<Model>> objAndModels;
 
 public:
 	void Finalize()override;

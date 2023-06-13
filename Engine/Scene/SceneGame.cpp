@@ -10,12 +10,7 @@ void SceneGame::Finalize()
 //---------------------------------------------------------------------------------------
 void SceneGame::Initialize()
 {
-	//Sound::GetInstance().PlayWave("Stage_BGM.wav", 0.4f, true);
-
 	sceneM->draw[5].PlayReverseAnimation(sceneM->modelFBX, true);
-
-	//ポストエフェクト初期化
-	//postPera.Initialize(L"Resources/image/normalImage.jpg");
 
 	//initializeの度,毎回やっちゃうとおかしくなる
 	{
@@ -25,14 +20,14 @@ void SceneGame::Initialize()
 		for (auto& objData : JsonLevelLoader::Getinstance().levelData->objects)
 		{
 			//ファイル名から登録済みモデルを検索
-			Model* model = ModelManager::GetInstance().LoadModel(objData.fileName);
+			Model* model = ModelManager::GetInstance().LoadModel(objData->fileName);
 			//モデルを指定して3Dオブジェクトを生成
-			Object* newObj = new Object;
+			std::unique_ptr <Object> newObj = std::make_unique<Object>();
 			//worldmat
-			newObj->worldMat = objData.worldMat;
+			newObj->SetWorldMat_(*objData->worldMat.get());
 
 			//セットで登録
-			objAndModels.insert(std::make_pair(newObj, model));
+			objAndModels.insert(std::make_pair(std::move(newObj), model));
 		}
 	}
 
@@ -56,16 +51,18 @@ void SceneGame::Update()
 
 void SceneGame::Draw()
 {
-	for (std::map<Object*, Model*>::iterator it = objAndModels.begin(); it != objAndModels.end(); it++)
+	for (std::map<std::unique_ptr<Object>, std::unique_ptr<Model>>::iterator it = objAndModels.begin(); it != objAndModels.end(); it++)
 	{
-		Object* obj = it->first;
-		Model* model = it->second;
+		Object* obj = it->first.get();
+		Model* model = it->second.get();
 
-		obj->DrawModel(obj->worldMat, &sceneM->camera->viewMat, &sceneM->camera->projectionMat, model);
+		obj->DrawModel(&sceneM->camera->viewMat, &sceneM->camera->projectionMat, model);
 	}
 
 	//最後に描画しないと映らない
 	//ParticleManager::GetInstance()->Draw(sceneM->texhandle[1]);
+
+	sceneM->draw[5].DrawFBX(&sceneM->camera->viewMat,&sceneM->camera->projectionMat,sceneM->modelFBX,{10.5f,10.5f,10.5f,10.0f});
 }
 
 void SceneGame::DrawSprite()

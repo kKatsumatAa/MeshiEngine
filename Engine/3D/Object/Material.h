@@ -44,7 +44,7 @@ public: // 静的メンバ関数
 	/// マテリアル生成
 	/// </summary>
 	/// <returns>生成されたマテリアル</returns>
-	static Material* Create();
+	static std::unique_ptr<Material> Create();
 
 private: // 静的メンバ変数
 	// デバイス
@@ -60,6 +60,16 @@ public:
 	UINT64 textureHandle;//画像ハンドル
 
 public:
+	~Material();
+	// コンストラクタ
+	Material() {
+		ambient = { 0.3f, 0.3f, 0.3f };
+		diffuse = { 0.0f, 0.0f, 0.0f };
+		specular = { 0.0f, 0.0f, 0.0f };
+		alpha = 1.0f;
+		textureHandle = NULL;
+	}
+
 	/// <summary>
 	/// 定数バッファの取得
 	/// </summary>
@@ -93,15 +103,6 @@ private:
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
 
 private:
-	// コンストラクタ
-	Material() {
-		ambient = { 0.3f, 0.3f, 0.3f };
-		diffuse = { 0.0f, 0.0f, 0.0f };
-		specular = { 0.0f, 0.0f, 0.0f };
-		alpha = 1.0f;
-		textureHandle = NULL;
-	}
-
 	/// <summary>
 	/// 初期化
 	/// </summary>

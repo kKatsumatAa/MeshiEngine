@@ -4,13 +4,10 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 	//ƒQ[ƒ€
-	Framework* game = new MyGame();
+	std::unique_ptr<Framework> game = std::make_unique<MyGame>();
 	
 	//ƒQ[ƒ€Às
 	game->Run();
-
-	//‰ğ•ú
-	delete game;
 
 	return 0;
 }

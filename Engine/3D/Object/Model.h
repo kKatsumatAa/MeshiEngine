@@ -24,11 +24,11 @@ private:
 	// 名前
 	std::string name;
 	// メッシュコンテナ
-	std::vector<Mesh*> meshes;
+	std::vector<std::unique_ptr<Mesh>> meshes_;
 	// マテリアルコンテナ
-	std::unordered_map<std::string, Material*> materials;
+	std::unordered_map<std::string, std::unique_ptr<Material>> materials;
 	// デフォルトマテリアル
-	Material* defaultMaterial = nullptr;
+	std::unique_ptr<Material> defaultMaterial;
 
 
 private:
@@ -38,7 +38,7 @@ private:
 	/// <summary>
 	/// マテリアル登録
 	/// </summary>
-	void AddMaterial(Material* material);
+	void AddMaterial(std::unique_ptr<Material> material);
 
 	/// <summary>
 	/// テクスチャ読み込み
@@ -51,7 +51,7 @@ public:
 public://静的メンバ関数
 	//OBJファイルから3Dモデルを読み込む
 	//"フォルダ名のみ"を指定すればmtl,obj,textuerを読みこむ（すべて同じ名前であれば）
-	static Model* LoadFromOBJ(const std::string& folderName, bool smoothing = false, bool modelType = false);
+	static std::unique_ptr<Model> LoadFromOBJ(const std::string& folderName, bool smoothing = false, bool modelType = false);
 
 public: // メンバ関数
 	/// <summary>

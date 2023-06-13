@@ -12,13 +12,13 @@ struct LevelData
 	struct ObjectData
 	{
 		//worldMat
-		WorldMat* worldMat;
+		std::unique_ptr<WorldMat> worldMat;
 		//ファイル名
 		std::string fileName;
 	};
 
 	//オブジェクトの配列
-	std::vector<ObjectData> objects;
+	std::vector<std::unique_ptr<ObjectData>> objects;
 };
 
 class JsonLevelLoader final
@@ -29,7 +29,7 @@ private:
 
 public:
 	//レベルデータ
-	LevelData* levelData = nullptr;
+	std::unique_ptr<LevelData> levelData;
 
 private:
 	JsonLevelLoader() { ; }

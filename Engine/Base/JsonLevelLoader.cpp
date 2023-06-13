@@ -10,7 +10,7 @@ JsonLevelLoader& JsonLevelLoader::Getinstance()
 
 void JsonLevelLoader::Initialize()
 {
-	levelData = new LevelData;
+	levelData = std::make_unique<LevelData>();
 }
 
 void JsonLevelLoader::LoadJsonFile(std::string fileName)
@@ -70,35 +70,35 @@ void JsonLevelLoader::LoadJsonFile(std::string fileName)
 void JsonLevelLoader::LoadRecursiveChildrenData(nlohmann::json::iterator object, WorldMat* parent)
 {
 	//要素追加
-	levelData->objects.emplace_back(LevelData::ObjectData{});
+	levelData->objects.emplace_back(std::make_unique<LevelData::ObjectData>());
 	//今追加した要素の参照を得る
-	LevelData::ObjectData& objectData = levelData->objects.back();
+	std::unique_ptr<LevelData::ObjectData>& objectData = levelData->objects.back();
 
 	if (object->contains("file_name"))
 	{
 		//ファイル名
-		objectData.fileName = (*object)["file_name"];
+		objectData->fileName = (*object)["file_name"];
 	}
 
 	//トランスフォームのパラメータ読み込み
 	nlohmann::json transform = (*object)["transform"];
 
 	//コライダーのパラメータ読み込み
-	objectData.worldMat = new WorldMat();
+	objectData->worldMat = std::make_unique<WorldMat>();
 	// 親(一番目のオブジェクトはnullptrが入るように)
-	objectData.worldMat->parent = parent;
+	objectData->worldMat->parent = parent;
 	//平行移動
-	objectData.worldMat->trans.x = (float)transform["translation"][1];
-	objectData.worldMat->trans.y = (float)transform["translation"][2];
-	objectData.worldMat->trans.z = -(float)transform["translation"][0];
+	objectData->worldMat->trans.x = (float)transform["translation"][1];
+	objectData->worldMat->trans.y = (float)transform["translation"][2];
+	objectData->worldMat->trans.z = -(float)transform["translation"][0];
 	//角度（うまくいってないかも）
-	objectData.worldMat->rot.x = -(float)transform["rotation"][1];
-	objectData.worldMat->rot.y = -(float)transform["rotation"][2];
-	objectData.worldMat->rot.z = (float)transform["rotation"][0];
+	objectData->worldMat->rot.x = -(float)transform["rotation"][1];
+	objectData->worldMat->rot.y = -(float)transform["rotation"][2];
+	objectData->worldMat->rot.z = (float)transform["rotation"][0];
 	//スケール
-	objectData.worldMat->scale.x = (float)transform["scaling"][1];
-	objectData.worldMat->scale.y = (float)transform["scaling"][2];
-	objectData.worldMat->scale.z = (float)transform["scaling"][0];
+	objectData->worldMat->scale.x = (float)transform["scaling"][1];
+	objectData->worldMat->scale.y = (float)transform["scaling"][2];
+	objectData->worldMat->scale.z = (float)transform["scaling"][0];
 
 	//子がいたら
 	if ((*object).contains("children"))
@@ -107,7 +107,7 @@ void JsonLevelLoader::LoadRecursiveChildrenData(nlohmann::json::iterator object,
 		for (nlohmann::json::iterator child = (*object)["children"].begin(); child != (*object)["children"].end(); child++)
 		{
 			//子を再帰で走査
-			LoadRecursiveChildrenData(child, objectData.worldMat);
+			LoadRecursiveChildrenData(child, objectData->worldMat.get());
 		}
 	}
 }

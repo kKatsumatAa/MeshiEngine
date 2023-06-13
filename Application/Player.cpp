@@ -8,10 +8,10 @@
 using namespace DirectX;
 
 
-Player* Player::Create()
+std::unique_ptr<Player> Player::Create()
 {
-	Player* instance = new Player();
-	if (instance == nullptr)
+	std::unique_ptr<Player> instance = std::make_unique<Player>();
+	if (instance.get() == nullptr)
 	{
 		return nullptr;
 	}
@@ -19,11 +19,10 @@ Player* Player::Create()
 	//初期化
 	if (!instance->Initialize())
 	{
-		delete instance;
 		assert(0);
 	}
 
-	return instance;
+	return std::move(instance);
 }
 
 bool Player::Initialize()
@@ -36,8 +35,8 @@ bool Player::Initialize()
 	//コライダーの追加
 	float radius = 0.6f;
 	//半径分だけ足元から浮いた座標を球の中心にする
-	SetCollider(new SphereCollider(XMVECTOR({ 0,radius,0,0 }), radius));
-	//SetCollider(new PlaneCollider(XMVECTOR({ 0,radius,0,0 }), radius));
+
+	SetCollider(std::make_unique<SphereCollider>(XMVECTOR({ 0,radius,0,0 }), radius));
 
 	return true;
 }
@@ -48,30 +47,30 @@ void Player::Update()
 
 	if (input->KeyPush(DIK_LEFTARROW) || PadInput::GetInstance().GetRightStickTilt().x < 0)
 	{
-		worldMat->rot.y -= AngletoRadi(2.0f);
+		SetRot({ GetRot().x,GetRot().y - AngletoRadi(2.0f), GetRot().z });
 	}
 	if (input->KeyPush(DIK_RIGHTARROW) || PadInput::GetInstance().GetRightStickTilt().x > 0)
 	{
-		worldMat->rot.y += AngletoRadi(2.0f);
+		SetRot({ GetRot().x,GetRot().y + AngletoRadi(2.0f), GetRot().z });
 	}
 
 	//移動ベクトルをY軸周りの角度で回転
 	Vec3 move = { 0,0,1.0f };
-	worldMat->SetWorld();
-	Vec3xM4(move, worldMat->matWorld, 0);
+	SetWorldMat();
+	Vec3xM4(move, GetMatWorld(), 0);
 
 	//向いてる方向に移動
 	if (input->KeyPush(DIK_UPARROW) || PadInput::GetInstance().GetLeftStickTilt().y < 0)
 	{
-		worldMat->trans.x -= move.x;
-		worldMat->trans.y -= move.y;
-		worldMat->trans.z -= move.z;
+		SetTrans({ GetTrans().x - move.x, GetTrans().y, GetTrans().z });
+		SetTrans({ GetTrans().x ,GetTrans().y - move.y, GetTrans().z });
+		SetTrans({ GetTrans().x ,GetTrans().y, GetTrans().z - move.z });
 	}
 	if (input->KeyPush(DIK_DOWNARROW) || PadInput::GetInstance().GetLeftStickTilt().y > 0)
 	{
-		worldMat->trans.x += move.x;
-		worldMat->trans.y += move.y;
-		worldMat->trans.z += move.z;
+		SetTrans({ GetTrans().x + move.x, GetTrans().y, GetTrans().z });
+		SetTrans({ GetTrans().x ,GetTrans().y + move.y, GetTrans().z });
+		SetTrans({ GetTrans().x ,GetTrans().y, GetTrans().z + move.z });
 	}
 
 	Object::Update();

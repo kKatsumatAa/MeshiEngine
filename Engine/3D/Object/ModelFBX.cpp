@@ -3,8 +3,8 @@
 
 ModelFBX::~ModelFBX()
 {
-	//fbxシーンの解放
-	fbxScene->Destroy();
+	//fbxシーンの解放（エラー出る）
+	//fbxScene->Destroy();
 }
 
 void ModelFBX::CreateBuffers()
