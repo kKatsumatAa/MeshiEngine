@@ -137,6 +137,6 @@ public:
 	void Draw2();
 
 	//ˆê–‡–Ú‚Æ“ñ–‡–Ú‚ğ•`‰æ‚·‚é(ˆø”‚Ì•`‰æŠÖ”‚ğˆê–‡–Ú‚É•`‰æ)
-	void DrawToPostpera(std::function<void()> f);
+	void DrawToPostpera(const std::function<void()>& f);
 };
 

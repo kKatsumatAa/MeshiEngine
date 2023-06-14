@@ -74,7 +74,7 @@ public: // メンバ関数
 	/// 頂点インデックスの追加
 	/// </summary>
 	/// <param name="index">インデックス</param>
-	void AddIndex(unsigned short index);
+	void AddIndex(uint16_t index);
 
 	void PopIndex();
 
@@ -89,7 +89,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="indexPosition">座標インデックス</param>
 	/// <param name="indexVertex">頂点インデックス</param>
-	void AddSmoothData(unsigned short indexPosition, unsigned short indexVertex);
+	void AddSmoothData(uint16_t indexPosition, uint16_t indexVertex);
 
 	/// <summary>
 	/// 平滑化された頂点法線の計算
@@ -145,9 +145,9 @@ private: // メンバ変数
 	// 頂点データ配列
 	std::vector<VertexPosNormalUvSkin> vertices;
 	// 頂点インデックス配列
-	std::vector<unsigned short> indices;
+	std::vector<uint16_t> indices;
 	// 頂点法線スムージング用データ
-	std::unordered_map<unsigned short, std::vector<unsigned short>> smoothData;
+	std::unordered_map<uint16_t, std::vector<uint16_t>> smoothData;
 	// マテリアル
 	Material* material = nullptr;
 };

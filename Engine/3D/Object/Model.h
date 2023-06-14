@@ -33,7 +33,7 @@ private:
 
 private:
 	//OBJファイルから3Dモデルを読み込む
-	void LoadFromOBJInternal(const std::string& folderName, const bool smoothing = false, const bool& modelType = false);
+	void LoadFromOBJInternal(const std::string& folderName, const bool smoothing = false, bool modelType = false);
 
 	/// <summary>
 	/// マテリアル登録
@@ -73,7 +73,7 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
-	void Draw(const int32_t indexNum = 1);
+	void Draw(uint32_t indexNum = 1);
 };
 
 

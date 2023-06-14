@@ -13,7 +13,7 @@ void JsonLevelLoader::Initialize()
 	levelData = std::make_unique<LevelData>();
 }
 
-void JsonLevelLoader::LoadJsonFile(std::string fileName)
+void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 {
 	//連結してフルパスを得る
 	const std::string fullpath = kDefaultBaseDirectory + fileName + kExtension;
@@ -67,7 +67,7 @@ void JsonLevelLoader::LoadJsonFile(std::string fileName)
 	}
 }
 
-void JsonLevelLoader::LoadRecursiveChildrenData(nlohmann::json::iterator object, WorldMat* parent)
+void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& object, WorldMat* parent)
 {
 	//要素追加
 	levelData->objects.emplace_back(std::make_unique<LevelData::ObjectData>());

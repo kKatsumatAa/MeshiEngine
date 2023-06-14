@@ -1,12 +1,14 @@
 #include "ConstBuffTransform.h"
 
-ConstBuffTransform::ConstBuffTransform(/*D3D12_RESOURCE_DESC& resDesc,*//* DirectXWrapper& directx*/)
+ConstBuffTransform::ConstBuffTransform()
 {
 
 }
 
-void ConstBuffTransform::Initialize(DirectXWrapper& directx)
+void ConstBuffTransform::Initialize()
 {
+	HRESULT result = {};
+
 	//05_02
 	{
 		//ヒープ設定
@@ -23,17 +25,17 @@ void ConstBuffTransform::Initialize(DirectXWrapper& directx)
 		cbResourceDesc.SampleDesc.Count = 1;
 		cbResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
-		directx.result = directx.GetDevice()->CreateCommittedResource(
+		result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
 			&cbHeapProp,//ヒープ設定
 			D3D12_HEAP_FLAG_NONE,
 			&cbResourceDesc,//リソース設定
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
 			IID_PPV_ARGS(&constBuffTransform));
-		assert(SUCCEEDED(directx.result));
+		assert(SUCCEEDED(result));
 
 	}
 	//定数バッファのマッピング
-	directx.result = constBuffTransform->Map(0, nullptr, (void**)&constMapTransform);//マッピング
-	assert(SUCCEEDED(directx.result));
+	result = constBuffTransform->Map(0, nullptr, (void**)&constMapTransform);//マッピング
+	assert(SUCCEEDED(result));
 }

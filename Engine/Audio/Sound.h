@@ -72,7 +72,7 @@ public://メンバ関数
 /// <param name="filename"></param>
 /// <param name="isConvert"></param>
 /// <returns></returns>
-	static void LoadWave(const std::string& filename, const bool& isConvert);
+	static void LoadWave(const std::string& filename, bool isConvert);
 	/// <summary>
 	/// 解放処理
 	/// </summary>
@@ -87,7 +87,7 @@ public://メンバ関数
 	/// <param name="">wavファイル名</param>
 	/// <param name="volume">音量</param>
 	/// <param name="Loop">ループ再生</param>
-	static void PlayWave(const std::string& filename, const float& volume = 1.0f, const bool& Loop = false);
+	static void PlayWave(const std::string& filename, float volume = 1.0f, bool Loop = false);
 
 	static void StopWave(const std::string& filename);
 

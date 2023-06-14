@@ -87,12 +87,12 @@ void Vec3xM4andDivisionW(Vec3& v, const M4& m4, const bool w)
 
 //---------------------------------------------
 
-float AngletoRadi(const float& angle)
+float AngletoRadi(float angle)
 {
 	return angle * pi / 180;
 }
 
-float RaditoAngle(const float& radian)
+float RaditoAngle(float radian)
 {
 	return radian / pi * 180;
 }
@@ -153,7 +153,7 @@ float EaseOut(float t)
 	return sin((t * 3.14f) / 2.0f);
 }
 
-bool CollisionCircleCircle(const Vec3& pos1, const float& r1, const Vec3& pos2, const float& r2)
+bool CollisionCircleCircle(const Vec3& pos1, float r1, const Vec3& pos2, float r2)
 {
 	if (pow(pos2.x - pos1.x, 2) + pow(pos2.y - pos1.y, 2) + pow(pos2.z - pos1.z, 2)
 		<= pow(r1 + r2, 2))

@@ -199,8 +199,8 @@ void ParticleManager::Draw(uint64_t texHandle)
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(drawNum, 1, 0, 0);
 }
 
-void ParticleManager::Add(int32_t life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale
-	, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_rot, float end_rot)
+void ParticleManager::Add(int32_t life, const XMFLOAT3& position, const XMFLOAT3& velocity, const XMFLOAT3& accel, float start_scale, float end_scale
+	, const XMFLOAT4& start_color, const XMFLOAT4& end_color, float start_rot, float end_rot)
 {
 	// リストに要素を追加
 	particles.emplace_front();
@@ -517,7 +517,7 @@ void ParticleManager::UpdateMatrix(ViewMat* view, ProjectionMat* projection)
 #pragma endregion
 }
 
-void ParticleManager::GenerateRandomParticle(int32_t num, int32_t lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale, XMFLOAT4 start_color, XMFLOAT4 end_color)
+void ParticleManager::GenerateRandomParticle(int32_t num, int32_t lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale, const XMFLOAT4& start_color, const XMFLOAT4& end_color)
 {
 	for (int32_t i = 0; i < num; i++)
 	{

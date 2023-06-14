@@ -68,7 +68,7 @@ public: // メンバ関数
 	/// 視点座標の設定
 	/// </summary>
 	/// <param name="eye">座標</param>
-	inline void SetEye(Vec3 eye) {
+	inline void SetEye(const Vec3& eye) {
 		this->viewMat.eye = eye; viewDirty = true;
 	}
 
@@ -84,7 +84,7 @@ public: // メンバ関数
 	/// 注視点座標の設定
 	/// </summary>
 	/// <param name="target">座標</param>
-	inline void SetTarget(Vec3 target) {
+	inline void SetTarget(const Vec3& target) {
 		this->viewMat.target = target; viewDirty = true;
 	}
 
@@ -100,7 +100,7 @@ public: // メンバ関数
 	/// 上方向ベクトルの設定
 	/// </summary>
 	/// <param name="up">上方向ベクトル</param>
-	inline void SetUp(Vec3 up) {
+	inline void SetUp(const Vec3& up) {
 		this->viewMat.up = up; viewDirty = true;
 	}
 

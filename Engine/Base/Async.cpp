@@ -20,7 +20,7 @@ void Async::AsyncLoad(std::function<void()> p)
     SetLockFlag(true);
 }
 
-void Async::StartAsyncFunction(std::function<void()> p)
+void Async::StartAsyncFunction(const std::function<void()>& p)
 {
     //非同期処理スタート
     th1 = std::thread([=] { AsyncLoad(p); });

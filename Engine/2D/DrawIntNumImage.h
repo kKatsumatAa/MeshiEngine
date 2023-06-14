@@ -33,7 +33,7 @@ private:
 public:
 	void Initialize(uint64_t texhandle);
 
-	void SetNum(int32_t num, Vec2 pos, Vec2 sizeUV, Vec2 numImageSize, float scale, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f });
+	void SetNum(int32_t num,const Vec2& pos, const Vec2& sizeUV, const Vec2& numImageSize, float scale, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f });
 
 	void Draw();
 };

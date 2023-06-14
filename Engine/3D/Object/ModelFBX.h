@@ -91,7 +91,7 @@ private:
 	//頂点データ配列
 	std::vector<VertexPosNormalUvSkin> vertices;
 	//頂点インデックス配列
-	std::vector<unsigned short> indices;
+	std::vector<uint16_t> indices;
 
 	//頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
@@ -133,7 +133,7 @@ public:
 	void CreateBuffers();
 
 	//描画
-	void Draw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
+	void Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
 
 public:
 	//getter

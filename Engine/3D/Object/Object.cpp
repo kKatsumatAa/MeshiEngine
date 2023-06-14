@@ -101,6 +101,8 @@ struct weightMap
 
 void DrawInitialize()
 {
+	HRESULT result = {};
+
 	//テクスチャ用のデスクリプタヒープ初期化
 	TextureManager::GetInstance().InitializeDescriptorHeap();
 
@@ -182,8 +184,8 @@ void DrawInitialize()
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &Object::effectFlagsBuff);
 		//定数バッファのマッピング
-		DirectXWrapper::GetInstance().result = Object::effectFlagsBuff->Map(0, nullptr, (void**)&Object::mapEffectFlagsBuff);//マッピング
-		assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+		result = Object::effectFlagsBuff->Map(0, nullptr, (void**)&Object::mapEffectFlagsBuff);//マッピング
+		assert(SUCCEEDED(result));
 	}
 }
 
@@ -274,10 +276,12 @@ void Object::SetIs2D(bool is2D)
 
 Object::Object()
 {
+	HRESULT result = {};
+
 	Object::Initialize();
 
 	//トランスフォーム行列
-	cbt.Initialize(DirectXWrapper::GetInstance());
+	cbt.Initialize();
 
 	//マテリアルバッファ（色）
 	//ヒープ設定
@@ -290,8 +294,8 @@ Object::Object()
 	//定数バッファの生成
 	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial);
 	//定数バッファのマッピング
-	DirectXWrapper::GetInstance().result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
-	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
+	assert(SUCCEEDED(result));
 
 	if (this->constBuffSkin.Get() == nullptr)
 	{
@@ -485,8 +489,8 @@ void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTra
 
 }
 
-void Object::Update(const int32_t& indexNum, const int32_t& pipelineNum, const uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
-	Model* model, ModelFBX* fbx, const bool& primitiveMode)
+void Object::Update(int32_t indexNum, int32_t pipelineNum, const uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
+	Model* model, ModelFBX* fbx, bool primitiveMode)
 {
 	//行列送信
 	SendingMat(indexNum);
@@ -589,7 +593,7 @@ void Object::Update(const int32_t& indexNum, const int32_t& pipelineNum, const u
 }
 
 void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-	ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const uint64_t textureHandle, const int32_t& pipelineNum)
+	ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -600,7 +604,7 @@ void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 }
 
 void Object::DrawBox(ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
-	XMFLOAT4 color, const uint64_t textureHandle, const int32_t& pipelineNum)
+	const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -610,9 +614,9 @@ void Object::DrawBox(ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, 
 	Update(BOX, pipelineNum, textureHandle, cbt);
 }
 
-void Object::DrawBoxSprite(const Vec3& pos, const float& scale,
-	XMFLOAT4 color, const uint64_t textureHandle, const Vec2& ancorUV, const bool& isReverseX, const bool& isReverseY,
-	float rotation, const int32_t& pipelineNum)
+void Object::DrawBoxSprite(const Vec3& pos, float scale,
+	const XMFLOAT4& color, const uint64_t textureHandle, const Vec2& ancorUV, bool isReverseX, bool isReverseY,
+	float rotation, int32_t pipelineNum)
 {
 	if (sprite_.get() == nullptr)
 	{
@@ -631,9 +635,9 @@ void Object::Draw()
 
 
 
-void Object::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	XMFLOAT4 color, const uint64_t textureHandle, bool isPosLeftTop, const bool& isReverseX, const bool& isReverseY,
-	float rotation, const int32_t& pipelineNum)
+void Object::DrawClippingBoxSprite(const Vec3& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+	const XMFLOAT4& color, const uint64_t textureHandle, bool isPosLeftTop, bool isReverseX, bool isReverseY,
+	float rotation, int32_t pipelineNum)
 {
 	if (sprite_.get() == nullptr)
 	{
@@ -647,7 +651,7 @@ void Object::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, cons
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
 
-void Object::DrawCube3D(ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const uint64_t textureHandle, const int32_t& pipelineNum)
+void Object::DrawCube3D(ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -669,7 +673,7 @@ void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  ViewMat* view, Pr
 }
 
 void Object::DrawCircle(ViewMat* view, ProjectionMat* projection,
-	XMFLOAT4 color, const uint64_t textureHandle, const int32_t& pipelineNum)
+	const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -680,7 +684,7 @@ void Object::DrawCircle(ViewMat* view, ProjectionMat* projection,
 }
 
 void Object::DrawSphere(ViewMat* view, ProjectionMat* projection,
-	XMFLOAT4 color, const uint64_t textureHandle, const int32_t& pipelineNum)
+	const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -691,7 +695,7 @@ void Object::DrawSphere(ViewMat* view, ProjectionMat* projection,
 }
 
 void Object::DrawModel(ViewMat* view, ProjectionMat* projection,
-	Model* model, XMFLOAT4 color, const int32_t& pipelineNum)
+	Model* model, const XMFLOAT4& color, int32_t pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -701,7 +705,7 @@ void Object::DrawModel(ViewMat* view, ProjectionMat* projection,
 	Update(MODEL, pipelineNum, NULL, cbt, model);
 }
 
-void Object::DrawFBX(ViewMat* view, ProjectionMat* projection, ModelFBX* modelFbx, XMFLOAT4 color, const int32_t& pipelineNum)
+void Object::DrawFBX(ViewMat* view, ProjectionMat* projection, ModelFBX* modelFbx, const XMFLOAT4& color, int32_t pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -712,12 +716,14 @@ void Object::DrawFBX(ViewMat* view, ProjectionMat* projection, ModelFBX* modelFb
 }
 
 void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
-	ID3DBlob* vsBlob, ID3DBlob* psBlob, const int32_t& indexNum)
+	ID3DBlob* vsBlob, ID3DBlob* psBlob, int32_t indexNum)
 {
+	HRESULT result = {};
+
 	if (indexNum == SPRITE)
 	{
 		// 頂点シェーダの読み込みとコンパイル
-		DirectXWrapper::GetInstance().result = D3DCompileFromFile(
+		result = D3DCompileFromFile(
 			L"Resources/shaders/SpriteVS.hlsl", // シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
@@ -727,10 +733,10 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 			&vsBlob, &errorBlob);
 
 		// エラーなら
-		Error(FAILED(DirectXWrapper::GetInstance().result));
+		Error(FAILED(result));
 
 		// ピクセルシェーダの読み込みとコンパイル
-		DirectXWrapper::GetInstance().result = D3DCompileFromFile(
+		result = D3DCompileFromFile(
 			L"Resources/shaders/SpritePS.hlsl", // シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
@@ -740,12 +746,12 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 			&psBlob, &errorBlob);
 
 		// エラーなら
-		Error(FAILED(DirectXWrapper::GetInstance().result));
+		Error(FAILED(result));
 	}
 	else if (indexNum == MODEL || indexNum == FBX)
 	{
 		// 頂点シェーダの読み込みとコンパイル
-		DirectXWrapper::GetInstance().result = D3DCompileFromFile(
+		result = D3DCompileFromFile(
 			L"Resources/shaders/OBJVertexShader.hlsl", // シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
@@ -755,10 +761,10 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 			&vsBlob, &errorBlob);
 
 		// エラーなら
-		Error(FAILED(DirectXWrapper::GetInstance().result));
+		Error(FAILED(result));
 
 		// ピクセルシェーダの読み込みとコンパイル
-		DirectXWrapper::GetInstance().result = D3DCompileFromFile(
+		result = D3DCompileFromFile(
 			L"Resources/shaders/OBJPixelShader.hlsl", // シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
@@ -768,12 +774,12 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 			&psBlob, &errorBlob);
 
 		// エラーなら
-		Error(FAILED(DirectXWrapper::GetInstance().result));
+		Error(FAILED(result));
 	}
 	else
 	{
 		// 頂点シェーダの読み込みとコンパイル
-		DirectXWrapper::GetInstance().result = D3DCompileFromFile(
+		result = D3DCompileFromFile(
 			L"Resources/shaders/BasicVS.hlsl", // シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
@@ -783,10 +789,10 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 			&vsBlob, &errorBlob);
 
 		// エラーなら
-		Error(FAILED(DirectXWrapper::GetInstance().result));
+		Error(FAILED(result));
 
 		// ピクセルシェーダの読み込みとコンパイル
-		DirectXWrapper::GetInstance().result = D3DCompileFromFile(
+		result = D3DCompileFromFile(
 			L"Resources/shaders/BasicPS.hlsl", // シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
@@ -796,7 +802,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 			&psBlob, &errorBlob);
 
 		// エラーなら
-		Error(FAILED(DirectXWrapper::GetInstance().result));
+		Error(FAILED(result));
 	}
 
 	// シェーダーの設定
@@ -870,12 +876,12 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	rootSignatureDesc.NumStaticSamplers = 1;
 	// ルートシグネチャのシリアライズ
 	ComPtr<ID3DBlob> rootSigBlob = nullptr;
-	DirectXWrapper::GetInstance().result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
+	result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
 		&rootSigBlob, &errorBlob);
-	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
-	DirectXWrapper::GetInstance().result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
+	assert(SUCCEEDED(result));
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(rootSig));
-	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+	assert(SUCCEEDED(result));
 	// パイプラインにルートシグネチャをセット
 	pipelineDesc.pRootSignature = *rootSig;
 
@@ -890,11 +896,11 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 		pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
 	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 
-	DirectXWrapper::GetInstance().result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(pipelineState));
-	//assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(pipelineState));
+	//assert(SUCCEEDED(result));
 }
 
-void Blend(const D3D12_BLEND_OP& blendMode, const bool& Inversion, const bool& Translucent)
+void Blend(const D3D12_BLEND_OP& blendMode, bool Inversion, bool Translucent)
 {
 	//共通設定
 	D3D12_RENDER_TARGET_BLEND_DESC& blendDesc = pipelineDesc.BlendState.RenderTarget[0];
@@ -947,7 +953,7 @@ void SetNormDigitalMat(XMMATRIX& mat)
 	mat.r[3].m128_f32[1] = 1.0f;
 }
 
-void Error(const bool& filed)
+void Error(bool filed)
 {
 	if (filed)
 	{

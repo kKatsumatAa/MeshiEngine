@@ -63,7 +63,7 @@ public:
 	//球体
 	Vertex verticesSphere[2 + 34 * 36];
 
-	unsigned short indicesSphere[PAPA * 36];
+	uint16_t indicesSphere[PAPA * 36];
 
 
 public:
@@ -78,29 +78,29 @@ public:
 	void InitializeSphere();
 
 	//Drawに必要なコマンド
-	void DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCount, Vertex* vertex, D3D12_PRIMITIVE_TOPOLOGY primitiveTopology,
-		D3D12_VERTEX_BUFFER_VIEW buffView, D3D12_INDEX_BUFFER_VIEW ibView, int32_t indicesCount,
-		std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
+	void DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCount, Vertex* vertex, const D3D12_PRIMITIVE_TOPOLOGY& primitiveTopology,
+		const D3D12_VERTEX_BUFFER_VIEW& buffView, const D3D12_INDEX_BUFFER_VIEW& ibView, int32_t indicesCount,
+		const std::function<void()>& setRootParam,const std::function<void()>& setMaterialLightTex);
 
-	void TriangleDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
-	void BoxDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
-	void CircleDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
-	void CubeDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
-	void LineDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
-	void SphereDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
+	void TriangleDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	void BoxDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	void CircleDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	void CubeDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	void LineDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	void SphereDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
 };
 
 
-static unsigned short indicesBox[6] =
+static uint16_t indicesBox[6] =
 {
 	0,1,2,//三角形1つ目
 	2,1,3,//三角形2つ目
 };
-static unsigned short indicesTriangle[3] =
+static uint16_t indicesTriangle[3] =
 {
 	0,1,2//三角形2つ目
 };
-static unsigned short indicesCube[36] =
+static uint16_t indicesCube[36] =
 {
 	//前
 	0,1,2,//三角形1つ目
@@ -121,7 +121,7 @@ static unsigned short indicesCube[36] =
 	22,21,20,//三角形1つ目
 	23,21,22,//三角形2つ目
 };
-static unsigned short indicesCircle[] =
+static uint16_t indicesCircle[] =
 {
 	2,1,0,
 	3,2,0,
@@ -147,7 +147,7 @@ static unsigned short indicesCircle[] =
 	23,22,0,
 };
 
-static unsigned short indicesLine[2] =
+static uint16_t indicesLine[2] =
 {
 	0,1//三角形2つ目
 };

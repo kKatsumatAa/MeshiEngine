@@ -26,7 +26,7 @@ public:
 	/// </summary>
 	virtual void Update() = 0;
 
-	inline CollisionShapeType GetShapeType() { return shapeType; }
+	inline const CollisionShapeType& GetShapeType() { return shapeType; }
 
 	//”»’è‚ð—LŒø‚É‚·‚é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO
 	inline void SetIsValid(bool isValid) { this->isValid = isValid; }

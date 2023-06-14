@@ -44,8 +44,8 @@ public:
 	void Initialize();
 
 	//jsonファイル読み込み
-	void LoadJsonFile(std::string fileName);
+	void LoadJsonFile(const std::string& fileName);
 
 	//再帰的に子供を読み込み
-	void LoadRecursiveChildrenData(nlohmann::json::iterator object, WorldMat* worldMat = nullptr);
+	void LoadRecursiveChildrenData(const nlohmann::json::iterator& object, WorldMat* worldMat = nullptr);
 };

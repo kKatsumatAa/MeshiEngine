@@ -186,7 +186,7 @@ void FbxLoader::ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh)
 void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh)
 {
 	std::vector<ModelFBX::VertexPosNormalUvSkin>& vertices = model->vertices;
-	std::vector<unsigned short>& indices = model->indices;
+	std::vector<uint16_t>& indices = model->indices;
 
 	//1ファイルに複数メッシュのモデルは非対応
 	assert(indices.size() == 0);

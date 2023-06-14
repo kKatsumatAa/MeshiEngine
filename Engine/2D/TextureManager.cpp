@@ -41,13 +41,15 @@ TextureManager& TextureManager::GetInstance()
 
 void TextureManager::InitializeDescriptorHeap()
 {
+	HRESULT result = {};
+
 	//設定をもとにSRV用デスクリプタヒープを生成
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.NumDescriptors = kMaxSRVCount;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダーから見えるように
 	//descは設定
-	DirectXWrapper::GetInstance().result = DirectXWrapper::GetInstance().GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
-	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
+	assert(SUCCEEDED(result));
 
 
 	//デスクリプタレンジの設定
@@ -63,6 +65,8 @@ void TextureManager::InitializeDescriptorHeap()
 void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 {
 	assert(count <= srvCount - 1);
+
+	HRESULT result = {};
 
 	//読み込まれているかどうか
 	char namec[128] = {};
@@ -84,20 +88,20 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 	//WICのテクスチャのロード
-	DirectXWrapper::GetInstance().result = LoadFromWICFile(
+	result = LoadFromWICFile(
 		name,
 		WIC_FLAGS_NONE,
 		&metadata, scratchImg
 	);
 
-	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+	assert(SUCCEEDED(result));
 
 	ScratchImage mipChain{};
 	//mipmap生成
-	DirectXWrapper::GetInstance().result = GenerateMipMaps(
+	result = GenerateMipMaps(
 		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
 		TEX_FILTER_DEFAULT, 0, mipChain);
-	if (SUCCEEDED(DirectXWrapper::GetInstance().result))
+	if (SUCCEEDED(result))
 	{
 		scratchImg = std::move(mipChain);
 		metadata = scratchImg.GetMetadata();
@@ -105,8 +109,6 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 	//読み込んだディフューズテクスチャをSRGBとして扱う
 	metadata.format = MakeSRGB(metadata.format);
 
-
-	HRESULT result;
 
 	//コピー先用
 	// ヒープの設定

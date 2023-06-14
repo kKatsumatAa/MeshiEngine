@@ -31,10 +31,10 @@ public:
 	Vec4& operator+=(const Vec4& other);
 	Vec4 operator-(const Vec4& other);
 	Vec4& operator-=(const Vec4& other);
-	Vec4 operator*(const float& other);
-	Vec4& operator*=(const float& other);
-	Vec4 operator/(const float& other);
-	Vec4& operator/=(const float& other);
+	Vec4 operator*(float other);
+	Vec4& operator*=(float other);
+	Vec4 operator/(float other);
+	Vec4& operator/=(float other);
 };
 
 //二項演算子オーバーロード

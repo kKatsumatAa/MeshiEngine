@@ -72,7 +72,7 @@ public://ŠÖ”
 	void Update();
 
 	//ˆÚ“®‚ÌüŒ`•âŠ®‚ğn‚ß‚é
-	void BegineLerpUsingCamera(Vec3 startEye, Vec3 endEye, Vec3 startTarget, Vec3 endTarget, Vec3 startUp, Vec3 endUp, int32_t time, Camera* afterCamera = nullptr, int32_t afterCount = 0);
+	void BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endEye, const Vec3& startTarget, const Vec3& endTarget, const Vec3& startUp, const Vec3& endUp, int32_t time, Camera* afterCamera = nullptr, int32_t afterCount = 0);
 
 
 	CameraManager& operator=(const CameraManager& obj);

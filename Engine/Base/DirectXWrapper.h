@@ -43,6 +43,8 @@ private:
 
 	float clearColor[4] = { 0,0,0,0 };
 
+	//
+	HRESULT result;
 
 private:
 	DirectXWrapper();
@@ -61,13 +63,7 @@ private:
 	//FPS固定更新
 	void UpdateFixFPS();
 
-	//ガラス
-	bool CreateEffectBufferAndView(const wchar_t* fileName);
-
 public:
-	//
-	HRESULT result;
-
 	void Initialize();
 
 
@@ -106,7 +102,7 @@ public:
 //画像のロード（引数にバッファ設定）
 void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuff);
 
-void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const uint32_t& size);
+void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, uint32_t size);
 
 void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource,
 	ID3D12Resource** buff);

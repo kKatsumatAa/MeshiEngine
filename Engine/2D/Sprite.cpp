@@ -39,10 +39,12 @@ void SpriteCommonBeginDraw(PipeLineSet* pipelineSet)
 
 void Sprite::SpriteDraw()
 {
+	HRESULT result = {};
+
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 	VertexSprite* vertMap = nullptr;
-	DirectXWrapper::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	assert(SUCCEEDED(result));
 	// 全頂点に対して
 	for (int32_t i = 0; i < 4; i++) {
 		vertMap[i] = vertices[i]; // 座標をコピー
@@ -55,9 +57,9 @@ void Sprite::SpriteDraw()
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }
 
-void Sprite::Update(const Vec3& pos, const float& scale,
-	XMFLOAT4 color, const uint64_t textureHandle, const Vec2& ancorUV,
-	const bool& isReverseX,const bool& isReverseY, float rotation,
+void Sprite::Update(const Vec3& pos, float scale,
+	const XMFLOAT4& color, const uint64_t textureHandle, const Vec2& ancorUV,
+	bool isReverseX,bool isReverseY, float rotation,
 	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
 	//テクスチャを設定していなかったら
@@ -126,9 +128,9 @@ void Sprite::Update(const Vec3& pos, const float& scale,
 	cbt->constMapTransform->cameraPos = cPos;
 }
 
-void Sprite::UpdateClipping(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	XMFLOAT4 color, const uint64_t textureHandle, bool isPosLeftTop,
-	const bool& isReverseX,const bool& isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
+void Sprite::UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+	const XMFLOAT4& color, const uint64_t textureHandle, bool isPosLeftTop,
+	bool isReverseX,bool isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
 	//テクスチャを設定していなかったら
 	uint64_t textureHandle_;

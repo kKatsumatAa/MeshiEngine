@@ -74,7 +74,7 @@ void M4::SetScaleMatrix(const Vec3& v3)
 	};
 }
 
-void M4::SetRotationMatrix(const float& angle, const char& axis)
+void M4::SetRotationMatrix(float angle, char axis)
 {
 	if (axis == 'x' || axis == 'X')
 	{

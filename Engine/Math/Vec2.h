@@ -29,11 +29,11 @@ public:
 	Vec2  operator +();
 	Vec2& operator +=(const Vec2& other);//複合演算子(+)
 
-	Vec2  operator *(const float& other);
-	Vec2& operator *=(const float& other);//複合演算子(*)
+	Vec2  operator *(float other);
+	Vec2& operator *=(float other);//複合演算子(*)
 
-	Vec2  operator /(const float& other);
-	Vec2& operator /=(const float& other);//複合演算子(/)
+	Vec2  operator /(float other);
+	Vec2& operator /=(float other);//複合演算子(/)
 };
 
 //二項演算子オーバーロード

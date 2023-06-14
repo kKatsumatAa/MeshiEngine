@@ -25,7 +25,7 @@ public:
 	void SetLockFlag(bool islock);
 
 	//”ñ“¯Šú‚ğŠJn
-	void StartAsyncFunction(std::function<void()> p);
+	void StartAsyncFunction(const std::function<void()>& p);
 
 	//lockFlag‚ª‚½‚Á‚½‚çâ‘Î‚ÉÀs‚·‚é‚±‚Æ
 	void EndThread();

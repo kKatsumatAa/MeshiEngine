@@ -67,7 +67,7 @@ Vec2& Vec2::operator+=(const Vec2& other)
 
 
 
-Vec2 Vec2::operator*(const float& other)
+Vec2 Vec2::operator*(float other)
 {
 	Vec2 v;
 	v.x = x * other;
@@ -76,7 +76,7 @@ Vec2 Vec2::operator*(const float& other)
 	return v;
 }
 
-Vec2& Vec2::operator*=(const float& other)
+Vec2& Vec2::operator*=(float other)
 {
 	*this = *this * other;//thisはアドレスなので*つける
 
@@ -85,7 +85,7 @@ Vec2& Vec2::operator*=(const float& other)
 
 
 
-Vec2 Vec2::operator/(const float& other)
+Vec2 Vec2::operator/(float other)
 {
 	Vec2 v;
 	v.x = x / other;
@@ -94,7 +94,7 @@ Vec2 Vec2::operator/(const float& other)
 	return v;
 }
 
-Vec2& Vec2::operator/=(const float& other)
+Vec2& Vec2::operator/=(float other)
 {
 	*this = *this / other;//thisはアドレスなので*つける
 

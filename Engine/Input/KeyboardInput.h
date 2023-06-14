@@ -9,8 +9,8 @@ private:
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	//全キーの入力状態を取得する
-	BYTE key[256] = {};
-	BYTE oldkey[256] = {};
+	byte key[256] = {};
+	byte oldkey[256] = {};
 	HRESULT result;
 
 	//キーボードデバイスの生成
@@ -34,19 +34,19 @@ public:
 
 
 	//トリガー用
-	bool KeyPush(BYTE keys)
+	bool KeyPush(byte keys)
 	{
 		return key[keys];
 	}
-	bool KeyRelease(BYTE keys)
+	bool KeyRelease(byte keys)
 	{
 		return !key[keys];
 	}
-	bool KeyTrigger(BYTE keys)
+	bool KeyTrigger(byte keys)
 	{
 		return (key[keys] && !oldkey[keys]);
 	}
-	bool KeyReleaseTrigger(BYTE keys)
+	bool KeyReleaseTrigger(byte keys)
 	{
 		return (!key[keys] && oldkey[keys]);
 	}

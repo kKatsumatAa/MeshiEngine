@@ -17,6 +17,8 @@ void Primitive::Initialize()
 
 void Primitive::InitializeTriangle()
 {
+	HRESULT result = {};
+
 	float angle = pi * 2.0f + pi * 2.0f / 3.0f * 2.0f;
 	float angle2 = pi * 2.0f;
 	float angle3 = pi * 2.0f + pi * 2.0f / 3.0f;
@@ -58,7 +60,7 @@ void Primitive::InitializeTriangle()
 		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
-		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
 		for (int32_t i = 0; i < _countof(indicesTriangle); i++)
 		{
@@ -79,9 +81,9 @@ void Primitive::InitializeTriangle()
 		for (int32_t i = 0; i < _countof(indicesTriangle) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			unsigned short index0 = indicesTriangle[i * 3 + 0];
-			unsigned short index1 = indicesTriangle[i * 3 + 1];
-			unsigned short index2 = indicesTriangle[i * 3 + 2];
+			uint16_t index0 = indicesTriangle[i * 3 + 0];
+			uint16_t index1 = indicesTriangle[i * 3 + 1];
+			uint16_t index2 = indicesTriangle[i * 3 + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesTriangle[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesTriangle[index1].pos);
@@ -101,6 +103,8 @@ void Primitive::InitializeTriangle()
 
 void Primitive::InitializeBox()
 {
+	HRESULT result = {};
+
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
 	sizeVB = static_cast<uint32_t>(sizeof(verticesBox[0]) * _countof(verticesBox));
 
@@ -133,7 +137,7 @@ void Primitive::InitializeBox()
 		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
-		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
 		for (int32_t i = 0; i < _countof(indicesBox); i++)
 		{
@@ -154,9 +158,9 @@ void Primitive::InitializeBox()
 		for (int32_t i = 0; i < _countof(indicesBox) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			unsigned short index0 = indicesBox[i * 3 + 0];
-			unsigned short index1 = indicesBox[i * 3 + 1];
-			unsigned short index2 = indicesBox[i * 3 + 2];
+			uint16_t index0 = indicesBox[i * 3 + 0];
+			uint16_t index1 = indicesBox[i * 3 + 1];
+			uint16_t index2 = indicesBox[i * 3 + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesBox[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesBox[index1].pos);
@@ -176,6 +180,8 @@ void Primitive::InitializeBox()
 
 void Primitive::InitializeCircle()
 {
+	HRESULT result = {};
+
 	verticesCircle[0].pos = { 0.0f,0.0f,0.0f };
 
 	static float count = _countof(verticesCircle) - 2;//中心点と初期の点はカウントしない
@@ -217,7 +223,7 @@ void Primitive::InitializeCircle()
 		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
-		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
 		for (int32_t i = 0; i < _countof(indicesCircle); i++)
 		{
@@ -238,9 +244,9 @@ void Primitive::InitializeCircle()
 		for (int32_t i = 0; i < _countof(indicesCircle) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			unsigned short index0 = indicesCircle[i * 3 + 0];
-			unsigned short index1 = indicesCircle[i * 3 + 1];
-			unsigned short index2 = indicesCircle[i * 3 + 2];
+			uint16_t index0 = indicesCircle[i * 3 + 0];
+			uint16_t index1 = indicesCircle[i * 3 + 1];
+			uint16_t index2 = indicesCircle[i * 3 + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesCircle[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesCircle[index1].pos);
@@ -260,6 +266,8 @@ void Primitive::InitializeCircle()
 
 void Primitive::InitializeCube()
 {
+	HRESULT result = {};
+
 	{
 		//手前
 		verticesCube[0] = { {-1.0f,-1.0f,-1.0f},{verticesCube[0].normal},{0.0f,1.0f} };//左下
@@ -325,7 +333,7 @@ void Primitive::InitializeCube()
 		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
-		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
 		for (int32_t i = 0; i < _countof(indicesCube); i++)
 		{
@@ -348,9 +356,9 @@ void Primitive::InitializeCube()
 		for (int32_t i = 0; i < _countof(indicesCube) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			unsigned short index0 = indicesCube[i * 3 + 0];
-			unsigned short index1 = indicesCube[i * 3 + 1];
-			unsigned short index2 = indicesCube[i * 3 + 2];
+			uint16_t index0 = indicesCube[i * 3 + 0];
+			uint16_t index1 = indicesCube[i * 3 + 1];
+			uint16_t index2 = indicesCube[i * 3 + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesCube[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesCube[index1].pos);
@@ -370,6 +378,8 @@ void Primitive::InitializeCube()
 
 void Primitive::InitializeLine()
 {
+	HRESULT result = {};
+
 	verticesLine[0] = { {-1.0,0,0},{verticesLine[0].normal},{0.0f,1.0f} };//左下
 	verticesLine[1] = { {1.0,0,0},  {verticesLine[1].normal},{0.5f,0.0f} };//上
 
@@ -386,7 +396,7 @@ void Primitive::InitializeLine()
 		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
-		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
 		for (int32_t i = 0; i < _countof(indicesLine); i++)
 		{
@@ -424,6 +434,8 @@ void Primitive::InitializeLine()
 
 void Primitive::InitializeSphere()
 {
+	HRESULT result = {};
+
 	//球体用
 	{
 		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
@@ -596,7 +608,7 @@ void Primitive::InitializeSphere()
 		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
-		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
 		for (int32_t i = 0; i < _countof(indicesSphere); i++)
 		{
@@ -618,9 +630,9 @@ void Primitive::InitializeSphere()
 			for (int32_t i = 0; i < _countof(indicesSphere) / 3; i++)
 			{//三角形一つごとに計算
 				//三角形のインデックスを取り出して、一時的な変数に入れる
-				unsigned short index0 = indicesSphere[i * 3 + 0];
-				unsigned short index1 = indicesSphere[i * 3 + 1];
-				unsigned short index2 = indicesSphere[i * 3 + 2];
+				uint16_t index0 = indicesSphere[i * 3 + 0];
+				uint16_t index1 = indicesSphere[i * 3 + 1];
+				uint16_t index2 = indicesSphere[i * 3 + 2];
 				//三角形を構成する頂点座標をベクトルに代入
 				XMVECTOR p0 = XMLoadFloat3(&verticesSphere[index0].pos);
 				XMVECTOR p1 = XMLoadFloat3(&verticesSphere[index1].pos);
@@ -639,14 +651,16 @@ void Primitive::InitializeSphere()
 	}
 }
 
-void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCount, Vertex* vertex, D3D12_PRIMITIVE_TOPOLOGY primitiveTopology,
-	D3D12_VERTEX_BUFFER_VIEW buffView, D3D12_INDEX_BUFFER_VIEW ibView, int32_t indicesCount,
-	std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCount, Vertex* vertex, const D3D12_PRIMITIVE_TOPOLOGY& primitiveTopology,
+	const D3D12_VERTEX_BUFFER_VIEW& buffView, const D3D12_INDEX_BUFFER_VIEW& ibView, int32_t indicesCount,
+	const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
+	HRESULT result = {};
+
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 	Vertex* vertMap = nullptr;
-	DirectXWrapper::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	assert(SUCCEEDED(result));
 	// 全頂点に対して
 	for (int32_t i = 0; i < vertexCount; i++) {
 
@@ -671,7 +685,7 @@ void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCou
 	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((uint32_t)indicesCount, 1, 0, 0, 0); // 全ての頂点を使って描画
 }
 
-void Primitive::TriangleDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+void Primitive::TriangleDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
 	DrawCommandPrimitive(vertBuffTriangle.Get(), _countof(verticesTriangle), verticesTriangle, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		this->vbTriangleView, this->ibViewTriangle,
@@ -679,7 +693,7 @@ void Primitive::TriangleDraw(std::function<void()>setRootParam, std::function<vo
 		setRootParam, setMaterialLightTex);
 }
 
-void Primitive::BoxDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+void Primitive::BoxDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
 	DrawCommandPrimitive(vertBuffBox.Get(), _countof(verticesBox), verticesBox, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		this->vbBoxView, this->ibViewBox,
@@ -687,7 +701,7 @@ void Primitive::BoxDraw(std::function<void()>setRootParam, std::function<void()>
 		setRootParam, setMaterialLightTex);
 }
 
-void Primitive::CircleDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+void Primitive::CircleDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
 	DrawCommandPrimitive(vertBuffCircle.Get(), _countof(verticesCircle), verticesCircle, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		this->vbCircleView, this->ibViewCircle,
@@ -695,7 +709,7 @@ void Primitive::CircleDraw(std::function<void()>setRootParam, std::function<void
 		setRootParam, setMaterialLightTex);
 }
 
-void Primitive::CubeDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+void Primitive::CubeDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
 	DrawCommandPrimitive(vertBuffCube.Get(), _countof(verticesCube), verticesCube, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		this->vbCubeView, this->ibViewCube,
@@ -703,7 +717,7 @@ void Primitive::CubeDraw(std::function<void()>setRootParam, std::function<void()
 		setRootParam, setMaterialLightTex);
 }
 
-void Primitive::LineDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+void Primitive::LineDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
 	DrawCommandPrimitive(vertBuffLine.Get(), _countof(verticesLine), verticesLine, D3D_PRIMITIVE_TOPOLOGY_LINELIST,
 		this->vbLineView, this->ibViewLine,
@@ -711,7 +725,7 @@ void Primitive::LineDraw(std::function<void()>setRootParam, std::function<void()
 		setRootParam, setMaterialLightTex);
 }
 
-void Primitive::SphereDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+void Primitive::SphereDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
 	DrawCommandPrimitive(vertBuffSphere.Get(), _countof(verticesSphere), verticesSphere, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		this->vbViewSphere, this->ibViewSphere,

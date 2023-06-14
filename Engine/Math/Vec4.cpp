@@ -74,7 +74,7 @@ Vec4& Vec4::operator-=(const Vec4& other)
     return *this;
 }
 
-Vec4 Vec4::operator*(const float& other)
+Vec4 Vec4::operator*(float other)
 {
     Vec4 v = *this;
     v.x *= other;
@@ -84,7 +84,7 @@ Vec4 Vec4::operator*(const float& other)
     return Vec4(v);
 }
 
-Vec4& Vec4::operator*=(const float& other)
+Vec4& Vec4::operator*=(float other)
 {
     this->x *= other;
     this->y *= other;
@@ -93,7 +93,7 @@ Vec4& Vec4::operator*=(const float& other)
     return *this;
 }
 
-Vec4 Vec4::operator/(const float& other)
+Vec4 Vec4::operator/(float other)
 {
     Vec4 v = *this;
     v.x /= other;
@@ -103,7 +103,7 @@ Vec4 Vec4::operator/(const float& other)
     return Vec4(v);
 }
 
-Vec4& Vec4::operator/=(const float& other)
+Vec4& Vec4::operator/=(float other)
 {
     this->x /= other;
     this->y /= other;

@@ -26,7 +26,7 @@ public:
 
 	//行列セット
 	void SetScaleMatrix(const Vec3& v3);
-	void SetRotationMatrix(const float& angle, const char& axis);
+	void SetRotationMatrix(float angle, char axis);
 	void SetTranslationMatrix(const Vec3& v3);
 
 	void SetInverseMatrix();

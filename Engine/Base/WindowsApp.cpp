@@ -3,7 +3,7 @@
 
 
 // imgui専用のウィンドウプロシージャ
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, uint32_t msg, WPARAM wParam,
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam,
 	LPARAM lParam);
 
 

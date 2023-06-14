@@ -81,7 +81,7 @@ public:
 	/// <param name="directoryPath">読み込みディレクトリパス</param>
 	/// <param name="cpuHandle">CPUデスクリプタハンドル</param>
 	/// <param name="gpuHandle">GPUデスクリプタハンドル</param>
-	void LoadTexture(const std::string& directoryPath, CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHandle, CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle);
+	void LoadTexture(const std::string& directoryPath, const CD3DX12_CPU_DESCRIPTOR_HANDLE& cpuHandle, const CD3DX12_GPU_DESCRIPTOR_HANDLE& gpuHandle);
 
 
 	/// <summary>

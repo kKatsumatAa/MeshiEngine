@@ -378,33 +378,32 @@ void DirectXWrapper::PostDraw()
 
 void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuff)
 {
+	HRESULT result = {};
+
 	// 04_03
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 	//WICのテクスチャのロード
-	DirectXWrapper::GetInstance().result = LoadFromWICFile(
+	result = LoadFromWICFile(
 		fileName,
 		WIC_FLAGS_NONE,
 		&metadata, scratchImg
 	);
 
-	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+	assert(SUCCEEDED(result));
 
 	ScratchImage mipChain{};
 	//mipmap生成
-	DirectXWrapper::GetInstance().result = GenerateMipMaps(
+	result = GenerateMipMaps(
 		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
 		TEX_FILTER_DEFAULT, 0, mipChain);
-	if (SUCCEEDED(DirectXWrapper::GetInstance().result))
+	if (SUCCEEDED(result))
 	{
 		scratchImg = std::move(mipChain);
 		metadata = scratchImg.GetMetadata();
 	}
 	//読み込んだディフューズテクスチャをSRGBとして扱う
 	metadata.format = MakeSRGB(metadata.format);
-
-
-	HRESULT result;
 
 	//コピー先用
 	// ヒープの設定
@@ -521,7 +520,7 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 }
 
 //------------------------------------------------------------------------------
-void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const uint32_t& size)
+void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, uint32_t size)
 {
 	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 	resDesc.Width = size;						//頂点データ全体のサイズ
@@ -534,14 +533,16 @@ void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const uint32_t& size)
 
 void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource, ID3D12Resource** buff)
 {
-	DirectXWrapper::GetInstance().result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
+	HRESULT result = {};
+
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
 		&heap,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&resource,//リソース設定
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(buff));
-	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
+	assert(SUCCEEDED(result));
 }
 
 

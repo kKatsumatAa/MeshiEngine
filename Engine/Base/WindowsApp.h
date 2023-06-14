@@ -12,7 +12,7 @@ private:
 	HWND hwnd;
 
 
-	//ウインドウプロシージャ
+	//ウインドウプロシージャ(const &にするとエラー出る)
 	static LRESULT WindowProc(HWND hwnd, uint32_t msg, WPARAM wparam, LPARAM lparam);
 
 	WindowsApp();
@@ -36,6 +36,7 @@ public:
 
 	static WindowsApp& GetInstance();
 
+	//(const &にするとエラー出る)
 	bool MessegeRoop(MSG msg);
 
 	void UnregisterClassA()
@@ -49,7 +50,7 @@ public:
 	//}
 
 	//getter
-	WNDCLASSEX Getw() { return w; }
-	HWND Gethwnd() { return hwnd; }
+	const WNDCLASSEX& Getw() { return w; }
+	const HWND& Gethwnd() { return hwnd; }
 };
 

@@ -26,7 +26,7 @@ public:
 	GausianBuffer();
 
 	void Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle,  ID3D12Device& device,
-		D3D12_DESCRIPTOR_HEAP_DESC heapDesc);
+		const D3D12_DESCRIPTOR_HEAP_DESC& heapDesc);
 
 	std::vector<float> weights;
 

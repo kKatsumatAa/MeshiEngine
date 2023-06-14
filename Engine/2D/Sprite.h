@@ -24,14 +24,14 @@ public:
 	void Initialize();
 	void SpriteDraw();
 
-	void Update(const Vec3& pos, const float& scale,
-		XMFLOAT4 color, const uint64_t textureHandle, const Vec2& ancorUV,
-		const bool& isReverseX,const bool& isReverseY, float rotation,
+	void Update(const Vec3& pos,  float scale,
+		const XMFLOAT4& color, const uint64_t textureHandle, const Vec2& ancorUV,
+		 bool isReverseX, bool isReverseY, float rotation,
 		ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
 
-	void UpdateClipping(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-		XMFLOAT4 color, const uint64_t textureHandle, bool isPosLeftTop,
-		const bool& isReverseX,const bool& isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
+	void UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+		const XMFLOAT4& color, const uint64_t textureHandle, bool isPosLeftTop,
+		 bool isReverseX, bool isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
 };
 
 //ã§í ÇÃèàóù

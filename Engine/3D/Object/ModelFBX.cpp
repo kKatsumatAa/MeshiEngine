@@ -39,13 +39,13 @@ void ModelFBX::CreateBuffers()
 	vbView.StrideInBytes = sizeof(vertices[0]);
 
 	//頂点インデックス全体のサイズ
-	uint32_t sizeIB = static_cast<uint32_t>(sizeof(unsigned short) * indices.size());
+	uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * indices.size());
 	//生成
 	ResourceProperties(resDesc, sizeIB);
 	BuffProperties(heapProp, resDesc, indexBuff.GetAddressOf());
 
 	//インデックスバッファへのデータ転送
-	unsigned short* indexmap = nullptr;
+	uint16_t* indexmap = nullptr;
 	result = indexBuff->Map(0, nullptr, (void**)&indexmap);
 	if (SUCCEEDED(result))
 	{
@@ -59,7 +59,7 @@ void ModelFBX::CreateBuffers()
 	ibView.Format = DXGI_FORMAT_R16_UINT;
 }
 
-void ModelFBX::Draw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
+void ModelFBX::Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
 	// パイプラインステートとルートシグネチャの設定コマンド
 	setRootParam();

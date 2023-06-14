@@ -43,7 +43,7 @@ void Sound::Initialize(const std::string& directoryPath_)
 	}
 }
 
-void Sound::LoadWave(const std::string& filename, const bool& isConvert)
+void Sound::LoadWave(const std::string& filename, bool isConvert)
 {
 	std::string fullpath = directoryPath_ + filename;
 
@@ -148,7 +148,7 @@ void Sound::UnLoad(SoundData* soundData)
 	soundData->wfex = {};
 }
 
-void Sound::PlayWave(const std::string& filename, const float& volume, const bool& Loop)
+void Sound::PlayWave(const std::string& filename, float volume, bool Loop)
 {
 	HRESULT result;
 

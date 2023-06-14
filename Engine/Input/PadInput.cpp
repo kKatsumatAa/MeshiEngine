@@ -194,7 +194,7 @@ Vec2 PadInput::GetRightStickTilt()
 	return Vec2(0, 0);
 }
 
-bool PadInput::GetPushButton(BYTE button)
+bool PadInput::GetPushButton(byte button)
 {
 	if (gamePad != NULL)
 	{
@@ -207,7 +207,7 @@ bool PadInput::GetPushButton(BYTE button)
 	return false;
 }
 
-bool PadInput::GetTriggerButton(BYTE button)
+bool PadInput::GetTriggerButton(byte button)
 {
 	if (gamePad != NULL)
 	{
@@ -220,7 +220,7 @@ bool PadInput::GetTriggerButton(BYTE button)
 	return false;
 }
 
-bool PadInput::GetReleaseTrigger(BYTE button)
+bool PadInput::GetReleaseTrigger(byte button)
 {
 	if (gamePad != NULL)
 	{

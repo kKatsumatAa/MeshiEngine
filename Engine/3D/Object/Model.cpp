@@ -13,7 +13,7 @@ const std::string Model::baseDirectory = "Resources/";
 uint32_t Model::descriptorHandleIncrementSize = 0;
 
 
-void Model::LoadFromOBJInternal(const std::string& folderName, const bool smoothing, const bool& modelType)
+void Model::LoadFromOBJInternal(const std::string& folderName, const bool smoothing, bool modelType)
 {
 	const std::string filename = folderName + ".obj";
 	const std::string directoryPath = baseDirectory + folderName + "/";
@@ -139,7 +139,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 			while (getline(line_stream, index_string, ' ')) {
 				// 頂点インデックス1個分の文字列をストリームに変換して解析しやすくする
 				std::istringstream index_stream(index_string);
-				unsigned short indexPosition, indexNormal, indexTexcoord;
+				uint16_t indexPosition, indexNormal, indexTexcoord;
 				// 頂点番号
 				index_stream >> indexPosition;
 
@@ -158,7 +158,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 					mesh->AddVertex(vertex);
 					// エッジ平滑化用のデータを追加
 					if (smoothing) {
-						mesh->AddSmoothData(indexPosition, (unsigned short)mesh->GetVertexCount() - 1);
+						mesh->AddSmoothData(indexPosition, (uint16_t)mesh->GetVertexCount() - 1);
 					}
 				}
 				else {
@@ -186,7 +186,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 						mesh->AddVertex(vertex);
 						// エッジ平滑化用のデータを追加
 						if (smoothing) {
-							mesh->AddSmoothData(indexPosition, (unsigned short)mesh->GetVertexCount() - 1);
+							mesh->AddSmoothData(indexPosition, (uint16_t)mesh->GetVertexCount() - 1);
 						}
 					}
 				}
@@ -421,7 +421,7 @@ void Model::Initialize(const std::string& foldername, bool smoothing)
 	LoadTextures();
 }
 
-void Model::Draw(const int32_t indexNum)
+void Model::Draw(uint32_t indexNum)
 {
 	// デスクリプタヒープの配列
 	if (TextureManager::GetInstance().srvHeap) {

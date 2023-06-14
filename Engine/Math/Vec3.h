@@ -30,10 +30,10 @@ public:
 	Vec3& operator+=(const Vec3& other);
 	Vec3 operator-();
 	Vec3& operator-=(const Vec3& other);
-	Vec3 operator*(const float& other);
-	Vec3& operator*=(const float& other);
-	Vec3 operator/(const float& other);
-	Vec3& operator/=(const float& other);
+	Vec3 operator*(float other);
+	Vec3& operator*=(float other);
+	Vec3 operator/(float other);
+	Vec3& operator/=(float other);
 };
 
 //二項演算子オーバーロード

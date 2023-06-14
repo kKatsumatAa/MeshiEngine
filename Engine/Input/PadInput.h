@@ -71,8 +71,8 @@ public://ゲッター
 	Vec2 GetRightStickTilt();
 
 	//ボタンが押されているか
-	bool GetPushButton(BYTE button);
-	bool GetTriggerButton(BYTE button);
-	bool GetReleaseTrigger(BYTE button);
+	bool GetPushButton(byte button);
+	bool GetTriggerButton(byte button);
+	bool GetReleaseTrigger(byte button);
 };
 

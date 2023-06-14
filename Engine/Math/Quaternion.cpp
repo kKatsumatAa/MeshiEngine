@@ -167,7 +167,7 @@ Quaternion& Quaternion::operator-=(const Quaternion& other)
 	return *this;
 }
 
-Quaternion Quaternion::operator*(const float& other)
+Quaternion Quaternion::operator*(float other)
 {
 	Quaternion ans = *this;
 	ans.x *= other;
@@ -178,7 +178,7 @@ Quaternion Quaternion::operator*(const float& other)
 	return Quaternion(ans);
 }
 
-Quaternion& Quaternion::operator*=(const float& other)
+Quaternion& Quaternion::operator*=(float other)
 {
 	this->x *= other;
 	this->y *= other;
@@ -188,7 +188,7 @@ Quaternion& Quaternion::operator*=(const float& other)
 	return *this;
 }
 
-Quaternion Quaternion::operator/(const float& other)
+Quaternion Quaternion::operator/(float other)
 {
 	Quaternion ans = *this;
 	ans.x /= other;
@@ -199,7 +199,7 @@ Quaternion Quaternion::operator/(const float& other)
 	return Quaternion(ans);
 }
 
-Quaternion& Quaternion::operator/=(const float& other)
+Quaternion& Quaternion::operator/=(float other)
 {
 	this->x /= other;
 	this->y /= other;

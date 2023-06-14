@@ -65,6 +65,11 @@ void SceneManager::Initialize()
 	draw[5].SetRot({ -3.14f / 2.0f,0,0 });
 	draw[5].CulcWorldMat();
 	
+	draw[6].SetScale({ 1.3f,1.3f,1.3f });
+	draw[6].SetTrans({ -20,0,0 });
+	draw[6].SetRot({ 0,0,0 });
+	draw[6].CulcWorldMat();
+	
 	//インスタンス生成
 	lightManager = std::move(LightManager::Create());
 	//ライト色を設定

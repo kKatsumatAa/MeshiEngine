@@ -14,7 +14,7 @@ private: // エイリアス
 	// DirectX::を省略
 	using XMVECTOR = DirectX::XMVECTOR;
 public:
-	PlaneCollider(XMVECTOR normal = { 0,0,0,0 }, float distance = 1.0f) :
+	PlaneCollider(const XMVECTOR& normal = { 0,0,0,0 }, float distance = 1.0f) :
 		normal(normal), distance(distance)
 	{
 		// 形状をセット
@@ -26,7 +26,7 @@ public:
 	/// </summary>
 	void Update() override;
 
-	inline void SetNormal(DirectX::XMVECTOR normal) { this->normal = normal; }
+	inline void SetNormal(const DirectX::XMVECTOR& normal) { this->normal = normal; }
 	inline void SetDistance(float distance) { this->distance = distance; }
 
 private:

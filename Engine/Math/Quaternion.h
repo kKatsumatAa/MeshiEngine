@@ -57,10 +57,10 @@ public://ÉIÉoÉçââéZéq
 	Quaternion& operator+=(const Quaternion& other);
 	 Quaternion  operator-()const;
 	Quaternion& operator-=(const Quaternion& other);
-	Quaternion  operator*(const float& other);
-	Quaternion& operator*=(const float& other);
-	Quaternion  operator/(const float& other);
-	Quaternion& operator/=(const float& other);
+	Quaternion  operator*(float other);
+	Quaternion& operator*=(float other);
+	Quaternion  operator/(float other);
+	Quaternion& operator/=(float other);
 
 	Quaternion  operator*(const Quaternion& other);
 	Quaternion& operator*=(const Quaternion& other);

@@ -14,8 +14,8 @@ void Vec3xM4andDivisionW(Vec3& v, const M4& m4, const bool w);
 
 //ÉâÉWÉAÉìån
 const float pi = 3.141592f;
-float AngletoRadi(const float& angle);
-float RaditoAngle(const float& radian);
+float AngletoRadi(float angle);
+float RaditoAngle(float radian);
 float GetRadianVec3(const Vec3& v1, const Vec3& v2);
 
 //ê¸å`ï‚äÆ
@@ -30,8 +30,8 @@ float EaseIn(float t);
 float EaseOut(float t);
 
 //è’ìÀ
-bool CollisionCircleCircle(const Vec3& pos1, const float& r1,
-	const Vec3& pos2, const float& r2);
+bool CollisionCircleCircle(const Vec3& pos1, float r1,
+	const Vec3& pos2, float r2);
 
 bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, const float r, const Vec3& pos, const float r2);
 
