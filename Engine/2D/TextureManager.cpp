@@ -13,7 +13,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE TextureManager::srvHandle;
 ComPtr<ID3D12Resource> TextureManager::texBuff[srvCount];
 
 //SRVの最大個数
-const size_t TextureManager::kMaxSRVCount = 2056;
+const int32_t TextureManager::kMaxSRVCount = 2056;
 //デスクリプタヒープの設定
 D3D12_DESCRIPTOR_HEAP_DESC TextureManager::srvHeapDesc;
 
@@ -162,7 +162,7 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 	std::vector<D3D12_SUBRESOURCE_DATA> subResourcesDatas{};
 	subResourcesDatas.resize(metadata.mipLevels);
 
-	for (size_t i = 0; i < subResourcesDatas.size(); i++)
+	for (int32_t i = 0; i < subResourcesDatas.size(); i++)
 	{
 		// 全ミップマップレベルを指定してイメージを取得
 		const Image* img = scratchImg.GetImage(i, 0, 0);

@@ -30,7 +30,7 @@ public:
 	static ComPtr<ID3D12Resource> texBuff[srvCount];
 
 	//SRVの最大個数
-	static const size_t kMaxSRVCount;
+	static const int32_t kMaxSRVCount;
 	//デスクリプタヒープの設定
 	static D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc;
 

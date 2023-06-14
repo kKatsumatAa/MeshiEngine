@@ -119,7 +119,7 @@ Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t)
 }
 
 
-Vec3 SplinePosition(const std::vector<Vec3>& points, size_t startIndex, float t)
+Vec3 SplinePosition(const std::vector<Vec3>& points, int32_t startIndex, float t)
 {
 	//•âŠ®‚·‚×‚«“_‚Ì”
 	size_t n = points.size() - 2;
@@ -317,7 +317,7 @@ float sign(float num)
 	return 0.0f;
 }
 
-size_t AligmentSize(size_t size, size_t aligment)
+int32_t AligmentSize(int32_t size, int32_t aligment)
 {
 	return size + aligment - size % aligment;
 }

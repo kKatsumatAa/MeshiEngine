@@ -639,8 +639,8 @@ void Primitive::InitializeSphere()
 	}
 }
 
-void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, size_t vertexCount, Vertex* vertex, D3D12_PRIMITIVE_TOPOLOGY primitiveTopology,
-	D3D12_VERTEX_BUFFER_VIEW buffView, D3D12_INDEX_BUFFER_VIEW ibView, size_t indicesCount,
+void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCount, Vertex* vertex, D3D12_PRIMITIVE_TOPOLOGY primitiveTopology,
+	D3D12_VERTEX_BUFFER_VIEW buffView, D3D12_INDEX_BUFFER_VIEW ibView, int32_t indicesCount,
 	std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)
 {
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得

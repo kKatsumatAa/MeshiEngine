@@ -78,8 +78,8 @@ public:
 	void InitializeSphere();
 
 	//Drawに必要なコマンド
-	void DrawCommandPrimitive(ID3D12Resource* vertBuff, size_t vertexCount, Vertex* vertex, D3D12_PRIMITIVE_TOPOLOGY primitiveTopology,
-		D3D12_VERTEX_BUFFER_VIEW buffView, D3D12_INDEX_BUFFER_VIEW ibView, size_t indicesCount,
+	void DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCount, Vertex* vertex, D3D12_PRIMITIVE_TOPOLOGY primitiveTopology,
+		D3D12_VERTEX_BUFFER_VIEW buffView, D3D12_INDEX_BUFFER_VIEW ibView, int32_t indicesCount,
 		std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);
 
 	void TriangleDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex);

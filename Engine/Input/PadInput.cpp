@@ -53,8 +53,8 @@ void PadInput::CreateDevice()
 	diprg.diph.dwHeaderSize = sizeof(diprg.diph);
 	diprg.diph.dwHow = DIPH_BYOFFSET;
 	diprg.diph.dwObj = DIJOFS_X;
-	diprg.lMin = (LONG)-stickRange;
-	diprg.lMax = (LONG)stickRange;
+	diprg.lMin = (long)-stickRange;
+	diprg.lMax = (long)stickRange;
 	result = gamePad->SetProperty(DIPROP_RANGE, &diprg.diph);
 	assert(SUCCEEDED(result));
 

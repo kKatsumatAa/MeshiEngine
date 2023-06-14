@@ -35,5 +35,5 @@ public:
 
 
 //ƒKƒEƒVƒAƒ“‚Ú‚©‚µ
-std::vector<float> GetGaussianWeights(size_t count, float s);
+std::vector<float> GetGaussianWeights(int32_t count, float s);
 

@@ -41,7 +41,7 @@ private:
 	//ãLò^éûä‘ÅiFPSå≈íË
 	std::chrono::steady_clock::time_point reference_;
 
-	FLOAT clearColor[4] = { 0,0,0,0 };
+	float clearColor[4] = { 0,0,0,0 };
 
 
 private:
@@ -96,7 +96,7 @@ public:
 	uint64_t& GetFenceVal() { return fenceVal; }
 	ID3D12Fence* GetFence() { return fence.Get(); }
 	ID3D12DescriptorHeap* GetRtvheap() { return rtvHeap.Get(); }
-	FLOAT* GetClearColor() { return clearColor; }
+	float* GetClearColor() { return clearColor; }
 	std::vector< ComPtr <ID3D12Resource>>& GetBackBuffer() { return backBuffers; }
 	ID3D12DescriptorHeap* GetDSVHeap() { return dsvHeap.Get(); }
 

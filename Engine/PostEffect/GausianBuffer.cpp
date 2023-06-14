@@ -26,7 +26,7 @@ void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle, ID3D12De
 
 		//リソース設定
 		ResourceProperties(cbResourceDesc,
-			(uint32_t)AligmentSize(sizeof(weights[0]) * weights.size(), 256));
+			(uint32_t)AligmentSize(sizeof(weights[0]) * (uint32_t)weights.size(), 256));
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &buff);
 
@@ -50,7 +50,7 @@ void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle, ID3D12De
 }
 
 
-std::vector<float> GetGaussianWeights(size_t count, float s)
+std::vector<float> GetGaussianWeights(int32_t count, float s)
 {
 	std::vector<float> weights(count); // ウェイト 配列 返却 用 
 	float x = 0.0f;

@@ -23,7 +23,7 @@ Vec3 LerpVec3(const Vec3& v1, const Vec3& v2, float t);
 Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t);
 
 //スプライン補間
-Vec3 SplinePosition(const std::vector<Vec3>& points, size_t startIndex, float t);
+Vec3 SplinePosition(const std::vector<Vec3>& points, int32_t startIndex, float t);
 
 float EaseIn(float t);
 
@@ -69,7 +69,7 @@ void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, 
 
 
 //アライメントにそろえたサイズを返す
-size_t AligmentSize(size_t size, size_t aligment);
+int32_t AligmentSize(int32_t size, int32_t aligment);
 
 //文字変換系
 //char* を const wchar_t* に変換

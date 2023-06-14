@@ -23,7 +23,7 @@ void DirectXWrapper::InitializeDevice()
 	}
 
 	// 妥当なアダプタを選別する
-	for (size_t i = 0; i < adapters.size(); i++) {
+	for (int32_t i = 0; i < adapters.size(); i++) {
 		DXGI_ADAPTER_DESC3 adapterDesc;
 		// アダプターの情報を取得する
 		adapters[i]->GetDesc3(&adapterDesc);
@@ -46,7 +46,7 @@ void DirectXWrapper::InitializeDevice()
 
 	D3D_FEATURE_LEVEL featureLevel;
 
-	for (size_t i = 0; i < _countof(levels); i++) {
+	for (int32_t i = 0; i < _countof(levels); i++) {
 		// 採用したアダプターでデバイスを生成
 		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i],
 			IID_PPV_ARGS(&device));
@@ -114,7 +114,7 @@ void DirectXWrapper::InitializeRendertargetView()
 
 	//RTV生成
 		// スワップチェーンの全てのバッファについて処理する
-	for (size_t i = 0; i < backBuffers.size(); i++) {
+	for (int32_t i = 0; i < backBuffers.size(); i++) {
 		// スワップチェーンからバッファを取得
 		swapChain->GetBuffer((uint32_t)i, IID_PPV_ARGS(&backBuffers[i]));
 		// デスクリプタヒープのハンドルを取得
@@ -336,9 +336,9 @@ void DirectXWrapper::PreDraw(const XMFLOAT4& winRGBA)
 	// シザー矩形
 	D3D12_RECT scissorRect{};
 	scissorRect.left = 0; // 切り抜き座標左
-	scissorRect.right = (LONG)(scissorRect.left + WindowsApp::GetInstance().window_width); // 切り抜き座標右
+	scissorRect.right = (long)(scissorRect.left + WindowsApp::GetInstance().window_width); // 切り抜き座標右
 	scissorRect.top = 0; // 切り抜き座標上
-	scissorRect.bottom = (LONG)(scissorRect.top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
+	scissorRect.bottom = (long)(scissorRect.top + WindowsApp::GetInstance().window_height); // 切り抜き座標下
 	// シザー矩形設定コマンドを、コマンドリストに積む
 	commandList->RSSetScissorRects(1, &scissorRect);
 }
@@ -460,7 +460,7 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 	std::vector<D3D12_SUBRESOURCE_DATA> subResourcesDatas{};
 	subResourcesDatas.resize(metadata.mipLevels);
 
-	for (size_t i = 0; i < subResourcesDatas.size(); i++)
+	for (int32_t i = 0; i < subResourcesDatas.size(); i++)
 	{
 		// 全ミップマップレベルを指定してイメージを取得
 		const Image* img = scratchImg.GetImage(i, 0, 0);
