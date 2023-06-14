@@ -2,9 +2,9 @@
 
 M4::M4()
 {
-	for (int i = 0; i < 4; i++)
+	for (int32_t i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int32_t j = 0; j < 4; j++)
 		{
 			m[i][j] = 0;
 		}
@@ -36,9 +36,9 @@ M4::M4(float m00, float m01, float m02, float m03,
 
 M4::M4(const float(*other)[4])
 {
-	for (int i = 0; i < 4; i++)
+	for (int32_t i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int32_t j = 0; j < 4; j++)
 		{
 			m[i][j] = other[i][j];
 		}
@@ -52,9 +52,9 @@ void M4::TransposeM4()
 {
 	M4 M = *this;
 
-	for (int i = 0; i < 4; i++)
+	for (int32_t i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int32_t j = 0; j < 4; j++)
 		{
 			m[i][j] = M.m[j][i];
 		}
@@ -122,9 +122,9 @@ void M4::SetInverseMatrix()
 	double inv[16], det;
 	double m[16];
 
-	for (int i = 0; i < 4; i++)
+	for (int32_t i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int32_t j = 0; j < 4; j++)
 		{
 			m[i * 4 + j] = this->m[i][j];
 		}
@@ -249,9 +249,9 @@ void M4::SetInverseMatrix()
 
 	det = 1.0 / det;
 
-	for (int i = 0; i < 4; i++)
+	for (int32_t i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int32_t j = 0; j < 4; j++)
 		{
 			this->m[i][j] = inv[i * 4 + j] * det;
 		}
@@ -260,9 +260,9 @@ void M4::SetInverseMatrix()
 
 //M4& M4::operator=(const float (*other)[4])
 //{
-//	for (int i = 0; i < 4; i++)
+//	for (int32_t i = 0; i < 4; i++)
 //	{
-//		for (int j = 0; j < 4; j++)
+//		for (int32_t j = 0; j < 4; j++)
 //		{
 //			m[i][j] = other[i][j];
 //		}
@@ -275,11 +275,11 @@ M4 M4::operator*(const M4& other)
 {
 	M4 m4;
 
-	for (int ic = 0; ic < 4; ic++)
+	for (int32_t ic = 0; ic < 4; ic++)
 	{
-		for (int i = 0; i < 4; i++)
+		for (int32_t i = 0; i < 4; i++)
 		{
-			for (int j = 0; j < 4; j++)
+			for (int32_t j = 0; j < 4; j++)
 			{
 				m4.m[ic][i] += m[ic][j] * other.m[j][i];
 			}
@@ -293,11 +293,11 @@ M4& M4::operator*=(const M4& other)
 {
 	M4 m4;
 
-	for (int ic = 0; ic < 4; ic++)
+	for (int32_t ic = 0; ic < 4; ic++)
 	{
-		for (int i = 0; i < 4; i++)
+		for (int32_t i = 0; i < 4; i++)
 		{
-			for (int j = 0; j < 4; j++)
+			for (int32_t j = 0; j < 4; j++)
 			{
 				m4.m[ic][i] += m[ic][j] * other.m[j][i];
 			}

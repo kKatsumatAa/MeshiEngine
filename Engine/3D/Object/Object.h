@@ -30,17 +30,17 @@ enum indices
 struct EffectOConstBuffer
 {
 	//フォグ
-	unsigned int isFog = false;
+	uint32_t isFog = false;
 	//トゥーン
-	unsigned int isToon = false;
+	uint32_t isToon = false;
 	//リムライト
-	unsigned int isRimLight = false;
+	uint32_t isRimLight = false;
 	float pad1;
 	//リムの色
 	XMFLOAT3 rimColor = { 1.0f,1.0f,1.0f };
 	float pad2;
 	//時間
-	unsigned int time = 0;
+	uint32_t time = 0;
 };
 
 class Object
@@ -64,7 +64,7 @@ private:
 	static LightManager* lightManager;
 
 	//ボーンの最大数
-	static const int MAX_BONES = 32;
+	static const int32_t MAX_BONES = 32;
 	//定数バッファ（スキン）
 	ComPtr<ID3D12Resource> constBuffSkin = nullptr;
 
@@ -114,20 +114,20 @@ protected://継承先まで公開
 
 private:
 	//--------------------
-	void Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
+	void Update(const int32_t& indexNum, const int32_t& pipelineNum, const uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
 		Model* model = nullptr, ModelFBX* fbx = nullptr, const bool& primitiveMode = true);
 
 	//行列送信
-	void SendingMat(int indexNum);
+	void SendingMat(int32_t indexNum);
 
 	//ボーンのデータ転送
 	void SendingBoneData(ModelFBX* model);
 
 	//ルートシグネチャ系のコマンド
-	void SetRootPipe(ID3D12PipelineState* pipelineState, int pipelineNum, ID3D12RootSignature* rootSignature);
+	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
 	//マテリアル、ライト、テクスチャ系のコマンド
-	void SetMaterialLightMTexSkin(UINT64 textureHandle_, ConstBuffTransform cbt);
-	void SetMaterialLightMTexSkinModel(UINT64 textureHandle_, ConstBuffTransform cbt, Material* material);
+	void SetMaterialLightMTexSkin(uint64_t textureHandle_, ConstBuffTransform cbt);
+	void SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTransform cbt, Material* material);
 
 
 public:
@@ -193,37 +193,37 @@ public:
 
 	void DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 		ViewMat* view, ProjectionMat* projection, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f },
-		const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+		const uint64_t textureHandle = NULL, const int32_t& pipelineNum = 0);
 
 	void DrawBox(ViewMat* view, ProjectionMat* projection, /*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,*/
 		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f },
-		const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+		const uint64_t textureHandle = NULL, const int32_t& pipelineNum = 0);
 
 	void DrawBoxSprite(const Vec3& pos, const float& scale, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }
-		, const UINT64 textureHandle = NULL, const Vec2& ancorUV = { 0,0 }, const bool& isReverseX = false, const bool& isReverseY = false,
-		float rotation = 0.0f, const int& pipelineNum = 0);
+		, const uint64_t textureHandle = NULL, const Vec2& ancorUV = { 0,0 }, const bool& isReverseX = false, const bool& isReverseY = false,
+		float rotation = 0.0f, const int32_t& pipelineNum = 0);
 
 	void DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, bool isPosLeftTop = true,
-		const bool& isReverseX = false, const bool& isReverseY = false, float rotation = 0.0f, const int& pipelineNum = 0);
+		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const uint64_t textureHandle = NULL, bool isPosLeftTop = true,
+		const bool& isReverseX = false, const bool& isReverseY = false, float rotation = 0.0f, const int32_t& pipelineNum = 0);
 
 	void DrawCube3D(ViewMat* view, ProjectionMat* projection,
-		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const uint64_t textureHandle = NULL, const int32_t& pipelineNum = 0);
 
 	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color
-		= { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL);
+		= { 1.0f,1.0f,1.0f,1.0f }, const uint64_t textureHandle = NULL);
 
 	void DrawCircle(ViewMat* view, ProjectionMat* projection,
-		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const uint64_t textureHandle = NULL, const int32_t& pipelineNum = 0);
 
 	void DrawSphere(ViewMat* view, ProjectionMat* projection,
-		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const UINT64 textureHandle = NULL, const int& pipelineNum = 0);
+		XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const uint64_t textureHandle = NULL, const int32_t& pipelineNum = 0);
 
 	void DrawModel(ViewMat* view, ProjectionMat* projection,
-		Model* model, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const int& pipelineNum = 0);
+		Model* model, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const int32_t& pipelineNum = 0);
 
 	void DrawFBX(ViewMat* view, ProjectionMat* projection,
-		ModelFBX* modelFbx, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const int& pipelineNum = 0);
+		ModelFBX* modelFbx, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, const int32_t& pipelineNum = 0);
 
 	//色を返す
 	XMFLOAT4 GetColor() { return constMapMaterial->color; }
@@ -242,7 +242,7 @@ void DrawInitialize();
 
 //
 void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
-	ID3DBlob* vsBlob, ID3DBlob* psBlob, const int& indexNum = NULL);
+	ID3DBlob* vsBlob, ID3DBlob* psBlob, const int32_t& indexNum = NULL);
 
 void Blend(const D3D12_BLEND_OP& blendMode,
 	const bool& Inversion = 0, const bool& Translucent = 0);

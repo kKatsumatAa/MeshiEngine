@@ -10,7 +10,7 @@ private:
 		XMFLOAT4 color;
 		Vec2 sizeUV;
 		Vec2 pos;
-		int num;
+		int32_t num;
 		float scale;
 		Vec2 numImageSize;
 		bool isTrue;
@@ -19,21 +19,21 @@ private:
 private:
 	NumImage numImages[5];
 	//—]‚è
-	int numRemainder;
+	int32_t numRemainder;
 	//‚»‚ÌŒ…
-	int numDigit;
+	int32_t numDigit;
 
-	UINT64 texhandle;
+	uint64_t texhandle;
 
 	bool isStartDigit = false;
 
-	int numCount = 0;
+	int32_t numCount = 0;
 
 
 public:
-	void Initialize(UINT64 texhandle);
+	void Initialize(uint64_t texhandle);
 
-	void SetNum(int num, Vec2 pos, Vec2 sizeUV, Vec2 numImageSize, float scale, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f });
+	void SetNum(int32_t num, Vec2 pos, Vec2 sizeUV, Vec2 numImageSize, float scale, XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f });
 
 	void Draw();
 };

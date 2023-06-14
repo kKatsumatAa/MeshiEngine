@@ -51,7 +51,7 @@ public:
 
 public://定数
 	//ボーンインデックス（影響を受けるボーン）の最大数
-	static const int MAX_BONE_INDICES = 4;//hlslのfloat4に対応するため"4"
+	static const int32_t MAX_BONE_INDICES = 4;//hlslのfloat4に対応するため"4"
 
 public://サブクラス
 	//頂点データ構造体
@@ -60,7 +60,7 @@ public://サブクラス
 		DirectX::XMFLOAT3 pos;//座標
 		DirectX::XMFLOAT3 normal;//法線ベクトル
 		DirectX::XMFLOAT2 uv;//uv座標
-		UINT boneIndex[MAX_BONE_INDICES] = { 0 };//影響を受けるボーン　番号
+		uint32_t boneIndex[MAX_BONE_INDICES] = { 0 };//影響を受けるボーン　番号
 		float boneWeight[MAX_BONE_INDICES] = { 1.0f,0,0,0 };//ボーン　重み
 	};
 

@@ -27,7 +27,7 @@ public://サブクラス
 		XMFLOAT3 lightcolor;
 		float pad2;
 		XMFLOAT3 lightatten;
-		unsigned int active;
+		uint32_t active;
 	};
 
 private://メンバ変数

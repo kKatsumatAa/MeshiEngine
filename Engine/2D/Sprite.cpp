@@ -6,10 +6,10 @@ void Sprite::Initialize()
 {
 	//sprite用
 	{
-		UINT sizeVB;
+		uint32_t sizeVB;
 		D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
 		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-		sizeVB = static_cast<UINT>(sizeof(vertices[0]) * 4.0);
+		sizeVB = static_cast<uint32_t>(sizeof(vertices[0]) * 4.0);
 		//頂点バッファの設定		//ヒープ設定
 		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
@@ -44,7 +44,7 @@ void Sprite::SpriteDraw()
 	DirectXWrapper::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
 	// 全頂点に対して
-	for (int i = 0; i < 4; i++) {
+	for (int32_t i = 0; i < 4; i++) {
 		vertMap[i] = vertices[i]; // 座標をコピー
 	}
 	// 繋がりを解除
@@ -56,12 +56,12 @@ void Sprite::SpriteDraw()
 }
 
 void Sprite::Update(const Vec3& pos, const float& scale,
-	XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV,
+	XMFLOAT4 color, const uint64_t textureHandle, const Vec2& ancorUV,
 	const bool& isReverseX,const bool& isReverseY, float rotation,
 	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
 	//テクスチャを設定していなかったら
-	UINT64 textureHandle_;
+	uint64_t textureHandle_;
 
 	if (textureHandle == NULL)
 	{
@@ -127,11 +127,11 @@ void Sprite::Update(const Vec3& pos, const float& scale,
 }
 
 void Sprite::UpdateClipping(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop,
+	XMFLOAT4 color, const uint64_t textureHandle, bool isPosLeftTop,
 	const bool& isReverseX,const bool& isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
 	//テクスチャを設定していなかったら
-	UINT64 textureHandle_;
+	uint64_t textureHandle_;
 
 	if (textureHandle == NULL)
 	{

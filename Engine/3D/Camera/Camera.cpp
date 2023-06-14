@@ -164,7 +164,7 @@ void Camera::MoveEyeVector(const XMVECTOR& move)
 	SetEye(eye_moved);
 }
 
-void Camera::CameraShake(int time, float length)
+void Camera::CameraShake(int32_t time, float length)
 {
 	shake.SetShake(time, length);
 }

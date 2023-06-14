@@ -46,7 +46,7 @@ public://サブクラス
 		//バッファの先頭アドレス
 		BYTE* pBuffer = nullptr;
 		//バッファのサイズ
-		unsigned int bufferSize;
+		uint32_t bufferSize;
 		//
 		std::vector<IXAudio2SourceVoice*> pSourceVoice = { nullptr };
 	};

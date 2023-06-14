@@ -6,10 +6,10 @@
 class TextureManager
 {
 private:
-	static int count;
+	static int32_t count;
 
 	//テクスチャデータの連想配列
-	static std::map < std::string, UINT64> textureDatas_;
+	static std::map < std::string, uint64_t> textureDatas_;
 
 	TextureManager();
 
@@ -17,7 +17,7 @@ private:
 
 
 public:
-	static UINT64 whiteTexHandle;
+	static uint64_t whiteTexHandle;
 
 
 	//リソース設定
@@ -26,7 +26,7 @@ public:
 	static ComPtr < ID3D12DescriptorHeap> srvHeap;
 	static D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
 
-	static const int srvCount = 512;
+	static const int32_t srvCount = 512;
 	static ComPtr<ID3D12Resource> texBuff[srvCount];
 
 	//SRVの最大個数
@@ -47,7 +47,7 @@ public:
 
 	//デスクリプタヒープ初期化
 	static void InitializeDescriptorHeap();
-	static void LoadGraph(const wchar_t* name, UINT64& textureHandle);
+	static void LoadGraph(const wchar_t* name, uint64_t& textureHandle);
 
 	static void AddSrvHandleCount() { count++; }
 };

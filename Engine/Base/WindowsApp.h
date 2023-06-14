@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <d3d12.h>
 #pragma comment(lib,"winmm.lib")
+#include<stdint.h>
 
 
 class WindowsApp final
@@ -12,7 +13,7 @@ private:
 
 
 	//ウインドウプロシージャ
-	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+	static LRESULT WindowProc(HWND hwnd, uint32_t msg, WPARAM wparam, LPARAM lparam);
 
 	WindowsApp();
 

@@ -3,7 +3,7 @@
 #include "Util.h"
 using namespace DirectX;
 
-int TextureManager::count = 0;
+int32_t TextureManager::count = 0;
 //リソース設定
 D3D12_RESOURCE_DESC TextureManager::resDesc;
 //設定をもとにSRV用デスクリプタヒープを生成
@@ -19,9 +19,9 @@ D3D12_DESCRIPTOR_HEAP_DESC TextureManager::srvHeapDesc;
 
 D3D12_DESCRIPTOR_RANGE TextureManager::descriptorRange;
 
-UINT64 TextureManager::whiteTexHandle = 114514;
+uint64_t TextureManager::whiteTexHandle = 114514;
 
-std::map < std::string, UINT64> TextureManager::textureDatas_;
+std::map < std::string, uint64_t> TextureManager::textureDatas_;
 
 TextureManager::TextureManager()
 {
@@ -60,7 +60,7 @@ void TextureManager::InitializeDescriptorHeap()
 }
 
 
-void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
+void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 {
 	assert(count <= srvCount - 1);
 
@@ -71,7 +71,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	std::string fileName = namec;
 	{
 		//ファイル名から探す
-		std::map<std::string, UINT64>::iterator it = textureDatas_.find(fileName);
+		std::map<std::string, uint64_t>::iterator it = textureDatas_.find(fileName);
 		//すでに読み込まれていたらそのハンドルを返す
 		if (it != textureDatas_.end())
 		{
@@ -117,10 +117,10 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 	CD3DX12_RESOURCE_DESC textureResourceDesc =
 		CD3DX12_RESOURCE_DESC::Tex2D(
 			metadata.format,
-			(UINT64)metadata.width,
-			(UINT)metadata.height,
-			(UINT16)metadata.arraySize,
-			(UINT16)metadata.mipLevels,
+			(uint64_t)metadata.width,
+			(uint32_t)metadata.height,
+			(uint16_t)metadata.arraySize,
+			(uint16_t)metadata.mipLevels,
 			1);
 
 	// テクスチャバッファの生成
@@ -137,7 +137,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 
 	//アップロードバッファ
 	// ヒープの設定
-	uint64_t uploadSize = GetRequiredIntermediateSize(texBuff[count].Get(), 0, (UINT)metadata.mipLevels);
+	uint64_t uploadSize = GetRequiredIntermediateSize(texBuff[count].Get(), 0, (uint32_t)metadata.mipLevels);
 
 	D3D12_HEAP_PROPERTIES uploadHeapProp{};
 	uploadHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -179,7 +179,7 @@ void TextureManager::LoadGraph(const wchar_t* name, UINT64& textureHandle)
 		uploadBuff.Get(),
 		0,
 		0,
-		(UINT)metadata.mipLevels,
+		(uint32_t)metadata.mipLevels,
 		subResourcesDatas.data()
 	);
 

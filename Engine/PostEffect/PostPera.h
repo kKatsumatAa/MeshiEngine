@@ -9,37 +9,37 @@
 struct EffectConstBuffer
 {
 	//ぼかし
-	unsigned int isGaussian = false;
+	uint32_t isGaussian = false;
 	//ガウシアンぼかし
-	unsigned int isGaussian2 = false;
+	uint32_t isGaussian2 = false;
 	//エンボス
-	unsigned int isEmboss = false;
+	uint32_t isEmboss = false;
 	//シャープネス
-	unsigned int isSharpness = false;
+	uint32_t isSharpness = false;
 	//諧調
-	unsigned int isGradation = false;
+	uint32_t isGradation = false;
 	//アウトライン
-	unsigned int isOutLine = false;
+	uint32_t isOutLine = false;
 	//ビネット
-	unsigned int isVignette = false;
+	uint32_t isVignette = false;
 	//樽状湾曲
-	unsigned int isBarrelCurve = false;
+	uint32_t isBarrelCurve = false;
 	//走査線
-	unsigned int isScanningLine = false;
+	uint32_t isScanningLine = false;
 	//グレースケール
-	unsigned int isGrayScale = false;
+	uint32_t isGrayScale = false;
 	//ガラスフィルター
-	unsigned int isGlassFilter = false;
+	uint32_t isGlassFilter = false;
 	//モザイク
-	unsigned int isMosaic = false;
+	uint32_t isMosaic = false;
 	//ネガポジ
-	unsigned int isNega = false;
+	uint32_t isNega = false;
 	//ネガポジ
-	unsigned int isRGBShift = false;
+	uint32_t isRGBShift = false;
 	//ブルーム
-	unsigned int isBloom = false;
+	uint32_t isBloom = false;
 	//時間
-	unsigned int time = 0;
+	uint32_t time = 0;
 };
 
 struct PeraVertex

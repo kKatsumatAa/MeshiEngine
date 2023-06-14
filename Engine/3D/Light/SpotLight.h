@@ -27,7 +27,7 @@ public://サブクラス
 		XMFLOAT3 lightatten;
 		float pad3;
 		XMFLOAT2 lightfactoranglecos;
-		unsigned int active;
+		uint32_t active;
 		float pad4;
 	};
 

@@ -58,7 +58,7 @@ void CameraManager::Update()
 	goalEffectCamera->Update();
 }
 
-void CameraManager::BegineLerpUsingCamera(Vec3 startEye, Vec3 endEye, Vec3 startTarget, Vec3 endTarget, Vec3 startUp, Vec3 endUp, int time, Camera* afterCamera, int afterCount)
+void CameraManager::BegineLerpUsingCamera(Vec3 startEye, Vec3 endEye, Vec3 startTarget, Vec3 endTarget, Vec3 startUp, Vec3 endUp, int32_t time, Camera* afterCamera, int32_t afterCount)
 {
 	this->startEye = startEye;
 	this->endEye = endEye;

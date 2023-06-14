@@ -11,17 +11,17 @@ class Shake
 {
 private:
 	float shakeLength = 0.0f;
-	int   lifeTimer = 0;
-	int   lifeTimerTmp = 0;
+	int32_t   lifeTimer = 0;
+	int32_t   lifeTimerTmp = 0;
 	float t = 0.0f;
 
 private:
 	float GetRandomShakeInternal(float min, float max);
 	void SetRandomLength(float length);
-	void SetLifeTime(int time);
+	void SetLifeTime(int32_t time);
 
 public:
-	void SetShake(int time, float length);
+	void SetShake(int32_t time, float length);
 	float GetShake();
 
 	bool GetIsShaking();

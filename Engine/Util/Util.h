@@ -35,7 +35,7 @@ bool CollisionCircleCircle(const Vec3& pos1, const float& r1,
 
 bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, const float r, const Vec3& pos, const float r2);
 
-bool CollisionBox(const int x1, const int y1, const int x2, const int y2, const int r1, const int r2);
+bool CollisionBox(const int32_t x1, const int32_t y1, const int32_t x2, const int32_t y2, const int32_t r1, const int32_t r2);
 
 
 //•Ö—˜

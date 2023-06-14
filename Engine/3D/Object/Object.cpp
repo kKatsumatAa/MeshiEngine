@@ -178,7 +178,7 @@ void DrawInitialize()
 		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
 		//リソース設定
 		ResourceProperties(cbResourceDesc,
-			((UINT)sizeof(EffectConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
+			((uint32_t)sizeof(EffectConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &Object::effectFlagsBuff);
 		//定数バッファのマッピング
@@ -223,9 +223,9 @@ void Object::StaticUpdate()
 	effectFlags.time++;
 	//imgui
 	ImGui::Begin("ObjectEffect");
-	ImGui::SliderInt("Fog", (int*)&effectFlags.isFog, 0, 1);
-	ImGui::SliderInt("Toon", (int*)&effectFlags.isToon, 0, 1);
-	ImGui::SliderInt("RimLight", (int*)&effectFlags.isRimLight, 0, 1);
+	ImGui::SliderInt("Fog", (int32_t*)&effectFlags.isFog, 0, 1);
+	ImGui::SliderInt("Toon", (int32_t*)&effectFlags.isToon, 0, 1);
+	ImGui::SliderInt("RimLight", (int32_t*)&effectFlags.isRimLight, 0, 1);
 	ImGui::ColorEdit3("RimColor", rimColorF3);
 	ImGui::End();
 
@@ -286,7 +286,7 @@ Object::Object()
 	//リソース設定
 	D3D12_RESOURCE_DESC cbResourceDesc{};
 	ResourceProperties(cbResourceDesc,
-		((UINT)sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff/*256バイトアライメント*/);
+		((uint32_t)sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff/*256バイトアライメント*/);
 	//定数バッファの生成
 	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial);
 	//定数バッファのマッピング
@@ -301,13 +301,13 @@ Object::Object()
 		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
 		//リソース設定
 		ResourceProperties(cbResourceDesc,
-			((UINT)sizeof(ConstBufferDataSkin) + 0xff) & ~0xff/*256バイトアライメント*/);
+			((uint32_t)sizeof(ConstBufferDataSkin) + 0xff) & ~0xff/*256バイトアライメント*/);
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffSkin);
 		//マッピング
 		ConstBufferDataSkin* constMapSkin = nullptr;
 		constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
-		for (UINT i = 0; i < MAX_BONES; i++)
+		for (uint32_t i = 0; i < MAX_BONES; i++)
 		{
 			constMapSkin->bones[i] = XMMatrixIdentity();
 		}
@@ -318,7 +318,7 @@ Object::Object()
 	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 }
 
-void Object::SendingMat(int indexNum)
+void Object::SendingMat(int32_t indexNum)
 {
 
 	//変換行列をGPUに送信
@@ -420,7 +420,7 @@ void Object::SendingBoneData(ModelFBX* model)
 	//定数バッファへデータ転送
 	ConstBufferDataSkin* constMapSkin = nullptr;
 	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
-	for (int i = 0; i < bones.size(); i++)
+	for (int32_t i = 0; i < bones.size(); i++)
 	{
 		//今の姿勢行列
 		XMMATRIX matCurrentPose;
@@ -439,7 +439,7 @@ void Object::SendingBoneData(ModelFBX* model)
 	constBuffSkin->Unmap(0, nullptr);
 }
 
-void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int pipelineNum, ID3D12RootSignature* rootSignature)
+void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature)
 {
 	// パイプラインステートとルートシグネチャの設定コマンド
 	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(&pipelineState[pipelineNum]);
@@ -447,7 +447,7 @@ void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int pipelineNum, ID
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature);
 }
 
-void Object::SetMaterialLightMTexSkin(UINT64 textureHandle_, ConstBuffTransform cbt)
+void Object::SetMaterialLightMTexSkin(uint64_t textureHandle_, ConstBuffTransform cbt)
 {
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
@@ -471,7 +471,7 @@ void Object::SetMaterialLightMTexSkin(UINT64 textureHandle_, ConstBuffTransform 
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
 }
 
-void Object::SetMaterialLightMTexSkinModel(UINT64 textureHandle_, ConstBuffTransform cbt, Material* material)
+void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTransform cbt, Material* material)
 {
 	SetMaterialLightMTexSkin(textureHandle_, cbt);
 
@@ -485,7 +485,7 @@ void Object::SetMaterialLightMTexSkinModel(UINT64 textureHandle_, ConstBuffTrans
 
 }
 
-void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 textureHandle, const ConstBuffTransform& constBuffTransform,
+void Object::Update(const int32_t& indexNum, const int32_t& pipelineNum, const uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
 	Model* model, ModelFBX* fbx, const bool& primitiveMode)
 {
 	//行列送信
@@ -493,7 +493,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 
 
 	//テクスチャを設定していなかったら
-	UINT64 textureHandle_;
+	uint64_t textureHandle_;
 
 	if (textureHandle == NULL)
 	{
@@ -589,7 +589,7 @@ void Object::Update(const int& indexNum, const int& pipelineNum, const UINT64 te
 }
 
 void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-	ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+	ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const uint64_t textureHandle, const int32_t& pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -600,7 +600,7 @@ void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 }
 
 void Object::DrawBox(ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
-	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+	XMFLOAT4 color, const uint64_t textureHandle, const int32_t& pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -611,8 +611,8 @@ void Object::DrawBox(ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, 
 }
 
 void Object::DrawBoxSprite(const Vec3& pos, const float& scale,
-	XMFLOAT4 color, const UINT64 textureHandle, const Vec2& ancorUV, const bool& isReverseX, const bool& isReverseY,
-	float rotation, const int& pipelineNum)
+	XMFLOAT4 color, const uint64_t textureHandle, const Vec2& ancorUV, const bool& isReverseX, const bool& isReverseY,
+	float rotation, const int32_t& pipelineNum)
 {
 	if (sprite_.get() == nullptr)
 	{
@@ -632,8 +632,8 @@ void Object::Draw()
 
 
 void Object::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	XMFLOAT4 color, const UINT64 textureHandle, bool isPosLeftTop, const bool& isReverseX, const bool& isReverseY,
-	float rotation, const int& pipelineNum)
+	XMFLOAT4 color, const uint64_t textureHandle, bool isPosLeftTop, const bool& isReverseX, const bool& isReverseY,
+	float rotation, const int32_t& pipelineNum)
 {
 	if (sprite_.get() == nullptr)
 	{
@@ -647,7 +647,7 @@ void Object::DrawClippingBoxSprite(const Vec3& leftTop, const float& scale, cons
 	Update(SPRITE, pipelineNum, textureHandle, cbt);
 }
 
-void Object::DrawCube3D(ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+void Object::DrawCube3D(ViewMat* view, ProjectionMat* projection, XMFLOAT4 color, const uint64_t textureHandle, const int32_t& pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -658,7 +658,7 @@ void Object::DrawCube3D(ViewMat* view, ProjectionMat* projection, XMFLOAT4 color
 }
 
 void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,
-	const UINT64 textureHandle)
+	const uint64_t textureHandle)
 {
 	this->view = view;
 	this->projection = projection;
@@ -669,7 +669,7 @@ void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  ViewMat* view, Pr
 }
 
 void Object::DrawCircle(ViewMat* view, ProjectionMat* projection,
-	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+	XMFLOAT4 color, const uint64_t textureHandle, const int32_t& pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -680,7 +680,7 @@ void Object::DrawCircle(ViewMat* view, ProjectionMat* projection,
 }
 
 void Object::DrawSphere(ViewMat* view, ProjectionMat* projection,
-	XMFLOAT4 color, const UINT64 textureHandle, const int& pipelineNum)
+	XMFLOAT4 color, const uint64_t textureHandle, const int32_t& pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -691,7 +691,7 @@ void Object::DrawSphere(ViewMat* view, ProjectionMat* projection,
 }
 
 void Object::DrawModel(ViewMat* view, ProjectionMat* projection,
-	Model* model, XMFLOAT4 color, const int& pipelineNum)
+	Model* model, XMFLOAT4 color, const int32_t& pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -701,7 +701,7 @@ void Object::DrawModel(ViewMat* view, ProjectionMat* projection,
 	Update(MODEL, pipelineNum, NULL, cbt, model);
 }
 
-void Object::DrawFBX(ViewMat* view, ProjectionMat* projection, ModelFBX* modelFbx, XMFLOAT4 color, const int& pipelineNum)
+void Object::DrawFBX(ViewMat* view, ProjectionMat* projection, ModelFBX* modelFbx, XMFLOAT4 color, const int32_t& pipelineNum)
 {
 	this->view = view;
 	this->projection = projection;
@@ -712,7 +712,7 @@ void Object::DrawFBX(ViewMat* view, ProjectionMat* projection, ModelFBX* modelFb
 }
 
 void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
-	ID3DBlob* vsBlob, ID3DBlob* psBlob, const int& indexNum)
+	ID3DBlob* vsBlob, ID3DBlob* psBlob, const int32_t& indexNum)
 {
 	if (indexNum == SPRITE)
 	{

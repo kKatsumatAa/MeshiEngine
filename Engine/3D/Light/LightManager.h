@@ -10,7 +10,7 @@ class LightManager
 {
 public:
 	//点光源の数
-	static const int PointLightNum = 6;
+	static const int32_t PointLightNum = 6;
 
 private://エイリアス
 //Microsoft::WRL::を省略
@@ -25,13 +25,13 @@ private://エイリアス
 private://定数
 
 	//平行光源
-	static const int DirLightNum = 3;
+	static const int32_t DirLightNum = 3;
 
 	//スポットライトの数
-	static const int SpotLightNum = 3;
+	static const int32_t SpotLightNum = 3;
 
 	//丸影の数
-	static const int CircleShadowNum = 1;
+	static const int32_t CircleShadowNum = 1;
 
 private://静的メンバ変数
 	static ID3D12Device* device_;
@@ -100,7 +100,7 @@ public:
 	/// 描画（描画はせず、定数バッファビューのセットのみ行う）
 	/// </summary>
 	/// <param name="rootParamaterIndex"></param>
-	void Draw(UINT rootParamaterIndex);
+	void Draw(uint32_t rootParamaterIndex);
 
 	/// <summary>
 	/// 標準のライト設定
@@ -127,50 +127,50 @@ public:
 		/// </summary>
 		/// <param name="index">ライト番号</param>
 		/// <param name="active">有効フラグ</param>
-	void SetDirLightActive(int index, bool active);
+	void SetDirLightActive(int32_t index, bool active);
 
 	/// <summary>
 	/// 平行光源のライト方向をセット
 	/// </summary>
 	/// <param name="index">ライト番号</param>
 	/// <param name="lightdir">ライト方向</param>
-	void SetDirLightDir(int index, const XMVECTOR& lightdir);
+	void SetDirLightDir(int32_t index, const XMVECTOR& lightdir);
 
 	/// <summary>
 	/// 平行光源のライト色をセット
 	/// </summary>
 	/// <param name="index">ライト番号</param>
 	/// <param name="lightcolor">ライト色</param>
-	void SetDirLightColor(int index, const XMFLOAT3& lightcolor);
+	void SetDirLightColor(int32_t index, const XMFLOAT3& lightcolor);
 
 ///ポイントライト用
-	void SetPointLightActive(int index, bool active);
-	void SetPointLightPos(int index, const XMFLOAT3& pos);
-	void SetPointLightColor(int index, const XMFLOAT3& color);
-	void SetPointLightAtten(int index, const XMFLOAT3& atten);
+	void SetPointLightActive(int32_t index, bool active);
+	void SetPointLightPos(int32_t index, const XMFLOAT3& pos);
+	void SetPointLightColor(int32_t index, const XMFLOAT3& color);
+	void SetPointLightAtten(int32_t index, const XMFLOAT3& atten);
 
 ///スポットライト用
-	void SetSpotLightActive(int index, bool active);
+	void SetSpotLightActive(int32_t index, bool active);
 	//ライトの方向をセット
-	void SetSpotLightDir(int index, const XMVECTOR& lightdir);
-	void SetSpotLightPos(int index, const XMFLOAT3& lightpos);
-	void SetSpotLightColor(int index, const XMFLOAT3& lightcolor);
+	void SetSpotLightDir(int32_t index, const XMVECTOR& lightdir);
+	void SetSpotLightPos(int32_t index, const XMFLOAT3& lightpos);
+	void SetSpotLightColor(int32_t index, const XMFLOAT3& lightcolor);
 	//減衰係数をセット
-	void SetSpotLightAtten(int index, const XMFLOAT3& lightAtten);
+	void SetSpotLightAtten(int32_t index, const XMFLOAT3& lightAtten);
 	//減衰開始、終了角度
-	void SetSpotLightFactorAngle(int index, const XMFLOAT2& lightFactorAngle);
+	void SetSpotLightFactorAngle(int32_t index, const XMFLOAT2& lightFactorAngle);
 
 ///丸影用
-	void SetCircleShadowActive(int index, bool active);
+	void SetCircleShadowActive(int32_t index, bool active);
 	//影の発生元のオブジェクトの座標
-	void SetCircleShadowCasterPos(int index, const XMFLOAT3& casterPos);
+	void SetCircleShadowCasterPos(int32_t index, const XMFLOAT3& casterPos);
 	//ライトの方向をセット
-	void SetCircleShadowDir(int index, const XMVECTOR& lightdir);
+	void SetCircleShadowDir(int32_t index, const XMVECTOR& lightdir);
 	//影からライトまでの距離
-	void SetCircleShadowDistanceCasterLight(int index, float distanceCasterLight);
+	void SetCircleShadowDistanceCasterLight(int32_t index, float distanceCasterLight);
 	//減衰係数をセット
-	void SetCircleShadowAtten(int index, const XMFLOAT3& lightAtten);
+	void SetCircleShadowAtten(int32_t index, const XMFLOAT3& lightAtten);
 	//減衰開始、終了角度
-	void SetCircleShadowFactorAngle(int index, const XMFLOAT2& lightFactorAngle);
+	void SetCircleShadowFactorAngle(int32_t index, const XMFLOAT2& lightFactorAngle);
 };
 

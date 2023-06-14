@@ -3,7 +3,7 @@
 
 
 
-UINT sizeVB;
+uint32_t sizeVB;
 
 void Primitive::Initialize()
 {
@@ -27,7 +27,7 @@ void Primitive::InitializeTriangle()
 
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<UINT>(sizeof(verticesTriangle[0]) * _countof(verticesTriangle));
+	sizeVB = static_cast<uint32_t>(sizeof(verticesTriangle[0]) * _countof(verticesTriangle));
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
@@ -49,7 +49,7 @@ void Primitive::InitializeTriangle()
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesTriangle));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(indicesTriangle));
 
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
@@ -60,7 +60,7 @@ void Primitive::InitializeTriangle()
 		uint16_t* indexMap = nullptr;
 		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int i = 0; i < _countof(indicesTriangle); i++)
+		for (int32_t i = 0; i < _countof(indicesTriangle); i++)
 		{
 			indexMap[i] = indicesTriangle[i];//インデックスをコピー
 
@@ -76,7 +76,7 @@ void Primitive::InitializeTriangle()
 
 	//06_03
 	{
-		for (int i = 0; i < _countof(indicesTriangle) / 3; i++)
+		for (int32_t i = 0; i < _countof(indicesTriangle) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
 			unsigned short index0 = indicesTriangle[i * 3 + 0];
@@ -102,7 +102,7 @@ void Primitive::InitializeTriangle()
 void Primitive::InitializeBox()
 {
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<UINT>(sizeof(verticesBox[0]) * _countof(verticesBox));
+	sizeVB = static_cast<uint32_t>(sizeof(verticesBox[0]) * _countof(verticesBox));
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
@@ -124,7 +124,7 @@ void Primitive::InitializeBox()
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesBox));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(indicesBox));
 
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
@@ -135,7 +135,7 @@ void Primitive::InitializeBox()
 		uint16_t* indexMap = nullptr;
 		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int i = 0; i < _countof(indicesBox); i++)
+		for (int32_t i = 0; i < _countof(indicesBox); i++)
 		{
 			indexMap[i] = indicesBox[i];//インデックスをコピー
 
@@ -151,7 +151,7 @@ void Primitive::InitializeBox()
 
 	//06_03
 	{
-		for (int i = 0; i < _countof(indicesBox) / 3; i++)
+		for (int32_t i = 0; i < _countof(indicesBox) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
 			unsigned short index0 = indicesBox[i * 3 + 0];
@@ -180,13 +180,13 @@ void Primitive::InitializeCircle()
 
 	static float count = _countof(verticesCircle) - 2;//中心点と初期の点はカウントしない
 
-	for (int i = 1; i < _countof(verticesCircle); i++)
+	for (int32_t i = 1; i < _countof(verticesCircle); i++)
 	{
 		verticesCircle[i].pos = { 1.0f * cosf(AngletoRadi(360 / count) * (i - 1)),1.0f * sinf(AngletoRadi(360 / count) * (i - 1)),0 };
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<UINT>(sizeof(verticesCircle[0]) * _countof(verticesCircle));
+	sizeVB = static_cast<uint32_t>(sizeof(verticesCircle[0]) * _countof(verticesCircle));
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
@@ -208,7 +208,7 @@ void Primitive::InitializeCircle()
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesCircle));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(indicesCircle));
 
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
@@ -219,7 +219,7 @@ void Primitive::InitializeCircle()
 		uint16_t* indexMap = nullptr;
 		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int i = 0; i < _countof(indicesCircle); i++)
+		for (int32_t i = 0; i < _countof(indicesCircle); i++)
 		{
 			indexMap[i] = indicesCircle[i];//インデックスをコピー
 
@@ -235,7 +235,7 @@ void Primitive::InitializeCircle()
 
 	//06_03
 	{
-		for (int i = 0; i < _countof(indicesCircle) / 3; i++)
+		for (int32_t i = 0; i < _countof(indicesCircle) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
 			unsigned short index0 = indicesCircle[i * 3 + 0];
@@ -294,7 +294,7 @@ void Primitive::InitializeCube()
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<UINT>(sizeof(verticesCube[0]) * _countof(verticesCube));
+	sizeVB = static_cast<uint32_t>(sizeof(verticesCube[0]) * _countof(verticesCube));
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
@@ -316,7 +316,7 @@ void Primitive::InitializeCube()
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesCube));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(indicesCube));
 
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
@@ -327,7 +327,7 @@ void Primitive::InitializeCube()
 		uint16_t* indexMap = nullptr;
 		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int i = 0; i < _countof(indicesCube); i++)
+		for (int32_t i = 0; i < _countof(indicesCube); i++)
 		{
 			indexMap[i] = indicesCube[i];//インデックスをコピー
 
@@ -345,7 +345,7 @@ void Primitive::InitializeCube()
 	//06_03
 		/*if (indexNum == SPHERE)*/
 	{
-		for (int i = 0; i < _countof(indicesCube) / 3; i++)
+		for (int32_t i = 0; i < _countof(indicesCube) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
 			unsigned short index0 = indicesCube[i * 3 + 0];
@@ -377,7 +377,7 @@ void Primitive::InitializeLine()
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesLine));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(indicesLine));
 
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
@@ -388,7 +388,7 @@ void Primitive::InitializeLine()
 		uint16_t* indexMap = nullptr;
 		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int i = 0; i < _countof(indicesLine); i++)
+		for (int32_t i = 0; i < _countof(indicesLine); i++)
 		{
 			indexMap[i] = indicesLine[i];//インデックスをコピー
 
@@ -403,7 +403,7 @@ void Primitive::InitializeLine()
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<UINT>(sizeof(verticesLine[0]) * _countof(verticesLine));
+	sizeVB = static_cast<uint32_t>(sizeof(verticesLine[0]) * _countof(verticesLine));
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
@@ -427,7 +427,7 @@ void Primitive::InitializeSphere()
 	//球体用
 	{
 		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-		sizeVB = static_cast<UINT>(sizeof(verticesSphere[0]) * (_countof(verticesSphere)));
+		sizeVB = static_cast<uint32_t>(sizeof(verticesSphere[0]) * (_countof(verticesSphere)));
 
 		//頂点バッファの設定		//ヒープ設定
 		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
@@ -453,30 +453,30 @@ void Primitive::InitializeSphere()
 		verticesSphere[0] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };//下
 		verticesSphere[1] = { {vec.x,-vec.y,vec.z},{},{1.0f,0.0f} };//上
 
-		for (int i = 0; i < 36; i++)//横
+		for (int32_t i = 0; i < 36; i++)//横
 		{
 			worldMat.rot.y = (float)i * AngletoRadi(360.0f / 35.0f);
 
 
-			for (int j = 0; j < 34; j++)//縦
+			for (int32_t j = 0; j < 34; j++)//縦
 			{
 				worldMat.rot.x = ((float)(j + 1) * (pi / 35.0f));
 				worldMat.SetWorld();
 				vec = { 0,-1.0f,0 };
 				Vec3xM4(vec, worldMat.matWorld, false);
 
-				int p = i * 34 + j;
+				int32_t p = i * 34 + j;
 				verticesSphere[(2) + i * 34 + j] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };
 			}
 		}
 
-		int count = 0;
-		int count2 = 0;
-		int count3 = 0;
-		int count4 = 0;
+		int32_t count = 0;
+		int32_t count2 = 0;
+		int32_t count3 = 0;
+		int32_t count4 = 0;
 		bool isLast = false;
 		//インデックス
-		for (int i = 0; i < _countof(indicesSphere); i++)
+		for (int32_t i = 0; i < _countof(indicesSphere); i++)
 		{
 			if (i % (PAPA * 35) == 0 && i != 0)//最後の縦の列
 			{
@@ -587,7 +587,7 @@ void Primitive::InitializeSphere()
 			}
 		}
 
-		UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indicesSphere));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(indicesSphere));
 
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
@@ -598,7 +598,7 @@ void Primitive::InitializeSphere()
 		uint16_t* indexMap = nullptr;
 		DirectXWrapper::GetInstance().result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int i = 0; i < _countof(indicesSphere); i++)
+		for (int32_t i = 0; i < _countof(indicesSphere); i++)
 		{
 			indexMap[i] = indicesSphere[i];//インデックスをコピー
 
@@ -615,7 +615,7 @@ void Primitive::InitializeSphere()
 		//06_03
 		/*if (indexNum == SPHERE)*/
 		{
-			for (int i = 0; i < _countof(indicesSphere) / 3; i++)
+			for (int32_t i = 0; i < _countof(indicesSphere) / 3; i++)
 			{//三角形一つごとに計算
 				//三角形のインデックスを取り出して、一時的な変数に入れる
 				unsigned short index0 = indicesSphere[i * 3 + 0];
@@ -648,7 +648,7 @@ void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, size_t vertexCoun
 	DirectXWrapper::GetInstance().result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(DirectXWrapper::GetInstance().result));
 	// 全頂点に対して
-	for (int i = 0; i < vertexCount; i++) {
+	for (int32_t i = 0; i < vertexCount; i++) {
 
 		vertMap[i] = vertex[i]; // 座標をコピー
 
@@ -668,7 +668,7 @@ void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, size_t vertexCoun
 	//マテリアルとかテクスチャ
 	setMaterialLightTex();
 
-	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((UINT)indicesCount, 1, 0, 0, 0); // 全ての頂点を使って描画
+	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((uint32_t)indicesCount, 1, 0, 0, 0); // 全ての頂点を使って描画
 }
 
 void Primitive::TriangleDraw(std::function<void()>setRootParam, std::function<void()>setMaterialLightTex)

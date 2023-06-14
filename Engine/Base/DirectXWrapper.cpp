@@ -13,7 +13,7 @@ void DirectXWrapper::InitializeDevice()
 	// ここに特定の名前を持つアダプターオブジェクトが入る
 	ComPtr < IDXGIAdapter4> tmpAdapter = nullptr;
 	// パフォーマンスが高いものから順に、全てのアダプターを列挙する
-	for (UINT i = 0;
+	for (uint32_t i = 0;
 		dxgiFactory->EnumAdapterByGpuPreference(i,
 			DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE,
 			IID_PPV_ARGS(&tmpAdapter)) != DXGI_ERROR_NOT_FOUND;
@@ -82,8 +82,8 @@ void DirectXWrapper::InitializeCommand()
 void DirectXWrapper::InitializeSwapchain()
 {
 	//スワップチェーン設定
-	swapChainDesc.Width = (UINT)WindowsApp::GetInstance().window_width;
-	swapChainDesc.Height = (UINT)WindowsApp::GetInstance().window_height;
+	swapChainDesc.Width = (uint32_t)WindowsApp::GetInstance().window_width;
+	swapChainDesc.Height = (uint32_t)WindowsApp::GetInstance().window_height;
 	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 色情報の書式
 	swapChainDesc.SampleDesc.Count = 1; // マルチサンプルしない
 	swapChainDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER; // バックバッファ用
@@ -116,7 +116,7 @@ void DirectXWrapper::InitializeRendertargetView()
 		// スワップチェーンの全てのバッファについて処理する
 	for (size_t i = 0; i < backBuffers.size(); i++) {
 		// スワップチェーンからバッファを取得
-		swapChain->GetBuffer((UINT)i, IID_PPV_ARGS(&backBuffers[i]));
+		swapChain->GetBuffer((uint32_t)i, IID_PPV_ARGS(&backBuffers[i]));
 		// デスクリプタヒープのハンドルを取得
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
 		// 裏か表かでアドレスがずれる
@@ -139,8 +139,8 @@ void DirectXWrapper::InitializeDepthBuffer()
 	//06_01
 	D3D12_RESOURCE_DESC depthResourceDesc{};
 	depthResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	depthResourceDesc.Width = (UINT16)WindowsApp::GetInstance().window_width;//レンダーターゲットに合わせる
-	depthResourceDesc.Height = (UINT)WindowsApp::GetInstance().window_height;//レンダーターゲットに合わせる
+	depthResourceDesc.Width = (uint16_t)WindowsApp::GetInstance().window_width;//レンダーターゲットに合わせる
+	depthResourceDesc.Height = (uint32_t)WindowsApp::GetInstance().window_height;//レンダーターゲットに合わせる
 	depthResourceDesc.DepthOrArraySize = 1;
 	depthResourceDesc.Format = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 	depthResourceDesc.SampleDesc.Count = 1;
@@ -305,7 +305,7 @@ void DirectXWrapper::DrawInitialize()
 void DirectXWrapper::PreDraw(const XMFLOAT4& winRGBA)
 {
 	// バックバッファの番号を取得(2つなので0番か1番)
-	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
+	uint32_t bbIndex = swapChain->GetCurrentBackBufferIndex();
 
 	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
 	// レンダーターゲットビューのハンドルを取得
@@ -415,10 +415,10 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 	CD3DX12_RESOURCE_DESC textureResourceDesc =
 		CD3DX12_RESOURCE_DESC::Tex2D(
 			metadata.format,
-			(UINT64)metadata.width,
-			(UINT)metadata.height,
-			(UINT16)metadata.arraySize,
-			(UINT16)metadata.mipLevels,
+			(uint64_t)metadata.width,
+			(uint32_t)metadata.height,
+			(uint16_t)metadata.arraySize,
+			(uint16_t)metadata.mipLevels,
 			1);
 
 	// テクスチャバッファの生成
@@ -435,7 +435,7 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 
 	//アップロードバッファ
 	// ヒープの設定
-	uint64_t uploadSize = GetRequiredIntermediateSize(texBuff.Get(), 0, (UINT)metadata.mipLevels);
+	uint64_t uploadSize = GetRequiredIntermediateSize(texBuff.Get(), 0, (uint32_t)metadata.mipLevels);
 
 	D3D12_HEAP_PROPERTIES uploadHeapProp{};
 	uploadHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -477,7 +477,7 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 		uploadBuff.Get(),
 		0,
 		0,
-		(UINT)metadata.mipLevels,
+		(uint32_t)metadata.mipLevels,
 		subResourcesDatas.data()
 	);
 
@@ -521,7 +521,7 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 }
 
 //------------------------------------------------------------------------------
-void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size)
+void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const uint32_t& size)
 {
 	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 	resDesc.Width = size;						//頂点データ全体のサイズ

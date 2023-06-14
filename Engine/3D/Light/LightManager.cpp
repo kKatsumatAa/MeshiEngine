@@ -18,10 +18,10 @@ void LightManager::Initialize()
 	DefaultLightSetting();
 
 	//ヒープ設定
-	UINT sizeVB;
+	uint32_t sizeVB;
 	D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<UINT>(sizeof(ConstBufferData));
+	sizeVB = static_cast<uint32_t>(sizeof(ConstBufferData));
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
@@ -47,7 +47,7 @@ void LightManager::TransferConstBuffer()
 		constMap->diffuseColor = diffuseColor;
 		constMap->specularColor = specularColor;
 
-		for (int i = 0; i < DirLightNum; i++) {
+		for (int32_t i = 0; i < DirLightNum; i++) {
 
 			//平行光源
 			// ライトが有効なら設定を転送
@@ -61,7 +61,7 @@ void LightManager::TransferConstBuffer()
 				constMap->dirLights[i].active = 0;
 			}
 		}
-		for (int i = 0; i < PointLightNum; i++) {
+		for (int32_t i = 0; i < PointLightNum; i++) {
 			//点光源
 			//ライトが有効なら設定を転送
 			if (pointLights[i].GetActive())
@@ -80,7 +80,7 @@ void LightManager::TransferConstBuffer()
 			}
 		}
 		//スポットライト
-		for (int i = 0; i < SpotLightNum; i++)
+		for (int32_t i = 0; i < SpotLightNum; i++)
 		{
 			//ライトが有効なら設定を転送
 			if (spotLights[i].GetLightActive())
@@ -102,7 +102,7 @@ void LightManager::TransferConstBuffer()
 			}
 		}
 		//丸影
-		for (int i = 0; i < CircleShadowNum; i++)
+		for (int32_t i = 0; i < CircleShadowNum; i++)
 		{
 			//ライトが有効なら設定を転送
 			if (circleShadows[i].GetLightActive())
@@ -171,7 +171,7 @@ void LightManager::Update()
 	}
 }
 
-void LightManager::Draw(UINT rootParamaterIndex)
+void LightManager::Draw(uint32_t rootParamaterIndex)
 {
 	//定数バッファビューをセット
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(
@@ -190,14 +190,14 @@ std::unique_ptr<LightManager> LightManager::Create()
 }
 
 //-----------------------------------------------------------
-void LightManager::SetDirLightActive(int index, bool active)
+void LightManager::SetDirLightActive(int32_t index, bool active)
 {
 	assert(0 <= index && index < DirLightNum);
 
 	dirLights[index].SetActive(active);
 }
 
-void LightManager::SetDirLightDir(int index, const XMVECTOR& lightdir)
+void LightManager::SetDirLightDir(int32_t index, const XMVECTOR& lightdir)
 {
 	assert(0 <= index && index < DirLightNum);
 
@@ -205,7 +205,7 @@ void LightManager::SetDirLightDir(int index, const XMVECTOR& lightdir)
 	dirty = true;
 }
 
-void LightManager::SetDirLightColor(int index, const XMFLOAT3& lightcolor)
+void LightManager::SetDirLightColor(int32_t index, const XMFLOAT3& lightcolor)
 {
 	assert(0 <= index && index < DirLightNum);
 
@@ -215,13 +215,13 @@ void LightManager::SetDirLightColor(int index, const XMFLOAT3& lightcolor)
 
 
 //-------------------------------------------------------------
-void LightManager::SetPointLightActive(int index, bool active)
+void LightManager::SetPointLightActive(int32_t index, bool active)
 {
 	assert(0 <= index && index < PointLightNum);
 	pointLights[index].SetActive(active);
 }
 
-void LightManager::SetPointLightPos(int index, const XMFLOAT3& pos)
+void LightManager::SetPointLightPos(int32_t index, const XMFLOAT3& pos)
 {
 	assert(0 <= index && index < PointLightNum);
 	pointLights[index].SetLightPos(pos);
@@ -229,7 +229,7 @@ void LightManager::SetPointLightPos(int index, const XMFLOAT3& pos)
 	dirty = true;
 }
 
-void LightManager::SetPointLightColor(int index, const XMFLOAT3& color)
+void LightManager::SetPointLightColor(int32_t index, const XMFLOAT3& color)
 {
 	assert(0 <= index && index < PointLightNum);
 	pointLights[index].SetLightColor(color);
@@ -237,7 +237,7 @@ void LightManager::SetPointLightColor(int index, const XMFLOAT3& color)
 	dirty = true;
 }
 
-void LightManager::SetPointLightAtten(int index, const XMFLOAT3& atten)
+void LightManager::SetPointLightAtten(int32_t index, const XMFLOAT3& atten)
 {
 	assert(0 <= index && index < PointLightNum);
 	pointLights[index].SetLightAtten(atten);
@@ -246,14 +246,14 @@ void LightManager::SetPointLightAtten(int index, const XMFLOAT3& atten)
 }
 
 //------------------------------------------------------------------------
-void LightManager::SetSpotLightActive(int index, bool active)
+void LightManager::SetSpotLightActive(int32_t index, bool active)
 {
 	assert(0 <= index && index < SpotLightNum);
 
 	spotLights[index].SetLightActive(active);
 }
 
-void LightManager::SetSpotLightDir(int index, const XMVECTOR& lightdir)
+void LightManager::SetSpotLightDir(int32_t index, const XMVECTOR& lightdir)
 {
 	assert(0 <= index && index < SpotLightNum);
 
@@ -261,7 +261,7 @@ void LightManager::SetSpotLightDir(int index, const XMVECTOR& lightdir)
 	dirty = true;
 }
 
-void LightManager::SetSpotLightPos(int index, const XMFLOAT3& lightpos)
+void LightManager::SetSpotLightPos(int32_t index, const XMFLOAT3& lightpos)
 {
 	assert(0 <= index && index < SpotLightNum);
 
@@ -269,7 +269,7 @@ void LightManager::SetSpotLightPos(int index, const XMFLOAT3& lightpos)
 	dirty = true;
 }
 
-void LightManager::SetSpotLightColor(int index, const XMFLOAT3& lightcolor)
+void LightManager::SetSpotLightColor(int32_t index, const XMFLOAT3& lightcolor)
 {
 	assert(0 <= index && index < SpotLightNum);
 
@@ -277,7 +277,7 @@ void LightManager::SetSpotLightColor(int index, const XMFLOAT3& lightcolor)
 	dirty = true;
 }
 
-void LightManager::SetSpotLightAtten(int index, const XMFLOAT3& lightAtten)
+void LightManager::SetSpotLightAtten(int32_t index, const XMFLOAT3& lightAtten)
 {
 	assert(0 <= index && index < SpotLightNum);
 
@@ -285,7 +285,7 @@ void LightManager::SetSpotLightAtten(int index, const XMFLOAT3& lightAtten)
 	dirty = true;
 }
 
-void LightManager::SetSpotLightFactorAngle(int index, const XMFLOAT2& lightFactorAngle)
+void LightManager::SetSpotLightFactorAngle(int32_t index, const XMFLOAT2& lightFactorAngle)
 {
 	assert(0 <= index && index < SpotLightNum);
 
@@ -295,14 +295,14 @@ void LightManager::SetSpotLightFactorAngle(int index, const XMFLOAT2& lightFacto
 
 
 //--------------------------------------------------------------------------------------
-void LightManager::SetCircleShadowActive(int index, bool active)
+void LightManager::SetCircleShadowActive(int32_t index, bool active)
 {
 	assert(0 <= index && index < CircleShadowNum);
 
 	circleShadows[index].SetLightActive(active);
 }
 
-void LightManager::SetCircleShadowCasterPos(int index, const XMFLOAT3& casterPos)
+void LightManager::SetCircleShadowCasterPos(int32_t index, const XMFLOAT3& casterPos)
 {
 	assert(0 <= index && index < CircleShadowNum);
 
@@ -310,7 +310,7 @@ void LightManager::SetCircleShadowCasterPos(int index, const XMFLOAT3& casterPos
 	dirty = true;
 }
 
-void LightManager::SetCircleShadowDir(int index, const XMVECTOR& lightdir)
+void LightManager::SetCircleShadowDir(int32_t index, const XMVECTOR& lightdir)
 {
 	assert(0 <= index && index < CircleShadowNum);
 
@@ -318,7 +318,7 @@ void LightManager::SetCircleShadowDir(int index, const XMVECTOR& lightdir)
 	dirty = true;
 }
 
-void LightManager::SetCircleShadowDistanceCasterLight(int index, float distanceCasterLight)
+void LightManager::SetCircleShadowDistanceCasterLight(int32_t index, float distanceCasterLight)
 {
 	assert(0 <= index && index < CircleShadowNum);
 
@@ -326,7 +326,7 @@ void LightManager::SetCircleShadowDistanceCasterLight(int index, float distanceC
 	dirty = true;
 }
 
-void LightManager::SetCircleShadowAtten(int index, const XMFLOAT3& lightAtten)
+void LightManager::SetCircleShadowAtten(int32_t index, const XMFLOAT3& lightAtten)
 {
 	assert(0 <= index && index < CircleShadowNum);
 
@@ -334,7 +334,7 @@ void LightManager::SetCircleShadowAtten(int index, const XMFLOAT3& lightAtten)
 	dirty = true;
 }
 
-void LightManager::SetCircleShadowFactorAngle(int index, const XMFLOAT2& lightFactorAngle)
+void LightManager::SetCircleShadowFactorAngle(int32_t index, const XMFLOAT2& lightFactorAngle)
 {
 	assert(0 <= index && index < CircleShadowNum);
 

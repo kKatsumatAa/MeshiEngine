@@ -7,7 +7,7 @@
 class SceneLoad : public SceneState
 {
 private:
-	int count = 0;
+	int32_t count = 0;
 	Async async;
 	Object loadObj;
 

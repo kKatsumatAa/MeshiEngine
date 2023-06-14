@@ -8,9 +8,9 @@ void Vec4xM4(Vec4& v, const M4& m4)
 		{0,0,0,0}
 	};
 
-	for (int i = 0; i < 4; i++)
+	for (int32_t i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int32_t j = 0; j < 4; j++)
 		{
 			v4[1][i] += v4[0][j] * (float)m4.m[j][i];
 		}
@@ -26,9 +26,9 @@ void Vec3xM4(Vec3& v, const M4& m4, const bool w)
 		{0,0,0,0}
 	};
 
-	for (int i = 0; i < 4; i++)
+	for (int32_t i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int32_t j = 0; j < 4; j++)
 		{
 			v4[1][i] += v4[0][j] * (float)m4.m[j][i];
 		}
@@ -44,9 +44,9 @@ Vec3 GetVec3xM4(Vec3 v, const M4 m4, const bool w)
 	{0,0,0,0}
 	};
 
-	for (int i = 0; i < 4; i++)
+	for (int32_t i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int32_t j = 0; j < 4; j++)
 		{
 			v4[1][i] += v4[0][j] * (float)m4.m[j][i];
 		}
@@ -62,9 +62,9 @@ void Vec3xM4andDivisionW(Vec3& v, const M4& m4, const bool w)
 		{0,0,0,0}
 	};
 
-	for (int i = 0; i < 4; i++)
+	for (int32_t i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int32_t j = 0; j < 4; j++)
 		{
 			v4[1][i] += v4[0][j] * (float)m4.m[j][i];
 		}
@@ -191,7 +191,7 @@ bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, const float r, const Vec
 	}
 }
 
-bool CollisionBox(const int x1, const int y1, const int x2, const int y2, const int r1, const int r2)
+bool CollisionBox(const int32_t x1, const int32_t y1, const int32_t x2, const int32_t y2, const int32_t r1, const int32_t r2)
 {
 	return x1 - r1 < x2 + r2 && x2 - r2 < x1 + r1 &&
 		y1 - r1 < y2 + r2 && y2 - r2 < y1 + r1;

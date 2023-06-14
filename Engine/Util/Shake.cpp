@@ -14,13 +14,13 @@ void Shake::SetRandomLength(float length)
 	this->shakeLength = length;
 }
 
-void Shake::SetLifeTime(int time)
+void Shake::SetLifeTime(int32_t time)
 {
 	this->lifeTimer = time;
 	this->lifeTimerTmp = time;
 }
 
-void Shake::SetShake(int time, float length)
+void Shake::SetShake(int32_t time, float length)
 {
 
 	if (time > this->lifeTimer)

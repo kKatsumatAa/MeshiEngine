@@ -89,7 +89,7 @@ void ParticleManager::Initialize()
 	//リソース設定
 	D3D12_RESOURCE_DESC cbResourceDesc{};
 	ResourceProperties(cbResourceDesc,
-		((UINT)sizeof(ConstBufferData) + 0xff) & ~0xff/*256バイトアライメント*/);
+		((uint32_t)sizeof(ConstBufferData) + 0xff) & ~0xff/*256バイトアライメント*/);
 	//定数バッファの生成
 	BuffProperties(cbHeapProp, cbResourceDesc, &constBuff);
 }
@@ -128,7 +128,7 @@ void ParticleManager::Update(ViewMat* view, ProjectionMat* projection)
 	}
 
 	// 頂点バッファへデータ転送
-	int vertCount = 0;
+	int32_t vertCount = 0;
 	VertexPos* vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	if (SUCCEEDED(result)) {
@@ -161,9 +161,9 @@ void ParticleManager::Update(ViewMat* view, ProjectionMat* projection)
 	constBuff->Unmap(0, nullptr);
 }
 
-void ParticleManager::Draw(UINT64 texHandle)
+void ParticleManager::Draw(uint64_t texHandle)
 {
-	UINT drawNum = (UINT)std::distance(particles.begin(), particles.end());
+	uint32_t drawNum = (uint32_t)std::distance(particles.begin(), particles.end());
 	if (drawNum > vertexCount) {
 		drawNum = vertexCount;
 	}
@@ -199,7 +199,7 @@ void ParticleManager::Draw(UINT64 texHandle)
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(drawNum, 1, 0, 0);
 }
 
-void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale
+void ParticleManager::Add(int32_t life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale
 	, XMFLOAT4 start_color, XMFLOAT4 end_color, float start_rot, float end_rot)
 {
 	// リストに要素を追加
@@ -413,7 +413,7 @@ void ParticleManager::CreateModel()
 	//リソース設定
 	D3D12_RESOURCE_DESC cbResourceDesc{};
 	ResourceProperties(cbResourceDesc,
-		((UINT)sizeof(VertexPos) * vertexCount));
+		((uint32_t)sizeof(VertexPos) * vertexCount));
 	//定数バッファの生成
 	BuffProperties(cbHeapProp, cbResourceDesc, &vertBuff);
 
@@ -517,9 +517,9 @@ void ParticleManager::UpdateMatrix(ViewMat* view, ProjectionMat* projection)
 #pragma endregion
 }
 
-void ParticleManager::GenerateRandomParticle(int num, int lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale, XMFLOAT4 start_color, XMFLOAT4 end_color)
+void ParticleManager::GenerateRandomParticle(int32_t num, int32_t lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale, XMFLOAT4 start_color, XMFLOAT4 end_color)
 {
-	for (int i = 0; i < num; i++)
+	for (int32_t i = 0; i < num; i++)
 	{
 		Vec3 pos = position;
 

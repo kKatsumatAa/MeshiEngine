@@ -79,7 +79,7 @@ void Player::Update()
 
 void Player::OnCollision(const CollisionInfo& info)
 {
-	for (int i = 0; i < 1; ++i)
+	for (int32_t i = 0; i < 1; ++i)
 	{
 		const float md_vel = 0.5f;
 		XMFLOAT3 vel{};

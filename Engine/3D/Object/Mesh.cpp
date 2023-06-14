@@ -75,8 +75,8 @@ void Mesh::CreateBuffers()
 {
 	HRESULT result = {};
 
-	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUvSkin) * vertices.size());
-	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
+	uint32_t sizeVB = static_cast<uint32_t>(sizeof(VertexPosNormalUvSkin) * vertices.size());
+	uint32_t sizeIB = static_cast<uint32_t>(sizeof(unsigned short) * indices.size());
 
 	// ヒーププロパティ
 	CD3DX12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
@@ -142,5 +142,5 @@ void Mesh::Draw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->SetGraphicsRootConstantBufferView(3, constBuff->GetGPUVirtualAddress());
 
 	// 描画コマンド
-	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
+	cmdList->DrawIndexedInstanced((uint32_t)indices.size(), 1, 0, 0, 0);
 }

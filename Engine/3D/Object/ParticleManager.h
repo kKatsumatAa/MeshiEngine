@@ -73,13 +73,13 @@ public: // サブクラス
 		float e_scale = 0.0f;
 		float e_rotation = 0.0f;
 		// 現在フレーム
-		int frame = 0;
+		int32_t frame = 0;
 		// 終了フレーム
-		int num_frame = 0;
+		int32_t num_frame = 0;
 	};
 
 private: // 定数
-	static const int vertexCount = 65536;		// 頂点数
+	static const int32_t vertexCount = 65536;		// 頂点数
 
 public:// 静的メンバ関数
 	static ParticleManager* GetInstance();
@@ -112,7 +112,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(UINT64 texHandle);
+	void Draw(uint64_t texHandle);
 
 	/// <summary>
 	/// パーティクルの追加
@@ -123,11 +123,11 @@ public: // メンバ関数
 	/// <param name="accel">加速度</param>
 	/// <param name="start_scale">開始時スケール</param>
 	/// <param name="end_scale">終了時スケール</param>
-	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale
+	void Add(int32_t life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale
 		, XMFLOAT4 start_color = { 1.0f,1.0f,1.0f,1.0f }, XMFLOAT4 end_color = { 1.0f,1.0f,1.0f,1.0f }, float start_rot = 0.0f, float end_rot = 0.0f);
 
 	//ランダムに生成
-	void GenerateRandomParticle(int num, int lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale
+	void GenerateRandomParticle(int32_t num, int32_t lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale
 		, XMFLOAT4 start_color = { 1.0f,1.0f,1.0f,1.0f }, XMFLOAT4 end_color = { 1.0f,1.0f,1.0f,1.0f });
 
 	void ClearParticles() { this->particles.clear(); }
@@ -156,7 +156,7 @@ private: // メンバ変数
 	XMMATRIX matView = DirectX::XMMatrixIdentity();
 
 public:
-	UINT64 texHandle = NULL;
+	uint64_t texHandle = NULL;
 
 
 private:

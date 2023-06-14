@@ -2,19 +2,19 @@
 using namespace std;
 
 
-void DebugText::Print(const std::string& text, float x, float y, int variable, float scale)
+void DebugText::Print(const std::string& text, float x, float y, int32_t variable, float scale)
 {
-	for (int i = 0; i < text.size(); i++)
+	for (int32_t i = 0; i < text.size(); i++)
 	{
 		if (spriteIndex >= maxCharCount) break;
 
 		const unsigned char& character = text[i];
 
-		int fontIndex = character - 32;
+		int32_t fontIndex = character - 32;
 		if (character >= 0x7f) fontIndex = 0;
 
-		int fontIndexY = fontIndex / fontLineCount;
-		int fontIndexX = fontIndex % fontLineCount;
+		int32_t fontIndexY = fontIndex / fontLineCount;
+		int32_t fontIndexX = fontIndex % fontLineCount;
 
 
 		leftTop[spriteIndex] = { x + fontWidth * scale * i,y,0 };
@@ -29,8 +29,8 @@ void DebugText::Print(const std::string& text, float x, float y, int variable, f
 	{
 		bool isMinus = false;
 
-		int number = variable;
-		int printNumber[6] = { };
+		int32_t number = variable;
+		int32_t printNumber[6] = { };
 
 		//マイナス
 		if (number < 0)
@@ -57,7 +57,7 @@ void DebugText::Print(const std::string& text, float x, float y, int variable, f
 		printNumber[5] = number;
 
 
-		for (int i = 0; i < _countof(printNumber); i++)
+		for (int32_t i = 0; i < _countof(printNumber); i++)
 		{
 			//最大文字数を超えたら
 			if (spriteIndex >= maxCharCount) break;
@@ -65,10 +65,10 @@ void DebugText::Print(const std::string& text, float x, float y, int variable, f
 			//マイナスの時
 			if (isMinus)
 			{
-				int fontIndex = '-' - 32;
+				int32_t fontIndex = '-' - 32;
 
-				int fontIndexY = fontIndex / fontLineCount;
-				int fontIndexX = fontIndex % fontLineCount;
+				int32_t fontIndexY = fontIndex / fontLineCount;
+				int32_t fontIndexX = fontIndex % fontLineCount;
 
 
 				leftTop[spriteIndex] = { x + (i + text.size()) * fontWidth * scale,y,0 };
@@ -85,11 +85,11 @@ void DebugText::Print(const std::string& text, float x, float y, int variable, f
 			}
 
 			//ASCIIコードの1段分飛ばした番号を計算
-			int fontIndex = printNumber[i] + 16;
+			int32_t fontIndex = printNumber[i] + 16;
 			//if (character >= 0x7f) fontIndex = 0;
 
-			int fontIndexY = fontIndex / fontLineCount;
-			int fontIndexX = fontIndex % fontLineCount;
+			int32_t fontIndexY = fontIndex / fontLineCount;
+			int32_t fontIndexX = fontIndex % fontLineCount;
 
 			//
 			leftTop[spriteIndex] = { x + (i + text.size()) * fontWidth * scale,y,0 };
@@ -105,17 +105,17 @@ void DebugText::Print(const std::string& text, float x, float y, int variable, f
 
 void DebugText::Printf(const std::string& text, float x, float y, float variable, float scale)
 {
-	for (int i = 0; i < text.size(); i++)
+	for (int32_t i = 0; i < text.size(); i++)
 	{
 		if (spriteIndex >= maxCharCount) break;
 
 		const unsigned char& character = text[i];
 
-		int fontIndex = character - 32;
+		int32_t fontIndex = character - 32;
 		if (character >= 0x7f) fontIndex = 0;
 
-		int fontIndexY = fontIndex / fontLineCount;
-		int fontIndexX = fontIndex % fontLineCount;
+		int32_t fontIndexY = fontIndex / fontLineCount;
+		int32_t fontIndexX = fontIndex % fontLineCount;
 
 
 		leftTop[spriteIndex] = { x + fontWidth * scale * i,y,0 };
@@ -131,7 +131,7 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 		bool isMinus = false;
 
 		float number = variable;
-		int printNumber[13] = { };
+		int32_t printNumber[13] = { };
 
 		//マイナス
 		if (number < 0)
@@ -182,7 +182,7 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 		number -= (int)number / (int)1;
 
 
-		for (int i = 0; i < _countof(printNumber); i++)
+		for (int32_t i = 0; i < _countof(printNumber); i++)
 		{
 			//最大文字数を超えたら
 			if (spriteIndex >= maxCharCount) break;
@@ -190,10 +190,10 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 			//マイナスの時
 			if (isMinus)
 			{
-				int fontIndex = '-' - 32;
+				int32_t fontIndex = '-' - 32;
 
-				int fontIndexY = fontIndex / fontLineCount;
-				int fontIndexX = fontIndex % fontLineCount;
+				int32_t fontIndexY = fontIndex / fontLineCount;
+				int32_t fontIndexX = fontIndex % fontLineCount;
 
 
 				leftTop[spriteIndex] = { x + (i + text.size()) * fontWidth * scale,y,0 };
@@ -210,11 +210,11 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 			}
 
 			//ASCIIコードの1段分飛ばした番号を計算
-			int fontIndex = printNumber[i] + 16;
+			int32_t fontIndex = printNumber[i] + 16;
 			//if (character >= 0x7f) fontIndex = 0;
 
-			int fontIndexY = fontIndex / fontLineCount;
-			int fontIndexX = fontIndex % fontLineCount;
+			int32_t fontIndexY = fontIndex / fontLineCount;
+			int32_t fontIndexX = fontIndex % fontLineCount;
 
 			//
 			leftTop[spriteIndex] = { x + (i + text.size()) * fontWidth * scale,y,0 };
@@ -228,9 +228,9 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 	}
 }
 
-void DebugText::DrawAll(UINT64 texhandle)
+void DebugText::DrawAll(uint64_t texhandle)
 {
-	for (int i = 0; i < spriteIndex; i++)
+	for (int32_t i = 0; i < spriteIndex; i++)
 	{
 		sprites[i].DrawClippingBoxSprite(leftTop[i], scale[i], UVleftTop[i], UVlength[i],
 			{ 1.0f,1.0f,1.0f,1.0f }, texhandle);

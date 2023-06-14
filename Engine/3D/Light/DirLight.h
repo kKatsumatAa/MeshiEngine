@@ -34,7 +34,7 @@ public://サブクラス
 	{
 		XMVECTOR lightv;     //ライトの方向を表すベクトル
 		XMFLOAT3 lightColor; //ライトの色
-		unsigned int active; //有効か
+		uint32_t active; //有効か
 	};
 
 

@@ -13,6 +13,6 @@
 //
 //	ComPtr<ID3D12Resource> GetEffectTexBuff() { return _effectTexBuffer; }
 //	ComPtr<ID3D12DescriptorHeap> GetEffectSRVHeap() { return _effectSRVHeap; }
-//	UINT64 texhandle;
+//	uint64_t texhandle;
 //};
 

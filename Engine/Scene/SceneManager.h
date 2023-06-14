@@ -36,14 +36,14 @@ public:
 	DebugText debugText;
 
 	//デバッグテキスト
-	UINT64 debugTextHandle;
-	UINT64 texhandle[10];
+	uint64_t debugTextHandle;
+	uint64_t texhandle[10];
 
 	//画像用ハンドル
-	UINT64 textureHandle[30] = { 0 };
+	uint64_t textureHandle[30] = { 0 };
 
 	//数字の画像
-	UINT64 textureNumHundle[12];
+	uint64_t textureNumHundle[12];
 
 	//ライト
 	std::unique_ptr<LightManager> lightManager;

@@ -76,7 +76,7 @@ void SceneManager::Initialize()
 	lightManager->SetDirLightActive(2, false);
 	lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
 	//“_ŒõŒ¹
-	for (int i = 0; i < 6; i++)
+	for (int32_t i = 0; i < 6; i++)
 	{
 		lightManager->SetPointLightActive(i, false);
 	}

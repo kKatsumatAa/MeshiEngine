@@ -1,7 +1,7 @@
 #include "DrawIntNumImage.h"
 #include <math.h>
 
-void DrawIntNumImage::Initialize(UINT64 texhandle)
+void DrawIntNumImage::Initialize(uint64_t texhandle)
 {
 	//余り
 	numRemainder = 0;
@@ -12,13 +12,13 @@ void DrawIntNumImage::Initialize(UINT64 texhandle)
 
 	numCount = 0;
 
-	for (int i = _countof(numImages) - 1; i >= 0; i--)
+	for (int32_t i = _countof(numImages) - 1; i >= 0; i--)
 	{
 		this->numImages[i].isTrue = false;
 	}
 }
 
-void DrawIntNumImage::SetNum(int num, Vec2 pos, Vec2 sizeUV, Vec2 numImageSize, float scale, XMFLOAT4 color)
+void DrawIntNumImage::SetNum(int32_t num, Vec2 pos, Vec2 sizeUV, Vec2 numImageSize, float scale, XMFLOAT4 color)
 {
 	//最初に数字全部入れる
 	numRemainder = num;
@@ -29,7 +29,7 @@ void DrawIntNumImage::SetNum(int num, Vec2 pos, Vec2 sizeUV, Vec2 numImageSize, 
 	//数字の数をカウント
 	numCount = 0;
 
-	for (int i = _countof(numImages) - 1; i >= 0; i--)
+	for (int32_t i = _countof(numImages) - 1; i >= 0; i--)
 	{
 		//その桁の数字を出す
 		numDigit = numRemainder / (int)std::pow(10, i);
@@ -63,7 +63,7 @@ void DrawIntNumImage::Draw()
 	if (isStartDigit)
 	{
 		//一番大きい桁からスタート
-		for (int i = numCount - 1; i >= 0; i--)
+		for (int32_t i = numCount - 1; i >= 0; i--)
 		{
 			if (this->numImages[i].isTrue)
 			{

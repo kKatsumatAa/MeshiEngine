@@ -1,7 +1,7 @@
 #pragma once
 #include"Model.h"
 
-static const int PAPA = 66 * 3 + 6;
+static const int32_t PAPA = 66 * 3 + 6;
 
 
 /// <summary>

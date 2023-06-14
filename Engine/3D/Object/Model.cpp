@@ -10,7 +10,7 @@
 /// 静的メンバ変数の実体
 /// </summary>
 const std::string Model::baseDirectory = "Resources/";
-UINT Model::descriptorHandleIncrementSize = 0;
+uint32_t Model::descriptorHandleIncrementSize = 0;
 
 
 void Model::LoadFromOBJInternal(const std::string& folderName, const bool smoothing, const bool& modelType)
@@ -33,8 +33,8 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 	meshes_.emplace_back(std::move(std::make_unique < Mesh>()));
 	//所有権をいったん与える
 	std::unique_ptr<Mesh> mesh = std::move(meshes_.back());
-	int indexCountTex = 0;
-	int indexCountNoTex = 0;
+	int32_t indexCountTex = 0;
+	int32_t indexCountNoTex = 0;
 
 	std::vector<XMFLOAT3> positions;	// 頂点座標
 	std::vector<XMFLOAT3> normals;	// 法線ベクトル
@@ -133,7 +133,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 		// 先頭文字列がfならポリゴン（三角形）
 		if (key == "f")
 		{
-			int faceIndexCount = 0;
+			int32_t faceIndexCount = 0;
 			// 半角スペース区切りで行の続きを読み込む
 			std::string index_string;
 			while (getline(line_stream, index_string, ' ')) {
@@ -421,7 +421,7 @@ void Model::Initialize(const std::string& foldername, bool smoothing)
 	LoadTextures();
 }
 
-void Model::Draw(const int indexNum)
+void Model::Draw(const int32_t indexNum)
 {
 	// デスクリプタヒープの配列
 	if (TextureManager::GetInstance().srvHeap) {

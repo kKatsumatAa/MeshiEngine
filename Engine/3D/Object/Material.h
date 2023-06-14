@@ -57,7 +57,7 @@ public:
 	XMFLOAT3 specular;	// スペキュラー影響度
 	float alpha;		// アルファ
 	std::string textureFilename;	// テクスチャファイル名
-	UINT64 textureHandle;//画像ハンドル
+	uint64_t textureHandle;//画像ハンドル
 
 public:
 	~Material();

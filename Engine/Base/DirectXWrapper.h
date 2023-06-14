@@ -27,7 +27,7 @@ private:
 
 	// フェンスの生成
 	ComPtr < ID3D12Fence> fence = nullptr;
-	UINT64 fenceVal = 0;
+	uint64_t fenceVal = 0;
 
 	// 1.リソースバリアで書き込み可能に変更
 	D3D12_RESOURCE_BARRIER barrierDesc{};
@@ -93,7 +93,7 @@ public:
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
 	//ComPtr<ID3D12DescriptorHeap> GetPeraSRVHeap() const { return _peraSRVHeap; }
 	ID3D12CommandQueue* GetCommandQueue()const { return commandQueue.Get(); }
-	UINT64& GetFenceVal() { return fenceVal; }
+	uint64_t& GetFenceVal() { return fenceVal; }
 	ID3D12Fence* GetFence() { return fence.Get(); }
 	ID3D12DescriptorHeap* GetRtvheap() { return rtvHeap.Get(); }
 	FLOAT* GetClearColor() { return clearColor; }
@@ -106,7 +106,7 @@ public:
 //画像のロード（引数にバッファ設定）
 void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuff);
 
-void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const UINT& size);
+void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, const uint32_t& size);
 
 void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource,
 	ID3D12Resource** buff);

@@ -18,7 +18,7 @@ class Model
 private:
 	static const std::string baseDirectory;
 	// デスクリプタサイズ
-	static UINT descriptorHandleIncrementSize;
+	static uint32_t descriptorHandleIncrementSize;
 
 private:
 	// 名前
@@ -73,7 +73,7 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
-	void Draw(const int indexNum = 1);
+	void Draw(const int32_t indexNum = 1);
 };
 
 

@@ -36,8 +36,8 @@ private:
 	const float stickRange = 1000;
 	const float stickRRange = 65535 / 2.0f;
 
-	const int searchCountMax = 120;
-	int searchCount = 0;
+	const int32_t searchCountMax = 120;
+	int32_t searchCount = 0;
 
 	bool isActive = false;
 

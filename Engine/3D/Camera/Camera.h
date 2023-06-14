@@ -112,7 +112,7 @@ public: // メンバ関数
 	void MoveEyeVector(const XMVECTOR& move);
 
 	//
-	void CameraShake(int time, float length);
+	void CameraShake(int32_t time, float length);
 
 	/// <summary>
 	/// ベクトルによる移動

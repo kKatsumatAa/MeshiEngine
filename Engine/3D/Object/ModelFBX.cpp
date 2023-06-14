@@ -12,8 +12,8 @@ void ModelFBX::CreateBuffers()
 	HRESULT result;//
 
 	//頂点データ全体のサイズ
-	UINT sizeVB =
-		static_cast<UINT>(sizeof(VertexPosNormalUvSkin) * vertices.size());
+	uint32_t sizeVB =
+		static_cast<uint32_t>(sizeof(VertexPosNormalUvSkin) * vertices.size());
 	//頂点バッファ生成
 	D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
 	//頂点バッファの設定		//ヒープ設定
@@ -39,7 +39,7 @@ void ModelFBX::CreateBuffers()
 	vbView.StrideInBytes = sizeof(vertices[0]);
 
 	//頂点インデックス全体のサイズ
-	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
+	uint32_t sizeIB = static_cast<uint32_t>(sizeof(unsigned short) * indices.size());
 	//生成
 	ResourceProperties(resDesc, sizeIB);
 	BuffProperties(heapProp, resDesc, indexBuff.GetAddressOf());
@@ -73,5 +73,5 @@ void ModelFBX::Draw(std::function<void()>setRootParam, std::function<void()>setM
 	setMaterialLightTex();
 
 	// 描画コマンド
-	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
+	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((uint32_t)indices.size(), 1, 0, 0, 0);
 }
