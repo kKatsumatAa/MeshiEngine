@@ -6,7 +6,7 @@ class SceneState
 {
 protected:
 	//ƒ|ƒCƒ“ƒ^Ø‚è‚Ä‚é‚¾‚¯‚È‚Ì‚Ådelete‚µ‚½‚ç~
-	SceneManager* sceneM;
+	SceneManager* sceneM_;
 
 public:
 	virtual void Finalize() = 0;

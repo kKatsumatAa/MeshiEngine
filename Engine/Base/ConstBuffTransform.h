@@ -1,6 +1,7 @@
 #pragma once
 #include"TextureManager.h"
 
+//アフィン変換行列用
 class ConstBuffTransform
 {
 private:
@@ -13,8 +14,8 @@ private:
 	};
 
 public:
-	ComPtr < ID3D12Resource> constBuffTransform = nullptr;//定数バッファのGPUリソースのポインタ
-	ConstBufferDataTransform* constMapTransform = nullptr;//定数バッファのマッピング用ポインタ
+	ComPtr < ID3D12Resource> constBuffTransform_ = nullptr;//定数バッファのGPUリソースのポインタ
+	ConstBufferDataTransform* constMapTransform_ = nullptr;//定数バッファのマッピング用ポインタ
 
 	ConstBuffTransform();
 	void Initialize();

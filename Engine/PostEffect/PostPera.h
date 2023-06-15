@@ -51,53 +51,50 @@ struct PeraVertex
 class PostPera
 {
 private:
-	PeraVertex pv[4] = {
+	PeraVertex pVertices_[4] = {
 		{{-1.0f, -1.0f,0},{0,1.0f}},//左下
 		{{-1.0f, +1.0f,0},{0,0}},//左上
 		{{+1.0f, -1.0f,0},{1.0f,1.0f}},//右下
 		{{+1.0f, +1.0f,0},{1.0f,0}}//右上
 	};
 
-	ComPtr<ID3D12Resource> _peraVB;
-	D3D12_VERTEX_BUFFER_VIEW _peraVBV;
+	ComPtr<ID3D12Resource> peraVB_;
+	D3D12_VERTEX_BUFFER_VIEW peraVBV_;
 
-	ComPtr<ID3DBlob> vs;
-	ComPtr<ID3DBlob> ps;
-	ComPtr<ID3DBlob> errBlob;
+	ComPtr<ID3DBlob> vs_;
+	ComPtr<ID3DBlob> ps_;
+	ComPtr<ID3DBlob> errBlob_;
 
-	ComPtr<ID3D12RootSignature> _peraRS;
-	ComPtr<ID3D12PipelineState> _peraPipeline = NULL;
-	ComPtr<ID3D12PipelineState> _peraPipeline2 = NULL;
+	ComPtr<ID3D12RootSignature> peraRS_;
+	ComPtr<ID3D12PipelineState> peraPipeline_ = NULL;
+	ComPtr<ID3D12PipelineState> peraPipeline2_ = NULL;
 
 	//画面効果用
-	ComPtr <ID3D12Resource> effectFlagsBuff;
+	ComPtr <ID3D12Resource> effectFlagsBuff_;
 	//マッピング用
-	EffectConstBuffer* mapEffectFlagsBuff;
-
-	//ルートパラメータの設定
-	D3D12_ROOT_PARAMETER rootParams[1] = {};
+	EffectConstBuffer* mapEffectFlagsBuff_;
 
 	//ポストエフェクト用
-	D3D12_CPU_DESCRIPTOR_HANDLE peraHandle;
-	std::array<ComPtr<ID3D12Resource>, 2> _peraResource;
-	ComPtr<ID3D12Resource> _peraResource2;
-	ComPtr<ID3D12DescriptorHeap> _peraRTVHeap;//レンダーターゲット用
-	ComPtr<ID3D12DescriptorHeap> _peraSRVHeap;//テクスチャ用
-	bool isPeraClear = false;
+	D3D12_CPU_DESCRIPTOR_HANDLE peraSRHandle_;
+	std::array<ComPtr<ID3D12Resource>, 2> peraResources_;
+	ComPtr<ID3D12Resource> peraResource2_;
+	ComPtr<ID3D12DescriptorHeap> peraRTVHeap_;//レンダーターゲット用
+	ComPtr<ID3D12DescriptorHeap> peraSRVHeap_;//テクスチャ用
+	bool isPeraClear_ = false;
 
-	GausianBuffer gausianBuff;
+	GausianBuffer gausianBuff_;
 
-	//ガラス
-	ComPtr<ID3D12Resource>_effectTexBuffer;
+	//法線マップ用
+	ComPtr<ID3D12Resource>effectTexBuffer_;
 
 	//ブルームバッファー
-	std::array<ComPtr<ID3D12Resource>, 2>_bloomBuffer;
+	std::array<ComPtr<ID3D12Resource>, 2>bloomBuffers_;
 	//画面全体ぼかし用パイプライン(ブルーム)
-	ComPtr<ID3D12PipelineState> _blurPipeline;
+	ComPtr<ID3D12PipelineState> blurPipeline_;
 
 public:
 	//画面効果用
-	EffectConstBuffer effectFlags;
+	EffectConstBuffer effectFlags_;
 
 
 

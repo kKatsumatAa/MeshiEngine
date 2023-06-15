@@ -14,9 +14,9 @@ class Sound final
 {
 public:
 	//音
-	static IXAudio2MasteringVoice* masterVoice;
+	static IXAudio2MasteringVoice* sMasterVoice_;
 	//音
-	static ComPtr<IXAudio2> xAudio2_;
+	static ComPtr<IXAudio2> sXAudio2_;
 
 
 public://サブクラス
@@ -53,9 +53,9 @@ public://サブクラス
 
 private:
 	//サウンドデータの連想配列
-	static std::map < std::string, SoundData> soundDatas_;
+	static std::map < std::string, SoundData> sSoundDatas_;
 	//サウンド格納ディレクトリ
-	static std::string directoryPath_;
+	static std::string sDirectoryPath_;
 
 
 private:
@@ -64,7 +64,7 @@ private:
 
 public://メンバ関数
 
-	static void Initialize(const std::string& directoryPath_ = "Resources/sound/");
+	static void Initialize(const std::string& directoryPath = "Resources/sound/");
 
 	/// <summary>
 /// 音の読み込み（第2は基本true,読み込めない/再生されないときはfalseにする）

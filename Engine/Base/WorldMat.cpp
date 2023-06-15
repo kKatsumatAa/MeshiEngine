@@ -3,25 +3,25 @@
 
 WorldMat::WorldMat()
 {
-	matWorld =
+	matWorld_ =
 	{ 1,0,0,0,
 	  0,1,0,0,
 	  0,0,1,0,
 	  0,0,0,1 };
 
-	matScale =
+	matScale_ =
 	{ 1,0,0,0,
 	  0,1,0,0,
 	  0,0,1,0,
 	  0,0,0,1 };
 
-	matRot =
+	matRot_ =
 	{ 1,0,0,0,
 	  0,1,0,0,
 	  0,0,1,0,
 	  0,0,0,1 };
 
-	matTrans =
+	matTrans_ =
 	{ 1,0,0,0,
 	  0,1,0,0,
 	  0,0,1,0,
@@ -30,92 +30,92 @@ WorldMat::WorldMat()
 
 void WorldMat::SetScale()
 {
-	matScale = {
-		scale.x, 0, 0, 0,
-			0, scale.y, 0, 0,
-			0, 0, scale.z, 0,
+	matScale_ = {
+		scale_.x_, 0, 0, 0,
+			0, scale_.y_, 0, 0,
+			0, 0, scale_.z_, 0,
 			0, 0, 0, 1
 	};
 
-	matWorld *= matScale;
+	matWorld_ *= matScale_;
 }
 
 void WorldMat::SetRot()
 {
-	matRot = normalM;
-	matRot *= {
-		cosf(rot.z), sinf(rot.z), 0, 0,
-			-sinf(rot.z), cosf(rot.z), 0, 0,
+	matRot_ = normalM;
+	matRot_ *= {
+		cosf(rot_.z_), sinf(rot_.z_), 0, 0,
+			-sinf(rot_.z_), cosf(rot_.z_), 0, 0,
 			0, 0, 1, 0,
 			0, 0, 0, 1
 	};
-	matRot *= {
+	matRot_ *= {
 		1, 0, 0, 0,
-			0, cosf(rot.x), sinf(rot.x), 0,
-			0, -sinf(rot.x), cosf(rot.x), 0,
+			0, cosf(rot_.x_), sinf(rot_.x_), 0,
+			0, -sinf(rot_.x_), cosf(rot_.x_), 0,
 			0, 0, 0, 1
 	};
-	matRot *= {
-		cosf(rot.y), 0, -sinf(rot.y), 0,
+	matRot_ *= {
+		cosf(rot_.y_), 0, -sinf(rot_.y_), 0,
 			0, 1, 0, 0,
-			sinf(rot.y), 0, cosf(rot.y), 0,
+			sinf(rot_.y_), 0, cosf(rot_.y_), 0,
 			0, 0, 0, 1
 	};
-	matWorld *= matRot;
+	matWorld_ *= matRot_;
 }
 
 void WorldMat::SetTrans()
 {
-	matWorld *= {
+	matWorld_ *= {
 		1, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
-			trans.x, trans.y, trans.z, 1
+			trans_.x_, trans_.y_, trans_.z_, 1
 	};
 }
 
 void WorldMat::SetWorld()
 {
-	matWorld = normalM;
+	matWorld_ = normalM;
 
 	SetScale();
 	SetRot();
 	SetTrans();
 
 	//親がいたら
-	if (parent)
+	if (parent_)
 	{
 		//親の行列も計算(重いかも)
-		SetParentWorld(parent);
+		SetParentWorld(parent_);
 		//親の行列を自分の行列にかけていく
-		RecursiveCulcParentMat(parent, matWorld);
+		RecursiveCulcParentMat(parent_, matWorld_);
 	}
 }
 
 void WorldMat::SetParentWorld(WorldMat* parent)
 {
 	//親の行列計算
-	parent->matWorld = normalM;
+	parent->matWorld_ = normalM;
 
 	parent->SetScale();
 	parent->SetRot();
 	parent->SetTrans();
 
 	//親に親があったら
-	if (parent->parent)
+	if (parent->parent_)
 	{
-		SetParentWorld(parent->parent);
+		SetParentWorld(parent->parent_);
 	}
 }
 
 void WorldMat::RecursiveCulcParentMat(WorldMat* parent, M4& childMat)
 {
 	//子の行列に親の行列をかける
-	childMat *= parent->matWorld;
+	childMat *= parent->matWorld_;
 
 	//まだ親がいれば
-	if (parent->parent)
+	if (parent->parent_)
 	{
-		RecursiveCulcParentMat(parent->parent, childMat);
+		RecursiveCulcParentMat(parent->parent_, childMat);
 	}
 }

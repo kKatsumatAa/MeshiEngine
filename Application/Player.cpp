@@ -45,13 +45,13 @@ void Player::Update()
 {
 	KeyboardInput* input = &KeyboardInput::GetInstance();
 
-	if (input->KeyPush(DIK_LEFTARROW) || PadInput::GetInstance().GetRightStickTilt().x < 0)
+	if (input->KeyPush(DIK_LEFTARROW) || PadInput::GetInstance().GetRightStickTilt().x_ < 0)
 	{
-		SetRot({ GetRot().x,GetRot().y - AngletoRadi(2.0f), GetRot().z });
+		SetRot({ GetRot().x_,GetRot().y_ - AngletoRadi(2.0f), GetRot().z_ });
 	}
-	if (input->KeyPush(DIK_RIGHTARROW) || PadInput::GetInstance().GetRightStickTilt().x > 0)
+	if (input->KeyPush(DIK_RIGHTARROW) || PadInput::GetInstance().GetRightStickTilt().x_ > 0)
 	{
-		SetRot({ GetRot().x,GetRot().y + AngletoRadi(2.0f), GetRot().z });
+		SetRot({ GetRot().x_,GetRot().y_ + AngletoRadi(2.0f), GetRot().z_ });
 	}
 
 	//ˆÚ“®ƒxƒNƒgƒ‹‚ðYŽ²Žü‚è‚ÌŠp“x‚Å‰ñ“]
@@ -60,17 +60,17 @@ void Player::Update()
 	Vec3xM4(move, GetMatWorld(), 0);
 
 	//Œü‚¢‚Ä‚é•ûŒü‚ÉˆÚ“®
-	if (input->KeyPush(DIK_UPARROW) || PadInput::GetInstance().GetLeftStickTilt().y < 0)
+	if (input->KeyPush(DIK_UPARROW) || PadInput::GetInstance().GetLeftStickTilt().y_ < 0)
 	{
-		SetTrans({ GetTrans().x - move.x, GetTrans().y, GetTrans().z });
-		SetTrans({ GetTrans().x ,GetTrans().y - move.y, GetTrans().z });
-		SetTrans({ GetTrans().x ,GetTrans().y, GetTrans().z - move.z });
+		SetTrans({ GetTrans().x_ - move.x_, GetTrans().y_, GetTrans().z_ });
+		SetTrans({ GetTrans().x_ ,GetTrans().y_ - move.y_, GetTrans().z_ });
+		SetTrans({ GetTrans().x_ ,GetTrans().y_, GetTrans().z_ - move.z_ });
 	}
-	if (input->KeyPush(DIK_DOWNARROW) || PadInput::GetInstance().GetLeftStickTilt().y > 0)
+	if (input->KeyPush(DIK_DOWNARROW) || PadInput::GetInstance().GetLeftStickTilt().y_ > 0)
 	{
-		SetTrans({ GetTrans().x + move.x, GetTrans().y, GetTrans().z });
-		SetTrans({ GetTrans().x ,GetTrans().y + move.y, GetTrans().z });
-		SetTrans({ GetTrans().x ,GetTrans().y, GetTrans().z + move.z });
+		SetTrans({ GetTrans().x_ + move.x_, GetTrans().y_, GetTrans().z_ });
+		SetTrans({ GetTrans().x_ ,GetTrans().y_ + move.y_, GetTrans().z_ });
+		SetTrans({ GetTrans().x_ ,GetTrans().y_, GetTrans().z_ + move.z_ });
 	}
 
 	Object::Update();
@@ -87,6 +87,6 @@ void Player::OnCollision(const CollisionInfo& info)
 		vel.y = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
 		vel.z = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
 
-		ParticleManager::GetInstance()->Add(20, XMFLOAT3(info.inter.m128_f32), vel, XMFLOAT3(), 0, 1.0f);
+		ParticleManager::GetInstance()->Add(20, XMFLOAT3(info.inter_.m128_f32), vel, XMFLOAT3(), 0, 1.0f);
 	}
 }

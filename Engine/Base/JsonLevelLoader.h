@@ -24,12 +24,12 @@ struct LevelData
 class JsonLevelLoader final
 {
 private:
-	std::string kDefaultBaseDirectory = "Resources/Level/";
-	std::string kExtension = ".json";
+	static const std::string S_DEFAULT_BASE_DIRECTORY_;
+	static const std::string S_EXTENSION_;
 
 public:
 	//レベルデータ
-	std::unique_ptr<LevelData> levelData;
+	std::unique_ptr<LevelData> levelData_;
 
 private:
 	JsonLevelLoader() { ; }

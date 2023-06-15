@@ -22,29 +22,29 @@ void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle, ID3D12De
 		//リソース設定
 		D3D12_RESOURCE_DESC cbResourceDesc{};
 
-		weights = std::move(GetGaussianWeights(8, 10.0f));
+		weights_ = std::move(GetGaussianWeights(8, 10.0f));
 
 		//リソース設定
 		ResourceProperties(cbResourceDesc,
-			(uint32_t)AligmentSize(sizeof(weights[0]) * (uint32_t)weights.size(), 256));
+			(uint32_t)AligmentSize(sizeof(weights_[0]) * (uint32_t)weights_.size(), 256));
 		//定数バッファの生成
-		BuffProperties(cbHeapProp, cbResourceDesc, &buff);
+		BuffProperties(cbHeapProp, cbResourceDesc, &buff_);
 
 		//定数バッファのマッピング
 		float* mappedWeight = nullptr;
-		result = buff->Map(0, nullptr, (void**)&mappedWeight);
+		result = buff_->Map(0, nullptr, (void**)&mappedWeight);
 
-		std::copy(weights.begin(), weights.end(), mappedWeight);
+		std::copy(weights_.begin(), weights_.end(), mappedWeight);
 
-		buff->Unmap(0, nullptr);
+		buff_->Unmap(0, nullptr);
 	}
 
 	//ボケ定数バッファビュー設定
 	peraHandle.ptr += device.GetDescriptorHandleIncrementSize(heapDesc.Type);
 
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-	cbvDesc.BufferLocation = buff->GetGPUVirtualAddress();
-	cbvDesc.SizeInBytes = (uint32_t)buff->GetDesc().Width;
+	cbvDesc.BufferLocation = buff_->GetGPUVirtualAddress();
+	cbvDesc.SizeInBytes = (uint32_t)buff_->GetDesc().Width;
 
 	device.CreateConstantBufferView(&cbvDesc, peraHandle);
 }

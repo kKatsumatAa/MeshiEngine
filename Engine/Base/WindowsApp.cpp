@@ -34,22 +34,22 @@ WindowsApp::WindowsApp()
 	timeBeginPeriod(1);
 
 	//ウインドウクラスの設定
-	w.cbSize = sizeof(WNDCLASSEX);
-	w.lpfnWndProc = (WNDPROC)WindowProc;		//ウインドウプロシージャの設定
-	w.lpszClassName = L"DirectX";				//ウインドウクラス名
-	w.hInstance = GetModuleHandle(nullptr);		//ウインドウハンドル
-	w.hCursor = LoadCursor(NULL, IDC_ARROW);	//カーソル指定
+	wndclassEX_.cbSize = sizeof(WNDCLASSEX);
+	wndclassEX_.lpfnWndProc = (WNDPROC)WindowProc;		//ウインドウプロシージャの設定
+	wndclassEX_.lpszClassName = L"DirectX";				//ウインドウクラス名
+	wndclassEX_.hInstance = GetModuleHandle(nullptr);		//ウインドウハンドル
+	wndclassEX_.hCursor = LoadCursor(NULL, IDC_ARROW);	//カーソル指定
 
 	//ウインドウクラスをOSに登録する
-	RegisterClassEx(&w);
+	RegisterClassEx(&wndclassEX_);
 	//ウインドウサイズ{X,Y,横幅,縦幅}
-	RECT wrc = { 0,0,(long)window_width,(long)window_height };
+	RECT wrc = { 0,0,(long)WINDOW_WIDTH_,(long)WINDOW_HEIGHT_ };
 	//自動でサイズ補正
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
 	//ウィンドウオブジェクトの生成
-	hwnd = CreateWindow(
-		w.lpszClassName,		//クラス名
+	hwnd_ = CreateWindow(
+		wndclassEX_.lpszClassName,		//クラス名
 		L"LE3A_03_イイダ_ユウキ",			//タイトルバーの文字
 		WS_OVERLAPPEDWINDOW,	//標準的なウィンドウスタイル
 		CW_USEDEFAULT,			//表示X座標(OSに任せる)
@@ -58,14 +58,14 @@ WindowsApp::WindowsApp()
 		wrc.bottom - wrc.top,	//ウィンドウ縦幅
 		nullptr,				//親ウィンドウハンドル
 		nullptr,				//メニューハンドル
-		w.hInstance,			//呼び出しアプリケーションハンドル
+		wndclassEX_.hInstance,			//呼び出しアプリケーションハンドル
 		nullptr					//オプション
 	);
 
 	//ウインドウを表示状態にする
-	ShowWindow(hwnd, SW_SHOW);
+	ShowWindow(hwnd_, SW_SHOW);
 
-	viewport = { 0, 0, window_width, window_height, 0.0f, 1.0f };
+	viewport_ = { 0, 0, WINDOW_WIDTH_, WINDOW_HEIGHT_, 0.0f, 1.0f };
 }
 
 WindowsApp& WindowsApp::GetInstance()

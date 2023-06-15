@@ -6,18 +6,18 @@ class Quaternion
 {
 public://•Ï”
 	//v
-	float x;
-	float y;
-	float z;
+	float x_;
+	float y_;
+	float z_;
 	//w
-	float w;
+	float w_;
 
 
 public://ŠÖ”
 	Quaternion()
-		: x(0), y(0), z(0), w(0) {};
+		: x_(0), y_(0), z_(0), w_(0) {};
 	Quaternion(float x, float y, float z, float w)
-		: x(x), y(y), z(z), w(w) {};
+		: x_(x), y_(y), z_(z), w_(w) {};
 
 
 	//Ï

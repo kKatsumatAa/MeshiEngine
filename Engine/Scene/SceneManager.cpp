@@ -13,7 +13,7 @@
 SceneManager::~SceneManager()
 {
 	state_->Finalize();
-	camera.reset();
+	camera_.reset();
 	//音データ解放
 }
 
@@ -45,80 +45,80 @@ void SceneManager::Initialize()
 	JsonLevelLoader::Getinstance().LoadJsonFile("untitled");
 
 	{
-		TextureManager::LoadGraph(L"Resources/image/loading.png", texhandle[3]);
+		TextureManager::LoadGraph(L"Resources/image/loading.png", texhandle_[3]);
 		//白い画像
 		TextureManager::LoadGraph(L"Resources/image/white.png", TextureManager::GetInstance().sWhiteTexHandle_);
 
 		//画像
-		TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
+		TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle_);
 
-		TextureManager::LoadGraph(L"Resources/image/effect1.png", texhandle[1]);
-		TextureManager::LoadGraph(L"Resources/image/a.png", texhandle[2]);
-		TextureManager::LoadGraph(L"Resources/image/test.jpg", texhandle[4]);
+		TextureManager::LoadGraph(L"Resources/image/effect1.png", texhandle_[1]);
+		TextureManager::LoadGraph(L"Resources/image/a.png", texhandle_[2]);
+		TextureManager::LoadGraph(L"Resources/image/test.jpg", texhandle_[4]);
 	}
 
 	//fbx読み込み
-	modelFBX = ModelManager::GetInstance().LoadModelFBX("boneTest");
+	modelFBX_ = ModelManager::GetInstance().LoadModelFBX("boneTest");
 
-	draw[5].SetScale({ 1.3f,1.3f,1.3f });
-	draw[5].SetTrans({ fighterPos[0],fighterPos[1] - 1.0f,fighterPos[2] });
-	draw[5].SetRot({ -3.14f / 2.0f,0,0 });
-	draw[5].CulcWorldMat();
+	draw_[5].SetScale({ 1.3f,1.3f,1.3f });
+	draw_[5].SetTrans({ fighterPos_[0],fighterPos_[1] - 1.0f,fighterPos_[2] });
+	draw_[5].SetRot({ -3.14f / 2.0f,0,0 });
+	draw_[5].CulcWorldMat();
 	
-	draw[6].SetScale({ 1.3f,1.3f,1.3f });
-	draw[6].SetTrans({ -20,0,0 });
-	draw[6].SetRot({ 0,0,0 });
-	draw[6].CulcWorldMat();
+	draw_[6].SetScale({ 1.3f,1.3f,1.3f });
+	draw_[6].SetTrans({ -20,0,0 });
+	draw_[6].SetRot({ 0,0,0 });
+	draw_[6].CulcWorldMat();
 	
 	//インスタンス生成
-	lightManager = std::move(LightManager::Create());
+	lightManager_ = std::move(LightManager::Create());
 	//ライト色を設定
-	lightManager->SetDirLightColor(0, { 1,1,1 });
+	lightManager_->SetDirLightColor(0, { 1,1,1 });
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
-	Object::SetLight(lightManager.get());
-	lightManager->SetDirLightActive(0, true);
-	lightManager->SetDirLightActive(1, false);
-	lightManager->SetDirLightActive(2, false);
-	lightManager->SetDirLightDir(0, { 0, 0, 1.0 });
+	Object::SetLight(lightManager_.get());
+	lightManager_->SetDirLightActive(0, true);
+	lightManager_->SetDirLightActive(1, false);
+	lightManager_->SetDirLightActive(2, false);
+	lightManager_->SetDirLightDir(0, { 0, 0, 1.0 });
 	//点光源
 	for (int32_t i = 0; i < 6; i++)
 	{
-		lightManager->SetPointLightActive(i, false);
+		lightManager_->SetPointLightActive(i, false);
 	}
 	//丸影
-	lightManager->SetCircleShadowActive(0, false);
+	lightManager_->SetCircleShadowActive(0, false);
 
 	//カメラ
-	camera = std::make_unique<Camera>();
-	camera->Initialize();
+	camera_ = std::make_unique<Camera>();
+	camera_->Initialize();
 
 	Sound::GetInstance().PlayWave("Stage_BGM.wav");
 }
 
 void SceneManager::Update()
 {
-	lightManager->Update();
+	lightManager_->Update();
 
 	state_->Update();
 
 	//#ifdef _DEBUG
 	{
-		cameraWorldMat.rot.y += (KeyboardInput::GetInstance().KeyPush(DIK_A) - KeyboardInput::GetInstance().KeyPush(DIK_D)) * 0.05f;
+		cameraWorldMat_.rot_.y_ += (KeyboardInput::GetInstance().KeyPush(DIK_A) - KeyboardInput::GetInstance().KeyPush(DIK_D)) * 0.05f;
 
-		cameraWorldMat.rot.x += (KeyboardInput::GetInstance().KeyPush(DIK_W) - KeyboardInput::GetInstance().KeyPush(DIK_S)) * 0.05f;
-		cameraWorldMat.rot.x = min(cameraWorldMat.rot.x, pi / 2.0f);
-		cameraWorldMat.rot.x = max(cameraWorldMat.rot.x, -pi / 2.0f);
+		cameraWorldMat_.rot_.x_ += (KeyboardInput::GetInstance().KeyPush(DIK_W) - KeyboardInput::GetInstance().KeyPush(DIK_S)) * 0.05f;
+		cameraWorldMat_.rot_.x_ = min(cameraWorldMat_.rot_.x_, pi / 2.0f);
+		cameraWorldMat_.rot_.x_ = max(cameraWorldMat_.rot_.x_, -pi / 2.0f);
 
-		cameraWorldMat.SetWorld();
-		camera->viewMat_.eye = cameraPos;
-		Vec3xM4(camera->viewMat_.eye, cameraWorldMat.matWorld, 0);
-		camera->UpdateViewMatrix();
+		cameraWorldMat_.SetWorld();
+		camera_->viewMat_.eye_ = CAMERA_POS_;
+		Vec3xM4(camera_->viewMat_.eye_, cameraWorldMat_.matWorld_, 0);
+		camera_->UpdateViewMatrix();
 	}
 	//#endif
 
-	lightManager->SetAmbientColor({ ambientColor[0],ambientColor[1], ambientColor[2] });
-	lightManager->SetDiffuseColor({ diffuseColor[0],diffuseColor[1], diffuseColor[2] });
-	lightManager->SetSpecularColor({ specularColor[0],specularColor[1], specularColor[2] });
+	lightManager_->SetAmbientColor({ ambientColor_[0],ambientColor_[1], ambientColor_[2] });
+	lightManager_->SetDiffuseColor({ diffuseColor_[0],diffuseColor_[1], diffuseColor_[2] });
+	lightManager_->SetSpecularColor({ specularColor_[0],specularColor_[1], specularColor_[2] });
 }
 
 void SceneManager::Draw()
@@ -140,16 +140,16 @@ void SceneManager::DrawSprite()
 {
 	state_->DrawSprite();
 
-	debugText.DrawAll(debugTextHandle);
+	debugText_.DrawAll(debugTextHandle_);
 }
 
 void SceneManager::DrawImgui()
 {
 	ImGui::Begin("LightColor");
 
-	ImGui::SliderFloat3("ambientColor", ambientColor, 0, 1.0f);
-	ImGui::SliderFloat3("diffuseColor", diffuseColor, 0, 1.0f);
-	ImGui::SliderFloat3("specularColor", specularColor, 0, 1.0f);
+	ImGui::SliderFloat3("ambientColor", ambientColor_, 0, 1.0f);
+	ImGui::SliderFloat3("diffuseColor", diffuseColor_, 0, 1.0f);
+	ImGui::SliderFloat3("specularColor", specularColor_, 0, 1.0f);
 
 	ImGui::End();
 

@@ -11,8 +11,8 @@ void MyGame::Initialize()
 
 	//シーンファクトリーを生成し、マネージャーにセット
 	sceneFactory_ = std::make_unique<SceneFactory>();
-	sceneM->SetSceneFactory(sceneFactory_.get());
-	sceneM->ChangeScene("GAME");
+	sceneM_->SetSceneFactory(sceneFactory_.get());
+	sceneM_->ChangeScene("GAME");
 }
 
 void MyGame::Finalize()
@@ -42,14 +42,14 @@ void MyGame::Draw()
 {
 	//1枚目に描画
 	{
-		std::function<void()>f = [=]() {sceneM->Draw(); };
+		std::function<void()>f = [=]() {sceneM_->Draw(); };
 		//一枚目に描画結果、二枚目も描画する
-		postPera[0]->DrawToPostpera(f);
+		postPera_[0]->DrawToPostpera(f);
 	}
 
 	//ブルーム用
 	{
-		postPera[0]->DrawShrinkTextureForBlur();
+		postPera_[0]->DrawShrinkTextureForBlur();
 	}
 
 	//実際に描画
@@ -58,11 +58,11 @@ void MyGame::Draw()
 		DirectXWrapper::GetInstance().PreDraw();
 
 		//実際に描画
-		postPera[0]->Draw2();
+		postPera_[0]->Draw2();
 
-		sceneM->DrawSprite();
+		sceneM_->DrawSprite();
 
-		imguiM->Draw();
+		imguiM_->Draw();
 
 		// 4.描画コマンドここまで //
 		DirectXWrapper::GetInstance().PostDraw();

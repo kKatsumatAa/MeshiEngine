@@ -24,44 +24,41 @@ private:
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 public:
-	WorldMat cameraWorldMat;
-	const Vec3 cameraPos = { 0,0,-100 };
+	WorldMat cameraWorldMat_;
+	const Vec3 CAMERA_POS_ = { 0,0,-100 };
 
-	//Model* model[20];
+	//Model* model_[20];
 
-	Object draw[10];
+	Object draw_[10];
 
-	ModelFBX* modelFBX;
+	ModelFBX* modelFBX_;
 
-	DebugText debugText;
+	DebugText debugText_;
 
 	//デバッグテキスト
-	uint64_t debugTextHandle;
-	uint64_t texhandle[10];
-
-	//画像用ハンドル
-	uint64_t textureHandle[30] = { 0 };
+	uint64_t debugTextHandle_;
+	uint64_t texhandle_[10];
 
 	//数字の画像
-	uint64_t textureNumHundle[12];
+	uint64_t textureNumHundle_[12];
 
 	//ライト
-	std::unique_ptr<LightManager> lightManager;
+	std::unique_ptr<LightManager> lightManager_;
 
-	float ambientColor[3] = { 1,1,1 };
-	float diffuseColor[3] = { 1,1,1 };
-	float specularColor[3] = { 1,1,1 };
+	float ambientColor_[3] = { 1,1,1 };
+	float diffuseColor_[3] = { 1,1,1 };
+	float specularColor_[3] = { 1,1,1 };
 
 	//丸影
-	float circleShadowDir[3] = { 0,-1,0 };
-	float circleShadowAtten[3] = { 0.5f,0.15f,0 };
-	float circleShadowFactorAngle[2] = { 0,5.0f };
-	float circleShadowDistance = 100.0f;
+	float circleShadowDir_[3] = { 0,-1,0 };
+	float circleShadowAtten_[3] = { 0.5f,0.15f,0 };
+	float circleShadowFactorAngle_[2] = { 0,5.0f };
+	float circleShadowDistance_ = 100.0f;
 
-	float fighterPos[3] = { -10.0f,0,0 };
+	float fighterPos_[3] = { -10.0f,0,0 };
 
 
-	std::unique_ptr<Camera> camera;
+	std::unique_ptr<Camera> camera_;
 
 
 

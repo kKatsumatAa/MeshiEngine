@@ -9,16 +9,16 @@
 class Framework
 {
 protected:
-	SceneManager* sceneM = nullptr;
+	SceneManager* sceneM_ = nullptr;
 
-	MSG msg{};	//メッセージ
+	MSG msg_{};	//メッセージ
 
 	//シーンファクトリー
 	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 
-	std::unique_ptr<PostPera> postPera[2];
+	std::unique_ptr<PostPera> postPera_[2];
 
-	std::unique_ptr <ImGuiManager> imguiM;
+	std::unique_ptr <ImGuiManager> imguiM_;
 
 
 public:

@@ -81,13 +81,13 @@ void Sprite::Update(const Vec3& pos, float scale,
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
 	//反転
-	if (isReverseX)length.x *= -1;
-	if (isReverseY)length.y *= -1;
+	if (isReverseX)length.x_ *= -1;
+	if (isReverseY)length.y_ *= -1;
 
-	vertices_[0] = { {-(float)(length.x * scale * ancorUV.x),+(float)(length.y * scale * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//左下
-	vertices_[1] = { {-(float)(length.x * scale * ancorUV.x),-(float)(length.y * scale * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
-	vertices_[2] = { {+(float)(length.x * scale * (1.0f - ancorUV.x)),+(float)(length.y * scale * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
-	vertices_[3] = { {+(float)(length.x * scale * (1.0f - ancorUV.x)),-(float)(length.y * scale * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
+	vertices_[0] = { {-(float)(length.x_ * scale * ancorUV.x_),+(float)(length.y_ * scale * (1.0f - ancorUV.y_)),0.0f},{0.0f,1.0f} };//左下
+	vertices_[1] = { {-(float)(length.x_ * scale * ancorUV.x_),-(float)(length.y_ * scale * (ancorUV.y_)),0.0f},{0.0f,0.0f} };//左上
+	vertices_[2] = { {+(float)(length.x_ * scale * (1.0f - ancorUV.x_)),+(float)(length.y_ * scale * (1.0f - ancorUV.y_)),0.0f},{1.0f,1.0f} };//右下
+	vertices_[3] = { {+(float)(length.x_ * scale * (1.0f - ancorUV.x_)),-(float)(length.y_ * scale * (ancorUV.y_)),0.0f},{1.0f,0.0f} };//右上
 
 
 	constMapMaterial->color = color;
@@ -95,37 +95,37 @@ void Sprite::Update(const Vec3& pos, float scale,
 	//ワールド行列
 	WorldMat worldMat;
 
-	worldMat.rot.z = AngletoRadi(rotation);
-	worldMat.trans = { pos.x /*+ length.x * ancorUV.x * scale*/,pos.y/* + length.y * ancorUV.y * scale*/,0.0f };
+	worldMat.rot_.z_ = AngletoRadi(rotation);
+	worldMat.trans_ = { pos.x_ /*+ length.x * ancorUV.x * scale*/,pos.y_/* + length.y * ancorUV.y * scale*/,0.0f };
 	worldMat.SetWorld();
 
 	//親がいたら
-	if (worldMat.parent != nullptr)
+	if (worldMat.parent_ != nullptr)
 	{
-		worldMat.matWorld *= worldMat.parent->matWorld;
+		worldMat.matWorld_ *= worldMat.parent_->matWorld_;
 	}
 
 	XMMATRIX matW;
-	matW = { (float)worldMat.matWorld.m[0][0],(float)worldMat.matWorld.m[0][1],(float)worldMat.matWorld.m[0][2],(float)worldMat.matWorld.m[0][3],
-			 (float)worldMat.matWorld.m[1][0],(float)worldMat.matWorld.m[1][1],(float)worldMat.matWorld.m[1][2],(float)worldMat.matWorld.m[1][3],
-			 (float)worldMat.matWorld.m[2][0],(float)worldMat.matWorld.m[2][1],(float)worldMat.matWorld.m[2][2],(float)worldMat.matWorld.m[2][3],
-			 (float)worldMat.matWorld.m[3][0],(float)worldMat.matWorld.m[3][1],(float)worldMat.matWorld.m[3][2],(float)worldMat.matWorld.m[3][3] };
+	matW = { (float)worldMat.matWorld_.m_[0][0],(float)worldMat.matWorld_.m_[0][1],(float)worldMat.matWorld_.m_[0][2],(float)worldMat.matWorld_.m_[0][3],
+			 (float)worldMat.matWorld_.m_[1][0],(float)worldMat.matWorld_.m_[1][1],(float)worldMat.matWorld_.m_[1][2],(float)worldMat.matWorld_.m_[1][3],
+			 (float)worldMat.matWorld_.m_[2][0],(float)worldMat.matWorld_.m_[2][1],(float)worldMat.matWorld_.m_[2][2],(float)worldMat.matWorld_.m_[2][3],
+			 (float)worldMat.matWorld_.m_[3][0],(float)worldMat.matWorld_.m_[3][1],(float)worldMat.matWorld_.m_[3][2],(float)worldMat.matWorld_.m_[3][3] };
 
 	//view
 	ViewMat view;
-	view.matView = XMMatrixIdentity();
+	view.matView_ = XMMatrixIdentity();
 
 
 	//平行投影の射影行列生成
 	ProjectionMat projection;
 
-	projection.matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width,
-		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
+	projection.matProjection_ = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().WINDOW_WIDTH_,
+		WindowsApp::GetInstance().WINDOW_HEIGHT_, 0.0, 0.0f, 1.0f);
 
-	cbt->constMapTransform->world = matW;
-	cbt->constMapTransform->viewproj = view.matView * projection.matProjection;
-	XMFLOAT3 cPos = { view.eye.x,view.eye.y,view.eye.z };
-	cbt->constMapTransform->cameraPos = cPos;
+	cbt->constMapTransform_->world = matW;
+	cbt->constMapTransform_->viewproj = view.matView_ * projection.matProjection_;
+	XMFLOAT3 cPos = { view.eye_.x_,view.eye_.y_,view.eye_.z_ };
+	cbt->constMapTransform_->cameraPos = cPos;
 }
 
 void Sprite::UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
@@ -151,77 +151,77 @@ void Sprite::UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& U
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
 	//反転
-	if (isReverseX)length.x *= -1;
-	if (isReverseY)length.y *= -1;
+	if (isReverseX)length.x_ *= -1;
+	if (isReverseY)length.y_ *= -1;
 
-	float texLeft = UVleftTop.x * +(float)length.x * scale;
-	float texRight = (UVleftTop.x + UVlength.x) * +(float)length.x * scale;
-	float texTop = UVleftTop.y * +(float)length.y * scale;
-	float texBottom = (UVleftTop.y + UVlength.y) * +(float)length.y * scale;
+	float texLeft = UVleftTop.x * +(float)length.x_ * scale;
+	float texRight = (UVleftTop.x + UVlength.x) * +(float)length.x_ * scale;
+	float texTop = UVleftTop.y * +(float)length.y_ * scale;
+	float texBottom = (UVleftTop.y + UVlength.y) * +(float)length.y_ * scale;
 
 	if (isPosLeftTop)
 	{
 		//左上からの座標
-		vertices_[0] = { {0,UVlength.y * length.y * scale,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		vertices_[0] = { {0,UVlength.y * length.y_ * scale,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
 		vertices_[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		vertices_[2] = { {UVlength.x * length.x * scale,UVlength.y * length.y * scale,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices_[3] = { {UVlength.x * length.x * scale,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		vertices_[2] = { {UVlength.x * length.x_ * scale,UVlength.y * length.y_ * scale,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		vertices_[3] = { {UVlength.x * length.x_ * scale,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	else
 	{
 		//切り抜いた後の画像の中心からの位置！！！！！！！！
-		vertices_[0] = { {-UVlength.x * length.x * scale / 2.0f,UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-		vertices_[1] = { {-UVlength.x * length.x * scale / 2.0f,-UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		vertices_[2] = { {UVlength.x * length.x * scale / 2.0f,UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices_[3] = { {UVlength.x * length.x * scale / 2.0f,-UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		vertices_[0] = { {-UVlength.x * length.x_ * scale / 2.0f,UVlength.y * length.y_ * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		vertices_[1] = { {-UVlength.x * length.x_ * scale / 2.0f,-UVlength.y * length.y_ * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
+		vertices_[2] = { {UVlength.x * length.x_ * scale / 2.0f,UVlength.y * length.y_ * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		vertices_[3] = { {UVlength.x * length.x_ * scale / 2.0f,-UVlength.y * length.y_ * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	constMapMaterial->color = color;
 
 	//ワールド行列
 	WorldMat worldMat;
 
-	worldMat.rot.z = AngletoRadi(rotation);
+	worldMat.rot_.z_ = AngletoRadi(rotation);
 
 	if (isPosLeftTop)
 	{
 		//引数の左上座標を設定
-		worldMat.trans = { leftTop.x,leftTop.y,0 };
+		worldMat.trans_ = { leftTop.x_,leftTop.y_,0 };
 	}
 	else
 	{
-		//切り抜いた後の画像の中心を設定！！！!!!!!!!!!!!!!!!!
-		worldMat.trans = { leftTop.x + texLeft + UVlength.x * (float)length.x * scale / 2.0f,
-			leftTop.y + texTop + UVlength.y * (float)length.y * scale / 2.0f,
-			leftTop.z };
+		//切り抜いた後の画像の中心を設定
+		worldMat.trans_ = { leftTop.x_ + texLeft + UVlength.x * (float)length.x_ * scale / 2.0f,
+			leftTop.y_ + texTop + UVlength.y * (float)length.y_ * scale / 2.0f,
+			leftTop.z_ };
 	}
 	worldMat.SetWorld();
 
 
 	//親がいたら
-	if (worldMat.parent != nullptr)
+	if (worldMat.parent_ != nullptr)
 	{
-		worldMat.matWorld *= worldMat.parent->matWorld;
+		worldMat.matWorld_ *= worldMat.parent_->matWorld_;
 	}
 
 	XMMATRIX matW;
-	matW = { (float)worldMat.matWorld.m[0][0],(float)worldMat.matWorld.m[0][1],(float)worldMat.matWorld.m[0][2],(float)worldMat.matWorld.m[0][3],
-			 (float)worldMat.matWorld.m[1][0],(float)worldMat.matWorld.m[1][1],(float)worldMat.matWorld.m[1][2],(float)worldMat.matWorld.m[1][3],
-			 (float)worldMat.matWorld.m[2][0],(float)worldMat.matWorld.m[2][1],(float)worldMat.matWorld.m[2][2],(float)worldMat.matWorld.m[2][3],
-			 (float)worldMat.matWorld.m[3][0],(float)worldMat.matWorld.m[3][1],(float)worldMat.matWorld.m[3][2],(float)worldMat.matWorld.m[3][3] };
+	matW = { (float)worldMat.matWorld_.m_[0][0],(float)worldMat.matWorld_.m_[0][1],(float)worldMat.matWorld_.m_[0][2],(float)worldMat.matWorld_.m_[0][3],
+			 (float)worldMat.matWorld_.m_[1][0],(float)worldMat.matWorld_.m_[1][1],(float)worldMat.matWorld_.m_[1][2],(float)worldMat.matWorld_.m_[1][3],
+			 (float)worldMat.matWorld_.m_[2][0],(float)worldMat.matWorld_.m_[2][1],(float)worldMat.matWorld_.m_[2][2],(float)worldMat.matWorld_.m_[2][3],
+			 (float)worldMat.matWorld_.m_[3][0],(float)worldMat.matWorld_.m_[3][1],(float)worldMat.matWorld_.m_[3][2],(float)worldMat.matWorld_.m_[3][3] };
 
 	//view
 	ViewMat view;
-	view.matView = XMMatrixIdentity();
+	view.matView_ = XMMatrixIdentity();
 
 	//平行投影の射影行列生成
 	ProjectionMat projection;
-	projection.matProjection = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().window_width,
-		WindowsApp::GetInstance().window_height, 0.0, 0.0f, 1.0f);
+	projection.matProjection_ = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().WINDOW_WIDTH_,
+		WindowsApp::GetInstance().WINDOW_HEIGHT_, 0.0, 0.0f, 1.0f);
 
-	cbt->constMapTransform->world = matW;
-	cbt->constMapTransform->viewproj = view.matView * projection.matProjection;
-	XMFLOAT3 cPos = { view.eye.x,view.eye.y,view.eye.z };
-	cbt->constMapTransform->cameraPos = cPos;
+	cbt->constMapTransform_->world = matW;
+	cbt->constMapTransform_->viewproj = view.matView_ * projection.matProjection_;
+	XMFLOAT3 cPos = { view.eye_.x_,view.eye_.y_,view.eye_.z_ };
+	cbt->constMapTransform_->cameraPos = cPos;
 }
 
 

@@ -1,5 +1,7 @@
 #include "JsonLevelLoader.h"
 
+const std::string JsonLevelLoader::S_DEFAULT_BASE_DIRECTORY_ = "Resources/Level/";
+const std::string JsonLevelLoader::S_EXTENSION_ = ".json";
 
 
 JsonLevelLoader& JsonLevelLoader::Getinstance()
@@ -10,13 +12,13 @@ JsonLevelLoader& JsonLevelLoader::Getinstance()
 
 void JsonLevelLoader::Initialize()
 {
-	levelData = std::make_unique<LevelData>();
+	levelData_ = std::make_unique<LevelData>();
 }
 
 void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 {
 	//連結してフルパスを得る
-	const std::string fullpath = kDefaultBaseDirectory + fileName + kExtension;
+	const std::string fullpath = S_DEFAULT_BASE_DIRECTORY_ + fileName + S_EXTENSION_;
 
 	//ファイルストリーム
 	std::ifstream file;
@@ -70,9 +72,9 @@ void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& object, WorldMat* parent)
 {
 	//要素追加
-	levelData->objects.emplace_back(std::make_unique<LevelData::ObjectData>());
+	levelData_->objects.emplace_back(std::make_unique<LevelData::ObjectData>());
 	//今追加した要素の参照を得る
-	std::unique_ptr<LevelData::ObjectData>& objectData = levelData->objects.back();
+	std::unique_ptr<LevelData::ObjectData>& objectData = levelData_->objects.back();
 
 	if (object->contains("file_name"))
 	{
@@ -86,19 +88,19 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 	//コライダーのパラメータ読み込み
 	objectData->worldMat = std::make_unique<WorldMat>();
 	// 親(一番目のオブジェクトはnullptrが入るように)
-	objectData->worldMat->parent = parent;
+	objectData->worldMat->parent_ = parent;
 	//平行移動
-	objectData->worldMat->trans.x = (float)transform["translation"][1];
-	objectData->worldMat->trans.y = (float)transform["translation"][2];
-	objectData->worldMat->trans.z = -(float)transform["translation"][0];
+	objectData->worldMat->trans_.x_ = (float)transform["translation"][1];
+	objectData->worldMat->trans_.y_ = (float)transform["translation"][2];
+	objectData->worldMat->trans_.z_ = -(float)transform["translation"][0];
 	//角度（うまくいってないかも）
-	objectData->worldMat->rot.x = -(float)transform["rotation"][1];
-	objectData->worldMat->rot.y = -(float)transform["rotation"][2];
-	objectData->worldMat->rot.z = (float)transform["rotation"][0];
+	objectData->worldMat->rot_.x_ = -(float)transform["rotation"][1];
+	objectData->worldMat->rot_.y_ = -(float)transform["rotation"][2];
+	objectData->worldMat->rot_.z_ = (float)transform["rotation"][0];
 	//スケール
-	objectData->worldMat->scale.x = (float)transform["scaling"][1];
-	objectData->worldMat->scale.y = (float)transform["scaling"][2];
-	objectData->worldMat->scale.z = (float)transform["scaling"][0];
+	objectData->worldMat->scale_.x_ = (float)transform["scaling"][1];
+	objectData->worldMat->scale_.y_ = (float)transform["scaling"][2];
+	objectData->worldMat->scale_.z_ = (float)transform["scaling"][0];
 
 	//子がいたら
 	if ((*object).contains("children"))

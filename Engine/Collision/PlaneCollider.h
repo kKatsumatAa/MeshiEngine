@@ -15,10 +15,10 @@ private: // エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 public:
 	PlaneCollider(const XMVECTOR& normal = { 0,0,0,0 }, float distance = 1.0f) :
-		normal(normal), distance(distance)
+		normal_(normal), distance_(distance)
 	{
 		// 形状をセット
-		shapeType = COLLISIONSHAPE_PLANE;
+		shapeType_ = COLLISIONSHAPE_PLANE;
 	}
 
 	/// <summary>
@@ -26,13 +26,13 @@ public:
 	/// </summary>
 	void Update() override;
 
-	inline void SetNormal(const DirectX::XMVECTOR& normal) { normal = normal; }
-	inline void SetDistance(float distance) { distance = distance; }
+	inline void SetNormal(const DirectX::XMVECTOR& normal) { normal_ = normal; }
+	inline void SetDistance(float distance) { distance_ = distance; }
 
 private:
 	//法線ベクトル
-	DirectX::XMVECTOR normal = { 0,1,0,0 };
+	DirectX::XMVECTOR normal_ = { 0,1,0,0 };
 	//原点(0,0,0)からの距離
-	float distance = 0.0f;
+	float distance_ = 0.0f;
 };
 

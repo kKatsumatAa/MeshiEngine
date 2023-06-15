@@ -9,7 +9,7 @@ void SceneTitle::Finalize()
 //---------------------------------------------------------------------------------------
 void SceneTitle::Initialize()
 {
-	sceneM->StopWaveAllScene();
+	sceneM_->StopWaveAllScene();
 }
 
 void SceneTitle::Update()
@@ -19,7 +19,7 @@ void SceneTitle::Update()
 	//ƒV[ƒ“‘JˆÚ
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
 	{
-		sceneM->ChangeScene("GAME");
+		sceneM_->ChangeScene("GAME");
 	}
 }
 

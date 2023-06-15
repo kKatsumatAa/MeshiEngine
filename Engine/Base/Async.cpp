@@ -2,14 +2,14 @@
 
 void Async::SetLockFlag(bool islock)
 {
-    std::lock_guard<std::mutex>  lock(isLoadedMutex);
-    isLoaded = islock;
+    std::lock_guard<std::mutex>  lock(isLoadedMutex_);
+    isLoaded_ = islock;
 }
 
 bool Async::GetLockFlag()
 {
-    std::lock_guard<std::mutex>  lock(isLoadedMutex);
-    return isLoaded;
+    std::lock_guard<std::mutex>  lock(isLoadedMutex_);
+    return isLoaded_;
 }
 
 void Async::AsyncLoad(std::function<void()> p)
@@ -23,11 +23,11 @@ void Async::AsyncLoad(std::function<void()> p)
 void Async::StartAsyncFunction(const std::function<void()>& p)
 {
     //非同期処理スタート
-    th1 = std::thread([=] { AsyncLoad(p); });
+    th1_ = std::thread([=] { AsyncLoad(p); });
 }
 
 void Async::EndThread()
 {
     //終わったら
-    th1.join();
+    th1_.join();
 }

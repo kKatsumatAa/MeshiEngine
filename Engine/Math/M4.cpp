@@ -6,7 +6,7 @@ M4::M4()
 	{
 		for (int32_t j = 0; j < 4; j++)
 		{
-			m[i][j] = 0;
+			m_[i][j] = 0;
 		}
 	}
 }
@@ -16,22 +16,22 @@ M4::M4(float m00, float m01, float m02, float m03,
 	float m20, float m21, float m22, float m23,
 	float m30, float m31, float m32, float m33)
 {
-	m[0][0] = m00;
-	m[0][1] = m01;
-	m[0][2] = m02;
-	m[0][3] = m03;
-	m[1][0] = m10;
-	m[1][1] = m11;
-	m[1][2] = m12;
-	m[1][3] = m13;
-	m[2][0] = m20;
-	m[2][1] = m21;
-	m[2][2] = m22;
-	m[2][3] = m23;
-	m[3][0] = m30;
-	m[3][1] = m31;
-	m[3][2] = m32;
-	m[3][3] = m33;
+	m_[0][0] = m00;
+	m_[0][1] = m01;
+	m_[0][2] = m02;
+	m_[0][3] = m03;
+	m_[1][0] = m10;
+	m_[1][1] = m11;
+	m_[1][2] = m12;
+	m_[1][3] = m13;
+	m_[2][0] = m20;
+	m_[2][1] = m21;
+	m_[2][2] = m22;
+	m_[2][3] = m23;
+	m_[3][0] = m30;
+	m_[3][1] = m31;
+	m_[3][2] = m32;
+	m_[3][3] = m33;
 }
 
 M4::M4(const float(*other)[4])
@@ -40,7 +40,7 @@ M4::M4(const float(*other)[4])
 	{
 		for (int32_t j = 0; j < 4; j++)
 		{
-			m[i][j] = other[i][j];
+			m_[i][j] = other[i][j];
 		}
 	}
 }
@@ -56,7 +56,7 @@ void M4::TransposeM4()
 	{
 		for (int32_t j = 0; j < 4; j++)
 		{
-			m[i][j] = M.m[j][i];
+			m_[i][j] = M.m_[j][i];
 		}
 	}
 }
@@ -67,9 +67,9 @@ void M4::TransposeM4()
 void M4::SetScaleMatrix(const Vec3& v3)
 {
 	*this = {
-		v3.x,0,0,0,
-		0,v3.y,0,0,
-		0,0,v3.z,0,
+		v3.x_,0,0,0,
+		0,v3.y_,0,0,
+		0,0,v3.z_,0,
 		0,0,0,1
 	};
 }
@@ -113,7 +113,7 @@ void M4::SetTranslationMatrix(const Vec3& v3)
 		1,0,0,0,
 		0,1,0,0,
 		0,0,1,0,
-		v3.x,v3.y,v3.z,1
+		v3.x_,v3.y_,v3.z_,1
 	};
 }
 
@@ -126,7 +126,7 @@ void M4::SetInverseMatrix()
 	{
 		for (int32_t j = 0; j < 4; j++)
 		{
-			m[i * 4 + j] = m[i][j];
+			m[i * 4 + j] = m_[i][j];
 		}
 	}
 
@@ -253,7 +253,7 @@ void M4::SetInverseMatrix()
 	{
 		for (int32_t j = 0; j < 4; j++)
 		{
-			m[i][j] = inv[i * 4 + j] * det;
+			m_[i][j] = inv[i * 4 + j] * det;
 		}
 	}
 }
@@ -281,7 +281,7 @@ M4 M4::operator*(const M4& other)
 		{
 			for (int32_t j = 0; j < 4; j++)
 			{
-				m4.m[ic][i] += m[ic][j] * other.m[j][i];
+				m4.m_[ic][i] += m_[ic][j] * other.m_[j][i];
 			}
 		}
 	}
@@ -299,7 +299,7 @@ M4& M4::operator*=(const M4& other)
 		{
 			for (int32_t j = 0; j < 4; j++)
 			{
-				m4.m[ic][i] += m[ic][j] * other.m[j][i];
+				m4.m_[ic][i] += m_[ic][j] * other.m_[j][i];
 			}
 		}
 	}
@@ -324,13 +324,13 @@ void M4::PutinXMMATRIX(const XMMATRIX& xM)
 
 Vec3 operator*(const Vec3& v, const M4& m2)
 {
-	float w = (float)(v.x * m2.m[0][3] + v.y * m2.m[1][3] + v.z * m2.m[2][3] + m2.m[3][3]);
+	float w = (float)(v.x_ * m2.m_[0][3] + v.y_ * m2.m_[1][3] + v.z_ * m2.m_[2][3] + m2.m_[3][3]);
 
 	Vec3 result
 	{
-		(float)(v.x * m2.m[0][0] + v.y * m2.m[1][0] + v.z * m2.m[2][0] + m2.m[3][0]) / w,
-		(float)(v.x * m2.m[0][1] + v.y * m2.m[1][1] + v.z * m2.m[2][1] + m2.m[3][1]) / w,
-		(float)(v.x * m2.m[0][2] + v.y * m2.m[1][2] + v.z * m2.m[2][2] + m2.m[3][2]) / w
+		(float)(v.x_ * m2.m_[0][0] + v.y_ * m2.m_[1][0] + v.z_ * m2.m_[2][0] + m2.m_[3][0]) / w,
+		(float)(v.x_ * m2.m_[0][1] + v.y_ * m2.m_[1][1] + v.z_ * m2.m_[2][1] + m2.m_[3][1]) / w,
+		(float)(v.x_ * m2.m_[0][2] + v.y_ * m2.m_[1][2] + v.z_ * m2.m_[2][2] + m2.m_[3][2]) / w
 	};
 
 	return result;

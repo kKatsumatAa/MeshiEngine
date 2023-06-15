@@ -7,16 +7,16 @@ private:
 
 
 public:
-	float x;
-	float y;
-	float z;
-	float w;
+	float x_;
+	float y_;
+	float z_;
+	float w_;
 
 	Vec4()
-		:x(0), y(0), z(0), w(0)
+		:x_(0), y_(0), z_(0), w_(0)
 	{}
 	Vec4(const float x, const float y, const float z, const float w)
-		:x(x), y(y), z(z), w(w)
+		:x_(x), y_(y), z_(z), w_(w)
 	{}
 
 	//•Ö—˜ŠÖ”

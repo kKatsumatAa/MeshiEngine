@@ -22,8 +22,8 @@ bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDis
 	XMVECTOR inter;
 
 	// 全てのコライダーと総当りチェック
-	it = colliders.begin();
-	for (; it != colliders.end(); ++it) {
+	it = colliders_.begin();
+	for (; it != colliders_.end(); ++it) {
 		BaseCollider* colA = *it;
 		//球の場合
 		if (colA->GetShapeType() == COLLISIONSHAPE_SPHERE && colA->GetIsValid() && !colA->GetIs2D()) {
@@ -100,12 +100,12 @@ void CollisionManager::CheckAllCollisions()
 	std::forward_list<BaseCollider*>::iterator itB;
 
 	//全ての組み合わせについて総当たりチェック
-	itA = colliders.begin();
-	for (; itA != colliders.end(); ++itA)
+	itA = colliders_.begin();
+	for (; itA != colliders_.end(); ++itA)
 	{
 		itB = itA;
 		++itB;
-		for (; itB != colliders.end(); ++itB)
+		for (; itB != colliders_.end(); ++itB)
 		{
 			BaseCollider* colA = *itA;
 			BaseCollider* colB = *itB;
@@ -197,5 +197,5 @@ void CollisionManager::CheckAllCollisions()
 
 void CollisionManager::Initialize()
 {
-	colliders.clear();
+	colliders_.clear();
 }

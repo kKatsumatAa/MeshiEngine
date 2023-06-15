@@ -7,9 +7,9 @@
 class Async
 {
 private:
-	bool isLoaded = false;
-	std::mutex isLoadedMutex;
-	std::thread th1;
+	bool isLoaded_ = false;
+	std::mutex isLoadedMutex_;
+	std::thread th1_;
 
 
 private:

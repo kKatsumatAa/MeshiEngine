@@ -10,10 +10,10 @@ static std::mt19937_64 engine(seed_gen());
 class Shake
 {
 private:
-	float shakeLength = 0.0f;
-	int32_t   lifeTimer = 0;
-	int32_t   lifeTimerTmp = 0;
-	float t = 0.0f;
+	float shakeLength_ = 0.0f;
+	int32_t   lifeTimer_ = 0;
+	int32_t   lifeTimerTmp_ = 0;
+	float t_ = 0.0f;
 
 private:
 	float GetRandomShakeInternal(float min, float max);

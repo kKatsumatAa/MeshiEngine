@@ -2,7 +2,7 @@
 
 float Vec3::GetLength() const
 {
-    return sqrtf(x * x + y * y + z * z);
+    return sqrtf(x_ * x_ + y_ * y_ + z_ * z_);
 }
 
 void Vec3::Normalized()
@@ -25,16 +25,16 @@ Vec3 Vec3::Cross(const Vec3& other)const
 {
     Vec3 v;
 
-    v.x = y * other.z - z * other.y;
-    v.y = z * other.x - x * other.z;
-    v.z = x * other.y - y * other.x;
+    v.x_ = y_ * other.z_ - z_ * other.y_;
+    v.y_ = z_ * other.x_ - x_ * other.z_;
+    v.z_ = x_ * other.y_ - y_ * other.x_;
 
     return v;
 }
 
 float Vec3::Dot(const Vec3& other)const
 {
-    return x * other.x + y * other.y + z * other.z;
+    return x_ * other.x_ + y_ * other.y_ + z_ * other.z_;
 }
 //--------------------------------------------------------------
 
@@ -46,23 +46,23 @@ Vec3 Vec3::operator+()
 
 Vec3& Vec3::operator+=(const Vec3& other)
 {
-    x += other.x;
-    y += other.y;
-    z += other.z;
+    x_ += other.x_;
+    y_ += other.y_;
+    z_ += other.z_;
 
     return *this;
 }
 
 Vec3 Vec3::operator-()
 {
-    return Vec3({-x,-y,-z});
+    return Vec3({-x_,-y_,-z_});
 }
 
 Vec3& Vec3::operator-=(const Vec3& other)
 {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
+    x_ -= other.x_;
+    y_ -= other.y_;
+    z_ -= other.z_;
 
     return *this;
 }
@@ -70,18 +70,18 @@ Vec3& Vec3::operator-=(const Vec3& other)
 Vec3 Vec3::operator*(float other)
 {
     Vec3 v = *this;
-    v.x *= other;
-    v.y *= other;
-    v.z *= other;
+    v.x_ *= other;
+    v.y_ *= other;
+    v.z_ *= other;
 
     return Vec3(v);
 }
 
 Vec3& Vec3::operator*=(float other)
 {
-    x *= other;
-    y *= other;
-    z *= other;
+    x_ *= other;
+    y_ *= other;
+    z_ *= other;
 
     return *this;
 }
@@ -89,18 +89,18 @@ Vec3& Vec3::operator*=(float other)
 Vec3 Vec3::operator/(float other)
 {
     Vec3 v = *this;
-    v.x /= other;
-    v.y /= other;
-    v.z /= other;
+    v.x_ /= other;
+    v.y_ /= other;
+    v.z_ /= other;
 
     return Vec3(v);
 }
 
 Vec3& Vec3::operator/=(float other)
 {
-    x /= other;
-    y /= other;
-    z /= other;
+    x_ /= other;
+    y_ /= other;
+    z_ /= other;
 
     return *this;
 }

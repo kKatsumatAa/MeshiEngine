@@ -10,9 +10,9 @@ private:
 	void SetScale();
 	void SetRot();
 	void SetTrans();
-	M4 matScale;
-	M4 matRot;
-	M4 matTrans;
+	M4 matScale_;
+	M4 matRot_;
+	M4 matTrans_;
 
 
 private:
@@ -22,11 +22,11 @@ private:
 	void RecursiveCulcParentMat(WorldMat* parent, M4& childMat);
 
 public:
-	M4 matWorld;
-	Vec3 scale = { 1.0f,1.0f,1.0f };
-	Vec3 rot = { 0,0,0 };
-	Vec3 trans = { 0,0,0 };
-	WorldMat* parent = nullptr;
+	M4 matWorld_;
+	Vec3 scale_ = { 1.0f,1.0f,1.0f };
+	Vec3 rot_ = { 0,0,0 };
+	Vec3 trans_ = { 0,0,0 };
+	WorldMat* parent_ = nullptr;
 
 	//
 	WorldMat();

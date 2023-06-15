@@ -3,17 +3,17 @@
 class Vec2
 {
 public:
-	float x;
-	float y;
+	float x_;
+	float y_;
 
 public:
 	//コンストラクタ
 	Vec2()
-		:x(0), y(0)
+		:x_(0), y_(0)
 	{}
 
 	Vec2(float x, float y)
-		:x(x), y(y)
+		:x_(x), y_(y)
 	{}
 
 	//メンバ関数

@@ -17,10 +17,10 @@ void Framework::Initialize()
 	DrawInitialize();
 
 	//ポストエフェクト//
-	postPera[0] = std::make_unique<PostPera>();
-	postPera[1] = std::make_unique<PostPera>();
-	postPera[0]->Initialize(L"Resources/image/normalImage.jpg");
-	postPera[1]->Initialize(L"Resources/image/normalImage.jpg");
+	postPera_[0] = std::make_unique<PostPera>();
+	postPera_[1] = std::make_unique<PostPera>();
+	postPera_[0]->Initialize(L"Resources/image/normalImage.jpg");
+	postPera_[1]->Initialize(L"Resources/image/normalImage.jpg");
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
@@ -34,11 +34,11 @@ void Framework::Initialize()
 	Model::StaticInitialize();
 
 	//シーン
-	sceneM = &SceneManager::GetInstance();
-	sceneM->Initialize();
+	sceneM_ = &SceneManager::GetInstance();
+	sceneM_->Initialize();
 
-	imguiM = std::make_unique<ImGuiManager>();
-	imguiM->Initialize();
+	imguiM_ = std::make_unique<ImGuiManager>();
+	imguiM_->Initialize();
 }
 
 void Framework::Finalize()
@@ -52,12 +52,12 @@ void Framework::Finalize()
 	//ウィンドウクラスを登録解除
 	WindowsApp::GetInstance().UnregisterClassA();
 
-	imguiM->Finalize();
+	imguiM_->Finalize();
 }
 
 bool Framework::Update()
 {
-	if (WindowsApp::GetInstance().MessegeRoop(msg))
+	if (WindowsApp::GetInstance().MessegeRoop(msg_))
 	{
 		return true;
 	}
@@ -67,20 +67,20 @@ bool Framework::Update()
 	PadInput::GetInstance().Update();
 
 	//更新処理
-	sceneM->Update();
+	sceneM_->Update();
 
 	//imgui
-	imguiM->Begin();
+	imguiM_->Begin();
 
 	//ポストエフェクト(imgui)
-	postPera[0]->Update();
+	postPera_[0]->Update();
 
 	//(imgui)
 	Object::StaticUpdate();
 	//(imgui)
-	sceneM->DrawImgui();
+	sceneM_->DrawImgui();
 
-	imguiM->End();
+	imguiM_->End();
 
 	return false;
 }

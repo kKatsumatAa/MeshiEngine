@@ -8,12 +8,10 @@ class ViewMat
 private:
 
 public:
-	float angle = 0.0f;//ƒJƒƒ‰‚Ì‰ñ“]Šp
-
-	XMMATRIX matView;
-	Vec3 eye;
-	Vec3 target;
-	Vec3 up;
+	XMMATRIX matView_;
+	Vec3 eye_;
+	Vec3 target_;
+	Vec3 up_;
 	
 
 	//

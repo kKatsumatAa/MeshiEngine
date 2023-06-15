@@ -8,11 +8,11 @@ class ProjectionMat
 private:
 
 public:
-	XMMATRIX matProjection;
-	float nearPos;
-	float farPos;
-	XMFLOAT2 aspect;
-	float fovY;
+	XMMATRIX matProjection_;
+	float nearPos_;
+	float farPos_;
+	XMFLOAT2 aspect_;
+	float fovY_;
 
 	//
 	ProjectionMat();

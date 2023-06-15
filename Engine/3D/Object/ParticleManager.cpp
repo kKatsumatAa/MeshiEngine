@@ -156,7 +156,7 @@ void ParticleManager::Update(ViewMat* view, ProjectionMat* projection)
 
 	ConstBufferData* constMap = nullptr;
 	result = constBuff_->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = view->matView * projection->matProjection;
+	constMap->mat = view->matView_ * projection->matProjection_;
 	constMap->matBillboard = sMatBillboard_;
 	constBuff_->Unmap(0, nullptr);
 }
@@ -426,11 +426,11 @@ void ParticleManager::CreateModel()
 void ParticleManager::UpdateMatrix(ViewMat* view, ProjectionMat* projection)
 {
 	//視点座標
-	XMVECTOR eyePosition = { view->eye.x,view->eye.y,view->eye.z };
+	XMVECTOR eyePosition = { view->eye_.x_,view->eye_.y_,view->eye_.z_ };
 	//注視点座標
-	XMVECTOR targetPosition = { view->target.x,view->target.y,view->target.z };
+	XMVECTOR targetPosition = { view->target_.x_,view->target_.y_,view->target_.z_ };
 	//（仮の）上方向
-	XMVECTOR upVector = { view->up.x,view->up.y,view->up.z };
+	XMVECTOR upVector = { view->up_.x_,view->up_.y_,view->up_.z_ };
 
 
 	//カメラのz軸求める
@@ -534,7 +534,7 @@ void ParticleManager::GenerateRandomParticle(int32_t num, int32_t lifeTime, floa
 		const float md_acc = vecPower * 0.05f;
 		acc.y = -(float)rand() / RAND_MAX * md_acc;
 
-		ParticleManager::GetInstance()->Add(lifeTime, { pos.x,pos.y,pos.z }, vel, acc, start_scale, end_scale
+		ParticleManager::GetInstance()->Add(lifeTime, { pos.x_,pos.y_,pos.z_ }, vel, acc, start_scale, end_scale
 			, start_color, end_color);
 	}
 }

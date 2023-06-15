@@ -61,7 +61,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>座標</returns>
 	inline const Vec3& GetEye() {
-		return viewMat_.eye;
+		return viewMat_.eye_;
 	}
 
 	/// <summary>
@@ -69,7 +69,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="eye">座標</param>
 	inline void SetEye(const Vec3& eye) {
-		viewMat_.eye = eye; viewDirty_ = true;
+		viewMat_.eye_ = eye; viewDirty_ = true;
 	}
 
 	/// <summary>
@@ -77,7 +77,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>座標</returns>
 	inline const Vec3& GetTarget() {
-		return viewMat_.target;
+		return viewMat_.target_;
 	}
 
 	/// <summary>
@@ -85,7 +85,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="target">座標</param>
 	inline void SetTarget(const Vec3& target) {
-		viewMat_.target = target; viewDirty_ = true;
+		viewMat_.target_ = target; viewDirty_ = true;
 	}
 
 	/// <summary>
@@ -93,7 +93,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>上方向ベクトル</returns>
 	inline const Vec3& GetUp() {
-		return viewMat_.up;
+		return viewMat_.up_;
 	}
 
 	/// <summary>
@@ -101,7 +101,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="up">上方向ベクトル</param>
 	inline void SetUp(const Vec3& up) {
-		viewMat_.up = up; viewDirty_ = true;
+		viewMat_.up_ = up; viewDirty_ = true;
 	}
 
 	/// <summary>

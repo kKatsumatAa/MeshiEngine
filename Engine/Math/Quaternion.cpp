@@ -6,30 +6,30 @@ Quaternion Quaternion::GetMultiply(const Quaternion& rhs) const
 	Quaternion   ans;
 	float   d1, d2, d3, d4;
 
-	d1 = w * rhs.w;
-	d2 = -x * rhs.x;
-	d3 = -y * rhs.y;
-	d4 = -z * rhs.z;
-	ans.w = d1 + d2 + d3 + d4;
+	d1 = w_ * rhs.w_;
+	d2 = -x_ * rhs.x_;
+	d3 = -y_ * rhs.y_;
+	d4 = -z_ * rhs.z_;
+	ans.w_ = d1 + d2 + d3 + d4;
 
 
-	d1 = y * rhs.z;
-	d2 = -z * rhs.y;
-	d3 = rhs.w * x;
-	d4 = w * rhs.x;
-	ans.x = d1 + d2 + d3 + d4;
+	d1 = y_ * rhs.z_;
+	d2 = -z_ * rhs.y_;
+	d3 = rhs.w_ * x_;
+	d4 = w_ * rhs.x_;
+	ans.x_ = d1 + d2 + d3 + d4;
 
-	d1 = z * rhs.x;
-	d2 = -x * rhs.z;
-	d3 = rhs.w * y;
-	d4 = w * rhs.y;
-	ans.y = d1 + d2 + d3 + d4;
+	d1 = z_ * rhs.x_;
+	d2 = -x_ * rhs.z_;
+	d3 = rhs.w_ * y_;
+	d4 = w_ * rhs.y_;
+	ans.y_ = d1 + d2 + d3 + d4;
 
-	d1 = x * rhs.y;
-	d2 = y * rhs.x;
-	d3 = rhs.w * z;
-	d4 = w * rhs.z;
-	ans.z = d1 + d2 + d3 + d4;
+	d1 = x_ * rhs.y_;
+	d2 = y_ * rhs.x_;
+	d3 = rhs.w_ * z_;
+	d4 = w_ * rhs.z_;
+	ans.z_ = d1 + d2 + d3 + d4;
 
 	return  Quaternion(ans);
 }
@@ -45,17 +45,17 @@ Quaternion Quaternion::GetConjugate() const
 {
 	Quaternion ans;
 
-	ans.x = -x;
-	ans.y = -y;
-	ans.z = -z;
-	ans.w = w;
+	ans.x_ = -x_;
+	ans.y_ = -y_;
+	ans.z_ = -z_;
+	ans.w_ = w_;
 
 	return Quaternion(ans);
 }
 
 float Quaternion::GetLength() const
 {
-	return sqrtf(w * w + x * x + y * y + z * z);
+	return sqrtf(w_ * w_ + x_ * x_ + y_ * y_ + z_ * z_);
 }
 
 Quaternion Quaternion::GetNormalize() const
@@ -64,10 +64,10 @@ Quaternion Quaternion::GetNormalize() const
 
 	float length = GetLength();
 
-	ans.w = w / length;
-	ans.x = x / length;
-	ans.y = y / length;
-	ans.z = z / length;
+	ans.w_ = w_ / length;
+	ans.x_ = x_ / length;
+	ans.y_ = y_ / length;
+	ans.z_ = z_ / length;
 
 	return Quaternion(ans);
 }
@@ -86,7 +86,7 @@ Quaternion Quaternion::GetInverse() const
 Quaternion Quaternion::MakeAxisAngle(const Vec3& axis, float angle)
 {
 	Vec3 ansV = axis.GetNormalized() * sinf(angle / 2.0f);
-	Quaternion ans(ansV.x, ansV.y, ansV.z, cosf(angle / 2.0f));
+	Quaternion ans(ansV.x_, ansV.y_, ansV.z_, cosf(angle / 2.0f));
 
 	return Quaternion(ans);
 }
@@ -108,20 +108,20 @@ Quaternion Quaternion::DirectionToDirection(const Vec3& u, const Vec3& v)
 
 Vec3 Quaternion::GetRotateVector(const Vec3& vector) const
 {
-	Quaternion r = { vector.x,vector.y,vector.z,0 };
+	Quaternion r = { vector.x_,vector.y_,vector.z_,0 };
 	Quaternion q = *this;
 	Quaternion q2 = GetConjugate();
 	Quaternion ans = q * r * q2;
 
-	return Vec3(ans.x, ans.y, ans.z);
+	return Vec3(ans.x_, ans.y_, ans.z_);
 }
 
 M4 Quaternion::MakeRotateMatrix() const
 {
 	M4 ans = {
-		w * w + x * x - y * y - z * z,2 * (x * y + w * z),2 * (x * z - w * y),0,
-		2 * (x * y - w * z),w * w - x * x + y * y - z * z,2 * (y * z + w * x),0,
-		2 * (x * z + w * y),2 * (y * z - w * x),w * w - x * x - y * y + z * z,0,
+		w_ * w_ + x_ * x_ - y_ * y_ - z_ * z_,2 * (x_ * y_ + w_ * z_),2 * (x_ * z_ - w_ * y_),0,
+		2 * (x_ * y_ - w_ * z_),w_ * w_ - x_ * x_ + y_ * y_ - z_ * z_,2 * (y_ * z_ + w_ * x_),0,
+		2 * (x_ * z_ + w_ * y_),2 * (y_ * z_ - w_ * x_),w_ * w_ - x_ * x_ - y_ * y_ + z_ * z_,0,
 		0,0,0,1
 	};
 
@@ -130,7 +130,7 @@ M4 Quaternion::MakeRotateMatrix() const
 
 float Quaternion::DotQuaternion(const Quaternion& rhs) const
 {
-	float ans = (w * rhs.w + x * rhs.x + y * rhs.y + z * rhs.z);
+	float ans = (w_ * rhs.w_ + x_ * rhs.x_ + y_ * rhs.y_ + z_ * rhs.z_);
 
 	return ans;
 }
@@ -144,25 +144,25 @@ Quaternion Quaternion::operator+()
 
 Quaternion& Quaternion::operator+=(const Quaternion& other)
 {
-	x += other.x;
-	y += other.y;
-	z += other.z;
-	w += other.w;
+	x_ += other.x_;
+	y_ += other.y_;
+	z_ += other.z_;
+	w_ += other.w_;
 
 	return *this;
 }
 
 Quaternion Quaternion::operator-()const
 {
-	return Quaternion({ -x,-y,-z,-w });
+	return Quaternion({ -x_,-y_,-z_,-w_ });
 }
 
 Quaternion& Quaternion::operator-=(const Quaternion& other)
 {
-	x -= other.x;
-	y -= other.y;
-	z -= other.z;
-	w -= other.w;
+	x_ -= other.x_;
+	y_ -= other.y_;
+	z_ -= other.z_;
+	w_ -= other.w_;
 
 	return *this;
 }
@@ -170,20 +170,20 @@ Quaternion& Quaternion::operator-=(const Quaternion& other)
 Quaternion Quaternion::operator*(float other)
 {
 	Quaternion ans = *this;
-	ans.x *= other;
-	ans.y *= other;
-	ans.z *= other;
-	ans.w *= other;
+	ans.x_ *= other;
+	ans.y_ *= other;
+	ans.z_ *= other;
+	ans.w_ *= other;
 
 	return Quaternion(ans);
 }
 
 Quaternion& Quaternion::operator*=(float other)
 {
-	x *= other;
-	y *= other;
-	z *= other;
-	w *= other;
+	x_ *= other;
+	y_ *= other;
+	z_ *= other;
+	w_ *= other;
 
 	return *this;
 }
@@ -191,20 +191,20 @@ Quaternion& Quaternion::operator*=(float other)
 Quaternion Quaternion::operator/(float other)
 {
 	Quaternion ans = *this;
-	ans.x /= other;
-	ans.y /= other;
-	ans.z /= other;
-	ans.w /= other;
+	ans.x_ /= other;
+	ans.y_ /= other;
+	ans.z_ /= other;
+	ans.w_ /= other;
 
 	return Quaternion(ans);
 }
 
 Quaternion& Quaternion::operator/=(float other)
 {
-	x /= other;
-	y /= other;
-	z /= other;
-	w /= other;
+	x_ /= other;
+	y_ /= other;
+	z_ /= other;
+	w_ /= other;
 
 	return *this;
 }

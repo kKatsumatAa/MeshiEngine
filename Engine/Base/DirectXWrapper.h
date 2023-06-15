@@ -7,44 +7,41 @@ class DirectXWrapper final
 {
 private:
 	//成果物系
-	ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
-	ComPtr < ID3D12CommandAllocator> commandAllocator = nullptr;
-	ComPtr < ID3D12CommandQueue> commandQueue = nullptr;
-	ComPtr<ID3D12Resource> depthBuff;
+	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
+	ComPtr < ID3D12CommandAllocator> commandAllocator_ = nullptr;
+	ComPtr < ID3D12CommandQueue> commandQueue_ = nullptr;
+	ComPtr<ID3D12Resource> depthBuff_;
 	// スワップチェーンの設定
-	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
-	ComPtr<IDXGISwapChain4> swapChain = nullptr;
+	DXGI_SWAP_CHAIN_DESC1 swapChainDesc_{};
+	ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
 	// デスクリプタヒープの設定
-	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
-	ComPtr < ID3D12DescriptorHeap> rtvHeap = nullptr;
-	// 2.描画先の変更
-		// レンダーターゲットビューのハンドルを取得
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc_{};
+	ComPtr < ID3D12DescriptorHeap> rtvHeap_ = nullptr;
+		// レンダーターゲットビューのハンドル
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle_;
 	// バックバッファ
-	std::vector< ComPtr <ID3D12Resource>> backBuffers;
+	std::vector< ComPtr <ID3D12Resource>> backBuffers_;
 	//
-	ComPtr < ID3D12DescriptorHeap> dsvHeap = nullptr;
+	ComPtr < ID3D12DescriptorHeap> dsvHeap_ = nullptr;
 
 	// フェンスの生成
-	ComPtr < ID3D12Fence> fence = nullptr;
-	uint64_t fenceVal = 0;
+	ComPtr < ID3D12Fence> fence_ = nullptr;
+	uint64_t fenceVal_ = 0;
 
-	// 1.リソースバリアで書き込み可能に変更
-	D3D12_RESOURCE_BARRIER barrierDesc{};
+	// 1.リソースバリアの設定
+	D3D12_RESOURCE_BARRIER barrierDesc_{};
 
-
-
-	//外部で参照
-	ComPtr<ID3D12Device> device = nullptr;
-	ComPtr < ID3D12GraphicsCommandList> commandList = nullptr;
+	//デバイス
+	ComPtr<ID3D12Device> device_ = nullptr;
+	ComPtr < ID3D12GraphicsCommandList> commandList_ = nullptr;
 
 	//記録時間（FPS固定
 	std::chrono::steady_clock::time_point reference_;
 
-	float clearColor[4] = { 0,0,0,0 };
+	float clearColor_[4] = { 0,0,0,0 };
 
 	//
-	HRESULT result;
+	HRESULT result_;
 
 private:
 	DirectXWrapper();
@@ -80,24 +77,23 @@ public:
 	void DrawInitialize();
 
 	//1枚目のテクスチャに描画
-	void PreDraw(const XMFLOAT4& winRGBA = { 0,0,0,0 });
+	void PreDraw();
 	void PostDraw();
 
 
 	//getter
-	ID3D12Device* GetDevice() const { return device.Get(); }
-	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
-	//ComPtr<ID3D12DescriptorHeap> GetPeraSRVHeap() const { return _peraSRVHeap; }
-	ID3D12CommandQueue* GetCommandQueue()const { return commandQueue.Get(); }
-	uint64_t& GetFenceVal() { return fenceVal; }
-	ID3D12Fence* GetFence() { return fence.Get(); }
-	ID3D12DescriptorHeap* GetRtvheap() { return rtvHeap.Get(); }
-	float* GetClearColor() { return clearColor; }
-	std::vector< ComPtr <ID3D12Resource>>& GetBackBuffer() { return backBuffers; }
-	ID3D12DescriptorHeap* GetDSVHeap() { return dsvHeap.Get(); }
+	ID3D12Device* GetDevice() const { return device_.Get(); }
+	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
+	ID3D12CommandQueue* GetCommandQueue()const { return commandQueue_.Get(); }
+	uint64_t& GetFenceVal() { return fenceVal_; }
+	ID3D12Fence* GetFence() { return fence_.Get(); }
+	ID3D12DescriptorHeap* GetRtvheap() { return rtvHeap_.Get(); }
+	float* GetClearColor() { return clearColor_; }
+	std::vector< ComPtr <ID3D12Resource>>& GetBackBuffer() { return backBuffers_; }
+	ID3D12DescriptorHeap* GetDSVHeap() { return dsvHeap_.Get(); }
 
 	//バックバッファの数を取得
-	size_t GetBackBufferCount() const { return backBuffers.size(); }
+	size_t GetBackBufferCount() const { return backBuffers_.size(); }
 };
 //画像のロード（引数にバッファ設定）
 void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuff);

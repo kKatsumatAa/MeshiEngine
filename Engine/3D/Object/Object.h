@@ -138,23 +138,23 @@ public:
 	virtual ~Object();
 
 	//位置
-	void SetTrans(const Vec3& pos) { worldMat_->trans = pos; }
-	void SetTransX(float pos) { worldMat_->trans.x = pos; }
-	void SetTransY(float pos) { worldMat_->trans.y = pos; }
-	void SetTransZ(float pos) { worldMat_->trans.z = pos; }
-	const Vec3& GetTrans() { return worldMat_->trans; }
+	void SetTrans(const Vec3& pos) { worldMat_->trans_ = pos; }
+	void SetTransX(float pos) { worldMat_->trans_.x_ = pos; }
+	void SetTransY(float pos) { worldMat_->trans_.y_ = pos; }
+	void SetTransZ(float pos) { worldMat_->trans_.z_ = pos; }
+	const Vec3& GetTrans() { return worldMat_->trans_; }
 	//スケール
-	void SetScale(const Vec3& scale) { worldMat_->scale = scale; }
-	void SetScaleX(float scale) { worldMat_->scale.x = scale; }
-	void SetScaleY(float scale) { worldMat_->scale.y = scale; }
-	void SetScaleZ(float scale) { worldMat_->scale.z = scale; }
-	const Vec3& GetScale() { return worldMat_->scale; }
+	void SetScale(const Vec3& scale) { worldMat_->scale_ = scale; }
+	void SetScaleX(float scale) { worldMat_->scale_.x_ = scale; }
+	void SetScaleY(float scale) { worldMat_->scale_.y_ = scale; }
+	void SetScaleZ(float scale) { worldMat_->scale_.z_ = scale; }
+	const Vec3& GetScale() { return worldMat_->scale_; }
 	//回転
-	void SetRot(const Vec3& rot) { worldMat_->rot = rot; }
-	void SetRotX(float rot) { worldMat_->rot.x = rot; }
-	void SetRotY(float rot) { worldMat_->rot.y = rot; }
-	void SetRotZ(float rot) { worldMat_->rot.z = rot; }
-	const Vec3& GetRot() { return worldMat_->rot; }
+	void SetRot(const Vec3& rot) { worldMat_->rot_ = rot; }
+	void SetRotX(float rot) { worldMat_->rot_.x_ = rot; }
+	void SetRotY(float rot) { worldMat_->rot_.y_ = rot; }
+	void SetRotZ(float rot) { worldMat_->rot_.z_ = rot; }
+	const Vec3& GetRot() { return worldMat_->rot_; }
 	//行列を更新
 	void CulcWorldMat() { worldMat_->SetWorld(); }
 	//ワールド行列の中身コピー
@@ -170,7 +170,7 @@ public:
 	virtual void Draw();
 
 	//ワールド行列の取得
-	const M4& GetMatWorld() { return worldMat_->matWorld; }
+	const M4& GetMatWorld() { return worldMat_->matWorld_; }
 
 	//コライダーのセット
 	void SetCollider(std::unique_ptr<BaseCollider> collider);

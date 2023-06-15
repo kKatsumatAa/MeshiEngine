@@ -8,8 +8,8 @@
 class WindowsApp final
 {
 private:
-	WNDCLASSEX w;
-	HWND hwnd;
+	WNDCLASSEX wndclassEX_;
+	HWND hwnd_;
 
 
 	//ウインドウプロシージャ(const &にするとエラー出る)
@@ -22,11 +22,11 @@ private:
 
 public:
 	//ウィンドウサイズ
-	const float window_width = 1280.0f;
-	const float window_height = 720.0f;
+	const float WINDOW_WIDTH_ = 1280.0f;
+	const float WINDOW_HEIGHT_ = 720.0f;
 
 	// ビューポート設定コマンド
-	D3D12_VIEWPORT viewport;
+	D3D12_VIEWPORT viewport_;
 
 
 	//コピーコンストラクタを無効
@@ -41,16 +41,11 @@ public:
 
 	void UnregisterClassA()
 	{
-		UnregisterClass(w.lpszClassName, w.hInstance);
+		UnregisterClass(wndclassEX_.lpszClassName, wndclassEX_.hInstance);
 	}
 
-	//void operator=(const WindowsApp& win)
-	//{
-	//	*this = win;
-	//}
-
 	//getter
-	const WNDCLASSEX& Getw() { return w; }
-	const HWND& Gethwnd() { return hwnd; }
+	const WNDCLASSEX& GetWndclassEX() { return wndclassEX_; }
+	const HWND& Gethwnd() { return hwnd_; }
 };
 

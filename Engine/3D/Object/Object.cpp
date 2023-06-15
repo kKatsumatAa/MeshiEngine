@@ -331,15 +331,15 @@ void Object::SendingMat(int32_t indexNum)
 	if (indexNum != SPRITE)
 	{
 		XMMATRIX matW;
-		matW = { (float)worldMat_->matWorld.m[0][0],(float)worldMat_->matWorld.m[0][1],(float)worldMat_->matWorld.m[0][2],(float)worldMat_->matWorld.m[0][3],
-				 (float)worldMat_->matWorld.m[1][0],(float)worldMat_->matWorld.m[1][1],(float)worldMat_->matWorld.m[1][2],(float)worldMat_->matWorld.m[1][3],
-				 (float)worldMat_->matWorld.m[2][0],(float)worldMat_->matWorld.m[2][1],(float)worldMat_->matWorld.m[2][2],(float)worldMat_->matWorld.m[2][3],
-				 (float)worldMat_->matWorld.m[3][0],(float)worldMat_->matWorld.m[3][1],(float)worldMat_->matWorld.m[3][2],(float)worldMat_->matWorld.m[3][3] };
+		matW = { (float)worldMat_->matWorld_.m_[0][0],(float)worldMat_->matWorld_.m_[0][1],(float)worldMat_->matWorld_.m_[0][2],(float)worldMat_->matWorld_.m_[0][3],
+				 (float)worldMat_->matWorld_.m_[1][0],(float)worldMat_->matWorld_.m_[1][1],(float)worldMat_->matWorld_.m_[1][2],(float)worldMat_->matWorld_.m_[1][3],
+				 (float)worldMat_->matWorld_.m_[2][0],(float)worldMat_->matWorld_.m_[2][1],(float)worldMat_->matWorld_.m_[2][2],(float)worldMat_->matWorld_.m_[2][3],
+				 (float)worldMat_->matWorld_.m_[3][0],(float)worldMat_->matWorld_.m_[3][1],(float)worldMat_->matWorld_.m_[3][2],(float)worldMat_->matWorld_.m_[3][3] };
 
-		cbt_.constMapTransform->world = matW;
-		cbt_.constMapTransform->viewproj = view_->matView * projection_->matProjection;
-		XMFLOAT3 cPos = { view_->eye.x,view_->eye.y,view_->eye.z };
-		cbt_.constMapTransform->cameraPos = cPos;
+		cbt_.constMapTransform_->world = matW;
+		cbt_.constMapTransform_->viewproj = view_->matView_ * projection_->matProjection_;
+		XMFLOAT3 cPos = { view_->eye_.x_,view_->eye_.y_,view_->eye_.z_ };
+		cbt_.constMapTransform_->cameraPos = cPos;
 	}
 }
 
@@ -469,7 +469,7 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle_, ConstBuffTransfor
 	}
 
 	//定数バッファビュー(CBV)の設定コマンド
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, cbt.constBuffTransform->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, cbt.constBuffTransform_->GetGPUVirtualAddress());
 
 	//演出フラグ
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, sEffectFlagsBuff_->GetGPUVirtualAddress());
@@ -554,7 +554,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, const uint64_t textur
 			DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 		}
 		//定数バッファビュー(CBV)の設定コマンド
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform_->GetGPUVirtualAddress());
 
 		sprite_->SpriteDraw();
 	}
@@ -570,7 +570,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, const uint64_t textur
 		sLightManager_->Draw(4);
 
 		//定数バッファビュー(CBV)の設定コマンド
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform_->GetGPUVirtualAddress());
 		//ポストエフェクトフラグ用
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, sEffectFlagsBuff_->GetGPUVirtualAddress());
 
@@ -947,8 +947,8 @@ void Object::constBuffTransfer(const XMFLOAT4& plusRGBA)
 
 void SetNormDigitalMat(XMMATRIX& mat)
 {
-	mat.r[0].m128_f32[0] = 2.0f / WindowsApp::GetInstance().window_width;
-	mat.r[1].m128_f32[1] = -2.0f / WindowsApp::GetInstance().window_height;
+	mat.r[0].m128_f32[0] = 2.0f / WindowsApp::GetInstance().WINDOW_WIDTH_;
+	mat.r[1].m128_f32[1] = -2.0f / WindowsApp::GetInstance().WINDOW_HEIGHT_;
 	mat.r[3].m128_f32[0] = -1.0f;
 	mat.r[3].m128_f32[1] = 1.0f;
 }

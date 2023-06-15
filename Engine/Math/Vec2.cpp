@@ -4,7 +4,7 @@
 
 float Vec2::GetLength() const
 {
-	return sqrtf(x * x + y * y);
+	return sqrtf(x_ * x_ + y_ * y_);
 }
 
 void Vec2::Normalized()
@@ -26,12 +26,12 @@ Vec2 Vec2::GetNormalize()
 
 float Vec2::Cross(const Vec2& other)const
 {
-	return x * other.y - y * other.x;
+	return x_ * other.y_ - y_ * other.x_;
 }
 
 float Vec2::Dot(const Vec2& other)const
 {
-	return x * other.x + y * other.y;
+	return x_ * other.x_ + y_ * other.y_;
 }
 
 
@@ -40,13 +40,13 @@ float Vec2::Dot(const Vec2& other)const
 //演算子オーバーロード
 Vec2 Vec2::operator-()
 {
-	return { -x,-y };
+	return { -x_,-y_ };
 }
 
 Vec2& Vec2::operator-=(const Vec2& other)
 {
-	x -= other.x;
-	y -= other.y;
+	x_ -= other.x_;
+	y_ -= other.y_;
 
 	return *this;
 }
@@ -59,8 +59,8 @@ Vec2 Vec2::operator+()
 
 Vec2& Vec2::operator+=(const Vec2& other)
 {
-	x += other.x;
-	y += other.y;
+	x_ += other.x_;
+	y_ += other.y_;
 
 	return *this;
 }
@@ -70,8 +70,8 @@ Vec2& Vec2::operator+=(const Vec2& other)
 Vec2 Vec2::operator*(float other)
 {
 	Vec2 v;
-	v.x = x * other;
-	v.y = y * other;
+	v.x_ = x_ * other;
+	v.y_ = y_ * other;
 
 	return v;
 }
@@ -88,8 +88,8 @@ Vec2& Vec2::operator*=(float other)
 Vec2 Vec2::operator/(float other)
 {
 	Vec2 v;
-	v.x = x / other;
-	v.y = y / other;
+	v.x_ = x_ / other;
+	v.y_ = y_ / other;
 
 	return v;
 }

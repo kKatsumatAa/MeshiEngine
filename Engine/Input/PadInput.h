@@ -26,20 +26,20 @@ private:
 	//namespace省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	HRESULT result;
-	DIJOYSTATE padData;
-	DIJOYSTATE oldPadData;
+	HRESULT result_;
+	DIJOYSTATE padData_;
+	DIJOYSTATE oldPadData_;
 
 	//キーボードデバイスの生成
-	ComPtr<IDirectInputDevice8> gamePad = nullptr;
+	ComPtr<IDirectInputDevice8> gamePad_ = nullptr;
 
-	const float stickRange = 1000;
-	const float stickRRange = 65535 / 2.0f;
+	const float STICK_RANGE_ = 1000;
+	const float STICK_R_RANGE_ = 65535 / 2.0f;
 
-	const int32_t searchCountMax = 120;
-	int32_t searchCount = 0;
+	const int32_t SEARCH_COUNT_MAX_ = 120;
+	int32_t searchCount_ = 0;
 
-	bool isActive = false;
+	bool isActive_ = false;
 
 private:
 	//接続されているか調べる(デバイス生成したりする)

@@ -31,11 +31,11 @@ void ConstBuffTransform::Initialize()
 			&cbResourceDesc,//リソース設定
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
-			IID_PPV_ARGS(&constBuffTransform));
+			IID_PPV_ARGS(&constBuffTransform_));
 		assert(SUCCEEDED(result));
 
 	}
 	//定数バッファのマッピング
-	result = constBuffTransform->Map(0, nullptr, (void**)&constMapTransform);//マッピング
+	result = constBuffTransform_->Map(0, nullptr, (void**)&constMapTransform_);//マッピング
 	assert(SUCCEEDED(result));
 }

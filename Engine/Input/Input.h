@@ -16,10 +16,10 @@ private:
 	//namespaceÈ—ª
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	HRESULT result;
+	HRESULT result_;
 
 	//DirectInput‚Ì‰Šú‰»
-	ComPtr<IDirectInput8> directInput = nullptr;
+	ComPtr<IDirectInput8> directInput_ = nullptr;
 
 private:
 	Input();
@@ -38,6 +38,6 @@ public:
 	void Update();
 
 
-	IDirectInput8* GetDirectInput() { return directInput.Get(); }
+	IDirectInput8* GetDirectInput() { return directInput_.Get(); }
 };
 

@@ -16,8 +16,11 @@ private:
 	CollisionManager(const CollisionManager&) = delete;
 	~CollisionManager() = default;
 	CollisionManager& operator=(const CollisionManager&) = delete;
+
+
+private:
 	//コライダーのリスト
-	std::forward_list<BaseCollider*> colliders;
+	std::forward_list<BaseCollider*> colliders_;
 
 
 
@@ -31,7 +34,7 @@ public://関数
 	/// <param name="collider"></param>
 	inline void AddCollider(BaseCollider* collider)
 	{
-		colliders.push_front(collider);
+		colliders_.push_front(collider);
 	}
 
 	/// <summary>
@@ -40,7 +43,7 @@ public://関数
 	/// <param name="collider"></param>
 	inline void RemoveCollider(BaseCollider* collider)
 	{
-		colliders.remove(collider);
+		colliders_.remove(collider);
 	}
 
 	/// <summary>

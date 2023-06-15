@@ -11,19 +11,19 @@ float Shake::GetRandomShakeInternal(float min, float max)
 
 void Shake::SetRandomLength(float length)
 {
-	shakeLength = length;
+	shakeLength_ = length;
 }
 
 void Shake::SetLifeTime(int32_t time)
 {
-	lifeTimer = time;
-	lifeTimerTmp = time;
+	lifeTimer_ = time;
+	lifeTimerTmp_ = time;
 }
 
 void Shake::SetShake(int32_t time, float length)
 {
 
-	if (time > lifeTimer)
+	if (time > lifeTimer_)
 	{
 		SetLifeTime(time);
 		SetRandomLength(length);
@@ -32,12 +32,12 @@ void Shake::SetShake(int32_t time, float length)
 
 float Shake::GetShake()
 {
-	return  GetRandomShakeInternal(-shakeLength * t, shakeLength * t);
+	return  GetRandomShakeInternal(-shakeLength_ * t_, shakeLength_ * t_);
 }
 
 bool Shake::GetIsShaking()
 {
-	if (lifeTimer > 0)
+	if (lifeTimer_ > 0)
 	{
 		return true;
 	}
@@ -47,19 +47,19 @@ bool Shake::GetIsShaking()
 
 void Shake::Initialize()
 {
-	shakeLength = 0.0f;
-	lifeTimer = 0;
-	lifeTimerTmp = 0;
-	t = 0.0f;
+	shakeLength_ = 0.0f;
+	lifeTimer_ = 0;
+	lifeTimerTmp_ = 0;
+	t_ = 0.0f;
 
 }
 
 void Shake::Update()
 {
-	if (lifeTimer != 0 && lifeTimerTmp != 0)
+	if (lifeTimer_ != 0 && lifeTimerTmp_ != 0)
 	{
-		lifeTimer--;
+		lifeTimer_--;
 
-		t = (float)lifeTimer / (float)lifeTimerTmp;
+		t_ = (float)lifeTimer_ / (float)lifeTimerTmp_;
 	}
 }

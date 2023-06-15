@@ -28,9 +28,9 @@ public:
 	void Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle,  ID3D12Device& device,
 		const D3D12_DESCRIPTOR_HEAP_DESC& heapDesc);
 
-	std::vector<float> weights;
+	std::vector<float> weights_;
 
-	ComPtr <ID3D12Resource> buff;
+	ComPtr <ID3D12Resource> buff_;
 };
 
 

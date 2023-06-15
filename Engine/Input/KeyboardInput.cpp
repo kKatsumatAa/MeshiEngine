@@ -3,18 +3,18 @@
 KeyboardInput::KeyboardInput()
 {
 	//キーボードデバイスの生成
-	result = Input::GetInstance().GetDirectInput()->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
-	assert(SUCCEEDED(result));
+	result_ = Input::GetInstance().GetDirectInput()->CreateDevice(GUID_SysKeyboard, &keyboard_, NULL);
+	assert(SUCCEEDED(result_));
 
 	//入力データ形式のセット
-	result = keyboard->SetDataFormat(&c_dfDIKeyboard);
-	assert(SUCCEEDED(result));
+	result_ = keyboard_->SetDataFormat(&c_dfDIKeyboard);
+	assert(SUCCEEDED(result_));
 
 	//排他制御レベルのリセット
-	result = keyboard->SetCooperativeLevel(
+	result_ = keyboard_->SetCooperativeLevel(
 		WindowsApp::GetInstance().Gethwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	//画面が手前にあるとき入力受付｜デバイスをこのアプリだけで専有しない｜Windowsキーを無効
-	assert(SUCCEEDED(result));
+	assert(SUCCEEDED(result_));
 }
 
 KeyboardInput::~KeyboardInput()
@@ -30,10 +30,10 @@ KeyboardInput& KeyboardInput::GetInstance()
 void KeyboardInput::Update()
 {
 	//前回のキー情報
-	memcpy(oldkey, key, sizeof(key));
+	memcpy(oldkey_, key_, sizeof(key_));
 
 	//キーボード情報の取得開始
-	keyboard->Acquire();
+	keyboard_->Acquire();
 	//全キーの入力情報を取得
-	keyboard->GetDeviceState(sizeof(key), key);
+	keyboard_->GetDeviceState(sizeof(key_), key_);
 }

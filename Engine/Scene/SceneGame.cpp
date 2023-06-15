@@ -10,14 +10,14 @@ void SceneGame::Finalize()
 //---------------------------------------------------------------------------------------
 void SceneGame::Initialize()
 {
-	sceneM->draw[5].PlayReverseAnimation(sceneM->modelFBX, true);
+	sceneM_->draw_[5].PlayReverseAnimation(sceneM_->modelFBX_, true);
 
 	//initializeの度,毎回やっちゃうとおかしくなる
 	{
-		objAndModels.clear();
+		objAndModels_.clear();
 
 		//レベルデータからオブジェクトを生成、配置
-		for (auto& objData : JsonLevelLoader::Getinstance().levelData->objects)
+		for (auto& objData : JsonLevelLoader::Getinstance().levelData_->objects)
 		{
 			//ファイル名から登録済みモデルを検索
 			Model* model = ModelManager::GetInstance().LoadModel(objData->fileName);
@@ -27,7 +27,7 @@ void SceneGame::Initialize()
 			newObj->SetWorldMat_(*objData->worldMat.get());
 
 			//セットで登録
-			objAndModels.insert(std::make_pair(std::move(newObj), model));
+			objAndModels_.insert(std::make_pair(std::move(newObj), model));
 		}
 	}
 
@@ -51,25 +51,25 @@ void SceneGame::Update()
 
 void SceneGame::Draw()
 {
-	for (std::map<std::unique_ptr<Object>, std::unique_ptr<Model>>::iterator it = objAndModels.begin(); it != objAndModels.end(); it++)
+	for (std::map<std::unique_ptr<Object>, std::unique_ptr<Model>>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
 		Model* model = it->second.get();
 
-		obj->DrawModel(&sceneM->camera->viewMat_, &sceneM->camera->projectionMat_, model);
+		obj->DrawModel(&sceneM_->camera_->viewMat_, &sceneM_->camera_->projectionMat_, model);
 	}
 
-	sceneM->draw[6].DrawCube3D(&sceneM->camera->viewMat_, &sceneM->camera->projectionMat_);
+	sceneM_->draw_[6].DrawCube3D(&sceneM_->camera_->viewMat_, &sceneM_->camera_->projectionMat_);
 
 	//最後に描画しないと映らない
 	//ParticleManager::GetInstance()->Draw(sceneM->texhandle[1]);
 
-	sceneM->draw[5].DrawFBX(&sceneM->camera->viewMat_,&sceneM->camera->projectionMat_,sceneM->modelFBX,{10.5f,10.5f,10.5f,10.0f});
+	sceneM_->draw_[5].DrawFBX(&sceneM_->camera_->viewMat_,&sceneM_->camera_->projectionMat_,sceneM_->modelFBX_,{10.5f,10.5f,10.5f,10.0f});
 }
 
 void SceneGame::DrawSprite()
 {
-	sceneM->debugText.Print("[1]", 10, 10);
+	sceneM_->debugText_.Print("[1]", 10, 10);
 }
 
 void SceneGame::DrawImgui()
