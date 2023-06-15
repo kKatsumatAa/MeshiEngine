@@ -53,7 +53,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>ビルボード行列</returns>
 	inline const XMMATRIX& GetBillboardMatrix() {
-		return matBillboard;
+		return matBillboard_;
 	}
 
 	/// <summary>
@@ -61,7 +61,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>座標</returns>
 	inline const Vec3& GetEye() {
-		return viewMat.eye;
+		return viewMat_.eye;
 	}
 
 	/// <summary>
@@ -69,7 +69,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="eye">座標</param>
 	inline void SetEye(const Vec3& eye) {
-		this->viewMat.eye = eye; viewDirty = true;
+		viewMat_.eye = eye; viewDirty_ = true;
 	}
 
 	/// <summary>
@@ -77,7 +77,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>座標</returns>
 	inline const Vec3& GetTarget() {
-		return viewMat.target;
+		return viewMat_.target;
 	}
 
 	/// <summary>
@@ -85,7 +85,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="target">座標</param>
 	inline void SetTarget(const Vec3& target) {
-		this->viewMat.target = target; viewDirty = true;
+		viewMat_.target = target; viewDirty_ = true;
 	}
 
 	/// <summary>
@@ -93,7 +93,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>上方向ベクトル</returns>
 	inline const Vec3& GetUp() {
-		return viewMat.up;
+		return viewMat_.up;
 	}
 
 	/// <summary>
@@ -101,7 +101,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="up">上方向ベクトル</param>
 	inline void SetUp(const Vec3& up) {
-		this->viewMat.up = up; viewDirty = true;
+		viewMat_.up = up; viewDirty_ = true;
 	}
 
 	/// <summary>
@@ -122,22 +122,22 @@ public: // メンバ関数
 	void MoveVector(const XMVECTOR& move);
 
 protected: // メンバ変数
-	Shake shake;
+	Shake shake_;
 
 	// ビルボード行列
-	XMMATRIX matBillboard = DirectX::XMMatrixIdentity();
+	XMMATRIX matBillboard_ = DirectX::XMMatrixIdentity();
 	// Y軸回りビルボード行列
-	XMMATRIX matBillboardY = DirectX::XMMatrixIdentity();
+	XMMATRIX matBillboardY_ = DirectX::XMMatrixIdentity();
 	//合成
-	XMMATRIX matViewProjection = DirectX::XMMatrixIdentity();
+	XMMATRIX matViewProjection_ = DirectX::XMMatrixIdentity();
 	// ビュー行列ダーティフラグ
-	bool viewDirty = false;
+	bool viewDirty_ = false;
 	// 射影行列ダーティフラグ
-	bool projectionDirty = false;
+	bool projectionDirty_ = false;
 
 public:
-	ViewMat viewMat;
-	ProjectionMat projectionMat;
+	ViewMat viewMat_;
+	ProjectionMat projectionMat_;
 };
 
 

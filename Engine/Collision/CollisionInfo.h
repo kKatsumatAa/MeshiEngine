@@ -12,9 +12,9 @@ struct CollisionInfo
 {
 public:
 	CollisionInfo(Object* object, BaseCollider* collider, const DirectX::XMVECTOR& inter) {
-		this->object = object;
-		this->collider = collider;
-		this->inter = inter;
+		object = object;
+		collider = collider;
+		inter = inter;
 	}
 
 	// 衝突相手のオブジェクト

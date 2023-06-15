@@ -51,7 +51,7 @@ public:
 
 public://定数
 	//ボーンインデックス（影響を受けるボーン）の最大数
-	static const int32_t MAX_BONE_INDICES = 4;//hlslのfloat4に対応するため"4"
+	static const int32_t S_MAX_BONE_INDICES_ = 4;//hlslのfloat4に対応するため"4"
 
 public://サブクラス
 	//頂点データ構造体
@@ -60,15 +60,15 @@ public://サブクラス
 		DirectX::XMFLOAT3 pos;//座標
 		DirectX::XMFLOAT3 normal;//法線ベクトル
 		DirectX::XMFLOAT2 uv;//uv座標
-		uint32_t boneIndex[MAX_BONE_INDICES] = { 0 };//影響を受けるボーン　番号
-		float boneWeight[MAX_BONE_INDICES] = { 1.0f,0,0,0 };//ボーン　重み
+		uint32_t boneIndex[S_MAX_BONE_INDICES_] = { 0 };//影響を受けるボーン　番号
+		float boneWeight[S_MAX_BONE_INDICES_] = { 1.0f,0,0,0 };//ボーン　重み
 	};
 
 	//ボーン構造体
 	struct Bone
 	{
 		//名前
-		std::string name;
+		std::string name_;
 		//初期姿勢の逆行列
 		DirectX::XMMATRIX invInitialPose;
 		//クラスター(FBX側のボーン情報)
@@ -76,45 +76,45 @@ public://サブクラス
 		//コンストラクタ
 		Bone(const std::string& name)
 		{
-			this->name = name;
+			name_ = name;
 		}
 	};
 
 #pragma region 変数
 private:
 	//モデル名
-	std::string name;
+	std::string name_;
 	//ノード行列
-	std::vector<Node> nodes;
+	std::vector<Node> nodes_;
 	//メッシュを持つノード
-	Node* meshNode = nullptr;
+	Node* meshNode_ = nullptr;
 	//頂点データ配列
-	std::vector<VertexPosNormalUvSkin> vertices;
+	std::vector<VertexPosNormalUvSkin> vertices_;
 	//頂点インデックス配列
-	std::vector<uint16_t> indices;
+	std::vector<uint16_t> indices_;
 
 	//頂点バッファ
-	ComPtr<ID3D12Resource> vertBuff;
+	ComPtr<ID3D12Resource> vertBuff_;
 	//インデックスバッファ
-	ComPtr<ID3D12Resource> indexBuff;
+	ComPtr<ID3D12Resource> indexBuff_;
 	//テクスチャバッファ
-	ComPtr<ID3D12Resource> texBuff;
+	ComPtr<ID3D12Resource> texBuff_;
 	//頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView = {};
+	D3D12_VERTEX_BUFFER_VIEW vbView_ = {};
 	//インデックスバッファビュー
-	D3D12_INDEX_BUFFER_VIEW ibView = {};
+	D3D12_INDEX_BUFFER_VIEW ibView_ = {};
 	//SRV用デスクリプタヒープ
-	ComPtr<ID3D12DescriptorHeap> descHeapSRV;
+	ComPtr<ID3D12DescriptorHeap> descHeapSRV_;
 
 	//ボーン配列
-	std::vector<Bone> bones;
+	std::vector<Bone> bones_;
 
 	//FBXシーン
-	FbxScene* fbxScene = nullptr;
+	FbxScene* fbxScene_ = nullptr;
 
 public:
 	//アンビエントなど
-	std::unique_ptr<Material> material;
+	std::unique_ptr<Material> material_;
 
 
 #pragma endregion
@@ -127,7 +127,7 @@ public:
 	~ModelFBX();
 
 	//モデルの変形行列を取得
-	const XMMATRIX& GetModelFBXTransform() { return meshNode->globalTransform; }
+	const XMMATRIX& GetModelFBXTransform() { return meshNode_->globalTransform; }
 
 	//各種バッファ生成
 	void CreateBuffers();
@@ -137,9 +137,9 @@ public:
 
 public:
 	//getter
-	std::vector<Bone>& GetBones() { return bones; }
+	std::vector<Bone>& GetBones() { return bones_; }
 
-	FbxScene* GetFbxScene() { return fbxScene; }
+	FbxScene* GetFbxScene() { return fbxScene_; }
 
 #pragma endregion
 };

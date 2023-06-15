@@ -36,7 +36,7 @@ void SceneGame::Initialize()
 void SceneGame::Update()
 {
 	//ParticleManager::GetInstance()->GenerateRandomParticle(2, 30, 1.0f, { 0,30,0 }, 100.0f, 0);
-	//ParticleManager::GetInstance()->Update(&sceneM->camera->viewMat, &sceneM->camera->projectionMat);
+	//ParticleManager::GetInstance()->Update(&sceneM->camera->viewMat_, &sceneM->camera->projectionMat_);
 
 	//ImGui::ShowDemoWindow();
 
@@ -56,15 +56,15 @@ void SceneGame::Draw()
 		Object* obj = it->first.get();
 		Model* model = it->second.get();
 
-		obj->DrawModel(&sceneM->camera->viewMat, &sceneM->camera->projectionMat, model);
+		obj->DrawModel(&sceneM->camera->viewMat_, &sceneM->camera->projectionMat_, model);
 	}
 
-	sceneM->draw[6].DrawCube3D(&sceneM->camera->viewMat, &sceneM->camera->projectionMat);
+	sceneM->draw[6].DrawCube3D(&sceneM->camera->viewMat_, &sceneM->camera->projectionMat_);
 
 	//ÅŒã‚É•`‰æ‚µ‚È‚¢‚Æ‰f‚ç‚È‚¢
 	//ParticleManager::GetInstance()->Draw(sceneM->texhandle[1]);
 
-	sceneM->draw[5].DrawFBX(&sceneM->camera->viewMat,&sceneM->camera->projectionMat,sceneM->modelFBX,{10.5f,10.5f,10.5f,10.0f});
+	sceneM->draw[5].DrawFBX(&sceneM->camera->viewMat_,&sceneM->camera->projectionMat_,sceneM->modelFBX,{10.5f,10.5f,10.5f,10.0f});
 }
 
 void SceneGame::DrawSprite()

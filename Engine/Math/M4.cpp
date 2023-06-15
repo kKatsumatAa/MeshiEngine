@@ -126,7 +126,7 @@ void M4::SetInverseMatrix()
 	{
 		for (int32_t j = 0; j < 4; j++)
 		{
-			m[i * 4 + j] = this->m[i][j];
+			m[i * 4 + j] = m[i][j];
 		}
 	}
 
@@ -253,7 +253,7 @@ void M4::SetInverseMatrix()
 	{
 		for (int32_t j = 0; j < 4; j++)
 		{
-			this->m[i][j] = inv[i * 4 + j] * det;
+			m[i][j] = inv[i * 4 + j] * det;
 		}
 	}
 }

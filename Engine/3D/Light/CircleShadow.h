@@ -32,45 +32,45 @@ public://サブクラス
 
 
 public://メンバ関数
-	inline void SetDir(const XMVECTOR& dir) { this->dir = DirectX::XMVector3Normalize(dir); }
-	inline const XMVECTOR& GetDir() { return dir; }
+	inline void SetDir(const XMVECTOR& dir) { dir_ = DirectX::XMVector3Normalize(dir); }
+	inline const XMVECTOR& GetDir() { return dir_; }
 
-	inline void SetCasterPos(const XMFLOAT3& casterPos) { this->casterPos = casterPos; }
-	inline const XMFLOAT3& GetCasterPos() { return casterPos; }
+	inline void SetCasterPos(const XMFLOAT3& casterPos) { casterPos_ = casterPos; }
+	inline const XMFLOAT3& GetCasterPos() { return casterPos_; }
 
-	inline void SetDistanceCasterLight(const float distanceCasterLight) { this->distanceCasterLight = distanceCasterLight; }
-	inline const float GetDistanceCasterLight() { return distanceCasterLight; }
+	inline void SetDistanceCasterLight(const float distanceCasterLight) { distanceCasterLight_ = distanceCasterLight; }
+	inline const float GetDistanceCasterLight() { return distanceCasterLight_; }
 
-	inline void SetAtten(const XMFLOAT3& atten) { this->atten = atten; }
-	inline const XMFLOAT3& GetAtten() { return atten; }
+	inline void SetAtten(const XMFLOAT3& atten) { atten_ = atten; }
+	inline const XMFLOAT3& GetAtten() { return atten_; }
 
 	inline void SetFactorAngleCos(const XMFLOAT2& FactorAngleCos) {
-		this->factorAngleCos.x = cosf(DirectX::XMConvertToRadians(FactorAngleCos.x));
-		this->factorAngleCos.y = cosf(DirectX::XMConvertToRadians(FactorAngleCos.y));
+		factorAngleCos_.x = cosf(DirectX::XMConvertToRadians(FactorAngleCos.x));
+		factorAngleCos_.y = cosf(DirectX::XMConvertToRadians(FactorAngleCos.y));
 	};
 	inline const XMFLOAT2& GetFactorAngleCos() {
-		return factorAngleCos;
+		return factorAngleCos_;
 	};
 
 	inline void SetLightActive(bool active) {
-		this->active = active;
+		active_ = active;
 	};
 	inline const bool GetLightActive() {
-		return active;
+		return active_;
 	};
 
 private://メンバ変数
 	//方向（単位ベクトル）
-	XMVECTOR dir = { 1.0f,0,0 };
+	XMVECTOR dir_ = { 1.0f,0,0 };
 	//キャスターとライトの距離
-	float distanceCasterLight = 100.0f;
+	float distanceCasterLight_ = 100.0f;
 	//キャスター座標（ワールド座標系）
-	XMFLOAT3 casterPos = { 0,0,0 };
+	XMFLOAT3 casterPos_ = { 0,0,0 };
 	//距離減衰係数
-	XMFLOAT3 atten = { 0.5f,0.6f,0.0f };
+	XMFLOAT3 atten_ = { 0.5f,0.6f,0.0f };
 	//減衰角度
-	XMFLOAT2 factorAngleCos = { 0.2f,0.5f };
+	XMFLOAT2 factorAngleCos_ = { 0.2f,0.5f };
 	//有効フラグ
-	bool active = false;
+	bool active_ = false;
 };
 

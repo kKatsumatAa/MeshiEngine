@@ -14,23 +14,23 @@ private://エイリアス
 
 private://変数
 	//fbxマネージャー(sdkを使うのに必要)
-	FbxManager* fbxManager = nullptr;
+	FbxManager* fbxManager_ = nullptr;
 	//fbxインポーター(.fbxを読み込むのに必要)
-	FbxImporter* fbxImporter = nullptr;
+	FbxImporter* fbxImporter_ = nullptr;
 
 	//テクスチャがない場合の標準テクスチャファイル名
-	static const string defaultTexFileName;
+	static const string S_DEFAULT_TEX_FILE_NAME_;
 
 public://定数
 	//モデル格納ルートパス
-	static const string baseDirectory;
+	static const string S_BASE_DIRECTORY_;
 
 
 private://関数
 	// privateなコンストラクタ（シングルトンパターン）
 	FbxLoader() = default;
 	// privateなデストラクタ（シングルトンパターン）
-	~FbxLoader() = default;
+	~FbxLoader();
 	// コピーコンストラクタを禁止（シングルトンパターン）
 	FbxLoader(const FbxLoader& obj) = delete;
 	// コピー代入演算子を禁止（シングルトンパターン）
@@ -61,7 +61,7 @@ public:
 	std::unique_ptr<ModelFBX> LoadModelFromFile(const string& modelName);
 
 	/// <summary>
-	/// 再帰的にノード攻勢を解析
+	/// 再帰的にノード構成を解析
 	/// </summary>
 	/// <param name="model">読み込み先モデルオブジェクト</param>
 	/// <param name="fbxNode">解析対象のノード</param>

@@ -1,9 +1,74 @@
 #include "Primitive.h"
 #include "Util.h"
 
+static uint16_t sIndicesBox[6] =
+{
+	0,1,2,//三角形1つ目
+	2,1,3,//三角形2つ目
+};
+static uint16_t sIndicesTriangle[3] =
+{
+	0,1,2//三角形2つ目
+};
+static uint16_t sIndicesCube[36] =
+{
+	//前
+	0,1,2,//三角形1つ目
+	2,1,3,//三角形2つ目
+	//奥
+	6,5,4,//三角形1つ目
+	7,5,6,//三角形2つ目
+	//上
+	10,9,8,//三角形1つ目
+	11,9,10,//三角形2つ目
+	//下
+	12,13,14,//三角形1つ目
+	14,13,15,//三角形2つ目
+	//左
+	16,17,18,//三角形1つ目
+	18,17,19,//三角形2つ目
+	//右
+	22,21,20,//三角形1つ目
+	23,21,22,//三角形2つ目
+};
+
+static uint16_t sIndicesCircle[] =
+{
+	2,1,0,
+	3,2,0,
+	4,3,0,
+	5,4,0,
+	6,5,0,
+	7,6,0,
+	8,7,0,
+	9,8,0,
+	10,9,0,
+	11,10,0,
+	12,11,0,
+	13,12,0,
+	14,13,0,
+	15,14,0,
+	16,15,0,
+	17,16,0,
+	18,17,0,
+	19,18,0,
+	20,19,0,
+	21,20,0,
+	22,21,0,
+	23,22,0,
+};
+
+static uint16_t sIndicesLine[2] =
+{
+	0,1//三角形2つ目
+};
+
+static uint16_t sIndicesSphere[Primitive::S_SPHERE_INDEX_NUM * 36];
 
 
 uint32_t sizeVB;
+
+//---------------------------------------------
 
 void Primitive::Initialize()
 {
@@ -23,80 +88,80 @@ void Primitive::InitializeTriangle()
 	float angle2 = pi * 2.0f;
 	float angle3 = pi * 2.0f + pi * 2.0f / 3.0f;
 
-	verticesTriangle[0] = { {sinf(angle),cosf(angle),0},{verticesTriangle[0].normal},{0.0f,1.0f} };//左下
-	verticesTriangle[1] = { {0,cosf(angle2),0},{verticesTriangle[1].normal},{0.5f,0.0f} };//上
-	verticesTriangle[2] = { {sinf(angle3),cosf(angle3),0},{verticesTriangle[2].normal},{1.0f,1.0f} };//右下
+	verticesTriangle_[0] = { {sinf(angle),cosf(angle),0},{verticesTriangle_[0].normal},{0.0f,1.0f} };//左下
+	verticesTriangle_[1] = { {0,cosf(angle2),0},{verticesTriangle_[1].normal},{0.5f,0.0f} };//上
+	verticesTriangle_[2] = { {sinf(angle3),cosf(angle3),0},{verticesTriangle_[2].normal},{1.0f,1.0f} };//右下
 
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<uint32_t>(sizeof(verticesTriangle[0]) * _countof(verticesTriangle));
+	sizeVB = static_cast<uint32_t>(sizeof(verticesTriangle_[0]) * _countof(verticesTriangle_));
 
 	//頂点バッファの設定		//ヒープ設定
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
+	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(TextureManager::GetInstance().resDesc, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB);
 
 	//頂点バッファの生成
-	BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &vertBuffTriangle);
+	BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &vertBuffTriangle_);
 
 	// 頂点バッファビューの作成
 	// GPU仮想アドレス
-	vbTriangleView.BufferLocation = vertBuffTriangle->GetGPUVirtualAddress();
+	vbTriangleView_.BufferLocation = vertBuffTriangle_->GetGPUVirtualAddress();
 	// 頂点バッファのサイズ
-	vbTriangleView.SizeInBytes = sizeVB;
+	vbTriangleView_.SizeInBytes = sizeVB;
 	// 頂点1つ分のデータサイズ
-	vbTriangleView.StrideInBytes = sizeof(verticesTriangle[0]);
+	vbTriangleView_.StrideInBytes = sizeof(verticesTriangle_[0]);
 
 	{
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(indicesTriangle));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesTriangle));
 
 		//リソース設定
-		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
+		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
 		//インデックスバッファの作成
 		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int32_t i = 0; i < _countof(indicesTriangle); i++)
+		for (int32_t i = 0; i < _countof(sIndicesTriangle); i++)
 		{
-			indexMap[i] = indicesTriangle[i];//インデックスをコピー
+			indexMap[i] = sIndicesTriangle[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
 		indexBuff->Unmap(0, nullptr);
 
 		//インデックスバッファビューの作成
-		ibViewTriangle.BufferLocation = indexBuff->GetGPUVirtualAddress();
-		ibViewTriangle.Format = DXGI_FORMAT_R16_UINT;
-		ibViewTriangle.SizeInBytes = sizeIB;
+		ibViewTriangle_.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibViewTriangle_.Format = DXGI_FORMAT_R16_UINT;
+		ibViewTriangle_.SizeInBytes = sizeIB;
 	}
 
 	//06_03
 	{
-		for (int32_t i = 0; i < _countof(indicesTriangle) / 3; i++)
+		for (int32_t i = 0; i < _countof(sIndicesTriangle) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = indicesTriangle[i * 3 + 0];
-			uint16_t index1 = indicesTriangle[i * 3 + 1];
-			uint16_t index2 = indicesTriangle[i * 3 + 2];
+			uint16_t index0 = sIndicesTriangle[i * 3 + 0];
+			uint16_t index1 = sIndicesTriangle[i * 3 + 1];
+			uint16_t index2 = sIndicesTriangle[i * 3 + 2];
 			//三角形を構成する頂点座標をベクトルに代入
-			XMVECTOR p0 = XMLoadFloat3(&verticesTriangle[index0].pos);
-			XMVECTOR p1 = XMLoadFloat3(&verticesTriangle[index1].pos);
-			XMVECTOR p2 = XMLoadFloat3(&verticesTriangle[index2].pos);
+			XMVECTOR p0 = XMLoadFloat3(&verticesTriangle_[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&verticesTriangle_[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&verticesTriangle_[index2].pos);
 			//p0->p1ベクトル、p0->p2ベクトルを計算
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
 			//外積（垂直なベクトル）
 			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
 			//求めた法線を頂点データに代入
-			XMStoreFloat3(&verticesTriangle[index0].normal, normal);
-			XMStoreFloat3(&verticesTriangle[index1].normal, normal);
-			XMStoreFloat3(&verticesTriangle[index2].normal, normal);
+			XMStoreFloat3(&verticesTriangle_[index0].normal, normal);
+			XMStoreFloat3(&verticesTriangle_[index1].normal, normal);
+			XMStoreFloat3(&verticesTriangle_[index2].normal, normal);
 		}
 	}
 }
@@ -106,74 +171,74 @@ void Primitive::InitializeBox()
 	HRESULT result = {};
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<uint32_t>(sizeof(verticesBox[0]) * _countof(verticesBox));
+	sizeVB = static_cast<uint32_t>(sizeof(verticesBox_[0]) * _countof(verticesBox_));
 
 	//頂点バッファの設定		//ヒープ設定
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
+	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(TextureManager::GetInstance().resDesc, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB);
 
 	//頂点バッファの生成
-	BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &vertBuffBox);
+	BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &vertBuffBox_);
 
 	// 頂点バッファビューの作成
 	// GPU仮想アドレス
-	vbBoxView.BufferLocation = vertBuffBox->GetGPUVirtualAddress();
+	vbBoxView_.BufferLocation = vertBuffBox_->GetGPUVirtualAddress();
 	// 頂点バッファのサイズ
-	vbBoxView.SizeInBytes = sizeVB;
+	vbBoxView_.SizeInBytes = sizeVB;
 	// 頂点1つ分のデータサイズ
-	vbBoxView.StrideInBytes = sizeof(verticesBox[0]);
+	vbBoxView_.StrideInBytes = sizeof(verticesBox_[0]);
 
 	{
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(indicesBox));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesBox));
 
 		//リソース設定
-		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
+		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
 		//インデックスバッファの作成
 		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int32_t i = 0; i < _countof(indicesBox); i++)
+		for (int32_t i = 0; i < _countof(sIndicesBox); i++)
 		{
-			indexMap[i] = indicesBox[i];//インデックスをコピー
+			indexMap[i] = sIndicesBox[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
 		indexBuff->Unmap(0, nullptr);
 
 		//インデックスバッファビューの作成
-		ibViewBox.BufferLocation = indexBuff->GetGPUVirtualAddress();
-		ibViewBox.Format = DXGI_FORMAT_R16_UINT;
-		ibViewBox.SizeInBytes = sizeIB;
+		ibViewBox_.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibViewBox_.Format = DXGI_FORMAT_R16_UINT;
+		ibViewBox_.SizeInBytes = sizeIB;
 	}
 
 	//06_03
 	{
-		for (int32_t i = 0; i < _countof(indicesBox) / 3; i++)
+		for (int32_t i = 0; i < _countof(sIndicesBox) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = indicesBox[i * 3 + 0];
-			uint16_t index1 = indicesBox[i * 3 + 1];
-			uint16_t index2 = indicesBox[i * 3 + 2];
+			uint16_t index0 = sIndicesBox[i * 3 + 0];
+			uint16_t index1 = sIndicesBox[i * 3 + 1];
+			uint16_t index2 = sIndicesBox[i * 3 + 2];
 			//三角形を構成する頂点座標をベクトルに代入
-			XMVECTOR p0 = XMLoadFloat3(&verticesBox[index0].pos);
-			XMVECTOR p1 = XMLoadFloat3(&verticesBox[index1].pos);
-			XMVECTOR p2 = XMLoadFloat3(&verticesBox[index2].pos);
+			XMVECTOR p0 = XMLoadFloat3(&verticesBox_[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&verticesBox_[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&verticesBox_[index2].pos);
 			//p0->p1ベクトル、p0->p2ベクトルを計算
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
 			//外積（垂直なベクトル）
 			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
 			//求めた法線を頂点データに代入
-			XMStoreFloat3(&verticesBox[index0].normal, normal);
-			XMStoreFloat3(&verticesBox[index1].normal, normal);
-			XMStoreFloat3(&verticesBox[index2].normal, normal);
+			XMStoreFloat3(&verticesBox_[index0].normal, normal);
+			XMStoreFloat3(&verticesBox_[index1].normal, normal);
+			XMStoreFloat3(&verticesBox_[index2].normal, normal);
 		}
 	}
 }
@@ -182,84 +247,84 @@ void Primitive::InitializeCircle()
 {
 	HRESULT result = {};
 
-	verticesCircle[0].pos = { 0.0f,0.0f,0.0f };
+	verticesCircle_[0].pos = { 0.0f,0.0f,0.0f };
 
-	static float count = _countof(verticesCircle) - 2;//中心点と初期の点はカウントしない
+	static float count = _countof(verticesCircle_) - 2;//中心点と初期の点はカウントしない
 
-	for (int32_t i = 1; i < _countof(verticesCircle); i++)
+	for (int32_t i = 1; i < _countof(verticesCircle_); i++)
 	{
-		verticesCircle[i].pos = { 1.0f * cosf(AngletoRadi(360 / count) * (i - 1)),1.0f * sinf(AngletoRadi(360 / count) * (i - 1)),0 };
+		verticesCircle_[i].pos = { 1.0f * cosf(AngletoRadi(360 / count) * (i - 1)),1.0f * sinf(AngletoRadi(360 / count) * (i - 1)),0 };
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<uint32_t>(sizeof(verticesCircle[0]) * _countof(verticesCircle));
+	sizeVB = static_cast<uint32_t>(sizeof(verticesCircle_[0]) * _countof(verticesCircle_));
 
 	//頂点バッファの設定		//ヒープ設定
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
+	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(TextureManager::GetInstance().resDesc, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB);
 
 	//頂点バッファの生成
-	BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &vertBuffCircle);
+	BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &vertBuffCircle_);
 
 	// 頂点バッファビューの作成
 	// GPU仮想アドレス
-	vbCircleView.BufferLocation = vertBuffCircle->GetGPUVirtualAddress();
+	vbCircleView_.BufferLocation = vertBuffCircle_->GetGPUVirtualAddress();
 	// 頂点バッファのサイズ
-	vbCircleView.SizeInBytes = sizeVB;
+	vbCircleView_.SizeInBytes = sizeVB;
 	// 頂点1つ分のデータサイズ
-	vbCircleView.StrideInBytes = sizeof(verticesCircle[0]);
+	vbCircleView_.StrideInBytes = sizeof(verticesCircle_[0]);
 
 	{
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(indicesCircle));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesCircle));
 
 		//リソース設定
-		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
+		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
 		//インデックスバッファの作成
 		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int32_t i = 0; i < _countof(indicesCircle); i++)
+		for (int32_t i = 0; i < _countof(sIndicesCircle); i++)
 		{
-			indexMap[i] = indicesCircle[i];//インデックスをコピー
+			indexMap[i] = sIndicesCircle[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
 		indexBuff->Unmap(0, nullptr);
 
 		//インデックスバッファビューの作成
-		ibViewCircle.BufferLocation = indexBuff->GetGPUVirtualAddress();
-		ibViewCircle.Format = DXGI_FORMAT_R16_UINT;
-		ibViewCircle.SizeInBytes = sizeIB;
+		ibViewCircle_.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibViewCircle_.Format = DXGI_FORMAT_R16_UINT;
+		ibViewCircle_.SizeInBytes = sizeIB;
 	}
 
 	//06_03
 	{
-		for (int32_t i = 0; i < _countof(indicesCircle) / 3; i++)
+		for (int32_t i = 0; i < _countof(sIndicesCircle) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = indicesCircle[i * 3 + 0];
-			uint16_t index1 = indicesCircle[i * 3 + 1];
-			uint16_t index2 = indicesCircle[i * 3 + 2];
+			uint16_t index0 = sIndicesCircle[i * 3 + 0];
+			uint16_t index1 = sIndicesCircle[i * 3 + 1];
+			uint16_t index2 = sIndicesCircle[i * 3 + 2];
 			//三角形を構成する頂点座標をベクトルに代入
-			XMVECTOR p0 = XMLoadFloat3(&verticesCircle[index0].pos);
-			XMVECTOR p1 = XMLoadFloat3(&verticesCircle[index1].pos);
-			XMVECTOR p2 = XMLoadFloat3(&verticesCircle[index2].pos);
+			XMVECTOR p0 = XMLoadFloat3(&verticesCircle_[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&verticesCircle_[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&verticesCircle_[index2].pos);
 			//p0->p1ベクトル、p0->p2ベクトルを計算
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
 			//外積（垂直なベクトル）
 			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
 			//求めた法線を頂点データに代入
-			XMStoreFloat3(&verticesCircle[index0].normal, normal);
-			XMStoreFloat3(&verticesCircle[index1].normal, normal);
-			XMStoreFloat3(&verticesCircle[index2].normal, normal);
+			XMStoreFloat3(&verticesCircle_[index0].normal, normal);
+			XMStoreFloat3(&verticesCircle_[index1].normal, normal);
+			XMStoreFloat3(&verticesCircle_[index2].normal, normal);
 		}
 	}
 }
@@ -270,108 +335,108 @@ void Primitive::InitializeCube()
 
 	{
 		//手前
-		verticesCube[0] = { {-1.0f,-1.0f,-1.0f},{verticesCube[0].normal},{0.0f,1.0f} };//左下
-		verticesCube[1] = { {-1.0f,1.0f, -1.0f},{verticesCube[1].normal},{0.0f,0.0f} };//左上
-		verticesCube[2] = { {1.0f,-1.0f, -1.0f},{verticesCube[2].normal},{1.0f,1.0f} };//右下
-		verticesCube[3] = { {1.0f,1.0f,  -1.0f},{verticesCube[3].normal},{1.0f,0.0f} };//右上
+		verticesCube_[0] = { {-1.0f,-1.0f,-1.0f},{verticesCube_[0].normal},{0.0f,1.0f} };//左下
+		verticesCube_[1] = { {-1.0f,1.0f, -1.0f},{verticesCube_[1].normal},{0.0f,0.0f} };//左上
+		verticesCube_[2] = { {1.0f,-1.0f, -1.0f},{verticesCube_[2].normal},{1.0f,1.0f} };//右下
+		verticesCube_[3] = { {1.0f,1.0f,  -1.0f},{verticesCube_[3].normal},{1.0f,0.0f} };//右上
 
-		verticesCube[4] = { {-1.0f,-1.0f,1.0f},{verticesCube[4].normal},{0.0f,1.0f} };//左下
-		verticesCube[5] = { {-1.0f,1.0f, 1.0f},{verticesCube[5].normal},{0.0f,0.0f} };//左上
-		verticesCube[6] = { {1.0f,-1.0f, 1.0f},{verticesCube[6].normal},{1.0f,1.0f} };//右下
-		verticesCube[7] = { {1.0f,1.0f,  1.0f},{verticesCube[7].normal},{1.0f,0.0f} };//右上
+		verticesCube_[4] = { {-1.0f,-1.0f,1.0f},{verticesCube_[4].normal},{0.0f,1.0f} };//左下
+		verticesCube_[5] = { {-1.0f,1.0f, 1.0f},{verticesCube_[5].normal},{0.0f,0.0f} };//左上
+		verticesCube_[6] = { {1.0f,-1.0f, 1.0f},{verticesCube_[6].normal},{1.0f,1.0f} };//右下
+		verticesCube_[7] = { {1.0f,1.0f,  1.0f},{verticesCube_[7].normal},{1.0f,0.0f} };//右上
 		//上
-		verticesCube[8] = { {1.0f,1.0f,-1.0f},{verticesCube[8].normal},{0.0f,1.0f} };//左下
-		verticesCube[9] = { {1.0f,1.0f, 1.0f},{verticesCube[9].normal},{0.0f,0.0f} };//左上
-		verticesCube[10] = { {-1.0f,1.0f, -1.0f},{verticesCube[10].normal},{1.0f,1.0f} };//右下
-		verticesCube[11] = { {-1.0f,1.0f, 1.0f},{verticesCube[11].normal},{1.0f,0.0f} };//右上
+		verticesCube_[8] = { {1.0f,1.0f,-1.0f},{verticesCube_[8].normal},{0.0f,1.0f} };//左下
+		verticesCube_[9] = { {1.0f,1.0f, 1.0f},{verticesCube_[9].normal},{0.0f,0.0f} };//左上
+		verticesCube_[10] = { {-1.0f,1.0f, -1.0f},{verticesCube_[10].normal},{1.0f,1.0f} };//右下
+		verticesCube_[11] = { {-1.0f,1.0f, 1.0f},{verticesCube_[11].normal},{1.0f,0.0f} };//右上
 
-		verticesCube[12] = { {1.0f,-1.0f,-1.0f},{verticesCube[12].normal},{0.0f,1.0f} };//左下
-		verticesCube[13] = { {1.0f,-1.0f, 1.0f},{verticesCube[13].normal},{0.0f,0.0f} };//左上
-		verticesCube[14] = { {-1.0f,-1.0f, -1.0f},{verticesCube[14].normal},{1.0f,1.0f} };//右下
-		verticesCube[15] = { {-1.0f,-1.0f, 1.0f},{verticesCube[15].normal},{1.0f,0.0f} };//右上
+		verticesCube_[12] = { {1.0f,-1.0f,-1.0f},{verticesCube_[12].normal},{0.0f,1.0f} };//左下
+		verticesCube_[13] = { {1.0f,-1.0f, 1.0f},{verticesCube_[13].normal},{0.0f,0.0f} };//左上
+		verticesCube_[14] = { {-1.0f,-1.0f, -1.0f},{verticesCube_[14].normal},{1.0f,1.0f} };//右下
+		verticesCube_[15] = { {-1.0f,-1.0f, 1.0f},{verticesCube_[15].normal},{1.0f,0.0f} };//右上
 
-		verticesCube[16] = { {-1.0f,-1.0f,-1.0f},{verticesCube[16].normal},{0.0f,1.0f} };//左下
-		verticesCube[17] = { {-1.0f,-1.0f, 1.0f},{verticesCube[17].normal},{0.0f,0.0f} };//左上
-		verticesCube[18] = { {-1.0f,1.0f, -1.0f},{verticesCube[18].normal},{1.0f,1.0f} };//右下
-		verticesCube[19] = { {-1.0f,1.0f,  1.0f},{verticesCube[19].normal},{1.0f,0.0f} };//右上
+		verticesCube_[16] = { {-1.0f,-1.0f,-1.0f},{verticesCube_[16].normal},{0.0f,1.0f} };//左下
+		verticesCube_[17] = { {-1.0f,-1.0f, 1.0f},{verticesCube_[17].normal},{0.0f,0.0f} };//左上
+		verticesCube_[18] = { {-1.0f,1.0f, -1.0f},{verticesCube_[18].normal},{1.0f,1.0f} };//右下
+		verticesCube_[19] = { {-1.0f,1.0f,  1.0f},{verticesCube_[19].normal},{1.0f,0.0f} };//右上
 
-		verticesCube[20] = { {1.0f,-1.0f,-1.0f},{verticesCube[20].normal},{0.0f,1.0f} };//左下
-		verticesCube[21] = { {1.0f,-1.0f, 1.0f},{verticesCube[21].normal},{0.0f,0.0f} };//左上
-		verticesCube[22] = { {1.0f,1.0f, -1.0f},{verticesCube[22].normal},{1.0f,1.0f} };//右下
-		verticesCube[23] = { {1.0f,1.0f,  1.0f},{verticesCube[23].normal},{1.0f,0.0f} };//右上;//左下
+		verticesCube_[20] = { {1.0f,-1.0f,-1.0f},{verticesCube_[20].normal},{0.0f,1.0f} };//左下
+		verticesCube_[21] = { {1.0f,-1.0f, 1.0f},{verticesCube_[21].normal},{0.0f,0.0f} };//左上
+		verticesCube_[22] = { {1.0f,1.0f, -1.0f},{verticesCube_[22].normal},{1.0f,1.0f} };//右下
+		verticesCube_[23] = { {1.0f,1.0f,  1.0f},{verticesCube_[23].normal},{1.0f,0.0f} };//右上;//左下
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<uint32_t>(sizeof(verticesCube[0]) * _countof(verticesCube));
+	sizeVB = static_cast<uint32_t>(sizeof(verticesCube_[0]) * _countof(verticesCube_));
 
 	//頂点バッファの設定		//ヒープ設定
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
+	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(TextureManager::GetInstance().resDesc, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB);
 
 	//頂点バッファの生成
-	BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &vertBuffCube);
+	BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &vertBuffCube_);
 
 	// 頂点バッファビューの作成
 	// GPU仮想アドレス
-	vbCubeView.BufferLocation = vertBuffCube->GetGPUVirtualAddress();
+	vbCubeView_.BufferLocation = vertBuffCube_->GetGPUVirtualAddress();
 	// 頂点バッファのサイズ
-	vbCubeView.SizeInBytes = sizeVB;
+	vbCubeView_.SizeInBytes = sizeVB;
 	// 頂点1つ分のデータサイズ
-	vbCubeView.StrideInBytes = sizeof(verticesCube[0]);
+	vbCubeView_.StrideInBytes = sizeof(verticesCube_[0]);
 
 	{
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(indicesCube));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesCube));
 
 		//リソース設定
-		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
+		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
 		//インデックスバッファの作成
 		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int32_t i = 0; i < _countof(indicesCube); i++)
+		for (int32_t i = 0; i < _countof(sIndicesCube); i++)
 		{
-			indexMap[i] = indicesCube[i];//インデックスをコピー
+			indexMap[i] = sIndicesCube[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
 		indexBuff->Unmap(0, nullptr);
 
 		//インデックスバッファビューの作成
-		ibViewCube.BufferLocation = indexBuff->GetGPUVirtualAddress();
-		ibViewCube.Format = DXGI_FORMAT_R16_UINT;
-		ibViewCube.SizeInBytes = sizeIB;
+		ibViewCube_.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibViewCube_.Format = DXGI_FORMAT_R16_UINT;
+		ibViewCube_.SizeInBytes = sizeIB;
 	}
 
 
 	//06_03
 		/*if (indexNum == SPHERE)*/
 	{
-		for (int32_t i = 0; i < _countof(indicesCube) / 3; i++)
+		for (int32_t i = 0; i < _countof(sIndicesCube) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = indicesCube[i * 3 + 0];
-			uint16_t index1 = indicesCube[i * 3 + 1];
-			uint16_t index2 = indicesCube[i * 3 + 2];
+			uint16_t index0 = sIndicesCube[i * 3 + 0];
+			uint16_t index1 = sIndicesCube[i * 3 + 1];
+			uint16_t index2 = sIndicesCube[i * 3 + 2];
 			//三角形を構成する頂点座標をベクトルに代入
-			XMVECTOR p0 = XMLoadFloat3(&verticesCube[index0].pos);
-			XMVECTOR p1 = XMLoadFloat3(&verticesCube[index1].pos);
-			XMVECTOR p2 = XMLoadFloat3(&verticesCube[index2].pos);
+			XMVECTOR p0 = XMLoadFloat3(&verticesCube_[index0].pos);
+			XMVECTOR p1 = XMLoadFloat3(&verticesCube_[index1].pos);
+			XMVECTOR p2 = XMLoadFloat3(&verticesCube_[index2].pos);
 			//p0->p1ベクトル、p0->p2ベクトルを計算
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
 			//外積（垂直なベクトル）
 			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
 			//求めた法線を頂点データに代入
-			XMStoreFloat3(&verticesCube[index0].normal, normal);
-			XMStoreFloat3(&verticesCube[index1].normal, normal);
-			XMStoreFloat3(&verticesCube[index2].normal, normal);
+			XMStoreFloat3(&verticesCube_[index0].normal, normal);
+			XMStoreFloat3(&verticesCube_[index1].normal, normal);
+			XMStoreFloat3(&verticesCube_[index2].normal, normal);
 		}
 	}
 }
@@ -380,56 +445,56 @@ void Primitive::InitializeLine()
 {
 	HRESULT result = {};
 
-	verticesLine[0] = { {-1.0,0,0},{verticesLine[0].normal},{0.0f,1.0f} };//左下
-	verticesLine[1] = { {1.0,0,0},  {verticesLine[1].normal},{0.5f,0.0f} };//上
+	verticesLine_[0] = { {-1.0,0,0},{verticesLine_[0].normal},{0.0f,1.0f} };//左下
+	verticesLine_[1] = { {1.0,0,0},  {verticesLine_[1].normal},{0.5f,0.0f} };//上
 
 	{
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(indicesLine));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesLine));
 
 		//リソース設定
-		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
+		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
 		//インデックスバッファの作成
 		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int32_t i = 0; i < _countof(indicesLine); i++)
+		for (int32_t i = 0; i < _countof(sIndicesLine); i++)
 		{
-			indexMap[i] = indicesLine[i];//インデックスをコピー
+			indexMap[i] = sIndicesLine[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
 		indexBuff->Unmap(0, nullptr);
 
 		//インデックスバッファビューの作成
-		ibViewLine.BufferLocation = indexBuff->GetGPUVirtualAddress();
-		ibViewLine.Format = DXGI_FORMAT_R16_UINT;
-		ibViewLine.SizeInBytes = sizeIB;
+		ibViewLine_.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibViewLine_.Format = DXGI_FORMAT_R16_UINT;
+		ibViewLine_.SizeInBytes = sizeIB;
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<uint32_t>(sizeof(verticesLine[0]) * _countof(verticesLine));
+	sizeVB = static_cast<uint32_t>(sizeof(verticesLine_[0]) * _countof(verticesLine_));
 
 	//頂点バッファの設定		//ヒープ設定
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
+	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(TextureManager::GetInstance().resDesc, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB);
 
 	//頂点バッファの生成
-	BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &vertBuffLine);
+	BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &vertBuffLine_);
 
 	// 頂点バッファビューの作成
 	// GPU仮想アドレス
-	vbLineView.BufferLocation = vertBuffLine->GetGPUVirtualAddress();
+	vbLineView_.BufferLocation = vertBuffLine_->GetGPUVirtualAddress();
 	// 頂点バッファのサイズ
-	vbLineView.SizeInBytes = sizeVB;
+	vbLineView_.SizeInBytes = sizeVB;
 	// 頂点1つ分のデータサイズ
-	vbLineView.StrideInBytes = sizeof(verticesLine[0]);
+	vbLineView_.StrideInBytes = sizeof(verticesLine_[0]);
 }
 
 void Primitive::InitializeSphere()
@@ -439,31 +504,31 @@ void Primitive::InitializeSphere()
 	//球体用
 	{
 		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-		sizeVB = static_cast<uint32_t>(sizeof(verticesSphere[0]) * (_countof(verticesSphere)));
+		sizeVB = static_cast<uint32_t>(sizeof(verticesSphere_[0]) * (_countof(verticesSphere_)));
 
 		//頂点バッファの設定		//ヒープ設定
-		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
+		heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-		ResourceProperties(TextureManager::GetInstance().resDesc, sizeVB);
+		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB);
 
 		//頂点バッファの生成
-		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, vertBuffSphere.GetAddressOf());
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, vertBuffSphere_.GetAddressOf());
 
 		// 頂点バッファビューの作成
 		// GPU仮想アドレス
-		vbViewSphere.BufferLocation = vertBuffSphere->GetGPUVirtualAddress();
+		vbViewSphere_.BufferLocation = vertBuffSphere_->GetGPUVirtualAddress();
 		// 頂点バッファのサイズ
-		vbViewSphere.SizeInBytes = sizeVB;
+		vbViewSphere_.SizeInBytes = sizeVB;
 		// 頂点1つ分のデータサイズ
-		vbViewSphere.StrideInBytes = sizeof(verticesSphere[0]);
+		vbViewSphere_.StrideInBytes = sizeof(verticesSphere_[0]);
 
 
 		WorldMat worldMat;
 		Vec3 vec = { 0,-1.0f,0 };
 
 		//頂点二つ
-		verticesSphere[0] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };//下
-		verticesSphere[1] = { {vec.x,-vec.y,vec.z},{},{1.0f,0.0f} };//上
+		verticesSphere_[0] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };//下
+		verticesSphere_[1] = { {vec.x,-vec.y,vec.z},{},{1.0f,0.0f} };//上
 
 		for (int32_t i = 0; i < 36; i++)//横
 		{
@@ -478,7 +543,7 @@ void Primitive::InitializeSphere()
 				Vec3xM4(vec, worldMat.matWorld, false);
 
 				int32_t p = i * 34 + j;
-				verticesSphere[(2) + i * 34 + j] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };
+				verticesSphere_[(2) + i * 34 + j] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} };
 			}
 		}
 
@@ -488,14 +553,14 @@ void Primitive::InitializeSphere()
 		int32_t count4 = 0;
 		bool isLast = false;
 		//インデックス
-		for (int32_t i = 0; i < _countof(indicesSphere); i++)
+		for (int32_t i = 0; i < _countof(sIndicesSphere); i++)
 		{
-			if (i % (PAPA * 35) == 0 && i != 0)//最後の縦の列
+			if (i % (S_SPHERE_INDEX_NUM * 35) == 0 && i != 0)//最後の縦の列
 			{
 				isLast = true;
 			}
 
-			if (i % PAPA == 0 || i % (PAPA * (count + 1) - 3) == 0)
+			if (i % S_SPHERE_INDEX_NUM == 0 || i % (S_SPHERE_INDEX_NUM * (count + 1) - 3) == 0)
 			{
 
 			}
@@ -505,18 +570,18 @@ void Primitive::InitializeSphere()
 				{
 					if (isLast)
 					{
-						indicesSphere[i] = 2 + 34 * count + (count3);
-						indicesSphere[i + 1] = 2 + 0 + (count3);//一周してきたので一番最初の列を使う
-						indicesSphere[i + 2] = 2 + 34 * count + (count3 + 1);
+						sIndicesSphere[i] = 2 + 34 * count + (count3);
+						sIndicesSphere[i + 1] = 2 + 0 + (count3);//一周してきたので一番最初の列を使う
+						sIndicesSphere[i + 2] = 2 + 34 * count + (count3 + 1);
 
 						count3++;
 						i += 2;
 					}
 					else
 					{
-						indicesSphere[i] = 2 + 34 * count + (count3);
-						indicesSphere[i + 1] = 2 + 34 * (count + 1) + (count3);
-						indicesSphere[i + 2] = 2 + 34 * count + (count3 + 1);
+						sIndicesSphere[i] = 2 + 34 * count + (count3);
+						sIndicesSphere[i + 1] = 2 + 34 * (count + 1) + (count3);
+						sIndicesSphere[i + 2] = 2 + 34 * count + (count3 + 1);
 
 						count3++;
 						i += 2;
@@ -526,18 +591,18 @@ void Primitive::InitializeSphere()
 				{
 					if (isLast)
 					{
-						indicesSphere[i] = 2 + 0 + (count4 + 1);//一周してきたので一番最初の列を使う
-						indicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
-						indicesSphere[i + 2] = 2 + 0 + (count4);//一周してきたので一番最初の列を使う
+						sIndicesSphere[i] = 2 + 0 + (count4 + 1);//一周してきたので一番最初の列を使う
+						sIndicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
+						sIndicesSphere[i + 2] = 2 + 0 + (count4);//一周してきたので一番最初の列を使う
 
 						count4++;
 						i += 2;
 					}
 					else
 					{
-						indicesSphere[i] = 2 + 34 * (count + 1) + (count4 + 1);
-						indicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
-						indicesSphere[i + 2] = 2 + 34 * (count + 1) + (count4);
+						sIndicesSphere[i] = 2 + 34 * (count + 1) + (count4 + 1);
+						sIndicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
+						sIndicesSphere[i + 2] = 2 + 34 * (count + 1) + (count4);
 
 						count4++;
 						i += 2;
@@ -546,34 +611,34 @@ void Primitive::InitializeSphere()
 
 				count2++;
 			}
-			if (i % PAPA == 0 || i % (PAPA * (count + 1) - 3) == 0)
+			if (i % S_SPHERE_INDEX_NUM == 0 || i % (S_SPHERE_INDEX_NUM * (count + 1) - 3) == 0)
 			{
-				if (i % PAPA == 0)//一番下の三角形
+				if (i % S_SPHERE_INDEX_NUM == 0)//一番下の三角形
 				{
 					if (isLast)
 					{
-						indicesSphere[i] = 0;
-						indicesSphere[i + 1] = 2 + 0;
-						indicesSphere[i + 2] = 2 + 34 * count;
+						sIndicesSphere[i] = 0;
+						sIndicesSphere[i + 1] = 2 + 0;
+						sIndicesSphere[i + 2] = 2 + 34 * count;
 
 						i += 2;
 					}
 					else
 					{
-						indicesSphere[i] = 2 + 34 * (count + 1);
-						indicesSphere[i + 1] = 2 + 34 * count;
-						indicesSphere[i + 2] = 0;
+						sIndicesSphere[i] = 2 + 34 * (count + 1);
+						sIndicesSphere[i + 1] = 2 + 34 * count;
+						sIndicesSphere[i + 2] = 0;
 
 						i += 2;
 					}
 				}
-				else if (i % (PAPA * (count + 1) - 3) == 0)//一番上の三角形
+				else if (i % (S_SPHERE_INDEX_NUM * (count + 1) - 3) == 0)//一番上の三角形
 				{
 					if (isLast)
 					{
-						indicesSphere[i] = 1 + 34 * (count + 1);
-						indicesSphere[i + 1] = 35;
-						indicesSphere[i + 2] = 1;
+						sIndicesSphere[i] = 1 + 34 * (count + 1);
+						sIndicesSphere[i + 1] = 35;
+						sIndicesSphere[i + 2] = 1;
 
 						i += 2;
 
@@ -584,9 +649,9 @@ void Primitive::InitializeSphere()
 					}
 					else
 					{
-						indicesSphere[i] = 1 + 34 * (count + 1);
-						indicesSphere[i + 1] = 1 + 34 * (count + 2);
-						indicesSphere[i + 2] = 1;
+						sIndicesSphere[i] = 1 + 34 * (count + 1);
+						sIndicesSphere[i + 1] = 1 + 34 * (count + 2);
+						sIndicesSphere[i + 2] = 1;
 
 						i += 2;
 
@@ -599,53 +664,53 @@ void Primitive::InitializeSphere()
 			}
 		}
 
-		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(indicesSphere));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesSphere));
 
 		//リソース設定
-		ResourceProperties(TextureManager::GetInstance().resDesc, sizeIB);
+		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
 		//インデックスバッファの作成
 		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp, TextureManager::GetInstance().resDesc, &indexBuff);
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &indexBuff);
 		//インデックスバッファをマッピング
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int32_t i = 0; i < _countof(indicesSphere); i++)
+		for (int32_t i = 0; i < _countof(sIndicesSphere); i++)
 		{
-			indexMap[i] = indicesSphere[i];//インデックスをコピー
+			indexMap[i] = sIndicesSphere[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
 		indexBuff->Unmap(0, nullptr);
 
 		//インデックスバッファビューの作成
-		ibViewSphere.BufferLocation = indexBuff->GetGPUVirtualAddress();
-		ibViewSphere.Format = DXGI_FORMAT_R16_UINT;
-		ibViewSphere.SizeInBytes = sizeIB;
+		ibViewSphere_.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibViewSphere_.Format = DXGI_FORMAT_R16_UINT;
+		ibViewSphere_.SizeInBytes = sizeIB;
 
 
 		//06_03
 		/*if (indexNum == SPHERE)*/
 		{
-			for (int32_t i = 0; i < _countof(indicesSphere) / 3; i++)
+			for (int32_t i = 0; i < _countof(sIndicesSphere) / 3; i++)
 			{//三角形一つごとに計算
 				//三角形のインデックスを取り出して、一時的な変数に入れる
-				uint16_t index0 = indicesSphere[i * 3 + 0];
-				uint16_t index1 = indicesSphere[i * 3 + 1];
-				uint16_t index2 = indicesSphere[i * 3 + 2];
+				uint16_t index0 = sIndicesSphere[i * 3 + 0];
+				uint16_t index1 = sIndicesSphere[i * 3 + 1];
+				uint16_t index2 = sIndicesSphere[i * 3 + 2];
 				//三角形を構成する頂点座標をベクトルに代入
-				XMVECTOR p0 = XMLoadFloat3(&verticesSphere[index0].pos);
-				XMVECTOR p1 = XMLoadFloat3(&verticesSphere[index1].pos);
-				XMVECTOR p2 = XMLoadFloat3(&verticesSphere[index2].pos);
+				XMVECTOR p0 = XMLoadFloat3(&verticesSphere_[index0].pos);
+				XMVECTOR p1 = XMLoadFloat3(&verticesSphere_[index1].pos);
+				XMVECTOR p2 = XMLoadFloat3(&verticesSphere_[index2].pos);
 				//p0->p1ベクトル、p0->p2ベクトルを計算
 				XMVECTOR v1 = XMVectorSubtract(p1, p0);
 				XMVECTOR v2 = XMVectorSubtract(p2, p0);
 				//外積（垂直なベクトル）
 				XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
 				//求めた法線を頂点データに代入
-				XMStoreFloat3(&verticesSphere[index0].normal, normal);
-				XMStoreFloat3(&verticesSphere[index1].normal, normal);
-				XMStoreFloat3(&verticesSphere[index2].normal, normal);
+				XMStoreFloat3(&verticesSphere_[index0].normal, normal);
+				XMStoreFloat3(&verticesSphere_[index1].normal, normal);
+				XMStoreFloat3(&verticesSphere_[index2].normal, normal);
 			}
 		}
 	}
@@ -687,49 +752,49 @@ void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCou
 
 void Primitive::TriangleDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	DrawCommandPrimitive(vertBuffTriangle.Get(), _countof(verticesTriangle), verticesTriangle, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
-		this->vbTriangleView, this->ibViewTriangle,
-		_countof(indicesTriangle),
+	DrawCommandPrimitive(vertBuffTriangle_.Get(), _countof(verticesTriangle_), verticesTriangle_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		vbTriangleView_, ibViewTriangle_,
+		_countof(sIndicesTriangle),
 		setRootParam, setMaterialLightTex);
 }
 
 void Primitive::BoxDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	DrawCommandPrimitive(vertBuffBox.Get(), _countof(verticesBox), verticesBox, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
-		this->vbBoxView, this->ibViewBox,
-		_countof(indicesBox),
+	DrawCommandPrimitive(vertBuffBox_.Get(), _countof(verticesBox_), verticesBox_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		vbBoxView_, ibViewBox_,
+		_countof(sIndicesBox),
 		setRootParam, setMaterialLightTex);
 }
 
 void Primitive::CircleDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	DrawCommandPrimitive(vertBuffCircle.Get(), _countof(verticesCircle), verticesCircle, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
-		this->vbCircleView, this->ibViewCircle,
-		_countof(indicesCircle),
+	DrawCommandPrimitive(vertBuffCircle_.Get(), _countof(verticesCircle_), verticesCircle_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		vbCircleView_, ibViewCircle_,
+		_countof(sIndicesCircle),
 		setRootParam, setMaterialLightTex);
 }
 
 void Primitive::CubeDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	DrawCommandPrimitive(vertBuffCube.Get(), _countof(verticesCube), verticesCube, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
-		this->vbCubeView, this->ibViewCube,
-		_countof(indicesCube),
+	DrawCommandPrimitive(vertBuffCube_.Get(), _countof(verticesCube_), verticesCube_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		vbCubeView_, ibViewCube_,
+		_countof(sIndicesCube),
 		setRootParam, setMaterialLightTex);
 }
 
 void Primitive::LineDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	DrawCommandPrimitive(vertBuffLine.Get(), _countof(verticesLine), verticesLine, D3D_PRIMITIVE_TOPOLOGY_LINELIST,
-		this->vbLineView, this->ibViewLine,
-		_countof(indicesLine),
+	DrawCommandPrimitive(vertBuffLine_.Get(), _countof(verticesLine_), verticesLine_, D3D_PRIMITIVE_TOPOLOGY_LINELIST,
+		vbLineView_, ibViewLine_,
+		_countof(sIndicesLine),
 		setRootParam, setMaterialLightTex);
 }
 
 void Primitive::SphereDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	DrawCommandPrimitive(vertBuffSphere.Get(), _countof(verticesSphere), verticesSphere, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
-		this->vbViewSphere, this->ibViewSphere,
-		_countof(indicesSphere),
+	DrawCommandPrimitive(vertBuffSphere_.Get(), _countof(verticesSphere_), verticesSphere_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		vbViewSphere_, ibViewSphere_,
+		_countof(sIndicesSphere),
 		setRootParam, setMaterialLightTex);
 }
 

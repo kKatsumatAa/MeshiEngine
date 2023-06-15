@@ -6,23 +6,23 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 {
 	for (int32_t i = 0; i < text.size(); i++)
 	{
-		if (spriteIndex >= maxCharCount) break;
+		if (spriteIndex_ >= S_MAX_CHAR_COUNT_) break;
 
 		const unsigned char& character = text[i];
 
 		int32_t fontIndex = character - 32;
 		if (character >= 0x7f) fontIndex = 0;
 
-		int32_t fontIndexY = fontIndex / fontLineCount;
-		int32_t fontIndexX = fontIndex % fontLineCount;
+		int32_t fontIndexY = fontIndex / S_FONT_LINE_COUNT_;
+		int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
 
 
-		leftTop[spriteIndex] = { x + fontWidth * scale * i,y,0 };
-		this->scale[spriteIndex] = scale;
-		UVleftTop[spriteIndex] = { (float)(fontIndexX) / (float)((fontIndexMaxX)) - 0.003f,(float)(fontIndexY) / (float)((fontIndexMaxY)) - 0.003f };
-		UVlength[spriteIndex] = { (float)fontWidth / (float)(fontWidth * (fontIndexMaxX)) ,(float)fontHeight / (float)(fontHeight * (fontIndexMaxY)) };
+		leftTop_[spriteIndex_] = { x + S_FONT_WIDTH_ * scale * i,y,0 };
+		scale_[spriteIndex_] = scale;
+		UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
+		UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
 
-		spriteIndex++;
+		spriteIndex_++;
 	}
 	//変数の中身表示用------------------------
 	if (variable != 114514)
@@ -60,24 +60,24 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 		for (int32_t i = 0; i < _countof(printNumber); i++)
 		{
 			//最大文字数を超えたら
-			if (spriteIndex >= maxCharCount) break;
+			if (spriteIndex_ >= S_MAX_CHAR_COUNT_) break;
 
 			//マイナスの時
 			if (isMinus)
 			{
 				int32_t fontIndex = '-' - 32;
 
-				int32_t fontIndexY = fontIndex / fontLineCount;
-				int32_t fontIndexX = fontIndex % fontLineCount;
+				int32_t fontIndexY = fontIndex / S_FONT_LINE_COUNT_;
+				int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
 
 
-				leftTop[spriteIndex] = { x + (i + text.size()) * fontWidth * scale,y,0 };
-				this->scale[spriteIndex] = scale;
-				UVleftTop[spriteIndex] = { (float)(fontIndexX) / (float)((fontIndexMaxX)) - 0.003f,(float)(fontIndexY) / (float)((fontIndexMaxY)) - 0.003f };
-				UVlength[spriteIndex] = { (float)fontWidth / (float)(fontWidth * (fontIndexMaxX)) ,(float)fontHeight / (float)(fontHeight * (fontIndexMaxY)) };
+				leftTop_[spriteIndex_] = { x + (i + text.size()) * S_FONT_WIDTH_ * scale,y,0 };
+				scale_[spriteIndex_] = scale;
+				UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
+				UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
 
 				// 添え字用変数をインクリメント
-				spriteIndex++;
+				spriteIndex_++;
 
 				isMinus = false;
 
@@ -88,17 +88,17 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 			int32_t fontIndex = printNumber[i] + 16;
 			//if (character >= 0x7f) fontIndex = 0;
 
-			int32_t fontIndexY = fontIndex / fontLineCount;
-			int32_t fontIndexX = fontIndex % fontLineCount;
+			int32_t fontIndexY = fontIndex / S_FONT_LINE_COUNT_;
+			int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
 
 			//
-			leftTop[spriteIndex] = { x + (i + text.size()) * fontWidth * scale,y,0 };
-			this->scale[spriteIndex] = scale;
-			UVleftTop[spriteIndex] = { (float)(fontIndexX) / (float)((fontIndexMaxX)) - 0.003f,(float)(fontIndexY) / (float)((fontIndexMaxY)) - 0.003f };
-			UVlength[spriteIndex] = { (float)fontWidth / (float)(fontWidth * (fontIndexMaxX)) ,(float)fontHeight / (float)(fontHeight * (fontIndexMaxY)) };
+			leftTop_[spriteIndex_] = { x + (i + text.size()) * S_FONT_WIDTH_ * scale,y,0 };
+			scale_[spriteIndex_] = scale;
+			UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
+			UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
 
 			//添え字用変数をインクリメント
-			spriteIndex++;
+			spriteIndex_++;
 		}
 	}
 }
@@ -107,23 +107,23 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 {
 	for (int32_t i = 0; i < text.size(); i++)
 	{
-		if (spriteIndex >= maxCharCount) break;
+		if (spriteIndex_ >= S_MAX_CHAR_COUNT_) break;
 
 		const unsigned char& character = text[i];
 
 		int32_t fontIndex = character - 32;
 		if (character >= 0x7f) fontIndex = 0;
 
-		int32_t fontIndexY = fontIndex / fontLineCount;
-		int32_t fontIndexX = fontIndex % fontLineCount;
+		int32_t fontIndexY = fontIndex / S_FONT_LINE_COUNT_;
+		int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
 
 
-		leftTop[spriteIndex] = { x + fontWidth * scale * i,y,0 };
-		this->scale[spriteIndex] = scale;
-		UVleftTop[spriteIndex] = { (float)(fontIndexX) / (float)((fontIndexMaxX)) - 0.003f,(float)(fontIndexY) / (float)((fontIndexMaxY)) - 0.003f };
-		UVlength[spriteIndex] = { (float)fontWidth / (float)(fontWidth * (fontIndexMaxX)) ,(float)fontHeight / (float)(fontHeight * (fontIndexMaxY)) };
+		leftTop_[spriteIndex_] = { x + S_FONT_WIDTH_ * scale * i,y,0 };
+		scale_[spriteIndex_] = scale;
+		UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
+		UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
 
-		spriteIndex++;
+		spriteIndex_++;
 	}
 	//変数の中身表示用------------------------
 	if (variable != 114514.0f)
@@ -185,24 +185,24 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 		for (int32_t i = 0; i < _countof(printNumber); i++)
 		{
 			//最大文字数を超えたら
-			if (spriteIndex >= maxCharCount) break;
+			if (spriteIndex_ >= S_MAX_CHAR_COUNT_) break;
 
 			//マイナスの時
 			if (isMinus)
 			{
 				int32_t fontIndex = '-' - 32;
 
-				int32_t fontIndexY = fontIndex / fontLineCount;
-				int32_t fontIndexX = fontIndex % fontLineCount;
+				int32_t fontIndexY = fontIndex / S_FONT_LINE_COUNT_;
+				int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
 
 
-				leftTop[spriteIndex] = { x + (i + text.size()) * fontWidth * scale,y,0 };
-				this->scale[spriteIndex] = scale;
-				UVleftTop[spriteIndex] = { (float)(fontIndexX) / (float)((fontIndexMaxX)) - 0.003f,(float)(fontIndexY) / (float)((fontIndexMaxY)) - 0.003f };
-				UVlength[spriteIndex] = { (float)fontWidth / (float)(fontWidth * (fontIndexMaxX)) ,(float)fontHeight / (float)(fontHeight * (fontIndexMaxY)) };
+				leftTop_[spriteIndex_] = { x + (i + text.size()) * S_FONT_WIDTH_ * scale,y,0 };
+				scale_[spriteIndex_] = scale;
+				UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
+				UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
 
 				//添え字用変数をインクリメント
-				spriteIndex++;
+				spriteIndex_++;
 
 				isMinus = false;
 
@@ -213,28 +213,28 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 			int32_t fontIndex = printNumber[i] + 16;
 			//if (character >= 0x7f) fontIndex = 0;
 
-			int32_t fontIndexY = fontIndex / fontLineCount;
-			int32_t fontIndexX = fontIndex % fontLineCount;
+			int32_t fontIndexY = fontIndex / S_FONT_LINE_COUNT_;
+			int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
 
 			//
-			leftTop[spriteIndex] = { x + (i + text.size()) * fontWidth * scale,y,0 };
-			this->scale[spriteIndex] = scale;
-			UVleftTop[spriteIndex] = { (float)(fontIndexX) / (float)((fontIndexMaxX)) - 0.003f,(float)(fontIndexY) / (float)((fontIndexMaxY)) - 0.003f };
-			UVlength[spriteIndex] = { (float)fontWidth / (float)(fontWidth * (fontIndexMaxX)) ,(float)fontHeight / (float)(fontHeight * (fontIndexMaxY)) };
+			leftTop_[spriteIndex_] = { x + (i + text.size()) * S_FONT_WIDTH_ * scale,y,0 };
+			scale_[spriteIndex_] = scale;
+			UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
+			UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
 
 			//添え字用変数をインクリメント
-			spriteIndex++;
+			spriteIndex_++;
 		}
 	}
 }
 
 void DebugText::DrawAll(uint64_t texhandle)
 {
-	for (int32_t i = 0; i < spriteIndex; i++)
+	for (int32_t i = 0; i < spriteIndex_; i++)
 	{
-		sprites[i].DrawClippingBoxSprite(leftTop[i], scale[i], UVleftTop[i], UVlength[i],
+		sprites_[i].DrawClippingBoxSprite(leftTop_[i], scale_[i], UVleftTop_[i], UVlength_[i],
 			{ 1.0f,1.0f,1.0f,1.0f }, texhandle);
 	}
 
-	spriteIndex = 0;
+	spriteIndex_ = 0;
 }

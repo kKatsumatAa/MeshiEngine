@@ -40,7 +40,7 @@ void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 	assert(deserialized.contains("name"));
 	assert(deserialized["name"].is_string());
 
-	//"name"を文字列として取得
+	//"name_"を文字列として取得
 	std::string name = deserialized["name"].get<std::string>();
 	//正しいレベルデータファイルかチェック
 	assert(name.compare("scene") == 0);

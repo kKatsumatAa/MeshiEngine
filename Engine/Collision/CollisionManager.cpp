@@ -197,5 +197,5 @@ void CollisionManager::CheckAllCollisions()
 
 void CollisionManager::Initialize()
 {
-	this->colliders.clear();
+	colliders.clear();
 }

@@ -14,7 +14,7 @@ public:
 	virtual ~BaseCollider() = default;
 
 	inline void SetObject(Object* object) {
-		this->object = object;
+		object = object;
 	}
 
 	inline Object* GetObject3d() {
@@ -29,11 +29,11 @@ public:
 	inline const CollisionShapeType& GetShapeType() { return shapeType; }
 
 	//判定を有効にするかどうかのフラグ
-	inline void SetIsValid(bool isValid) { this->isValid = isValid; }
+	inline void SetIsValid(bool isValid) { isValid = isValid; }
 	inline bool GetIsValid() { return isValid; }
 
 	//2dかどうか（スプライト用）
-	inline void SetIs2D(bool is2D) { this->is2D = is2D; }
+	inline void SetIs2D(bool is2D) { is2D = is2D; }
 	inline bool GetIs2D() { return is2D; }
 
 	/// <summary>

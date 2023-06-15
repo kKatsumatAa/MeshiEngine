@@ -26,8 +26,8 @@ public:
 	/// </summary>
 	void Update() override;
 
-	inline void SetNormal(const DirectX::XMVECTOR& normal) { this->normal = normal; }
-	inline void SetDistance(float distance) { this->distance = distance; }
+	inline void SetNormal(const DirectX::XMVECTOR& normal) { normal = normal; }
+	inline void SetDistance(float distance) { distance = distance; }
 
 private:
 	//法線ベクトル

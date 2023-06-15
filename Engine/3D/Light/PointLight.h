@@ -32,24 +32,24 @@ public://サブクラス
 
 private://メンバ変数
 	//ライト座標（ワールド座標系）
-	XMFLOAT3 lightpos = { 0,0,0 };
+	XMFLOAT3 lightpos_ = { 0,0,0 };
 	//ライト色
-	XMFLOAT3 lightcolor = { 1.0f,1.0f,1.0f };
+	XMFLOAT3 lightcolor_ = { 1.0f,1.0f,1.0f };
 	//ライト距離減衰係数
-	XMFLOAT3 lightatten = { 1.0f,1.0f,1.0f };
+	XMFLOAT3 lightatten_ = { 1.0f,1.0f,1.0f };
 	//有効フラグ
-	bool active = false;
+	bool active_ = false;
 
 
 
 public://メンバ関数
-	inline void SetLightPos(const XMFLOAT3& lightpos) { this->lightpos = lightpos; }
-	inline const XMFLOAT3& GetLightPos() { return lightpos; }
-	inline void SetLightColor(const XMFLOAT3& lightcolor) { this->lightcolor = lightcolor; }
-	inline const XMFLOAT3& GetLightColor() { return lightcolor; }
-	inline void SetLightAtten(const XMFLOAT3& lightatten) { this->lightatten = lightatten; }
-	inline const XMFLOAT3& GetLightAtten() { return lightatten; }
-	inline void SetActive(bool active) { this->active = active; }
-	inline bool GetActive() { return active; }
+	inline void SetLightPos(const XMFLOAT3& lightpos) { lightpos_ = lightpos; }
+	inline const XMFLOAT3& GetLightPos() { return lightpos_; }
+	inline void SetLightColor(const XMFLOAT3& lightcolor) { lightcolor_ = lightcolor; }
+	inline const XMFLOAT3& GetLightColor() { return lightcolor_; }
+	inline void SetLightAtten(const XMFLOAT3& lightatten) { lightatten_ = lightatten; }
+	inline const XMFLOAT3& GetLightAtten() { return lightatten_; }
+	inline void SetActive(bool active) { active_ = active; }
+	inline bool GetActive() { return active_; }
 };
 

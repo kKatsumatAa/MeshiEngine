@@ -43,6 +43,9 @@ void Framework::Initialize()
 
 void Framework::Finalize()
 {
+	//ƒ‚ƒfƒ‹‘S‚Ä‚ð‰ð•ú
+	ModelManager::GetInstance().Finalize();
+
 	//FBX
 	FbxLoader::GetInstance()->Finalize();
 

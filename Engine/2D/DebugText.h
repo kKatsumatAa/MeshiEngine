@@ -1,22 +1,25 @@
 #pragma once
 #include"Object.h"
 
-static const int32_t maxCharCount = 256;
-static const int32_t fontWidth = 9;
-static const int32_t fontHeight = 18;
-static const int32_t fontLineCount = 14;
-static const int32_t fontIndexMaxX = 14;
-static const int32_t fontIndexMaxY = 7;
-
 //
 class DebugText
 {
 private:
-	Object sprites[maxCharCount];
-	Vec3 leftTop[maxCharCount]; float scale[maxCharCount]; XMFLOAT2 UVleftTop[maxCharCount]; XMFLOAT2 UVlength[maxCharCount];
+	static const int32_t S_MAX_CHAR_COUNT_ = 256;
+	static const int32_t S_FONT_WIDTH_ = 9;
+	static const int32_t S_FONT_HEIGHT_ = 18;
+	static const int32_t S_FONT_LINE_COUNT_ = 14;
+	static const int32_t S_FONT_INDEX_MAX_X_ = 14;
+	static const int32_t S_FONT_INDEX_MAX_Y_ = 7;
+
+	Object sprites_[S_MAX_CHAR_COUNT_];
+	Vec3 leftTop_[S_MAX_CHAR_COUNT_]; 
+	float scale_[S_MAX_CHAR_COUNT_]; 
+	XMFLOAT2 UVleftTop_[S_MAX_CHAR_COUNT_];
+	XMFLOAT2 UVlength_[S_MAX_CHAR_COUNT_];
 
 	//ìYÇ¶éöópÇÃïœêî
-	int32_t spriteIndex = 0;
+	int32_t spriteIndex_ = 0;
 
 public:
 	void Print(const std::string& text, float x, float y, int32_t variable = 114514, float scale = 1.0f);

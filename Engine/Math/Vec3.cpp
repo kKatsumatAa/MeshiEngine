@@ -46,9 +46,9 @@ Vec3 Vec3::operator+()
 
 Vec3& Vec3::operator+=(const Vec3& other)
 {
-    this->x += other.x;
-    this->y += other.y;
-    this->z += other.z;
+    x += other.x;
+    y += other.y;
+    z += other.z;
 
     return *this;
 }
@@ -60,9 +60,9 @@ Vec3 Vec3::operator-()
 
 Vec3& Vec3::operator-=(const Vec3& other)
 {
-    this->x -= other.x;
-    this->y -= other.y;
-    this->z -= other.z;
+    x -= other.x;
+    y -= other.y;
+    z -= other.z;
 
     return *this;
 }
@@ -79,9 +79,9 @@ Vec3 Vec3::operator*(float other)
 
 Vec3& Vec3::operator*=(float other)
 {
-    this->x *= other;
-    this->y *= other;
-    this->z *= other;
+    x *= other;
+    y *= other;
+    z *= other;
 
     return *this;
 }
@@ -98,9 +98,9 @@ Vec3 Vec3::operator/(float other)
 
 Vec3& Vec3::operator/=(float other)
 {
-    this->x /= other;
-    this->y /= other;
-    this->z /= other;
+    x /= other;
+    y /= other;
+    z /= other;
 
     return *this;
 }

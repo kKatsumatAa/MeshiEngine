@@ -151,7 +151,7 @@ Vec2 PadInput::GetLeftStickTilt()
 	{
 		// スティックの方向判定
 	// 無反応範囲
-		long unresponsive_range = (long)(this->stickRange / 5.0f);
+		long unresponsive_range = (long)(stickRange / 5.0f);
 
 		if (padData.lX< -unresponsive_range || padData.lX > unresponsive_range
 			|| padData.lY < -unresponsive_range || padData.lY > unresponsive_range)
@@ -160,8 +160,8 @@ Vec2 PadInput::GetLeftStickTilt()
 			float x;
 			float y;
 
-			x = (padData.lX) / (this->stickRange);
-			y = (padData.lY) / (this->stickRange);
+			x = (padData.lX) / (stickRange);
+			y = (padData.lY) / (stickRange);
 
 			return Vec2(x, y);
 		}
@@ -175,7 +175,7 @@ Vec2 PadInput::GetRightStickTilt()
 	if (gamePad != NULL)
 	{
 		// 無反応範囲
-		long unresponsive_range = (long)(this->stickRRange / 5.0f);
+		long unresponsive_range = (long)(stickRRange / 5.0f);
 
 		if (padData.lRx - stickRRange<-unresponsive_range || padData.lRx - stickRRange > unresponsive_range
 			|| padData.lRy - stickRRange<-unresponsive_range || padData.lRy - stickRRange > unresponsive_range)
@@ -184,8 +184,8 @@ Vec2 PadInput::GetRightStickTilt()
 			float x;
 			float y;
 
-			x = (padData.lRx - stickRRange) / (this->stickRRange);
-			y = (padData.lRy - stickRRange) / (this->stickRRange);
+			x = (padData.lRx - stickRRange) / (stickRRange);
+			y = (padData.lRy - stickRRange) / (stickRRange);
 
 			return Vec2(x, y);
 		}

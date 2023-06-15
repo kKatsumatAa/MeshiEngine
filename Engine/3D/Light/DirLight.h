@@ -21,11 +21,11 @@ private://エイリアス
 
 private://メンバ変数
 	//ライト光線方向
-	XMVECTOR lightdir = { 1,0,0,0 };
+	XMVECTOR lightdir_ = { 1,0,0,0 };
 	//ライト色
-	XMFLOAT3 lightColor = { 1,1,1 };
+	XMFLOAT3 lightColor_ = { 1,1,1 };
 	// 有効フラグ
-	bool active = false;
+	bool active_ = false;
 
 
 public://サブクラス
@@ -42,37 +42,37 @@ public:
 	/// <summary>
 	/// ライト方向をセット
 	/// </summary>
-	/// <param name="lightdir">ライト方向</param>
-	inline void SetLightDir(const XMVECTOR& lightdir) { this->lightdir = DirectX::XMVector3Normalize(lightdir); }
+	/// <param name="lightdir_">ライト方向</param>
+	inline void SetLightDir(const XMVECTOR& lightdir) { lightdir_ = DirectX::XMVector3Normalize(lightdir); }
 
 	/// <summary>
 	/// ライト方向を取得
 	/// </summary>
 	/// <returns>ライト方向</returns>
-	inline const XMVECTOR& GetLightDir() { return lightdir; }
+	inline const XMVECTOR& GetLightDir() { return lightdir_; }
 
 	/// <summary>
 	/// ライト色をセット
 	/// </summary>
 	/// <param name="lightcolor">ライト色</param>
-	inline void SetLightColor(const XMFLOAT3& lightcolor) { this->lightColor = lightcolor; }
+	inline void SetLightColor(const XMFLOAT3& lightcolor) { lightColor_ = lightcolor; }
 
 	/// <summary>
 	/// ライト色を取得
 	/// </summary>
 	/// <returns>ライト色</returns>
-	inline const XMFLOAT3& GetLightColor() { return lightColor; }
+	inline const XMFLOAT3& GetLightColor() { return lightColor_; }
 
 	/// <summary>
 	/// 有効フラグをセット
 	/// </summary>
 	/// <param name="active">有効フラグ</param>
-	inline void SetActive(bool active) { this->active = active; }
+	inline void SetActive(bool active) { active_ = active; }
 
 	/// <summary>
 	/// 有効チェック
 	/// </summary>
 	/// <returns>有効フラグ</returns>
-	inline bool IsActive() { return active; }
+	inline bool IsActive() { return active_; }
 };
 

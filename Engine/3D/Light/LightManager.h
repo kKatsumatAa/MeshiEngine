@@ -10,7 +10,7 @@ class LightManager
 {
 public:
 	//点光源の数
-	static const int32_t PointLightNum = 6;
+	static const int32_t S_POINT_LIGHT_NUM_ = 6;
 
 private://エイリアス
 //Microsoft::WRL::を省略
@@ -25,34 +25,34 @@ private://エイリアス
 private://定数
 
 	//平行光源
-	static const int32_t DirLightNum = 3;
+	static const int32_t S_DIR_LIGHT_NUM_ = 3;
 
 	//スポットライトの数
-	static const int32_t SpotLightNum = 3;
+	static const int32_t S_SPOT_LIGHT_NUM_ = 3;
 
 	//丸影の数
-	static const int32_t CircleShadowNum = 1;
+	static const int32_t S_CIRCLE_SHADOW_NUM_ = 1;
 
 private://静的メンバ変数
-	static ID3D12Device* device_;
+	static ID3D12Device* sDevice_;
 
 private://メンバ変数
 	//定数バッファ
-	ComPtr<ID3D12Resource> constBuff;
+	ComPtr<ID3D12Resource> constBuff_;
 	//ダーティフラグ
-	bool dirty = false;
+	bool dirty_ = false;
 	// 環境光の色
-	XMFLOAT3 ambientColor = { 1,1,1 };
-	XMFLOAT3 diffuseColor = { 1,1,1 };
-	XMFLOAT3 specularColor = { 1,1,1 };
+	XMFLOAT3 ambientColor_ = { 1,1,1 };
+	XMFLOAT3 diffuseColor_ = { 1,1,1 };
+	XMFLOAT3 specularColor_ = { 1,1,1 };
 	//点光源の配列
-	PointLight pointLights[PointLightNum];
+	PointLight pointLights_[S_POINT_LIGHT_NUM_];
 	// 平行光源の配列
-	DirLight dirLights[DirLightNum];
+	DirLight dirLights_[S_DIR_LIGHT_NUM_];
 	//スポットライトの配列
-	SpotLight spotLights[SpotLightNum];
+	SpotLight spotLights_[S_SPOT_LIGHT_NUM_];
 	//丸影の配列
-	CircleShadow circleShadows[CircleShadowNum];
+	CircleShadow circleShadows_[S_CIRCLE_SHADOW_NUM_];
 
 public://サブクラス
 	//定数バッファ用データ構造体(平行光源、点光源の配列をまとめて送る)
@@ -69,13 +69,13 @@ public://サブクラス
 		float pad3;
 
 		// 平行光源の配列
-		DirLight::ConstBufferData dirLights[DirLightNum];
+		DirLight::ConstBufferData dirLights[S_DIR_LIGHT_NUM_];
 		//点光源用
-		PointLight::ConstBufferData pointLights[PointLightNum];
+		PointLight::ConstBufferData pointLights[S_POINT_LIGHT_NUM_];
 		//スポットライト用
-		SpotLight::ConstBufferData spotLights[SpotLightNum];
+		SpotLight::ConstBufferData spotLights[S_SPOT_LIGHT_NUM_];
 		//丸影用
-		CircleShadow::ConstBufferData circleShadows[CircleShadowNum];
+		CircleShadow::ConstBufferData circleShadows[S_CIRCLE_SHADOW_NUM_];
 	};
 
 

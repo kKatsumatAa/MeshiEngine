@@ -9,22 +9,22 @@ void Sprite::Initialize()
 		uint32_t sizeVB;
 		D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
 		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-		sizeVB = static_cast<uint32_t>(sizeof(vertices[0]) * 4.0);
+		sizeVB = static_cast<uint32_t>(sizeof(vertices_[0]) * 4.0);
 		//頂点バッファの設定		//ヒープ設定
 		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
 		ResourceProperties(resDesc, sizeVB);
 		resDesc.Format = DXGI_FORMAT_UNKNOWN;
 		//頂点バッファの生成
-		BuffProperties(heapProp, resDesc, vertBuff.GetAddressOf());
+		BuffProperties(heapProp, resDesc, vertBuff_.GetAddressOf());
 
 		// 頂点バッファビューの作成
 		// GPU仮想アドレス
-		vbView.BufferLocation = vertBuff.Get()->GetGPUVirtualAddress();
+		vbView_.BufferLocation = vertBuff_.Get()->GetGPUVirtualAddress();
 		// 頂点バッファのサイズ
-		vbView.SizeInBytes = sizeVB;
+		vbView_.SizeInBytes = sizeVB;
 		// 頂点1つ分のデータサイズ
-		vbView.StrideInBytes = sizeof(vertices[0]);
+		vbView_.StrideInBytes = sizeof(vertices_[0]);
 	}
 }
 
@@ -43,16 +43,16 @@ void Sprite::SpriteDraw()
 
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 	VertexSprite* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	result = vertBuff_->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	// 全頂点に対して
 	for (int32_t i = 0; i < 4; i++) {
-		vertMap[i] = vertices[i]; // 座標をコピー
+		vertMap[i] = vertices_[i]; // 座標をコピー
 	}
 	// 繋がりを解除
-	vertBuff->Unmap(0, nullptr);
+	vertBuff_->Unmap(0, nullptr);
 
-	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
+	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
 
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }
@@ -67,16 +67,16 @@ void Sprite::Update(const Vec3& pos, float scale,
 
 	if (textureHandle == NULL)
 	{
-		textureHandle_ = TextureManager::GetInstance().whiteTexHandle;
+		textureHandle_ = TextureManager::GetInstance().sWhiteTexHandle_;
 	}
 	else
 	{
 		textureHandle_ = textureHandle;
 	}
 
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetInstance().srvHeap->GetGPUDescriptorHandleForHeapStart();
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetInstance().sSrvHeap_->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = TextureManager::GetInstance().texBuff[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type)]->GetDesc();
+	resDesc = TextureManager::GetInstance().sTexBuff_[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().sSrvHeapDesc_.Type)]->GetDesc();
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
@@ -84,10 +84,10 @@ void Sprite::Update(const Vec3& pos, float scale,
 	if (isReverseX)length.x *= -1;
 	if (isReverseY)length.y *= -1;
 
-	vertices[0] = { {-(float)(length.x * scale * ancorUV.x),+(float)(length.y * scale * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//左下
-	vertices[1] = { {-(float)(length.x * scale * ancorUV.x),-(float)(length.y * scale * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
-	vertices[2] = { {+(float)(length.x * scale * (1.0f - ancorUV.x)),+(float)(length.y * scale * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
-	vertices[3] = { {+(float)(length.x * scale * (1.0f - ancorUV.x)),-(float)(length.y * scale * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
+	vertices_[0] = { {-(float)(length.x * scale * ancorUV.x),+(float)(length.y * scale * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//左下
+	vertices_[1] = { {-(float)(length.x * scale * ancorUV.x),-(float)(length.y * scale * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
+	vertices_[2] = { {+(float)(length.x * scale * (1.0f - ancorUV.x)),+(float)(length.y * scale * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
+	vertices_[3] = { {+(float)(length.x * scale * (1.0f - ancorUV.x)),-(float)(length.y * scale * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
 
 
 	constMapMaterial->color = color;
@@ -137,16 +137,16 @@ void Sprite::UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& U
 
 	if (textureHandle == NULL)
 	{
-		textureHandle_ = TextureManager::GetInstance().whiteTexHandle;
+		textureHandle_ = TextureManager::GetInstance().sWhiteTexHandle_;
 	}
 	else
 	{
 		textureHandle_ = textureHandle;
 	}
 
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetInstance().srvHeap->GetGPUDescriptorHandleForHeapStart();
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetInstance().sSrvHeap_->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = TextureManager::GetInstance().texBuff[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type)]->GetDesc();
+	resDesc = TextureManager::GetInstance().sTexBuff_[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().sSrvHeapDesc_.Type)]->GetDesc();
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
@@ -162,18 +162,18 @@ void Sprite::UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& U
 	if (isPosLeftTop)
 	{
 		//左上からの座標
-		vertices[0] = { {0,UVlength.y * length.y * scale,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-		vertices[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		vertices[2] = { {UVlength.x * length.x * scale,UVlength.y * length.y * scale,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices[3] = { {UVlength.x * length.x * scale,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		vertices_[0] = { {0,UVlength.y * length.y * scale,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		vertices_[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
+		vertices_[2] = { {UVlength.x * length.x * scale,UVlength.y * length.y * scale,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		vertices_[3] = { {UVlength.x * length.x * scale,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	else
 	{
 		//切り抜いた後の画像の中心からの位置！！！！！！！！
-		vertices[0] = { {-UVlength.x * length.x * scale / 2.0f,UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-		vertices[1] = { {-UVlength.x * length.x * scale / 2.0f,-UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		vertices[2] = { {UVlength.x * length.x * scale / 2.0f,UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices[3] = { {UVlength.x * length.x * scale / 2.0f,-UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		vertices_[0] = { {-UVlength.x * length.x * scale / 2.0f,UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		vertices_[1] = { {-UVlength.x * length.x * scale / 2.0f,-UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
+		vertices_[2] = { {UVlength.x * length.x * scale / 2.0f,UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		vertices_[3] = { {UVlength.x * length.x * scale / 2.0f,-UVlength.y * length.y * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	constMapMaterial->color = color;
 

@@ -4,8 +4,6 @@
 
 ModelManager::~ModelManager()
 {
-	nameAndModels.clear();
-	nameAndModelFBXs.clear();
 }
 
 ModelManager& ModelManager::GetInstance()
@@ -14,12 +12,18 @@ ModelManager& ModelManager::GetInstance()
 	return inst;
 }
 
+void ModelManager::Finalize()
+{
+	nameAndModels_.clear();
+	nameAndModelFBXs_.clear();
+}
+
 Model* ModelManager::LoadModel(std::string fileName, bool smoothing, bool modelType)
 {
 	//ファイル名から探す
-	std::map<std::string, std::unique_ptr<Model>>::iterator it = nameAndModels.find(fileName);
+	std::map<std::string, std::unique_ptr<Model>>::iterator it = nameAndModels_.find(fileName);
 	//すでに読み込まれていたらそのモデルのポインタを返す
-	if (it != nameAndModels.end())
+	if (it != nameAndModels_.end())
 	{
 		return it->second.get();
 	}
@@ -28,10 +32,10 @@ Model* ModelManager::LoadModel(std::string fileName, bool smoothing, bool modelT
 	std::unique_ptr<Model> model_ = Model::LoadFromOBJ(fileName, smoothing, modelType);
 
 	//保存しておく
-	nameAndModels.insert(std::make_pair(fileName,std::move(model_)));
+	nameAndModels_.insert(std::make_pair(fileName,std::move(model_)));
 
 	//保存したものを取得
-	it = nameAndModels.find(fileName);
+	it = nameAndModels_.find(fileName);
 
 	//ポインタ返す
 	return it->second.get();
@@ -40,9 +44,9 @@ Model* ModelManager::LoadModel(std::string fileName, bool smoothing, bool modelT
 ModelFBX* ModelManager::LoadModelFBX(std::string fileName)
 {
 	//ファイル名から探す
-	std::map<std::string, std::unique_ptr<ModelFBX>>::iterator it = nameAndModelFBXs.find(fileName);
+	std::map<std::string, std::unique_ptr<ModelFBX>>::iterator it = nameAndModelFBXs_.find(fileName);
 	//すでに読み込まれていたらそのモデルのポインタを返す
-	if (it != nameAndModelFBXs.end())
+	if (it != nameAndModelFBXs_.end())
 	{
 		return it->second.get();
 	}
@@ -51,10 +55,10 @@ ModelFBX* ModelManager::LoadModelFBX(std::string fileName)
 	std::unique_ptr<ModelFBX> model_ = FbxLoader::GetInstance()->LoadModelFromFile(fileName);
 
 	//保存しておく
-	nameAndModelFBXs.insert(std::make_pair(fileName, std::move(model_)));
+	nameAndModelFBXs_.insert(std::make_pair(fileName, std::move(model_)));
 
 	//保存したものを取得
-	it = nameAndModelFBXs.find(fileName);
+	it = nameAndModelFBXs_.find(fileName);
 
 	//ポインタ返す
 	return it->second.get();

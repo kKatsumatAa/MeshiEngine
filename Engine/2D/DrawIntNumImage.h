@@ -17,17 +17,17 @@ private:
 	};
 
 private:
-	NumImage numImages[5];
+	NumImage numImages_[5];
 	//—]‚è
-	int32_t numRemainder;
+	int32_t numRemainder_;
 	//‚»‚ÌŒ…
-	int32_t numDigit;
+	int32_t numDigit_;
 
-	uint64_t texhandle;
+	uint64_t texhandle_;
 
-	bool isStartDigit = false;
+	bool isStartDigit_ = false;
 
-	int32_t numCount = 0;
+	int32_t numCount_ = 0;
 
 
 public:

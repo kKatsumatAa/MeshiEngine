@@ -2,26 +2,26 @@
 
 CameraManager::CameraManager()
 {
-	stageSelectCamera = std::make_unique<Camera>();
-	gameMainCamera = std::make_unique<Camera>();
-	gameTurnCamera = std::make_unique<Camera>();
-	goalEffectCamera = std::make_unique<Camera>();
+	stageSelectCamera_ = std::make_unique<Camera>();
+	gameMainCamera_ = std::make_unique<Camera>();
+	gameTurnCamera_ = std::make_unique<Camera>();
+	goalEffectCamera_ = std::make_unique<Camera>();
 
-	stageSelectCamera->Initialize();
-	gameMainCamera->Initialize();
-	gameTurnCamera->Initialize();
-	goalEffectCamera->Initialize();
+	stageSelectCamera_->Initialize();
+	gameMainCamera_->Initialize();
+	gameTurnCamera_->Initialize();
+	goalEffectCamera_->Initialize();
 
 	//何かしらカメラのポインタ入れる
-	usingCamera = gameMainCamera.get();
+	usingCamera_ = gameMainCamera_.get();
 }
 
 CameraManager::~CameraManager()
 {
-	stageSelectCamera.reset();
-	gameMainCamera.reset();
-	gameTurnCamera.reset();
-	goalEffectCamera.reset();
+	stageSelectCamera_.reset();
+	gameMainCamera_.reset();
+	gameTurnCamera_.reset();
+	goalEffectCamera_.reset();
 }
 
 void CameraManager::ChangeUsingCameraState(std::unique_ptr<UsingCameraState> state)
@@ -33,12 +33,12 @@ void CameraManager::ChangeUsingCameraState(std::unique_ptr<UsingCameraState> sta
 
 void CameraManager::Initialize()
 {
-	lerpCount = 0;
-	lerpCountMax = 0;
-	afterCount = 0;
-	afterCamera = nullptr;
-	isLerpMoving = false;
-	isLerpEnd = false;
+	lerpCount_ = 0;
+	lerpCountMax_ = 0;
+	afterCount_ = 0;
+	afterCamera_ = nullptr;
+	isLerpMoving_ = false;
+	isLerpEnd_ = false;
 
 	ChangeUsingCameraState(std::make_unique<UsingCameraNormalState>());
 }
@@ -47,31 +47,31 @@ void CameraManager::Update()
 {
 	state_->Update();
 
-	usingCamera->Update();
+	usingCamera_->Update();
 
-	stageSelectCamera->Update();
+	stageSelectCamera_->Update();
 	//ゲーム中メインで使うカメラ
-	gameMainCamera->Update();
+	gameMainCamera_->Update();
 	//ゲーム中、回転時に使うカメラ
-	gameTurnCamera->Update();
+	gameTurnCamera_->Update();
 	//ゴール演出時に使うカメラ
-	goalEffectCamera->Update();
+	goalEffectCamera_->Update();
 }
 
 void CameraManager::BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endEye, const Vec3& startTarget, const Vec3& endTarget, const Vec3& startUp, const Vec3& endUp, int32_t time, Camera* afterCamera, int32_t afterCount)
 {
-	this->startEye = startEye;
-	this->endEye = endEye;
-	this->startTarget = startTarget;
-	this->endTarget = endTarget;
-	this->startUp = startUp;
-	this->endUp = endUp;
-	this->lerpCountMax = time;
-	this->lerpCount = 0;
-	this->afterCamera = afterCamera;
-	this->afterCount = afterCount;
-	isLerpMoving = true;
-	isLerpEnd = false;
+	startEye_ = startEye;
+	endEye_ = endEye;
+	startTarget_ = startTarget;
+	endTarget_ = endTarget;
+	startUp_ = startUp;
+	endUp_ = endUp;
+	lerpCountMax_ = time;
+	lerpCount_ = 0;
+	afterCamera_ = afterCamera;
+	afterCount_ = afterCount;
+	isLerpMoving_ = true;
+	isLerpEnd_ = false;
 
 	ChangeUsingCameraState(std::make_unique<UsingCameraLerpMoveState>());
 
@@ -80,25 +80,25 @@ void CameraManager::BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endE
 
 CameraManager& CameraManager::operator=(const CameraManager& obj)
 {
-	this->Initialize();
+	Initialize();
 
-	*this->state_ = *obj.state_;//ステートなど、ポインタは削除される可能性があるので中身のみコピー
-	this->usingCamera = obj.usingCamera;
-	*this->stageSelectCamera.get() = *obj.stageSelectCamera.get();
-	*this->gameMainCamera.get() = *obj.gameMainCamera.get();
-	*this->gameTurnCamera.get() = *obj.gameTurnCamera.get();
-	*this->goalEffectCamera.get() = *obj.goalEffectCamera.get();
-	this->startEye = obj.startEye;
-	this->endEye = obj.endEye;
-	this->startTarget = obj.startTarget;
-	this->endTarget = obj.endTarget;
-	this->startUp = obj.startUp;
-	this->endUp = obj.endUp;
-	this->lerpCountMax = obj.lerpCountMax;
-	this->lerpCount = obj.lerpCount;
-	if (obj.afterCamera) { this->afterCamera = obj.afterCamera; }
-	this->afterCount = obj.afterCount;
-	this->isLerpMoving = obj.isLerpMoving;
+	*state_ = *obj.state_;//ステートなど、ポインタは削除される可能性があるので中身のみコピー
+	usingCamera_ = obj.usingCamera_;
+	*stageSelectCamera_.get() = *obj.stageSelectCamera_.get();
+	*gameMainCamera_.get() = *obj.gameMainCamera_.get();
+	*gameTurnCamera_.get() = *obj.gameTurnCamera_.get();
+	*goalEffectCamera_.get() = *obj.goalEffectCamera_.get();
+	startEye_ = obj.startEye_;
+	endEye_ = obj.endEye_;
+	startTarget_ = obj.startTarget_;
+	endTarget_ = obj.endTarget_;
+	startUp_ = obj.startUp_;
+	endUp_ = obj.endUp_;
+	lerpCountMax_ = obj.lerpCountMax_;
+	lerpCount_ = obj.lerpCount_;
+	if (obj.afterCamera_) { afterCamera_ = obj.afterCamera_; }
+	afterCount_ = obj.afterCount_;
+	isLerpMoving_ = obj.isLerpMoving_;
 
 	return *this;
 }
@@ -107,55 +107,55 @@ CameraManager& CameraManager::operator=(const CameraManager& obj)
 //----------------------------------------------------------------------------------------------------------------------------------------
 void UsingCameraState::SetCameraM(CameraManager* cameraM)
 {
-	this->cameraM = cameraM;
+	cameraM = cameraM;
 }
 
 
 //-------------------------------------------------------------------------------------------------------
 void UsingCameraNormalState::Update()
 {
-	if (cameraM->isLerpMoving)
+	if (cameraM_->isLerpMoving_)
 	{
-		cameraM->ChangeUsingCameraState(std::make_unique<UsingCameraLerpMoveState>());
+		cameraM_->ChangeUsingCameraState(std::make_unique<UsingCameraLerpMoveState>());
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------
 void UsingCameraLerpMoveState::Update()
 {
-	float t = (float)cameraM->lerpCount / (float)cameraM->lerpCountMax;
+	float t = (float)cameraM_->lerpCount_ / (float)cameraM_->lerpCountMax_;
 
-	if (cameraM->lerpCount < cameraM->lerpCountMax)
+	if (cameraM_->lerpCount_ < cameraM_->lerpCountMax_)
 	{
-		cameraM->lerpCount++;
+		cameraM_->lerpCount_++;
 	}
 
-	cameraM->usingCamera->SetEye(LerpVec3(cameraM->startEye, cameraM->endEye, EaseOut(t)));
-	cameraM->usingCamera->SetUp(LerpVec3(cameraM->startUp, cameraM->endUp, EaseOut(t)));
-	cameraM->usingCamera->SetTarget(LerpVec3(cameraM->startTarget, cameraM->endTarget, EaseOut(t)));
+	cameraM_->usingCamera_->SetEye(LerpVec3(cameraM_->startEye_, cameraM_->endEye_, EaseOut(t)));
+	cameraM_->usingCamera_->SetUp(LerpVec3(cameraM_->startUp_, cameraM_->endUp_, EaseOut(t)));
+	cameraM_->usingCamera_->SetTarget(LerpVec3(cameraM_->startTarget_, cameraM_->endTarget_, EaseOut(t)));
 
 	//終了する1フレーム前に演出等入れる用
-	if (cameraM->lerpCount >= cameraM->lerpCountMax - 1)
+	if (cameraM_->lerpCount_ >= cameraM_->lerpCountMax_ - 1)
 	{
-		cameraM->isLerpEnd = true;
+		cameraM_->isLerpEnd_ = true;
 	}
 
-	if (cameraM->lerpCount >= cameraM->lerpCountMax)
+	if (cameraM_->lerpCount_ >= cameraM_->lerpCountMax_)
 	{
-		cameraM->afterCount--;
-		cameraM->isLerpMoving = false;
+		cameraM_->afterCount_--;
+		cameraM_->isLerpMoving_ = false;
 
-		if (cameraM->afterCount <= 0)
+		if (cameraM_->afterCount_ <= 0)
 		{
 
-			if (cameraM->afterCamera)
+			if (cameraM_->afterCamera_)
 			{
-				cameraM->usingCamera = cameraM->afterCamera;
+				cameraM_->usingCamera_ = cameraM_->afterCamera_;
 			}
 
 
 
-			cameraM->ChangeUsingCameraState(std::make_unique<UsingCameraNormalState>());
+			cameraM_->ChangeUsingCameraState(std::make_unique<UsingCameraNormalState>());
 		}
 	}
 }

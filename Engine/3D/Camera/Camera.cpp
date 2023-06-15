@@ -11,7 +11,7 @@ Camera::Camera()
 	UpdateProjectionMatrix();
 
 	// ビュープロジェクションの合成
-	matViewProjection = viewMat.matView * projectionMat.matProjection;
+	matViewProjection_ = viewMat_.matView * projectionMat_.matProjection;
 }
 
 void Camera::Initialize()
@@ -23,43 +23,43 @@ void Camera::Initialize()
 	UpdateProjectionMatrix();
 
 	// ビュープロジェクションの合成
-	matViewProjection = viewMat.matView * projectionMat.matProjection;
+	matViewProjection_ = viewMat_.matView * projectionMat_.matProjection;
 
-	shake.Initialize();
+	shake_.Initialize();
 }
 
 void Camera::Update()
 {
-	if (viewDirty || projectionDirty || shake.GetIsShaking()) {
+	if (viewDirty_ || projectionDirty_ || shake_.GetIsShaking()) {
 		// 再計算必要なら
-		if (viewDirty || shake.GetIsShaking()) {
+		if (viewDirty_ || shake_.GetIsShaking()) {
 			// ビュー行列更新
 			UpdateViewMatrix();
-			viewDirty = false;
+			viewDirty_ = false;
 		}
 
 		// 再計算必要なら
-		if (projectionDirty) {
+		if (projectionDirty_) {
 			// ビュー行列更新
 			UpdateProjectionMatrix();
-			projectionDirty = false;
+			projectionDirty_ = false;
 		}
 		// ビュープロジェクションの合成
-		matViewProjection = viewMat.matView * projectionMat.matProjection;
+		matViewProjection_ = viewMat_.matView * projectionMat_.matProjection;
 	}
 }
 
 void Camera::UpdateViewMatrix()
 {
-	//shake
-	shake.Update();
-	float shakeNum = shake.GetShake();
+	//shake_
+	shake_.Update();
+	float shakeNum = shake_.GetShake();
 	// 視点座標
-	XMVECTOR eyePosition = { viewMat.eye.x + shakeNum,viewMat.eye.y + shakeNum,viewMat.eye.z + shakeNum };
+	XMVECTOR eyePosition = { viewMat_.eye.x + shakeNum,viewMat_.eye.y + shakeNum,viewMat_.eye.z + shakeNum };
 	// 注視点座標
-	XMVECTOR targetPosition = { viewMat.target.x + shakeNum,viewMat.target.y + shakeNum,viewMat.target.z + shakeNum };
+	XMVECTOR targetPosition = { viewMat_.target.x + shakeNum,viewMat_.target.y + shakeNum,viewMat_.target.z + shakeNum };
 	// （仮の）上方向
-	XMVECTOR upVector = { viewMat.up.x,viewMat.up.y,viewMat.up.z };
+	XMVECTOR upVector = { viewMat_.up.x,viewMat_.up.y,viewMat_.up.z };
 
 	// カメラZ軸（視線方向）
 	XMVECTOR cameraAxisZ = XMVectorSubtract(targetPosition, eyePosition);
@@ -94,7 +94,7 @@ void Camera::UpdateViewMatrix()
 	matCameraRot.r[2] = cameraAxisZ;
 	matCameraRot.r[3] = XMVectorSet(0, 0, 0, 1);
 	// 転置により逆行列（逆回転）を計算
-	viewMat.matView = XMMatrixTranspose(matCameraRot);
+	viewMat_.matView = XMMatrixTranspose(matCameraRot);
 
 	// 視点座標に-1を掛けた座標
 	XMVECTOR reverseEyePosition = XMVectorNegate(eyePosition);
@@ -105,14 +105,14 @@ void Camera::UpdateViewMatrix()
 	// 一つのベクトルにまとめる
 	XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
 	// ビュー行列に平行移動成分を設定
-	viewMat.matView.r[3] = translation;
+	viewMat_.matView.r[3] = translation;
 
 #pragma region 全方向ビルボード行列の計算
 	// ビルボード行列
-	matBillboard.r[0] = cameraAxisX;
-	matBillboard.r[1] = cameraAxisY;
-	matBillboard.r[2] = cameraAxisZ;
-	matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
+	matBillboard_.r[0] = cameraAxisX;
+	matBillboard_.r[1] = cameraAxisY;
+	matBillboard_.r[2] = cameraAxisZ;
+	matBillboard_.r[3] = XMVectorSet(0, 0, 0, 1);
 #pragma region
 
 #pragma region Y軸回りビルボード行列の計算
@@ -127,17 +127,17 @@ void Camera::UpdateViewMatrix()
 	ybillCameraAxisZ = XMVector3Cross(ybillCameraAxisX, ybillCameraAxisY);
 
 	// Y軸回りビルボード行列
-	matBillboardY.r[0] = ybillCameraAxisX;
-	matBillboardY.r[1] = ybillCameraAxisY;
-	matBillboardY.r[2] = ybillCameraAxisZ;
-	matBillboardY.r[3] = XMVectorSet(0, 0, 0, 1);
+	matBillboardY_.r[0] = ybillCameraAxisX;
+	matBillboardY_.r[1] = ybillCameraAxisY;
+	matBillboardY_.r[2] = ybillCameraAxisZ;
+	matBillboardY_.r[3] = XMVectorSet(0, 0, 0, 1);
 #pragma endregion
 }
 
 void Camera::UpdateProjectionMatrix()
 {
 	// 透視投影による射影行列の生成
-	projectionMat.SetMat();
+	projectionMat_.SetMat();
 }
 
 void Camera::MoveEyeVector(const Vec3& move)
@@ -166,7 +166,7 @@ void Camera::MoveEyeVector(const XMVECTOR& move)
 
 void Camera::CameraShake(int32_t time, float length)
 {
-	shake.SetShake(time, length);
+	shake_.SetShake(time, length);
 }
 
 void Camera::MoveVector(const Vec3& move)

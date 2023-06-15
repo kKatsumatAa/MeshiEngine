@@ -9,16 +9,16 @@ private:
 	
 
 public:
-	VertexSprite vertices[4] = {
+	VertexSprite vertices_[4] = {
 		{{0.0f,100.0f,0.0f},{0.0f,1.0f}},
 		{{0.0f,0.0f,0.0f},{0.0f,0.0f}},
 		{{100.0f,100.0f,0.0f},{1.0f,1.0f}},
 		{{100.0f,0.0f,0.0f},{1.0f,0.0f}}
 	};
 	//頂点バッファ
-	ComPtr<ID3D12Resource> vertBuff;
+	ComPtr<ID3D12Resource> vertBuff_;
 	// 頂点バッファビューの作成
-	D3D12_VERTEX_BUFFER_VIEW vbView{};
+	D3D12_VERTEX_BUFFER_VIEW vbView_{};
 
 public:
 	void Initialize();

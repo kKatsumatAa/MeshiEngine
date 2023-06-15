@@ -9,14 +9,14 @@
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-const std::string Model::baseDirectory = "Resources/";
-uint32_t Model::descriptorHandleIncrementSize = 0;
+const std::string Model::S_BASE_DIRECTORY_ = "Resources/";
+uint32_t Model::sDescriptorHandleIncrementSize_ = 0;
 
 
 void Model::LoadFromOBJInternal(const std::string& folderName, const bool smoothing, bool modelType)
 {
 	const std::string filename = folderName + ".obj";
-	const std::string directoryPath = baseDirectory + folderName + "/";
+	const std::string directoryPath = S_BASE_DIRECTORY_ + folderName + "/";
 
 	// ファイルストリーム
 	std::ifstream file;
@@ -27,7 +27,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 		assert(0);
 	}
 
-	name = folderName;
+	name_ = folderName;
 
 	// メッシュ生成
 	meshes_.emplace_back(std::move(std::make_unique < Mesh>()));
@@ -124,8 +124,8 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 				line_stream >> materialName;
 
 				// マテリアル名で検索し、マテリアルを割り当てる
-				auto itr = materials.find(materialName);
-				if (itr != materials.end()) {
+				auto itr = materials_.find(materialName);
+				if (itr != materials_.end()) {
 					mesh->SetMaterial(itr->second.get());
 				}
 			}
@@ -146,7 +146,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 				Material* material = mesh->GetMaterial();
 				index_stream.seekg(1, std::ios_base::cur); // スラッシュを飛ばす
 				// マテリアル、テクスチャがある場合
-				if (material && material->textureFilename.size() > 0) {
+				if (material && material->textureFilename_.size() > 0) {
 					index_stream >> indexTexcoord;
 					index_stream.seekg(1, std::ios_base::cur); // スラッシュを飛ばす
 					index_stream >> indexNormal;
@@ -277,41 +277,41 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 			// 新しいマテリアルを生成
 			material = Material::Create();
 			// マテリアル名読み込み
-			line_stream >> material->name;
+			line_stream >> material->name_;
 		}
 		// 先頭文字列がKaならアンビエント色
 		if (key == "Ka") {
-			line_stream >> material->ambient.x;
-			line_stream >> material->ambient.y;
-			line_stream >> material->ambient.z;
+			line_stream >> material->ambient_.x;
+			line_stream >> material->ambient_.y;
+			line_stream >> material->ambient_.z;
 		}
 		// 先頭文字列がKdならディフューズ色
 		if (key == "Kd") {
-			line_stream >> material->diffuse.x;
-			line_stream >> material->diffuse.y;
-			line_stream >> material->diffuse.z;
+			line_stream >> material->diffuse_.x;
+			line_stream >> material->diffuse_.y;
+			line_stream >> material->diffuse_.z;
 		}
 		// 先頭文字列がKsならスペキュラー色
 		if (key == "Ks") {
-			line_stream >> material->specular.x;
-			line_stream >> material->specular.y;
-			line_stream >> material->specular.z;
+			line_stream >> material->specular_.x;
+			line_stream >> material->specular_.y;
+			line_stream >> material->specular_.z;
 		}
 		// 先頭文字列がmap_Kdならテクスチャファイル名
 		if (key == "map_Kd") {
 			//テクスチャファイル名読み込み
-			line_stream >> material->textureFilename;
+			line_stream >> material->textureFilename_;
 
 			// フルパスからファイル名を取り出す
 			size_t pos1;
-			pos1 = material->textureFilename.rfind('\\');
+			pos1 = material->textureFilename_.rfind('\\');
 			if (pos1 != std::string::npos) {
-				material->textureFilename = material->textureFilename.substr(pos1 + 1, material->textureFilename.size() - pos1 - 1);
+				material->textureFilename_ = material->textureFilename_.substr(pos1 + 1, material->textureFilename_.size() - pos1 - 1);
 			}
 
-			pos1 = material->textureFilename.rfind('/');
+			pos1 = material->textureFilename_.rfind('/');
 			if (pos1 != std::string::npos) {
-				material->textureFilename = material->textureFilename.substr(pos1 + 1, material->textureFilename.size() - pos1 - 1);
+				material->textureFilename_ = material->textureFilename_.substr(pos1 + 1, material->textureFilename_.size() - pos1 - 1);
 			}
 
 		}
@@ -328,21 +328,21 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 void Model::AddMaterial(std::unique_ptr<Material> material)
 {
 	// コンテナに登録
-	materials.emplace(material->name, std::move(material));
+	materials_.emplace(material->name_, std::move(material));
 }
 
 void Model::LoadTextures()
 {
-	std::string directoryPath = baseDirectory + name + "/";
+	std::string directoryPath = S_BASE_DIRECTORY_ + name_ + "/";
 
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 
-	for (auto& m : materials) {
+	for (auto& m : materials_) {
 		Material* material = m.second.get();
-		srvGpuHandle.ptr = material->textureHandle;
+		srvGpuHandle.ptr = material->textureHandle_;
 
 		// テクスチャあり
-		if (material->textureFilename.size() > 0) {
+		if (material->textureFilename_.size() > 0) {
 			CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV; cpuDescHandleSRV.ptr = 0;
 			CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV; gpuDescHandleSRV.ptr = 0;
 			// マテリアルにテクスチャ読み込み
@@ -353,7 +353,7 @@ void Model::LoadTextures()
 			CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV; cpuDescHandleSRV.ptr = 0;
 			CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV; gpuDescHandleSRV.ptr = 0;
 			// マテリアルにテクスチャ読み込み
-			material->LoadTexture(baseDirectory, cpuDescHandleSRV, gpuDescHandleSRV);
+			material->LoadTexture(S_BASE_DIRECTORY_, cpuDescHandleSRV, gpuDescHandleSRV);
 		}
 	}
 }
@@ -373,7 +373,7 @@ std::unique_ptr<Model> Model::LoadFromOBJ(const std::string& folderName, bool sm
 Model::~Model()
 {
 	meshes_.clear();
-	materials.clear();
+	materials_.clear();
 }
 
 void Model::StaticInitialize()
@@ -390,19 +390,19 @@ void Model::Initialize(const std::string& foldername, bool smoothing)
 	for (auto& m : meshes_) {
 		// マテリアルの割り当てがない
 		if (m && m->GetMaterial() == nullptr) {
-			if (defaultMaterial == nullptr) {
+			if (defaultMaterial_ == nullptr) {
 				// デフォルトマテリアルを生成
-				defaultMaterial = Material::Create();
-				defaultMaterial->name = "no material";
+				defaultMaterial_ = Material::Create();
+				defaultMaterial_->name_ = "no material";
 
 				// デフォルトマテリアルをセット(メッシュに渡すのはポインタのみ（所有権は渡さない）)
-				m->SetMaterial(defaultMaterial.get());
+				m->SetMaterial(defaultMaterial_.get());
 
 				//追加（所有権渡す）
-				materials.emplace(defaultMaterial->name, std::move(defaultMaterial));
+				materials_.emplace(defaultMaterial_->name_, std::move(defaultMaterial_));
 			}
 			//// デフォルトマテリアルをセット(メッシュに渡すのはポインタのみ（所有権は渡さない）)
-			//m->SetMaterial(defaultMaterial.get());
+			//m->SetMaterial(defaultMaterial_.get());
 		}
 	}
 
@@ -413,7 +413,7 @@ void Model::Initialize(const std::string& foldername, bool smoothing)
 		}
 	}
 	// マテリアルの数値を定数バッファに反映
-	for (auto& m : materials) {
+	for (auto& m : materials_) {
 		m.second->Update();
 	}
 
@@ -424,8 +424,8 @@ void Model::Initialize(const std::string& foldername, bool smoothing)
 void Model::Draw(uint32_t indexNum)
 {
 	// デスクリプタヒープの配列
-	if (TextureManager::GetInstance().srvHeap) {
-		ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetInstance().srvHeap.Get() };
+	if (TextureManager::GetInstance().sSrvHeap_) {
+		ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetInstance().sSrvHeap_.Get() };
 		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(indexNum, ppHeaps);
 	}
 

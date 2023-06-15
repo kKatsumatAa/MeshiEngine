@@ -6,10 +6,10 @@
 class TextureManager
 {
 private:
-	static int32_t count;
+	static int32_t sCount_;
 
 	//テクスチャデータの連想配列
-	static std::map < std::string, uint64_t> textureDatas_;
+	static std::map < std::string, uint64_t> sTextureDatas_;
 
 	TextureManager();
 
@@ -17,25 +17,25 @@ private:
 
 
 public:
-	static uint64_t whiteTexHandle;
+	static uint64_t sWhiteTexHandle_;
 
 
 	//リソース設定
-	static D3D12_RESOURCE_DESC resDesc;
+	static D3D12_RESOURCE_DESC sResDesc_;
 	//設定をもとにSRV用デスクリプタヒープを生成
-	static ComPtr < ID3D12DescriptorHeap> srvHeap;
-	static D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
+	static ComPtr < ID3D12DescriptorHeap> sSrvHeap_;
+	static D3D12_CPU_DESCRIPTOR_HANDLE sSrvHandle_;
 
-	static const int32_t srvCount = 512;
-	static ComPtr<ID3D12Resource> texBuff[srvCount];
+	static const int32_t S_SRV_COUNT_ = 512;
+	static ComPtr<ID3D12Resource> sTexBuff_[S_SRV_COUNT_];
 
 	//SRVの最大個数
-	static const int32_t kMaxSRVCount;
+	static const int32_t S_K_MAX_SRV_COUNT_;
 	//デスクリプタヒープの設定
-	static D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc;
+	static D3D12_DESCRIPTOR_HEAP_DESC sSrvHeapDesc_;
 
 	//デスクリプタレンジの設定
-	static D3D12_DESCRIPTOR_RANGE descriptorRange;
+	static D3D12_DESCRIPTOR_RANGE sDescriptorRange_;
 
 public:
 	//コピーコンストラクタを無効
@@ -49,6 +49,6 @@ public:
 	static void InitializeDescriptorHeap();
 	static void LoadGraph(const wchar_t* name, uint64_t& textureHandle);
 
-	static void AddSrvHandleCount() { count++; }
+	static void AddSrvHandleCount() { sCount_++; }
 };
 

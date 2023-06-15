@@ -6,29 +6,29 @@ Quaternion Quaternion::GetMultiply(const Quaternion& rhs) const
 	Quaternion   ans;
 	float   d1, d2, d3, d4;
 
-	d1 = this->w * rhs.w;
-	d2 = -this->x * rhs.x;
-	d3 = -this->y * rhs.y;
-	d4 = -this->z * rhs.z;
+	d1 = w * rhs.w;
+	d2 = -x * rhs.x;
+	d3 = -y * rhs.y;
+	d4 = -z * rhs.z;
 	ans.w = d1 + d2 + d3 + d4;
 
 
-	d1 = this->y * rhs.z;
-	d2 = -this->z * rhs.y;
-	d3 = rhs.w * this->x;
-	d4 = this->w * rhs.x;
+	d1 = y * rhs.z;
+	d2 = -z * rhs.y;
+	d3 = rhs.w * x;
+	d4 = w * rhs.x;
 	ans.x = d1 + d2 + d3 + d4;
 
-	d1 = this->z * rhs.x;
-	d2 = -this->x * rhs.z;
-	d3 = rhs.w * this->y;
-	d4 = this->w * rhs.y;
+	d1 = z * rhs.x;
+	d2 = -x * rhs.z;
+	d3 = rhs.w * y;
+	d4 = w * rhs.y;
 	ans.y = d1 + d2 + d3 + d4;
 
-	d1 = this->x * rhs.y;
-	d2 = this->y * rhs.x;
-	d3 = rhs.w * this->z;
-	d4 = this->w * rhs.z;
+	d1 = x * rhs.y;
+	d2 = y * rhs.x;
+	d3 = rhs.w * z;
+	d4 = w * rhs.z;
 	ans.z = d1 + d2 + d3 + d4;
 
 	return  Quaternion(ans);
@@ -45,10 +45,10 @@ Quaternion Quaternion::GetConjugate() const
 {
 	Quaternion ans;
 
-	ans.x = -this->x;
-	ans.y = -this->y;
-	ans.z = -this->z;
-	ans.w = this->w;
+	ans.x = -x;
+	ans.y = -y;
+	ans.z = -z;
+	ans.w = w;
 
 	return Quaternion(ans);
 }
@@ -64,10 +64,10 @@ Quaternion Quaternion::GetNormalize() const
 
 	float length = GetLength();
 
-	ans.w = this->w / length;
-	ans.x = this->x / length;
-	ans.y = this->y / length;
-	ans.z = this->z / length;
+	ans.w = w / length;
+	ans.x = x / length;
+	ans.y = y / length;
+	ans.z = z / length;
 
 	return Quaternion(ans);
 }
@@ -110,7 +110,7 @@ Vec3 Quaternion::GetRotateVector(const Vec3& vector) const
 {
 	Quaternion r = { vector.x,vector.y,vector.z,0 };
 	Quaternion q = *this;
-	Quaternion q2 = this->GetConjugate();
+	Quaternion q2 = GetConjugate();
 	Quaternion ans = q * r * q2;
 
 	return Vec3(ans.x, ans.y, ans.z);
@@ -130,7 +130,7 @@ M4 Quaternion::MakeRotateMatrix() const
 
 float Quaternion::DotQuaternion(const Quaternion& rhs) const
 {
-	float ans = (this->w * rhs.w + this->x * rhs.x + this->y * rhs.y + this->z * rhs.z);
+	float ans = (w * rhs.w + x * rhs.x + y * rhs.y + z * rhs.z);
 
 	return ans;
 }
@@ -144,10 +144,10 @@ Quaternion Quaternion::operator+()
 
 Quaternion& Quaternion::operator+=(const Quaternion& other)
 {
-	this->x += other.x;
-	this->y += other.y;
-	this->z += other.z;
-	this->w += other.w;
+	x += other.x;
+	y += other.y;
+	z += other.z;
+	w += other.w;
 
 	return *this;
 }
@@ -159,10 +159,10 @@ Quaternion Quaternion::operator-()const
 
 Quaternion& Quaternion::operator-=(const Quaternion& other)
 {
-	this->x -= other.x;
-	this->y -= other.y;
-	this->z -= other.z;
-	this->w -= other.w;
+	x -= other.x;
+	y -= other.y;
+	z -= other.z;
+	w -= other.w;
 
 	return *this;
 }
@@ -180,10 +180,10 @@ Quaternion Quaternion::operator*(float other)
 
 Quaternion& Quaternion::operator*=(float other)
 {
-	this->x *= other;
-	this->y *= other;
-	this->z *= other;
-	this->w *= other;
+	x *= other;
+	y *= other;
+	z *= other;
+	w *= other;
 
 	return *this;
 }
@@ -201,22 +201,22 @@ Quaternion Quaternion::operator/(float other)
 
 Quaternion& Quaternion::operator/=(float other)
 {
-	this->x /= other;
-	this->y /= other;
-	this->z /= other;
-	this->w /= other;
+	x /= other;
+	y /= other;
+	z /= other;
+	w /= other;
 
 	return *this;
 }
 
 Quaternion Quaternion::operator*(const Quaternion& other)
 {
-	return Quaternion(this->GetMultiply(other));
+	return Quaternion(GetMultiply(other));
 }
 
 Quaternion& Quaternion::operator*=(const Quaternion& other)
 {
-	*this = this->GetMultiply(other);
+	*this = GetMultiply(other);
 
 	return *this;
 }

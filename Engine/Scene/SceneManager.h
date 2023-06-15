@@ -81,7 +81,7 @@ public:
 	void ChangeScene(std::string sceneName);
 
 	//シーンファクトリーのセッター
-	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { this->sceneFactory_ = sceneFactory; }
+	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
 
 	void Initialize();
 	void Update();

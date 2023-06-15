@@ -6,7 +6,7 @@ class CameraManager;
 class UsingCameraState
 {
 protected:
-	CameraManager* cameraM = nullptr;
+	CameraManager* cameraM_ = nullptr;
 
 public:
 	void SetCameraM(CameraManager* cameraM);
@@ -38,28 +38,28 @@ private:
 
 public:
 	//ここにいろんなカメラのポインタを入れて、描画時に使う
-	Camera* usingCamera;
+	Camera* usingCamera_;
 	//選択画面で使う
-	std::unique_ptr<Camera> stageSelectCamera;
+	std::unique_ptr<Camera> stageSelectCamera_;
 	//ゲーム中メインで使うカメラ
-	std::unique_ptr<Camera> gameMainCamera;
+	std::unique_ptr<Camera> gameMainCamera_;
 	//ゲーム中、回転時に使うカメラ
-	std::unique_ptr<Camera> gameTurnCamera;
+	std::unique_ptr<Camera> gameTurnCamera_;
 	//ゴール演出時に使うカメラ
-	std::unique_ptr<Camera> goalEffectCamera;
+	std::unique_ptr<Camera> goalEffectCamera_;
 
 	//演出などが終わった後にそのカメラに切り替えるためのポインタ
-	Camera* afterCamera = nullptr;
+	Camera* afterCamera_ = nullptr;
 	//終わった後、カメラに切り替えるまでのフレーム数
-	int32_t afterCount = 0;
+	int32_t afterCount_ = 0;
 
 	//lerp用
-	int32_t lerpCount = 0;
-	int32_t lerpCountMax = 0;
-	Vec3 startEye, endEye, startTarget, endTarget, startUp, endUp;
+	int32_t lerpCount_ = 0;
+	int32_t lerpCountMax_ = 0;
+	Vec3 startEye_, endEye_, startTarget_, endTarget_, startUp_, endUp_;
 
-	bool isLerpMoving = false;
-	bool isLerpEnd = false;
+	bool isLerpMoving_ = false;
+	bool isLerpEnd_ = false;
 
 public://関数
 	CameraManager();

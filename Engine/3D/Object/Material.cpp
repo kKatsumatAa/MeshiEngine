@@ -10,14 +10,14 @@ using namespace std;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-ID3D12Device* Material::device = nullptr;
+ID3D12Device* Material::sDevice_ = nullptr;
 
 void Material::StaticInitialize(ID3D12Device* device)
 {
 	// 再初期化チェック
-	assert(!Material::device);
+	assert(!Material::sDevice_);
 
-	Material::device = device;
+	Material::sDevice_ = device;
 }
 
 std::unique_ptr<Material> Material::Create()
@@ -46,7 +46,7 @@ void Material::CreateConstantBuffer()
 	ResourceProperties(cbResourceDesc,
 		((uint32_t)sizeof(Material::ConstBufferDataMaterial2) + 0xff) & ~0xff/*256バイトアライメント*/);
 	//定数バッファの生成
-	BuffProperties(cbHeapProp, cbResourceDesc, &constBuff);
+	BuffProperties(cbHeapProp, cbResourceDesc, &constBuff_);
 }
 
 Material::~Material()
@@ -57,12 +57,12 @@ Material::~Material()
 void Material::LoadTexture(const std::string& directoryPath, const CD3DX12_CPU_DESCRIPTOR_HANDLE& cpuHandle, const CD3DX12_GPU_DESCRIPTOR_HANDLE& gpuHandle)
 {
 	// テクスチャなし
-	if (textureFilename.size() == 0) {
-		textureFilename = "image/white.png";
+	if (textureFilename_.size() == 0) {
+		textureFilename_ = "image/white.png";
 	}
 
-	cpuDescHandleSRV = cpuHandle;
-	gpuDescHandleSRV = gpuHandle;
+	cpuDescHandleSRV_ = cpuHandle;
+	gpuDescHandleSRV_ = gpuHandle;
 
 	HRESULT result = S_FALSE;
 
@@ -71,12 +71,12 @@ void Material::LoadTexture(const std::string& directoryPath, const CD3DX12_CPU_D
 	ScratchImage scratchImg{};
 
 	// ファイルパスを結合
-	string filepath = directoryPath + textureFilename;
+	string filepath = directoryPath + textureFilename_;
 
 	const char* name = filepath.c_str();
 	wchar_t wchar[128];
 	ConstCharToWcharT(name, wchar);
-	TextureManager::LoadGraph(wchar, textureHandle);
+	TextureManager::LoadGraph(wchar, textureHandle_);
 }
 
 void Material::Update()
@@ -84,18 +84,18 @@ void Material::Update()
 	HRESULT result;
 	// 定数バッファへデータ転送
 	ConstBufferDataMaterial2* constMap = nullptr;
-	result = constBuff->Map(0, nullptr, (void**)&constMap);
+	result = constBuff_->Map(0, nullptr, (void**)&constMap);
 	if (SUCCEEDED(result)) {
-		constMap->ambient = ambient;
-		constMap->diffuse = diffuse;
-		constMap->specular = specular;
-		constMap->alpha = alpha;
-		constBuff->Unmap(0, nullptr);
+		constMap->ambient = ambient_;
+		constMap->diffuse = diffuse_;
+		constMap->specular = specular_;
+		constMap->alpha = alpha_;
+		constBuff_->Unmap(0, nullptr);
 	}
 }
 
 const CD3DX12_GPU_DESCRIPTOR_HANDLE& Material::GetGpuHandle()
 {
-	gpuDescHandleSRV.ptr = textureHandle;
-	return gpuDescHandleSRV;
+	gpuDescHandleSRV_.ptr = textureHandle_;
+	return gpuDescHandleSRV_;
 }

@@ -25,7 +25,7 @@ private: // エイリアス
 
 public://定数
 	//ボーンインデックス（影響を受けるボーン）の最大数
-	static const int32_t MAX_BONE_INDICES = 4;//hlslのfloat4に対応するため"4"
+	static const int32_t S_MAX_BONE_INDICES_ = 4;//hlslのfloat4に対応するため"4"
 
 public://サブクラス
 	//頂点データ構造体
@@ -34,8 +34,8 @@ public://サブクラス
 		DirectX::XMFLOAT3 pos;//座標
 		DirectX::XMFLOAT3 normal;//法線ベクトル
 		DirectX::XMFLOAT2 uv;//uv座標
-		uint32_t boneIndex[MAX_BONE_INDICES] = { 0 };//影響を受けるボーン　番号
-		float boneWeight[MAX_BONE_INDICES] = { 1.0f,0,0,0 };//ボーン　重み
+		uint32_t boneIndex[S_MAX_BONE_INDICES_] = { 0 };//影響を受けるボーン　番号
+		float boneWeight[S_MAX_BONE_INDICES_] = { 1.0f,0,0,0 };//ボーン　重み
 	};
 
 public: // 静的メンバ関数
@@ -48,7 +48,7 @@ public: // 静的メンバ関数
 
 private: // 静的メンバ変数
 	// デバイス
-	static ID3D12Device* device;
+	static ID3D12Device* sDevice_;
 
 public: // メンバ関数
 
@@ -56,12 +56,12 @@ public: // メンバ関数
 	/// 名前を取得
 	/// </summary>
 	/// <returns>名前</returns>
-	const std::string& GetName() { return name; }
+	const std::string& GetName() { return name_; }
 
 	/// <summary>
 	/// 名前をセット
 	/// </summary>
-	/// <param name="name">名前</param>
+	/// <param name="name_">名前</param>
 	void SetName(const std::string& name);
 
 	/// <summary>
@@ -82,7 +82,7 @@ public: // メンバ関数
 	/// 頂点データの数を取得
 	/// </summary>
 	/// <returns>頂点データの数</returns>
-	inline size_t GetVertexCount() { return vertices.size(); }
+	inline size_t GetVertexCount() { return vertices_.size(); }
 
 	/// <summary>
 	/// エッジ平滑化データの追加
@@ -100,7 +100,7 @@ public: // メンバ関数
 	/// マテリアルの取得
 	/// </summary>
 	/// <returns>マテリアル</returns>
-	Material* GetMaterial() { return material; }
+	Material* GetMaterial() { return material_; }
 
 	/// <summary>
 	/// マテリアルの割り当て
@@ -117,13 +117,13 @@ public: // メンバ関数
 	/// 頂点バッファ取得
 	/// </summary>
 	/// <returns>頂点バッファ</returns>
-	const D3D12_VERTEX_BUFFER_VIEW& GetVBView() { return vbView; }
+	const D3D12_VERTEX_BUFFER_VIEW& GetVBView() { return vbView_; }
 
 	/// <summary>
 	/// インデックスバッファ取得
 	/// </summary>
 	/// <returns>インデックスバッファ</returns>
-	const D3D12_INDEX_BUFFER_VIEW& GetIBView() { return ibView; }
+	const D3D12_INDEX_BUFFER_VIEW& GetIBView() { return ibView_; }
 
 	/// <summary>
 	/// 描画
@@ -133,21 +133,21 @@ public: // メンバ関数
 
 private: // メンバ変数
 	// 名前
-	std::string name;
+	std::string name_;
 	// 頂点バッファ
-	ComPtr<ID3D12Resource> vertBuff;
+	ComPtr<ID3D12Resource> vertBuff_;
 	// インデックスバッファ
-	ComPtr<ID3D12Resource> indexBuff;
+	ComPtr<ID3D12Resource> indexBuff_;
 	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView = {};
+	D3D12_VERTEX_BUFFER_VIEW vbView_ = {};
 	// インデックスバッファビュー
-	D3D12_INDEX_BUFFER_VIEW ibView = {};
+	D3D12_INDEX_BUFFER_VIEW ibView_ = {};
 	// 頂点データ配列
-	std::vector<VertexPosNormalUvSkin> vertices;
+	std::vector<VertexPosNormalUvSkin> vertices_;
 	// 頂点インデックス配列
-	std::vector<uint16_t> indices;
+	std::vector<uint16_t> indices_;
 	// 頂点法線スムージング用データ
-	std::unordered_map<uint16_t, std::vector<uint16_t>> smoothData;
+	std::unordered_map<uint16_t, std::vector<uint16_t>> smoothData_;
 	// マテリアル
-	Material* material = nullptr;
+	Material* material_ = nullptr;
 };

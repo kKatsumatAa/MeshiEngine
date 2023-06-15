@@ -47,7 +47,7 @@ void SceneManager::Initialize()
 	{
 		TextureManager::LoadGraph(L"Resources/image/loading.png", texhandle[3]);
 		//”’‚¢‰æ‘œ
-		TextureManager::LoadGraph(L"Resources/image/white.png", TextureManager::GetInstance().whiteTexHandle);
+		TextureManager::LoadGraph(L"Resources/image/white.png", TextureManager::GetInstance().sWhiteTexHandle_);
 
 		//‰æ‘œ
 		TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle);
@@ -110,8 +110,8 @@ void SceneManager::Update()
 		cameraWorldMat.rot.x = max(cameraWorldMat.rot.x, -pi / 2.0f);
 
 		cameraWorldMat.SetWorld();
-		camera->viewMat.eye = cameraPos;
-		Vec3xM4(camera->viewMat.eye, cameraWorldMat.matWorld, 0);
+		camera->viewMat_.eye = cameraPos;
+		Vec3xM4(camera->viewMat_.eye, cameraWorldMat.matWorld, 0);
 		camera->UpdateViewMatrix();
 	}
 	//#endif

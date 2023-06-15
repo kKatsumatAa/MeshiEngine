@@ -53,33 +53,33 @@ public: // サブクラス
 
 	public:
 		// 座標
-		XMFLOAT3 position = {};
+		XMFLOAT3 position_ = {};
 		// 速度
-		XMFLOAT3 velocity = {};
+		XMFLOAT3 velocity_ = {};
 		// 加速度
-		XMFLOAT3 accel = {};
+		XMFLOAT3 accel_ = {};
 		// 色
-		XMFLOAT4 color = {};
+		XMFLOAT4 color_ = {};
 		// スケール
-		float scale = 1.0f;
+		float scale_ = 1.0f;
 		// 回転
-		float rotation = 0.0f;
+		float rotation_ = 0.0f;
 		// 初期値
-		XMFLOAT4 s_color = {};
-		float s_scale = 1.0f;
-		float s_rotation = 0.0f;
+		XMFLOAT4 sColor_ = {};
+		float sScale_ = 1.0f;
+		float sRotation_ = 0.0f;
 		// 最終値
-		XMFLOAT4 e_color = {};
-		float e_scale = 0.0f;
-		float e_rotation = 0.0f;
+		XMFLOAT4 eColor_ = {};
+		float eScale_ = 0.0f;
+		float eRotation_ = 0.0f;
 		// 現在フレーム
-		int32_t frame = 0;
+		int32_t frame_ = 0;
 		// 終了フレーム
-		int32_t num_frame = 0;
+		int32_t numFrame_ = 0;
 	};
 
 private: // 定数
-	static const int32_t vertexCount = 65536;		// 頂点数
+	static const int32_t S_VERTEX_COUNT_ = 65536;		// 頂点数
 
 public:// 静的メンバ関数
 	static ParticleManager* GetInstance();
@@ -130,33 +130,33 @@ public: // メンバ関数
 	void GenerateRandomParticle(int32_t num, int32_t lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale
 		, const XMFLOAT4& start_color = { 1.0f,1.0f,1.0f,1.0f }, const XMFLOAT4& end_color = { 1.0f,1.0f,1.0f,1.0f });
 
-	void ClearParticles() { this->particles.clear(); }
+	void ClearParticles() { particles_.clear(); }
 
 private: // メンバ変数
 	// ルートシグネチャ
-	ComPtr<ID3D12RootSignature> rootsignature;
+	ComPtr<ID3D12RootSignature> rootsignature_;
 	// パイプラインステートオブジェクト
-	ComPtr<ID3D12PipelineState> pipelinestate;
+	ComPtr<ID3D12PipelineState> pipelinestate_;
 	// 頂点バッファ
-	ComPtr<ID3D12Resource> vertBuff;
+	ComPtr<ID3D12Resource> vertBuff_;
 	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView;
+	D3D12_VERTEX_BUFFER_VIEW vbView_;
 	// 定数バッファ
-	ComPtr<ID3D12Resource> constBuff;
+	ComPtr<ID3D12Resource> constBuff_;
 	// パーティクル配列
-	std::forward_list<Particle> particles;
+	std::forward_list<Particle> particles_;
 	//
-	ViewMat* view = nullptr;
-	ProjectionMat* projection = nullptr;
+	ViewMat* view_ = nullptr;
+	ProjectionMat* projection_ = nullptr;
 
 	//ビルボード行列
-	static XMMATRIX matBillboard;
-	static XMMATRIX matBillboardY;
+	static XMMATRIX sMatBillboard_;
+	static XMMATRIX sMatBillboardY_;
 	// ビュー行列
-	XMMATRIX matView = DirectX::XMMatrixIdentity();
+	XMMATRIX matView_ = DirectX::XMMatrixIdentity();
 
 public:
-	uint64_t texHandle = NULL;
+	uint64_t texHandle_ = NULL;
 
 
 private:

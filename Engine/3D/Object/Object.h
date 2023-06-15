@@ -48,66 +48,66 @@ class Object
 private:
 	//リソース設定
 	//D3D12_RESOURCE_DESC resDesc{};
-	ConstBuffTransform cbt;//ここをどうにかすれば、インスタンス一つでも色々描画
+	ConstBuffTransform cbt_;//ここをどうにかすれば、インスタンス一つでも色々描画
 
 
 	//定数バッファの生成
-	ComPtr < ID3D12Resource> constBuffMaterial = nullptr;
+	ComPtr < ID3D12Resource> constBuffMaterial_ = nullptr;
 	//定数バッファ用データ構造体（マテリアル）
 	//定数バッファのマッピング
-	ConstBufferDataMaterial* constMapMaterial = nullptr;
+	ConstBufferDataMaterial* constMapMaterial_ = nullptr;
 
 	//スプライト
 	std::unique_ptr<Sprite> sprite_;
 
 	//ライト
-	static LightManager* lightManager;
+	static LightManager* sLightManager_;
 
 	//ボーンの最大数
-	static const int32_t MAX_BONES = 32;
+	static const int32_t S_MAX_BONES_ = 32;
 	//定数バッファ（スキン）
-	ComPtr<ID3D12Resource> constBuffSkin = nullptr;
+	ComPtr<ID3D12Resource> constBuffSkin_ = nullptr;
 
 	//1フレームの時間
-	FbxTime frameTime;
+	FbxTime frameTime_;
 	//アニメーション開始時間
-	FbxTime startTime;
+	FbxTime startTime_;
 	//アニメーション終了時間
-	FbxTime endTime;
+	FbxTime endTime_;
 	//アニメーション現在時間
-	FbxTime currentTime;
+	FbxTime currentTime_;
 	//アニメーションフラグ
-	bool isPlay = false;
+	bool isPlay_ = false;
 	//ループ
-	bool isLoop = false;
+	bool isLoop_ = false;
 	//逆再生
-	bool isReverse = false;
+	bool isReverse_ = false;
 
 	//
-	static float rimColorF3[3];
+	static float sRimColorF3_[3];
 
 	std::unique_ptr<WorldMat> worldMat_ = std::make_unique<WorldMat>();
 
 public://変数
-	ViewMat* view;
-	ProjectionMat* projection;
-	bool isWireFrame = 0;
+	ViewMat* view_;
+	ProjectionMat* projection_;
+	bool isWireFrame_ = 0;
 	//画面効果用
-	static EffectOConstBuffer effectFlags;
+	static EffectOConstBuffer sEffectFlags_;
 	//画面効果用
-	static ComPtr <ID3D12Resource> effectFlagsBuff;
-	static EffectOConstBuffer* mapEffectFlagsBuff;
+	static ComPtr <ID3D12Resource> sEffectFlagsBuff_;
+	static EffectOConstBuffer* sMapEffectFlagsBuff_;
 
 public:
 	//定数バッファ用データ構造体（スキニング）
 	struct ConstBufferDataSkin
 	{
-		XMMATRIX bones[MAX_BONES];
+		XMMATRIX bones[S_MAX_BONES_];
 	};
 
 protected://継承先まで公開
 	//クラス名(デバッグ用)
-	const char* name = nullptr;
+	const char* NAME_ = nullptr;
 	//コライダー
 	std::unique_ptr<BaseCollider> collider_ = nullptr;
 
@@ -226,12 +226,12 @@ public:
 		ModelFBX* modelFbx, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
 
 	//色を返す
-	const XMFLOAT4& GetColor() { return constMapMaterial->color; }
+	const XMFLOAT4& GetColor() { return constMapMaterial_->color; }
 	/// <summary>
 	/// ライトのセット
 	/// </summary>
 	/// <param name="light"></param>
-	static void SetLight(LightManager* lightManager) { Object::lightManager = lightManager; }
+	static void SetLight(LightManager* lightManager) { Object::sLightManager_ = lightManager; }
 
 private:
 	void constBuffTransfer(const XMFLOAT4& plusRGBA);

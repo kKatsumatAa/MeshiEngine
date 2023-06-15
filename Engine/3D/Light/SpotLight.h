@@ -34,57 +34,57 @@ public://サブクラス
 public://メンバ関数
 
 	inline void SetLightDir(const XMVECTOR& lightdir) {
-		this->lightdir = DirectX::XMVector3Normalize(lightdir);
+		lightdir_ = DirectX::XMVector3Normalize(lightdir);
 	};
 	inline const XMVECTOR& GetLightDir() {
-		return lightdir;
+		return lightdir_;
 	};
 	inline void SetLightPos(const XMFLOAT3& lightpos) {
-		this->lightpos = lightpos;
+		lightpos_ = lightpos;
 	};
 	inline const XMFLOAT3& GetLightPos() {
-		return lightpos;
+		return lightpos_;
 	};
 	inline void SetLightColor(const XMFLOAT3& lightcolor) {
-		this->lightcolor = lightcolor;
+		lightcolor_ = lightcolor;
 	};
 	inline const XMFLOAT3& GetLightColor() {
-		return lightcolor;
+		return lightcolor_;
 	};
 	inline void SetLightAtten(const XMFLOAT3& lightAtten) {
-		this->lightAtten = lightAtten;
+		lightAtten_ = lightAtten;
 	};
 	inline const XMFLOAT3& GetLightAtten() {
-		return lightAtten;
+		return lightAtten_;
 	};
 	inline void SetLightFactorAngleCos(const XMFLOAT2& lightFactoeAngleCos) {
-		this->lightFactorAngleCos.x = cosf(DirectX::XMConvertToRadians(lightFactoeAngleCos.x));
-		this->lightFactorAngleCos.y = cosf(DirectX::XMConvertToRadians(lightFactoeAngleCos.y));
+		lightFactorAngleCos_.x = cosf(DirectX::XMConvertToRadians(lightFactoeAngleCos.x));
+		lightFactorAngleCos_.y = cosf(DirectX::XMConvertToRadians(lightFactoeAngleCos.y));
 	};
 	inline const XMFLOAT2& GetLightFactorAngleCos() {
-		return lightFactorAngleCos;
+		return lightFactorAngleCos_;
 	};
 	inline void SetLightActive(bool active) {
-		this->active = active;
+		active_ = active;
 	};
 	inline const bool GetLightActive() {
-		return active;
+		return active_;
 	};
 
 
 private://メンバ変数
 	//ライト方向
-	XMVECTOR lightdir = { 1.0f,0,0 };
+	XMVECTOR lightdir_ = { 1.0f,0,0 };
 	//ライト座標（ワールド座標系）
-	XMFLOAT3 lightpos = { 0,0,0 };
+	XMFLOAT3 lightpos_ = { 0,0,0 };
 	//ライト色
-	XMFLOAT3 lightcolor = { 1,1,1 };
+	XMFLOAT3 lightcolor_ = { 1,1,1 };
 	//ライト距離減衰係数
-	XMFLOAT3 lightAtten = { 1.0f,1.0f,1.0f };
+	XMFLOAT3 lightAtten_ = { 1.0f,1.0f,1.0f };
 	//ライト減衰角度（開始角度、終了角度）
-	XMFLOAT2 lightFactorAngleCos = { 0.5f,0.2f };
+	XMFLOAT2 lightFactorAngleCos_ = { 0.5f,0.2f };
 	//有効フラグ
-	bool active = false;
+	bool active_ = false;
 
 };
 

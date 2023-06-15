@@ -16,7 +16,7 @@ void SceneLoad::Initialize()
 {
 
 	//非同期処理(ステージ作成中にもロード画面出す的な)
-	async.StartAsyncFunction([=]() { this->Load(); });
+	async.StartAsyncFunction([=]() { Load(); });
 }
 
 void SceneLoad::Update()

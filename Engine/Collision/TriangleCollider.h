@@ -26,8 +26,8 @@ public:
 	/// </summary>
 	void Update() override;
 
-	inline void SetNormal(const DirectX::XMVECTOR& normal) { this->normal = normal; }
-	inline void SetPos(const DirectX::XMVECTOR& p0, const DirectX::XMVECTOR& p1, const DirectX::XMVECTOR& p2) { this->p0 = p0; this->p1 = p1; this->p2 = p2; }
+	inline void SetNormal(const DirectX::XMVECTOR& normal) { normal = normal; }
+	inline void SetPos(const DirectX::XMVECTOR& p0, const DirectX::XMVECTOR& p1, const DirectX::XMVECTOR& p2) { p0 = p0; p1 = p1; p2 = p2; }
 
 private:
 	//í∏ì_ç¿ïW3Ç¬

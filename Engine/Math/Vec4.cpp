@@ -48,9 +48,9 @@ Vec4 Vec4::operator+(const Vec4& other)
 
 Vec4& Vec4::operator+=(const Vec4& other)
 {
-    this->x += other.x;
-    this->y += other.y;
-    this->z += other.z;
+    x += other.x;
+    y += other.y;
+    z += other.z;
 
     return *this;
 }
@@ -67,9 +67,9 @@ Vec4 Vec4::operator-(const Vec4& other)
 
 Vec4& Vec4::operator-=(const Vec4& other)
 {
-    this->x -= other.x;
-    this->y -= other.y;
-    this->z -= other.z;
+    x -= other.x;
+    y -= other.y;
+    z -= other.z;
 
     return *this;
 }
@@ -86,9 +86,9 @@ Vec4 Vec4::operator*(float other)
 
 Vec4& Vec4::operator*=(float other)
 {
-    this->x *= other;
-    this->y *= other;
-    this->z *= other;
+    x *= other;
+    y *= other;
+    z *= other;
 
     return *this;
 }
@@ -105,9 +105,9 @@ Vec4 Vec4::operator/(float other)
 
 Vec4& Vec4::operator/=(float other)
 {
-    this->x /= other;
-    this->y /= other;
-    this->z /= other;
+    x /= other;
+    y /= other;
+    z /= other;
 
     return *this;
 }

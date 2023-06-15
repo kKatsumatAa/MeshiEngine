@@ -4,5 +4,5 @@
 void SceneState::SetScene(SceneManager* sceneM)
 {
 	//stateではなくSceneクラスのインスタンス//
-	this->sceneM = sceneM;
+	sceneM = sceneM;
 }

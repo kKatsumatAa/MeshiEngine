@@ -16,19 +16,19 @@ struct Vertex
 class Model
 {
 private:
-	static const std::string baseDirectory;
+	static const std::string S_BASE_DIRECTORY_;
 	// デスクリプタサイズ
-	static uint32_t descriptorHandleIncrementSize;
+	static uint32_t sDescriptorHandleIncrementSize_;
 
 private:
 	// 名前
-	std::string name;
+	std::string name_;
 	// メッシュコンテナ
 	std::vector<std::unique_ptr<Mesh>> meshes_;
 	// マテリアルコンテナ
-	std::unordered_map<std::string, std::unique_ptr<Material>> materials;
+	std::unordered_map<std::string, std::unique_ptr<Material>> materials_;
 	// デフォルトマテリアル
-	std::unique_ptr<Material> defaultMaterial;
+	std::unique_ptr<Material> defaultMaterial_;
 
 
 private:

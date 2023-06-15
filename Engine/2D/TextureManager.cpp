@@ -3,25 +3,25 @@
 #include "Util.h"
 using namespace DirectX;
 
-int32_t TextureManager::count = 0;
+int32_t TextureManager::sCount_ = 0;
 //リソース設定
-D3D12_RESOURCE_DESC TextureManager::resDesc;
+D3D12_RESOURCE_DESC TextureManager::sResDesc_;
 //設定をもとにSRV用デスクリプタヒープを生成
-ComPtr < ID3D12DescriptorHeap> TextureManager::srvHeap;
-D3D12_CPU_DESCRIPTOR_HANDLE TextureManager::srvHandle;
+ComPtr < ID3D12DescriptorHeap> TextureManager::sSrvHeap_;
+D3D12_CPU_DESCRIPTOR_HANDLE TextureManager::sSrvHandle_;
 
-ComPtr<ID3D12Resource> TextureManager::texBuff[srvCount];
+ComPtr<ID3D12Resource> TextureManager::sTexBuff_[S_SRV_COUNT_];
 
 //SRVの最大個数
-const int32_t TextureManager::kMaxSRVCount = 2056;
+const int32_t TextureManager::S_K_MAX_SRV_COUNT_ = 2056;
 //デスクリプタヒープの設定
-D3D12_DESCRIPTOR_HEAP_DESC TextureManager::srvHeapDesc;
+D3D12_DESCRIPTOR_HEAP_DESC TextureManager::sSrvHeapDesc_;
 
-D3D12_DESCRIPTOR_RANGE TextureManager::descriptorRange;
+D3D12_DESCRIPTOR_RANGE TextureManager::sDescriptorRange_;
 
-uint64_t TextureManager::whiteTexHandle = 114514;
+uint64_t TextureManager::sWhiteTexHandle_ = 114514;
 
-std::map < std::string, uint64_t> TextureManager::textureDatas_;
+std::map < std::string, uint64_t> TextureManager::sTextureDatas_;
 
 TextureManager::TextureManager()
 {
@@ -44,27 +44,27 @@ void TextureManager::InitializeDescriptorHeap()
 	HRESULT result = {};
 
 	//設定をもとにSRV用デスクリプタヒープを生成
-	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	srvHeapDesc.NumDescriptors = kMaxSRVCount;
-	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダーから見えるように
+	sSrvHeapDesc_.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	sSrvHeapDesc_.NumDescriptors = S_K_MAX_SRV_COUNT_;
+	sSrvHeapDesc_.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダーから見えるように
 	//descは設定
-	result = DirectXWrapper::GetInstance().GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateDescriptorHeap(&sSrvHeapDesc_, IID_PPV_ARGS(sSrvHeap_.GetAddressOf()));
 	assert(SUCCEEDED(result));
 
 
 	//デスクリプタレンジの設定
-	descriptorRange.NumDescriptors = 100;   //一度の描画に使うテクスチャの枚数
-	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange.BaseShaderRegister = 0;  //テクスチャレジスタ0番(t0)
-	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	sDescriptorRange_.NumDescriptors = 100;   //一度の描画に使うテクスチャの枚数
+	sDescriptorRange_.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	sDescriptorRange_.BaseShaderRegister = 0;  //テクスチャレジスタ0番(t0)
+	sDescriptorRange_.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
+	sSrvHandle_ = sSrvHeap_->GetCPUDescriptorHandleForHeapStart();
 }
 
 
 void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 {
-	assert(count <= srvCount - 1);
+	assert(sCount_ <= S_SRV_COUNT_ - 1);
 
 	HRESULT result = {};
 
@@ -75,9 +75,9 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 	std::string fileName = namec;
 	{
 		//ファイル名から探す
-		std::map<std::string, uint64_t>::iterator it = textureDatas_.find(fileName);
+		std::map<std::string, uint64_t>::iterator it = sTextureDatas_.find(fileName);
 		//すでに読み込まれていたらそのハンドルを返す
-		if (it != textureDatas_.end())
+		if (it != sTextureDatas_.end())
 		{
 			textureHandle = it->second;
 			return;
@@ -133,13 +133,13 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 			&textureResourceDesc,
 			D3D12_RESOURCE_STATE_COPY_DEST,
 			nullptr,
-			IID_PPV_ARGS(&texBuff[count]));
+			IID_PPV_ARGS(&sTexBuff_[sCount_]));
 	assert(SUCCEEDED(result));
 
 
 	//アップロードバッファ
 	// ヒープの設定
-	uint64_t uploadSize = GetRequiredIntermediateSize(texBuff[count].Get(), 0, (uint32_t)metadata.mipLevels);
+	uint64_t uploadSize = GetRequiredIntermediateSize(sTexBuff_[sCount_].Get(), 0, (uint32_t)metadata.mipLevels);
 
 	D3D12_HEAP_PROPERTIES uploadHeapProp{};
 	uploadHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -177,7 +177,7 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 	//サブリソースを転送
 	UpdateSubresources(
 		DirectXWrapper::GetInstance().GetCommandList(),
-		texBuff[count].Get(),
+		sTexBuff_[sCount_].Get(),
 		uploadBuff.Get(),
 		0,
 		0,
@@ -188,8 +188,8 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 	//SRV
 	{
 		//SRVヒープの先頭ハンドルを取得
-		if (count == 0) { srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart(); }
-		else { srvHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(srvHeapDesc.Type); }
+		if (sCount_ == 0) { sSrvHandle_ = sSrvHeap_->GetCPUDescriptorHandleForHeapStart(); }
+		else { sSrvHandle_.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(sSrvHeapDesc_.Type); }
 
 		//04_03
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
@@ -199,17 +199,17 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
 		srvDesc.Texture2D.MipLevels = 1;
 		//ハンドルのさす位置にシェーダーリソースビュー作成
-		DirectXWrapper::GetInstance().GetDevice()->CreateShaderResourceView(TextureManager::GetInstance().texBuff[count].Get(), &srvDesc, srvHandle);
+		DirectXWrapper::GetInstance().GetDevice()->CreateShaderResourceView(TextureManager::GetInstance().sTexBuff_[sCount_].Get(), &srvDesc, sSrvHandle_);
 
 		//04_02(画像貼る用のアドレスを引数に)
 		//SRVヒープのハンドルを取得
-		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-		textureHandle = srvGpuHandle.ptr + (DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().srvHeapDesc.Type) * count);
+		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = sSrvHeap_->GetGPUDescriptorHandleForHeapStart();
+		textureHandle = srvGpuHandle.ptr + (DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().sSrvHeapDesc_.Type) * sCount_);
 
 		{
 			//名前とデータを紐づけて保存
 			//サウンドデータを連想配列に格納(複製してセットでマップに格納)
-			textureDatas_.insert(std::make_pair(fileName, textureHandle));
+			sTextureDatas_.insert(std::make_pair(fileName, textureHandle));
 		}
 
 		//元データ解放
@@ -220,7 +220,7 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 	D3D12_RESOURCE_BARRIER BarrierDesc = {};
 	BarrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	BarrierDesc.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	BarrierDesc.Transition.pResource = texBuff[count].Get();
+	BarrierDesc.Transition.pResource = sTexBuff_[sCount_].Get();
 	BarrierDesc.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	BarrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;//ここが重要
 	BarrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;//ここも重要
@@ -253,5 +253,5 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 
 
 	//バッファ用のカウント
-	count++;
+	sCount_++;
 }

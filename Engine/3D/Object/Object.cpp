@@ -85,13 +85,13 @@ ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
 D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 //static
-LightManager* Object::lightManager = nullptr;
+LightManager* Object::sLightManager_ = nullptr;
 
 //演出用
-ComPtr <ID3D12Resource> Object::effectFlagsBuff = nullptr;
-EffectOConstBuffer* Object::mapEffectFlagsBuff = nullptr;
-EffectOConstBuffer Object::effectFlags;
-float Object::rimColorF3[3] = { 1.0f,1.0f,1.0f };
+ComPtr <ID3D12Resource> Object::sEffectFlagsBuff_ = nullptr;
+EffectOConstBuffer* Object::sMapEffectFlagsBuff_ = nullptr;
+EffectOConstBuffer Object::sEffectFlags_;
+float Object::sRimColorF3_[3] = { 1.0f,1.0f,1.0f };
 
 
 struct weightMap
@@ -117,7 +117,7 @@ void DrawInitialize()
 	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ0番（テクスチャ）
 	rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	rootParams[1].DescriptorTable.pDescriptorRanges = &TextureManager::GetInstance().descriptorRange;//デスクリプタレンジ
+	rootParams[1].DescriptorTable.pDescriptorRanges = &TextureManager::GetInstance().sDescriptorRange_;//デスクリプタレンジ
 	rootParams[1].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//定数バッファ1番(行列)
@@ -182,9 +182,9 @@ void DrawInitialize()
 		ResourceProperties(cbResourceDesc,
 			((uint32_t)sizeof(EffectConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
 		//定数バッファの生成
-		BuffProperties(cbHeapProp, cbResourceDesc, &Object::effectFlagsBuff);
+		BuffProperties(cbHeapProp, cbResourceDesc, &Object::sEffectFlagsBuff_);
 		//定数バッファのマッピング
-		result = Object::effectFlagsBuff->Map(0, nullptr, (void**)&Object::mapEffectFlagsBuff);//マッピング
+		result = Object::sEffectFlagsBuff_->Map(0, nullptr, (void**)&Object::sMapEffectFlagsBuff_);//マッピング
 		assert(SUCCEEDED(result));
 	}
 }
@@ -192,15 +192,15 @@ void DrawInitialize()
 //----------------------------------------------------------------
 bool Object::Initialize()
 {
-	name = typeid(*this).name();
+	NAME_ = typeid(*this).name();
 	return true;
 }
 
 Object::~Object()
 {
-	//delete& this->cbt;
-	constBuffMaterial.Reset();
-	constBuffSkin.Reset();
+	//delete& cbt;
+	constBuffMaterial_.Reset();
+	constBuffSkin_.Reset();
 
 	//object毎に消えるのでいらないかも
 	if (collider_.get())
@@ -222,26 +222,26 @@ void Object::Update()
 
 void Object::StaticUpdate()
 {
-	effectFlags.time++;
+	sEffectFlags_.time++;
 	//imgui
 	ImGui::Begin("ObjectEffect");
-	ImGui::SliderInt("Fog", (int32_t*)&effectFlags.isFog, 0, 1);
-	ImGui::SliderInt("Toon", (int32_t*)&effectFlags.isToon, 0, 1);
-	ImGui::SliderInt("RimLight", (int32_t*)&effectFlags.isRimLight, 0, 1);
-	ImGui::ColorEdit3("RimColor", rimColorF3);
+	ImGui::SliderInt("Fog", (int32_t*)&sEffectFlags_.isFog, 0, 1);
+	ImGui::SliderInt("Toon", (int32_t*)&sEffectFlags_.isToon, 0, 1);
+	ImGui::SliderInt("RimLight", (int32_t*)&sEffectFlags_.isRimLight, 0, 1);
+	ImGui::ColorEdit3("RimColor", sRimColorF3_);
 	ImGui::End();
 
-	effectFlags.rimColor = { rimColorF3[0],rimColorF3[1],rimColorF3[2] };
+	sEffectFlags_.rimColor = { sRimColorF3_[0],sRimColorF3_[1],sRimColorF3_[2] };
 
 
 
 	//画面効果用
 	{
-		mapEffectFlagsBuff->isFog = effectFlags.isFog;
-		mapEffectFlagsBuff->isToon = effectFlags.isToon;
-		mapEffectFlagsBuff->isRimLight = effectFlags.isRimLight;
-		mapEffectFlagsBuff->rimColor = effectFlags.rimColor;
-		mapEffectFlagsBuff->time = effectFlags.time;
+		sMapEffectFlagsBuff_->isFog = sEffectFlags_.isFog;
+		sMapEffectFlagsBuff_->isToon = sEffectFlags_.isToon;
+		sMapEffectFlagsBuff_->isRimLight = sEffectFlags_.isRimLight;
+		sMapEffectFlagsBuff_->rimColor = sEffectFlags_.rimColor;
+		sMapEffectFlagsBuff_->time = sEffectFlags_.time;
 	}
 }
 
@@ -281,7 +281,7 @@ Object::Object()
 	Object::Initialize();
 
 	//トランスフォーム行列
-	cbt.Initialize();
+	cbt_.Initialize();
 
 	//マテリアルバッファ（色）
 	//ヒープ設定
@@ -292,12 +292,12 @@ Object::Object()
 	ResourceProperties(cbResourceDesc,
 		((uint32_t)sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff/*256バイトアライメント*/);
 	//定数バッファの生成
-	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial);
+	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial_);
 	//定数バッファのマッピング
-	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
+	result = constBuffMaterial_->Map(0, nullptr, (void**)&constMapMaterial_);//マッピング
 	assert(SUCCEEDED(result));
 
-	if (this->constBuffSkin.Get() == nullptr)
+	if (constBuffSkin_.Get() == nullptr)
 	{
 		//スキンのバッファ
 		//ヒープ設定
@@ -307,19 +307,19 @@ Object::Object()
 		ResourceProperties(cbResourceDesc,
 			((uint32_t)sizeof(ConstBufferDataSkin) + 0xff) & ~0xff/*256バイトアライメント*/);
 		//定数バッファの生成
-		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffSkin);
+		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffSkin_);
 		//マッピング
 		ConstBufferDataSkin* constMapSkin = nullptr;
-		constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
-		for (uint32_t i = 0; i < MAX_BONES; i++)
+		constBuffSkin_->Map(0, nullptr, (void**)&constMapSkin);
+		for (uint32_t i = 0; i < S_MAX_BONES_; i++)
 		{
 			constMapSkin->bones[i] = XMMatrixIdentity();
 		}
-		constBuffSkin->Unmap(0, nullptr);
+		constBuffSkin_->Unmap(0, nullptr);
 	}
 
 	//1フレーム分の時間を60fpsで設定
-	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+	frameTime_.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 }
 
 void Object::SendingMat(int32_t indexNum)
@@ -336,10 +336,10 @@ void Object::SendingMat(int32_t indexNum)
 				 (float)worldMat_->matWorld.m[2][0],(float)worldMat_->matWorld.m[2][1],(float)worldMat_->matWorld.m[2][2],(float)worldMat_->matWorld.m[2][3],
 				 (float)worldMat_->matWorld.m[3][0],(float)worldMat_->matWorld.m[3][1],(float)worldMat_->matWorld.m[3][2],(float)worldMat_->matWorld.m[3][3] };
 
-		cbt.constMapTransform->world = matW;
-		cbt.constMapTransform->viewproj = view->matView * projection->matProjection;
-		XMFLOAT3 cPos = { view->eye.x,view->eye.y,view->eye.z };
-		cbt.constMapTransform->cameraPos = cPos;
+		cbt_.constMapTransform->world = matW;
+		cbt_.constMapTransform->viewproj = view_->matView * projection_->matProjection;
+		XMFLOAT3 cPos = { view_->eye.x,view_->eye.y,view_->eye.z };
+		cbt_.constMapTransform->cameraPos = cPos;
 	}
 }
 
@@ -364,23 +364,23 @@ void Object::PlayAnimationInternal(ModelFBX* model, FbxTime& sTime, FbxTime& eTi
 	//終了時間取得
 	eTime = takeInfo->mLocalTimeSpan.GetStop();
 	//開始時間取得
-	currentTime = startTime;
+	currentTime_ = startTime_;
 	//再生中状態
-	isPlay = true;
+	isPlay_ = true;
 	//ループ
-	this->isLoop = isLoop;
+	isLoop_ = isLoop;
 	//逆再生
-	this->isReverse = isReverse;
+	isReverse_ = isReverse;
 }
 
 void Object::PlayAnimation(ModelFBX* model, bool isLoop)
 {
-	PlayAnimationInternal(model, startTime, endTime, isLoop);
+	PlayAnimationInternal(model, startTime_, endTime_, isLoop);
 }
 
 void Object::PlayReverseAnimation(ModelFBX* model, bool isLoop)
 {
-	PlayAnimationInternal(model, endTime, startTime, isLoop, true);
+	PlayAnimationInternal(model, endTime_, startTime_, isLoop, true);
 }
 
 void Object::SendingBoneData(ModelFBX* model)
@@ -388,31 +388,31 @@ void Object::SendingBoneData(ModelFBX* model)
 	HRESULT result = {};
 
 	//アニメーション
-	if (isPlay)
+	if (isPlay_)
 	{
 		//逆再生
-		if (isReverse)
+		if (isReverse_)
 		{
-			currentTime -= frameTime;
+			currentTime_ -= frameTime_;
 		}
 		else
 		{
 			//1フレーム進める
-			currentTime += frameTime;
+			currentTime_ += frameTime_;
 		}
 		//最後まで再生したら
-		if ((!isReverse && currentTime > endTime)
-			|| (isReverse && currentTime < endTime))
+		if ((!isReverse_ && currentTime_ > endTime_)
+			|| (isReverse_ && currentTime_ < endTime_))
 		{
 			//先頭に戻す
-			if (isLoop)
+			if (isLoop_)
 			{
-				currentTime = startTime;
+				currentTime_ = startTime_;
 			}
 			//終了
 			else
 			{
-				isPlay = false;
+				isPlay_ = false;
 			}
 		}
 	}
@@ -423,14 +423,14 @@ void Object::SendingBoneData(ModelFBX* model)
 
 	//定数バッファへデータ転送
 	ConstBufferDataSkin* constMapSkin = nullptr;
-	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
+	result = constBuffSkin_->Map(0, nullptr, (void**)&constMapSkin);
 	for (int32_t i = 0; i < bones.size(); i++)
 	{
 		//今の姿勢行列
 		XMMATRIX matCurrentPose;
 		//今の姿勢行列を取得
 		FbxAMatrix fbxCurrentPose =
-			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
+			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime_);
 		//xmmatrixに変換
 		FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
@@ -440,7 +440,7 @@ void Object::SendingBoneData(ModelFBX* model)
 		//初期姿勢の逆行列と今の姿勢行列を合成してスキニング行列に
 		constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
 	}
-	constBuffSkin->Unmap(0, nullptr);
+	constBuffSkin_->Unmap(0, nullptr);
 }
 
 void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature)
@@ -453,14 +453,14 @@ void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum
 
 void Object::SetMaterialLightMTexSkin(uint64_t textureHandle_, ConstBuffTransform cbt)
 {
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 
-	lightManager->Draw(4);
+	sLightManager_->Draw(4);
 
 	//04_02
 	{
 		//SRVヒープの設定コマンド
-		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
+		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
 		//SRVヒープの先頭ハンドルを取得
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 		srvGpuHandle.ptr = textureHandle_;
@@ -472,7 +472,7 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle_, ConstBuffTransfor
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, cbt.constBuffTransform->GetGPUVirtualAddress());
 
 	//演出フラグ
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, sEffectFlagsBuff_->GetGPUVirtualAddress());
 }
 
 void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTransform cbt, Material* material)
@@ -485,7 +485,7 @@ void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTra
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, constBuff->GetGPUVirtualAddress());
 
 	//スキニング用
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(6, constBuffSkin->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(6, constBuffSkin_->GetGPUVirtualAddress());
 
 }
 
@@ -501,7 +501,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, const uint64_t textur
 
 	if (textureHandle == NULL)
 	{
-		textureHandle_ = TextureManager::GetInstance().whiteTexHandle;
+		textureHandle_ = TextureManager::GetInstance().sWhiteTexHandle_;
 	}
 	else
 	{
@@ -540,13 +540,13 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, const uint64_t textur
 	{
 		SpriteCommonBeginDraw(&pipelineSet);
 
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 
 
 		//04_02
 		{
 			//SRVヒープの設定コマンド
-			DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().srvHeap.GetAddressOf());
+			DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
 			//SRVヒープの先頭ハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 			srvGpuHandle.ptr = textureHandle_;
@@ -565,17 +565,17 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, const uint64_t textur
 
 		DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 
-		lightManager->Draw(4);
+		sLightManager_->Draw(4);
 
 		//定数バッファビュー(CBV)の設定コマンド
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform->GetGPUVirtualAddress());
 		//ポストエフェクトフラグ用
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff->GetGPUVirtualAddress());
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, sEffectFlagsBuff_->GetGPUVirtualAddress());
 
 		//スキニング用
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(6, constBuffSkin->GetGPUVirtualAddress());
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(6, constBuffSkin_->GetGPUVirtualAddress());
 
 		//モデル用描画
 		model->Draw();
@@ -586,7 +586,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, const uint64_t textur
 
 		//ラムダ式でコマンド関数
 		std::function<void()>SetRootPipeR = [=]() {SetRootPipe(pipelineSetFBX.pipelineState.Get(), 0, pipelineSetFBX.rootSignature.Get()); };
-		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(fbx->material->textureHandle, constBuffTransform, fbx->material.get()); };
+		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(fbx->material_->textureHandle_, constBuffTransform, fbx->material_.get()); };
 
 		fbx->Draw(SetRootPipeR, SetMaterialTex);
 	}
@@ -595,23 +595,23 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, const uint64_t textur
 void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 	ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
 {
-	this->view = view;
-	this->projection = projection;
+	view_ = view;
+	projection_ = projection;
 
-	constMapMaterial->color = color;
+	constMapMaterial_->color = color;
 
-	Update(TRIANGLE, pipelineNum, textureHandle, cbt);
+	Update(TRIANGLE, pipelineNum, textureHandle, cbt_);
 }
 
 void Object::DrawBox(ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
 	const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
 {
-	this->view = view;
-	this->projection = projection;
+	view_ = view;
+	projection_ = projection;
 
-	constMapMaterial->color = color;
+	constMapMaterial_->color = color;
 
-	Update(BOX, pipelineNum, textureHandle, cbt);
+	Update(BOX, pipelineNum, textureHandle, cbt_);
 }
 
 void Object::DrawBoxSprite(const Vec3& pos, float scale,
@@ -624,9 +624,9 @@ void Object::DrawBoxSprite(const Vec3& pos, float scale,
 		//スプライトクラスの初期化
 		sprite_->Initialize();
 	}
-	sprite_->Update(pos, scale, color, textureHandle, ancorUV, isReverseX, isReverseY, rotation, &cbt, constMapMaterial);
+	sprite_->Update(pos, scale, color, textureHandle, ancorUV, isReverseX, isReverseY, rotation, &cbt_, constMapMaterial_);
 
-	Update(SPRITE, pipelineNum, textureHandle, cbt);
+	Update(SPRITE, pipelineNum, textureHandle, cbt_);
 }
 
 void Object::Draw()
@@ -646,73 +646,73 @@ void Object::DrawClippingBoxSprite(const Vec3& leftTop, float scale, const XMFLO
 		sprite_->Initialize();
 	}
 	sprite_->UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle,
-		isPosLeftTop, isReverseX, isReverseY, rotation, &cbt, constMapMaterial);
+		isPosLeftTop, isReverseX, isReverseY, rotation, &cbt_, constMapMaterial_);
 
-	Update(SPRITE, pipelineNum, textureHandle, cbt);
+	Update(SPRITE, pipelineNum, textureHandle, cbt_);
 }
 
 void Object::DrawCube3D(ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
 {
-	this->view = view;
-	this->projection = projection;
+	view_ = view;
+	projection_ = projection;
 
-	constMapMaterial->color = color;
+	constMapMaterial_->color = color;
 
-	Update(CUBE, pipelineNum, textureHandle, cbt);
+	Update(CUBE, pipelineNum, textureHandle, cbt_);
 }
 
 void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,
 	const uint64_t textureHandle)
 {
-	this->view = view;
-	this->projection = projection;
+	view_ = view;
+	projection_ = projection;
 
-	constMapMaterial->color = color;
+	constMapMaterial_->color = color;
 
-	Update(LINE, 2, textureHandle, cbt, nullptr, nullptr, false);
+	Update(LINE, 2, textureHandle, cbt_, nullptr, nullptr, false);
 }
 
 void Object::DrawCircle(ViewMat* view, ProjectionMat* projection,
 	const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
 {
-	this->view = view;
-	this->projection = projection;
+	view_ = view;
+	projection_ = projection;
 
-	constMapMaterial->color = color;
+	constMapMaterial_->color = color;
 
-	Update(CIRCLE, pipelineNum, textureHandle, cbt);
+	Update(CIRCLE, pipelineNum, textureHandle, cbt_);
 }
 
 void Object::DrawSphere(ViewMat* view, ProjectionMat* projection,
 	const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
 {
-	this->view = view;
-	this->projection = projection;
+	view_ = view;
+	projection_ = projection;
 
-	constMapMaterial->color = color;
+	constMapMaterial_->color = color;
 
-	Update(SPHERE, pipelineNum, textureHandle, cbt);
+	Update(SPHERE, pipelineNum, textureHandle, cbt_);
 }
 
 void Object::DrawModel(ViewMat* view, ProjectionMat* projection,
 	Model* model, const XMFLOAT4& color, int32_t pipelineNum)
 {
-	this->view = view;
-	this->projection = projection;
+	view_ = view;
+	projection_ = projection;
 
-	constMapMaterial->color = color;
+	constMapMaterial_->color = color;
 
-	Update(MODEL, pipelineNum, NULL, cbt, model);
+	Update(MODEL, pipelineNum, NULL, cbt_, model);
 }
 
 void Object::DrawFBX(ViewMat* view, ProjectionMat* projection, ModelFBX* modelFbx, const XMFLOAT4& color, int32_t pipelineNum)
 {
-	this->view = view;
-	this->projection = projection;
+	view_ = view;
+	projection_ = projection;
 
-	constMapMaterial->color = color;
+	constMapMaterial_->color = color;
 
-	Update(FBX, pipelineNum, NULL, cbt, nullptr, modelFbx);
+	Update(FBX, pipelineNum, NULL, cbt_, nullptr, modelFbx);
 }
 
 void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
@@ -933,14 +933,14 @@ void Blend(const D3D12_BLEND_OP& blendMode, bool Inversion, bool Translucent)
 
 void Object::constBuffTransfer(const XMFLOAT4& plusRGBA)
 {
-	if (constMapMaterial->color.x <= 1.0f && constMapMaterial->color.x >= 0.0f)
-		constMapMaterial->color.x += plusRGBA.x;
-	if (constMapMaterial->color.y <= 1.0f && constMapMaterial->color.y >= 0.0f)
-		constMapMaterial->color.y += plusRGBA.y;
-	if (constMapMaterial->color.z <= 1.0f && constMapMaterial->color.z >= 0.0f)
-		constMapMaterial->color.z += plusRGBA.z;
-	if (constMapMaterial->color.w <= 1.0f && constMapMaterial->color.w >= 0.0f)
-		constMapMaterial->color.w += plusRGBA.w;
+	if (constMapMaterial_->color.x <= 1.0f && constMapMaterial_->color.x >= 0.0f)
+		constMapMaterial_->color.x += plusRGBA.x;
+	if (constMapMaterial_->color.y <= 1.0f && constMapMaterial_->color.y >= 0.0f)
+		constMapMaterial_->color.y += plusRGBA.y;
+	if (constMapMaterial_->color.z <= 1.0f && constMapMaterial_->color.z >= 0.0f)
+		constMapMaterial_->color.z += plusRGBA.z;
+	if (constMapMaterial_->color.w <= 1.0f && constMapMaterial_->color.w >= 0.0f)
+		constMapMaterial_->color.w += plusRGBA.w;
 }
 
 

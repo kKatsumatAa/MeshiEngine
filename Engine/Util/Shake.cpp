@@ -11,19 +11,19 @@ float Shake::GetRandomShakeInternal(float min, float max)
 
 void Shake::SetRandomLength(float length)
 {
-	this->shakeLength = length;
+	shakeLength = length;
 }
 
 void Shake::SetLifeTime(int32_t time)
 {
-	this->lifeTimer = time;
-	this->lifeTimerTmp = time;
+	lifeTimer = time;
+	lifeTimerTmp = time;
 }
 
 void Shake::SetShake(int32_t time, float length)
 {
 
-	if (time > this->lifeTimer)
+	if (time > lifeTimer)
 	{
 		SetLifeTime(time);
 		SetRandomLength(length);

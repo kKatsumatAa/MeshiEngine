@@ -35,9 +35,8 @@ struct VertexSprite
 class SpriteCommon
 {
 private:
-
+	PipeLineSet pipelineSet_;
 
 public:
-	PipeLineSet pipelineSet;
 };
 

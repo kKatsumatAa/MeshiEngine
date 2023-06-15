@@ -4,7 +4,7 @@
 //bool GlassFilter::CreateEffectBufferAndView()
 //{
 //	//法線マップをロード
-//	LoadPictureFromFile(L"Resources/image/normalImage.jpg", this->_effectTexBuffer);
+//	LoadPictureFromFile(L"Resources/image/normalImage.jpg", _effectTexBuffer);
 //
 //
 //	//ポストエフェクト用のディスクリプタヒープを生成
