@@ -11,7 +11,7 @@ private:
 
 public:
 	//球のインデックス用
-	static const int32_t S_SPHERE_INDEX_NUM = 66 * 3 + 6;
+	static const int32_t S_SPHERE_INDEX_NUM_ = 66 * 3 + 6;
 
 	//頂点バッファの生成
 	ComPtr < ID3D12Resource> vertBuffTriangle_ = nullptr;

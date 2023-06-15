@@ -63,7 +63,7 @@ static uint16_t sIndicesLine[2] =
 	0,1//三角形2つ目
 };
 
-static uint16_t sIndicesSphere[Primitive::S_SPHERE_INDEX_NUM * 36];
+static uint16_t sIndicesSphere[Primitive::S_SPHERE_INDEX_NUM_ * 36];
 
 
 uint32_t sizeVB;
@@ -555,12 +555,12 @@ void Primitive::InitializeSphere()
 		//インデックス
 		for (int32_t i = 0; i < _countof(sIndicesSphere); i++)
 		{
-			if (i % (S_SPHERE_INDEX_NUM * 35) == 0 && i != 0)//最後の縦の列
+			if (i % (S_SPHERE_INDEX_NUM_ * 35) == 0 && i != 0)//最後の縦の列
 			{
 				isLast = true;
 			}
 
-			if (i % S_SPHERE_INDEX_NUM == 0 || i % (S_SPHERE_INDEX_NUM * (count + 1) - 3) == 0)
+			if (i % S_SPHERE_INDEX_NUM_ == 0 || i % (S_SPHERE_INDEX_NUM_ * (count + 1) - 3) == 0)
 			{
 
 			}
@@ -611,9 +611,9 @@ void Primitive::InitializeSphere()
 
 				count2++;
 			}
-			if (i % S_SPHERE_INDEX_NUM == 0 || i % (S_SPHERE_INDEX_NUM * (count + 1) - 3) == 0)
+			if (i % S_SPHERE_INDEX_NUM_ == 0 || i % (S_SPHERE_INDEX_NUM_ * (count + 1) - 3) == 0)
 			{
-				if (i % S_SPHERE_INDEX_NUM == 0)//一番下の三角形
+				if (i % S_SPHERE_INDEX_NUM_ == 0)//一番下の三角形
 				{
 					if (isLast)
 					{
@@ -632,7 +632,7 @@ void Primitive::InitializeSphere()
 						i += 2;
 					}
 				}
-				else if (i % (S_SPHERE_INDEX_NUM * (count + 1) - 3) == 0)//一番上の三角形
+				else if (i % (S_SPHERE_INDEX_NUM_ * (count + 1) - 3) == 0)//一番上の三角形
 				{
 					if (isLast)
 					{
