@@ -34,13 +34,13 @@ M4::M4(float m00, float m01, float m02, float m03,
 	m_[3][3] = m33;
 }
 
-M4::M4(const float(*other)[4])
+M4::M4(const float(*P_P_OTHER)[4])
 {
 	for (int32_t i = 0; i < 4; i++)
 	{
 		for (int32_t j = 0; j < 4; j++)
 		{
-			m_[i][j] = other[i][j];
+			m_[i][j] = P_P_OTHER[i][j];
 		}
 	}
 }
@@ -322,7 +322,7 @@ void M4::PutinXMMATRIX(const XMMATRIX& xM)
 //{
 //}
 
-Vec3 operator*(const Vec3& v, const M4& m2)
+const Vec3 operator*(const Vec3& v, const M4& m2)
 {
 	float w = (float)(v.x_ * m2.m_[0][3] + v.y_ * m2.m_[1][3] + v.z_ * m2.m_[2][3] + m2.m_[3][3]);
 

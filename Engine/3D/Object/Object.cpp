@@ -192,7 +192,7 @@ void DrawInitialize()
 //----------------------------------------------------------------
 bool Object::Initialize()
 {
-	NAME_ = typeid(*this).name();
+	P_NAME = typeid(*this).name();
 	return true;
 }
 
@@ -355,9 +355,9 @@ void Object::PlayAnimationInternal(ModelFBX* model, FbxTime& sTime, FbxTime& eTi
 	if (animStack == nullptr) { return; }
 
 	//アニメーションの名前取得
-	const char* animStackName = animStack->GetName();
+	const char* P_ANIM_STACK_NAME = animStack->GetName();
 	//アニメーションの時間情報
-	FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(animStackName);
+	FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(P_ANIM_STACK_NAME);
 
 	//開始時間取得
 	sTime = takeInfo->mLocalTimeSpan.GetStart();
@@ -489,7 +489,7 @@ void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTra
 
 }
 
-void Object::Update(int32_t indexNum, int32_t pipelineNum, const uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
+void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
 	Model* model, ModelFBX* fbx, bool primitiveMode)
 {
 	//行列送信
@@ -593,7 +593,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, const uint64_t textur
 }
 
 void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-	ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
+	ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,  uint64_t textureHandle, int32_t pipelineNum)
 {
 	view_ = view;
 	projection_ = projection;
@@ -604,7 +604,7 @@ void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 }
 
 void Object::DrawBox(ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
-	const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
+	const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	view_ = view;
 	projection_ = projection;
@@ -615,7 +615,7 @@ void Object::DrawBox(ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, 
 }
 
 void Object::DrawBoxSprite(const Vec3& pos, float scale,
-	const XMFLOAT4& color, const uint64_t textureHandle, const Vec2& ancorUV, bool isReverseX, bool isReverseY,
+	const XMFLOAT4& color, uint64_t textureHandle, const Vec2& ancorUV, bool isReverseX, bool isReverseY,
 	float rotation, int32_t pipelineNum)
 {
 	if (sprite_.get() == nullptr)
@@ -636,7 +636,7 @@ void Object::Draw()
 
 
 void Object::DrawClippingBoxSprite(const Vec3& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	const XMFLOAT4& color, const uint64_t textureHandle, bool isPosLeftTop, bool isReverseX, bool isReverseY,
+	const XMFLOAT4& color, uint64_t textureHandle, bool isPosLeftTop, bool isReverseX, bool isReverseY,
 	float rotation, int32_t pipelineNum)
 {
 	if (sprite_.get() == nullptr)
@@ -651,7 +651,7 @@ void Object::DrawClippingBoxSprite(const Vec3& leftTop, float scale, const XMFLO
 	Update(SPRITE, pipelineNum, textureHandle, cbt_);
 }
 
-void Object::DrawCube3D(ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
+void Object::DrawCube3D(ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	view_ = view;
 	projection_ = projection;
@@ -662,7 +662,7 @@ void Object::DrawCube3D(ViewMat* view, ProjectionMat* projection, const XMFLOAT4
 }
 
 void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,
-	const uint64_t textureHandle)
+	uint64_t textureHandle)
 {
 	view_ = view;
 	projection_ = projection;
@@ -673,7 +673,7 @@ void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  ViewMat* view, Pr
 }
 
 void Object::DrawCircle(ViewMat* view, ProjectionMat* projection,
-	const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
+	const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	view_ = view;
 	projection_ = projection;
@@ -684,7 +684,7 @@ void Object::DrawCircle(ViewMat* view, ProjectionMat* projection,
 }
 
 void Object::DrawSphere(ViewMat* view, ProjectionMat* projection,
-	const XMFLOAT4& color, const uint64_t textureHandle, int32_t pipelineNum)
+	const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	view_ = view;
 	projection_ = projection;

@@ -84,9 +84,9 @@ void Primitive::InitializeTriangle()
 {
 	HRESULT result = {};
 
-	float angle = pi * 2.0f + pi * 2.0f / 3.0f * 2.0f;
-	float angle2 = pi * 2.0f;
-	float angle3 = pi * 2.0f + pi * 2.0f / 3.0f;
+	float angle = PI * 2.0f + PI * 2.0f / 3.0f * 2.0f;
+	float angle2 = PI * 2.0f;
+	float angle3 = PI * 2.0f + PI * 2.0f / 3.0f;
 
 	verticesTriangle_[0] = { {sinf(angle),cosf(angle),0},{verticesTriangle_[0].normal},{0.0f,1.0f} };//左下
 	verticesTriangle_[1] = { {0,cosf(angle2),0},{verticesTriangle_[1].normal},{0.5f,0.0f} };//上
@@ -249,11 +249,11 @@ void Primitive::InitializeCircle()
 
 	verticesCircle_[0].pos = { 0.0f,0.0f,0.0f };
 
-	static float count = _countof(verticesCircle_) - 2;//中心点と初期の点はカウントしない
+	static float sCount = _countof(verticesCircle_) - 2;//中心点と初期の点はカウントしない
 
 	for (int32_t i = 1; i < _countof(verticesCircle_); i++)
 	{
-		verticesCircle_[i].pos = { 1.0f * cosf(AngletoRadi(360 / count) * (i - 1)),1.0f * sinf(AngletoRadi(360 / count) * (i - 1)),0 };
+		verticesCircle_[i].pos = { 1.0f * cosf(AngletoRadi(360 / sCount) * (i - 1)),1.0f * sinf(AngletoRadi(360 / sCount) * (i - 1)),0 };
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
@@ -537,7 +537,7 @@ void Primitive::InitializeSphere()
 
 			for (int32_t j = 0; j < 34; j++)//縦
 			{
-				worldMat.rot_.x_ = ((float)(j + 1) * (pi / 35.0f));
+				worldMat.rot_.x_ = ((float)(j + 1) * (PI / 35.0f));
 				worldMat.SetWorld();
 				vec = { 0,-1.0f,0 };
 				Vec3xM4(vec, worldMat.matWorld_, false);

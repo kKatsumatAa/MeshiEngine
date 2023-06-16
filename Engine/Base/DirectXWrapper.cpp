@@ -192,9 +192,9 @@ void DirectXWrapper::InitializeFixFPS()
 void DirectXWrapper::UpdateFixFPS()
 {
 	//1/60(s)ぴったりの時間
-	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
+	const std::chrono::microseconds MIN_TIME(uint64_t(1000000.0f / 60.0f));
 	//1/60(s)よりわずかに短い時間
-	const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.0f));
+	const std::chrono::microseconds MIN_CHECK_TIME(uint64_t(1000000.0f / 65.0f));
 
 	//現在時間を取得
 	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
@@ -203,10 +203,10 @@ void DirectXWrapper::UpdateFixFPS()
 		std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
 
 	//1/60(s)（よりわずかに短い時間）経ってない場合
-	if (elapsed < kMinCheckTime)
+	if (elapsed < MIN_CHECK_TIME)
 	{
 		//1/60(s)経過するまで微小なスリープ繰り返す
-		while (std::chrono::steady_clock::now() - reference_ < kMinCheckTime)//
+		while (std::chrono::steady_clock::now() - reference_ < MIN_CHECK_TIME)//
 		{
 			//1マイクロ秒スリープ
 			std::this_thread::sleep_for(std::chrono::microseconds(1));
@@ -282,8 +282,8 @@ DirectXWrapper::~DirectXWrapper()
 
 DirectXWrapper& DirectXWrapper::GetInstance()
 {
-	static DirectXWrapper inst; // private なコンストラクタを呼び出す。
-	return inst;
+	static DirectXWrapper sInst; // private なコンストラクタを呼び出す。
+	return sInst;
 }
 
 void DirectXWrapper::CommandReset()
@@ -376,7 +376,7 @@ void DirectXWrapper::PostDraw()
 	assert(SUCCEEDED(result_));
 }
 
-void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuff)
+void LoadPictureFromFile(const wchar_t* P_FILE_NAME, ComPtr<ID3D12Resource>& texBuff)
 {
 	HRESULT result = {};
 
@@ -385,7 +385,7 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 	ScratchImage scratchImg{};
 	//WICのテクスチャのロード
 	result = LoadFromWICFile(
-		fileName,
+		P_FILE_NAME,
 		WIC_FLAGS_NONE,
 		&metadata, scratchImg
 	);
@@ -462,11 +462,11 @@ void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuf
 	for (int32_t i = 0; i < subResourcesDatas.size(); i++)
 	{
 		// 全ミップマップレベルを指定してイメージを取得
-		const Image* img = scratchImg.GetImage(i, 0, 0);
+		const Image* P_IMG = scratchImg.GetImage(i, 0, 0);
 
-		subResourcesDatas[i].pData = img->pixels;
-		subResourcesDatas[i].RowPitch = img->rowPitch;
-		subResourcesDatas[i].SlicePitch = img->slicePitch;
+		subResourcesDatas[i].pData = P_IMG->pixels;
+		subResourcesDatas[i].RowPitch = P_IMG->rowPitch;
+		subResourcesDatas[i].SlicePitch = P_IMG->slicePitch;
 	}
 
 	//サブリソースを転送

@@ -15,14 +15,14 @@ public:
 	Vec4()
 		:x_(0), y_(0), z_(0), w_(0)
 	{}
-	Vec4(const float x, const float y, const float z, const float w)
+	Vec4(float x, float y, float z, float w)
 		:x_(x), y_(y), z_(z), w_(w)
 	{}
 
 	//ï÷óòä÷êî
 	float GetLength() const;
 	void Normalized();
-	const Vec4 GetNormalized();
+	Vec4 GetNormalized() const;
 	Vec4 Cross(const Vec4& other) const;
 	float Dot(const Vec4& other) const;
 

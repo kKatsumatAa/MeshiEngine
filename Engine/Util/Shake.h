@@ -3,9 +3,9 @@
 #include<random>
 
 //乱数シード生成器
-static std::random_device seed_gen;
+static std::random_device sSeedGen;
 //メルセンヌツイスター
-static std::mt19937_64 engine(seed_gen());
+static std::mt19937_64 sEngine(sSeedGen());
 
 class Shake
 {

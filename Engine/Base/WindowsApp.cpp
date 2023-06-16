@@ -70,8 +70,8 @@ WindowsApp::WindowsApp()
 
 WindowsApp& WindowsApp::GetInstance()
 {
-	static WindowsApp inst; // private なコンストラクタを呼び出す。
-	return inst;
+	static WindowsApp sInst; // private なコンストラクタを呼び出す。
+	return sInst;
 }
 
 bool WindowsApp::MessegeRoop(MSG msg)

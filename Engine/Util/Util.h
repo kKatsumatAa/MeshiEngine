@@ -8,12 +8,12 @@
 
 //自作
 void Vec4xM4(Vec4& v, const M4& m4);
-void Vec3xM4(Vec3& v, const M4& m4, const bool w);
-Vec3 GetVec3xM4(Vec3 v, const M4 m4, const bool w);
-void Vec3xM4andDivisionW(Vec3& v, const M4& m4, const bool w);
+void Vec3xM4(Vec3& v, const M4& m4, bool w);
+Vec3 GetVec3xM4(Vec3 v, const M4& m4, bool w);
+void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w);
 
 //ラジアン系
-const float pi = 3.141592f;
+const float PI = 3.141592f;
 float AngletoRadi(float angle);
 float RaditoAngle(float radian);
 float GetRadianVec3(const Vec3& v1, const Vec3& v2);
@@ -33,9 +33,9 @@ float EaseOut(float t);
 bool CollisionCircleCircle(const Vec3& pos1, float r1,
 	const Vec3& pos2, float r2);
 
-bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, const float r, const Vec3& pos, const float r2);
+bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, float r, const Vec3& pos, float r2);
 
-bool CollisionBox(const int32_t x1, const int32_t y1, const int32_t x2, const int32_t y2, const int32_t r1, const int32_t r2);
+bool CollisionBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t r1, int32_t r2);
 
 
 //便利
@@ -55,7 +55,7 @@ Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 /// <param name="projection"></param>
 /// <param name="distance"></param>
 /// <returns></returns>
-Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection, const float distance);
+Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection, float distance);
 
 /// <summary>
 /// スクリーン座標をprojectionのnear,farの位置に変換してreturn...Posに代入
@@ -73,7 +73,7 @@ int32_t AligmentSize(int32_t size, int32_t aligment);
 
 //文字変換系
 //char* を const wchar_t* に変換
-void ConstCharToWcharT(const char* string, wchar_t(&wString)[128]);
+void ConstCharToWcharT(const char* P_STRING, wchar_t(&wString)[128]);
 
 //const wchar_t* を char* に変換
-void ConstWCharTToChar(const wchar_t* wString, char(&string)[128]);
+void ConstWCharTToChar(const wchar_t* P_W_STRING, char(&string)[128]);

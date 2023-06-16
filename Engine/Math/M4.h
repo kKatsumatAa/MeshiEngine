@@ -17,7 +17,7 @@ public:
 		float m10, float m11, float m12, float m13,
 		float m20, float m21, float m22, float m23,
 		float m30, float m31, float m32, float m33);
-	M4(const float(*other)[4]);
+	M4(const float(*P_P_OTHER)[4]);
 	/*void Normalize();*/
 
 	//é©çÏ
@@ -39,10 +39,10 @@ public:
 	void PutinXMMATRIX(const XMMATRIX& xM);
 };
 
-Vec3 operator*(const Vec3& v, const M4& m2);
+const Vec3 operator*(const Vec3& v, const M4& m2);
 
 
-const float normalM[4][4] = {
+const float NORMAL_M[4][4] = {
 		{1,0,0,0},
 		{0,1,0,0},
 		{0,0,1,0},

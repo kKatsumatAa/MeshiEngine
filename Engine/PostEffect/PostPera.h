@@ -99,11 +99,11 @@ public:
 
 
 private://関数
-	void InitializeBuffRTV(const wchar_t* nomalImageFileName);
+	void InitializeBuffRTV(const wchar_t* P_NORMAL_IMAGE_FILE_NAME);
 	void GenerateRSPL();
-	void GlassFilterBuffGenerate(const wchar_t* fileName);
+	void GlassFilterBuffGenerate(const wchar_t* P_FILE_NAME);
 	//ガラス用のバッファとビュー作成
-	bool CreateEffectBufferAndView(const wchar_t* fileName);
+	bool CreateEffectBufferAndView(const wchar_t* P_FILE_NAME);
 	//ブルーム用のバッファ作成
 	bool CreateBloomBuffer();
 	//ブルーム用のバッファ作成
@@ -123,7 +123,7 @@ private://関数
 	void Draw2All();
 
 public:
-	void Initialize(const wchar_t* nomalImageFileName);
+	void Initialize(const wchar_t* P_NORMAL_IMAGE_FILE_NAME);
 
 	void Update();
 

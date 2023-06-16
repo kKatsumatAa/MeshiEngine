@@ -25,12 +25,12 @@ public:
 	void SpriteDraw();
 
 	void Update(const Vec3& pos,  float scale,
-		const XMFLOAT4& color, const uint64_t textureHandle, const Vec2& ancorUV,
+		const XMFLOAT4& color, uint64_t textureHandle, const Vec2& ancorUV,
 		 bool isReverseX, bool isReverseY, float rotation,
 		ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
 
 	void UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-		const XMFLOAT4& color, const uint64_t textureHandle, bool isPosLeftTop,
+		const XMFLOAT4& color, uint64_t textureHandle, bool isPosLeftTop,
 		 bool isReverseX, bool isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
 };
 

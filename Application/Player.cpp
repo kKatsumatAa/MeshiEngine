@@ -81,11 +81,11 @@ void Player::OnCollision(const CollisionInfo& info)
 {
 	for (int32_t i = 0; i < 1; ++i)
 	{
-		const float md_vel = 0.5f;
+		const float MD_VEL = 0.5f;
 		XMFLOAT3 vel{};
-		vel.x = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
-		vel.y = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
-		vel.z = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
+		vel.x = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.y = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.z = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
 
 		ParticleManager::GetInstance()->Add(20, XMFLOAT3(info.inter_.m128_f32), vel, XMFLOAT3(), 0, 1.0f);
 	}

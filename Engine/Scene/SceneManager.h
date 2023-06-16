@@ -67,7 +67,7 @@ private:
 	SceneManager() { ; }
 
 public:
-	static SceneManager& GetInstance() { static SceneManager inst; return inst; }
+	static SceneManager& GetInstance() { static SceneManager sInst; return sInst; }
 	//コピーコンストラクタを無効
 	SceneManager(const SceneManager& obj) = delete;
 	//代入演算子も

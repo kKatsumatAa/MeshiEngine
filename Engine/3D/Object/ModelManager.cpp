@@ -8,8 +8,8 @@ ModelManager::~ModelManager()
 
 ModelManager& ModelManager::GetInstance()
 {
-	static ModelManager inst;
-	return inst;
+	static ModelManager sInst;
+	return sInst;
 }
 
 void ModelManager::Finalize()

@@ -23,8 +23,8 @@ KeyboardInput::~KeyboardInput()
 
 KeyboardInput& KeyboardInput::GetInstance()
 {
-	static KeyboardInput inst; // private なコンストラクタを呼び出す。
-	return inst;
+	static KeyboardInput sInst; // private なコンストラクタを呼び出す。
+	return sInst;
 }
 
 void KeyboardInput::Update()

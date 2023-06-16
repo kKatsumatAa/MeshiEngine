@@ -13,15 +13,15 @@ const std::string Model::S_BASE_DIRECTORY_ = "Resources/";
 uint32_t Model::sDescriptorHandleIncrementSize_ = 0;
 
 
-void Model::LoadFromOBJInternal(const std::string& folderName, const bool smoothing, bool modelType)
+void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing, bool modelType)
 {
-	const std::string filename = folderName + ".obj";
-	const std::string directoryPath = S_BASE_DIRECTORY_ + folderName + "/";
+	const std::string FILE_NAME = folderName + ".obj";
+	const std::string DIRECTORY_PATH = S_BASE_DIRECTORY_ + folderName + "/";
 
 	// ファイルストリーム
 	std::ifstream file;
 	// .objファイルを開く
-	file.open(directoryPath + filename);
+	file.open(DIRECTORY_PATH + FILE_NAME);
 	// ファイルオープン失敗をチェック
 	if (file.fail()) {
 		assert(0);
@@ -57,7 +57,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, const bool smooth
 			std::string filename;
 			line_stream >> filename;
 			// マテリアル読み込み
-			LoadMaterial(directoryPath, filename);
+			LoadMaterial(DIRECTORY_PATH, filename);
 		}
 		// 先頭文字列がgならグループの開始
 		if (key == "g") {

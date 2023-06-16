@@ -19,7 +19,7 @@ void Vec4xM4(Vec4& v, const M4& m4)
 	v = { v4[1][0],v4[1][1] ,v4[1][2] ,v4[1][3] };
 }
 
-void Vec3xM4(Vec3& v, const M4& m4, const bool w)
+void Vec3xM4(Vec3& v, const M4& m4, bool w)
 {
 	float v4[2][4] = {
 		{ v.x_,v.y_,v.z_,(float)w },
@@ -37,7 +37,7 @@ void Vec3xM4(Vec3& v, const M4& m4, const bool w)
 	v = { v4[1][0],v4[1][1] ,v4[1][2] };
 }
 
-Vec3 GetVec3xM4(Vec3 v, const M4 m4, const bool w)
+Vec3 GetVec3xM4(Vec3 v, const M4& m4, bool w)
 {
 	float v4[2][4] = {
 	{ v.x_,v.y_,v.z_,(float)w },
@@ -55,7 +55,7 @@ Vec3 GetVec3xM4(Vec3 v, const M4 m4, const bool w)
 	return { v4[1][0],v4[1][1] ,v4[1][2] };
 }
 
-void Vec3xM4andDivisionW(Vec3& v, const M4& m4, const bool w)
+void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w)
 {
 	float v4[2][4] = {
 		{ v.x_,v.y_,v.z_,(float)w },
@@ -89,12 +89,12 @@ void Vec3xM4andDivisionW(Vec3& v, const M4& m4, const bool w)
 
 float AngletoRadi(float angle)
 {
-	return angle * pi / 180;
+	return angle * PI / 180;
 }
 
 float RaditoAngle(float radian)
 {
-	return radian / pi * 180;
+	return radian / PI * 180;
 }
 
 float GetRadianVec3(const Vec3& v1, const Vec3& v2)
@@ -164,7 +164,7 @@ bool CollisionCircleCircle(const Vec3& pos1, float r1, const Vec3& pos2, float r
 	return false;
 }
 
-bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, const float r, const Vec3& pos, const float r2)
+bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, float r, const Vec3& pos, float r2)
 {
 	//レイとの当たり判定
 	Vec3 rayLength = ev - sv;
@@ -191,7 +191,7 @@ bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, const float r, const Vec
 	}
 }
 
-bool CollisionBox(const int32_t x1, const int32_t y1, const int32_t x2, const int32_t y2, const int32_t r1, const int32_t r2)
+bool CollisionBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t r1, int32_t r2)
 {
 	return x1 - r1 < x2 + r2 && x2 - r2 < x1 + r1 &&
 		y1 - r1 < y2 + r2 && y2 - r2 < y1 + r1;
@@ -230,7 +230,7 @@ Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 	return Vec2(vec3.x_, vec3.y_);
 }
 
-Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection, const float distance)
+Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection, float distance)
 {
 	XMMATRIX viewPort = {
 		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,0,0,0,
@@ -265,9 +265,9 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 	nearFarDirection.Normalized();
 
 	//カメラから照準オブジェクトの距離
-	const float distanceTestObject = distance;//仮
+	const float DISTANCE_TEST_OBJECT = distance;//仮
 
-	Vec3 pos = posNear + nearFarDirection * distanceTestObject;
+	Vec3 pos = posNear + nearFarDirection * DISTANCE_TEST_OBJECT;
 
 	return Vec3(pos);
 }
@@ -322,14 +322,14 @@ int32_t AligmentSize(int32_t size, int32_t aligment)
 	return size + aligment - size % aligment;
 }
 
-void ConstCharToWcharT(const char* string, wchar_t(&wString)[128])
+void ConstCharToWcharT(const char* P_STRING, wchar_t(&wString)[128])
 {
 	size_t size = _countof(wString);
-	mbstowcs_s(&size, wString, string, size);
+	mbstowcs_s(&size, wString, P_STRING, size);
 }
 
-void ConstWCharTToChar(const wchar_t* wString, char(&string)[128])
+void ConstWCharTToChar(const wchar_t* P_W_STRING, char(&string)[128])
 {
 	size_t size = _countof(string);
-	wcstombs_s(&size, string, wString, size);
+	wcstombs_s(&size, string, P_W_STRING, size);
 }

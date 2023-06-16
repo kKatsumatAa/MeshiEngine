@@ -14,7 +14,7 @@ public:
 	Vec3()
 		:x_(0), y_(0), z_(0)
 	{}
-	Vec3(const float x, const float y, const float z)
+	Vec3(float x, float y, float z)
 		:x_(x), y_(y), z_(z)
 	{}
 
@@ -26,9 +26,9 @@ public:
 	float Dot(const Vec3& other) const;
 
 	//ƒIƒoƒ‰‰Zq
-	Vec3 operator+();
+	Vec3 operator+()const;
 	Vec3& operator+=(const Vec3& other);
-	Vec3 operator-();
+	Vec3 operator-()const;
 	Vec3& operator-=(const Vec3& other);
 	Vec3 operator*(float other);
 	Vec3& operator*=(float other);

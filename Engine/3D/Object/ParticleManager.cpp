@@ -29,12 +29,12 @@ static const DirectX::XMFLOAT3 operator-(const DirectX::XMFLOAT3& lhs, const Dir
 	return result;
 }
 
-const DirectX::XMFLOAT3 operator/(const DirectX::XMFLOAT3& lhs, const float rhs)
+const DirectX::XMFLOAT3 operator/(const DirectX::XMFLOAT3& lhs, float RHS)
 {
 	XMFLOAT3 result;
-	result.x = lhs.x / rhs;
-	result.y = lhs.y / rhs;
-	result.z = lhs.z / rhs;
+	result.x = lhs.x / RHS;
+	result.y = lhs.y / RHS;
+	result.z = lhs.z / RHS;
 	return result;
 }
 
@@ -58,21 +58,21 @@ static const DirectX::XMFLOAT4 operator-(const DirectX::XMFLOAT4& lhs, const Dir
 	return result;
 }
 
-const DirectX::XMFLOAT4 operator/(const DirectX::XMFLOAT4& lhs, const float rhs)
+const DirectX::XMFLOAT4 operator/(const DirectX::XMFLOAT4& lhs, float RHS)
 {
 	XMFLOAT4 result;
-	result.x = lhs.x / rhs;
-	result.y = lhs.y / rhs;
-	result.z = lhs.z / rhs;
-	result.w = lhs.w / rhs;
+	result.x = lhs.x / RHS;
+	result.y = lhs.y / RHS;
+	result.z = lhs.z / RHS;
+	result.w = lhs.w / RHS;
 	return result;
 }
 
 
 ParticleManager* ParticleManager::GetInstance()
 {
-	static ParticleManager instance;
-	return &instance;
+	static ParticleManager sInstance;
+	return &sInstance;
 }
 
 void ParticleManager::Initialize()
@@ -523,16 +523,16 @@ void ParticleManager::GenerateRandomParticle(int32_t num, int32_t lifeTime, floa
 	{
 		Vec3 pos = position;
 
-		const float md_vel = vecPower;
+		const float MD_VEL = vecPower;
 		XMFLOAT3 vel{};
-		vel.x = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
-		vel.y = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
-		vel.z = (float)rand() / RAND_MAX * md_vel - md_vel / 2.0f;
+		vel.x = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.y = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.z = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
 
 		//重力に見立ててYのみ[-0.001f~0]でランダムに
 		XMFLOAT3 acc{};
-		const float md_acc = vecPower * 0.05f;
-		acc.y = -(float)rand() / RAND_MAX * md_acc;
+		const float MD_ACC = vecPower * 0.05f;
+		acc.y = -(float)rand() / RAND_MAX * MD_ACC;
 
 		ParticleManager::GetInstance()->Add(lifeTime, { pos.x_,pos.y_,pos.z_ }, vel, acc, start_scale, end_scale
 			, start_color, end_color);

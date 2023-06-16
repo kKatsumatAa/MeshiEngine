@@ -106,8 +106,8 @@ void SceneManager::Update()
 		cameraWorldMat_.rot_.y_ += (KeyboardInput::GetInstance().KeyPush(DIK_A) - KeyboardInput::GetInstance().KeyPush(DIK_D)) * 0.05f;
 
 		cameraWorldMat_.rot_.x_ += (KeyboardInput::GetInstance().KeyPush(DIK_W) - KeyboardInput::GetInstance().KeyPush(DIK_S)) * 0.05f;
-		cameraWorldMat_.rot_.x_ = min(cameraWorldMat_.rot_.x_, pi / 2.0f);
-		cameraWorldMat_.rot_.x_ = max(cameraWorldMat_.rot_.x_, -pi / 2.0f);
+		cameraWorldMat_.rot_.x_ = min(cameraWorldMat_.rot_.x_, PI / 2.0f);
+		cameraWorldMat_.rot_.x_ = max(cameraWorldMat_.rot_.x_, -PI / 2.0f);
 
 		cameraWorldMat_.SetWorld();
 		camera_->viewMat_.eye_ = CAMERA_POS_;

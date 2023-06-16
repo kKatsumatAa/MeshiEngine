@@ -107,14 +107,14 @@ public:
 
 protected://継承先まで公開
 	//クラス名(デバッグ用)
-	const char* NAME_ = nullptr;
+	const char* P_NAME = nullptr;
 	//コライダー
 	std::unique_ptr<BaseCollider> collider_ = nullptr;
 
 
 private:
 	//--------------------
-	void Update(int32_t indexNum, int32_t pipelineNum, const uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
+	void Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
 		Model* model = nullptr, ModelFBX* fbx = nullptr, bool primitiveMode = true);
 
 	//行列送信
@@ -193,31 +193,31 @@ public:
 
 	void DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 		ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },
-		const uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		 uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawBox(ViewMat* view, ProjectionMat* projection, /*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,*/
 		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },
-		const uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		 uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawBoxSprite(const Vec3& pos, float scale, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }
-		, const uint64_t textureHandle = NULL, const Vec2& ancorUV = { 0,0 }, bool isReverseX = false, bool isReverseY = false,
+		,  uint64_t textureHandle = NULL, const Vec2& ancorUV = { 0,0 }, bool isReverseX = false, bool isReverseY = false,
 		float rotation = 0.0f, int32_t pipelineNum = 0);
 
 	void DrawClippingBoxSprite(const Vec3& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, const uint64_t textureHandle = NULL, bool isPosLeftTop = true,
+		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL, bool isPosLeftTop = true,
 		bool isReverseX = false, bool isReverseY = false, float rotation = 0.0f, int32_t pipelineNum = 0);
 
 	void DrawCube3D(ViewMat* view, ProjectionMat* projection,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, const uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color
-		= { 1.0f,1.0f,1.0f,1.0f }, const uint64_t textureHandle = NULL);
+		= { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL);
 
 	void DrawCircle(ViewMat* view, ProjectionMat* projection,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, const uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawSphere(ViewMat* view, ProjectionMat* projection,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, const uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawModel(ViewMat* view, ProjectionMat* projection,
 		Model* model, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);

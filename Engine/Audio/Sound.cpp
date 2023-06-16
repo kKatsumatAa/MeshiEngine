@@ -213,8 +213,8 @@ void Sound::StopWave(const std::string& filename)
 }
 Sound& Sound::GetInstance()
 {
-	static Sound inst; // private なコンストラクタを呼び出す。
-	return inst;
+	static Sound sInst; // private なコンストラクタを呼び出す。
+	return sInst;
 }
 
 //void SetpSourceVoice(SoundData& soundData, IXAudio2SourceVoice* pSourceVoice)

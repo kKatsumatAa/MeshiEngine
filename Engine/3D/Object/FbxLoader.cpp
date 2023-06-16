@@ -19,8 +19,8 @@ FbxLoader::~FbxLoader()
 
 FbxLoader* FbxLoader::GetInstance()
 {
-	static FbxLoader instance;
-	return &instance;
+	static FbxLoader sInstance;
+	return &sInstance;
 }
 
 void FbxLoader::Initialize()
@@ -46,14 +46,14 @@ void FbxLoader::Finalize()
 std::unique_ptr<ModelFBX> FbxLoader::LoadModelFromFile(const string& modelName)
 {
 	//モデルと同じ名前のフォルダから読み込む
-	const string directoryPath = S_BASE_DIRECTORY_ + modelName + "/";
+	const string DIRECTORY_PATH = S_BASE_DIRECTORY_ + modelName + "/";
 	//拡張子.fbxを付加
-	const string fileName = modelName + ".fbx";
+	const string FILE_NAME = modelName + ".fbx";
 	//フルパス
-	const string fullPath = directoryPath + fileName;
+	const string FULL_PATH = DIRECTORY_PATH + FILE_NAME;
 
 	//ファイル名を指定してfbxファイルを読み込む
-	if (!fbxImporter_->Initialize(fullPath.c_str(), -1, fbxManager_->GetIOSettings()))
+	if (!fbxImporter_->Initialize(FULL_PATH.c_str(), -1, fbxManager_->GetIOSettings()))
 	{
 		assert(0);
 	}
@@ -168,17 +168,17 @@ void FbxLoader::ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh)
 	std::vector<ModelFBX::VertexPosNormalUvSkin>& vertices = model->vertices_;
 
 	//頂点座標データの数(コントロールポイントとは、1つ分の頂点データのこと)
-	const int32_t controlPointsCount =
+	const int32_t CONTROL_POINTS_COUNT =
 		fbxMesh->GetControlPointsCount();
 	//必要数だけ頂点データ配列を確保
 	ModelFBX::VertexPosNormalUvSkin vert{};
-	model->vertices_.resize(controlPointsCount, vert);
+	model->vertices_.resize(CONTROL_POINTS_COUNT, vert);
 
 	//FBXメッシュの頂点座標配列を取得
 	FbxVector4* pCoord = fbxMesh->GetControlPoints();
 
 	//fbxメッシュの全頂点座標をモデル内の配列にコピーする
-	for (int32_t i = 0; i < controlPointsCount; i++)
+	for (int32_t i = 0; i < CONTROL_POINTS_COUNT; i++)
 	{
 		ModelFBX::VertexPosNormalUvSkin& vertex = vertices[i];
 		//座標のコピー
@@ -197,22 +197,22 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh)
 	//1ファイルに複数メッシュのモデルは非対応
 	assert(indices.size() == 0);
 	//面の数
-	const int32_t polygonCount = fbxMesh->GetPolygonCount();
+	const int32_t POLYGON_COUNT = fbxMesh->GetPolygonCount();
 	//uvデータの数
-	const int32_t textureUVCount = fbxMesh->GetTextureUVCount();
+	const int32_t TEXTURE_UV_COUNT = fbxMesh->GetTextureUVCount();
 	//UV名リスト
 	FbxStringList uvNames;
 	fbxMesh->GetUVSetNames(uvNames);
 
 	//面ごとの情報読み取り
-	for (int32_t i = 0; i < polygonCount; i++)
+	for (int32_t i = 0; i < POLYGON_COUNT; i++)
 	{
 		//面を構成する頂点の数を取得（3なら三角形ポリゴン,4なら四角形）
-		const int32_t polygonSize = fbxMesh->GetPolygonSize(i);
-		assert(polygonSize <= 4);
+		const int32_t POLYGON_SIZE = fbxMesh->GetPolygonSize(i);
+		assert(POLYGON_SIZE <= 4);
 
 		//1頂点ずつ処理
-		for (int32_t j = 0; j < polygonSize; j++)
+		for (int32_t j = 0; j < POLYGON_SIZE; j++)
 		{
 			//面のj番目の頂点
 			int32_t index = fbxMesh->GetPolygonVertex(i, j);
@@ -230,7 +230,7 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh)
 			}
 
 			//テクスチャUV読み込み
-			if (textureUVCount > 0)
+			if (TEXTURE_UV_COUNT > 0)
 			{
 				//情報を読み込むときに入れる変数
 				FbxVector2 uvs;
@@ -267,8 +267,8 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh)
 
 void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
 {
-	const int32_t materialCount = fbxNode->GetMaterialCount();
-	if (materialCount > 0)
+	const int32_t MATERIAL_COUNT = fbxNode->GetMaterialCount();
+	if (MATERIAL_COUNT > 0)
 	{
 		//先頭のマテリアルを取得
 		FbxSurfaceMaterial* material = fbxNode->GetMaterial(0);
@@ -306,17 +306,17 @@ void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
 			}
 
 			//ディフューズテクスチャを取り出す
-			const FbxProperty diffuseProperty =
+			const FbxProperty DIFFUSE_PROPERTY =
 				material->FindProperty(FbxSurfaceMaterial::sDiffuse);
 
-			if (diffuseProperty.IsValid())
+			if (DIFFUSE_PROPERTY.IsValid())
 			{
-				const FbxFileTexture* tex = diffuseProperty.GetSrcObject<FbxFileTexture>();
-				if (tex)
+				const FbxFileTexture* P_TEX = DIFFUSE_PROPERTY.GetSrcObject<FbxFileTexture>();
+				if (P_TEX)
 				{
-					const char* filePath = tex->GetFileName();
+					const char* P_FILE_PATH = P_TEX->GetFileName();
 					//ファイルパスからファイル名抽出
-					string path_str(filePath);
+					string path_str(P_FILE_PATH);
 					string name = ExtractFileName(path_str);
 					//texture読み込み
 					LoadTexture(model, S_BASE_DIRECTORY_ + model->name_ + "/" + name);
@@ -413,10 +413,10 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
 
 		//ボーン自体のノードの名前を取得
-		const char* boneName = fbxCluster->GetLink()->GetName();
+		const char* P_BONE_NAME = fbxCluster->GetLink()->GetName();
 
 		//新しくボーンを追加し、追加したボーンの参照を得る
-		bones.emplace_back(ModelFBX::Bone(boneName));
+		bones.emplace_back(ModelFBX::Bone(P_BONE_NAME));
 		ModelFBX::Bone& bone = bones.back();
 		//自作ボーンとfbxのボーンを紐づける
 		bone.fbxCluster = fbxCluster;

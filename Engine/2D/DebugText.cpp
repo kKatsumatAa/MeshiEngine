@@ -8,10 +8,10 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 	{
 		if (spriteIndex_ >= S_MAX_CHAR_COUNT_) break;
 
-		const unsigned char& character = text[i];
+		const unsigned char& CHARACTER = text[i];
 
-		int32_t fontIndex = character - 32;
-		if (character >= 0x7f) fontIndex = 0;
+		int32_t fontIndex = CHARACTER - 32;
+		if (CHARACTER >= 0x7f) fontIndex = 0;
 
 		int32_t fontIndexY = fontIndex / S_FONT_LINE_COUNT_;
 		int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
@@ -109,10 +109,10 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 	{
 		if (spriteIndex_ >= S_MAX_CHAR_COUNT_) break;
 
-		const unsigned char& character = text[i];
+		const unsigned char& CHARACTER = text[i];
 
-		int32_t fontIndex = character - 32;
-		if (character >= 0x7f) fontIndex = 0;
+		int32_t fontIndex = CHARACTER - 32;
+		if (CHARACTER >= 0x7f) fontIndex = 0;
 
 		int32_t fontIndexY = fontIndex / S_FONT_LINE_COUNT_;
 		int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;

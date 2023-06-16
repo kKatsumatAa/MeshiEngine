@@ -6,8 +6,8 @@ const std::string JsonLevelLoader::S_EXTENSION_ = ".json";
 
 JsonLevelLoader& JsonLevelLoader::Getinstance()
 {
-	static JsonLevelLoader inst;
-	return inst;
+	static JsonLevelLoader sInst;
+	return sInst;
 }
 
 void JsonLevelLoader::Initialize()
@@ -18,13 +18,13 @@ void JsonLevelLoader::Initialize()
 void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 {
 	//連結してフルパスを得る
-	const std::string fullpath = S_DEFAULT_BASE_DIRECTORY_ + fileName + S_EXTENSION_;
+	const std::string FULL_PATH = S_DEFAULT_BASE_DIRECTORY_ + fileName + S_EXTENSION_;
 
 	//ファイルストリーム
 	std::ifstream file;
 
 	//ファイルを開く
-	file.open(fullpath);
+	file.open(FULL_PATH);
 	//ファイルオープン失敗をチェック
 	if (file.fail())
 	{

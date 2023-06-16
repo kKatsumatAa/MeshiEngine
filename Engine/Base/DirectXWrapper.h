@@ -96,7 +96,7 @@ public:
 	size_t GetBackBufferCount() const { return backBuffers_.size(); }
 };
 //画像のロード（引数にバッファ設定）
-void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuff);
+void LoadPictureFromFile(const wchar_t* P_FILE_NAME, ComPtr<ID3D12Resource>& texBuff);
 
 void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, uint32_t size);
 

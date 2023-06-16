@@ -5,8 +5,8 @@
 
 CollisionManager* CollisionManager::GetInstance()
 {
-	static CollisionManager instance;
-	return &instance;
+	static CollisionManager sInstance;
+	return &sInstance;
 }
 
 bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDistance)

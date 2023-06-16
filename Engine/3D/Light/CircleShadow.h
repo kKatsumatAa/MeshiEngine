@@ -38,8 +38,8 @@ public://ƒƒ“ƒoŠÖ”
 	inline void SetCasterPos(const XMFLOAT3& casterPos) { casterPos_ = casterPos; }
 	inline const XMFLOAT3& GetCasterPos() { return casterPos_; }
 
-	inline void SetDistanceCasterLight(const float distanceCasterLight) { distanceCasterLight_ = distanceCasterLight; }
-	inline const float GetDistanceCasterLight() { return distanceCasterLight_; }
+	inline void SetDistanceCasterLight(float distanceCasterLight) { distanceCasterLight_ = distanceCasterLight; }
+	inline float GetDistanceCasterLight() { return distanceCasterLight_; }
 
 	inline void SetAtten(const XMFLOAT3& atten) { atten_ = atten; }
 	inline const XMFLOAT3& GetAtten() { return atten_; }
@@ -55,7 +55,7 @@ public://ƒƒ“ƒoŠÖ”
 	inline void SetLightActive(bool active) {
 		active_ = active;
 	};
-	inline const bool GetLightActive() {
+	inline bool GetLightActive() {
 		return active_;
 	};
 

@@ -42,7 +42,7 @@ void WorldMat::SetScale()
 
 void WorldMat::SetRot()
 {
-	matRot_ = normalM;
+	matRot_ = NORMAL_M;
 	matRot_ *= {
 		cosf(rot_.z_), sinf(rot_.z_), 0, 0,
 			-sinf(rot_.z_), cosf(rot_.z_), 0, 0,
@@ -76,7 +76,7 @@ void WorldMat::SetTrans()
 
 void WorldMat::SetWorld()
 {
-	matWorld_ = normalM;
+	matWorld_ = NORMAL_M;
 
 	SetScale();
 	SetRot();
@@ -95,7 +95,7 @@ void WorldMat::SetWorld()
 void WorldMat::SetParentWorld(WorldMat* parent)
 {
 	//e‚Ìs—ñŒvŽZ
-	parent->matWorld_ = normalM;
+	parent->matWorld_ = NORMAL_M;
 
 	parent->SetScale();
 	parent->SetRot();

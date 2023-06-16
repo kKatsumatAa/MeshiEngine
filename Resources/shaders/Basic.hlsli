@@ -24,7 +24,7 @@ cbuffer ConstBufferDataTransform : register(b1)
 }
 
 // 点光源の数
-static const int POINTLIGHT_NUM = 6;
+static const int S_POINTLIGHT_NUM = 6;
 struct PointLight
 {
 	float3 lightpos;//ライトの座標
@@ -34,7 +34,7 @@ struct PointLight
 };
 
 // 平行光源の数
-static const int DIRLIGHT_NUM = 3;
+static const int S_DIRLIGHT_NUM = 3;
 struct DirLight
 {
 	float3 lightv;    // ライトへの方向の単位ベクトル
@@ -43,7 +43,7 @@ struct DirLight
 };
 
 
-static const int SPOTLIGHT_NUM = 3;
+static const int S_SPOTLIGHT_NUM = 3;
 struct SpotLight
 {
 	float3 lightv;    // ライトへの方向の単位ベクトル
@@ -55,7 +55,7 @@ struct SpotLight
 };
 
 //丸影
-static const int CIRCLESHADOW_NUM = 1;
+static const int S_CIRCLESHADOW_NUM = 1;
 struct CircleShadow
 {
 	float3 dir; //投影方向の逆ベクトル
@@ -72,10 +72,10 @@ cbuffer ConstBufferDataMaterial3 : register(b3)
 	float3     ambientColor;
 	float3     diffuseColor;
 	float3     specularColor;
-	DirLight   dirLights[DIRLIGHT_NUM];
-	PointLight pointLights[POINTLIGHT_NUM];
-	SpotLight  spotLights[SPOTLIGHT_NUM];
-	CircleShadow circleShadows[CIRCLESHADOW_NUM];
+	DirLight   dirLights[S_DIRLIGHT_NUM];
+	PointLight pointLights[S_POINTLIGHT_NUM];
+	SpotLight  spotLights[S_SPOTLIGHT_NUM];
+	CircleShadow circleShadows[S_CIRCLESHADOW_NUM];
 }
 
 cbuffer ConstBufferEffectFlags : register(b4)

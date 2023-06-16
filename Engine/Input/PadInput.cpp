@@ -108,8 +108,8 @@ PadInput::~PadInput()
 
 PadInput& PadInput::GetInstance()
 {
-	static PadInput instance;
-	return instance;
+	static PadInput sInstance;
+	return sInstance;
 }
 
 void PadInput::Update()

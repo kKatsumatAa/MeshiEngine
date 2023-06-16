@@ -18,7 +18,7 @@ PSOutput main(VSOutput input)
 	float4 texcolor = tex.Sample(smp, input.uv);
 
 	// 光沢度
-	const float shininess = 4.0f;
+	const float SHININESS = 4.0f;
 	// 頂点から視点への方向ベクトル
 	float3 eyedir = normalize(cameraPos - input.worldpos.xyz);
 
@@ -30,13 +30,13 @@ PSOutput main(VSOutput input)
 
 
 	//平行光源
-	for (int i = 0; i < DIRLIGHT_NUM; i++) {
+	for (int i = 0; i < S_DIRLIGHT_NUM; i++) {
 		if (dirLights[i].active) {
 			// ライトに向かうベクトルと法線の内積
 			float3 dotlightnormal = dot(dirLights[i].lightv, input.normal);
 			// 反射光ベクトル
 			float3 reflect = normalize(-dirLights[i].lightv + 2 * dotlightnormal * input.normal);
-			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess);
+			float3 specular = pow(saturate(dot(reflect, eyedir)), SHININESS);
 			//トゥーン
 			if (isToon) {
 				specular = smoothstep(0.5f, 0.55f, specular);
@@ -55,7 +55,7 @@ PSOutput main(VSOutput input)
 	}
 
 	//点光源
-	for (int i = 0; i < POINTLIGHT_NUM; i++) {
+	for (int i = 0; i < S_POINTLIGHT_NUM; i++) {
 		if (pointLights[i].active) {
 			//ライトへのベクトル
 			float3 lightv = pointLights[i].lightpos - input.worldpos.xyz;
@@ -70,7 +70,7 @@ PSOutput main(VSOutput input)
 			float3 dotlightnormal = dot(lightv, input.normal);
 			// 反射光ベクトル
 			float3 reflect = normalize(-lightv + 2 * dotlightnormal * input.normal);
-			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess);
+			float3 specular = pow(saturate(dot(reflect, eyedir)), SHININESS);
 			//トゥーン
 			if (isToon) {
 				specular = smoothstep(0.5f, 0.55f, specular);
@@ -89,7 +89,7 @@ PSOutput main(VSOutput input)
 	}
 
 	//スポットライト
-	for (int i = 0; i < SPOTLIGHT_NUM; i++)
+	for (int i = 0; i < S_SPOTLIGHT_NUM; i++)
 	{
 		if (spotLights[i].active)
 		{
@@ -112,7 +112,7 @@ PSOutput main(VSOutput input)
 			float3 dotlightnormal = dot(lightv, input.normal);
 			// 反射光ベクトル
 			float3 reflect = normalize(-lightv + 2 * dotlightnormal * input.normal);
-			float3 specular = pow(saturate(dot(reflect, eyedir)), shininess);
+			float3 specular = pow(saturate(dot(reflect, eyedir)), SHININESS);
 			//トゥーン
 			if (isToon) {
 				specular = smoothstep(0.5f, 0.55f, specular);
@@ -131,7 +131,7 @@ PSOutput main(VSOutput input)
 	}
 
 	//丸影
-	for (int i = 0; i < CIRCLESHADOW_NUM; i++)
+	for (int i = 0; i < S_CIRCLESHADOW_NUM; i++)
 	{
 		if (circleShadows[i].active)
 		{

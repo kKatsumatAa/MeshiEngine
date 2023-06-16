@@ -67,7 +67,7 @@ public://ƒƒ“ƒoŠÖ”
 	inline void SetLightActive(bool active) {
 		active_ = active;
 	};
-	inline const bool GetLightActive() {
+	inline bool GetLightActive() {
 		return active_;
 	};
 

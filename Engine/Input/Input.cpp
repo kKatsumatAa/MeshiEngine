@@ -15,8 +15,8 @@ Input::~Input()
 
 Input& Input::GetInstance()
 {
-	static Input instance;
-	return instance;
+	static Input sInstance;
+	return sInstance;
 }
 
 void Input::Update()
