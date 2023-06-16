@@ -44,11 +44,11 @@ public: // 静的メンバ関数
 	/// 静的初期化
 	/// </summary>
 	/// <param name="device">デバイス</param>
-	static void StaticInitialize(ID3D12Device* device);
+	static void StaticInitialize(ID3D12Device* pDevice);
 
 private: // 静的メンバ変数
 	// デバイス
-	static ID3D12Device* sDevice_;
+	static ID3D12Device* pSDevice_;
 
 public: // メンバ関数
 
@@ -100,13 +100,13 @@ public: // メンバ関数
 	/// マテリアルの取得
 	/// </summary>
 	/// <returns>マテリアル</returns>
-	Material* GetMaterial() { return material_; }
+	Material* GetMaterial() { return pMaterial_; }
 
 	/// <summary>
 	/// マテリアルの割り当て
 	/// </summary>
 	/// <param name="material">マテリアル</param>
-	void SetMaterial(Material* material);
+	void SetMaterial(Material* pMaterial);
 
 	/// <summary>
 	/// バッファの生成
@@ -129,7 +129,7 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	void Draw(ID3D12GraphicsCommandList* pCmdList);
 
 private: // メンバ変数
 	// 名前
@@ -149,5 +149,5 @@ private: // メンバ変数
 	// 頂点法線スムージング用データ
 	std::unordered_map<uint16_t, std::vector<uint16_t>> smoothData_;
 	// マテリアル
-	Material* material_ = nullptr;
+	Material* pMaterial_ = nullptr;
 };

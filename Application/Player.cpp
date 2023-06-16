@@ -43,13 +43,13 @@ bool Player::Initialize()
 
 void Player::Update()
 {
-	KeyboardInput* input = &KeyboardInput::GetInstance();
+	KeyboardInput* pInput = &KeyboardInput::GetInstance();
 
-	if (input->KeyPush(DIK_LEFTARROW) || PadInput::GetInstance().GetRightStickTilt().x_ < 0)
+	if (pInput->KeyPush(DIK_LEFTARROW) || PadInput::GetInstance().GetRightStickTilt().x_ < 0)
 	{
 		SetRot({ GetRot().x_,GetRot().y_ - AngletoRadi(2.0f), GetRot().z_ });
 	}
-	if (input->KeyPush(DIK_RIGHTARROW) || PadInput::GetInstance().GetRightStickTilt().x_ > 0)
+	if (pInput->KeyPush(DIK_RIGHTARROW) || PadInput::GetInstance().GetRightStickTilt().x_ > 0)
 	{
 		SetRot({ GetRot().x_,GetRot().y_ + AngletoRadi(2.0f), GetRot().z_ });
 	}
@@ -60,13 +60,13 @@ void Player::Update()
 	Vec3xM4(move, GetMatWorld(), 0);
 
 	//Œü‚¢‚Ä‚é•ûŒü‚ÉˆÚ“®
-	if (input->KeyPush(DIK_UPARROW) || PadInput::GetInstance().GetLeftStickTilt().y_ < 0)
+	if (pInput->KeyPush(DIK_UPARROW) || PadInput::GetInstance().GetLeftStickTilt().y_ < 0)
 	{
 		SetTrans({ GetTrans().x_ - move.x_, GetTrans().y_, GetTrans().z_ });
 		SetTrans({ GetTrans().x_ ,GetTrans().y_ - move.y_, GetTrans().z_ });
 		SetTrans({ GetTrans().x_ ,GetTrans().y_, GetTrans().z_ - move.z_ });
 	}
-	if (input->KeyPush(DIK_DOWNARROW) || PadInput::GetInstance().GetLeftStickTilt().y_ > 0)
+	if (pInput->KeyPush(DIK_DOWNARROW) || PadInput::GetInstance().GetLeftStickTilt().y_ > 0)
 	{
 		SetTrans({ GetTrans().x_ + move.x_, GetTrans().y_, GetTrans().z_ });
 		SetTrans({ GetTrans().x_ ,GetTrans().y_ + move.y_, GetTrans().z_ });

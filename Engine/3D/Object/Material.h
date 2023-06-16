@@ -38,7 +38,7 @@ public: // 静的メンバ関数
 	/// 静的初期化
 	/// </summary>
 	/// <param name="device">デバイス</param>
-	static void StaticInitialize(ID3D12Device* device);
+	static void StaticInitialize(ID3D12Device* pDevice);
 
 	/// <summary>
 	/// マテリアル生成
@@ -48,7 +48,7 @@ public: // 静的メンバ関数
 
 private: // 静的メンバ変数
 	// デバイス
-	static ID3D12Device* sDevice_;
+	static ID3D12Device* pSDevice_;
 
 public:
 	std::string name_;	// マテリアル名

@@ -76,7 +76,7 @@ public:
 	void InitializeSphere();
 
 	//Drawに必要なコマンド
-	void DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCount, Vertex* vertex, const D3D12_PRIMITIVE_TOPOLOGY& primitiveTopology,
+	void DrawCommandPrimitive(ID3D12Resource* pVertBuff, int32_t vertexCount, Vertex* pVertex, const D3D12_PRIMITIVE_TOPOLOGY& primitiveTopology,
 		const D3D12_VERTEX_BUFFER_VIEW& buffView, const D3D12_INDEX_BUFFER_VIEW& ibView, int32_t indicesCount,
 		const std::function<void()>& setRootParam,const std::function<void()>& setMaterialLightTex);
 

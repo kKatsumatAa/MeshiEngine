@@ -1,16 +1,16 @@
 #include "LightManager.h"
 
-ID3D12Device* LightManager::sDevice_ = nullptr;
+ID3D12Device* LightManager::pSDevice_ = nullptr;
 
 
 void LightManager::StaticInitialize()
 {
 	//再初期化をチェック
-	assert(!LightManager::sDevice_);
+	assert(!LightManager::pSDevice_);
 	//nullptrチェック
 	assert(DirectXWrapper::GetInstance().GetDevice());
 	//セット
-	LightManager::sDevice_ = DirectXWrapper::GetInstance().GetDevice();
+	LightManager::pSDevice_ = DirectXWrapper::GetInstance().GetDevice();
 }
 
 void LightManager::Initialize()
@@ -38,27 +38,27 @@ void LightManager::TransferConstBuffer()
 {
 	HRESULT result;
 	//定数バッファへデータ転送
-	ConstBufferData* constMap = nullptr;
-	result = constBuff_->Map(0, nullptr, (void**)&constMap);
+	ConstBufferData* pConstMap = nullptr;
+	result = constBuff_->Map(0, nullptr, (void**)&pConstMap);
 	if (SUCCEEDED(result))
 	{
 		//環境光
-		constMap->ambientColor = ambientColor_;
-		constMap->diffuseColor = diffuseColor_;
-		constMap->specularColor = specularColor_;
+		pConstMap->ambientColor = ambientColor_;
+		pConstMap->diffuseColor = diffuseColor_;
+		pConstMap->specularColor = specularColor_;
 
 		for (int32_t i = 0; i < S_DIR_LIGHT_NUM_; i++) {
 
 			//平行光源
 			// ライトが有効なら設定を転送
 			if (dirLights_[i].IsActive()) {
-				constMap->dirLights[i].active = 1;
-				constMap->dirLights[i].lightv = -dirLights_[i].GetLightDir();
-				constMap->dirLights[i].lightColor = dirLights_[i].GetLightColor();
+				pConstMap->dirLights[i].active = 1;
+				pConstMap->dirLights[i].lightv = -dirLights_[i].GetLightDir();
+				pConstMap->dirLights[i].lightColor = dirLights_[i].GetLightColor();
 			}
 			// ライトが無効ならライト色を0に
 			else {
-				constMap->dirLights[i].active = 0;
+				pConstMap->dirLights[i].active = 0;
 			}
 		}
 		for (int32_t i = 0; i < S_POINT_LIGHT_NUM_; i++) {
@@ -66,17 +66,17 @@ void LightManager::TransferConstBuffer()
 			//ライトが有効なら設定を転送
 			if (pointLights_[i].GetActive())
 			{
-				constMap->pointLights[i].active = 1;
-				constMap->pointLights[i].lightpos = pointLights_[i].GetLightPos();
-				constMap->pointLights[i].lightcolor =
+				pConstMap->pointLights[i].active = 1;
+				pConstMap->pointLights[i].lightpos = pointLights_[i].GetLightPos();
+				pConstMap->pointLights[i].lightcolor =
 					pointLights_[i].GetLightColor();
-				constMap->pointLights[i].lightatten =
+				pConstMap->pointLights[i].lightatten =
 					pointLights_[i].GetLightAtten();
 			}
 			//ライトが無効ならライト色を0に
 			else
 			{
-				constMap->pointLights[i].active = 0;
+				pConstMap->pointLights[i].active = 0;
 			}
 		}
 		//スポットライト
@@ -85,20 +85,20 @@ void LightManager::TransferConstBuffer()
 			//ライトが有効なら設定を転送
 			if (spotLights_[i].GetLightActive())
 			{
-				constMap->spotLights[i].active = 1;
-				constMap->spotLights[i].lightv = -spotLights_[i].GetLightDir();
-				constMap->spotLights[i].lightpos = spotLights_[i].GetLightPos();
-				constMap->spotLights[i].lightcolor =
+				pConstMap->spotLights[i].active = 1;
+				pConstMap->spotLights[i].lightv = -spotLights_[i].GetLightDir();
+				pConstMap->spotLights[i].lightpos = spotLights_[i].GetLightPos();
+				pConstMap->spotLights[i].lightcolor =
 					spotLights_[i].GetLightColor();
-				constMap->spotLights[i].lightatten =
+				pConstMap->spotLights[i].lightatten =
 					spotLights_[i].GetLightAtten();
-				constMap->spotLights[i].lightfactoranglecos =
+				pConstMap->spotLights[i].lightfactoranglecos =
 					spotLights_[i].GetLightFactorAngleCos();
 			}
 			//ライトが無効ならライト色を0に
 			else
 			{
-				constMap->spotLights[i].active = 0;
+				pConstMap->spotLights[i].active = 0;
 			}
 		}
 		//丸影
@@ -107,20 +107,20 @@ void LightManager::TransferConstBuffer()
 			//ライトが有効なら設定を転送
 			if (circleShadows_[i].GetLightActive())
 			{
-				constMap->circleShadows[i].active = 1;
-				constMap->circleShadows[i].dir = -circleShadows_[i].GetDir();
-				constMap->circleShadows[i].casterPos = circleShadows_[i].GetCasterPos();
-				constMap->circleShadows[i].distanceCasterLight =
+				pConstMap->circleShadows[i].active = 1;
+				pConstMap->circleShadows[i].dir = -circleShadows_[i].GetDir();
+				pConstMap->circleShadows[i].casterPos = circleShadows_[i].GetCasterPos();
+				pConstMap->circleShadows[i].distanceCasterLight =
 					circleShadows_[i].GetDistanceCasterLight();
-				constMap->circleShadows[i].atten =
+				pConstMap->circleShadows[i].atten =
 					circleShadows_[i].GetAtten();
-				constMap->circleShadows[i].factorAngleCos =
+				pConstMap->circleShadows[i].factorAngleCos =
 					circleShadows_[i].GetFactorAngleCos();
 			}
 			//ライトが無効ならライト色を0に
 			else
 			{
-				constMap->circleShadows[i].active = 0;
+				pConstMap->circleShadows[i].active = 0;
 			}
 		}
 

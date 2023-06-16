@@ -121,22 +121,22 @@ void Primitive::InitializeTriangle()
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
 		//インデックスバッファの作成
-		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &indexBuff);
+		ID3D12Resource* pIndexBuff = nullptr;//GPU側のメモリ
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &pIndexBuff);
 		//インデックスバッファをマッピング
-		uint16_t* indexMap = nullptr;
-		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		uint16_t* pIndexMap = nullptr;
+		result = pIndexBuff->Map(0, nullptr, (void**)&pIndexMap);
 		//全インデックスに対して
 		for (int32_t i = 0; i < _countof(sIndicesTriangle); i++)
 		{
-			indexMap[i] = sIndicesTriangle[i];//インデックスをコピー
+			pIndexMap[i] = sIndicesTriangle[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
-		indexBuff->Unmap(0, nullptr);
+		pIndexBuff->Unmap(0, nullptr);
 
 		//インデックスバッファビューの作成
-		ibViewTriangle_.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibViewTriangle_.BufferLocation = pIndexBuff->GetGPUVirtualAddress();
 		ibViewTriangle_.Format = DXGI_FORMAT_R16_UINT;
 		ibViewTriangle_.SizeInBytes = sizeIB;
 	}
@@ -198,22 +198,22 @@ void Primitive::InitializeBox()
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
 		//インデックスバッファの作成
-		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &indexBuff);
+		ID3D12Resource* pIndexBuff = nullptr;//GPU側のメモリ
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &pIndexBuff);
 		//インデックスバッファをマッピング
-		uint16_t* indexMap = nullptr;
-		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		uint16_t* pIndexMap = nullptr;
+		result = pIndexBuff->Map(0, nullptr, (void**)&pIndexMap);
 		//全インデックスに対して
 		for (int32_t i = 0; i < _countof(sIndicesBox); i++)
 		{
-			indexMap[i] = sIndicesBox[i];//インデックスをコピー
+			pIndexMap[i] = sIndicesBox[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
-		indexBuff->Unmap(0, nullptr);
+		pIndexBuff->Unmap(0, nullptr);
 
 		//インデックスバッファビューの作成
-		ibViewBox_.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibViewBox_.BufferLocation = pIndexBuff->GetGPUVirtualAddress();
 		ibViewBox_.Format = DXGI_FORMAT_R16_UINT;
 		ibViewBox_.SizeInBytes = sizeIB;
 	}
@@ -284,22 +284,22 @@ void Primitive::InitializeCircle()
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
 		//インデックスバッファの作成
-		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &indexBuff);
+		ID3D12Resource* pIndexBuff = nullptr;//GPU側のメモリ
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &pIndexBuff);
 		//インデックスバッファをマッピング
-		uint16_t* indexMap = nullptr;
-		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		uint16_t* pIndexMap = nullptr;
+		result = pIndexBuff->Map(0, nullptr, (void**)&pIndexMap);
 		//全インデックスに対して
 		for (int32_t i = 0; i < _countof(sIndicesCircle); i++)
 		{
-			indexMap[i] = sIndicesCircle[i];//インデックスをコピー
+			pIndexMap[i] = sIndicesCircle[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
-		indexBuff->Unmap(0, nullptr);
+		pIndexBuff->Unmap(0, nullptr);
 
 		//インデックスバッファビューの作成
-		ibViewCircle_.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibViewCircle_.BufferLocation = pIndexBuff->GetGPUVirtualAddress();
 		ibViewCircle_.Format = DXGI_FORMAT_R16_UINT;
 		ibViewCircle_.SizeInBytes = sizeIB;
 	}
@@ -394,22 +394,22 @@ void Primitive::InitializeCube()
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
 		//インデックスバッファの作成
-		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &indexBuff);
+		ID3D12Resource* pIndexBuff = nullptr;//GPU側のメモリ
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &pIndexBuff);
 		//インデックスバッファをマッピング
-		uint16_t* indexMap = nullptr;
-		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		uint16_t* pIndexMap = nullptr;
+		result = pIndexBuff->Map(0, nullptr, (void**)&pIndexMap);
 		//全インデックスに対して
 		for (int32_t i = 0; i < _countof(sIndicesCube); i++)
 		{
-			indexMap[i] = sIndicesCube[i];//インデックスをコピー
+			pIndexMap[i] = sIndicesCube[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
-		indexBuff->Unmap(0, nullptr);
+		pIndexBuff->Unmap(0, nullptr);
 
 		//インデックスバッファビューの作成
-		ibViewCube_.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibViewCube_.BufferLocation = pIndexBuff->GetGPUVirtualAddress();
 		ibViewCube_.Format = DXGI_FORMAT_R16_UINT;
 		ibViewCube_.SizeInBytes = sizeIB;
 	}
@@ -457,22 +457,22 @@ void Primitive::InitializeLine()
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
 		//インデックスバッファの作成
-		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &indexBuff);
+		ID3D12Resource* pIndexBuff = nullptr;//GPU側のメモリ
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &pIndexBuff);
 		//インデックスバッファをマッピング
-		uint16_t* indexMap = nullptr;
-		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		uint16_t* pIndexMap = nullptr;
+		result = pIndexBuff->Map(0, nullptr, (void**)&pIndexMap);
 		//全インデックスに対して
 		for (int32_t i = 0; i < _countof(sIndicesLine); i++)
 		{
-			indexMap[i] = sIndicesLine[i];//インデックスをコピー
+			pIndexMap[i] = sIndicesLine[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
-		indexBuff->Unmap(0, nullptr);
+		pIndexBuff->Unmap(0, nullptr);
 
 		//インデックスバッファビューの作成
-		ibViewLine_.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibViewLine_.BufferLocation = pIndexBuff->GetGPUVirtualAddress();
 		ibViewLine_.Format = DXGI_FORMAT_R16_UINT;
 		ibViewLine_.SizeInBytes = sizeIB;
 	}
@@ -669,22 +669,22 @@ void Primitive::InitializeSphere()
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
 		//インデックスバッファの作成
-		ID3D12Resource* indexBuff = nullptr;//GPU側のメモリ
-		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &indexBuff);
+		ID3D12Resource* pIndexBuff = nullptr;//GPU側のメモリ
+		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &pIndexBuff);
 		//インデックスバッファをマッピング
-		uint16_t* indexMap = nullptr;
-		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		uint16_t* pIndexMap = nullptr;
+		result = pIndexBuff->Map(0, nullptr, (void**)&pIndexMap);
 		//全インデックスに対して
 		for (int32_t i = 0; i < _countof(sIndicesSphere); i++)
 		{
-			indexMap[i] = sIndicesSphere[i];//インデックスをコピー
+			pIndexMap[i] = sIndicesSphere[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
-		indexBuff->Unmap(0, nullptr);
+		pIndexBuff->Unmap(0, nullptr);
 
 		//インデックスバッファビューの作成
-		ibViewSphere_.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibViewSphere_.BufferLocation = pIndexBuff->GetGPUVirtualAddress();
 		ibViewSphere_.Format = DXGI_FORMAT_R16_UINT;
 		ibViewSphere_.SizeInBytes = sizeIB;
 
@@ -716,24 +716,24 @@ void Primitive::InitializeSphere()
 	}
 }
 
-void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCount, Vertex* vertex, const D3D12_PRIMITIVE_TOPOLOGY& primitiveTopology,
+void Primitive::DrawCommandPrimitive(ID3D12Resource* pVertBuff, int32_t vertexCount, Vertex* pVertex, const D3D12_PRIMITIVE_TOPOLOGY& primitiveTopology,
 	const D3D12_VERTEX_BUFFER_VIEW& buffView, const D3D12_INDEX_BUFFER_VIEW& ibView, int32_t indicesCount,
 	const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
 	HRESULT result = {};
 
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
-	Vertex* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	Vertex* pVertMap = nullptr;
+	result = pVertBuff->Map(0, nullptr, (void**)&pVertMap);
 	assert(SUCCEEDED(result));
 	// 全頂点に対して
 	for (int32_t i = 0; i < vertexCount; i++) {
 
-		vertMap[i] = vertex[i]; // 座標をコピー
+		pVertMap[i] = pVertex[i]; // 座標をコピー
 
 	}
 	// 繋がりを解除
-	vertBuff->Unmap(0, nullptr);
+	pVertBuff->Unmap(0, nullptr);
 
 	// パイプラインステートとルートシグネチャの設定コマンド
 	setRootParam();

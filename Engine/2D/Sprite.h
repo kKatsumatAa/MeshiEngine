@@ -27,15 +27,15 @@ public:
 	void Update(const Vec3& pos,  float scale,
 		const XMFLOAT4& color, uint64_t textureHandle, const Vec2& ancorUV,
 		 bool isReverseX, bool isReverseY, float rotation,
-		ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
+		ConstBuffTransform* pCbt, ConstBufferDataMaterial* pConstMapMaterial);
 
 	void UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 		const XMFLOAT4& color, uint64_t textureHandle, bool isPosLeftTop,
-		 bool isReverseX, bool isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
+		 bool isReverseX, bool isReverseY, float rotation, ConstBuffTransform* pCbt, ConstBufferDataMaterial* pConstMapMaterial);
 };
 
 //ã§í ÇÃèàóù
-void SpriteCommonBeginDraw(PipeLineSet* pipelineSet);
+void SpriteCommonBeginDraw(PipeLineSet* pPipelineSet);
 
 
 

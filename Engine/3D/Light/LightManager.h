@@ -34,7 +34,7 @@ private://定数
 	static const int32_t S_CIRCLE_SHADOW_NUM_ = 1;
 
 private://静的メンバ変数
-	static ID3D12Device* sDevice_;
+	static ID3D12Device* pSDevice_;
 
 private://メンバ変数
 	//定数バッファ

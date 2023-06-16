@@ -94,7 +94,7 @@ void ParticleManager::Initialize()
 	BuffProperties(cbHeapProp, cbResourceDesc, &constBuff_);
 }
 
-void ParticleManager::Update(ViewMat* view, ProjectionMat* projection)
+void ParticleManager::Update(ViewMat* pView, ProjectionMat* pProjection)
 {
 	HRESULT result;
 
@@ -129,21 +129,21 @@ void ParticleManager::Update(ViewMat* view, ProjectionMat* projection)
 
 	// 頂点バッファへデータ転送
 	int32_t vertCount = 0;
-	VertexPos* vertMap = nullptr;
-	result = vertBuff_->Map(0, nullptr, (void**)&vertMap);
+	VertexPos* pVertMap = nullptr;
+	result = vertBuff_->Map(0, nullptr, (void**)&pVertMap);
 	if (SUCCEEDED(result)) {
 		// パーティクルの情報を1つずつ反映
 		for (std::forward_list<Particle>::iterator it = particles_.begin();
 			it != particles_.end();
 			it++) {
 			// 座標
-			vertMap->pos = it->position_;
+			pVertMap->pos = it->position_;
 			// スケール
-			vertMap->scale = it->scale_;
+			pVertMap->scale = it->scale_;
 			// 色
-			vertMap->color = it->color_;
+			pVertMap->color = it->color_;
 			// 次の頂点へ
-			vertMap++;
+			pVertMap++;
 			if (++vertCount >= S_VERTEX_COUNT_) {
 				break;
 			}
@@ -152,12 +152,12 @@ void ParticleManager::Update(ViewMat* view, ProjectionMat* projection)
 	}
 
 	// 定数バッファへデータ転送
-	UpdateMatrix(view, projection);
+	UpdateMatrix(pView, pProjection);
 
-	ConstBufferData* constMap = nullptr;
-	result = constBuff_->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = view->matView_ * projection->matProjection_;
-	constMap->matBillboard = sMatBillboard_;
+	ConstBufferData* pConstMap = nullptr;
+	result = constBuff_->Map(0, nullptr, (void**)&pConstMap);
+	pConstMap->mat = pView->matView_ * pProjection->matProjection_;
+	pConstMap->matBillboard = sMatBillboard_;
 	constBuff_->Unmap(0, nullptr);
 }
 
@@ -423,14 +423,14 @@ void ParticleManager::CreateModel()
 	vbView_.StrideInBytes = sizeof(VertexPos);
 }
 
-void ParticleManager::UpdateMatrix(ViewMat* view, ProjectionMat* projection)
+void ParticleManager::UpdateMatrix(ViewMat* pView, ProjectionMat* pProjection)
 {
 	//視点座標
-	XMVECTOR eyePosition = { view->eye_.x_,view->eye_.y_,view->eye_.z_ };
+	XMVECTOR eyePosition = { pView->eye_.x_,pView->eye_.y_,pView->eye_.z_ };
 	//注視点座標
-	XMVECTOR targetPosition = { view->target_.x_,view->target_.y_,view->target_.z_ };
+	XMVECTOR targetPosition = { pView->target_.x_,pView->target_.y_,pView->target_.z_ };
 	//（仮の）上方向
-	XMVECTOR upVector = { view->up_.x_,view->up_.y_,view->up_.z_ };
+	XMVECTOR upVector = { pView->up_.x_,pView->up_.y_,pView->up_.z_ };
 
 
 	//カメラのz軸求める

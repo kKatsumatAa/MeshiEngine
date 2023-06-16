@@ -10,7 +10,11 @@ void SceneGame::Finalize()
 //---------------------------------------------------------------------------------------
 void SceneGame::Initialize()
 {
+	sceneM_->player.Initialize();
+	sceneM_->player.SetCollider(std::move(std::make_unique<SphereCollider>()));
+
 	sceneM_->draw_[5].PlayReverseAnimation(sceneM_->modelFBX_, true);
+	sceneM_->player.PlayReverseAnimation(sceneM_->modelFBX_, true);
 
 	//initialize‚Ì“x,–ˆ‰ñ‚â‚Á‚¿‚á‚¤‚Æ‚¨‚©‚µ‚­‚È‚é
 	{
@@ -47,6 +51,8 @@ void SceneGame::Update()
 	{
 		//sceneM->ChangeScene("TITLE");
 	}
+
+	sceneM_->player.Update();
 }
 
 void SceneGame::Draw()
@@ -59,7 +65,9 @@ void SceneGame::Draw()
 		obj->DrawModel(&sceneM_->camera_->viewMat_, &sceneM_->camera_->projectionMat_, model);
 	}
 
-	sceneM_->draw_[6].DrawCube3D(&sceneM_->camera_->viewMat_, &sceneM_->camera_->projectionMat_);
+	sceneM_->draw_[6].DrawSphere(&sceneM_->camera_->viewMat_, &sceneM_->camera_->projectionMat_);
+
+	sceneM_->player.DrawFBX(&sceneM_->camera_->viewMat_, &sceneM_->camera_->projectionMat_, sceneM_->modelFBX_);
 
 	//ÅŒã‚É•`‰æ‚µ‚È‚¢‚Æ‰f‚ç‚È‚¢
 	//ParticleManager::GetInstance()->Draw(sceneM->texhandle[1]);

@@ -96,7 +96,7 @@ private:
 	/// </summary>
 	void CreateModel();
 
-	void UpdateMatrix(ViewMat* view, ProjectionMat* projection);
+	void UpdateMatrix(ViewMat* pView, ProjectionMat* pProjection);
 
 public: // メンバ関数	
 	/// <summary>
@@ -107,7 +107,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update(ViewMat* view, ProjectionMat* projection);
+	void Update(ViewMat* pView, ProjectionMat* pProjection);
 
 	/// <summary>
 	/// 描画
@@ -146,8 +146,8 @@ private: // メンバ変数
 	// パーティクル配列
 	std::forward_list<Particle> particles_;
 	//
-	ViewMat* view_ = nullptr;
-	ProjectionMat* projection_ = nullptr;
+	ViewMat* pView_ = nullptr;
+	ProjectionMat* pProjection_ = nullptr;
 
 	//ビルボード行列
 	static XMMATRIX sMatBillboard_;

@@ -82,7 +82,7 @@ private:
 	ComPtr<ID3D12DescriptorHeap> peraSRVHeap_;//テクスチャ用
 	bool isPeraClear_ = false;
 
-	GausianBuffer gausianBuff_;
+	std::unique_ptr<GausianBuffer> gausianBuff_;
 
 	//法線マップ用
 	ComPtr<ID3D12Resource>effectTexBuffer_;

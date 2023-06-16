@@ -76,20 +76,20 @@ ComPtr < ID3D12PipelineState> pipelineState[3] = { nullptr };
 ComPtr<ID3D12RootSignature> rootSignature;
 // グラフィックスパイプライン設定
 D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
-ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
-ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
-ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
+ID3DBlob* pVsBlob = nullptr; // 頂点シェーダオブジェクト
+ID3DBlob* pPsBlob = nullptr; // ピクセルシェーダオブジェクト
+ID3DBlob* pErrorBlob = nullptr; // エラーオブジェクト
 
 // 2.描画先の変更
 	// レンダーターゲットビューのハンドルを取得
 D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 //static
-LightManager* Object::sLightManager_ = nullptr;
+LightManager* Object::pSLightManager_ = nullptr;
 
 //演出用
 ComPtr <ID3D12Resource> Object::sEffectFlagsBuff_ = nullptr;
-EffectOConstBuffer* Object::sMapEffectFlagsBuff_ = nullptr;
+EffectOConstBuffer* Object::pSMapEffectFlagsBuff_ = nullptr;
 EffectOConstBuffer Object::sEffectFlags_;
 float Object::sRimColorF3_[3] = { 1.0f,1.0f,1.0f };
 
@@ -147,27 +147,27 @@ void DrawInitialize()
 	rootParams[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 
 	// パイプランステートの生成
-	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob);
+	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState->GetAddressOf(), rootSignature.GetAddressOf(), pVsBlob, pPsBlob);
 
-	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 1)->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob);
+	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 1)->GetAddressOf(), rootSignature.GetAddressOf(), pVsBlob, pPsBlob);
 
 	//line
-	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 2)->GetAddressOf(), rootSignature.GetAddressOf(), vsBlob, psBlob, LINE);
+	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState + 2)->GetAddressOf(), rootSignature.GetAddressOf(), pVsBlob, pPsBlob, LINE);
 
 	//sprite用
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSet.pipelineState.GetAddressOf(),
-		pipelineSet.rootSignature.GetAddressOf(), pipelineSet.vsBlob,
-		pipelineSet.psBlob, SPRITE);
+		pipelineSet.rootSignature.GetAddressOf(), pipelineSet.pVsBlob,
+		pipelineSet.pPsBlob, SPRITE);
 
 	//model用
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetM.pipelineState.GetAddressOf(),
-		pipelineSetM.rootSignature.GetAddressOf(), pipelineSetM.vsBlob,
-		pipelineSetM.psBlob, MODEL);
+		pipelineSetM.rootSignature.GetAddressOf(), pipelineSetM.pVsBlob,
+		pipelineSetM.pPsBlob, MODEL);
 
 	//FBX用
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetFBX.pipelineState.GetAddressOf(),
-		pipelineSetFBX.rootSignature.GetAddressOf(), pipelineSetFBX.vsBlob,
-		pipelineSetFBX.psBlob, FBX);
+		pipelineSetFBX.rootSignature.GetAddressOf(), pipelineSetFBX.pVsBlob,
+		pipelineSetFBX.pPsBlob, FBX);
 
 
 	//画面効果用
@@ -184,7 +184,7 @@ void DrawInitialize()
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &Object::sEffectFlagsBuff_);
 		//定数バッファのマッピング
-		result = Object::sEffectFlagsBuff_->Map(0, nullptr, (void**)&Object::sMapEffectFlagsBuff_);//マッピング
+		result = Object::sEffectFlagsBuff_->Map(0, nullptr, (void**)&Object::pSMapEffectFlagsBuff_);//マッピング
 		assert(SUCCEEDED(result));
 	}
 }
@@ -237,11 +237,11 @@ void Object::StaticUpdate()
 
 	//画面効果用
 	{
-		sMapEffectFlagsBuff_->isFog = sEffectFlags_.isFog;
-		sMapEffectFlagsBuff_->isToon = sEffectFlags_.isToon;
-		sMapEffectFlagsBuff_->isRimLight = sEffectFlags_.isRimLight;
-		sMapEffectFlagsBuff_->rimColor = sEffectFlags_.rimColor;
-		sMapEffectFlagsBuff_->time = sEffectFlags_.time;
+		pSMapEffectFlagsBuff_->isFog = sEffectFlags_.isFog;
+		pSMapEffectFlagsBuff_->isToon = sEffectFlags_.isToon;
+		pSMapEffectFlagsBuff_->isRimLight = sEffectFlags_.isRimLight;
+		pSMapEffectFlagsBuff_->rimColor = sEffectFlags_.rimColor;
+		pSMapEffectFlagsBuff_->time = sEffectFlags_.time;
 	}
 }
 
@@ -294,7 +294,7 @@ Object::Object()
 	//定数バッファの生成
 	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial_);
 	//定数バッファのマッピング
-	result = constBuffMaterial_->Map(0, nullptr, (void**)&constMapMaterial_);//マッピング
+	result = constBuffMaterial_->Map(0, nullptr, (void**)&pConstMapMaterial_);//マッピング
 	assert(SUCCEEDED(result));
 
 	if (constBuffSkin_.Get() == nullptr)
@@ -309,11 +309,11 @@ Object::Object()
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffSkin_);
 		//マッピング
-		ConstBufferDataSkin* constMapSkin = nullptr;
-		constBuffSkin_->Map(0, nullptr, (void**)&constMapSkin);
+		ConstBufferDataSkin* pConstMapSkin = nullptr;
+		constBuffSkin_->Map(0, nullptr, (void**)&pConstMapSkin);
 		for (uint32_t i = 0; i < S_MAX_BONES_; i++)
 		{
-			constMapSkin->bones[i] = XMMatrixIdentity();
+			pConstMapSkin->bones[i] = XMMatrixIdentity();
 		}
 		constBuffSkin_->Unmap(0, nullptr);
 	}
@@ -337,32 +337,32 @@ void Object::SendingMat(int32_t indexNum)
 				 (float)worldMat_->matWorld_.m_[3][0],(float)worldMat_->matWorld_.m_[3][1],(float)worldMat_->matWorld_.m_[3][2],(float)worldMat_->matWorld_.m_[3][3] };
 
 		cbt_.constMapTransform_->world = matW;
-		cbt_.constMapTransform_->viewproj = view_->matView_ * projection_->matProjection_;
-		XMFLOAT3 cPos = { view_->eye_.x_,view_->eye_.y_,view_->eye_.z_ };
+		cbt_.constMapTransform_->viewproj = pView_->matView_ * pProjection_->matProjection_;
+		XMFLOAT3 cPos = { pView_->eye_.x_,pView_->eye_.y_,pView_->eye_.z_ };
 		cbt_.constMapTransform_->cameraPos = cPos;
 	}
 }
 
-void Object::PlayAnimationInternal(ModelFBX* model, FbxTime& sTime, FbxTime& eTime,
+void Object::PlayAnimationInternal(ModelFBX* pModel, FbxTime& sTime, FbxTime& eTime,
 	bool isLoop, bool isReverse)
 {
 	//アニメーションが1つしかない前提
 
-	FbxScene* fbxScene = model->GetFbxScene();
+	FbxScene* pFbxScene = pModel->GetFbxScene();
 	//0番のアニメーション取得
-	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	FbxAnimStack* pAnimStack = pFbxScene->GetSrcObject<FbxAnimStack>(0);
 	//アニメーションなかったら
-	if (animStack == nullptr) { return; }
+	if (pAnimStack == nullptr) { return; }
 
 	//アニメーションの名前取得
-	const char* P_ANIM_STACK_NAME = animStack->GetName();
+	const char* P_ANIM_STACK_NAME = pAnimStack->GetName();
 	//アニメーションの時間情報
-	FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(P_ANIM_STACK_NAME);
+	FbxTakeInfo* pTakeInfo = pFbxScene->GetTakeInfo(P_ANIM_STACK_NAME);
 
 	//開始時間取得
-	sTime = takeInfo->mLocalTimeSpan.GetStart();
+	sTime = pTakeInfo->mLocalTimeSpan.GetStart();
 	//終了時間取得
-	eTime = takeInfo->mLocalTimeSpan.GetStop();
+	eTime = pTakeInfo->mLocalTimeSpan.GetStop();
 	//開始時間取得
 	currentTime_ = startTime_;
 	//再生中状態
@@ -373,17 +373,17 @@ void Object::PlayAnimationInternal(ModelFBX* model, FbxTime& sTime, FbxTime& eTi
 	isReverse_ = isReverse;
 }
 
-void Object::PlayAnimation(ModelFBX* model, bool isLoop)
+void Object::PlayAnimation(ModelFBX* pModel, bool isLoop)
 {
-	PlayAnimationInternal(model, startTime_, endTime_, isLoop);
+	PlayAnimationInternal(pModel, startTime_, endTime_, isLoop);
 }
 
-void Object::PlayReverseAnimation(ModelFBX* model, bool isLoop)
+void Object::PlayReverseAnimation(ModelFBX* pModel, bool isLoop)
 {
-	PlayAnimationInternal(model, endTime_, startTime_, isLoop, true);
+	PlayAnimationInternal(pModel, endTime_, startTime_, isLoop, true);
 }
 
-void Object::SendingBoneData(ModelFBX* model)
+void Object::SendingBoneData(ModelFBX* pModel)
 {
 	HRESULT result = {};
 
@@ -419,18 +419,18 @@ void Object::SendingBoneData(ModelFBX* model)
 
 
 	//モデルのボーン配列
-	std::vector<ModelFBX::Bone>& bones = model->GetBones();
+	std::vector<ModelFBX::Bone>& bones = pModel->GetBones();
 
 	//定数バッファへデータ転送
-	ConstBufferDataSkin* constMapSkin = nullptr;
-	result = constBuffSkin_->Map(0, nullptr, (void**)&constMapSkin);
+	ConstBufferDataSkin* pConstMapSkin = nullptr;
+	result = constBuffSkin_->Map(0, nullptr, (void**)&pConstMapSkin);
 	for (int32_t i = 0; i < bones.size(); i++)
 	{
 		//今の姿勢行列
 		XMMATRIX matCurrentPose;
 		//今の姿勢行列を取得
 		FbxAMatrix fbxCurrentPose =
-			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime_);
+			bones[i].pFbxCluster->GetLink()->EvaluateGlobalTransform(currentTime_);
 		//xmmatrixに変換
 		FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
@@ -438,24 +438,24 @@ void Object::SendingBoneData(ModelFBX* model)
 		//model->GetFbxScene()->GetNode()->GetMesh()
 
 		//初期姿勢の逆行列と今の姿勢行列を合成してスキニング行列に
-		constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
+		pConstMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
 	}
 	constBuffSkin_->Unmap(0, nullptr);
 }
 
-void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature)
+void Object::SetRootPipe(ID3D12PipelineState* pPipelineState, int32_t pipelineNum, ID3D12RootSignature* pRootSignature)
 {
 	// パイプラインステートとルートシグネチャの設定コマンド
-	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(&pipelineState[pipelineNum]);
+	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(&pPipelineState[pipelineNum]);
 
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(pRootSignature);
 }
 
 void Object::SetMaterialLightMTexSkin(uint64_t textureHandle_, ConstBuffTransform cbt)
 {
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 
-	sLightManager_->Draw(4);
+	pSLightManager_->Draw(4);
 
 	//04_02
 	{
@@ -475,14 +475,14 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle_, ConstBuffTransfor
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, sEffectFlagsBuff_->GetGPUVirtualAddress());
 }
 
-void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTransform cbt, Material* material)
+void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTransform cbt, Material* pMaterial)
 {
 	SetMaterialLightMTexSkin(textureHandle_, cbt);
 
 	//アンビエントとか
-	material->Update();
-	ID3D12Resource* constBuff = material->GetConstantBuffer();
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, constBuff->GetGPUVirtualAddress());
+	pMaterial->Update();
+	ID3D12Resource* pConstBuff = pMaterial->GetConstantBuffer();
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, pConstBuff->GetGPUVirtualAddress());
 
 	//スキニング用
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(6, constBuffSkin_->GetGPUVirtualAddress());
@@ -490,7 +490,7 @@ void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTra
 }
 
 void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
-	Model* model, ModelFBX* fbx, bool primitiveMode)
+	Model* pModel, ModelFBX* pFbx, bool primitiveMode)
 {
 	//行列送信
 	SendingMat(indexNum);
@@ -567,7 +567,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 
-		sLightManager_->Draw(4);
+		pSLightManager_->Draw(4);
 
 		//定数バッファビュー(CBV)の設定コマンド
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform_->GetGPUVirtualAddress());
@@ -578,38 +578,38 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(6, constBuffSkin_->GetGPUVirtualAddress());
 
 		//モデル用描画
-		model->Draw();
+		pModel->Draw();
 	}
 	else if (indexNum == FBX)
 	{
-		SendingBoneData(fbx);
+		SendingBoneData(pFbx);
 
 		//ラムダ式でコマンド関数
 		std::function<void()>SetRootPipeR = [=]() {SetRootPipe(pipelineSetFBX.pipelineState.Get(), 0, pipelineSetFBX.rootSignature.Get()); };
-		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(fbx->material_->textureHandle_, constBuffTransform, fbx->material_.get()); };
+		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(pFbx->material_->textureHandle_, constBuffTransform, pFbx->material_.get()); };
 
-		fbx->Draw(SetRootPipeR, SetMaterialTex);
+		pFbx->Draw(SetRootPipeR, SetMaterialTex);
 	}
 }
 
 void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-	ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,  uint64_t textureHandle, int32_t pipelineNum)
+	ViewMat* pView, ProjectionMat* pProjection, const XMFLOAT4& color,  uint64_t textureHandle, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
+	pView_ = pView;
+	pProjection_ = pProjection;
 
-	constMapMaterial_->color = color;
+	pConstMapMaterial_->color = color;
 
 	Update(TRIANGLE, pipelineNum, textureHandle, cbt_);
 }
 
-void Object::DrawBox(ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
+void Object::DrawBox(ViewMat* pView, ProjectionMat* pProjection,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
 	const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
+	pView_ = pView;
+	pProjection_ = pProjection;
 
-	constMapMaterial_->color = color;
+	pConstMapMaterial_->color = color;
 
 	Update(BOX, pipelineNum, textureHandle, cbt_);
 }
@@ -624,7 +624,7 @@ void Object::DrawBoxSprite(const Vec3& pos, float scale,
 		//スプライトクラスの初期化
 		sprite_->Initialize();
 	}
-	sprite_->Update(pos, scale, color, textureHandle, ancorUV, isReverseX, isReverseY, rotation, &cbt_, constMapMaterial_);
+	sprite_->Update(pos, scale, color, textureHandle, ancorUV, isReverseX, isReverseY, rotation, &cbt_, pConstMapMaterial_);
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt_);
 }
@@ -646,77 +646,77 @@ void Object::DrawClippingBoxSprite(const Vec3& leftTop, float scale, const XMFLO
 		sprite_->Initialize();
 	}
 	sprite_->UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle,
-		isPosLeftTop, isReverseX, isReverseY, rotation, &cbt_, constMapMaterial_);
+		isPosLeftTop, isReverseX, isReverseY, rotation, &cbt_, pConstMapMaterial_);
 
 	Update(SPRITE, pipelineNum, textureHandle, cbt_);
 }
 
-void Object::DrawCube3D(ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
+void Object::DrawCube3D(ViewMat* pView, ProjectionMat* pProjection, const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
+	pView_ = pView;
+	pProjection_ = pProjection;
 
-	constMapMaterial_->color = color;
+	pConstMapMaterial_->color = color;
 
 	Update(CUBE, pipelineNum, textureHandle, cbt_);
 }
 
-void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,
+void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  ViewMat* pView, ProjectionMat* pProjection, const XMFLOAT4& color,
 	uint64_t textureHandle)
 {
-	view_ = view;
-	projection_ = projection;
+	pView_ = pView;
+	pProjection_ = pProjection;
 
-	constMapMaterial_->color = color;
+	pConstMapMaterial_->color = color;
 
 	Update(LINE, 2, textureHandle, cbt_, nullptr, nullptr, false);
 }
 
-void Object::DrawCircle(ViewMat* view, ProjectionMat* projection,
+void Object::DrawCircle(ViewMat* pView, ProjectionMat* pProjection,
 	const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
+	pView_ = pView;
+	pProjection_ = pProjection;
 
-	constMapMaterial_->color = color;
+	pConstMapMaterial_->color = color;
 
 	Update(CIRCLE, pipelineNum, textureHandle, cbt_);
 }
 
-void Object::DrawSphere(ViewMat* view, ProjectionMat* projection,
+void Object::DrawSphere(ViewMat* pView, ProjectionMat* pProjection,
 	const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
+	pView_ = pView;
+	pProjection_ = pProjection;
 
-	constMapMaterial_->color = color;
+	pConstMapMaterial_->color = color;
 
 	Update(SPHERE, pipelineNum, textureHandle, cbt_);
 }
 
-void Object::DrawModel(ViewMat* view, ProjectionMat* projection,
-	Model* model, const XMFLOAT4& color, int32_t pipelineNum)
+void Object::DrawModel(ViewMat* pView, ProjectionMat* pProjection,
+	Model* pModel, const XMFLOAT4& color, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
+	pView_ = pView;
+	pProjection_ = pProjection;
 
-	constMapMaterial_->color = color;
+	pConstMapMaterial_->color = color;
 
-	Update(MODEL, pipelineNum, NULL, cbt_, model);
+	Update(MODEL, pipelineNum, NULL, cbt_, pModel);
 }
 
-void Object::DrawFBX(ViewMat* view, ProjectionMat* projection, ModelFBX* modelFbx, const XMFLOAT4& color, int32_t pipelineNum)
+void Object::DrawFBX(ViewMat* pView, ProjectionMat* pProjection, ModelFBX* pModelFbx, const XMFLOAT4& color, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
+	pView_ = pView;
+	pProjection_ = pProjection;
 
-	constMapMaterial_->color = color;
+	pConstMapMaterial_->color = color;
 
-	Update(FBX, pipelineNum, NULL, cbt_, nullptr, modelFbx);
+	Update(FBX, pipelineNum, NULL, cbt_, nullptr, pModelFbx);
 }
 
-void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
-	ID3DBlob* vsBlob, ID3DBlob* psBlob, int32_t indexNum)
+void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** ppPipelineState, ID3D12RootSignature** ppRootSig,
+	ID3DBlob* pVsBlob, ID3DBlob* pPsBlob, int32_t indexNum)
 {
 	HRESULT result = {};
 
@@ -730,7 +730,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 			"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
 			0,
-			&vsBlob, &errorBlob);
+			&pVsBlob, &pErrorBlob);
 
 		// エラーなら
 		Error(FAILED(result));
@@ -743,7 +743,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 			"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
 			0,
-			&psBlob, &errorBlob);
+			&pPsBlob, &pErrorBlob);
 
 		// エラーなら
 		Error(FAILED(result));
@@ -758,7 +758,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 			"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
 			0,
-			&vsBlob, &errorBlob);
+			&pVsBlob, &pErrorBlob);
 
 		// エラーなら
 		Error(FAILED(result));
@@ -771,7 +771,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 			"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
 			0,
-			&psBlob, &errorBlob);
+			&pPsBlob, &pErrorBlob);
 
 		// エラーなら
 		Error(FAILED(result));
@@ -786,7 +786,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 			"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
 			0,
-			&vsBlob, &errorBlob);
+			&pVsBlob, &pErrorBlob);
 
 		// エラーなら
 		Error(FAILED(result));
@@ -799,17 +799,17 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 			"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
 			0,
-			&psBlob, &errorBlob);
+			&pPsBlob, &pErrorBlob);
 
 		// エラーなら
 		Error(FAILED(result));
 	}
 
 	// シェーダーの設定
-	pipelineDesc.VS.pShaderBytecode = vsBlob->GetBufferPointer();
-	pipelineDesc.VS.BytecodeLength = vsBlob->GetBufferSize();
-	pipelineDesc.PS.pShaderBytecode = psBlob->GetBufferPointer();
-	pipelineDesc.PS.BytecodeLength = psBlob->GetBufferSize();
+	pipelineDesc.VS.pShaderBytecode = pVsBlob->GetBufferPointer();
+	pipelineDesc.VS.BytecodeLength = pVsBlob->GetBufferSize();
+	pipelineDesc.PS.pShaderBytecode = pPsBlob->GetBufferPointer();
+	pipelineDesc.PS.BytecodeLength = pPsBlob->GetBufferSize();
 
 	// サンプルマスクの設定
 	pipelineDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
@@ -877,13 +877,13 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 	// ルートシグネチャのシリアライズ
 	ComPtr<ID3DBlob> rootSigBlob = nullptr;
 	result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
-		&rootSigBlob, &errorBlob);
+		&rootSigBlob, &pErrorBlob);
 	assert(SUCCEEDED(result));
 	result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
-		IID_PPV_ARGS(rootSig));
+		IID_PPV_ARGS(ppRootSig));
 	assert(SUCCEEDED(result));
 	// パイプラインにルートシグネチャをセット
-	pipelineDesc.pRootSignature = *rootSig;
+	pipelineDesc.pRootSignature = *ppRootSig;
 
 	//06_01
 	//デプスステンシルステート
@@ -896,7 +896,7 @@ void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipeli
 		pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
 	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 
-	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(pipelineState));
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(ppPipelineState));
 	//assert(SUCCEEDED(result));
 }
 
@@ -933,14 +933,14 @@ void Blend(const D3D12_BLEND_OP& blendMode, bool Inversion, bool Translucent)
 
 void Object::constBuffTransfer(const XMFLOAT4& plusRGBA)
 {
-	if (constMapMaterial_->color.x <= 1.0f && constMapMaterial_->color.x >= 0.0f)
-		constMapMaterial_->color.x += plusRGBA.x;
-	if (constMapMaterial_->color.y <= 1.0f && constMapMaterial_->color.y >= 0.0f)
-		constMapMaterial_->color.y += plusRGBA.y;
-	if (constMapMaterial_->color.z <= 1.0f && constMapMaterial_->color.z >= 0.0f)
-		constMapMaterial_->color.z += plusRGBA.z;
-	if (constMapMaterial_->color.w <= 1.0f && constMapMaterial_->color.w >= 0.0f)
-		constMapMaterial_->color.w += plusRGBA.w;
+	if (pConstMapMaterial_->color.x <= 1.0f && pConstMapMaterial_->color.x >= 0.0f)
+		pConstMapMaterial_->color.x += plusRGBA.x;
+	if (pConstMapMaterial_->color.y <= 1.0f && pConstMapMaterial_->color.y >= 0.0f)
+		pConstMapMaterial_->color.y += plusRGBA.y;
+	if (pConstMapMaterial_->color.z <= 1.0f && pConstMapMaterial_->color.z >= 0.0f)
+		pConstMapMaterial_->color.z += plusRGBA.z;
+	if (pConstMapMaterial_->color.w <= 1.0f && pConstMapMaterial_->color.w >= 0.0f)
+		pConstMapMaterial_->color.w += plusRGBA.w;
 }
 
 
@@ -959,9 +959,9 @@ void Error(bool filed)
 	{
 		// errorBlobからエラー内容をstring型にコピー
 		std::string error;
-		error.resize(errorBlob->GetBufferSize());
-		std::copy_n((char*)errorBlob->GetBufferPointer(),
-			errorBlob->GetBufferSize(),
+		error.resize(pErrorBlob->GetBufferSize());
+		std::copy_n((char*)pErrorBlob->GetBufferPointer(),
+			pErrorBlob->GetBufferSize(),
 			error.begin());
 		error += "\n";
 		// エラー内容を出力ウィンドウに表示

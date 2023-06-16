@@ -28,11 +28,11 @@ void Sprite::Initialize()
 	}
 }
 
-void SpriteCommonBeginDraw(PipeLineSet* pipelineSet)
+void SpriteCommonBeginDraw(PipeLineSet* pPipelineSet)
 {
-	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(pipelineSet->pipelineState.Get());
+	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(pPipelineSet->pipelineState.Get());
 
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSet->rootSignature.Get());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(pPipelineSet->rootSignature.Get());
 
 	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 }
@@ -42,12 +42,12 @@ void Sprite::SpriteDraw()
 	HRESULT result = {};
 
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
-	VertexSprite* vertMap = nullptr;
-	result = vertBuff_->Map(0, nullptr, (void**)&vertMap);
+	VertexSprite* pVertMap = nullptr;
+	result = vertBuff_->Map(0, nullptr, (void**)&pVertMap);
 	assert(SUCCEEDED(result));
 	// 全頂点に対して
 	for (int32_t i = 0; i < 4; i++) {
-		vertMap[i] = vertices_[i]; // 座標をコピー
+		pVertMap[i] = vertices_[i]; // 座標をコピー
 	}
 	// 繋がりを解除
 	vertBuff_->Unmap(0, nullptr);
@@ -60,7 +60,7 @@ void Sprite::SpriteDraw()
 void Sprite::Update(const Vec3& pos, float scale,
 	const XMFLOAT4& color,  uint64_t textureHandle, const Vec2& ancorUV,
 	bool isReverseX,bool isReverseY, float rotation,
-	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
+	ConstBuffTransform* pCbt, ConstBufferDataMaterial* pConstMapMaterial)
 {
 	//テクスチャを設定していなかったら
 	uint64_t textureHandle_;
@@ -90,7 +90,7 @@ void Sprite::Update(const Vec3& pos, float scale,
 	vertices_[3] = { {+(float)(length.x_ * scale * (1.0f - ancorUV.x_)),-(float)(length.y_ * scale * (ancorUV.y_)),0.0f},{1.0f,0.0f} };//右上
 
 
-	constMapMaterial->color = color;
+	pConstMapMaterial->color = color;
 
 	//ワールド行列
 	WorldMat worldMat;
@@ -122,15 +122,15 @@ void Sprite::Update(const Vec3& pos, float scale,
 	projection.matProjection_ = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().WINDOW_WIDTH_,
 		WindowsApp::GetInstance().WINDOW_HEIGHT_, 0.0, 0.0f, 1.0f);
 
-	cbt->constMapTransform_->world = matW;
-	cbt->constMapTransform_->viewproj = view.matView_ * projection.matProjection_;
+	pCbt->constMapTransform_->world = matW;
+	pCbt->constMapTransform_->viewproj = view.matView_ * projection.matProjection_;
 	XMFLOAT3 cPos = { view.eye_.x_,view.eye_.y_,view.eye_.z_ };
-	cbt->constMapTransform_->cameraPos = cPos;
+	pCbt->constMapTransform_->cameraPos = cPos;
 }
 
 void Sprite::UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	const XMFLOAT4& color,  uint64_t textureHandle, bool isPosLeftTop,
-	bool isReverseX,bool isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
+	bool isReverseX,bool isReverseY, float rotation, ConstBuffTransform* pCbt, ConstBufferDataMaterial* pConstMapMaterial)
 {
 	//テクスチャを設定していなかったら
 	uint64_t textureHandle_;
@@ -175,7 +175,7 @@ void Sprite::UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& U
 		vertices_[2] = { {UVlength.x * length.x_ * scale / 2.0f,UVlength.y * length.y_ * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
 		vertices_[3] = { {UVlength.x * length.x_ * scale / 2.0f,-UVlength.y * length.y_ * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
-	constMapMaterial->color = color;
+	pConstMapMaterial->color = color;
 
 	//ワールド行列
 	WorldMat worldMat;
@@ -218,10 +218,10 @@ void Sprite::UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& U
 	projection.matProjection_ = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().WINDOW_WIDTH_,
 		WindowsApp::GetInstance().WINDOW_HEIGHT_, 0.0, 0.0f, 1.0f);
 
-	cbt->constMapTransform_->world = matW;
-	cbt->constMapTransform_->viewproj = view.matView_ * projection.matProjection_;
+	pCbt->constMapTransform_->world = matW;
+	pCbt->constMapTransform_->viewproj = view.matView_ * projection.matProjection_;
 	XMFLOAT3 cPos = { view.eye_.x_,view.eye_.y_,view.eye_.z_ };
-	cbt->constMapTransform_->cameraPos = cPos;
+	pCbt->constMapTransform_->cameraPos = cPos;
 }
 
 

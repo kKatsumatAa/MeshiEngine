@@ -14,9 +14,9 @@ private://エイリアス
 
 private://変数
 	//fbxマネージャー(sdkを使うのに必要)
-	FbxManager* fbxManager_ = nullptr;
+	FbxManager* pFbxManager_ = nullptr;
 	//fbxインポーター(.fbxを読み込むのに必要)
-	FbxImporter* fbxImporter_ = nullptr;
+	FbxImporter* pFbxImporter_ = nullptr;
 
 	//テクスチャがない場合の標準テクスチャファイル名
 	static const string S_DEFAULT_TEX_FILE_NAME_;
@@ -65,26 +65,26 @@ public:
 	/// </summary>
 	/// <param name="model">読み込み先モデルオブジェクト</param>
 	/// <param name="fbxNode">解析対象のノード</param>
-	void ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* parent = nullptr);
+	void ParseNodeRecursive(ModelFBX* pModel, FbxNode* pFbxNode, Node* pParent = nullptr);
 
 	/// <summary>
 	/// メッシュ読み取り
 	/// </summary>
 	/// <param name="model">読み込み先モデルオブジェクト</param>
 	/// <param name="fbxNode">解析対象のノード</param>
-	void ParseMesh(ModelFBX* model, FbxNode* fbxNode);
+	void ParseMesh(ModelFBX* pModel, FbxNode* pFbxNode);
 
 	//頂点座標読み取り
-	void ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh);
+	void ParseMeshVertices(ModelFBX* pModel, FbxMesh* pFbxMesh);
 
 	//面情報読み取り
-	void ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh);
+	void ParseMeshFaces(ModelFBX* pModel, FbxMesh* pFbxMesh);
 
 	//マテリアル読み取り
-	void ParseMaterial(ModelFBX* model, FbxNode* fbxNode);
+	void ParseMaterial(ModelFBX* pModel, FbxNode* fbxNode);
 
 	//テクスチャ読み込み
-	void LoadTexture(ModelFBX* model, const std::string& fullpath);
+	void LoadTexture(ModelFBX* pModel, const std::string& fullpath);
 
 	//ディレクトリを含んだファイルパスからファイル名(***.pmg)を抽出する
 	std::string ExtractFileName(const std::string& path);
@@ -94,8 +94,8 @@ public:
 	/// </summary>
 	/// <param name="dst">書き込み先</param>
 	/// <param name="src">元となるFBX行列</param>
-	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
+	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* pDst, const FbxAMatrix& src);
 
 	//スキニング情報の読み取り
-	void PerseSkin(ModelFBX* model, FbxMesh* fbxMesh);
+	void PerseSkin(ModelFBX* pModel, FbxMesh* pFbxMesh);
 };

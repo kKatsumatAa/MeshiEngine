@@ -13,7 +13,7 @@ CameraManager::CameraManager()
 	goalEffectCamera_->Initialize();
 
 	//何かしらカメラのポインタ入れる
-	usingCamera_ = gameMainCamera_.get();
+	pUsingCamera_ = gameMainCamera_.get();
 }
 
 CameraManager::~CameraManager()
@@ -36,7 +36,7 @@ void CameraManager::Initialize()
 	lerpCount_ = 0;
 	lerpCountMax_ = 0;
 	afterCount_ = 0;
-	afterCamera_ = nullptr;
+	pAfterCamera_ = nullptr;
 	isLerpMoving_ = false;
 	isLerpEnd_ = false;
 
@@ -47,7 +47,7 @@ void CameraManager::Update()
 {
 	state_->Update();
 
-	usingCamera_->Update();
+	pUsingCamera_->Update();
 
 	stageSelectCamera_->Update();
 	//ゲーム中メインで使うカメラ
@@ -58,7 +58,8 @@ void CameraManager::Update()
 	goalEffectCamera_->Update();
 }
 
-void CameraManager::BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endEye, const Vec3& startTarget, const Vec3& endTarget, const Vec3& startUp, const Vec3& endUp, int32_t time, Camera* afterCamera, int32_t afterCount)
+void CameraManager::BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endEye, const Vec3& startTarget,
+	const Vec3& endTarget, const Vec3& startUp, const Vec3& endUp, int32_t time, Camera* pAfterCamera, int32_t afterCount)
 {
 	startEye_ = startEye;
 	endEye_ = endEye;
@@ -68,7 +69,7 @@ void CameraManager::BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endE
 	endUp_ = endUp;
 	lerpCountMax_ = time;
 	lerpCount_ = 0;
-	afterCamera_ = afterCamera;
+	pAfterCamera_ = pAfterCamera;
 	afterCount_ = afterCount;
 	isLerpMoving_ = true;
 	isLerpEnd_ = false;
@@ -83,7 +84,7 @@ CameraManager& CameraManager::operator=(const CameraManager& obj)
 	Initialize();
 
 	*state_ = *obj.state_;//ステートなど、ポインタは削除される可能性があるので中身のみコピー
-	usingCamera_ = obj.usingCamera_;
+	pUsingCamera_ = obj.pUsingCamera_;
 	*stageSelectCamera_.get() = *obj.stageSelectCamera_.get();
 	*gameMainCamera_.get() = *obj.gameMainCamera_.get();
 	*gameTurnCamera_.get() = *obj.gameTurnCamera_.get();
@@ -96,7 +97,7 @@ CameraManager& CameraManager::operator=(const CameraManager& obj)
 	endUp_ = obj.endUp_;
 	lerpCountMax_ = obj.lerpCountMax_;
 	lerpCount_ = obj.lerpCount_;
-	if (obj.afterCamera_) { afterCamera_ = obj.afterCamera_; }
+	if (obj.pAfterCamera_) { pAfterCamera_ = obj.pAfterCamera_; }
 	afterCount_ = obj.afterCount_;
 	isLerpMoving_ = obj.isLerpMoving_;
 
@@ -105,57 +106,57 @@ CameraManager& CameraManager::operator=(const CameraManager& obj)
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------
-void UsingCameraState::SetCameraM(CameraManager* cameraM)
+void UsingCameraState::SetCameraM(CameraManager* pCameraM)
 {
-	cameraM = cameraM;
+	pCameraM_ = pCameraM;
 }
 
 
 //-------------------------------------------------------------------------------------------------------
 void UsingCameraNormalState::Update()
 {
-	if (cameraM_->isLerpMoving_)
+	if (pCameraM_->isLerpMoving_)
 	{
-		cameraM_->ChangeUsingCameraState(std::make_unique<UsingCameraLerpMoveState>());
+		pCameraM_->ChangeUsingCameraState(std::make_unique<UsingCameraLerpMoveState>());
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------
 void UsingCameraLerpMoveState::Update()
 {
-	float t = (float)cameraM_->lerpCount_ / (float)cameraM_->lerpCountMax_;
+	float t = (float)pCameraM_->lerpCount_ / (float)pCameraM_->lerpCountMax_;
 
-	if (cameraM_->lerpCount_ < cameraM_->lerpCountMax_)
+	if (pCameraM_->lerpCount_ < pCameraM_->lerpCountMax_)
 	{
-		cameraM_->lerpCount_++;
+		pCameraM_->lerpCount_++;
 	}
 
-	cameraM_->usingCamera_->SetEye(LerpVec3(cameraM_->startEye_, cameraM_->endEye_, EaseOut(t)));
-	cameraM_->usingCamera_->SetUp(LerpVec3(cameraM_->startUp_, cameraM_->endUp_, EaseOut(t)));
-	cameraM_->usingCamera_->SetTarget(LerpVec3(cameraM_->startTarget_, cameraM_->endTarget_, EaseOut(t)));
+	pCameraM_->pUsingCamera_->SetEye(LerpVec3(pCameraM_->startEye_, pCameraM_->endEye_, EaseOut(t)));
+	pCameraM_->pUsingCamera_->SetUp(LerpVec3(pCameraM_->startUp_, pCameraM_->endUp_, EaseOut(t)));
+	pCameraM_->pUsingCamera_->SetTarget(LerpVec3(pCameraM_->startTarget_, pCameraM_->endTarget_, EaseOut(t)));
 
 	//終了する1フレーム前に演出等入れる用
-	if (cameraM_->lerpCount_ >= cameraM_->lerpCountMax_ - 1)
+	if (pCameraM_->lerpCount_ >= pCameraM_->lerpCountMax_ - 1)
 	{
-		cameraM_->isLerpEnd_ = true;
+		pCameraM_->isLerpEnd_ = true;
 	}
 
-	if (cameraM_->lerpCount_ >= cameraM_->lerpCountMax_)
+	if (pCameraM_->lerpCount_ >= pCameraM_->lerpCountMax_)
 	{
-		cameraM_->afterCount_--;
-		cameraM_->isLerpMoving_ = false;
+		pCameraM_->afterCount_--;
+		pCameraM_->isLerpMoving_ = false;
 
-		if (cameraM_->afterCount_ <= 0)
+		if (pCameraM_->afterCount_ <= 0)
 		{
 
-			if (cameraM_->afterCamera_)
+			if (pCameraM_->pAfterCamera_)
 			{
-				cameraM_->usingCamera_ = cameraM_->afterCamera_;
+				pCameraM_->pUsingCamera_ = pCameraM_->pAfterCamera_;
 			}
 
 
 
-			cameraM_->ChangeUsingCameraState(std::make_unique<UsingCameraNormalState>());
+			pCameraM_->ChangeUsingCameraState(std::make_unique<UsingCameraNormalState>());
 		}
 	}
 }

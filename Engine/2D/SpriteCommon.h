@@ -11,8 +11,8 @@ struct PipeLineSet
 {
 	ComPtr<ID3D12PipelineState> pipelineState;
 	ComPtr<ID3D12RootSignature> rootSignature;
-	ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
-	ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
+	ID3DBlob* pVsBlob = nullptr; // 頂点シェーダオブジェクト
+	ID3DBlob* pPsBlob = nullptr; // ピクセルシェーダオブジェクト
 };
 struct ConstBufferDataMaterial
 {

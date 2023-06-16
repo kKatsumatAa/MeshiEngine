@@ -9,6 +9,7 @@
 #include "SceneState.h"
 #include "AbstractSceneFactory.h"
 #include "ModelManager.h"
+#include "Player.h"
 
 
 
@@ -26,6 +27,8 @@ private:
 public:
 	WorldMat cameraWorldMat_;
 	const Vec3 CAMERA_POS_ = { 0,0,-100 };
+
+	Player player;
 
 	//Model* model_[20];
 

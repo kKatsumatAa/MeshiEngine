@@ -229,8 +229,8 @@ void TextureManager::LoadGraph(const wchar_t* P_NAME, uint64_t& textureHandle)
 	DirectXWrapper::GetInstance().GetCommandList()->Close();
 
 	//コマンドリストの実行
-	ID3D12CommandList* cmdlists[] = { DirectXWrapper::GetInstance().GetCommandList() };
-	DirectXWrapper::GetInstance().GetCommandQueue()->ExecuteCommandLists(1, cmdlists);
+	ID3D12CommandList* pCmdlists[] = { DirectXWrapper::GetInstance().GetCommandList() };
+	DirectXWrapper::GetInstance().GetCommandQueue()->ExecuteCommandLists(1, pCmdlists);
 
 	//コマンド閉じる
 	DirectXWrapper::GetInstance().GetCommandQueue()->Signal(DirectXWrapper::GetInstance().GetFence(),

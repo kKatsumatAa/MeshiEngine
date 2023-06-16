@@ -55,13 +55,13 @@ private:
 	ComPtr < ID3D12Resource> constBuffMaterial_ = nullptr;
 	//定数バッファ用データ構造体（マテリアル）
 	//定数バッファのマッピング
-	ConstBufferDataMaterial* constMapMaterial_ = nullptr;
+	ConstBufferDataMaterial* pConstMapMaterial_ = nullptr;
 
 	//スプライト
 	std::unique_ptr<Sprite> sprite_;
 
 	//ライト
-	static LightManager* sLightManager_;
+	static LightManager* pSLightManager_;
 
 	//ボーンの最大数
 	static const int32_t S_MAX_BONES_ = 32;
@@ -89,14 +89,14 @@ private:
 	std::unique_ptr<WorldMat> worldMat_ = std::make_unique<WorldMat>();
 
 public://変数
-	ViewMat* view_;
-	ProjectionMat* projection_;
+	ViewMat* pView_;
+	ProjectionMat* pProjection_;
 	bool isWireFrame_ = 0;
 	//画面効果用
 	static EffectOConstBuffer sEffectFlags_;
 	//画面効果用
 	static ComPtr <ID3D12Resource> sEffectFlagsBuff_;
-	static EffectOConstBuffer* sMapEffectFlagsBuff_;
+	static EffectOConstBuffer* pSMapEffectFlagsBuff_;
 
 public:
 	//定数バッファ用データ構造体（スキニング）
@@ -115,19 +115,19 @@ protected://継承先まで公開
 private:
 	//--------------------
 	void Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
-		Model* model = nullptr, ModelFBX* fbx = nullptr, bool primitiveMode = true);
+		Model* pModel = nullptr, ModelFBX* pFbx = nullptr, bool primitiveMode = true);
 
 	//行列送信
 	void SendingMat(int32_t indexNum);
 
 	//ボーンのデータ転送
-	void SendingBoneData(ModelFBX* model);
+	void SendingBoneData(ModelFBX* pModel);
 
 	//ルートシグネチャ系のコマンド
-	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
+	void SetRootPipe(ID3D12PipelineState* pPipelineState, int32_t pipelineNum, ID3D12RootSignature* pRootSignature);
 	//マテリアル、ライト、テクスチャ系のコマンド
 	void SetMaterialLightMTexSkin(uint64_t textureHandle_, ConstBuffTransform cbt);
-	void SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTransform cbt, Material* material);
+	void SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTransform cbt, Material* pMaterial);
 
 
 public:
@@ -184,18 +184,18 @@ public:
 	virtual void OnCollision(const CollisionInfo& info) {}
 
 	//アニメーション開始
-	void PlayAnimationInternal(ModelFBX* model, FbxTime& sTime, FbxTime& eTime,
+	void PlayAnimationInternal(ModelFBX* pModel, FbxTime& sTime, FbxTime& eTime,
 		bool isLoop = false, bool isReverse = false);
-	void PlayAnimation(ModelFBX* model, bool isLoop = false);
-	void PlayReverseAnimation(ModelFBX* model, bool isLoop = false);
+	void PlayAnimation(ModelFBX* pModel, bool isLoop = false);
+	void PlayReverseAnimation(ModelFBX* pModel, bool isLoop = false);
 
 	//-------------
 
 	void DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-		ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },
+		ViewMat* pView, ProjectionMat* pProjection, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },
 		 uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawBox(ViewMat* view, ProjectionMat* projection, /*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,*/
+	void DrawBox(ViewMat* pView, ProjectionMat* pProjection, /*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,*/
 		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },
 		 uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
@@ -207,31 +207,31 @@ public:
 		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL, bool isPosLeftTop = true,
 		bool isReverseX = false, bool isReverseY = false, float rotation = 0.0f, int32_t pipelineNum = 0);
 
-	void DrawCube3D(ViewMat* view, ProjectionMat* projection,
+	void DrawCube3D(ViewMat* pView, ProjectionMat* pProjection,
 		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color
+	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */ViewMat* pView, ProjectionMat* pProjection, const XMFLOAT4& color
 		= { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL);
 
-	void DrawCircle(ViewMat* view, ProjectionMat* projection,
+	void DrawCircle(ViewMat* pView, ProjectionMat* pProjection,
 		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawSphere(ViewMat* view, ProjectionMat* projection,
+	void DrawSphere(ViewMat* pView, ProjectionMat* pProjection,
 		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawModel(ViewMat* view, ProjectionMat* projection,
-		Model* model, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
+	void DrawModel(ViewMat* pView, ProjectionMat* pProjection,
+		Model* pModel, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
 
-	void DrawFBX(ViewMat* view, ProjectionMat* projection,
-		ModelFBX* modelFbx, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
+	void DrawFBX(ViewMat* pView, ProjectionMat* pProjection,
+		ModelFBX* pModelFbx, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
 
 	//色を返す
-	const XMFLOAT4& GetColor() { return constMapMaterial_->color; }
+	const XMFLOAT4& GetColor() { return pConstMapMaterial_->color; }
 	/// <summary>
 	/// ライトのセット
 	/// </summary>
 	/// <param name="light"></param>
-	static void SetLight(LightManager* lightManager) { Object::sLightManager_ = lightManager; }
+	static void SetLight(LightManager* pLightManager) { Object::pSLightManager_ = pLightManager; }
 
 private:
 	void constBuffTransfer(const XMFLOAT4& plusRGBA);
@@ -241,8 +241,8 @@ private:
 void DrawInitialize();
 
 //
-void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
-	ID3DBlob* vsBlob, ID3DBlob* psBlob, int32_t indexNum = NULL);
+void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** ppPipelineState, ID3D12RootSignature** ppRootSig,
+	ID3DBlob* pVsBlob, ID3DBlob* pPsBlob, int32_t indexNum = NULL);
 
 void Blend(const D3D12_BLEND_OP& blendMode,
 	bool Inversion = 0, bool Translucent = 0);

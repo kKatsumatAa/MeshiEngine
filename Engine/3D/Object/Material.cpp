@@ -10,14 +10,14 @@ using namespace std;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-ID3D12Device* Material::sDevice_ = nullptr;
+ID3D12Device* Material::pSDevice_ = nullptr;
 
-void Material::StaticInitialize(ID3D12Device* device)
+void Material::StaticInitialize(ID3D12Device* pDevice)
 {
 	// 再初期化チェック
-	assert(!Material::sDevice_);
+	assert(!Material::pSDevice_);
 
-	Material::sDevice_ = device;
+	Material::pSDevice_ = pDevice;
 }
 
 std::unique_ptr<Material> Material::Create()
@@ -83,13 +83,13 @@ void Material::Update()
 {
 	HRESULT result;
 	// 定数バッファへデータ転送
-	ConstBufferDataMaterial2* constMap = nullptr;
-	result = constBuff_->Map(0, nullptr, (void**)&constMap);
+	ConstBufferDataMaterial2* pConstMap = nullptr;
+	result = constBuff_->Map(0, nullptr, (void**)&pConstMap);
 	if (SUCCEEDED(result)) {
-		constMap->ambient = ambient_;
-		constMap->diffuse = diffuse_;
-		constMap->specular = specular_;
-		constMap->alpha = alpha_;
+		pConstMap->ambient = ambient_;
+		pConstMap->diffuse = diffuse_;
+		pConstMap->specular = specular_;
+		pConstMap->alpha = alpha_;
 		constBuff_->Unmap(0, nullptr);
 	}
 }

@@ -9,17 +9,17 @@ using namespace DirectX;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-ID3D12Device* Mesh::sDevice_ = nullptr;
+ID3D12Device* Mesh::pSDevice_ = nullptr;
 
-void Mesh::StaticInitialize(ID3D12Device* device)
+void Mesh::StaticInitialize(ID3D12Device* pDevice)
 {
 	// 再初期化チェック
-	assert(!Mesh::sDevice_);
+	assert(!Mesh::pSDevice_);
 
-	Mesh::sDevice_ = device;
+	Mesh::pSDevice_ = pDevice;
 
 	// マテリアルの静的初期化
-	Material::StaticInitialize(device);
+	Material::StaticInitialize(pDevice);
 }
 
 void Mesh::SetName(const std::string& name)
@@ -66,9 +66,9 @@ void Mesh::CalculateSmoothedVertexNormals()
 	}
 }
 
-void Mesh::SetMaterial(Material* material)
+void Mesh::SetMaterial(Material* pMaterial)
 {
-	material_ = material;
+	pMaterial_ = pMaterial;
 }
 
 void Mesh::CreateBuffers()
@@ -91,10 +91,10 @@ void Mesh::CreateBuffers()
 
 
 	// 頂点バッファへのデータ転送
-	VertexPosNormalUvSkin* vertMap = nullptr;
-	result = vertBuff_->Map(0, nullptr, (void**)&vertMap);
+	VertexPosNormalUvSkin* pVertMap = nullptr;
+	result = vertBuff_->Map(0, nullptr, (void**)&pVertMap);
 	if (SUCCEEDED(result)) {
-		std::copy(vertices_.begin(), vertices_.end(), vertMap);
+		std::copy(vertices_.begin(), vertices_.end(), pVertMap);
 		vertBuff_->Unmap(0, nullptr);
 	}
 
@@ -110,11 +110,11 @@ void Mesh::CreateBuffers()
 	BuffProperties(heapProps, resourceDesc, &indexBuff_);
 
 	// インデックスバッファへのデータ転送
-	uint16_t* indexMap = nullptr;
-	result = indexBuff_->Map(0, nullptr, (void**)&indexMap);
+	uint16_t* pIndexMap = nullptr;
+	result = indexBuff_->Map(0, nullptr, (void**)&pIndexMap);
 	if (SUCCEEDED(result)) {
 
-		std::copy(indices_.begin(), indices_.end(), indexMap);
+		std::copy(indices_.begin(), indices_.end(), pIndexMap);
 
 		indexBuff_->Unmap(0, nullptr);
 	}
@@ -125,22 +125,22 @@ void Mesh::CreateBuffers()
 	ibView_.SizeInBytes = sizeIB;
 }
 
-void Mesh::Draw(ID3D12GraphicsCommandList* cmdList)
+void Mesh::Draw(ID3D12GraphicsCommandList* pCmdList)
 {
 	// 頂点バッファをセット
-	cmdList->IASetVertexBuffers(0, 1, &vbView_);
+	pCmdList->IASetVertexBuffers(0, 1, &vbView_);
 	// インデックスバッファをセット
-	cmdList->IASetIndexBuffer(&ibView_);
+	pCmdList->IASetIndexBuffer(&ibView_);
 	// シェーダリソースビューをセット
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-	srvGpuHandle.ptr = material_->textureHandle_;
-	cmdList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+	srvGpuHandle.ptr = pMaterial_->textureHandle_;
+	pCmdList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 
 	// マテリアルの定数バッファをセット
-	ID3D12Resource* constBuff = material_->GetConstantBuffer();
-	cmdList->SetGraphicsRootConstantBufferView(3, constBuff->GetGPUVirtualAddress());
+	ID3D12Resource* pConstBuff = pMaterial_->GetConstantBuffer();
+	pCmdList->SetGraphicsRootConstantBufferView(3, pConstBuff->GetGPUVirtualAddress());
 
 	// 描画コマンド
-	cmdList->DrawIndexedInstanced((uint32_t)indices_.size(), 1, 0, 0, 0);
+	pCmdList->DrawIndexedInstanced((uint32_t)indices_.size(), 1, 0, 0, 0);
 }

@@ -18,9 +18,9 @@ void Framework::Initialize()
 
 	//ポストエフェクト//
 	postPera_[0] = std::make_unique<PostPera>();
-	postPera_[1] = std::make_unique<PostPera>();
+	//postPera_[1] = std::make_unique<PostPera>();
 	postPera_[0]->Initialize(L"Resources/image/normalImage.jpg");
-	postPera_[1]->Initialize(L"Resources/image/normalImage.jpg");
+	//postPera_[1]->Initialize(L"Resources/image/normalImage.jpg");
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();

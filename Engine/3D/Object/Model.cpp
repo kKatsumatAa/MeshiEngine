@@ -143,10 +143,10 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing, b
 				// 頂点番号
 				index_stream >> indexPosition;
 
-				Material* material = mesh->GetMaterial();
+				Material* pMaterial = mesh->GetMaterial();
 				index_stream.seekg(1, std::ios_base::cur); // スラッシュを飛ばす
 				// マテリアル、テクスチャがある場合
-				if (material && material->textureFilename_.size() > 0) {
+				if (pMaterial && pMaterial->textureFilename_.size() > 0) {
 					index_stream >> indexTexcoord;
 					index_stream.seekg(1, std::ios_base::cur); // スラッシュを飛ばす
 					index_stream >> indexNormal;
@@ -338,22 +338,22 @@ void Model::LoadTextures()
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 
 	for (auto& m : materials_) {
-		Material* material = m.second.get();
-		srvGpuHandle.ptr = material->textureHandle_;
+		Material* pMaterial = m.second.get();
+		srvGpuHandle.ptr = pMaterial->textureHandle_;
 
 		// テクスチャあり
-		if (material->textureFilename_.size() > 0) {
+		if (pMaterial->textureFilename_.size() > 0) {
 			CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV; cpuDescHandleSRV.ptr = 0;
 			CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV; gpuDescHandleSRV.ptr = 0;
 			// マテリアルにテクスチャ読み込み
-			material->LoadTexture(directoryPath, cpuDescHandleSRV, gpuDescHandleSRV);
+			pMaterial->LoadTexture(directoryPath, cpuDescHandleSRV, gpuDescHandleSRV);
 		}
 		// テクスチャなし
 		else {
 			CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV; cpuDescHandleSRV.ptr = 0;
 			CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV; gpuDescHandleSRV.ptr = 0;
 			// マテリアルにテクスチャ読み込み
-			material->LoadTexture(S_BASE_DIRECTORY_, cpuDescHandleSRV, gpuDescHandleSRV);
+			pMaterial->LoadTexture(S_BASE_DIRECTORY_, cpuDescHandleSRV, gpuDescHandleSRV);
 		}
 	}
 }

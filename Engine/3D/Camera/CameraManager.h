@@ -6,10 +6,10 @@ class CameraManager;
 class UsingCameraState
 {
 protected:
-	CameraManager* cameraM_ = nullptr;
+	CameraManager* pCameraM_ = nullptr;
 
 public:
-	void SetCameraM(CameraManager* cameraM);
+	void SetCameraM(CameraManager* pCameraM);
 	virtual void Update() = 0;
 };
 
@@ -38,7 +38,7 @@ private:
 
 public:
 	//ここにいろんなカメラのポインタを入れて、描画時に使う
-	Camera* usingCamera_;
+	Camera* pUsingCamera_;
 	//選択画面で使う
 	std::unique_ptr<Camera> stageSelectCamera_;
 	//ゲーム中メインで使うカメラ
@@ -49,7 +49,7 @@ public:
 	std::unique_ptr<Camera> goalEffectCamera_;
 
 	//演出などが終わった後にそのカメラに切り替えるためのポインタ
-	Camera* afterCamera_ = nullptr;
+	Camera* pAfterCamera_ = nullptr;
 	//終わった後、カメラに切り替えるまでのフレーム数
 	int32_t afterCount_ = 0;
 
@@ -72,7 +72,8 @@ public://関数
 	void Update();
 
 	//移動の線形補完を始める
-	void BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endEye, const Vec3& startTarget, const Vec3& endTarget, const Vec3& startUp, const Vec3& endUp, int32_t time, Camera* afterCamera = nullptr, int32_t afterCount = 0);
+	void BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endEye, const Vec3& startTarget, const Vec3& endTarget,
+		const Vec3& startUp, const Vec3& endUp, int32_t time, Camera* pAfterCamera = nullptr, int32_t afterCount = 0);
 
 
 	CameraManager& operator=(const CameraManager& obj);

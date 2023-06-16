@@ -16,7 +16,7 @@ protected:
 	//シーンファクトリー
 	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 
-	std::unique_ptr<PostPera> postPera_[2];
+	std::unique_ptr<PostPera> postPera_[1];
 
 	std::unique_ptr <ImGuiManager> imguiM_;
 

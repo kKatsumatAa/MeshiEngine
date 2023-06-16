@@ -4,7 +4,7 @@
 ModelFBX::~ModelFBX()
 {
 	//fbxシーンの解放（FBXLoaderのFinalize()の前じゃないとエラー出る）
-	fbxScene_->Destroy();
+	pFbxScene_->Destroy();
 }
 
 void ModelFBX::CreateBuffers()

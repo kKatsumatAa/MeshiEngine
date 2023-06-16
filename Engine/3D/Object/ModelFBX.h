@@ -26,7 +26,7 @@ struct Node
 	//グローバル変形行列（親の影響も含めた）
 	DirectX::XMMATRIX globalTransform = {};
 	//親ノード
-	Node* parent = nullptr;
+	Node* pParent = nullptr;
 };
 
 class ModelFBX
@@ -72,7 +72,7 @@ public://サブクラス
 		//初期姿勢の逆行列
 		DirectX::XMMATRIX invInitialPose;
 		//クラスター(FBX側のボーン情報)
-		FbxCluster* fbxCluster;
+		FbxCluster* pFbxCluster;
 		//コンストラクタ
 		Bone(const std::string& name)
 		{
@@ -87,7 +87,7 @@ private:
 	//ノード行列
 	std::vector<Node> nodes_;
 	//メッシュを持つノード
-	Node* meshNode_ = nullptr;
+	Node* pMeshNode_ = nullptr;
 	//頂点データ配列
 	std::vector<VertexPosNormalUvSkin> vertices_;
 	//頂点インデックス配列
@@ -110,7 +110,7 @@ private:
 	std::vector<Bone> bones_;
 
 	//FBXシーン
-	FbxScene* fbxScene_ = nullptr;
+	FbxScene* pFbxScene_ = nullptr;
 
 public:
 	//アンビエントなど
@@ -127,7 +127,7 @@ public:
 	~ModelFBX();
 
 	//モデルの変形行列を取得
-	const XMMATRIX& GetModelFBXTransform() { return meshNode_->globalTransform; }
+	const XMMATRIX& GetModelFBXTransform() { return pMeshNode_->globalTransform; }
 
 	//各種バッファ生成
 	void CreateBuffers();
@@ -139,7 +139,7 @@ public:
 	//getter
 	std::vector<Bone>& GetBones() { return bones_; }
 
-	FbxScene* GetFbxScene() { return fbxScene_; }
+	FbxScene* GetFbxScene() { return pFbxScene_; }
 
 #pragma endregion
 };
