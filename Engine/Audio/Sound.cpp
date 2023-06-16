@@ -1,4 +1,5 @@
 #include "Sound.h"
+#include <iostream>
 
 IXAudio2MasteringVoice* Sound::sMasterVoice_;
 ComPtr<IXAudio2> Sound::sXAudio2_;
@@ -120,21 +121,20 @@ void Sound::LoadWave(const std::string& filename, bool isConvert)
 	{
 		assert(0);
 	}
-	//Dataチャンクのデータ部（波形データの読み込み）
-	char* pBuffer = new char[data.size];
-	file.read(pBuffer, data.size);
-
-
-	//waveファイルを閉じる
-	file.close();
-
 
 	//returnするための音声データ
 	SoundData soundData = {};
 
 	soundData.wfex = format.fmt;//波形のフォーマット
-	soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);//波形データ
+	//Dataチャンクのデータ部（波形データの読み込み）
+	soundData.pBuffer.resize(data.size);
+	file.read((char*)&soundData.pBuffer[0], data.size);
+
 	soundData.bufferSize = data.size;//波形データのサイズ
+
+
+	//waveファイルを閉じる
+	file.close();
 
 	//サウンドデータを連想配列に格納(複製してセットでマップに格納)
 	sSoundDatas_.insert(std::make_pair(fullpath, soundData));
@@ -143,9 +143,9 @@ void Sound::LoadWave(const std::string& filename, bool isConvert)
 void Sound::UnLoad(SoundData* soundData)
 {
 	//バッファのメモリ開放
-	delete[] soundData->pBuffer;
+	soundData->pBuffer.clear();
 
-	soundData->pBuffer = 0;
+	//soundData->pBuffer = 0;
 	soundData->bufferSize = 0;
 	soundData->wfex = {};
 }
@@ -171,7 +171,7 @@ void Sound::PlayWave(const std::string& filename, float volume, bool Loop)
 
 	//再生する波形データの設定
 	XAUDIO2_BUFFER buf{};
-	buf.pAudioData = soundData.pBuffer;
+	buf.pAudioData = &soundData.pBuffer[0];
 	buf.AudioBytes = soundData.bufferSize;
 	buf.Flags = XAUDIO2_END_OF_STREAM;
 	//ループ再生

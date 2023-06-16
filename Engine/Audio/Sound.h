@@ -44,7 +44,7 @@ public://サブクラス
 		//波形フォーマット
 		WAVEFORMATEX wfex;
 		//バッファの先頭アドレス
-		BYTE* pBuffer = nullptr;
+		std::vector<BYTE> pBuffer;
 		//バッファのサイズ
 		uint32_t bufferSize;
 		//
@@ -72,13 +72,13 @@ public://メンバ関数
 /// <param name="filename"></param>
 /// <param name="isConvert"></param>
 /// <returns></returns>
-	static void LoadWave(const std::string& filename, bool isConvert);
+	void LoadWave(const std::string& filename, bool isConvert);
 	/// <summary>
 	/// 解放処理
 	/// </summary>
 	/// <param name="soudData"></param>
 	/// <returns></returns>
-	static void UnLoad(SoundData* soundData);
+	void UnLoad(SoundData* soundData);
 
 
 	/// <summary>
@@ -87,9 +87,9 @@ public://メンバ関数
 	/// <param name="">wavファイル名</param>
 	/// <param name="volume">音量</param>
 	/// <param name="Loop">ループ再生</param>
-	static void PlayWave(const std::string& filename, float volume = 1.0f, bool Loop = false);
+	void PlayWave(const std::string& filename, float volume = 1.0f, bool Loop = false);
 
-	static void StopWave(const std::string& filename);
+	void StopWave(const std::string& filename);
 
 
 public://シングルトン
