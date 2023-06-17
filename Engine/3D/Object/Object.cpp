@@ -451,7 +451,7 @@ void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature);
 }
 
-void Object::SetMaterialLightMTexSkin(uint64_t textureHandle_, ConstBuffTransform cbt)
+void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, ConstBuffTransform cbt)
 {
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 
@@ -463,7 +463,7 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle_, ConstBuffTransfor
 		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
 		//SRVヒープの先頭ハンドルを取得
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-		srvGpuHandle.ptr = textureHandle_;
+		srvGpuHandle.ptr = textureHandle;
 		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 	}
@@ -475,9 +475,9 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle_, ConstBuffTransfor
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, sEffectFlagsBuff_->GetGPUVirtualAddress());
 }
 
-void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTransform cbt, Material* material)
+void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle, ConstBuffTransform cbt, Material* material)
 {
-	SetMaterialLightMTexSkin(textureHandle_, cbt);
+	SetMaterialLightMTexSkin(textureHandle, cbt);
 
 	//アンビエントとか
 	material->Update();

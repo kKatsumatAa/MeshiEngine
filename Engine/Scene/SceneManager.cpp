@@ -65,7 +65,7 @@ void SceneManager::Initialize()
 	draw_[5].SetRot({ -3.14f / 2.0f,0,0 });
 	draw_[5].CulcWorldMat();
 	
-	draw_[6].SetScale({ 1.3f,1.3f,1.3f });
+	draw_[6].SetScale({ 2.3f,2.3f,2.3f });
 	draw_[6].SetTrans({ -20,0,0 });
 	draw_[6].SetRot({ 0,0,0 });
 	draw_[6].CulcWorldMat();

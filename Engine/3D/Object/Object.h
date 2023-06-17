@@ -126,8 +126,8 @@ private:
 	//ルートシグネチャ系のコマンド
 	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
 	//マテリアル、ライト、テクスチャ系のコマンド
-	void SetMaterialLightMTexSkin(uint64_t textureHandle_, ConstBuffTransform cbt);
-	void SetMaterialLightMTexSkinModel(uint64_t textureHandle_, ConstBuffTransform cbt, Material* material);
+	void SetMaterialLightMTexSkin(uint64_t textureHandle, ConstBuffTransform cbt);
+	void SetMaterialLightMTexSkinModel(uint64_t textureHandle, ConstBuffTransform cbt, Material* material);
 
 
 public:

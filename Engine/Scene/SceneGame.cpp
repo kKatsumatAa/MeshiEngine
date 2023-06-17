@@ -59,7 +59,7 @@ void SceneGame::Draw()
 		obj->DrawModel(&sceneM_->camera_->viewMat_, &sceneM_->camera_->projectionMat_, model);
 	}
 
-	sceneM_->draw_[6].DrawCube3D(&sceneM_->camera_->viewMat_, &sceneM_->camera_->projectionMat_);
+	sceneM_->draw_[6].DrawSphere(&sceneM_->camera_->viewMat_, &sceneM_->camera_->projectionMat_);
 
 	//ÅŒã‚É•`‰æ‚µ‚È‚¢‚Æ‰f‚ç‚È‚¢
 	//ParticleManager::GetInstance()->Draw(sceneM->texhandle[1]);
