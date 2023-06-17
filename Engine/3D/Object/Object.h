@@ -107,7 +107,7 @@ public:
 
 protected://継承先まで公開
 	//クラス名(デバッグ用)
-	const char* P_NAME = nullptr;
+	const char* NAME = nullptr;
 	//コライダー
 	std::unique_ptr<BaseCollider> collider_ = nullptr;
 

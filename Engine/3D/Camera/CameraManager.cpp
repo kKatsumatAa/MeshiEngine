@@ -107,7 +107,7 @@ CameraManager& CameraManager::operator=(const CameraManager& obj)
 //----------------------------------------------------------------------------------------------------------------------------------------
 void UsingCameraState::SetCameraM(CameraManager* cameraM)
 {
-	cameraM = cameraM;
+	cameraM_ = cameraM;
 }
 
 

@@ -165,8 +165,8 @@ void Sound::PlayWave(const std::string& filename, float volume, bool Loop)
 	SoundData& soundData = it->second;
 
 	//波形フォーマットを元にSourceVoiceの生成
-	IXAudio2SourceVoice* pSourceVoice = nullptr;
-	result = sXAudio2_->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
+	IXAudio2SourceVoice* sourceVoice = nullptr;
+	result = sXAudio2_->CreateSourceVoice(&sourceVoice, &soundData.wfex);
 	assert(SUCCEEDED(result));
 
 	//再生する波形データの設定
@@ -178,12 +178,12 @@ void Sound::PlayWave(const std::string& filename, float volume, bool Loop)
 	if (Loop == true) { buf.LoopCount = XAUDIO2_LOOP_INFINITE; }
 
 	//波形データの再生&設定
-	result = pSourceVoice->SubmitSourceBuffer(&buf);
-	result = pSourceVoice->SetVolume(volume);
-	result = pSourceVoice->Start();
+	result = sourceVoice->SubmitSourceBuffer(&buf);
+	result = sourceVoice->SetVolume(volume);
+	result = sourceVoice->Start();
 
 	//停止用
-	soundData.pSourceVoice.push_back(pSourceVoice);
+	soundData.pSourceVoice.push_back(sourceVoice);
 }
 
 void Sound::StopWave(const std::string& filename)

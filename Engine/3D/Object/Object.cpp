@@ -192,7 +192,7 @@ void DrawInitialize()
 //----------------------------------------------------------------
 bool Object::Initialize()
 {
-	P_NAME = typeid(*this).name();
+	NAME = typeid(*this).name();
 	return true;
 }
 
@@ -355,9 +355,9 @@ void Object::PlayAnimationInternal(ModelFBX* model, FbxTime& sTime, FbxTime& eTi
 	if (animStack == nullptr) { return; }
 
 	//アニメーションの名前取得
-	const char* P_ANIM_STACK_NAME = animStack->GetName();
+	const char* ANIM_STACK_NAME = animStack->GetName();
 	//アニメーションの時間情報
-	FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(P_ANIM_STACK_NAME);
+	FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(ANIM_STACK_NAME);
 
 	//開始時間取得
 	sTime = takeInfo->mLocalTimeSpan.GetStart();

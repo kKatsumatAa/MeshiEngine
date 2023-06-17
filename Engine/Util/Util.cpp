@@ -322,14 +322,14 @@ int32_t AligmentSize(int32_t size, int32_t aligment)
 	return size + aligment - size % aligment;
 }
 
-void ConstCharToWcharT(const char* P_STRING, wchar_t(&wString)[128])
+void ConstCharToWcharT(const char* string, wchar_t(&wString)[128])
 {
 	size_t size = _countof(wString);
-	mbstowcs_s(&size, wString, P_STRING, size);
+	mbstowcs_s(&size, wString, string, size);
 }
 
-void ConstWCharTToChar(const wchar_t* P_W_STRING, char(&string)[128])
+void ConstWCharTToChar(const wchar_t* wString, char(&string)[128])
 {
 	size_t size = _countof(string);
-	wcstombs_s(&size, string, P_W_STRING, size);
+	wcstombs_s(&size, string, wString, size);
 }

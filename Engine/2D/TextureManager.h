@@ -47,7 +47,7 @@ public:
 
 	//デスクリプタヒープ初期化
 	static void InitializeDescriptorHeap();
-	static void LoadGraph(const wchar_t* P_NAME, uint64_t& textureHandle);
+	static void LoadGraph(const wchar_t* name, uint64_t& textureHandle);
 
 	static void AddSrvHandleCount() { sCount_++; }
 };

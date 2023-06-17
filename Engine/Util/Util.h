@@ -73,7 +73,7 @@ int32_t AligmentSize(int32_t size, int32_t aligment);
 
 //•¶Žš•ÏŠ·Œn
 //char* ‚ð const wchar_t* ‚É•ÏŠ·
-void ConstCharToWcharT(const char* P_STRING, wchar_t(&wString)[128]);
+void ConstCharToWcharT(const char* string, wchar_t(&wString)[128]);
 
 //const wchar_t* ‚ð char* ‚É•ÏŠ·
-void ConstWCharTToChar(const wchar_t* P_W_STRING, char(&string)[128]);
+void ConstWCharTToChar(const wchar_t* wString, char(&string)[128]);

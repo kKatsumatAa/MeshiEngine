@@ -175,16 +175,16 @@ void FbxLoader::ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh)
 	model->vertices_.resize(CONTROL_POINTS_COUNT, vert);
 
 	//FBXメッシュの頂点座標配列を取得
-	FbxVector4* pCoord = fbxMesh->GetControlPoints();
+	FbxVector4* coord = fbxMesh->GetControlPoints();
 
 	//fbxメッシュの全頂点座標をモデル内の配列にコピーする
 	for (int32_t i = 0; i < CONTROL_POINTS_COUNT; i++)
 	{
 		ModelFBX::VertexPosNormalUvSkin& vertex = vertices[i];
 		//座標のコピー
-		vertex.pos.x = (float)pCoord[i][0];
-		vertex.pos.y = (float)pCoord[i][1];
-		vertex.pos.z = (float)pCoord[i][2];
+		vertex.pos.x = (float)coord[i][0];
+		vertex.pos.y = (float)coord[i][1];
+		vertex.pos.z = (float)coord[i][2];
 	}
 
 }
@@ -311,12 +311,12 @@ void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
 
 			if (DIFFUSE_PROPERTY.IsValid())
 			{
-				const FbxFileTexture* P_TEX = DIFFUSE_PROPERTY.GetSrcObject<FbxFileTexture>();
-				if (P_TEX)
+				const FbxFileTexture* TEX = DIFFUSE_PROPERTY.GetSrcObject<FbxFileTexture>();
+				if (TEX)
 				{
-					const char* P_FILE_PATH = P_TEX->GetFileName();
+					const char* FILE_PATH = TEX->GetFileName();
 					//ファイルパスからファイル名抽出
-					string path_str(P_FILE_PATH);
+					string path_str(FILE_PATH);
 					string name = ExtractFileName(path_str);
 					//texture読み込み
 					LoadTexture(model, S_BASE_DIRECTORY_ + model->name_ + "/" + name);
@@ -413,10 +413,10 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
 
 		//ボーン自体のノードの名前を取得
-		const char* P_BONE_NAME = fbxCluster->GetLink()->GetName();
+		const char* BONE_NAME = fbxCluster->GetLink()->GetName();
 
 		//新しくボーンを追加し、追加したボーンの参照を得る
-		bones.emplace_back(ModelFBX::Bone(P_BONE_NAME));
+		bones.emplace_back(ModelFBX::Bone(BONE_NAME));
 		ModelFBX::Bone& bone = bones.back();
 		//自作ボーンとfbxのボーンを紐づける
 		bone.fbxCluster = fbxCluster;

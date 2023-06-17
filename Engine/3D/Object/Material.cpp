@@ -73,9 +73,9 @@ void Material::LoadTexture(const std::string& directoryPath, const CD3DX12_CPU_D
 	// ファイルパスを結合
 	string filepath = directoryPath + textureFilename_;
 
-	const char* P_NAME = filepath.c_str();
+	const char* NAME = filepath.c_str();
 	wchar_t wchar[128];
-	ConstCharToWcharT(P_NAME, wchar);
+	ConstCharToWcharT(NAME, wchar);
 	TextureManager::LoadGraph(wchar, textureHandle_);
 }
 

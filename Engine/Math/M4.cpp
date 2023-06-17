@@ -34,13 +34,13 @@ M4::M4(float m00, float m01, float m02, float m03,
 	m_[3][3] = m33;
 }
 
-M4::M4(const float(*P_P_OTHER)[4])
+M4::M4(const float(*other)[4])
 {
 	for (int32_t i = 0; i < 4; i++)
 	{
 		for (int32_t j = 0; j < 4; j++)
 		{
-			m_[i][j] = P_P_OTHER[i][j];
+			m_[i][j] = other[i][j];
 		}
 	}
 }

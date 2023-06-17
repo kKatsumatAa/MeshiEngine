@@ -62,7 +62,7 @@ void TextureManager::InitializeDescriptorHeap()
 }
 
 
-void TextureManager::LoadGraph(const wchar_t* P_NAME, uint64_t& textureHandle)
+void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 {
 	assert(sCount_ <= S_SRV_COUNT_ - 1);
 
@@ -70,7 +70,7 @@ void TextureManager::LoadGraph(const wchar_t* P_NAME, uint64_t& textureHandle)
 
 	//読み込まれているかどうか
 	char namec[128] = {};
-	ConstWCharTToChar(P_NAME, namec);
+	ConstWCharTToChar(name, namec);
 
 	std::string fileName = namec;
 	{
@@ -89,7 +89,7 @@ void TextureManager::LoadGraph(const wchar_t* P_NAME, uint64_t& textureHandle)
 	ScratchImage scratchImg{};
 	//WICのテクスチャのロード
 	result = LoadFromWICFile(
-		P_NAME,
+		name,
 		WIC_FLAGS_NONE,
 		&metadata, scratchImg
 	);
@@ -167,11 +167,11 @@ void TextureManager::LoadGraph(const wchar_t* P_NAME, uint64_t& textureHandle)
 	for (int32_t i = 0; i < subResourcesDatas.size(); i++)
 	{
 		// 全ミップマップレベルを指定してイメージを取得
-		const Image* P_IMG = scratchImg.GetImage(i, 0, 0);
+		const Image* IMG = scratchImg.GetImage(i, 0, 0);
 
-		subResourcesDatas[i].pData = P_IMG->pixels;
-		subResourcesDatas[i].RowPitch = P_IMG->rowPitch;
-		subResourcesDatas[i].SlicePitch = P_IMG->slicePitch;
+		subResourcesDatas[i].pData = IMG->pixels;
+		subResourcesDatas[i].RowPitch = IMG->rowPitch;
+		subResourcesDatas[i].SlicePitch = IMG->slicePitch;
 	}
 
 	//サブリソースを転送
