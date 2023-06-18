@@ -5,6 +5,7 @@
 
 void SceneGame::Finalize()
 {
+	objAndModels_.clear();
 }
 
 //---------------------------------------------------------------------------------------
@@ -51,15 +52,15 @@ void SceneGame::Update()
 
 void SceneGame::Draw()
 {
-	for (std::map<std::unique_ptr<Object>, std::unique_ptr<Model>>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
-		Model* model = it->second.get();
+		Model* model = it->second;
 
 		obj->DrawModel(&sceneM_->camera_->viewMat_, &sceneM_->camera_->projectionMat_, model);
 	}
 
-	sceneM_->draw_[6].DrawSphere(&sceneM_->camera_->viewMat_, &sceneM_->camera_->projectionMat_);
+	sceneM_->draw_[6].DrawModel(&sceneM_->camera_->viewMat_, &sceneM_->camera_->projectionMat_,ModelManager::GetInstance().LoadModel("player"));
 
 	//ÅŒã‚É•`‰æ‚µ‚È‚¢‚Æ‰f‚ç‚È‚¢
 	//ParticleManager::GetInstance()->Draw(sceneM->texhandle[1]);

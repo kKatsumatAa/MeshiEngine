@@ -1,13 +1,12 @@
-# Blender MTL File: 'item.blend'
-# Material Count: 1
+# Blender 3.3.1 MTL File: 'None'
+# www.blender.org
 
 newmtl マテリアル
-Ns 474.846279
+Ns 474.846252
 Ka 0.734545 0.734545 0.734545
-Kd 0.800000 0.800000 0.800000
 Ks 0.172727 0.172727 0.172727
 Ke 0.000000 0.000000 0.000000
 Ni 12.649999
 d 1.000000
 illum 3
-map_Kd item\\item.png
+map_Kd item.png

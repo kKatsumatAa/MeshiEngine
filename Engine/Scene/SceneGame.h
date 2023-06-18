@@ -8,7 +8,7 @@
 class SceneGame : public SceneState
 {
 private:
-	std::map<std::unique_ptr<Object>, std::unique_ptr<Model>> objAndModels_;
+	std::map<std::unique_ptr<Object>, Model*> objAndModels_;
 
 public:
 	void Finalize()override;

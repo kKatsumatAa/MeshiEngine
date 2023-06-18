@@ -20,6 +20,8 @@ private:
 	void SetParentWorld(WorldMat* parent);
 	//再帰,親があれば行列を掛ける
 	void RecursiveCulcParentMat(WorldMat* parent, M4& childMat);
+	//行列計算のみ
+	void CulcWorldMat();
 
 public:
 	M4 matWorld_;

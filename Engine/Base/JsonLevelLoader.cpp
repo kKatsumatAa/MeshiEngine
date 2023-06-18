@@ -1,4 +1,5 @@
 #include "JsonLevelLoader.h"
+#include "Util.h"
 
 const std::string JsonLevelLoader::S_DEFAULT_BASE_DIRECTORY_ = "Resources/Level/";
 const std::string JsonLevelLoader::S_EXTENSION_ = ".json";
@@ -94,9 +95,9 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 	objectData->worldMat->trans_.y_ = (float)transform["translation"][2];
 	objectData->worldMat->trans_.z_ = -(float)transform["translation"][0];
 	//角度（うまくいってないかも）
-	objectData->worldMat->rot_.x_ = -(float)transform["rotation"][1];
-	objectData->worldMat->rot_.y_ = -(float)transform["rotation"][2];
-	objectData->worldMat->rot_.z_ = (float)transform["rotation"][0];
+	objectData->worldMat->rot_.x_ = AngletoRadi(-(float)transform["rotation"][1]);
+	objectData->worldMat->rot_.y_ = AngletoRadi(-(float)transform["rotation"][2]);
+	objectData->worldMat->rot_.z_ = AngletoRadi((float)transform["rotation"][0]);
 	//スケール
 	objectData->worldMat->scale_.x_ = (float)transform["scaling"][1];
 	objectData->worldMat->scale_.y_ = (float)transform["scaling"][2];
