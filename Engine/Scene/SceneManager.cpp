@@ -60,6 +60,8 @@ void SceneManager::Initialize()
 	//fbxì«Ç›çûÇ›
 	modelFBX_ = ModelManager::GetInstance().LoadModelFBX("boneTest");
 
+	model_[6] = ModelManager::GetInstance().LoadModel("chr_sword");
+
 	draw_[5].SetScale({ 1.3f,1.3f,1.3f });
 	draw_[5].SetTrans({ fighterPos_[0],fighterPos_[1] - 1.0f,fighterPos_[2] });
 	draw_[5].SetRot({ -3.14f / 2.0f,0,0 });
