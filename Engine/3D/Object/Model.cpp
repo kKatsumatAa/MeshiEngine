@@ -33,8 +33,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing, b
 	meshes_.emplace_back(std::move(std::make_unique < Mesh>()));
 	//所有権をいったん与える
 	std::unique_ptr<Mesh> mesh = std::move(meshes_.back());
-	int32_t indexCountTex = 0;
-	int32_t indexCountNoTex = 0;
+	int32_t indexCount = 0;
 
 	std::vector<XMFLOAT3> positions;	// 頂点座標
 	std::vector<XMFLOAT3> normals;	// 法線ベクトル
@@ -74,7 +73,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing, b
 				// 次のメッシュ生成
 				meshes_.emplace_back(std::move(std::make_unique<Mesh>()));
 				mesh = std::move(meshes_.back());
-				indexCountTex = 0;
+				indexCount = 0;
 			}
 
 			// グループ名読み込み
@@ -91,6 +90,9 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing, b
 			line_stream >> position.x;
 			line_stream >> position.y;
 			line_stream >> position.z;
+			//逆向きに読み込まれちゃうので
+			//position.x *= -1.0f;
+			position.z *= -1.0f;
 			positions.emplace_back(position);
 		}
 		// 先頭文字列がvtならテクスチャ
@@ -112,6 +114,9 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing, b
 			line_stream >> normal.x;
 			line_stream >> normal.y;
 			line_stream >> normal.z;
+			//逆向きに読み込まれちゃうので
+			//normal.x *= -1.0f;
+			normal.z *= -1.0f;
 			// 法線ベクトルデータに追加
 			normals.emplace_back(normal);
 		}
@@ -133,95 +138,57 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing, b
 		// 先頭文字列がfならポリゴン（三角形）
 		if (key == "f")
 		{
-			int32_t faceIndexCount = 0;
-			// 半角スペース区切りで行の続きを読み込む
+			int indexNum = 0;
+			std::vector<uint16_t> indices;
+
 			std::string index_string;
-			while (getline(line_stream, index_string, ' ')) {
-				// 頂点インデックス1個分の文字列をストリームに変換して解析しやすくする
+			while (getline(line_stream, index_string, ' '))
+			{
 				std::istringstream index_stream(index_string);
-				uint16_t indexPosition, indexNormal, indexTexcoord;
-				// 頂点番号
-				index_stream >> indexPosition;
+				unsigned short indexPos, indexNormal, indexUV;
+				index_stream >> indexPos;
+				index_stream.seekg(1, std::ios_base::cur);
+				index_stream >> indexUV;
+				index_stream.seekg(1, std::ios_base::cur);
+				index_stream >> indexNormal;
 
-				Material* material = mesh->GetMaterial();
-				index_stream.seekg(1, std::ios_base::cur); // スラッシュを飛ばす
-				// マテリアル、テクスチャがある場合
-				if (material && material->textureFilename_.size() > 0) {
-					index_stream >> indexTexcoord;
-					index_stream.seekg(1, std::ios_base::cur); // スラッシュを飛ばす
-					index_stream >> indexNormal;
-					// 頂点データの追加
-					Mesh::VertexPosNormalUvSkin vertex{};
-					vertex.pos = positions[indexPosition - 1];
-					vertex.normal = normals[indexNormal - 1];
-					vertex.uv = texcoords[indexTexcoord - 1];
-					mesh->AddVertex(vertex);
-					// エッジ平滑化用のデータを追加
-					if (smoothing) {
-						mesh->AddSmoothData(indexPosition, (uint16_t)mesh->GetVertexCount() - 1);
-					}
+				Mesh::VertexPosNormalUvSkin vertex{};
+				vertex.pos = positions[indexPos - 1];
+				vertex.normal = normals[indexNormal - 1];
+				vertex.uv = texcoords[indexUV - 1];
+				vertex.boneWeight[0] = 1.0f;			//	fbxVertex用
+				mesh->AddVertex(vertex);
+
+				if (smoothing) {
+					mesh->AddSmoothData(indexPos, (unsigned short)mesh->GetVertexCount() - 1);
 				}
-				else {
-					char c;
-					index_stream >> c;
-					// スラッシュ2連続の場合、頂点番号のみ
-					if (c == '/') {
-						// 頂点データの追加
-						Mesh::VertexPosNormalUvSkin vertex{};
-						vertex.pos = positions[indexPosition - 1];
-						vertex.normal = { 0, 0, 1 };
-						vertex.uv = { 0, 0 };
-						mesh->AddVertex(vertex);
-					}
-					else {
-						index_stream.seekg(-1, std::ios_base::cur); // 1文字戻る
-						index_stream >> indexTexcoord;
-						index_stream.seekg(1, std::ios_base::cur); // スラッシュを飛ばす
-						index_stream >> indexNormal;
-						// 頂点データの追加
-						Mesh::VertexPosNormalUvSkin vertex{};
-						vertex.pos = positions[indexPosition - 1];
-						vertex.normal = normals[indexNormal - 1];
-						vertex.uv = { 0, 0 };
-						mesh->AddVertex(vertex);
-						// エッジ平滑化用のデータを追加
-						if (smoothing) {
-							mesh->AddSmoothData(indexPosition, (uint16_t)mesh->GetVertexCount() - 1);
-						}
-					}
-				}
-				// インデックスデータの追加
-				if (faceIndexCount >= 3) {
-
-					if (modelType == false)
-					{
-						// 四角形ポリゴンの4点目なので、
-						// 四角形の0,1,2,3の内 2,3,0で三角形を構築する
-						mesh->AddIndex(indexCountTex - 1);
-						mesh->AddIndex(indexCountTex);
-						mesh->AddIndex(indexCountTex - 3);
-					}
-					else
-					{
-						mesh->PopIndex();
-						mesh->PopIndex();
-						mesh->PopIndex();
-
-						mesh->AddIndex(indexCountTex - 1);
-						mesh->AddIndex(indexCountTex - 2);
-						mesh->AddIndex(indexCountTex - 3);
-
-						mesh->AddIndex(indexCountTex - 3);
-						mesh->AddIndex(indexCountTex);
-						mesh->AddIndex(indexCountTex - 1);
-					}
+				//四角メッシュだったら
+				if (indexNum >= 3) {
+					indices.emplace_back((unsigned short)(indexCount - 1));
+					indices.emplace_back((unsigned short)indexCount);
+					indices.emplace_back((unsigned short)(indexCount - 3));
 				}
 				else
 				{
-					mesh->AddIndex(indexCountTex);
+					indices.emplace_back((unsigned short)indexCount);
 				}
-				indexCountTex++;
-				faceIndexCount++;
+				indexNum++;
+				indexCount++;
+			}
+			//四角メッシュだったら
+			if (indices.size() == 3)
+			{
+				mesh->AddIndex(indices[0]);
+				mesh->AddIndex(indices[2]);
+				mesh->AddIndex(indices[1]);
+			}
+			else {
+				mesh->AddIndex(indices[0]);
+				mesh->AddIndex(indices[2]);
+				mesh->AddIndex(indices[1]);
+				mesh->AddIndex(indices[3]);
+				mesh->AddIndex(indices[5]);
+				mesh->AddIndex(indices[4]);
 			}
 		}
 	}
