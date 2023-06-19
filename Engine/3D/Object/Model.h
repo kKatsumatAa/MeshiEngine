@@ -33,7 +33,7 @@ private:
 
 private:
 	//OBJファイルから3Dモデルを読み込む
-	void LoadFromOBJInternal(const std::string& folderName, bool smoothing = false, bool modelType = false);
+	void LoadFromOBJInternal(const std::string& folderName, bool smoothing = false/*, bool modelType = false*/);
 
 	/// <summary>
 	/// マテリアル登録

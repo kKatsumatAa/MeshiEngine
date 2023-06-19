@@ -13,7 +13,7 @@ const std::string Model::S_BASE_DIRECTORY_ = "Resources/";
 uint32_t Model::sDescriptorHandleIncrementSize_ = 0;
 
 
-void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing, bool modelType)
+void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing/*, bool modelType*/)
 {
 	const std::string FILE_NAME = folderName + ".obj";
 	const std::string DIRECTORY_PATH = S_BASE_DIRECTORY_ + folderName + "/";
@@ -141,11 +141,13 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing, b
 			int indexNum = 0;
 			std::vector<uint16_t> indices;
 
+			//半角スペース区切りで行を読み込む
 			std::string index_string;
 			while (getline(line_stream, index_string, ' '))
 			{
 				std::istringstream index_stream(index_string);
 				unsigned short indexPos, indexNormal, indexUV;
+				//座標などを変数に読み込む
 				index_stream >> indexPos;
 				index_stream.seekg(1, std::ios_base::cur);
 				index_stream >> indexUV;
@@ -153,16 +155,19 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing, b
 				index_stream >> indexNormal;
 
 				Mesh::VertexPosNormalUvSkin vertex{};
+				//座標などをセット
 				vertex.pos = positions[indexPos - 1];
 				vertex.normal = normals[indexNormal - 1];
 				vertex.uv = texcoords[indexUV - 1];
-				vertex.boneWeight[0] = 1.0f;			//	fbxVertex用
+				vertex.boneWeight[0] = 1.0f;
+				//メッシュを登録
 				mesh->AddVertex(vertex);
 
+				//スムージング
 				if (smoothing) {
 					mesh->AddSmoothData(indexPos, (unsigned short)mesh->GetVertexCount() - 1);
 				}
-				//四角メッシュだったら
+				//四角メッシュだったら[2,3,0]の順で入れる
 				if (indexNum >= 3) {
 					indices.emplace_back((unsigned short)(indexCount - 1));
 					indices.emplace_back((unsigned short)indexCount);
@@ -175,13 +180,14 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing, b
 				indexNum++;
 				indexCount++;
 			}
-			//四角メッシュだったら
+			// インデックスデータの追加
 			if (indices.size() == 3)
 			{
 				mesh->AddIndex(indices[0]);
 				mesh->AddIndex(indices[2]);
 				mesh->AddIndex(indices[1]);
 			}
+			//四角メッシュだったら
 			else {
 				mesh->AddIndex(indices[0]);
 				mesh->AddIndex(indices[2]);
