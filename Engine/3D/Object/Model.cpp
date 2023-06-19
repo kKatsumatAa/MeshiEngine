@@ -181,6 +181,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing/*,
 				indexCount++;
 			}
 			// インデックスデータの追加
+			//三角メッシュ
 			if (indices.size() == 3)
 			{
 				mesh->AddIndex(indices[0]);
