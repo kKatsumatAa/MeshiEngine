@@ -55,6 +55,7 @@ void CameraManager::Update()
 		//デバッグカメラが有効の時
 		if (usingCamera_ == debugCamera)
 		{
+			//回転
 			Vec3 rotMove = {
 				(KeyboardInput::GetInstance().KeyPush(DIK_W) - KeyboardInput::GetInstance().KeyPush(DIK_S)) * 0.05f,
 				(KeyboardInput::GetInstance().KeyPush(DIK_A) - KeyboardInput::GetInstance().KeyPush(DIK_D)) * 0.05f,
