@@ -6,6 +6,7 @@
 #include "BaseCollider.h"
 #include "CollisionManager.h"
 #include "ImguiManager.h"
+#include "CameraManager.h"
 
 //図形のクラス
 Primitive primitive;
@@ -322,7 +323,7 @@ Object::Object()
 	frameTime_.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 }
 
-void Object::SendingMat(int32_t indexNum)
+void Object::SendingMat(int32_t indexNum, Camera* camera)
 {
 
 	//変換行列をGPUに送信
@@ -330,6 +331,13 @@ void Object::SendingMat(int32_t indexNum)
 	//スプライトじゃない場合
 	if (indexNum != SPRITE)
 	{
+		Camera* lCamera = camera;
+		//カメラがセットされてなければ使用されてるカメラを使う
+		if (camera == nullptr)
+		{
+			lCamera = CameraManager::GetInstance().usingCamera_;
+		}
+
 		XMMATRIX matW;
 		matW = { (float)worldMat_->matWorld_.m_[0][0],(float)worldMat_->matWorld_.m_[0][1],(float)worldMat_->matWorld_.m_[0][2],(float)worldMat_->matWorld_.m_[0][3],
 				 (float)worldMat_->matWorld_.m_[1][0],(float)worldMat_->matWorld_.m_[1][1],(float)worldMat_->matWorld_.m_[1][2],(float)worldMat_->matWorld_.m_[1][3],
@@ -337,8 +345,8 @@ void Object::SendingMat(int32_t indexNum)
 				 (float)worldMat_->matWorld_.m_[3][0],(float)worldMat_->matWorld_.m_[3][1],(float)worldMat_->matWorld_.m_[3][2],(float)worldMat_->matWorld_.m_[3][3] };
 
 		cbt_.constMapTransform_->world = matW;
-		cbt_.constMapTransform_->viewproj = view_->matView_ * projection_->matProjection_;
-		XMFLOAT3 cPos = { view_->eye_.x_,view_->eye_.y_,view_->eye_.z_ };
+		cbt_.constMapTransform_->viewproj = lCamera->viewMat_.matView_ * lCamera->projectionMat_.matProjection_;
+		XMFLOAT3 cPos = { lCamera->viewMat_.eye_.x_,lCamera->viewMat_.eye_.y_,lCamera->viewMat_.eye_.z_ };
 		cbt_.constMapTransform_->cameraPos = cPos;
 	}
 }
@@ -490,15 +498,13 @@ void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle, ConstBuffTran
 }
 
 void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
-	Model* model, ModelFBX* fbx, bool primitiveMode)
+	Camera* camera, Model* model, ModelFBX* fbx, bool primitiveMode)
 {
 	//行列送信
-	SendingMat(indexNum);
-
+	SendingMat(indexNum, camera);
 
 	//テクスチャを設定していなかったら
 	uint64_t textureHandle_;
-
 	if (textureHandle == NULL)
 	{
 		textureHandle_ = TextureManager::GetInstance().sWhiteTexHandle_;
@@ -593,25 +599,19 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 }
 
 void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-	ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,  uint64_t textureHandle, int32_t pipelineNum)
+	Camera* camera, const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
-
 	constMapMaterial_->color = color;
 
-	Update(TRIANGLE, pipelineNum, textureHandle, cbt_);
+	Update(TRIANGLE, pipelineNum, textureHandle, cbt_, camera);
 }
 
-void Object::DrawBox(ViewMat* view, ProjectionMat* projection,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
+void Object::DrawBox(Camera* camera,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
 	const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
-
 	constMapMaterial_->color = color;
 
-	Update(BOX, pipelineNum, textureHandle, cbt_);
+	Update(BOX, pipelineNum, textureHandle, cbt_, camera);
 }
 
 void Object::DrawBoxSprite(const Vec3& pos, float scale,
@@ -626,7 +626,7 @@ void Object::DrawBoxSprite(const Vec3& pos, float scale,
 	}
 	sprite_->Update(pos, scale, color, textureHandle, ancorUV, isReverseX, isReverseY, rotation, &cbt_, constMapMaterial_);
 
-	Update(SPRITE, pipelineNum, textureHandle, cbt_);
+	Update(SPRITE, pipelineNum, textureHandle, cbt_, nullptr);
 }
 
 void Object::Draw()
@@ -648,71 +648,53 @@ void Object::DrawClippingBoxSprite(const Vec3& leftTop, float scale, const XMFLO
 	sprite_->UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle,
 		isPosLeftTop, isReverseX, isReverseY, rotation, &cbt_, constMapMaterial_);
 
-	Update(SPRITE, pipelineNum, textureHandle, cbt_);
+	Update(SPRITE, pipelineNum, textureHandle, cbt_, nullptr);
 }
 
-void Object::DrawCube3D(ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
+void Object::DrawCube3D(Camera* camera, const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
-
 	constMapMaterial_->color = color;
 
-	Update(CUBE, pipelineNum, textureHandle, cbt_);
+	Update(CUBE, pipelineNum, textureHandle, cbt_, camera);
 }
 
-void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color,
+void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  Camera* camera, const XMFLOAT4& color,
 	uint64_t textureHandle)
 {
-	view_ = view;
-	projection_ = projection;
-
 	constMapMaterial_->color = color;
 
-	Update(LINE, 2, textureHandle, cbt_, nullptr, nullptr, false);
+	Update(LINE, 2, textureHandle, cbt_, camera, nullptr, nullptr, false);
 }
 
-void Object::DrawCircle(ViewMat* view, ProjectionMat* projection,
+void Object::DrawCircle(Camera* camera,
 	const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
-
 	constMapMaterial_->color = color;
 
-	Update(CIRCLE, pipelineNum, textureHandle, cbt_);
+	Update(CIRCLE, pipelineNum, textureHandle, cbt_, camera);
 }
 
-void Object::DrawSphere(ViewMat* view, ProjectionMat* projection,
+void Object::DrawSphere(Camera* camera,
 	const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
-
 	constMapMaterial_->color = color;
 
-	Update(SPHERE, pipelineNum, textureHandle, cbt_);
+	Update(SPHERE, pipelineNum, textureHandle, cbt_, camera);
 }
 
-void Object::DrawModel(ViewMat* view, ProjectionMat* projection,
-	Model* model, const XMFLOAT4& color, int32_t pipelineNum)
+void Object::DrawModel(Model* model, Camera* camera,
+	const XMFLOAT4& color, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
-
 	constMapMaterial_->color = color;
 
-	Update(MODEL, pipelineNum, NULL, cbt_, model);
+	Update(MODEL, pipelineNum, NULL, cbt_, camera, model);
 }
 
-void Object::DrawFBX(ViewMat* view, ProjectionMat* projection, ModelFBX* modelFbx, const XMFLOAT4& color, int32_t pipelineNum)
+void Object::DrawFBX(ModelFBX* modelFbx, Camera* camera, const XMFLOAT4& color, int32_t pipelineNum)
 {
-	view_ = view;
-	projection_ = projection;
-
 	constMapMaterial_->color = color;
 
-	Update(FBX, pipelineNum, NULL, cbt_, nullptr, modelFbx);
+	Update(FBX, pipelineNum, NULL, cbt_, camera, nullptr, modelFbx);
 }
 
 void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,

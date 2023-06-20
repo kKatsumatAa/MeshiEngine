@@ -2,26 +2,15 @@
 
 CameraManager::CameraManager()
 {
-	stageSelectCamera_ = std::make_unique<Camera>();
-	gameMainCamera_ = std::make_unique<Camera>();
-	gameTurnCamera_ = std::make_unique<Camera>();
-	goalEffectCamera_ = std::make_unique<Camera>();
+	AddCamera("debugCamera");
+	GetCamera("debugCamera")->Initialize();
 
-	stageSelectCamera_->Initialize();
-	gameMainCamera_->Initialize();
-	gameTurnCamera_->Initialize();
-	goalEffectCamera_->Initialize();
-
-	//何かしらカメラのポインタ入れる
-	usingCamera_ = gameMainCamera_.get();
+	//何かしらカメラのポインタ入れる(MyGameで入れている)
 }
 
 CameraManager::~CameraManager()
 {
-	stageSelectCamera_.reset();
-	gameMainCamera_.reset();
-	gameTurnCamera_.reset();
-	goalEffectCamera_.reset();
+	cameraAndNames_.clear();
 }
 
 void CameraManager::ChangeUsingCameraState(std::unique_ptr<UsingCameraState> state)
@@ -45,17 +34,100 @@ void CameraManager::Initialize()
 
 void CameraManager::Update()
 {
-	state_->Update();
+#ifdef _DEBUG
+	{
+		Camera* debugCamera = GetCamera("debugCamera");
+
+		if (KeyboardInput::GetInstance().KeyTrigger(DIK_C))
+		{
+			//デバッグカメラに変更
+			if (usingCamera_ != debugCamera)
+			{
+				afterCamera_ = usingCamera_;
+				usingCamera_ = debugCamera;
+			}
+			else
+			{
+				usingCamera_ = afterCamera_;
+			}
+		}
+
+		//デバッグカメラが有効の時
+		if (usingCamera_ == debugCamera)
+		{
+			Vec3 rotMove = {
+				(KeyboardInput::GetInstance().KeyPush(DIK_W) - KeyboardInput::GetInstance().KeyPush(DIK_S)) * 0.05f,
+				(KeyboardInput::GetInstance().KeyPush(DIK_A) - KeyboardInput::GetInstance().KeyPush(DIK_D)) * 0.05f,
+				0
+			};
+
+			debugWorldMat_.rot_ += rotMove;
+			debugWorldMat_.rot_.x_ = min(debugWorldMat_.rot_.x_, PI / 2.0f);
+			debugWorldMat_.rot_.x_ = max(debugWorldMat_.rot_.x_, -PI / 2.0f);
+
+			debugWorldMat_.SetWorld();
+			debugCamera->viewMat_.eye_ = CAMERA_POS_;
+			Vec3xM4(debugCamera->viewMat_.eye_, debugWorldMat_.matWorld_, 0);
+			debugCamera->UpdateViewMatrix();
+		}
+	}
+#endif
+
+	if (state_.get())
+	{
+		state_->Update();
+	}
 
 	usingCamera_->Update();
+}
 
-	stageSelectCamera_->Update();
-	//ゲーム中メインで使うカメラ
-	gameMainCamera_->Update();
-	//ゲーム中、回転時に使うカメラ
-	gameTurnCamera_->Update();
-	//ゴール演出時に使うカメラ
-	goalEffectCamera_->Update();
+void CameraManager::AddCamera(std::string cameraName)
+{
+	//ファイル名から探す
+	std::map< std::string, std::unique_ptr<Camera>>::iterator it = cameraAndNames_.find(cameraName);
+	//すでに同じ名前のカメラがあったらエラー
+	if (it != cameraAndNames_.end())
+	{
+		return;
+		//assert(false);
+	}
+
+	//なければ読み込み
+	std::unique_ptr<Camera> camera = std::make_unique<Camera>();
+	camera->Initialize();
+
+	//保存しておく
+	cameraAndNames_.insert(std::make_pair(cameraName, std::move(camera)));
+}
+
+Camera* CameraManager::GetCamera(std::string cameraName)
+{
+	//ファイル名から探す
+	std::map< std::string, std::unique_ptr<Camera>>::iterator it = cameraAndNames_.find(cameraName);
+	//指定した名前のカメラがあればポインタを返す
+	if (it != cameraAndNames_.end())
+	{
+		return it->second.get();
+	}
+
+	//なければnullptr
+	assert(false);
+	return nullptr;
+}
+
+void CameraManager::SetUsingCamera(std::string cameraName)
+{
+	//ファイル名から探す
+	std::map< std::string, std::unique_ptr<Camera>>::iterator it = cameraAndNames_.find(cameraName);
+	//指定した名前のカメラがあればポインタusingCamera_にポインタセット
+	if (it != cameraAndNames_.end())
+	{
+		usingCamera_ = it->second.get();
+		return;
+	}
+
+	//なければ
+	assert(false);
 }
 
 void CameraManager::BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endEye, const Vec3& startTarget, const Vec3& endTarget, const Vec3& startUp, const Vec3& endUp, int32_t time, Camera* afterCamera, int32_t afterCount)
@@ -77,32 +149,6 @@ void CameraManager::BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endE
 
 	Update();
 }
-
-CameraManager& CameraManager::operator=(const CameraManager& obj)
-{
-	Initialize();
-
-	*state_ = *obj.state_;//ステートなど、ポインタは削除される可能性があるので中身のみコピー
-	usingCamera_ = obj.usingCamera_;
-	*stageSelectCamera_.get() = *obj.stageSelectCamera_.get();
-	*gameMainCamera_.get() = *obj.gameMainCamera_.get();
-	*gameTurnCamera_.get() = *obj.gameTurnCamera_.get();
-	*goalEffectCamera_.get() = *obj.goalEffectCamera_.get();
-	startEye_ = obj.startEye_;
-	endEye_ = obj.endEye_;
-	startTarget_ = obj.startTarget_;
-	endTarget_ = obj.endTarget_;
-	startUp_ = obj.startUp_;
-	endUp_ = obj.endUp_;
-	lerpCountMax_ = obj.lerpCountMax_;
-	lerpCount_ = obj.lerpCount_;
-	if (obj.afterCamera_) { afterCamera_ = obj.afterCamera_; }
-	afterCount_ = obj.afterCount_;
-	isLerpMoving_ = obj.isLerpMoving_;
-
-	return *this;
-}
-
 
 //----------------------------------------------------------------------------------------------------------------------------------------
 void UsingCameraState::SetCameraM(CameraManager* cameraM)

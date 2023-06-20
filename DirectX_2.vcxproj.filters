@@ -294,6 +294,9 @@
     <ClCompile Include="Engine\3D\Object\ModelManager.cpp">
       <Filter>ソース ファイル\Engine\3D\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Base\LevelManager.cpp">
+      <Filter>ソース ファイル\Engine\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Player.h">
@@ -487,6 +490,9 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Object\ModelManager.h">
       <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\LevelManager.h">
+      <Filter>ヘッダー ファイル\Engine\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

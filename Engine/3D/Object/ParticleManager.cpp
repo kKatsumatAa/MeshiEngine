@@ -94,7 +94,7 @@ void ParticleManager::Initialize()
 	BuffProperties(cbHeapProp, cbResourceDesc, &constBuff_);
 }
 
-void ParticleManager::Update(ViewMat* view, ProjectionMat* projection)
+void ParticleManager::Update(Camera* camera)
 {
 	HRESULT result;
 
@@ -152,11 +152,11 @@ void ParticleManager::Update(ViewMat* view, ProjectionMat* projection)
 	}
 
 	// 定数バッファへデータ転送
-	UpdateMatrix(view, projection);
+	UpdateMatrix(camera);
 
 	ConstBufferData* constMap = nullptr;
 	result = constBuff_->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = view->matView_ * projection->matProjection_;
+	constMap->mat = camera->viewMat_.matView_ * camera->projectionMat_.matProjection_;
 	constMap->matBillboard = sMatBillboard_;
 	constBuff_->Unmap(0, nullptr);
 }
@@ -423,14 +423,14 @@ void ParticleManager::CreateModel()
 	vbView_.StrideInBytes = sizeof(VertexPos);
 }
 
-void ParticleManager::UpdateMatrix(ViewMat* view, ProjectionMat* projection)
+void ParticleManager::UpdateMatrix(Camera* camera)
 {
 	//視点座標
-	XMVECTOR eyePosition = { view->eye_.x_,view->eye_.y_,view->eye_.z_ };
+	XMVECTOR eyePosition = { camera->viewMat_.eye_.x_,camera->viewMat_.eye_.y_,camera->viewMat_.eye_.z_ };
 	//注視点座標
-	XMVECTOR targetPosition = { view->target_.x_,view->target_.y_,view->target_.z_ };
+	XMVECTOR targetPosition = { camera->viewMat_.target_.x_,camera->viewMat_.target_.y_,camera->viewMat_.target_.z_ };
 	//（仮の）上方向
-	XMVECTOR upVector = { view->up_.x_,view->up_.y_,view->up_.z_ };
+	XMVECTOR upVector = { camera->viewMat_.up_.x_,camera->viewMat_.up_.y_,camera->viewMat_.up_.z_ };
 
 
 	//カメラのz軸求める

@@ -67,6 +67,13 @@ void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 			LoadRecursiveChildrenData(object);
 
 		}
+
+		//Camera
+		if (type.compare("CAMERA") == 0)
+		{
+			LoadCameraData(object);
+
+		}
 	}
 }
 
@@ -112,5 +119,46 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 			//子を再帰で走査
 			LoadRecursiveChildrenData(child, objectData->worldMat.get());
 		}
+	}
+}
+
+//カメラのデータ読み込み
+void JsonLevelLoader::LoadCameraData(const nlohmann::json::iterator& object)
+{
+	//要素追加
+	levelData_->cameras.emplace_back(std::make_unique<LevelData::CameraData>());
+	//今追加した要素の参照を得る
+	std::unique_ptr<LevelData::CameraData>& objectData = levelData_->cameras.back();
+
+	if (object->contains("file_name"))
+	{
+		//ファイル名
+		objectData->fileName = (*object)["file_name"];
+	}
+
+	//トランスフォームのパラメータ読み込み
+	nlohmann::json transform = (*object)["transform"];
+
+	//カメラ作成
+	objectData->camera = std::make_unique<Camera>();
+	objectData->camera->Initialize();
+	//平行移動
+	objectData->camera->SetEye({ (float)transform["translation"][1], (float)transform["translation"][2], -(float)transform["translation"][0] });
+	//角度
+	{
+		Vec3 targetRot = {
+			AngletoRadi(-(float)transform["rotation"][1]),
+			AngletoRadi(-(float)transform["rotation"][2]),
+			AngletoRadi((float)transform["rotation"][0])
+		};
+		WorldMat targetWorldMat;
+		targetWorldMat.rot_ = targetRot;
+
+		targetWorldMat.SetWorld();
+		//奥に向かうベクトルをターゲットの元とする
+		Vec3 targetTmpPos = { 0,0,1.0f };
+		//読み込んだ角度でターゲットを回転
+		Vec3xM4(targetTmpPos, targetWorldMat.matWorld_, 0);
+		objectData->camera->SetTarget(targetTmpPos);
 	}
 }

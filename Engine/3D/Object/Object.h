@@ -6,6 +6,7 @@
 #include"CollisionInfo.h"
 #include "PostPera.h"
 #include <FbxLoader.h>
+#include "Camera.h"
 
 class BaseCollider;
 
@@ -89,8 +90,6 @@ private:
 	std::unique_ptr<WorldMat> worldMat_ = std::make_unique<WorldMat>();
 
 public://変数
-	ViewMat* view_;
-	ProjectionMat* projection_;
 	bool isWireFrame_ = 0;
 	//画面効果用
 	static EffectOConstBuffer sEffectFlags_;
@@ -115,10 +114,10 @@ protected://継承先まで公開
 private:
 	//--------------------
 	void Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
-		Model* model = nullptr, ModelFBX* fbx = nullptr, bool primitiveMode = true);
+		Camera* camera, Model* model = nullptr, ModelFBX* fbx = nullptr, bool primitiveMode = true);
 
 	//行列送信
-	void SendingMat(int32_t indexNum);
+	void SendingMat(int32_t indexNum, Camera* camera);
 
 	//ボーンのデータ転送
 	void SendingBoneData(ModelFBX* model);
@@ -192,38 +191,38 @@ public:
 	//-------------
 
 	void DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-		ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },
-		 uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		Camera* camera = nullptr, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },
+		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawBox(ViewMat* view, ProjectionMat* projection, /*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,*/
+	void DrawBox(Camera* camera = nullptr, /*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,*/
 		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },
-		 uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawBoxSprite(const Vec3& pos, float scale, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }
-		,  uint64_t textureHandle = NULL, const Vec2& ancorUV = { 0,0 }, bool isReverseX = false, bool isReverseY = false,
+		, uint64_t textureHandle = NULL, const Vec2& ancorUV = { 0,0 }, bool isReverseX = false, bool isReverseY = false,
 		float rotation = 0.0f, int32_t pipelineNum = 0);
 
 	void DrawClippingBoxSprite(const Vec3& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL, bool isPosLeftTop = true,
+		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, bool isPosLeftTop = true,
 		bool isReverseX = false, bool isReverseY = false, float rotation = 0.0f, int32_t pipelineNum = 0);
 
-	void DrawCube3D(ViewMat* view, ProjectionMat* projection,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+	void DrawCube3D(Camera* camera = nullptr,
+		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */ViewMat* view, ProjectionMat* projection, const XMFLOAT4& color
-		= { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL);
+	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */Camera* camera = nullptr, const XMFLOAT4& color
+		= { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL);
 
-	void DrawCircle(ViewMat* view, ProjectionMat* projection,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+	void DrawCircle(Camera* camera = nullptr,
+		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawSphere(ViewMat* view, ProjectionMat* projection,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },  uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+	void DrawSphere(Camera* camera = nullptr,
+		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawModel(ViewMat* view, ProjectionMat* projection,
-		Model* model, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
+	void DrawModel(Model* model, Camera* camera = nullptr,
+		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
 
-	void DrawFBX(ViewMat* view, ProjectionMat* projection,
-		ModelFBX* modelFbx, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
+	void DrawFBX(ModelFBX* modelFbx, Camera* camera = nullptr,
+		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
 
 	//色を返す
 	const XMFLOAT4& GetColor() { return constMapMaterial_->color; }

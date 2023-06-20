@@ -66,6 +66,9 @@ bool Framework::Update()
 	KeyboardInput::GetInstance().Update();
 	PadInput::GetInstance().Update();
 
+	//カメラマネージャー
+	CameraManager::GetInstance().Update();
+
 	//更新処理
 	sceneM_->Update();
 

@@ -1,5 +1,6 @@
 #pragma once
 #include"Camera.h"
+#include"WorldMat.h"
 
 class CameraManager;
 
@@ -36,17 +37,16 @@ class CameraManager
 private:
 	std::unique_ptr<UsingCameraState> state_;
 
+	//デバッグ用
+	WorldMat debugWorldMat_;
+	const Vec3 CAMERA_POS_ = { 0,0,-100 };
+
+	//カメラと名前をセットで持っておく
+	std::map< std::string, std::unique_ptr<Camera>> cameraAndNames_;
+
 public:
 	//ここにいろんなカメラのポインタを入れて、描画時に使う
 	Camera* usingCamera_;
-	//選択画面で使う
-	std::unique_ptr<Camera> stageSelectCamera_;
-	//ゲーム中メインで使うカメラ
-	std::unique_ptr<Camera> gameMainCamera_;
-	//ゲーム中、回転時に使うカメラ
-	std::unique_ptr<Camera> gameTurnCamera_;
-	//ゴール演出時に使うカメラ
-	std::unique_ptr<Camera> goalEffectCamera_;
 
 	//演出などが終わった後にそのカメラに切り替えるためのポインタ
 	Camera* afterCamera_ = nullptr;
@@ -61,9 +61,15 @@ public:
 	bool isLerpMoving_ = false;
 	bool isLerpEnd_ = false;
 
-public://関数
+private://関数
 	CameraManager();
 	~CameraManager();
+
+	CameraManager(const CameraManager& other) = delete;
+	CameraManager& operator=(const CameraManager& other) = delete;
+
+public:
+	static CameraManager& GetInstance() { static CameraManager sInst; return sInst; }
 
 	void ChangeUsingCameraState(std::unique_ptr<UsingCameraState> state);
 
@@ -74,6 +80,10 @@ public://関数
 	//移動の線形補完を始める
 	void BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endEye, const Vec3& startTarget, const Vec3& endTarget, const Vec3& startUp, const Vec3& endUp, int32_t time, Camera* afterCamera = nullptr, int32_t afterCount = 0);
 
-
-	CameraManager& operator=(const CameraManager& obj);
+	//カメラを新たに追加する
+	void AddCamera(std::string cameraName);
+	//名前を指定してカメラを取得
+	Camera* GetCamera(std::string cameraName);
+	//カメラを使用しているカメラにセット
+	void SetUsingCamera(std::string cameraName);
 };

@@ -38,11 +38,7 @@ void SceneManager::StopWaveAllScene()
 
 void SceneManager::Initialize()
 {
-	Sound::GetInstance().LoadWave("Stage_BGM.wav",false);
-
-	//json
-	JsonLevelLoader::Getinstance().Initialize();
-	JsonLevelLoader::Getinstance().LoadJsonFile("untitled");
+	Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
 
 	{
 		TextureManager::LoadGraph(L"Resources/image/loading.png", texhandle_[3]);
@@ -57,6 +53,13 @@ void SceneManager::Initialize()
 		TextureManager::LoadGraph(L"Resources/image/test.jpg", texhandle_[4]);
 	}
 
+	//json
+	JsonLevelLoader::Getinstance().Initialize();
+	JsonLevelLoader::Getinstance().LoadJsonFile("untitled");
+	//レベルマネージャー
+	LevelManager::GetInstance().StaticInitialize();
+	LevelManager::GetInstance().LoadLevelData();
+
 	//fbx読み込み
 	modelFBX_ = ModelManager::GetInstance().LoadModelFBX("boneTest");
 
@@ -66,12 +69,12 @@ void SceneManager::Initialize()
 	draw_[5].SetTrans({ fighterPos_[0],fighterPos_[1] - 1.0f,fighterPos_[2] });
 	draw_[5].SetRot({ -3.14f / 2.0f,0,0 });
 	draw_[5].CulcWorldMat();
-	
+
 	draw_[6].SetScale({ 2.3f,2.3f,2.3f });
 	draw_[6].SetTrans({ -20,0,0 });
 	draw_[6].SetRot({ 0,0,0 });
 	draw_[6].CulcWorldMat();
-	
+
 	//インスタンス生成
 	lightManager_ = std::move(LightManager::Create());
 	//ライト色を設定
@@ -102,21 +105,6 @@ void SceneManager::Update()
 	lightManager_->Update();
 
 	state_->Update();
-
-	//#ifdef _DEBUG
-	{
-		cameraWorldMat_.rot_.y_ += (KeyboardInput::GetInstance().KeyPush(DIK_A) - KeyboardInput::GetInstance().KeyPush(DIK_D)) * 0.05f;
-
-		cameraWorldMat_.rot_.x_ += (KeyboardInput::GetInstance().KeyPush(DIK_W) - KeyboardInput::GetInstance().KeyPush(DIK_S)) * 0.05f;
-		cameraWorldMat_.rot_.x_ = min(cameraWorldMat_.rot_.x_, PI / 2.0f);
-		cameraWorldMat_.rot_.x_ = max(cameraWorldMat_.rot_.x_, -PI / 2.0f);
-
-		cameraWorldMat_.SetWorld();
-		camera_->viewMat_.eye_ = CAMERA_POS_;
-		Vec3xM4(camera_->viewMat_.eye_, cameraWorldMat_.matWorld_, 0);
-		camera_->UpdateViewMatrix();
-	}
-	//#endif
 
 	lightManager_->SetAmbientColor({ ambientColor_[0],ambientColor_[1], ambientColor_[2] });
 	lightManager_->SetDiffuseColor({ diffuseColor_[0],diffuseColor_[1], diffuseColor_[2] });

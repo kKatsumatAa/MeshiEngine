@@ -5,6 +5,9 @@
 #include <json.hpp>
 #include "Vec3.h"
 #include "WorldMat.h"
+#include "Camera.h"
+#include <functional>
+
 
 struct LevelData
 {
@@ -17,8 +20,19 @@ struct LevelData
 		std::string fileName;
 	};
 
+	//カメラのデータ
+	struct CameraData
+	{
+		//worldMat
+		std::unique_ptr<Camera> camera;
+		//ファイル名
+		std::string fileName;
+	};
+
 	//オブジェクトの配列
 	std::vector<std::unique_ptr<ObjectData>> objects;
+	//カメラ
+	std::vector<std::unique_ptr<CameraData>> cameras;
 };
 
 class JsonLevelLoader final
@@ -46,6 +60,8 @@ public:
 	//jsonファイル読み込み
 	void LoadJsonFile(const std::string& fileName);
 
-	//再帰的に子供を読み込み
-	void LoadRecursiveChildrenData(const nlohmann::json::iterator& object, WorldMat* worldMat = nullptr);
+	//再帰的に子供を読み込み(オブジェクトデータ)
+	void LoadRecursiveChildrenData(const nlohmann::json::iterator& object, WorldMat* parent = nullptr);
+	//カメラのデータ読み込み
+	void LoadCameraData(const nlohmann::json::iterator& object);
 };

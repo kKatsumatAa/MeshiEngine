@@ -129,6 +129,7 @@
     <ClCompile Include="Engine\Base\Framework.cpp" />
     <ClCompile Include="Engine\Base\ImGuiManager.cpp" />
     <ClCompile Include="Engine\Base\JsonLevelLoader.cpp" />
+    <ClCompile Include="Engine\Base\LevelManager.cpp" />
     <ClCompile Include="Engine\Base\MyGame.cpp" />
     <ClCompile Include="Engine\Base\ProjectionMat.cpp" />
     <ClCompile Include="Engine\Base\ViewMat.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Engine\Base\DirectXWrapper.h" />
     <ClInclude Include="Engine\Base\Framework.h" />
     <ClInclude Include="Engine\Base\ImGuiManager.h" />
+    <ClInclude Include="Engine\Base\LevelManager.h" />
     <ClInclude Include="Engine\Base\MyGame.h" />
     <ClInclude Include="Engine\Base\ProjectionMat.h" />
     <ClInclude Include="Engine\Base\ViewMat.h" />

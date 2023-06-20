@@ -9,6 +9,7 @@
 #include "ViewMat.h"
 #include "ProjectionMat.h"
 #include "TextureManager.h"
+#include "Camera.h"
 
 /// <summary>
 /// パーティクルマネージャ
@@ -96,7 +97,7 @@ private:
 	/// </summary>
 	void CreateModel();
 
-	void UpdateMatrix(ViewMat* view, ProjectionMat* projection);
+	void UpdateMatrix(Camera* camera);
 
 public: // メンバ関数	
 	/// <summary>
@@ -107,7 +108,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update(ViewMat* view, ProjectionMat* projection);
+	void Update(Camera* camera = nullptr);
 
 	/// <summary>
 	/// 描画

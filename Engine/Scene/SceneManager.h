@@ -9,6 +9,7 @@
 #include "SceneState.h"
 #include "AbstractSceneFactory.h"
 #include "ModelManager.h"
+#include "LevelManager.h"
 
 
 
@@ -24,9 +25,6 @@ private:
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 public:
-	WorldMat cameraWorldMat_;
-	const Vec3 CAMERA_POS_ = { 0,0,-100 };
-
 	Model* model_[20];
 
 	Object draw_[10];

@@ -3,6 +3,7 @@
 #include"DebugText.h"
 #include"FbxLoader.h"
 #include"AbstractSceneFactory.h"
+#include"CameraManager.h"
 
 
 //ゲーム全体（共通処理）
