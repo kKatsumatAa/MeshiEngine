@@ -38,6 +38,8 @@ struct EffectConstBuffer
 	uint32_t isRGBShift = false;
 	//ブルーム
 	uint32_t isBloom = false;
+	//クロスフィルタ
+	uint32_t isCrossFilter = false;
 	//時間
 	uint32_t time = 0;
 };
@@ -76,19 +78,19 @@ private:
 
 	//ポストエフェクト用
 	D3D12_CPU_DESCRIPTOR_HANDLE peraSRHandle_;
-	std::array<ComPtr<ID3D12Resource>, 2> peraResources_;
+	ComPtr<ID3D12Resource> peraResources_[2];
 	ComPtr<ID3D12Resource> peraResource2_;
 	ComPtr<ID3D12DescriptorHeap> peraRTVHeap_;//レンダーターゲット用
 	ComPtr<ID3D12DescriptorHeap> peraSRVHeap_;//テクスチャ用
 	bool isPeraClear_ = false;
 
-	GausianBuffer gausianBuff_;
+	GausianBuffer gaussianBuff_;
 
 	//法線マップ用
 	ComPtr<ID3D12Resource>effectTexBuffer_;
 
 	//ブルームバッファー
-	std::array<ComPtr<ID3D12Resource>, 2>bloomBuffers_;
+	ComPtr<ID3D12Resource>bloomBuffers_[3];
 	//画面全体ぼかし用パイプライン(ブルーム)
 	ComPtr<ID3D12PipelineState> blurPipeline_;
 

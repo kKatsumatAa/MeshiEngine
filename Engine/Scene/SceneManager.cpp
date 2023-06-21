@@ -55,7 +55,7 @@ void SceneManager::Initialize()
 
 	//json
 	JsonLevelLoader::Getinstance().Initialize();
-	JsonLevelLoader::Getinstance().LoadJsonFile("untitled");
+	JsonLevelLoader::Getinstance().LoadJsonFile("level");
 	//レベルマネージャー
 	LevelManager::GetInstance().StaticInitialize();
 	LevelManager::GetInstance().LoadLevelData();

@@ -33,6 +33,8 @@ cbuffer ConstBufferEffectFlags : register(b0)
 	unsigned int isRGBShift;
 	//ブルーム
 	unsigned int isBloom;
+	//クロスフィルタ
+	unsigned int isCrossFilter;
 	//時間
 	uint time;
 }
@@ -57,8 +59,10 @@ Texture2D<float4> tex1 : register(t1);
 Texture2D<float4> tex2 : register(t2);
 //一枚目の四つ目(縮小バッファ高輝度)
 Texture2D<float4> tex3 : register(t3);
+//一枚目の5つ目(縮小バッファ高輝度2)
+Texture2D<float4> tex4 : register(t4);
 //ガラスフィルター
-Texture2D<float4> effectTex : register(t4);
+Texture2D<float4> effectTex : register(t5);
 
 
 //ぼかした後の画像を返す
@@ -110,4 +114,35 @@ float4 Get5x5GaussianBlur(Texture2D<float4> tex, SamplerState smp, float2 uv, fl
 		+ tex.Sample(smp, uv + float2(r1, d2)).rgb * 4
 		+ tex.Sample(smp, uv + float2(r2, d2)).rgb
 		) / 256.0f, ret.a);
+}
+
+//unityの方を
+float4 Gaussian2(float2 drawUV, float2 pickUV, float sigma)
+{
+	float d = distance(drawUV, pickUV);
+	float e = 2.71828182845904523536;
+	return pow(e, -(d * d) / (2 * sigma * sigma));
+}
+
+float4 GaussianAngle(Texture2D<float4> tex, SamplerState smp, float angle, float2 uv)
+{
+	float totalWeight = 0, sigma = 0.005, stepWidth = 0.001;
+	float color = float4(0, 0, 0, 0);
+	float2 pickUV = float2(0, 0);//色を取得する座標
+	float pickRange = 0.06;//ガウス関数式でいうシグマ
+	float angleDeg = angle;
+	float angleRad = angleDeg * 3.1415 / 180;//ぼかす角度
+
+	for (float j = -pickRange; j <= pickRange * 2; j += 0.005)
+	{
+		float x = cos(angleRad) * j;//角度から座標指定
+		float y = sin(angleRad) * j;
+		pickUV = uv + float2(x, y);
+
+		float weight = Gaussian2(uv, pickUV, pickRange);//自作のガウス関数で計算
+		color += tex.Sample(smp, pickUV) * weight;//取得する色にweightをかける
+		totalWeight += weight;//掛けるweightの合計値を控える
+	}
+	color = color / totalWeight;//足し合わせた色をweightの合計値で割る
+	return color;
 }
