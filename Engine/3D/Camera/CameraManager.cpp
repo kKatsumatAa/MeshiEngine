@@ -2,15 +2,39 @@
 
 CameraManager::CameraManager()
 {
+	//何かしらカメラのポインタ入れる
+	/*CameraManager::GetInstance().AddCamera("mainCamera");
+	CameraManager::GetInstance().SetUsingCamera("mainCamera");*/
+
+#ifdef _DEBUG
 	AddCamera("debugCamera");
 	GetCamera("debugCamera")->Initialize();
+#endif
 
-	//何かしらカメラのポインタ入れる(MyGameで入れている)
+	//カメラを順に切り替えるためのイテレータ
+	cameraItr_ = cameraAndNames_.begin();
 }
 
 CameraManager::~CameraManager()
 {
 	cameraAndNames_.clear();
+}
+
+void CameraManager::ChangeCamera()
+{
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_V))
+	{
+		cameraItr_++;
+
+		//最後まで行ったら
+		if (cameraItr_ == cameraAndNames_.end())
+		{
+			cameraItr_ = cameraAndNames_.begin();
+		}
+
+		//カメラポインタをセット
+		usingCamera_ = cameraItr_->second.get();
+	}
 }
 
 void CameraManager::ChangeUsingCameraState(std::unique_ptr<UsingCameraState> state)
@@ -73,6 +97,9 @@ void CameraManager::Update()
 		}
 	}
 #endif
+	//カメラ切り替え
+	ChangeCamera();
+
 
 	if (state_.get())
 	{

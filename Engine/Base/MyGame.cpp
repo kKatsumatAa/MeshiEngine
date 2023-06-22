@@ -13,9 +13,6 @@ void MyGame::Initialize()
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneM_->SetSceneFactory(sceneFactory_.get());
 	sceneM_->ChangeScene("GAME");
-
-	CameraManager::GetInstance().AddCamera("mainCamera");
-	CameraManager::GetInstance().SetUsingCamera("mainCamera");
 }
 
 void MyGame::Finalize()

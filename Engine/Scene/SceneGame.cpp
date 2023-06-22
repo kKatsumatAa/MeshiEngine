@@ -29,12 +29,12 @@ void SceneGame::Draw()
 {
 	LevelManager::GetInstance().Draw();
 
-	sceneM_->draw_[6].DrawModel(sceneM_->model_[6]);
+	//sceneM_->draw_[6].DrawModel(sceneM_->model_[6]);
 
 	//ÅŒã‚É•`‰æ‚µ‚È‚¢‚Æ‰f‚ç‚È‚¢
 	//ParticleManager::GetInstance()->Draw(sceneM->texhandle[1]);
 
-	sceneM_->draw_[5].DrawFBX(sceneM_->modelFBX_, nullptr, { 10.5f,10.5f,10.5f,10.0f });
+	//sceneM_->draw_[5].DrawFBX(sceneM_->modelFBX_, nullptr, { 10.5f,10.5f,10.5f,10.0f });
 }
 
 void SceneGame::DrawSprite()

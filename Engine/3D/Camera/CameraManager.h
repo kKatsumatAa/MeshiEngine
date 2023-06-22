@@ -43,6 +43,8 @@ private:
 
 	//カメラと名前をセットで持っておく
 	std::map< std::string, std::unique_ptr<Camera>> cameraAndNames_;
+	//カメラを順に切り替えるためのイテレータ
+	std::map< std::string, std::unique_ptr<Camera>>::iterator cameraItr_;
 
 public:
 	//ここにいろんなカメラのポインタを入れて、描画時に使う
@@ -67,6 +69,10 @@ private://関数
 
 	CameraManager(const CameraManager& other) = delete;
 	CameraManager& operator=(const CameraManager& other) = delete;
+
+private:
+	//カメラを順に切り替える
+	void ChangeCamera();
 
 public:
 	static CameraManager& GetInstance() { static CameraManager sInst; return sInst; }

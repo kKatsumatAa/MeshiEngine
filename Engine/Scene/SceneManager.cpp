@@ -38,7 +38,7 @@ void SceneManager::StopWaveAllScene()
 
 void SceneManager::Initialize()
 {
-	Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
+	//Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
 
 	{
 		TextureManager::LoadGraph(L"Resources/image/loading.png", texhandle_[3]);
@@ -97,7 +97,7 @@ void SceneManager::Initialize()
 	camera_ = std::make_unique<Camera>();
 	camera_->Initialize();
 
-	Sound::GetInstance().PlayWave("Stage_BGM.wav");
+	//Sound::GetInstance().PlayWave("Stage_BGM.wav");
 }
 
 void SceneManager::Update()
