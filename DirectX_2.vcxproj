@@ -143,6 +143,7 @@
     <ClCompile Include="Engine\Collision\TriangleCollider.cpp" />
     <ClCompile Include="Engine\Input\Input.cpp" />
     <ClCompile Include="Engine\Input\KeyboardInput.cpp" />
+    <ClCompile Include="Engine\Input\MouseInput.cpp" />
     <ClCompile Include="Engine\Input\PadInput.cpp" />
     <ClCompile Include="Engine\Math\M4.cpp" />
     <ClCompile Include="Engine\Math\Quaternion.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="Engine\Collision\TriangleCollider.h" />
     <ClInclude Include="Engine\Input\Input.h" />
     <ClInclude Include="Engine\Input\KeyboardInput.h" />
+    <ClInclude Include="Engine\Input\MouseInput.h" />
     <ClInclude Include="Engine\Input\PadInput.h" />
     <ClInclude Include="Engine\Math\M4.h" />
     <ClInclude Include="Engine\Math\Quaternion.h" />

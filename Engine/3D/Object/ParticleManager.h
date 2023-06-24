@@ -162,8 +162,10 @@ public:
 
 private:
 	ParticleManager() { ; }
-	ParticleManager(const ParticleManager&) = delete;
 	~ParticleManager();
+
+public:
+	ParticleManager(const ParticleManager&) = delete;
 	ParticleManager& operator=(const ParticleManager&) = delete;
 };
 

@@ -67,14 +67,14 @@ private://ŠÖ”
 	CameraManager();
 	~CameraManager();
 
-	CameraManager(const CameraManager& other) = delete;
-	CameraManager& operator=(const CameraManager& other) = delete;
-
 private:
 	//ƒJƒƒ‰‚ğ‡‚ÉØ‚è‘Ö‚¦‚é
 	void ChangeCamera();
 
 public:
+	CameraManager(const CameraManager& other) = delete;
+	CameraManager& operator=(const CameraManager& other) = delete;
+
 	static CameraManager& GetInstance() { static CameraManager sInst; return sInst; }
 
 	void ChangeUsingCameraState(std::unique_ptr<UsingCameraState> state);

@@ -13,10 +13,7 @@ class CollisionManager
 {
 private:
 	CollisionManager() = default;
-	CollisionManager(const CollisionManager&) = delete;
 	~CollisionManager() = default;
-	CollisionManager& operator=(const CollisionManager&) = delete;
-
 
 private:
 	//コライダーのリスト
@@ -25,6 +22,9 @@ private:
 
 
 public://静的メンバ関数
+	CollisionManager(const CollisionManager&) = delete;
+	CollisionManager& operator=(const CollisionManager&) = delete;
+
 	static CollisionManager* GetInstance();
 
 public://関数

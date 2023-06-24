@@ -10,6 +10,7 @@
 #include "AbstractSceneFactory.h"
 #include "ModelManager.h"
 #include "LevelManager.h"
+#include "MouseInput.h"
 
 
 

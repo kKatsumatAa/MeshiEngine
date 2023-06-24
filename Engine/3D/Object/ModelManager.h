@@ -17,10 +17,10 @@ private:
 	ModelManager() { ; }
 	~ModelManager();
 
+public:
 	ModelManager& operator=(const ModelManager& inst) = delete;
 	ModelManager(const ModelManager& inst) = delete;
 
-public:
 	static ModelManager& GetInstance();
 
 	//å„énññ

@@ -57,7 +57,7 @@ void Sprite::SpriteDraw()
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }
 
-void Sprite::Update(const Vec3& pos, float scale,
+void Sprite::Update(const Vec2& pos, float scale,
 	const XMFLOAT4& color,  uint64_t textureHandle, const Vec2& ancorUV,
 	bool isReverseX,bool isReverseY, float rotation,
 	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
@@ -128,7 +128,7 @@ void Sprite::Update(const Vec3& pos, float scale,
 	cbt->constMapTransform_->cameraPos = cPos;
 }
 
-void Sprite::UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+void Sprite::UpdateClipping(const Vec2& leftTop,  float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	const XMFLOAT4& color,  uint64_t textureHandle, bool isPosLeftTop,
 	bool isReverseX,bool isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
@@ -192,7 +192,7 @@ void Sprite::UpdateClipping(const Vec3& leftTop,  float scale, const XMFLOAT2& U
 		//Ø‚è”²‚¢‚½Œã‚Ì‰æ‘œ‚Ì’†S‚ğİ’è
 		worldMat.trans_ = { leftTop.x_ + texLeft + UVlength.x * (float)length.x_ * scale / 2.0f,
 			leftTop.y_ + texTop + UVlength.y * (float)length.y_ * scale / 2.0f,
-			leftTop.z_ };
+			0 };
 	}
 	worldMat.SetWorld();
 

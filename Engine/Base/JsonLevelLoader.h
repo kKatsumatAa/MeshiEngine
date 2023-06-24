@@ -49,11 +49,11 @@ private:
 	JsonLevelLoader() { ; }
 	~JsonLevelLoader() { ; }
 
+public:
 	//コピーコンストラクタ禁止
 	JsonLevelLoader& operator=(const JsonLevelLoader& inst) = delete;
 	JsonLevelLoader(const JsonLevelLoader& inst) = delete;
 
-public:
 	static JsonLevelLoader& Getinstance();
 	void Initialize();
 

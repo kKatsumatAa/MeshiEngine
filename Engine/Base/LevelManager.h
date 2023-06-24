@@ -12,14 +12,14 @@ private://変数
 
 
 private://関数
-	//コピーコンストラクタ禁止
-	LevelManager(const LevelManager& other) = delete;
-	LevelManager& operator=(const LevelManager& other) = delete;
-
 	LevelManager() { ; }
 	~LevelManager();
 
 public:
+	//コピーコンストラクタ禁止
+	LevelManager(const LevelManager& other) = delete;
+	LevelManager& operator=(const LevelManager& other) = delete;
+
 	static LevelManager& GetInstance();
 
 	void StaticInitialize();

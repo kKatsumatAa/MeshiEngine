@@ -4,6 +4,7 @@
 #include"FbxLoader.h"
 #include"AbstractSceneFactory.h"
 #include"CameraManager.h"
+#include"MouseInput.h"
 
 
 //ゲーム全体（共通処理）

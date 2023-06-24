@@ -47,7 +47,7 @@ private:
 
 	PadInput();
 
-	~PadInput();
+	~PadInput() { ; }
 
 public:
 	//コピーコンストラクタを無効
@@ -61,6 +61,8 @@ public:
 	void CreateDevice();
 
 	void Update();
+
+	void Finalize();
 
 public://ゲッター
 

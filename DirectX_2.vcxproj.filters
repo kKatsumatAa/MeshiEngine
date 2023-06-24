@@ -297,6 +297,9 @@
     <ClCompile Include="Engine\Base\LevelManager.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Input\MouseInput.cpp">
+      <Filter>ソース ファイル\Engine\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Player.h">
@@ -493,6 +496,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Base\LevelManager.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Input\MouseInput.h">
+      <Filter>ヘッダー ファイル\Engine\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

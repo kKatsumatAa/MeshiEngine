@@ -17,7 +17,7 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 		int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
 
 
-		leftTop_[spriteIndex_] = { x + S_FONT_WIDTH_ * scale * i,y,0 };
+		leftTop_[spriteIndex_] = { x + S_FONT_WIDTH_ * scale * i,y };
 		scale_[spriteIndex_] = scale;
 		UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
 		UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
@@ -71,7 +71,7 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 				int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
 
 
-				leftTop_[spriteIndex_] = { x + (i + text.size()) * S_FONT_WIDTH_ * scale,y,0 };
+				leftTop_[spriteIndex_] = { x + (i + text.size()) * S_FONT_WIDTH_ * scale,y };
 				scale_[spriteIndex_] = scale;
 				UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
 				UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
@@ -92,7 +92,7 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 			int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
 
 			//
-			leftTop_[spriteIndex_] = { x + (i + text.size()) * S_FONT_WIDTH_ * scale,y,0 };
+			leftTop_[spriteIndex_] = { x + (i + text.size()) * S_FONT_WIDTH_ * scale,y };
 			scale_[spriteIndex_] = scale;
 			UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
 			UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
@@ -118,7 +118,7 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 		int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
 
 
-		leftTop_[spriteIndex_] = { x + S_FONT_WIDTH_ * scale * i,y,0 };
+		leftTop_[spriteIndex_] = { x + S_FONT_WIDTH_ * scale * i,y };
 		scale_[spriteIndex_] = scale;
 		UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
 		UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
@@ -196,7 +196,7 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 				int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
 
 
-				leftTop_[spriteIndex_] = { x + (i + text.size()) * S_FONT_WIDTH_ * scale,y,0 };
+				leftTop_[spriteIndex_] = { x + (i + text.size()) * S_FONT_WIDTH_ * scale,y };
 				scale_[spriteIndex_] = scale;
 				UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
 				UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
@@ -217,7 +217,7 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 			int32_t fontIndexX = fontIndex % S_FONT_LINE_COUNT_;
 
 			//
-			leftTop_[spriteIndex_] = { x + (i + text.size()) * S_FONT_WIDTH_ * scale,y,0 };
+			leftTop_[spriteIndex_] = { x + (i + text.size()) * S_FONT_WIDTH_ * scale,y };
 			scale_[spriteIndex_] = scale;
 			UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
 			UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };

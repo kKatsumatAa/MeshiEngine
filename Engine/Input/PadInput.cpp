@@ -88,6 +88,8 @@ void PadInput::PadConnectSearch()
 		//パッドが接続されてないかつ、前までされていたら削除
 		if (gamePad_ && !isActive_)
 		{
+			gamePad_->Unacquire();
+			gamePad_->Release();
 			gamePad_.Reset();
 		}
 	}
@@ -100,8 +102,12 @@ PadInput::PadInput()
 
 }
 
-PadInput::~PadInput()
+void PadInput::Finalize()
 {
+	if (!gamePad_) { return; }
+
+	gamePad_->Unacquire();
+	gamePad_->Release();
 }
 
 
@@ -124,6 +130,8 @@ void PadInput::Update()
 
 		//キーボード情報の取得開始
 		gamePad_->Acquire();
+		//ポーリング(一定間隔でデバイスの情報を同期)
+		gamePad_->Poll();
 		//全キーの入力情報を取得
 		result_ = gamePad_->GetDeviceState(sizeof(padData_), &padData_);
 		//assert(SUCCEEDED(result));

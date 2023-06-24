@@ -75,7 +75,7 @@ void DrawIntNumImage::Draw()
 				pos.x_ -= numImages_[i].numImageSize.x_ / 2.0f * numImages_[i].scale;
 				pos.y_ -= numImages_[i].numImageSize.y_ / 2.0f * numImages_[i].scale;
 
-				numImages_[i].obj.DrawClippingBoxSprite({ pos.x_,pos.y_,0 }, numImages_[i].scale, { numImages_[i].num * numImages_[i].sizeUV.x_,0 },
+				numImages_[i].obj.DrawClippingBoxSprite({ pos.x_,pos.y_}, numImages_[i].scale, { numImages_[i].num * numImages_[i].sizeUV.x_,0 },
 					{ numImages_[i].sizeUV.x_,numImages_[i].sizeUV.y_ }, numImages_[i].color, texhandle_, true);
 			}
 		}

@@ -1,4 +1,5 @@
 #include "CameraManager.h"
+#include "MouseInput.h"
 
 CameraManager::CameraManager()
 {
@@ -77,12 +78,14 @@ void CameraManager::Update()
 		}
 
 		//デバッグカメラが有効の時
-		if (usingCamera_ == debugCamera)
+		if (usingCamera_ == debugCamera && MouseInput::GetInstance().GetClick(CLICK_LEFT))
 		{
+			Vec2 vel = MouseInput::GetInstance().GetCursorVelocity();
+
 			//回転
 			Vec3 rotMove = {
-				(KeyboardInput::GetInstance().KeyPush(DIK_W) - KeyboardInput::GetInstance().KeyPush(DIK_S)) * 0.05f,
-				(KeyboardInput::GetInstance().KeyPush(DIK_A) - KeyboardInput::GetInstance().KeyPush(DIK_D)) * 0.05f,
+				vel.y_ * 0.01f,
+				vel.x_ * 0.01f,
 				0
 			};
 

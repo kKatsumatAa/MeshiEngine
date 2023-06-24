@@ -31,12 +31,12 @@ private://関数
 	FbxLoader() = default;
 	// privateなデストラクタ（シングルトンパターン）
 	~FbxLoader();
+public:
 	// コピーコンストラクタを禁止（シングルトンパターン）
 	FbxLoader(const FbxLoader& obj) = delete;
 	// コピー代入演算子を禁止（シングルトンパターン）
 	void operator=(const FbxLoader& obj) = delete;
 
-public:
 	/// <summary>
 	/// シングルトンインスタンスの取得
 	/// </summary>

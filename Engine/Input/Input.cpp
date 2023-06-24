@@ -11,6 +11,7 @@ Input::Input()
 
 Input::~Input()
 {
+	directInput_->Release();
 }
 
 Input& Input::GetInstance()

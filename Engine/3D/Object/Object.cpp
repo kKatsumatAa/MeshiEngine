@@ -614,7 +614,7 @@ void Object::DrawBox(Camera* camera,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& 
 	Update(BOX, pipelineNum, textureHandle, cbt_, camera);
 }
 
-void Object::DrawBoxSprite(const Vec3& pos, float scale,
+void Object::DrawBoxSprite(const Vec2& pos, float scale,
 	const XMFLOAT4& color, uint64_t textureHandle, const Vec2& ancorUV, bool isReverseX, bool isReverseY,
 	float rotation, int32_t pipelineNum)
 {
@@ -635,7 +635,7 @@ void Object::Draw()
 
 
 
-void Object::DrawClippingBoxSprite(const Vec3& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+void Object::DrawClippingBoxSprite(const Vec2& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	const XMFLOAT4& color, uint64_t textureHandle, bool isPosLeftTop, bool isReverseX, bool isReverseY,
 	float rotation, int32_t pipelineNum)
 {

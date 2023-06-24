@@ -13,7 +13,7 @@ private:
 	static const int32_t S_FONT_INDEX_MAX_Y_ = 7;
 
 	Object sprites_[S_MAX_CHAR_COUNT_];
-	Vec3 leftTop_[S_MAX_CHAR_COUNT_]; 
+	Vec2 leftTop_[S_MAX_CHAR_COUNT_]; 
 	float scale_[S_MAX_CHAR_COUNT_]; 
 	XMFLOAT2 UVleftTop_[S_MAX_CHAR_COUNT_];
 	XMFLOAT2 UVlength_[S_MAX_CHAR_COUNT_];

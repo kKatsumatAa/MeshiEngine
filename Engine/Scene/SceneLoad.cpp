@@ -40,7 +40,7 @@ void SceneLoad::Draw()
 void SceneLoad::DrawSprite()
 {
 	count_++;
-	loadObj_.DrawBoxSprite({ 0,0 + sinf(count_ * 0.1f) * 3.0f,0 }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, sceneM_->texhandle_[3]);
+	loadObj_.DrawBoxSprite({ 0,0 + sinf(count_ * 0.1f) * 3.0f }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, sceneM_->texhandle_[3]);
 }
 
 void SceneLoad::DrawImgui()

@@ -53,6 +53,9 @@ void Framework::Finalize()
 	WindowsApp::GetInstance().UnregisterClassA();
 
 	imguiM_->Finalize();
+
+	MouseInput::GetInstance().Finalize();
+	PadInput::GetInstance().Finalize();
 }
 
 bool Framework::Update()
@@ -65,6 +68,7 @@ bool Framework::Update()
 	//キーボード情報の取得開始
 	KeyboardInput::GetInstance().Update();
 	PadInput::GetInstance().Update();
+	MouseInput::GetInstance().Update();
 
 	//カメラマネージャー
 	CameraManager::GetInstance().Update();
