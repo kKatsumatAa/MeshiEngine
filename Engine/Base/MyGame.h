@@ -16,7 +16,7 @@ public:
 	void Finalize() override;
 
 	//毎フレーム更新
-	bool Update() override;
+	void Update() override;
 
 	//描画
 	void Draw() override;

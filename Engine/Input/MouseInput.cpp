@@ -8,7 +8,7 @@ BOOL CALLBACK DeviceFindCallBackM(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef)
 	return DIENUM_STOP;
 }
 
-void MouseInput::CreateDevice()
+void MouseInput::CreateDevice(bool isExclusive)
 {
 	//つながってたら呼ばれる関数なのでフラグはオンに
 	isActive_ = true;
@@ -31,9 +31,15 @@ void MouseInput::CreateDevice()
 	mouse_->SetDataFormat(&c_dfDIMouse);
 	assert(SUCCEEDED(result));
 
+	//ほかのアプリでもマウス取得させるか
+	int32_t exclusive = DISCL_NONEXCLUSIVE;
+	if (isExclusive) { 
+		exclusive = DISCL_EXCLUSIVE;
+	}
+
 	//協調モードの設定(ウィンドウがアクティブ中のみ取得、別アプリケーションでも取得できる)
 	if (FAILED(mouse_->SetCooperativeLevel(WindowsApp::GetInstance().Gethwnd(),
-		DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY)
+		DISCL_FOREGROUND | exclusive | DISCL_NOWINKEY)
 	))
 	{
 		assert(false);
@@ -45,8 +51,6 @@ void MouseInput::CreateDevice()
 
 void MouseInput::MouseConnectSearch()
 {
-	searchCount_++;
-
 	//毎フレーム接続確認すると重いので
 	if (searchCount_ % SEARCH_COUNT_MAX_ == 0)
 	{
@@ -71,6 +75,8 @@ void MouseInput::MouseConnectSearch()
 			mouse_.Reset();
 		}
 	}
+
+	searchCount_++;
 }
 
 MouseInput::MouseInput()

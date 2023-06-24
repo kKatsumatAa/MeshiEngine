@@ -22,6 +22,7 @@ protected:
 
 	std::unique_ptr <ImGuiManager> imguiM_;
 
+	bool isEndGame_ = false;
 
 public:
 	//仮想デストラクタ(派生クラスのデストラクタを呼べるように)
@@ -34,7 +35,7 @@ public:
 	virtual void Finalize();
 
 	//毎フレーム更新
-	virtual bool Update();
+	virtual void Update();
 
 	//描画(継承しないとインスタンスを生成出来なくするため)
 	virtual void Draw() = 0;

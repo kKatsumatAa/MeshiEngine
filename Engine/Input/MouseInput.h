@@ -46,7 +46,7 @@ public:
 
 	static MouseInput& GetInstance();
 
-	void CreateDevice();
+	void CreateDevice(bool isExclusive = false);
 
 	void Update();
 

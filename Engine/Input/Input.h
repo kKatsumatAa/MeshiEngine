@@ -24,14 +24,13 @@ private:
 private:
 	Input();
 
-	~Input();
-
 public:
 	//コピーコンストラクタを無効
 	Input(const Input& obj) = delete;
 	//代入演算子も
 	Input& operator=(const Input& obj) = delete;
 
+	void Finalize();
 
 	static Input& GetInstance();
 

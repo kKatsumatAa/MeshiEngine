@@ -24,6 +24,8 @@ void Framework::Initialize()
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
+	//trueにすることでマウスがほかのアプリで使用されない
+	MouseInput::GetInstance().CreateDevice(true);
 
 	ParticleManager::GetInstance()->Initialize();
 
@@ -58,11 +60,12 @@ void Framework::Finalize()
 	PadInput::GetInstance().Finalize();
 }
 
-bool Framework::Update()
+void Framework::Update()
 {
-	if (WindowsApp::GetInstance().MessegeRoop(msg_))
+	//終了
+	if (WindowsApp::GetInstance().MessegeRoop(msg_) || KeyboardInput::GetInstance().KeyPush(DIK_ESCAPE))
 	{
-		return true;
+		isEndGame_ = true;
 	}
 
 	//キーボード情報の取得開始
@@ -88,8 +91,6 @@ bool Framework::Update()
 	sceneM_->DrawImgui();
 
 	imguiM_->End();
-
-	return false;
 }
 
 void Framework::Run()
@@ -98,13 +99,10 @@ void Framework::Run()
 	Initialize();
 
 	//ゲームループ
-	while (true) {
+	while (!isEndGame_) {
 
 		//ゲームの更新
-		if (Update())
-		{
-			break;
-		}
+		Update();
 
 		//ゲームの描画
 		Draw();

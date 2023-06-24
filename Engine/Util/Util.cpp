@@ -333,3 +333,14 @@ void ConstWCharTToChar(const wchar_t* wString, char(&string)[128])
 	size_t size = _countof(string);
 	wcstombs_s(&size, string, wString, size);
 }
+
+float SmoothStep(float Min, float Max, float V)
+{
+	V = (V - Min) / (Max - Min);
+	float d = V - 1.0f;
+	long  r = (*(long*)&V ^ 0x3F800000) & (*(long*)&d >> 31);
+	r ^= 0x3F800000;
+	r &= ~(r >> 31);
+	float x = *(float*)&r;
+	return (x * x * (3.0f - (x + x)));
+}

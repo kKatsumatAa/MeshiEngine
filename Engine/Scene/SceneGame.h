@@ -3,11 +3,13 @@
 #include"PostPera.h"
 #include"Model.h"
 #include"Object.h"
+#include"Player.h"
 
 
 class SceneGame : public SceneState
 {
 private:
+	std::unique_ptr<Player> player_;
 
 public:
 	void Finalize()override;

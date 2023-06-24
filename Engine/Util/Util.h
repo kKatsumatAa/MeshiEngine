@@ -77,3 +77,6 @@ void ConstCharToWcharT(const char* string, wchar_t(&wString)[128]);
 
 //const wchar_t* を char* に変換
 void ConstWCharTToChar(const wchar_t* wString, char(&string)[128]);
+
+//スムースステップ
+float SmoothStep(float Min, float Max, float V);

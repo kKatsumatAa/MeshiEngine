@@ -9,7 +9,7 @@ Input::Input()
 	assert(SUCCEEDED(result_));
 }
 
-Input::~Input()
+void Input::Finalize()
 {
 	directInput_->Release();
 }

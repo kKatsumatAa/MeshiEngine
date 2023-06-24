@@ -13,7 +13,7 @@ private:
 	ComPtr<ID3D12Resource> depthBuff_;
 	// スワップチェーンの設定
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc_{};
-	ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
+	ComPtr<IDXGISwapChain4> swapChain_;
 	// デスクリプタヒープの設定
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc_{};
 	ComPtr < ID3D12DescriptorHeap> rtvHeap_ = nullptr;

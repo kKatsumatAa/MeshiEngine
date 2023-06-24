@@ -24,18 +24,13 @@ void MyGame::Finalize()
 	Framework::Finalize();
 }
 
-bool MyGame::Update()
+void MyGame::Update()
 {
 	//基底クラスの更新処理
-	if (Framework::Update())
-	{
-		return true;
-	}
+	Framework::Update();
 
 	//ゲーム固有の更新処理
 
-
-	return false;
 }
 
 void MyGame::Draw()

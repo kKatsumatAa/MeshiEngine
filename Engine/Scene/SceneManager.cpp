@@ -14,8 +14,6 @@
 SceneManager::~SceneManager()
 {
 	state_->Finalize();
-	camera_.reset();
-	//音データ解放
 }
 
 void SceneManager::ChangeScene(std::string sceneName)
@@ -60,23 +58,6 @@ void SceneManager::Initialize()
 	//レベルマネージャー
 	LevelManager::GetInstance().StaticInitialize();
 	LevelManager::GetInstance().LoadLevelData();
-	//カメラ
-	CameraManager::GetInstance().SetUsingCamera("mainCamera");
-
-	//fbx読み込み
-	modelFBX_ = ModelManager::GetInstance().LoadModelFBX("boneTest");
-
-	model_[6] = ModelManager::GetInstance().LoadModel("chr_sword");
-
-	draw_[5].SetScale({ 1.3f,1.3f,1.3f });
-	draw_[5].SetTrans({ fighterPos_[0],fighterPos_[1] - 1.0f,fighterPos_[2] });
-	draw_[5].SetRot({ -3.14f / 2.0f,0,0 });
-	draw_[5].CulcWorldMat();
-
-	draw_[6].SetScale({ 2.3f,2.3f,2.3f });
-	draw_[6].SetTrans({ -20,0,0 });
-	draw_[6].SetRot({ 0,0,0 });
-	draw_[6].CulcWorldMat();
 
 	//インスタンス生成
 	lightManager_ = std::move(LightManager::Create());
@@ -95,12 +76,6 @@ void SceneManager::Initialize()
 	}
 	//丸影
 	lightManager_->SetCircleShadowActive(0, false);
-
-	//カメラ
-	camera_ = std::make_unique<Camera>();
-	camera_->Initialize();
-
-	//Sound::GetInstance().PlayWave("Stage_BGM.wav");
 }
 
 void SceneManager::Update(PostPera* postPera)

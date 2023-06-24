@@ -67,9 +67,7 @@ void PadInput::CreateDevice()
 
 void PadInput::PadConnectSearch()
 {
-	searchCount_++;
-
-	//舞フレーム接続確認すると重いので
+	//毎フレーム接続確認すると重いので
 	if (searchCount_ % SEARCH_COUNT_MAX_ == 0)
 	{
 		searchCount_ = 0;
@@ -93,6 +91,8 @@ void PadInput::PadConnectSearch()
 			gamePad_.Reset();
 		}
 	}
+
+	searchCount_++;
 }
 
 PadInput::PadInput()

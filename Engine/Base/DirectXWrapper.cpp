@@ -356,13 +356,19 @@ void DirectXWrapper::PostDraw()
 	ID3D12CommandList* commandLists[] = { commandList_.Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 
+	// 画面に表示するバッファをフリップ(裏表の入替え)
+	result_ = swapChain_->Present(1, 0);
+
 	// コマンドの実行完了を待つ
 	commandQueue_->Signal(fence_.Get(), ++fenceVal_);
-	if (fence_->GetCompletedValue() != fenceVal_) {
+	if (fence_->GetCompletedValue() != fenceVal_)//GPUの処理が完了したか
+	{
 		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
 		fence_->SetEventOnCompletion(fenceVal_, event);
-		WaitForSingleObject(event, INFINITE);
-		CloseHandle(event);
+		if (event != 0) {
+			WaitForSingleObject(event, INFINITE);
+			CloseHandle(event);
+		}
 	}
 
 	//FPS固定
@@ -371,8 +377,6 @@ void DirectXWrapper::PostDraw()
 	//リセット
 	CommandReset();
 
-	// 画面に表示するバッファをフリップ(裏表の入替え)
-	result_ = swapChain_->Present(1, 0);
 	assert(SUCCEEDED(result_));
 }
 

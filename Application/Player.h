@@ -4,23 +4,32 @@
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
 
+
 class Player :
-    public Object
+	public Object
 {
-public:
-    /// <summary>
-    /// オブジェクト生成
-    /// </summary>
-    /// <param name="model"></param>
-    /// <returns></returns>
-    static std::unique_ptr<Player> Create();
+private:
+	Vec3 velocity_ = { 0,0,0 };
+	const float ANGLE_VEL_EXTEND_ = 0.003f;
 
 public:
+	/// <summary>
+	/// オブジェクト生成
+	/// </summary>
+	/// <param name="model"></param>
+	/// <returns></returns>
+	static std::unique_ptr<Player> Create();
 
-    bool Initialize() override;
+private:
+	//移動
+	void Move();
 
-    void Update() override;
+public:
 
-    void OnCollision(const CollisionInfo& info) override;
+	bool Initialize() override;
+
+	void Update() override;
+
+	void OnCollision(const CollisionInfo& info) override;
 };
 
