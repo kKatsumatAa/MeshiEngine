@@ -8,6 +8,8 @@
 //画面効果用のフラグ
 struct EffectConstBuffer
 {
+	//課題用マルチテクスチャ組み合わせ
+	uint32_t isMultiTex = false;
 	//ぼかし
 	uint32_t isGaussian = false;
 	//ガウシアンぼかし

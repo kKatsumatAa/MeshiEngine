@@ -13,6 +13,9 @@ void MyGame::Initialize()
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneM_->SetSceneFactory(sceneFactory_.get());
 	sceneM_->ChangeScene("GAME");
+
+	//
+	postPera_[0]->effectFlags_.isMultiTex = true;
 }
 
 void MyGame::Finalize()

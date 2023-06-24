@@ -107,6 +107,17 @@ float4 PS2(Output input) : SV_TARGET
 			+ saturate(bloomAccum[1]) / 1.1f;//縮小ぼかし済み(/ で強さ調整)
 	}
 
+	//課題用のマルチテクスチャ組み合わせ
+	if (isMultiTex)
+	{
+		float4 color = tex1.Sample(smp, input.uv);
+		if (fmod(input.uv.y, 0.1f) < 0.05f)
+		{
+			color = tex0.Sample(smp, input.uv);
+		}
+
+		return float4(color.rgb, 1);
+	}
 
 	if (isEffect)
 	{

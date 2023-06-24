@@ -85,7 +85,7 @@ float4 PS(Output input) : SV_TARGET
 	}
 
 	//ƒKƒEƒVƒAƒ“
-	if (isGaussian == true)
+	if (isGaussian == true || isMultiTex)
 	{
 		float dx = 2.0f / w;
 		float dy = 2.0f / h;

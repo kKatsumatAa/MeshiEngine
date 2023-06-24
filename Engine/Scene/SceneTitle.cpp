@@ -12,7 +12,7 @@ void SceneTitle::Initialize()
 	sceneM_->StopWaveAllScene();
 }
 
-void SceneTitle::Update()
+void SceneTitle::Update(PostPera* postPera)
 {
 
 

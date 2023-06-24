@@ -70,7 +70,7 @@ bool Framework::Update()
 	CameraManager::GetInstance().Update();
 
 	//XVˆ—
-	sceneM_->Update();
+	sceneM_->Update(postPera_->get());
 
 	//imgui
 	imguiM_->Begin();

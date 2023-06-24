@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "FbxLoader.h"
 #include "JsonLevelLoader.h"
+#include "CameraManager.h"
 
 
 //---------------------------------------------------------------------------------------
@@ -59,6 +60,8 @@ void SceneManager::Initialize()
 	//レベルマネージャー
 	LevelManager::GetInstance().StaticInitialize();
 	LevelManager::GetInstance().LoadLevelData();
+	//カメラ
+	CameraManager::GetInstance().SetUsingCamera("debugCamera");
 
 	//fbx読み込み
 	modelFBX_ = ModelManager::GetInstance().LoadModelFBX("boneTest");
@@ -100,11 +103,11 @@ void SceneManager::Initialize()
 	//Sound::GetInstance().PlayWave("Stage_BGM.wav");
 }
 
-void SceneManager::Update()
+void SceneManager::Update(PostPera* postPera)
 {
 	lightManager_->Update();
 
-	state_->Update();
+	state_->Update(postPera);
 
 	lightManager_->SetAmbientColor({ ambientColor_[0],ambientColor_[1], ambientColor_[2] });
 	lightManager_->SetDiffuseColor({ diffuseColor_[0],diffuseColor_[1], diffuseColor_[2] });

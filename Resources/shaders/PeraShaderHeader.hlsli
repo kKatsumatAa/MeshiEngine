@@ -4,6 +4,8 @@
 cbuffer ConstBufferEffectFlags : register(b0)
 {
 	//‚Ú‚©‚µ
+	unsigned int isMultiTex;
+	//‚Ú‚©‚µ
 	unsigned int isGaussian;
 	//ƒKƒEƒVƒAƒ“‚Ú‚©‚µ
 	unsigned int isGaussian2;

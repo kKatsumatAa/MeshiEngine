@@ -79,7 +79,7 @@ public:
 	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
 
 	void Initialize();
-	void Update();
+	void Update(PostPera* postPera);
 	void Draw();
 	void DrawPostEffect();
 	void DrawPostEffect2();

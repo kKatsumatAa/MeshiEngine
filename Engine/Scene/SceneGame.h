@@ -12,7 +12,7 @@ private:
 public:
 	void Finalize()override;
 	void Initialize()override;
-	void Update()override;
+	void Update(PostPera* postPera)override;
 	void Draw()override;
 	void DrawSprite()override;
 
