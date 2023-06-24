@@ -61,7 +61,7 @@ void SceneManager::Initialize()
 	LevelManager::GetInstance().StaticInitialize();
 	LevelManager::GetInstance().LoadLevelData();
 	//ƒJƒƒ‰
-	CameraManager::GetInstance().SetUsingCamera("debugCamera");
+	CameraManager::GetInstance().SetUsingCamera("mainCamera");
 
 	//fbx“Ç‚İ‚İ
 	modelFBX_ = ModelManager::GetInstance().LoadModelFBX("boneTest");
