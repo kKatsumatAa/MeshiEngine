@@ -29,7 +29,7 @@ public: // サブクラス
 	// 頂点データ構造体
 	struct VertexPos
 	{
-		XMFLOAT3 pos; // xyz座標
+		Vec3 pos; // xyz座標
 		float scale; // スケール
 		XMFLOAT4 color;//色
 	};
@@ -54,11 +54,11 @@ public: // サブクラス
 
 	public:
 		// 座標
-		XMFLOAT3 position_ = {};
+		Vec3 position_ = {};
 		// 速度
-		XMFLOAT3 velocity_ = {};
+		Vec3 velocity_ = {};
 		// 加速度
-		XMFLOAT3 accel_ = {};
+		Vec3 accel_ = {};
 		// 色
 		XMFLOAT4 color_ = {};
 		// スケール
@@ -74,7 +74,7 @@ public: // サブクラス
 		float eScale_ = 0.0f;
 		float eRotation_ = 0.0f;
 		// 現在フレーム
-		int32_t frame_ = 0;
+		float frame_ = 0;
 		// 終了フレーム
 		int32_t numFrame_ = 0;
 	};
@@ -124,7 +124,7 @@ public: // メンバ関数
 	/// <param name="accel">加速度</param>
 	/// <param name="start_scale">開始時スケール</param>
 	/// <param name="end_scale">終了時スケール</param>
-	void Add(int32_t life, const XMFLOAT3& position, const XMFLOAT3& velocity, const XMFLOAT3& accel, float start_scale, float end_scale
+	void Add(int32_t life, const Vec3& position, const Vec3& velocity, const Vec3& accel, float start_scale, float end_scale
 		, const XMFLOAT4& start_color = { 1.0f,1.0f,1.0f,1.0f }, const XMFLOAT4& end_color = { 1.0f,1.0f,1.0f,1.0f }, float start_rot = 0.0f, float end_rot = 0.0f);
 
 	//ランダムに生成

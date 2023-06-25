@@ -2,6 +2,8 @@
 #include "SceneManager.h"
 #include "JsonLevelLoader.h"
 #include "CameraManager.h"
+#include "CollisionManager.h"
+#include "GameVelocityManager.h"
 
 
 void SceneGame::Finalize()
@@ -12,18 +14,30 @@ void SceneGame::Finalize()
 //---------------------------------------------------------------------------------------
 void SceneGame::Initialize()
 {
-	player_ = Player::Create();
+	//json
+	JsonLevelLoader::Getinstance().Initialize();
+	JsonLevelLoader::Getinstance().LoadJsonFile("level");
+	//レベルマネージャー
+	LevelManager::GetInstance().StaticInitialize();
+	LevelManager::GetInstance().LoadLevelData();
 
 	//カメラをセット
 	CameraManager::GetInstance().SetUsingCamera("playerCamera");
+
+	//ゲームスピード
+	GameVelocityManager::GetInstance().Initialize();
 }
 
 void SceneGame::Update(PostPera* postPera)
 {
+	//レベルデータで読み込んだオブジェクト等
 	LevelManager::GetInstance().Update();
 
-	//
-	player_->Update();
+	//判定
+	CollisionManager::GetInstance()->CheckAllCollisions();
+
+	//ゲームスピード
+	GameVelocityManager::GetInstance().Update();
 
 	//シーン遷移
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
@@ -35,8 +49,6 @@ void SceneGame::Update(PostPera* postPera)
 void SceneGame::Draw()
 {
 	LevelManager::GetInstance().Draw();
-
-	player_->Draw();
 }
 
 void SceneGame::DrawSprite()
@@ -45,6 +57,7 @@ void SceneGame::DrawSprite()
 
 void SceneGame::DrawImgui()
 {
+	GameVelocityManager::GetInstance().UpdateImGui();
 }
 
 void SceneGame::DrawPostEffect()

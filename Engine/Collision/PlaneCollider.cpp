@@ -11,7 +11,7 @@ void PlaneCollider::Update()
 	//–@ü‚ðŒvŽZ
 	WorldMat worldNormal;
 	worldNormal.rot_ = object_->GetRot();
-	worldNormal.SetWorld();
+	worldNormal.SetWorldMat();
 	//‰ñ“]‚Ì‚Ý
 	Vec3 normal = GetVec3xM4({ 0,0,-1.0f }, worldNormal.matWorld_, 1);
 	normal.Normalized();

@@ -28,7 +28,7 @@ WorldMat::WorldMat()
 	  0,0,0,1 };
 }
 
-void WorldMat::SetScale()
+void WorldMat::SetScaleMat()
 {
 	matScale_ = {
 		scale_.x_, 0, 0, 0,
@@ -40,7 +40,7 @@ void WorldMat::SetScale()
 	matWorld_ *= matScale_;
 }
 
-void WorldMat::SetRot()
+void WorldMat::SetRotMat()
 {
 	matRot_ = NORMAL_M;
 	matRot_ *= {
@@ -64,7 +64,7 @@ void WorldMat::SetRot()
 	matWorld_ *= matRot_;
 }
 
-void WorldMat::SetTrans()
+void WorldMat::SetTransMat()
 {
 	matWorld_ *= {
 		1, 0, 0, 0,
@@ -74,7 +74,7 @@ void WorldMat::SetTrans()
 	};
 }
 
-void WorldMat::SetWorld()
+void WorldMat::SetWorldMat()
 {
 	//çsóÒåvéZ
 	CulcWorldMat();
@@ -117,7 +117,7 @@ void WorldMat::CulcWorldMat()
 {
 	matWorld_ = NORMAL_M;
 
-	SetScale();
-	SetRot();
-	SetTrans();
+	SetScaleMat();
+	SetRotMat();
+	SetTransMat();
 }

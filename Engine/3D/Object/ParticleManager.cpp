@@ -1,6 +1,8 @@
 ﻿#include "ParticleManager.h"
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
+#include "CameraManager.h"
+#include "GameVelocityManager.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -9,34 +11,6 @@ using namespace Microsoft::WRL;
 
 XMMATRIX ParticleManager::sMatBillboard_ = XMMatrixIdentity();
 XMMATRIX ParticleManager::sMatBillboardY_ = XMMatrixIdentity();
-
-
-static const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
-{
-	XMFLOAT3 result;
-	result.x = lhs.x + rhs.x;
-	result.y = lhs.y + rhs.y;
-	result.z = lhs.z + rhs.z;
-	return result;
-}
-
-static const DirectX::XMFLOAT3 operator-(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
-{
-	XMFLOAT3 result;
-	result.x = lhs.x - rhs.x;
-	result.y = lhs.y - rhs.y;
-	result.z = lhs.z - rhs.z;
-	return result;
-}
-
-const DirectX::XMFLOAT3 operator/(const DirectX::XMFLOAT3& lhs, float RHS)
-{
-	XMFLOAT3 result;
-	result.x = lhs.x / RHS;
-	result.y = lhs.y / RHS;
-	result.z = lhs.z / RHS;
-	return result;
-}
 
 static const DirectX::XMFLOAT4 operator+(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs)
 {
@@ -98,6 +72,12 @@ void ParticleManager::Update(Camera* camera)
 {
 	HRESULT result;
 
+	//カメラがセットされてなかったら
+	if (camera == nullptr)
+	{
+		camera = CameraManager::GetInstance().usingCamera_;
+	}
+
 	// 寿命が尽きたパーティクルを全削除
 	particles_.remove_if([](Particle& x) { return x.frame_ >= x.numFrame_; });
 
@@ -106,8 +86,11 @@ void ParticleManager::Update(Camera* camera)
 		it != particles_.end();
 		it++) {
 
+		//ゲームスピード
+		float gameVel[2] = { GameVelocityManager::GetInstance().GetVelocity(),1.0f - GameVelocityManager::GetInstance().GetVelocity() };
+
 		// 経過フレーム数をカウント
-		it->frame_++;
+		it->frame_ += 1.0f * gameVel[0];
 		// 進行度を0～1の範囲に換算
 		float f = (float)it->numFrame_ / it->frame_;
 
@@ -115,7 +98,7 @@ void ParticleManager::Update(Camera* camera)
 		it->velocity_ = it->velocity_ + it->accel_;
 
 		// 速度による移動
-		it->position_ = it->position_ + it->velocity_;
+		it->position_ = it->position_ + it->velocity_ * gameVel[0];
 
 		// カラーの線形補間
 		it->color_ = it->sColor_ + (it->eColor_ - it->sColor_) / f;
@@ -199,7 +182,7 @@ void ParticleManager::Draw(uint64_t texHandle)
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(drawNum, 1, 0, 0);
 }
 
-void ParticleManager::Add(int32_t life, const XMFLOAT3& position, const XMFLOAT3& velocity, const XMFLOAT3& accel, float start_scale, float end_scale
+void ParticleManager::Add(int32_t life, const Vec3& position, const Vec3& velocity, const Vec3& accel, float start_scale, float end_scale
 	, const XMFLOAT4& start_color, const XMFLOAT4& end_color, float start_rot, float end_rot)
 {
 	// リストに要素を追加
@@ -524,15 +507,15 @@ void ParticleManager::GenerateRandomParticle(int32_t num, int32_t lifeTime, floa
 		Vec3 pos = position;
 
 		const float MD_VEL = vecPower;
-		XMFLOAT3 vel{};
-		vel.x = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.y = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.z = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		Vec3 vel{};
+		vel.x_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
 
 		//重力に見立ててYのみ[-0.001f~0]でランダムに
-		XMFLOAT3 acc{};
+		Vec3 acc{};
 		const float MD_ACC = vecPower * 0.05f;
-		acc.y = -(float)rand() / RAND_MAX * MD_ACC;
+		acc.y_ = -(float)rand() / RAND_MAX * MD_ACC;
 
 		ParticleManager::GetInstance()->Add(lifeTime, { pos.x_,pos.y_,pos.z_ }, vel, acc, start_scale, end_scale
 			, start_color, end_color);

@@ -300,6 +300,12 @@
     <ClCompile Include="Engine\Input\MouseInput.cpp">
       <Filter>ソース ファイル\Engine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Enemy.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameVelocityManager.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Player.h">
@@ -499,6 +505,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Input\MouseInput.h">
       <Filter>ヘッダー ファイル\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Enemy.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameVelocityManager.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -193,7 +193,7 @@ void DrawInitialize()
 //----------------------------------------------------------------
 bool Object::Initialize()
 {
-	NAME = typeid(*this).name();
+	objName_ = typeid(*this).name();
 	return true;
 }
 
@@ -213,7 +213,7 @@ Object::~Object()
 void Object::Update()
 {
 	//行列更新
-	worldMat_->SetWorld();
+	worldMat_->SetWorldMat();
 	//当たり判定更新
 	if (collider_.get())
 	{
@@ -327,7 +327,7 @@ void Object::SendingMat(int32_t indexNum, Camera* camera)
 {
 
 	//変換行列をGPUに送信
-	worldMat_->SetWorld();
+	worldMat_->SetWorldMat();
 	//スプライトじゃない場合
 	if (indexNum != SPRITE)
 	{

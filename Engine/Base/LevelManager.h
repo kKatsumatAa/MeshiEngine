@@ -26,6 +26,9 @@ public:
 	//JsonLevelLoaderで読み込んだ内容を実際にエンジン上で読み込む
 	void LoadLevelData();
 
+	//ファイル名によってクラス生成
+	void LoadCharacter(const LevelData::ObjectData& objData);
+
 	//読み込んだものを動かす
 	void Update();
 	//読み込んだものを描画

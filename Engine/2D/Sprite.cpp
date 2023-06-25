@@ -97,7 +97,7 @@ void Sprite::Update(const Vec2& pos, float scale,
 
 	worldMat.rot_.z_ = AngletoRadi(rotation);
 	worldMat.trans_ = { pos.x_ /*+ length.x * ancorUV.x * scale*/,pos.y_/* + length.y * ancorUV.y * scale*/,0.0f };
-	worldMat.SetWorld();
+	worldMat.SetWorldMat();
 
 	//êeÇ™Ç¢ÇΩÇÁ
 	if (worldMat.parent_ != nullptr)
@@ -194,7 +194,7 @@ void Sprite::UpdateClipping(const Vec2& leftTop,  float scale, const XMFLOAT2& U
 			leftTop.y_ + texTop + UVlength.y * (float)length.y_ * scale / 2.0f,
 			0 };
 	}
-	worldMat.SetWorld();
+	worldMat.SetWorldMat();
 
 
 	//êeÇ™Ç¢ÇΩÇÁ

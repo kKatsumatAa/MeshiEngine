@@ -27,6 +27,7 @@ public:
 	void Update() override;
 
 	inline void SetRadius(float radius) { radius_ = radius; }
+	inline float GetRadius() { return radius_; }
 
 private:
 	// オブジェクト中心からのオフセット

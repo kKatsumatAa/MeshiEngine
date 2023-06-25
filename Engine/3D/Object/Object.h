@@ -87,6 +87,9 @@ private:
 	//
 	static float sRimColorF3_[3];
 
+	//生きてるフラグ
+	bool isAlive_ = true;
+
 	std::unique_ptr<WorldMat> worldMat_ = std::make_unique<WorldMat>();
 
 public://変数
@@ -106,7 +109,7 @@ public:
 
 protected://継承先まで公開
 	//クラス名(デバッグ用)
-	const char* NAME = nullptr;
+	std::string objName_;
 	//コライダー
 	std::unique_ptr<BaseCollider> collider_ = nullptr;
 
@@ -155,9 +158,22 @@ public:
 	void SetRotZ(float rot) { worldMat_->rot_.z_ = rot; }
 	const Vec3& GetRot() { return worldMat_->rot_; }
 	//行列を更新
-	void CulcWorldMat() { worldMat_->SetWorld(); }
+	void CulcWorldMat() { worldMat_->SetWorldMat(); }
+	void CulcRotMat() { worldMat_->SetRotMat(); }
+	void CulcTransMat() { worldMat_->SetTransMat(); }
+	void CulcScaleMat() { worldMat_->SetScaleMat(); }
 	//ワールド行列の中身コピー
 	void SetWorldMat_(WorldMat worldMat) { *worldMat_ = worldMat; }
+
+	//オブジェクト名前
+	void SetObjName(std::string objName) { objName_ = objName; }
+	const std::string& GetObjName() { return objName_; }
+	//コライダー
+	BaseCollider* GetCollider() { return collider_.get(); }
+
+	//生きてるか
+	inline void SetIsAlive(bool isAlive) { isAlive_ = isAlive; }
+	inline bool GetIsAlive() { return isAlive_; }
 
 	//初期化
 	virtual bool Initialize();

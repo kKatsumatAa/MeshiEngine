@@ -33,7 +33,8 @@ void MyGame::Update()
 	Framework::Update();
 
 	//ゲーム固有の更新処理
-
+		//パーティクル
+	ParticleManager::GetInstance()->Update();
 }
 
 void MyGame::Draw()

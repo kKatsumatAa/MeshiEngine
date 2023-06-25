@@ -5,12 +5,13 @@
 #include "PlaneCollider.h"
 
 
-class Player :
+class Enemy :
 	public Object
 {
 private:
-	const float ANGLE_VEL_EXTEND_ = 0.003f;
-	WorldMat rotWorldMat;
+	Vec3 velocity_ = { 0,0,0 };
+	const float VELOCITY_TMP_ = 1.0f;
+	bool isCantMove = false;
 
 public:
 	/// <summary>
@@ -18,7 +19,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Player> Create();
+	static std::unique_ptr<Enemy> Create();
 
 private:
 	//ˆÚ“®

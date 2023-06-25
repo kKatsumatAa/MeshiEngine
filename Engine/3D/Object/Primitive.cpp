@@ -538,7 +538,7 @@ void Primitive::InitializeSphere()
 			for (int32_t j = 0; j < 34; j++)//c
 			{
 				worldMat.rot_.x_ = ((float)(j + 1) * (PI / 35.0f));
-				worldMat.SetWorld();
+				worldMat.SetWorldMat();
 				vec = { 0,-1.0f,0 };
 				Vec3xM4(vec, worldMat.matWorld_, false);
 

@@ -52,13 +52,6 @@ void SceneManager::Initialize()
 		TextureManager::LoadGraph(L"Resources/image/test.jpg", texhandle_[4]);
 	}
 
-	//json
-	JsonLevelLoader::Getinstance().Initialize();
-	JsonLevelLoader::Getinstance().LoadJsonFile("level");
-	//レベルマネージャー
-	LevelManager::GetInstance().StaticInitialize();
-	LevelManager::GetInstance().LoadLevelData();
-
 	//インスタンス生成
 	lightManager_ = std::move(LightManager::Create());
 	//ライト色を設定
@@ -80,6 +73,9 @@ void SceneManager::Initialize()
 
 void SceneManager::Update(PostPera* postPera)
 {
+	//パーティクル
+	ParticleManager::GetInstance()->Update();
+
 	lightManager_->Update();
 
 	state_->Update(postPera);
@@ -92,6 +88,8 @@ void SceneManager::Update(PostPera* postPera)
 void SceneManager::Draw()
 {
 	state_->Draw();
+
+	ParticleManager::GetInstance()->Draw(texhandle_[1]);
 }
 
 void SceneManager::DrawPostEffect()

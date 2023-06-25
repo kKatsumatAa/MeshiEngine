@@ -93,7 +93,7 @@ void CameraManager::Update()
 			debugWorldMat_.rot_.x_ = min(debugWorldMat_.rot_.x_, PI / 2.0f);
 			debugWorldMat_.rot_.x_ = max(debugWorldMat_.rot_.x_, -PI / 2.0f);
 
-			debugWorldMat_.SetWorld();
+			debugWorldMat_.SetWorldMat();
 			debugCamera->viewMat_.eye_ = CAMERA_POS_;
 			Vec3xM4(debugCamera->viewMat_.eye_, debugWorldMat_.matWorld_, 0);
 			debugCamera->UpdateViewMatrix();

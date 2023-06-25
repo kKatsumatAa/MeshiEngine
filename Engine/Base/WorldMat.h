@@ -7,9 +7,6 @@ using namespace DirectX;
 class WorldMat
 {
 private:
-	void SetScale();
-	void SetRot();
-	void SetTrans();
 	M4 matScale_;
 	M4 matRot_;
 	M4 matTrans_;
@@ -32,5 +29,8 @@ public:
 
 	//
 	WorldMat();
-	void SetWorld();
+	void SetScaleMat();
+	void SetRotMat();
+	void SetTransMat();
+	void SetWorldMat();
 };
