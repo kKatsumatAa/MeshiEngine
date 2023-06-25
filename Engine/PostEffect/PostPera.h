@@ -126,8 +126,11 @@ private://関数
 	//二回目のエフェクトかける用の描画
 	void Draw2All();
 
+	//全てのビュー等をセット
+	void SetHeapAllBuffView(bool isPost2 = false);
+
 public:
-	void Initialize(const wchar_t* normalImageFileName);
+	void Initialize(const wchar_t* normalImageFileName, float vertexExtend = 1.0f);
 
 	void Update();
 

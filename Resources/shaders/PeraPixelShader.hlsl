@@ -2,8 +2,17 @@
 
 SamplerState smp : register(s0);
 
-float4 PS(Output input) : SV_TARGET
+//高輝度と通常
+struct PSOutput
 {
+	float4 color : SV_TARGET0;//通常
+	float4 highLumi : SV_TARGET1;//高輝度
+};
+
+PSOutput PS(Output input) : SV_TARGET
+{
+	PSOutput output;
+
 	// シェーディングによる色で描画
 	float4 RGBA = tex0.Sample(smp, input.uv);
 	float3 RGB = RGBA.rgb;
@@ -240,14 +249,22 @@ float4 PS(Output input) : SV_TARGET
 
 	if (isEffect)
 	{
-		return ret;
+		output.color = ret;
 	}
-
-	//マルチテクスチャ
+	else
 	{
-		//輝度だけ
-		//return tex2.Sample(smp, input.uv);
+		output.color = RGBA;
 	}
 
-	return RGBA;
+	//ブルーム
+	if(isBloom || isCrossFilter)
+	{
+		float4 col = tex0.Sample(smp, input.uv);
+		float grayScale = col.r * 0.299 + col.g * 0.587 + col.b * 0.144;
+		float extract = smoothstep(0.6, 0.9, grayScale);
+
+		output.highLumi = col * extract;
+	}
+
+	return output;
 }

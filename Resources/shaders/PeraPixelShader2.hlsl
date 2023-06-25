@@ -55,7 +55,7 @@ float4 PS2(Output input) : SV_TARGET
 		float dy = 1.0f / h;
 
 		float4 bloomAccum = float4(0, 0, 0, 0);
-		float2 uvSize = float2(1.0f, 0.5f);
+		float2 uvSize = float2(1.0, 0.5);
 		float2 uvOfst = float2(0, 0);
 
 		//iの上限を変えると強さが変わる（8にすると細かすぎておかしくなる）
@@ -63,13 +63,12 @@ float4 PS2(Output input) : SV_TARGET
 			bloomAccum += Get5x5GaussianBlur(
 				tex3, smp, input.uv * uvSize + uvOfst, dx, dy, float4(uvOfst, uvOfst + uvSize));
 			uvOfst.y += uvSize.y;
-			uvSize *= 0.5f;
+			uvSize *= 0.5;
 		}
 
 		//元の画像とぼかした高輝度の部分を足す
 		return tex0.Sample(smp, input.uv)//通常テクスチャ
-			+ Get5x5GaussianBlur(tex2,smp,input.uv,dx,dy,(0,0,1,1))//高輝度をぼかす
-			+ saturate(bloomAccum) / 1.1f;//縮小ぼかし済み(/ で強さ調整)
+			+ saturate(bloomAccum) / 1.8f;//縮小ぼかし済み(/ で強さ調整)
 	}
 
 	//クロスフィルタ
@@ -83,28 +82,29 @@ float4 PS2(Output input) : SV_TARGET
 		float dy = 1.0f / h;
 
 		float4 bloomAccum[2] = { float4(0, 0, 0, 0),float4(0, 0, 0, 0) };
-		float2 uvSize = float2(1.0f, 0.5f);
+		float2 uvSize = float2(1.0, 0.5);
 		float2 uvOfst = float2(0, 0);
 
 		//iの上限を変えると強さが変わる（8にすると細かすぎておかしくなる）
 		for (int i = 0; i < 2; ++i) {
-			bloomAccum[0] += GaussianAngle(tex3, smp, 30, input.uv * uvSize + uvOfst);
+			bloomAccum[0] += Get5x5GaussianBlur(
+				tex3, smp, input.uv * uvSize + uvOfst, dx, dy, float4(uvOfst, uvOfst + uvSize));
 			uvOfst.y += uvSize.y;
-			uvSize *= 0.5f;
+			uvSize *= 0.5;
 		}
-		uvSize = float2(1.0f, 0.5f);
+		uvSize = float2(1.0, 0.5);
 		uvOfst = float2(0, 0);
 		for (int i = 0; i < 2; ++i) {
-			bloomAccum[1] += GaussianAngle(tex4, smp, -30, input.uv * uvSize + uvOfst);
+			bloomAccum[1] += Get5x5GaussianBlur(
+				tex4, smp, input.uv * uvSize + uvOfst, dx, dy, float4(uvOfst, uvOfst + uvSize));
 			uvOfst.y += uvSize.y;
-			uvSize *= 0.5f;
+			uvSize *= 0.5;
 		}
 
 		//元の画像とぼかした高輝度の部分を足す
 		return tex0.Sample(smp, input.uv)//通常テクスチャ
-			+ Get5x5GaussianBlur(tex2, smp, input.uv, dx, dy, (0, 0, 1, 1))//高輝度をぼかす
-			+ saturate(bloomAccum[0]) / 1.1f//縮小ぼかし済み(/ で強さ調整)
-			+ saturate(bloomAccum[1]) / 1.1f;//縮小ぼかし済み(/ で強さ調整)
+			+ saturate(bloomAccum[0]) / 2.1f//縮小ぼかし済み(/ で強さ調整)
+			+ saturate(bloomAccum[1]) / 2.1f;//縮小ぼかし済み(/ で強さ調整)
 	}
 
 	//課題用のマルチテクスチャ組み合わせ

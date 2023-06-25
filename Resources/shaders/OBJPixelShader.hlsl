@@ -204,8 +204,7 @@ PSOutput main(VSOutput input)
 	//V“ñ‚Â–Ú
 	output.col2 = float4(1 - (RGBA).rgb, 1);
 	//ŽO‚Â–Ú
-	float y = dot(float3(0.299f, 0.587f, 0.114f), output.col);
-	output.highLumi = y > 1.0f ? output.col : 0.0f;
+	//output.highLumi = RGBA;
 
 	return output;
 }

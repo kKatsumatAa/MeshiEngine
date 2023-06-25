@@ -19,8 +19,7 @@ PSOutput main(GSOutput input)
 	//二つ目
 	output.col2 = output.col;
 	//三つ目
-	float y = dot(float3(0.299f, 0.587f, 0.114f), output.col);
-	output.highLumi = y > 1.0f ? output.col : 0.0f;
+	//output.highLumi = tex.Sample(smp, input.uv) * input.color;
 
 	return output;
 }

@@ -119,11 +119,39 @@ float4 Get5x5GaussianBlur(Texture2D<float4> tex, SamplerState smp, float2 uv, fl
 }
 
 //unity‚Ì•û‚ð
-float4 Gaussian2(float2 drawUV, float2 pickUV, float sigma)
+float4 GaussianTmp(float2 drawUV, float2 pickUV, float sigma)
 {
 	float d = distance(drawUV, pickUV);
 	float e = 2.71828182845904523536;
 	return pow(e, -(d * d) / (2 * sigma * sigma));
+}
+
+float4 Gaussian2(Texture2D<float4> tex, SamplerState smp, float2 uv)
+{
+	float w, h, level;
+
+	tex.GetDimensions(0, w, h, level);
+
+	float dx = 1.0f / w;
+	float dy = 1.0f / h;
+
+	float4 RGBA = tex.Sample(smp, uv);
+	float4 color = float4(0, 0, 0, 0);
+
+	float4 ret = float4(0, 0, 0, 0);
+	//ret += bkweights[0] * RGBA;
+	for (int i = 1; i < 8; ++i) {
+		ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, clamp(uv + float2(0, dy * i), 0, 1.0f));
+		ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, clamp(uv + float2(0, -dy * i), 0, 1.0f));
+	}
+	//ret += bkweights[0] * RGBA;
+	for (int i = 1; i < 8; ++i)
+	{
+		ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, clamp(uv + float2(i * dx, 0), 0, 1.0f));
+		ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, clamp(uv + float2(-i * dx, 0), 0, 1.0f));
+	}
+
+	return ret;
 }
 
 float4 GaussianAngle(Texture2D<float4> tex, SamplerState smp, float angle, float2 uv)
@@ -135,13 +163,13 @@ float4 GaussianAngle(Texture2D<float4> tex, SamplerState smp, float angle, float
 	float angleDeg = angle;
 	float angleRad = angleDeg * 3.1415 / 180;//‚Ú‚©‚·Šp“x
 
-	for (float j = -pickRange; j <= pickRange * 2; j += 0.005)
+	for (float j = -pickRange * 2; j <= pickRange * 2; j += 0.005)
 	{
 		float x = cos(angleRad) * j;//Šp“x‚©‚çÀ•WŽw’è
 		float y = sin(angleRad) * j;
 		pickUV = uv + float2(x, y);
 
-		float weight = Gaussian2(uv, pickUV, pickRange);//Ž©ì‚ÌƒKƒEƒXŠÖ”‚ÅŒvŽZ
+		float weight = GaussianTmp(uv, pickUV, pickRange);//Ž©ì‚ÌƒKƒEƒXŠÖ”‚ÅŒvŽZ
 		color += tex.Sample(smp, pickUV) * weight;//Žæ“¾‚·‚éF‚Éweight‚ð‚©‚¯‚é
 		totalWeight += weight;//Š|‚¯‚éweight‚Ì‡Œv’l‚ðT‚¦‚é
 	}
