@@ -28,7 +28,7 @@ WorldMat::WorldMat()
 	  0,0,0,1 };
 }
 
-void WorldMat::SetScaleMat()
+void WorldMat::CulcScaleMat()
 {
 	matScale_ = {
 		scale_.x_, 0, 0, 0,
@@ -40,7 +40,7 @@ void WorldMat::SetScaleMat()
 	matWorld_ *= matScale_;
 }
 
-void WorldMat::SetRotMat()
+void WorldMat::CulcRotMat()
 {
 	matRot_ = NORMAL_M;
 	matRot_ *= {
@@ -64,7 +64,24 @@ void WorldMat::SetRotMat()
 	matWorld_ *= matRot_;
 }
 
-void WorldMat::SetTransMat()
+void WorldMat::CulcQuaternionRotMat()
+{
+	matRot_ = NORMAL_M;
+	//z
+	Quaternion qZ = Quaternion::MakeAxisAngle({ 0,0,1.0f }, rot_.z_);
+	matRot_ *= qZ.MakeRotateMatrix();
+	//x
+	Quaternion qX = Quaternion::MakeAxisAngle({ 1.0f,0,0 }, rot_.x_);
+	matRot_ *= qX.MakeRotateMatrix();
+	//y
+	Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot_.y_);
+	matRot_ *= qY.MakeRotateMatrix();
+
+
+	matWorld_ *= matRot_;
+}
+
+void WorldMat::CulcTransMat()
 {
 	matWorld_ *= {
 		1, 0, 0, 0,
@@ -74,7 +91,7 @@ void WorldMat::SetTransMat()
 	};
 }
 
-void WorldMat::SetWorldMat()
+void WorldMat::CulcAllTreeMat()
 {
 	//行列計算
 	CulcWorldMat();
@@ -117,7 +134,23 @@ void WorldMat::CulcWorldMat()
 {
 	matWorld_ = NORMAL_M;
 
-	SetScaleMat();
-	SetRotMat();
-	SetTransMat();
+	CulcScaleMat();
+	//回転にクォータニオン
+	CulcQuaternionRotMat();
+	CulcTransMat();
+}
+
+Quaternion WorldMat::GetQuaternion()
+{
+	//z
+	Quaternion qZ = Quaternion::MakeAxisAngle({ 0,0,1.0f }, rot_.z_);
+	//x
+	Quaternion qX = Quaternion::MakeAxisAngle({ 1.0f,0,0 }, rot_.x_);
+	//y
+	Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot_.y_);
+
+	qZ = qZ.GetMultiply(qX);
+	qZ = qZ.GetMultiply(qY);
+
+	return Quaternion(qZ);
 }

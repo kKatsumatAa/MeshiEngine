@@ -4,6 +4,7 @@
 #include "Vec2.h"
 #include "Vec4.h"
 #include "M4.h"
+#include "Quaternion.h"
 #include"TextureManager.h"
 
 //自作
@@ -13,7 +14,6 @@ Vec3 GetVec3xM4(Vec3 v, const M4& m4, bool w);
 void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w);
 
 //ラジアン系
-const float PI = 3.141592f;
 float AngletoRadi(float angle);
 float RaditoAngle(float radian);
 float GetRadianVec3(const Vec3& v1, const Vec3& v2);
@@ -80,3 +80,10 @@ void ConstWCharTToChar(const wchar_t* wString, char(&string)[128]);
 
 //スムースステップ
 float SmoothStep(float Min, float Max, float V);
+
+//回転行列から角度を求める
+Vec3 GetRotFromQuaternion(Quaternion q);
+
+Vec3 GetRotFromMat(M4 m);
+
+bool Approximately(float a, float b);

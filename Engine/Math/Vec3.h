@@ -1,6 +1,8 @@
 #pragma once
 #include<DirectXMath.h>
 
+const float PI = 3.1415f;
+
 class Vec3
 {
 private:

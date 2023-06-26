@@ -79,6 +79,10 @@ void LevelManager::LoadCharacter(const LevelData::ObjectData& objData)
 	//worldmat
 	newObj->SetWorldMat_(*objData.worldMat.get());
 
+	//³–ÊƒxƒNƒgƒ‹(obj‚ÌŠp“x‚É‚æ‚Á‚Ä‰ñ“],‰ñ“]Œã‚ÌƒxƒNƒgƒ‹‚ðŠî‘b³–Ê‚Æ‚·‚é)
+	newObj->CulcFrontVec();
+	newObj->SetFrontVecTmp(newObj->GetFrontVec());
+
 	//ƒZƒbƒg‚Å“o˜^
 	objAndModels_.insert(std::make_pair(std::move(newObj), model));
 }

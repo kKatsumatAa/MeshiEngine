@@ -154,7 +154,7 @@ void JsonLevelLoader::LoadCameraData(const nlohmann::json::iterator& object)
 		WorldMat targetWorldMat;
 		targetWorldMat.rot_ = targetRot;
 
-		targetWorldMat.SetWorldMat();
+		targetWorldMat.CulcWorldMat();
 		//奥に向かうベクトルをターゲットの元とする
 		Vec3 targetTmpPos = { 0,0,1.0f };
 		//読み込んだ角度でターゲットを回転

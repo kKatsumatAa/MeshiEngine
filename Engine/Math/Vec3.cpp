@@ -8,7 +8,7 @@ float Vec3::GetLength() const
 void Vec3::Normalized()
 {
     float len = GetLength();
-    if (len > 0) {
+    if (len != 0.0f) {
         *this /= GetLength();
     }
 }
@@ -16,7 +16,7 @@ void Vec3::Normalized()
 Vec3 Vec3::GetNormalized() const
 {
     float len = GetLength();
-    if (len > 0) { return *this / len; }
+    if (len != 0.0f) { return *this / len; }
 
     return *this;
 }

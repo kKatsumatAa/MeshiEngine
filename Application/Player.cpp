@@ -77,7 +77,7 @@ void Player::Move()
 	Vec3 frontVec = { 0,0,1.0f };
 	Vec3 upVec = { 0,1.0f,0 };
 	Vec3 rightVec = { 0,0,0 };
-	rotWorldMat.SetWorldMat();
+	rotWorldMat.CulcWorldMat();
 	//‰ñ“]
 	Vec3xM4(frontVec, rotWorldMat.matWorld_, 0);
 

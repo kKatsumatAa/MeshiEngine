@@ -64,12 +64,15 @@ Quaternion Quaternion::GetNormalize() const
 
 	float length = GetLength();
 
-	ans.w_ = w_ / length;
-	ans.x_ = x_ / length;
-	ans.y_ = y_ / length;
-	ans.z_ = z_ / length;
+	if (length != 0.0f)
+	{
+		ans.w_ = w_ / length;
+		ans.x_ = x_ / length;
+		ans.y_ = y_ / length;
+		ans.z_ = z_ / length;
+	}
 
-	return Quaternion(ans);
+	return Quaternion(*this);
 }
 
 Quaternion Quaternion::GetInverse() const
@@ -85,8 +88,17 @@ Quaternion Quaternion::GetInverse() const
 //----------
 Quaternion Quaternion::MakeAxisAngle(const Vec3& axis, float angle)
 {
-	Vec3 ansV = axis.GetNormalized() * sinf(angle / 2.0f);
-	Quaternion ans(ansV.x_, ansV.y_, ansV.z_, cosf(angle / 2.0f));
+	Quaternion ans;
+	Vec3 axis_ = axis;
+	axis_.Normalized();
+
+	float rad = sinf(angle / 2);
+	ans.x_ = axis_.x_ * rad;
+	ans.y_ = axis_.y_ * rad;
+	ans.z_ = axis_.z_ * rad;
+	ans.w_ = cosf(angle / 2);
+
+	ans = ans.GetNormalize();
 
 	return Quaternion(ans);
 }
@@ -110,18 +122,29 @@ Vec3 Quaternion::GetRotateVector(const Vec3& vector) const
 {
 	Quaternion r = { vector.x_,vector.y_,vector.z_,0 };
 	Quaternion q = *this;
+	q = q.GetNormalize();
 	Quaternion q2 = GetConjugate();
-	Quaternion ans = q * r * q2;
+	r = q.GetMultiply(r);
+	r = r.GetMultiply(q2);
 
-	return Vec3(ans.x_, ans.y_, ans.z_);
+	return Vec3(r.x_, r.y_, r.z_);
 }
 
 M4 Quaternion::MakeRotateMatrix() const
 {
 	M4 ans = {
-		w_ * w_ + x_ * x_ - y_ * y_ - z_ * z_,2 * (x_ * y_ + w_ * z_),2 * (x_ * z_ - w_ * y_),0,
-		2 * (x_ * y_ - w_ * z_),w_ * w_ - x_ * x_ + y_ * y_ - z_ * z_,2 * (y_ * z_ + w_ * x_),0,
-		2 * (x_ * z_ + w_ * y_),2 * (y_ * z_ - w_ * x_),w_ * w_ - x_ * x_ - y_ * y_ + z_ * z_,0,
+		w_ * w_ + x_ * x_ - y_ * y_ - z_ * z_,
+		2 * (x_ * y_ + w_ * z_),
+		2 * (x_ * z_ - w_ * y_),
+		0,
+		2 * (x_ * y_ - w_ * z_),
+		w_ * w_ - x_ * x_ + y_ * y_ - z_ * z_,
+		2 * (y_ * z_ + w_ * x_),
+		0,
+		2 * (x_ * z_ + w_ * y_),
+		2 * (y_ * z_ - w_ * x_),
+		w_ * w_ - x_ * x_ - y_ * y_ + z_ * z_,
+		0,
 		0,0,0,1
 	};
 
@@ -293,5 +316,5 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
 	}
 
 	//ÇªÇÍÇºÇÍÇÃï‚ä‘åWêîÇóòópÇµÇƒï‚ä‘å„ÇÃQuaternionÇãÅÇﬂÇÈ
-	return scale0 * q02 + scale1 * q1;	
+	return scale0 * q02 + scale1 * q1;
 }

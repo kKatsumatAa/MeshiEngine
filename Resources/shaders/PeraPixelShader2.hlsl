@@ -68,7 +68,7 @@ float4 PS2(Output input) : SV_TARGET
 
 		//元の画像とぼかした高輝度の部分を足す
 		return tex0.Sample(smp, input.uv)//通常テクスチャ
-			+ saturate(bloomAccum) / 1.8f;//縮小ぼかし済み(/ で強さ調整)
+			+ saturate(bloomAccum) / bloomPow;//縮小ぼかし済み(/ で強さ調整)
 	}
 
 	//クロスフィルタ
@@ -103,8 +103,8 @@ float4 PS2(Output input) : SV_TARGET
 
 		//元の画像とぼかした高輝度の部分を足す
 		return tex0.Sample(smp, input.uv)//通常テクスチャ
-			+ saturate(bloomAccum[0]) / 2.1f//縮小ぼかし済み(/ で強さ調整)
-			+ saturate(bloomAccum[1]) / 2.1f;//縮小ぼかし済み(/ で強さ調整)
+			+ saturate(bloomAccum[0]) / bloomPow//縮小ぼかし済み(/ で強さ調整)
+			+ saturate(bloomAccum[1]) / bloomPow;//縮小ぼかし済み(/ で強さ調整)
 	}
 
 	//課題用のマルチテクスチャ組み合わせ

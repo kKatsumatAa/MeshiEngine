@@ -13,6 +13,14 @@ private:
 	const float VELOCITY_TMP_ = 1.0f;
 	bool isCantMove = false;
 
+	//向きをプレイヤーに向けるためのクォータニオン
+	Quaternion directionQua_;
+	//初期向きのベクトル
+	Vec3 directionVec = { 0,0,1.0f };
+	//回転の時間
+	float directionRotTime = 0;
+	const float DIRCTION_ROT_TIME_ = 60;
+
 public:
 	/// <summary>
 	/// オブジェクト生成

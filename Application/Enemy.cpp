@@ -66,6 +66,23 @@ void Enemy::Move()
 	velocity_ = directionVec * VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity();
 
 	SetTrans(GetTrans() + velocity_);
+
+	//プレイヤーの方を向かせる
+	directionRotTime += GameVelocityManager::GetInstance().GetVelocity();
+	if (directionRotTime > DIRCTION_ROT_TIME_) { directionRotTime = 0; }
+	float t = directionRotTime / DIRCTION_ROT_TIME_;
+
+	//CulcFrontVec();
+
+	Quaternion q = Quaternion::DirectionToDirection(
+		GetFrontVec().GetNormalized(), directionVec.GetNormalized());
+
+	//角度をセット
+	Vec3 rot = GetRotFromQuaternion(Slerp(GetQuaternion(), q, 1.0f));
+	//Vec3 rot = GetRotFromQuaternion(q);
+	//Vec3 rot = GetRotFromMat(q.MakeRotateMatrix());
+	Vec3 rot1 = Object::GetRot();
+	SetRot(/*rot1 +*/ rot);
 }
 
 void Enemy::Update()
@@ -93,7 +110,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 
 			Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
 
-			ParticleManager::GetInstance()->Add(180, pos, vel, {0,0,0}, 1.0f, 0.0f);
+			ParticleManager::GetInstance()->Add(180, pos, vel, { 0,0,0 }, 1.0f, 0.0f);
 		}
 	}
 	//敵同士で当たったらめり込まないようにする

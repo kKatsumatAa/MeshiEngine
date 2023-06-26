@@ -210,10 +210,23 @@ Object::~Object()
 	}
 }
 
+const Vec3& Object::GetFrontVec()
+{
+	return frontVec_;
+}
+
+void Object::CulcFrontVec()
+{
+	Quaternion q = worldMat_->GetQuaternion();
+	frontVec_ = q.GetRotateVector({0,0,-1.0f});
+
+	//frontVec_.Normalized();
+}
+
 void Object::Update()
 {
 	//行列更新
-	worldMat_->SetWorldMat();
+	worldMat_->CulcWorldMat();
 	//当たり判定更新
 	if (collider_.get())
 	{
@@ -327,7 +340,7 @@ void Object::SendingMat(int32_t indexNum, Camera* camera)
 {
 
 	//変換行列をGPUに送信
-	worldMat_->SetWorldMat();
+	worldMat_->CulcWorldMat();
 	//スプライトじゃない場合
 	if (indexNum != SPRITE)
 	{

@@ -39,6 +39,8 @@ cbuffer ConstBufferEffectFlags : register(b0)
 	unsigned int isCrossFilter;
 	//ŠÔ
 	uint time;
+	//ƒuƒ‹[ƒ€‚Ì‹­‚³
+	float bloomPow;
 }
 
 cbuffer PostEffect : register(b1)

@@ -344,3 +344,103 @@ float SmoothStep(float Min, float Max, float V)
 	float x = *(float*)&r;
 	return (x * x * (3.0f - (x + x)));
 }
+
+Vec3 GetRotFromQuaternion(Quaternion q)
+{
+	Vec3 retRotVec = {};
+
+	//Quaternion r = transform.rotation;
+	float x = q.x_;
+	float y = q.y_;
+	float z = q.z_;
+	float w = q.w_;
+
+	float x2 = x * x;
+	float y2 = y * y;
+	float z2 = z * z;
+
+	float xy = x * y;
+	float xz = x * z;
+	float yz = y * z;
+	float wx = w * x;
+	float wy = w * y;
+	float wz = w * z;
+
+	// 1 - 2y^2 - 2z^2
+	float m00 = 1.0f - (2.0f * y2) - (2.0f * z2);
+
+	// 2xy + 2wz
+	float m01 = (2.0f * xy) + (2.0f * wz);
+
+	// 2xy - 2wz
+	float m10 = (2.0f * xy) - (2.0f * wz);
+
+	// 1 - 2x^2 - 2z^2
+	float m11 = 1.0f - (2.0f * x2) - (2.0f * z2);
+
+	// 2xz + 2wy
+	float m20 = (2.0f * xz) + (2.0f * wy);
+
+	// 2yz+2wx
+	float m21 = (2.0f * yz) - (2.0f * wx);
+
+	// 1 - 2x^2 - 2y^2
+	float m22 = 1.0f - (2.0f * x2) - (2.0f * y2);
+
+
+	float tx, ty, tz;
+
+	if (Approximately(m21, 1.0f))
+	{
+		tx = PI / 2.0f;
+		ty = 0;
+		tz = atan2(m10, m00);
+	}
+	else if (Approximately(m21, -1.0f))
+	{
+		tx = -PI / 2.0f;
+		ty = 0;
+		tz = atan2(m10, m00);
+	}
+	else
+	{
+		tx = asin(-m21);
+		ty = atan2(m20, m22);
+		tz = atan2(m01, m11);
+	}
+
+	//tx *= Rad2Deg;
+	//ty *= Rad2Deg;
+	//tz *= Rad2Deg;
+
+	return Vec3(tx, ty, tz);
+}
+
+Vec3 GetRotFromMat(M4 m)
+{
+	double threshold = 0.001;
+
+	Vec3 ansRot = {};
+
+	if (abs(m.m_[2][1] - 1.0) < threshold) { // R(2,1) = sin(x) = 1‚ÌŽž
+		ansRot.x_ = PI / 2;
+		ansRot.y_ = 0;
+		ansRot.z_ = (float)atan2(m.m_[1][0], m.m_[0][0]);
+	}
+	else if (abs(m.m_[2][1] + 1.0) < threshold) { // R(2,1) = sin(x) = -1‚ÌŽž
+		ansRot.x_ = -PI / 2;
+		ansRot.y_ = 0;
+		ansRot.z_ = (float)atan2(m.m_[1][0], m.m_[0][0]);
+	}
+	else {
+		ansRot.x_ = (float)asin(m.m_[2][1]);
+		ansRot.y_ = (float)atan2(-m.m_[2][0], m.m_[2][2]);
+		ansRot.z_ = (float)atan2(-m.m_[0][1], m.m_[1][1]);
+	}
+	return ansRot;
+}
+
+bool Approximately(float a, float b)
+{
+	return (fabs(a - b) <= 0.1f);
+}

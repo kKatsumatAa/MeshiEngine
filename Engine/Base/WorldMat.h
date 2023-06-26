@@ -1,7 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
-#include "Vec3.h"
-#include "M4.h"
+#include "Util.h"
 using namespace DirectX;
 
 class WorldMat
@@ -11,14 +10,13 @@ private:
 	M4 matRot_;
 	M4 matTrans_;
 
-
 private:
 	//親の行列も計算
 	void SetParentWorld(WorldMat* parent);
 	//再帰,親があれば行列を掛ける
 	void RecursiveCulcParentMat(WorldMat* parent, M4& childMat);
 	//行列計算のみ
-	void CulcWorldMat();
+	void CulcAllTreeMat();
 
 public:
 	M4 matWorld_;
@@ -27,10 +25,13 @@ public:
 	Vec3 trans_ = { 0,0,0 };
 	WorldMat* parent_ = nullptr;
 
-	//
 	WorldMat();
-	void SetScaleMat();
-	void SetRotMat();
-	void SetTransMat();
-	void SetWorldMat();
+	//行列計算
+	void CulcScaleMat();
+	void CulcRotMat();
+	void CulcQuaternionRotMat();
+	void CulcTransMat();
+	void CulcWorldMat();
+
+	Quaternion GetQuaternion();
 };

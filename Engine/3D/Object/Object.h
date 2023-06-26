@@ -89,8 +89,11 @@ private:
 
 	//生きてるフラグ
 	bool isAlive_ = true;
-
+	//
 	std::unique_ptr<WorldMat> worldMat_ = std::make_unique<WorldMat>();
+	//初期の正面ベクトル
+	Vec3 frontVec_ = { 0,0,-1.0f };
+	Vec3 frontVecTmp_ = { 0,0,-1.0f };
 
 public://変数
 	bool isWireFrame_ = 0;
@@ -131,7 +134,6 @@ private:
 	void SetMaterialLightMTexSkin(uint64_t textureHandle, ConstBuffTransform cbt);
 	void SetMaterialLightMTexSkinModel(uint64_t textureHandle, ConstBuffTransform cbt, Material* material);
 
-
 public:
 	//コンストラクタ
 	Object();
@@ -152,16 +154,18 @@ public:
 	void SetScaleZ(float scale) { worldMat_->scale_.z_ = scale; }
 	const Vec3& GetScale() { return worldMat_->scale_; }
 	//回転
-	void SetRot(const Vec3& rot) { worldMat_->rot_ = rot; }
+	void SetRot(const Vec3& rot) { 
+		worldMat_->rot_ = rot; 
+	}
 	void SetRotX(float rot) { worldMat_->rot_.x_ = rot; }
 	void SetRotY(float rot) { worldMat_->rot_.y_ = rot; }
 	void SetRotZ(float rot) { worldMat_->rot_.z_ = rot; }
 	const Vec3& GetRot() { return worldMat_->rot_; }
 	//行列を更新
-	void CulcWorldMat() { worldMat_->SetWorldMat(); }
-	void CulcRotMat() { worldMat_->SetRotMat(); }
-	void CulcTransMat() { worldMat_->SetTransMat(); }
-	void CulcScaleMat() { worldMat_->SetScaleMat(); }
+	void CulcWorldMat() { worldMat_->CulcWorldMat(); }
+	void CulcRotMat() { worldMat_->CulcRotMat(); }
+	void CulcTransMat() { worldMat_->CulcTransMat(); }
+	void CulcScaleMat() { worldMat_->CulcScaleMat(); }
 	//ワールド行列の中身コピー
 	void SetWorldMat_(WorldMat worldMat) { *worldMat_ = worldMat; }
 
@@ -174,6 +178,16 @@ public:
 	//生きてるか
 	inline void SetIsAlive(bool isAlive) { isAlive_ = isAlive; }
 	inline bool GetIsAlive() { return isAlive_; }
+
+	//正面ベクトル
+	//オブジェクトの角度で回転させた正面ベクトルをゲット
+	const Vec3& GetFrontVec();
+	void CulcFrontVec();
+	const Vec3& GetFrontVecTmp() { return frontVecTmp_; }
+	inline void SetFrontVecTmp(const Vec3& vec) { frontVecTmp_ = vec; }
+
+	//
+	 Quaternion GetQuaternion() { return worldMat_->GetQuaternion(); }
 
 	//初期化
 	virtual bool Initialize();
