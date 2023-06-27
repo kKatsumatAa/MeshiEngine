@@ -45,7 +45,7 @@ struct EffectConstBuffer
 	//時間
 	uint32_t time = 0;
 	//ブルームの強さ
-	float bloomPow = 3.0f;
+	float bloomPow = 5.0f;
 };
 
 struct PeraVertex
@@ -99,7 +99,7 @@ private:
 	ComPtr<ID3D12PipelineState> blurPipeline_;
 
 	//ブルームの最大強さ
-	const float BLOOM_MAX_POW_ = 10.0f;
+	const float BLOOM_MAX_POW_ = 15.0f;
 
 public:
 	//画面効果用

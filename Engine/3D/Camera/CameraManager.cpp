@@ -1,5 +1,6 @@
 #include "CameraManager.h"
 #include "MouseInput.h"
+#include "ImGuiManager.h"
 
 CameraManager::CameraManager()
 {
@@ -111,6 +112,13 @@ void CameraManager::Update()
 	}
 
 	usingCamera_->Update();
+}
+
+void CameraManager::ImguiUpdate()
+{
+	ImGui::Begin("Camera");
+	//ImGui::char
+	ImGui::Begin("Camera");
 }
 
 void CameraManager::AddCamera(std::string cameraName)

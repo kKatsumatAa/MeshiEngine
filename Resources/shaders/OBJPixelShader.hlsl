@@ -202,7 +202,7 @@ PSOutput main(VSOutput input)
 	//ˆê–‡–Ú‚Ìˆê‚Â–Ú
 	output.col = RGBA;
 	//V“ñ‚Â–Ú
-	output.col2 = float4(1 - (RGBA).rgb, 1);
+	//output.col2 = float4(1.0f - RGBA.r, 1.0f - RGBA.g, 1.0f - RGBA.b, 1.0f)
 	//O‚Â–Ú
 	//output.highLumi = RGBA;
 

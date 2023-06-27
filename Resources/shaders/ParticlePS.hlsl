@@ -17,7 +17,7 @@ PSOutput main(GSOutput input)
 	//一つ目
 	output.col = tex.Sample(smp, input.uv) * input.color;
 	//二つ目
-	output.col2 = output.col;
+	//output.col2 = float4(1.0f - input.color.r, 1.0f - input.color.g, 1.0f - input.color.b, 1.0f);
 	//三つ目
 	//output.highLumi = tex.Sample(smp, input.uv) * input.color;
 

@@ -83,6 +83,8 @@ public:
 
 	void Update();
 
+	void ImguiUpdate();
+
 	//ˆÚ“®‚ÌüŒ`•âŠ®‚ğn‚ß‚é
 	void BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endEye, const Vec3& startTarget, const Vec3& endTarget, const Vec3& startUp, const Vec3& endUp, int32_t time, Camera* afterCamera = nullptr, int32_t afterCount = 0);
 

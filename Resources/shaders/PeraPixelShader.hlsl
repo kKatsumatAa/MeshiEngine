@@ -6,7 +6,8 @@ SamplerState smp : register(s0);
 struct PSOutput
 {
 	float4 color : SV_TARGET0;//通常
-	float4 highLumi : SV_TARGET1;//高輝度
+	float4 color2 : SV_TARGET1;//色違い
+	float4 highLumi : SV_TARGET2;//高輝度
 };
 
 PSOutput PS(Output input) : SV_TARGET
@@ -26,23 +27,6 @@ float dx = 1.0f / w;
 float dy = 1.0f / h;
 float4 ret = float4(0, 0, 0, 0);
 bool isEffect = false;
-
-//ぼかし
-//if (isGaussian == true)
-//{
-//	ret += tex0.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)); // 左上 
-//	ret += tex0.Sample(smp, input.uv + float2(0, -2 * dy)); // 上 
-//	ret += tex0.Sample(smp, input.uv + float2(2 * dx, -2 * dy));// 右 上 
-//	ret += tex0.Sample(smp, input.uv + float2(-2 * dx, 0)); // 左 
-//	ret += tex0.Sample(smp, input.uv);                       // 自分 
-//	ret += tex0.Sample(smp, input.uv + float2(2 * dx, 0)); // 右
-//	ret += tex0.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)); // 左下 
-//	ret += tex0.Sample(smp, input.uv + float2(0, 2 * dy));// 下 
-//	ret += tex0.Sample(smp, input.uv + float2(2 * dx, 2 * dy)); // 右 下
-//	ret /= 9.0f;
-
-//	isEffect = true;
-//}
 
 //エンボス
 if (isEmboss == true)
@@ -94,7 +78,7 @@ if (isOutLine == true)
 }
 
 //ガウシアン
-if (isGaussian == true || isMultiTex)
+if (isGaussian == true)
 {
 	float dx = 2.0f / w;
 	float dy = 2.0f / h;
@@ -219,6 +203,45 @@ if (isRGBShift)
 	isEffect = true;
 }
 
+if (isMultiTex)
+{
+	float dx = 1.0f / w;
+	float dy = 1.0f / h;
+	// 今 の ピクセル を 中心 に 縦横 5 つ ずつ に なる よう 加算 する 
+	// 最 上段 
+	ret += tex0.Sample(smp, clamp(input.uv + float2(-2 * dx, 2 * dy), 0, 1.0f)) * 1 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(-1 * dx, 2 * dy), 0, 1.0f)) * 4 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(0 * dx, 2 * dy), 0, 1.0f)) * 6 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(1 * dx, 2 * dy), 0, 1.0f)) * 4 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(2 * dx, 2 * dy), 0, 1.0f)) * 1 / 256;
+	// 1 つ 上段 
+	ret += tex0.Sample(smp, clamp(input.uv + float2(-2 * dx, 1 * dy), 0, 1.0f)) * 4 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(-1 * dx, 1 * dy), 0, 1.0f)) * 16 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(0 * dx, 1 * dy), 0, 1.0f)) * 24 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(1 * dx, 1 * dy), 0, 1.0f)) * 16 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(2 * dx, 1 * dy), 0, 1.0f)) * 4 / 256;
+	// 中段 
+	ret += tex0.Sample(smp, clamp(input.uv + float2(-2 * dx, 0 * dy), 0, 1.0f)) * 6 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(-1 * dx, 0 * dy), 0, 1.0f)) * 24 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(0 * dx, 0 * dy), 0, 1.0f)) * 36 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(1 * dx, 0 * dy), 0, 1.0f)) * 24 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(2 * dx, 0 * dy), 0, 1.0f)) * 6 / 256;
+	// 1 つ 下段 
+	ret += tex0.Sample(smp, clamp(input.uv + float2(-2 * dx, -1 * dy), 0, 1.0f)) * 4 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(-1 * dx, -1 * dy), 0, 1.0f)) * 16 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(0 * dx, -1 * dy), 0, 1.0f)) * 24 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(1 * dx, -1 * dy), 0, 1.0f)) * 16 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(2 * dx, -1 * dy), 0, 1.0f)) * 4 / 256;
+	// 最 下段 
+	ret += tex0.Sample(smp, clamp(input.uv + float2(-2 * dx, -2 * dy), 0, 1.0f)) * 1 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(-1 * dx, -2 * dy), 0, 1.0f)) * 4 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(0 * dx, -2 * dy), 0, 1.0f)) * 6 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(1 * dx, -2 * dy), 0, 1.0f)) * 4 / 256;
+	ret += tex0.Sample(smp, clamp(input.uv + float2(2 * dx, -2 * dy), 0, 1.0f)) * 1 / 256;
+
+	isEffect = true;
+}
+
 if (isEffect)
 {
 	output.color = ret;
@@ -246,6 +269,9 @@ if (isBloom || isCrossFilter)
 		output.highLumi = output.highLumi * float4(1, 1, 1, 1) * 1 - step(0.3, l);
 	}
 }
+
+//色違い
+output.color2 = float4(1.0f - RGBA.r, 1.0f - RGBA.g, 1.0f - RGBA.b, 1.0f);
 
 return output;
 }
