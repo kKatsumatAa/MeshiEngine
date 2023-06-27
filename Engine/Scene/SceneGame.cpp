@@ -22,7 +22,7 @@ void SceneGame::Initialize()
 	LevelManager::GetInstance().LoadLevelData();
 
 	//カメラをセット
-	CameraManager::GetInstance().SetUsingCamera("playerCamera");
+	//CameraManager::GetInstance().SetUsingCamera("playerCamera");
 
 	//ゲームスピード
 	GameVelocityManager::GetInstance().Initialize();

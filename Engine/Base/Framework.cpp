@@ -18,14 +18,14 @@ void Framework::Initialize()
 
 	//ポストエフェクト//
 	postPera_[0] = std::make_unique<PostPera>();
-	postPera_[1] = std::make_unique<PostPera>();
-	postPera_[0]->Initialize(L"Resources/image/normalImage.jpg", 0.952f);
-	postPera_[1]->Initialize(L"Resources/image/normalImage.jpg");
+	//postPera_[1] = std::make_unique<PostPera>();
+	postPera_[0]->Initialize(L"Resources/image/normalImage.jpg"/*, 0.952f*/);
+	//postPera_[1]->Initialize(L"Resources/image/normalImage.jpg");
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
 	//trueにすることでマウスがほかのアプリで使用されない
-	MouseInput::GetInstance().CreateDevice(true);
+	MouseInput::GetInstance().CreateDevice(/*true*/);
 
 	//
 	ParticleManager::GetInstance()->Initialize();
@@ -85,7 +85,7 @@ void Framework::Update()
 
 	//ポストエフェクト(imgui)
 	postPera_[0]->Update();
-	postPera_[1]->Update();
+	//postPera_[1]->Update();
 
 	//(imgui)
 	Object::StaticUpdate();

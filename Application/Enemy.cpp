@@ -56,7 +56,7 @@ void Enemy::Move()
 	}
 
 	//プレイヤーに向かわせる(とりあえずカメラから位置もらう)
-	Vec3 playerPos = CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
+	Vec3 playerPos = CameraManager::GetInstance().GetCamera("debugCamera")->GetEye();
 	//敵からプレイヤーへのベクトル
 	Vec3 directionVec = playerPos - GetTrans();
 	//正規化
@@ -87,7 +87,7 @@ void Enemy::Move()
 
 void Enemy::Update()
 {
-	Move();
+	//Move();
 
 	Object::Update();
 }

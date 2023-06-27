@@ -26,7 +26,7 @@ void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle, ID3D12De
 
 		//リソース設定
 		ResourceProperties(cbResourceDesc,
-			(uint32_t)AligmentSize(sizeof(weights_[0]) * (uint32_t)weights_.size(), 256));
+			(uint32_t)AligmentSize(sizeof(weights_[0]) * (uint32_t)weights_.size(), D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT));
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &buff_);
 

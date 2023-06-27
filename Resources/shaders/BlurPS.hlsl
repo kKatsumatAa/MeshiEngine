@@ -24,15 +24,17 @@ PSOutput BlurPS(Output input)
 
 	if (isBloom)
 	{
-		output.blur = Get5x5GaussianBlur(tex2, smp, input.uv, dx, dy, float4(0, 0, 1, 1));
+		output.blur = Gaussian2(tex2, smp, input.uv);
 	}
 
 	if (isCrossFilter)
 	{
 		//‚‹P“x‚Ú‚©‚µˆê–‡–Ú‚É‚¾‚¯
-		output.blur = GaussianAngle(tex2, smp, 30, input.uv);
-		//‚‹P“x‚Ú‚©‚µˆê–‡–Ú‚É‚¾‚¯
-		output.blur2 = GaussianAngle(tex2, smp, -30, input.uv);
+		output.blur = GaussianAngle(tex2, smp, 45, input.uv);
+		output.blur += GaussianAngle(tex2, smp, 90, input.uv);
+		//‚‹P“x‚Ú‚©‚µ2–‡–Ú‚É‚¾‚¯
+		output.blur2 = GaussianAngle(tex2, smp, -45, input.uv);
+		output.blur2 += GaussianAngle(tex2, smp, -90, input.uv);
 	}
 
 	return output;

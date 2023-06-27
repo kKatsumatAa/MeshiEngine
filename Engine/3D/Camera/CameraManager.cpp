@@ -7,12 +7,13 @@ CameraManager::CameraManager()
 	/*CameraManager::GetInstance().AddCamera("mainCamera");
 	CameraManager::GetInstance().SetUsingCamera("mainCamera");*/
 
-#ifdef _DEBUG
+	//#ifdef _DEBUG
 	AddCamera("debugCamera");
 	GetCamera("debugCamera")->Initialize();
-#endif
+	SetUsingCamera("debugCamera");
+	//#endif
 
-	//カメラを順に切り替えるためのイテレータ
+		//カメラを順に切り替えるためのイテレータ
 	cameraItr_ = cameraAndNames_.begin();
 }
 
@@ -59,7 +60,7 @@ void CameraManager::Initialize()
 
 void CameraManager::Update()
 {
-#ifdef _DEBUG
+	//#ifdef _DEBUG
 	{
 		Camera* debugCamera = GetCamera("debugCamera");
 
@@ -71,14 +72,14 @@ void CameraManager::Update()
 				afterCamera_ = usingCamera_;
 				usingCamera_ = debugCamera;
 			}
-			else
+			else if (afterCamera_)
 			{
 				usingCamera_ = afterCamera_;
 			}
 		}
 
 		//デバッグカメラが有効の時
-		if (usingCamera_ == debugCamera && MouseInput::GetInstance().GetClick(CLICK_LEFT))
+		if (usingCamera_ == debugCamera && MouseInput::GetInstance().GetClick(CLICK_RIGHT))
 		{
 			Vec2 vel = MouseInput::GetInstance().GetCursorVelocity();
 
@@ -99,8 +100,8 @@ void CameraManager::Update()
 			debugCamera->UpdateViewMatrix();
 		}
 	}
-#endif
-	//カメラ切り替え
+	//#endif
+		//カメラ切り替え
 	ChangeCamera();
 
 

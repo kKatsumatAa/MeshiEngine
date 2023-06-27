@@ -124,36 +124,28 @@ float4 Get5x5GaussianBlur(Texture2D<float4> tex, SamplerState smp, float2 uv, fl
 float4 GaussianTmp(float2 drawUV, float2 pickUV, float sigma)
 {
 	float d = distance(drawUV, pickUV);
-	float e = 2.71828182845904523536;
-	return pow(e, -(d * d) / (2 * sigma * sigma));
+	return exp(-(d * d) / (2 * sigma * sigma));
 }
 
 float4 Gaussian2(Texture2D<float4> tex, SamplerState smp, float2 uv)
 {
-	float w, h, level;
+	float totalWeight = 0, sigma = 0.005, stepWidth = 0.001;
+	float4 col = float4(0, 0, 0, 0);
 
-	tex.GetDimensions(0, w, h, level);
-
-	float dx = 1.0f / w;
-	float dy = 1.0f / h;
-
-	float4 RGBA = tex.Sample(smp, uv);
-	float4 color = float4(0, 0, 0, 0);
-
-	float4 ret = float4(0, 0, 0, 0);
-	//ret += bkweights[0] * RGBA;
-	for (int i = 1; i < 8; ++i) {
-		ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, clamp(uv + float2(0, dy * i), 0, 1.0f));
-		ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, clamp(uv + float2(0, -dy * i), 0, 1.0f));
-	}
-	//ret += bkweights[0] * RGBA;
-	for (int i = 1; i < 8; ++i)
+	for (float py = -sigma * 2; py <= sigma * 2; py += stepWidth)
 	{
-		ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, clamp(uv + float2(i * dx, 0), 0, 1.0f));
-		ret += bkweights[i >> 2][i % 4] * tex.Sample(smp, clamp(uv + float2(-i * dx, 0), 0, 1.0f));
+		for (float px = -sigma * 2; px <= sigma * 2; px += stepWidth)
+		{
+			float2 pickUV = uv + float2(px, py);
+			float weight = GaussianTmp(uv, pickUV, sigma);
+			col += tex.Sample(smp, pickUV) * weight;//重みを色にかける
+			totalWeight += weight;//重みの合計値を計算
+		}
 	}
 
-	return ret;
+	col.rgb = col.rgb / totalWeight;//掛けた重み分結果から割る
+	col.a = 1;
+	return col;
 }
 
 float4 GaussianAngle(Texture2D<float4> tex, SamplerState smp, float angle, float2 uv)
