@@ -25,6 +25,8 @@ public:
 	Vec3 trans_ = { 0,0,0 };
 	WorldMat* parent_ = nullptr;
 
+	Quaternion quaternion_;
+
 	WorldMat();
 	//s—ñŒvZ
 	void CulcScaleMat();

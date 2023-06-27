@@ -21,8 +21,8 @@ void Vec4xM4(Vec4& v, const M4& m4)
 
 void Vec3xM4(Vec3& v, const M4& m4, bool w)
 {
-	float v4[2][4] = {
-		{ v.x_,v.y_,v.z_,(float)w },
+	double v4[2][4] = {
+		{ v.x_,v.y_,v.z_,(double)w },
 		{0,0,0,0}
 	};
 
@@ -30,11 +30,11 @@ void Vec3xM4(Vec3& v, const M4& m4, bool w)
 	{
 		for (int32_t j = 0; j < 4; j++)
 		{
-			v4[1][i] += v4[0][j] * (float)m4.m_[j][i];
+			v4[1][i] += v4[0][j] * m4.m_[j][i];
 		}
 	}
 
-	v = { v4[1][0],v4[1][1] ,v4[1][2] };
+	v = { (float)v4[1][0],(float)v4[1][1] ,(float)v4[1][2] };
 }
 
 Vec3 GetVec3xM4(Vec3 v, const M4& m4, bool w)
@@ -432,7 +432,8 @@ Vec3 GetRotFromMat(M4 m)
 		ansRot.y_ = 0;
 		ansRot.z_ = (float)atan2(m.m_[1][0], m.m_[0][0]);
 	}
-	else {
+	else
+	{
 		ansRot.x_ = (float)asin(m.m_[2][1]);
 		ansRot.y_ = (float)atan2(-m.m_[2][0], m.m_[2][2]);
 		ansRot.z_ = (float)atan2(-m.m_[0][1], m.m_[1][1]);

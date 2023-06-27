@@ -218,7 +218,12 @@ const Vec3& Object::GetFrontVec()
 void Object::CulcFrontVec()
 {
 	Quaternion q = worldMat_->GetQuaternion();
-	frontVec_ = q.GetRotateVector({0,0,-1.0f});
+	//frontVec_ = q.GetRotateVector({0,0,-1.0f});
+
+	WorldMat w;
+	w.rot_ = GetRot();
+	w.CulcRotMat();
+	Vec3xM4(frontVec_, w.matWorld_, 0);
 
 	//frontVec_.Normalized();
 }

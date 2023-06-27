@@ -3,34 +3,11 @@
 
 Quaternion Quaternion::GetMultiply(const Quaternion& rhs) const
 {
-	Quaternion   ans;
-	float   d1, d2, d3, d4;
-
-	d1 = w_ * rhs.w_;
-	d2 = -x_ * rhs.x_;
-	d3 = -y_ * rhs.y_;
-	d4 = -z_ * rhs.z_;
-	ans.w_ = d1 + d2 + d3 + d4;
-
-
-	d1 = y_ * rhs.z_;
-	d2 = -z_ * rhs.y_;
-	d3 = rhs.w_ * x_;
-	d4 = w_ * rhs.x_;
-	ans.x_ = d1 + d2 + d3 + d4;
-
-	d1 = z_ * rhs.x_;
-	d2 = -x_ * rhs.z_;
-	d3 = rhs.w_ * y_;
-	d4 = w_ * rhs.y_;
-	ans.y_ = d1 + d2 + d3 + d4;
-
-	d1 = x_ * rhs.y_;
-	d2 = y_ * rhs.x_;
-	d3 = rhs.w_ * z_;
-	d4 = w_ * rhs.z_;
-	ans.z_ = d1 + d2 + d3 + d4;
-
+	Quaternion ans;
+	ans.w_ = w_ * rhs.w_ - x_ * rhs.x_ - y_ * rhs.y_ - z_ * rhs.z_;
+	ans.x_ = y_ * rhs.z_ - z_ * rhs.y_ + rhs.w_ * x_ + w_ * rhs.x_;
+	ans.y_ = z_ * rhs.x_ - x_ * rhs.z_ + rhs.w_ * y_ + w_ * rhs.y_;
+	ans.z_ = x_ * rhs.y_ - y_ * rhs.x_ + rhs.w_ * z_ + w_ * rhs.z_;
 	return  Quaternion(ans);
 }
 

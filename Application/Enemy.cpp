@@ -68,9 +68,9 @@ void Enemy::Move()
 	SetTrans(GetTrans() + velocity_);
 
 	//プレイヤーの方を向かせる
-	directionRotTime += GameVelocityManager::GetInstance().GetVelocity();
+	/*directionRotTime += GameVelocityManager::GetInstance().GetVelocity();
 	if (directionRotTime > DIRCTION_ROT_TIME_) { directionRotTime = 0; }
-	float t = directionRotTime / DIRCTION_ROT_TIME_;
+	float t = directionRotTime / DIRCTION_ROT_TIME_;*/
 
 	//CulcFrontVec();
 
@@ -78,8 +78,8 @@ void Enemy::Move()
 		GetFrontVec().GetNormalized(), directionVec.GetNormalized());
 
 	//角度をセット
-	Vec3 rot = GetRotFromQuaternion(Slerp(GetQuaternion(), q, 1.0f));
-	//Vec3 rot = GetRotFromQuaternion(q);
+	//Vec3 rot = GetRotFromQuaternion(Slerp(GetQuaternion(), q, 1.0f));
+	Vec3 rot = GetRotFromQuaternion(q);
 	//Vec3 rot = GetRotFromMat(q.MakeRotateMatrix());
 	Vec3 rot1 = Object::GetRot();
 	SetRot(/*rot1 +*/ rot);

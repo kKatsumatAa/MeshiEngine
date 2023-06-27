@@ -69,16 +69,16 @@ void WorldMat::CulcQuaternionRotMat()
 	matRot_ = NORMAL_M;
 	//z
 	Quaternion qZ = Quaternion::MakeAxisAngle({ 0,0,1.0f }, rot_.z_);
-	matRot_ *= qZ.MakeRotateMatrix();
 	//x
 	Quaternion qX = Quaternion::MakeAxisAngle({ 1.0f,0,0 }, rot_.x_);
-	matRot_ *= qX.MakeRotateMatrix();
 	//y
 	Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot_.y_);
-	matRot_ *= qY.MakeRotateMatrix();
+
+	//çáê¨
+	qZ = qZ * qY * qX;
 
 
-	matWorld_ *= matRot_;
+	matWorld_ *= qZ.MakeRotateMatrix();
 }
 
 void WorldMat::CulcTransMat()
@@ -149,8 +149,8 @@ Quaternion WorldMat::GetQuaternion()
 	//y
 	Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot_.y_);
 
-	qZ = qZ.GetMultiply(qX);
-	qZ = qZ.GetMultiply(qY);
+	//çáê¨
+	qZ = qZ * qY * qX;
 
 	return Quaternion(qZ);
 }
