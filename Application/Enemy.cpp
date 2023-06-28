@@ -60,6 +60,7 @@ void Enemy::Move()
 	//敵からプレイヤーへのベクトル
 	Vec3 directionVec = playerPos - GetTrans();
 	//正規化
+	//directionVec.y_ = 0;
 	directionVec.Normalized();
 
 	//現在のスピードに方向ベクトル足し、ゲームスピードをかける
