@@ -8,9 +8,12 @@ bool Collision::CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2, 
 	Vec3 vec = { length.m128_f32[0],length.m128_f32[1],length.m128_f32[2] };
 
 	XMVECTOR Vec = sphere2.center - sphere.center;
+	Vec3 v = { Vec.m128_f32[0],Vec.m128_f32[1], Vec.m128_f32[2] };
+	v.Normalized();
+	v *= sphere.radius;
 	if (inter)
 	{
-		*inter = sphere.center + Vec / 2.0f;
+		*inter = sphere.center + XMVECTOR{ v.x_, v.y_, v.z_ };
 	}
 
 	if (vec.GetLength() <= sphere.radius + sphere2.radius)

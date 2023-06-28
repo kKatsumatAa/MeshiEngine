@@ -40,6 +40,9 @@ public://関数
 	//内積
 	float DotQuaternion(const Quaternion& rhs)const;
 
+	//x,y,zをセット
+	void SetVec(const Vec3& vec);
+
 
 public://静的メンバ関数
 	//単位クォータニオンを生成
@@ -81,6 +84,7 @@ Quaternion  operator*(const Quaternion& q1, const Quaternion& q2);
 
 //球面線形補完
 Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
+Quaternion SlerpUseVec3(const Vec3& v0, const Vec3& v1, float t);
 
 
 

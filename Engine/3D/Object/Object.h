@@ -95,6 +95,9 @@ private:
 	Vec3 frontVec_ = { 0,0,-1.0f };
 	Vec3 frontVecTmp_ = { 0,0,-1.0f };
 
+	//仮
+	Vec3 velocity_ = { 0,0,0 };
+
 public://変数
 	bool isWireFrame_ = 0;
 	//画面効果用
@@ -154,8 +157,8 @@ public:
 	void SetScaleZ(float scale) { worldMat_->scale_.z_ = scale; }
 	const Vec3& GetScale() { return worldMat_->scale_; }
 	//回転
-	void SetRot(const Vec3& rot) { 
-		worldMat_->rot_ = rot; 
+	void SetRot(const Vec3& rot) {
+		worldMat_->rot_ = rot;
 	}
 	void SetRotX(float rot) { worldMat_->rot_.x_ = rot; }
 	void SetRotY(float rot) { worldMat_->rot_.y_ = rot; }
@@ -185,9 +188,16 @@ public:
 	void CulcFrontVec();
 	const Vec3& GetFrontVecTmp() { return frontVecTmp_; }
 	inline void SetFrontVecTmp(const Vec3& vec) { frontVecTmp_ = vec; }
+	inline void SetFrontVec(const Vec3& vec) { frontVec_ = vec; }
 
-	//
-	 Quaternion GetQuaternion() { return worldMat_->GetQuaternion(); }
+	//スピード（当たり判定に使う）
+	inline void SetVelocity(const Vec3& vec) { velocity_ = vec; }
+	inline const Vec3& GetVelocity() { return velocity_; }
+
+	//クォータニオン系
+	Quaternion GetQuaternion() { return worldMat_->GetQuaternion(); }
+	void SetIsUseQuaternionMatRot(bool is) { worldMat_->SetIsUseQuaMatRot(is); }
+	void SetMatRot(const M4& m) { worldMat_->SetRotMat(m); }
 
 	//初期化
 	virtual bool Initialize();

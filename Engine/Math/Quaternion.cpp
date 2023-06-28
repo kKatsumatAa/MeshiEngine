@@ -84,7 +84,7 @@ Quaternion Quaternion::DirectionToDirection(const Vec3& u, const Vec3& v)
 {
 	//uとvを正規化して内積を求める
 	float dot = u.GetNormalized().Dot(v.GetNormalized());
-	//u,vの外積をとる
+	//u,vの外積をとる(回転軸を出す)
 	Vec3 cross = u.GetNormalized().Cross(v.GetNormalized());
 	//軸は単位ベクトルである必要があるので正規化
 	//uとvが単位ベクトルあっても、外積が単位ベクトルとは限らないのでここの正規化は必須
@@ -133,6 +133,13 @@ float Quaternion::DotQuaternion(const Quaternion& rhs) const
 	float ans = (w_ * rhs.w_ + x_ * rhs.x_ + y_ * rhs.y_ + z_ * rhs.z_);
 
 	return ans;
+}
+
+void Quaternion::SetVec(const Vec3& vec)
+{
+	x_ = vec.x_;
+	y_ = vec.y_;
+	z_ = vec.z_;
 }
 
 
@@ -294,4 +301,14 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
 
 	//それぞれの補間係数を利用して補間後のQuaternionを求める
 	return scale0 * q02 + scale1 * q1;
+}
+
+Quaternion SlerpUseVec3(const Vec3& v0, const Vec3& v1, float t)
+{
+	Quaternion q0;
+	q0.SetVec(v0);
+	Quaternion q1;
+	q1.SetVec(v1);
+
+	return Slerp(q0, q1, t);
 }

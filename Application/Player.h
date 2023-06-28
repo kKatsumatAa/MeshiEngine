@@ -10,7 +10,11 @@ class Player :
 {
 private:
 	const float ANGLE_VEL_EXTEND_ = 0.003f;
-	WorldMat rotWorldMat;
+	Vec3 cameraRot_ = { 0,0,0 };
+
+	Vec3 frontVec_ = { 0,0,1.0f };
+	Vec3 upVec_ = { 0,1.0f,0 };
+	Vec3 rightVec_ = { 0,0,0 };
 
 public:
 	/// <summary>
@@ -23,6 +27,8 @@ public:
 private:
 	//ˆÚ“®
 	void Move();
+	//Œü‚«‚ð•Ï‚¦‚é
+	void DirectionUpdate();
 
 public:
 

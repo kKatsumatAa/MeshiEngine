@@ -7,8 +7,10 @@ class WorldMat
 {
 private:
 	M4 matScale_;
-	M4 matRot_;
 	M4 matTrans_;
+
+	bool isUseQMat_ = false;
+	M4 matRot_;
 
 private:
 	//êeÇÃçsóÒÇ‡åvéZ
@@ -36,4 +38,10 @@ public:
 	void CulcWorldMat();
 
 	Quaternion GetQuaternion();
+
+	void SetIsUseQuaMatRot(bool is) { isUseQMat_ = is; }
+	bool GetIsUseQuaMatRot() { return isUseQMat_; }
+
+	void SetRotMat(const M4& m) { matRot_ = m; }
+	const M4& GetRotMat() { return matRot_; }
 };

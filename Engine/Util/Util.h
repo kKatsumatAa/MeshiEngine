@@ -83,7 +83,9 @@ float SmoothStep(float Min, float Max, float V);
 
 //回転行列から角度を求める
 Vec3 GetRotFromQuaternion(Quaternion q);
-
 Vec3 GetRotFromMat(M4 m);
-
+//ほぼ等しいかどうか
 bool Approximately(float a, float b);
+
+//ベクトルを角度を使ってクォータニオンで回転
+Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot);

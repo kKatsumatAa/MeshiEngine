@@ -14,10 +14,8 @@ void MyGame::Initialize()
 	sceneM_->SetSceneFactory(sceneFactory_.get());
 	sceneM_->ChangeScene("GAME");
 
-	//postPera_[1]->effectFlags_.isBarrelCurve = true;
-	//postPera_[0]->effectFlags_.isBloom = true;
-
-	postPera_[0]->effectFlags_.isMultiTex = true;
+	postPera_[1]->effectFlags_.isBarrelCurve = true;
+	postPera_[0]->effectFlags_.isBloom = true;
 }
 
 void MyGame::Finalize()
@@ -47,13 +45,13 @@ void MyGame::Draw()
 		postPera_[0]->DrawToPostpera(f);
 		postPera_[0]->DrawShrinkTextureForBlur();
 		//ˆê–‡–Ú‚É•`‰æŒ‹‰ÊA“ñ–‡–Ú‚à•`‰æ‚·‚é
-		//std::function<void()>f2 = [=]() { postPera_[0]->Draw2();  };
-		//postPera_[1]->DrawToPostpera(f2);
+		std::function<void()>f2 = [=]() { postPera_[0]->Draw2();  };
+		postPera_[1]->DrawToPostpera(f2);
 	}
 
 	//ƒuƒ‹[ƒ€—p
 	{
-		//postPera_[1]->DrawShrinkTextureForBlur();
+		postPera_[1]->DrawShrinkTextureForBlur();
 	}
 
 	//ÀÛ‚É•`‰æ
@@ -62,8 +60,7 @@ void MyGame::Draw()
 		DirectXWrapper::GetInstance().PreDraw();
 
 		//ÀÛ‚É•`‰æ
-		//postPera_[1]->Draw2();
-		postPera_[0]->Draw2();
+		postPera_[1]->Draw2();
 
 		sceneM_->DrawSprite();
 

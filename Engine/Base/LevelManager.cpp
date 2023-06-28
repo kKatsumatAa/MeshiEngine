@@ -89,24 +89,24 @@ void LevelManager::LoadCharacter(const LevelData::ObjectData& objData)
 
 void LevelManager::Update()
 {
-	//コライダーで生きてるフラグオフになったら消す
-	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
-	{
-		Object* obj = it->first.get();
-		
-		if (!obj->GetIsAlive())
-		{
-			objAndModels_.erase(it);
-			it = objAndModels_.begin();
-		}
-	}
-
 	//.Objを更新
 	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
 
 		obj->Update();
+	}
+
+	//コライダーで生きてるフラグオフになったら消す
+	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	{
+		Object* obj = it->first.get();
+
+		if (!obj->GetIsAlive())
+		{
+			objAndModels_.erase(it);
+			it = objAndModels_.begin();
+		}
 	}
 }
 

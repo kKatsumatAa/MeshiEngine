@@ -5,8 +5,12 @@ class GameVelocityManager final
 {
 private:
 	float gameVelocity_ = 0;
+
+public:
 	const float GAME_VELOCITY_MAX_ = 1.0f;
 	const float GAME_VELOCITY_MIN_ = 0.03f;
+
+
 
 private:
 	GameVelocityManager() { ; }

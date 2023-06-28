@@ -22,7 +22,7 @@ void SceneGame::Initialize()
 	LevelManager::GetInstance().LoadLevelData();
 
 	//カメラをセット
-	//CameraManager::GetInstance().SetUsingCamera("playerCamera");
+	CameraManager::GetInstance().SetUsingCamera("playerCamera");
 
 	//ゲームスピード
 	GameVelocityManager::GetInstance().Initialize();
@@ -30,39 +30,6 @@ void SceneGame::Initialize()
 
 void SceneGame::Update(PostPera* postPera)
 {
-	//課題用
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE))
-	{
-		if (postPera[0].effectFlags_.isMultiTex)
-		{
-			postPera[0].effectFlags_.isMultiTex = false;
-			postPera[0].effectFlags_.isGlassFilter = true;
-		}
-		else if (postPera[0].effectFlags_.isGlassFilter)
-		{
-			postPera[0].effectFlags_.isGlassFilter = false;
-			postPera[0].effectFlags_.isBloom = true;
-		}
-		else if (postPera[0].effectFlags_.isBloom)
-		{
-			postPera[0].effectFlags_.isBloom = false;
-			postPera[0].effectFlags_.isCrossFilter = true;
-		}
-		else if (postPera[0].effectFlags_.isCrossFilter)
-		{
-			postPera[0].effectFlags_.isCrossFilter = false;
-			postPera[0].effectFlags_.isGaussian = true;
-		}
-		else if (postPera[0].effectFlags_.isGaussian)
-		{
-			postPera[0].effectFlags_.isGaussian = false;
-		}
-		else if (!postPera[0].effectFlags_.isMultiTex && !postPera[0].effectFlags_.isGaussian)
-		{
-			postPera[0].effectFlags_.isMultiTex = true;
-		}
-	}
-
 	//レベルデータで読み込んだオブジェクト等
 	LevelManager::GetInstance().Update();
 

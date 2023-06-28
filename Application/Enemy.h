@@ -21,6 +21,11 @@ private:
 	float directionRotTime = 0;
 	const float DIRCTION_ROT_TIME_ = 60;
 
+	//hp
+	int8_t hp = 3;
+	float damageCoolTime = 0;
+	float velocityLength = 0;
+
 public:
 	/// <summary>
 	/// オブジェクト生成

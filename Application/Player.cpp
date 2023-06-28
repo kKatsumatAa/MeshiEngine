@@ -48,11 +48,8 @@ bool Player::Initialize()
 	return true;
 }
 
-void Player::Move()
+void Player::DirectionUpdate()
 {
-	//キー入力
-	KeyboardInput* input = &KeyboardInput::GetInstance();
-
 	//カメラ取得（借りてるだけ）
 	Camera* camera = CameraManager::GetInstance().GetCamera("playerCamera");
 
@@ -69,44 +66,51 @@ void Player::Move()
 		0
 	};
 	//角度を足す
-	rotWorldMat.rot_ = (rotWorldMat.rot_ + rotMove);
-	rotWorldMat.rot_.x_ = (min(rotWorldMat.rot_.x_, PI / 2.0f * 0.9f));
-	rotWorldMat.rot_.x_ = (max(rotWorldMat.rot_.x_, -PI / 2.0f * 0.9f));
+	cameraRot_ = (cameraRot_ + rotMove);
+	cameraRot_.x_ = (min(cameraRot_.x_, PI / 2.0f * 0.9f));
+	cameraRot_.x_ = (max(cameraRot_.x_, -PI / 2.0f * 0.9f));
 
-	//移動ベクトルをY軸周りの角度で回転
-	Vec3 frontVec = { 0,0,1.0f };
-	Vec3 upVec = { 0,1.0f,0 };
-	Vec3 rightVec = { 0,0,0 };
-	rotWorldMat.CulcWorldMat();
+	frontVec_ = GetFrontVecTmp();
 	//回転
-	Vec3xM4(frontVec, rotWorldMat.matWorld_, 0);
+	frontVec_ = GetTurnVec3UseQuaternionAndRot(frontVec_, cameraRot_);
+	
+	//正面ベクトルセット
+	SetFrontVec(frontVec_);
 
 	//カメラの右方向ベクトルを出す
-	rightVec = upVec.Cross(frontVec);
+	rightVec_ = upVec_.Cross(frontVec_);
 	//上方向も正しいものを
-	//upVec = frontVec.Cross(rightVec);
+	//upVec = frontVec_.Cross(rightVec);
 
 	//カメラの上方向セット
 	//camera->SetUp(upVec);
+}
 
+void Player::Move()
+{
+	//キー入力
+	KeyboardInput* input = &KeyboardInput::GetInstance();
+
+	//カメラ取得（借りてるだけ）
+	Camera* camera = CameraManager::GetInstance().GetCamera("playerCamera");
 
 	Vec3 velocity_ = { 0,0,0 };
 	//向いてる方向に移動
 	if (input->KeyPush(DIK_UPARROW) || input->KeyPush(DIK_W) || PadInput::GetInstance().GetLeftStickTilt().y_ < 0)
 	{
-		velocity_ += { frontVec.x_, 0, frontVec.z_ };
+		velocity_ += { frontVec_.x_, 0, frontVec_.z_ };
 	}
 	if (input->KeyPush(DIK_DOWNARROW) || input->KeyPush(DIK_S) || PadInput::GetInstance().GetLeftStickTilt().y_ > 0)
 	{
-		velocity_ += { -frontVec.x_, 0, -frontVec.z_ };
+		velocity_ += { -frontVec_.x_, 0, -frontVec_.z_ };
 	}
 	if (input->KeyPush(DIK_LEFTARROW) || input->KeyPush(DIK_A) || PadInput::GetInstance().GetLeftStickTilt().y_ < 0)
 	{
-		velocity_ += { -rightVec.x_, 0, -rightVec.z_ };
+		velocity_ += { -rightVec_.x_, 0, -rightVec_.z_ };
 	}
 	if (input->KeyPush(DIK_RIGHTARROW) || input->KeyPush(DIK_D) || PadInput::GetInstance().GetLeftStickTilt().y_ > 0)
 	{
-		velocity_ += { rightVec.x_, 0, rightVec.z_ };
+		velocity_ += { rightVec_.x_, 0, rightVec_.z_ };
 	}
 
 	//ゲームスピードを移動で足す
@@ -119,7 +123,7 @@ void Player::Move()
 	camera->SetEye(GetTrans());
 
 	//カメラの注視点に回転したベクトルセット
-	camera->SetTarget(GetTrans() + frontVec);
+	camera->SetTarget(GetTrans() + frontVec_);
 }
 
 void Player::Update()
@@ -127,6 +131,10 @@ void Player::Update()
 	//仮で小さくする
 	SetScale({ 0,0,0 });
 
+	//カメラの向き変更
+	DirectionUpdate();
+
+	//移動
 	Move();
 
 	Object::Update();
@@ -135,16 +143,35 @@ void Player::Update()
 
 void Player::OnCollision(const CollisionInfo& info)
 {
-	for (int32_t i = 0; i < 1; ++i)
+	if (info.object_->GetObjName() == "enemy")
 	{
-		const float MD_VEL = 0.5f;
-		Vec3 vel{};
-		vel.x_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		//パーティクル
+		for (int32_t i = 0; i < 30; ++i)
+		{
+			const float MD_VEL = 0.1f;
+			Vec3 vel{};
+			vel.x_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+			vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+			vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
 
-		Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
+			Vec3 pos = info.object_->GetTrans();
 
-		ParticleManager::GetInstance()->Add(180, pos, vel, { 0,0,0 }, 1.0f, 0.0f);
+			ParticleManager::GetInstance()->Add(180, pos, vel, { 0,0,0 }, 0.05f, 0.0f, { 2.0f,2.0f,2.0f,0.8f }, { 0,0,0,0 });
+		}
+
+
+		////長さ
+		float length = (info.object_->GetScale().x_ + GetScale().x_);
+		//距離のベクトル
+		Vec3 distanceVec = GetTrans() - info.object_->GetTrans();
+		//仮でyは動かさない
+		distanceVec.y_ = 0;
+		distanceVec.Normalized();
+
+		//めり込まないように位置セット(半径＋半径の長さをベクトルの方向を使って足す)
+		Vec3 ansPos = info.object_->GetTrans() + distanceVec * length * 0.5f;
+		SetTrans(ansPos);
+		ansPos = info.object_->GetTrans() - distanceVec * length * 0.501f;
+		info.object_->SetTrans(ansPos);
 	}
 }

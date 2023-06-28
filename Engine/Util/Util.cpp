@@ -445,3 +445,17 @@ bool Approximately(float a, float b)
 {
 	return (fabs(a - b) <= 0.1f);
 }
+
+Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot)
+{
+	Quaternion qZ = Quaternion::MakeAxisAngle({ 0,0,1.0f }, rot.z_);
+	Quaternion qX = Quaternion::MakeAxisAngle({ 1.0f,0,0 }, rot.x_);
+	Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot.y_);
+
+	Vec3 ansFrontV = vec;
+	ansFrontV = qZ.GetRotateVector(ansFrontV);
+	ansFrontV = qX.GetRotateVector(ansFrontV);
+	ansFrontV = qY.GetRotateVector(ansFrontV);
+
+	return ansFrontV;
+}
