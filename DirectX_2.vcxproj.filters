@@ -306,6 +306,9 @@
     <ClCompile Include="Application\GameVelocityManager.cpp">
       <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
+    <ClCompile Include="Application\PlayerAttackState.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Player.h">
@@ -510,6 +513,9 @@
       <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
     <ClInclude Include="Application\GameVelocityManager.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\PlayerAttackState.h">
       <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
   </ItemGroup>

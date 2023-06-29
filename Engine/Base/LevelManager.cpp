@@ -119,5 +119,6 @@ void LevelManager::Draw(Camera* camera)
 		Model* model = it->second;
 
 		obj->DrawModel(model, camera);
+		obj->Draw();
 	}
 }

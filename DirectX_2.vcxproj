@@ -103,6 +103,7 @@
     <ClCompile Include="Application\Enemy.cpp" />
     <ClCompile Include="Application\GameVelocityManager.cpp" />
     <ClCompile Include="Application\Player.cpp" />
+    <ClCompile Include="Application\PlayerAttackState.cpp" />
     <ClCompile Include="Engine\2D\DebugText.cpp" />
     <ClCompile Include="Engine\2D\DrawIntNumImage.cpp" />
     <ClCompile Include="Engine\2D\Sprite.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Application\Enemy.h" />
     <ClInclude Include="Application\GameVelocityManager.h" />
     <ClInclude Include="Application\Player.h" />
+    <ClInclude Include="Application\PlayerAttackState.h" />
     <ClInclude Include="Engine\2D\DebugText.h" />
     <ClInclude Include="Engine\2D\DrawIntNumImage.h" />
     <ClInclude Include="Engine\2D\Sprite.h" />

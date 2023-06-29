@@ -6,6 +6,8 @@
 #include "PadInput.h"
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
+#include "PlayerAttackState.h"
+
 
 using namespace DirectX;
 
@@ -45,8 +47,21 @@ bool Player::Initialize()
 	//カメラの位置と合わせる
 	SetTrans(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
 
+	//ステート
+	ChangeAttackState(std::make_unique<PlayerAttackStateNone>());
+
 	return true;
 }
+
+void Player::ChangeAttackState(std::unique_ptr<PlayerAttackState> state)
+{
+	attackState_.reset();
+	//所有権ごと渡す
+	attackState_ = std::move(state);
+	attackState_->SetPlayer(this);
+	attackState_->Initialize();
+}
+
 
 void Player::DirectionUpdate()
 {
@@ -73,7 +88,7 @@ void Player::DirectionUpdate()
 	frontVec_ = GetFrontVecTmp();
 	//回転
 	frontVec_ = GetTurnVec3UseQuaternionAndRot(frontVec_, cameraRot_);
-	
+
 	//正面ベクトルセット
 	SetFrontVec(frontVec_);
 
@@ -137,29 +152,33 @@ void Player::Update()
 	//移動
 	Move();
 
+	//攻撃ステート
+	attackState_->Update();
+
 	Object::Update();
 }
 
+void Player::Draw()
+{
+	//攻撃のステート
+	attackState_->Draw();
+
+
+	XMFLOAT4 col = { 1.0f,1.0f,1.0f,0.9f };
+
+	if (isCanAttack_)
+	{
+		col = { 1.0f,0,0,1.0f };
+	}
+
+	Object::DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f, WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },
+		0.05f, col, TextureManager::GetInstance().sWhiteTexHandle_, { 0.5f,0.5f });
+}
 
 void Player::OnCollision(const CollisionInfo& info)
 {
 	if (info.object_->GetObjName() == "enemy")
 	{
-		//パーティクル
-		for (int32_t i = 0; i < 30; ++i)
-		{
-			const float MD_VEL = 0.1f;
-			Vec3 vel{};
-			vel.x_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-			vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-			vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-
-			Vec3 pos = info.object_->GetTrans();
-
-			ParticleManager::GetInstance()->Add(180, pos, vel, { 0,0,0 }, 0.05f, 0.0f, { 2.0f,2.0f,2.0f,0.8f }, { 0,0,0,0 });
-		}
-
-
 		////長さ
 		float length = (info.object_->GetScale().x_ + GetScale().x_);
 		//距離のベクトル
@@ -169,9 +188,12 @@ void Player::OnCollision(const CollisionInfo& info)
 		distanceVec.Normalized();
 
 		//めり込まないように位置セット(半径＋半径の長さをベクトルの方向を使って足す)
-		Vec3 ansPos = info.object_->GetTrans() + distanceVec * length * 0.5f;
-		SetTrans(ansPos);
-		ansPos = info.object_->GetTrans() - distanceVec * length * 0.501f;
-		info.object_->SetTrans(ansPos);
+		//Vec3 ansPosP = info.object_->GetTrans() + distanceVec * length * 0.5f;
+		Vec3 ansPosE = GetTrans() - distanceVec * length * 1.01f;
+		//SetTrans(ansPosP);
+		info.object_->SetTrans(ansPosE);
+		
+		//info.object_->SetTrans(ansPos);
+		info.object_->SetVelocity({ 0,0,0 });
 	}
 }

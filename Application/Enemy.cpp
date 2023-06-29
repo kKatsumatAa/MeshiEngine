@@ -122,7 +122,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	if (info.object_->GetObjName() == "player")
 	{
 		////長さ
-		float length = (/*info.object_->GetScale().x_*/ + GetScale().x_);
+		float length = (/*info.object_->GetScale().x_*/ +GetScale().x_);
 		//距離のベクトル
 		Vec3 distanceVec = GetTrans() - info.object_->GetTrans();
 		//仮でyは動かさない
@@ -135,7 +135,10 @@ void Enemy::OnCollision(const CollisionInfo& info)
 
 		//動けないようにする
 		isCantMove = true;
-
+	}
+	//プレイヤーの攻撃との判定
+	else if (info.object_->GetObjName() == "playerAttack")
+	{
 		if (damageCoolTime <= 0)
 		{
 			//hp減らす
@@ -159,6 +162,23 @@ void Enemy::OnCollision(const CollisionInfo& info)
 			if (hp <= 0)
 			{
 				SetIsAlive(false);
+			}
+
+			//パーティクル
+			for (int32_t i = 0; i < 30; ++i)
+			{
+				const float MD_VEL = 0.1f;
+				Vec3 vel{};
+				vel.x_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+				vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+				vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+
+				Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
+
+				float scale = (float)rand() / RAND_MAX;
+				float scale2 = (float)rand() / RAND_MAX;
+
+				ParticleManager::GetInstance()->Add(100, pos, vel, { 0,0,0 }, scale, scale2, { 2.0f,0,0,1.5f }, { 0,0,0,0.0f });
 			}
 		}
 	}
