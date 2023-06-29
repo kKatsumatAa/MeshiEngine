@@ -29,6 +29,7 @@ void PlayerAttackStateNone::Update()
 			CollisionInfo c = CollisionInfo(player_, player_->GetCollider(), info.inter);
 			c.object_->SetObjName("playerAttack");
 			info.collider->OnCollision(c);
+			c.object_->SetObjName("player");
 		}
 	}
 	else

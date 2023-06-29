@@ -10,7 +10,7 @@ class Enemy :
 {
 private:
 	Vec3 velocity_ = { 0,0,0 };
-	const float VELOCITY_TMP_ = 1.0f;
+	const float VELOCITY_TMP_ = 0.8f;
 	bool isCantMove = false;
 
 	//向きをプレイヤーに向けるためのクォータニオン
