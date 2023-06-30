@@ -223,7 +223,7 @@ void Object::CulcFrontVec()
 void Object::Update()
 {
 	//行列更新
-	worldMat_->CulcWorldMat();
+	worldMat_->CulcAllTreeMat();
 	//当たり判定更新
 	if (collider_.get())
 	{
@@ -337,7 +337,7 @@ void Object::SendingMat(int32_t indexNum, Camera* camera)
 {
 
 	//変換行列をGPUに送信
-	worldMat_->CulcWorldMat();
+	worldMat_->CulcAllTreeMat();
 	//スプライトじゃない場合
 	if (indexNum != SPRITE)
 	{

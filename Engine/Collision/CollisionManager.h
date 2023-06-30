@@ -9,7 +9,7 @@
 class BaseCollider;
 
 //Objectが持っているコライダーをこのクラスの変数に登録して使う
-class CollisionManager 
+class CollisionManager
 {
 private:
 	CollisionManager() = default;
@@ -53,7 +53,7 @@ public://関数
 	/// <param name="hitInfo">衝突情報</param>
 	/// <param name="maxDistance">最大距離</param>
 	/// <returns>レイが任意のコライダーと交わる場合はtrue</returns>
-	bool Raycast(const Ray& ray, RaycastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
+	bool Raycast(const Ray& ray, std::string notTargetName, RaycastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
 
 	void CheckAllCollisions();
 

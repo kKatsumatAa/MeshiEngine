@@ -74,11 +74,11 @@ void Framework::Update()
 	PadInput::GetInstance().Update();
 	MouseInput::GetInstance().Update();
 
-	//カメラマネージャー
-	CameraManager::GetInstance().Update();
-
 	//更新処理
 	sceneM_->Update(postPera_->get());
+
+	//カメラマネージャー
+	CameraManager::GetInstance().Update();
 
 	//imgui
 	imguiM_->Begin();

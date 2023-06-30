@@ -47,19 +47,12 @@ bool Player::Initialize()
 	//カメラの位置と合わせる
 	SetTrans(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
 
-	//ステート
-	ChangeAttackState(std::make_unique<PlayerAttackStateNone>());
+	//手
+	handManager_.reset();
+	handManager_ = std::make_unique<PlayerHandManager>();
+	handManager_->Initialize(this);
 
 	return true;
-}
-
-void Player::ChangeAttackState(std::unique_ptr<PlayerAttackState> state)
-{
-	attackState_.reset();
-	//所有権ごと渡す
-	attackState_ = std::move(state);
-	attackState_->SetPlayer(this);
-	attackState_->Initialize();
 }
 
 
@@ -91,6 +84,15 @@ void Player::DirectionUpdate()
 
 	//正面ベクトルセット
 	SetFrontVec(frontVec_);
+
+	{
+		//元となる正面ベクトルからプレイヤーの方向ベクトルへの回転クォータニオン
+		Quaternion q = Quaternion::DirectionToDirection(GetFrontVecTmp(), frontVec_);
+		//角度じゃなくて行列をそのまま使う
+		SetIsUseQuaternionMatRot(true);
+		SetMatRot(q.MakeRotateMatrix());
+	}
+
 
 	//カメラの右方向ベクトルを出す
 	rightVec_ = upVec_.Cross(frontVec_);
@@ -144,7 +146,7 @@ void Player::Move()
 void Player::Update()
 {
 	//仮で小さくする
-	SetScale({ 0,0,0 });
+	//SetScale({ 0,0,0 });
 
 	//カメラの向き変更
 	DirectionUpdate();
@@ -152,18 +154,14 @@ void Player::Update()
 	//移動
 	Move();
 
-	//攻撃ステート
-	attackState_->Update();
-
 	Object::Update();
+
+	//手のアップデート
+	handManager_->Update();
 }
 
 void Player::Draw()
 {
-	//攻撃のステート
-	attackState_->Draw();
-
-
 	XMFLOAT4 col = { 1.0f,1.0f,1.0f,0.9f };
 
 	if (isCanAttack_)
@@ -173,6 +171,9 @@ void Player::Draw()
 
 	Object::DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f, WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },
 		0.05f, col, TextureManager::GetInstance().sWhiteTexHandle_, { 0.5f,0.5f });
+
+	//手の描画
+	handManager_->Draw();
 }
 
 void Player::OnCollision(const CollisionInfo& info)

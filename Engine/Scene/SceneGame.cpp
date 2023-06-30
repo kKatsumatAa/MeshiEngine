@@ -30,6 +30,16 @@ void SceneGame::Initialize()
 
 void SceneGame::Update(PostPera* postPera)
 {
+
+#ifdef _DEBUG
+	//リセット
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_R))
+	{
+		LevelManager::GetInstance().LoadLevelData();
+		ParticleManager::GetInstance()->ClearParticles();
+	}
+#endif
+
 	//レベルデータで読み込んだオブジェクト等
 	LevelManager::GetInstance().Update();
 

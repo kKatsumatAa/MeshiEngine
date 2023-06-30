@@ -4,20 +4,6 @@
 
 CameraManager::CameraManager()
 {
-	//何かしらカメラのポインタ入れる
-	/*CameraManager::GetInstance().AddCamera("mainCamera");
-	CameraManager::GetInstance().SetUsingCamera("mainCamera");*/
-
-	#ifdef _DEBUG
-
-	AddCamera("debugCamera");
-	GetCamera("debugCamera")->Initialize();
-	//SetUsingCamera("debugCamera");
-
-	#endif
-
-		//カメラを順に切り替えるためのイテレータ
-	cameraItr_ = cameraAndNames_.begin();
 }
 
 CameraManager::~CameraManager()
@@ -57,6 +43,23 @@ void CameraManager::Initialize()
 	afterCamera_ = nullptr;
 	isLerpMoving_ = false;
 	isLerpEnd_ = false;
+
+	cameraAndNames_.clear();
+
+	//何かしらカメラのポインタ入れる
+/*CameraManager::GetInstance().AddCamera("mainCamera");
+CameraManager::GetInstance().SetUsingCamera("mainCamera");*/
+
+#ifdef _DEBUG
+
+	AddCamera("debugCamera");
+	GetCamera("debugCamera")->Initialize();
+	//SetUsingCamera("debugCamera");
+
+#endif
+
+	//カメラを順に切り替えるためのイテレータ
+	cameraItr_ = cameraAndNames_.begin();
 
 	ChangeUsingCameraState(std::make_unique<UsingCameraNormalState>());
 }

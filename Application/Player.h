@@ -3,6 +3,7 @@
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
+#include "PlayerHandManager.h"
 
 class PlayerAttackState;
 
@@ -25,8 +26,8 @@ private:
 	//攻撃が届く距離
 	const float attackLength_ = 20.0f;
 
-	//攻撃のステート
-	std::unique_ptr<PlayerAttackState> attackState_ = nullptr;
+	//手のマネージャークラス
+	std::unique_ptr<PlayerHandManager> handManager_ = nullptr;
 
 public:
 
@@ -61,9 +62,6 @@ public:
 	void Update() override;
 
 	void Draw() override;
-
-	//攻撃のステート変更
-	void ChangeAttackState(std::unique_ptr<PlayerAttackState> state);
 
 	void OnCollision(const CollisionInfo& info) override;
 };

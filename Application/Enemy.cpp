@@ -153,7 +153,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 			velocity_.y_ = 0;
 			distanceVec.Normalized();
 			//ノックバック
-			velocity_ += distanceVec * length * 0.5f;
+			velocity_ += distanceVec * length * 0.23f;
 			SetVelocity(velocity_);
 			//ダメージを受けるクールタイム
 			damageCoolTime = 20;
@@ -212,9 +212,9 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		float myLengthRatio = GetVelocity().GetLength() / addLength;
 
 		//衝突後の自分のスピードベクトルは[現在のスピードベクトル]+[相手から自分へのベクトル]*[相手の長さの割合]
-		SetVelocity((GetVelocity() + distanceVec.GetNormalized() * addLength * (1.0f - myLengthRatio)) * 0.5f);
+		SetVelocity((GetVelocity() + distanceVec.GetNormalized() * addLength * (1.0f - myLengthRatio)) * 0.63f);
 		//衝突後の相手のスピードベクトルは[現在のスピードベクトル]+[このインスタンスから相手へのベクトル]*[このインスタンスの長さの割合]
-		info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * 0.5f);
+		info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * 0.63f);
 
 		////ベクトルを足して
 		//Vec3 addVel = GetVelocity() + info.object_->GetVelocity() * 2.0f;

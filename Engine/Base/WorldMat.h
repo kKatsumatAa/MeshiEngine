@@ -17,8 +17,6 @@ private:
 	void SetParentWorld(WorldMat* parent);
 	//再帰,親があれば行列を掛ける
 	void RecursiveCulcParentMat(WorldMat* parent, M4& childMat);
-	//行列計算のみ
-	void CulcAllTreeMat();
 
 public:
 	M4 matWorld_;
@@ -36,6 +34,8 @@ public:
 	void CulcQuaternionRotMat();
 	void CulcTransMat();
 	void CulcWorldMat();
+	//親の行列も考慮した行列計算
+	void CulcAllTreeMat();
 
 	Quaternion GetQuaternion();
 

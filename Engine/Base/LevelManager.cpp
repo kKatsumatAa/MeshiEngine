@@ -23,6 +23,7 @@ void LevelManager::LoadLevelData()
 {
 	//initializeの度,毎回やっちゃうとおかしくなる
 	objAndModels_.clear();
+	CameraManager::GetInstance().Initialize();
 
 	//レベルデータからカメラを取得
 	for (auto& cameraData : JsonLevelLoader::Getinstance().levelData_->cameras)

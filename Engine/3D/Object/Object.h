@@ -171,6 +171,11 @@ public:
 	void CulcScaleMat() { worldMat_->CulcScaleMat(); }
 	//ワールド行列の中身コピー
 	void SetWorldMat_(WorldMat worldMat) { *worldMat_ = worldMat; }
+	//親
+	void SetParent(Object* obj) { worldMat_->parent_ = obj->GetWorldMat(); }
+	WorldMat* GetParent() { return worldMat_->parent_; }
+	//
+	WorldMat* GetWorldMat() { return worldMat_.get(); }
 
 	//オブジェクト名前
 	void SetObjName(std::string objName) { objName_ = objName; }

@@ -1,17 +1,24 @@
 #pragma once
 #include"Util.h"
+#include<functional>
 
-class Player;
+
+class PlayerHand;
 
 class PlayerAttackState
 {
 protected:
 	//状態を使うインスタンスポインタ
-	Player* player_ = nullptr;
-	int32_t timer_ = 0;
+	PlayerHand* playerHand_ = nullptr;
+	float timer_ = 0;
+
+	//敵の被弾処理
+	std::function<void()> enemyDamageFunc_ = nullptr;
 
 public:
-	void SetPlayer(Player* player) { player_ = player; }
+	void SetEnemyDamageFunc(std::function<void()> f) { enemyDamageFunc_ = f; }
+
+	void SetPlayerHand(PlayerHand* playerHand) { playerHand_ = playerHand; }
 
 	virtual void Initialize() = 0;
 	virtual void Update() = 0;
@@ -34,7 +41,7 @@ public:
 class PlayerAttackStateDoing : public PlayerAttackState
 {
 private:
-	const int32_t TIMER_MAX_ = 20;
+	const int32_t TIMER_MAX_ = 4;
 
 public:
 	void Initialize() override;
@@ -46,7 +53,7 @@ public:
 class PlayerAttackStateDoing2 : public PlayerAttackState
 {
 private:
-	const int32_t TIMER_MAX_ = 20;
+	const int32_t TIMER_MAX_ = 7;
 
 public:
 	void Initialize() override;

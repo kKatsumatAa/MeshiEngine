@@ -309,6 +309,12 @@
     <ClCompile Include="Application\PlayerAttackState.cpp">
       <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
+    <ClCompile Include="Application\PlayerHand.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\PlayerHandManager.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Player.h">
@@ -516,6 +522,12 @@
       <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
     <ClInclude Include="Application\PlayerAttackState.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\PlayerHand.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\PlayerHandManager.h">
       <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
   </ItemGroup>
