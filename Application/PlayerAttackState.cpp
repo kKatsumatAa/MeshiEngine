@@ -2,6 +2,7 @@
 #include "CollisionManager.h"
 #include "Player.h"
 #include "MouseInput.h"
+#include "GameVelocityManager.h"
 
 
 //何もしない---------------------------------------------------------------
@@ -30,6 +31,9 @@ void PlayerAttackStateNone::Update()
 			c.object_->SetObjName("playerAttack");
 			info.collider->OnCollision(c);
 			c.object_->SetObjName("player");
+
+			//ゲームのスピード
+			GameVelocityManager::GetInstance().AddGameVelocity(0.5f);
 		}
 	}
 	else

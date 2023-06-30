@@ -153,7 +153,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 			velocity_.y_ = 0;
 			distanceVec.Normalized();
 			//ノックバック
-			velocity_ += distanceVec * length * 0.4f;
+			velocity_ += distanceVec * length * 0.5f;
 			SetVelocity(velocity_);
 			//ダメージを受けるクールタイム
 			damageCoolTime = 20;

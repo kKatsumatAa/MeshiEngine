@@ -15,17 +15,23 @@ void GameVelocityManager::Initialize()
 
 void GameVelocityManager::AddGameVelocity(float velocity, std::string velName)
 {
-	gameVelocity_ += velocity * 3.0f;
+	if (velocity == 0)
+	{
+		return;
+	}
+
+
 	//最大スピード超えないように
 	if (velName == "mouse")
 	{
-		//マウスは
-		gameVelocity_ = min(GAME_VELOCITY_MAX_ / 7.0f, gameVelocity_);
+		velocity = (GAME_VELOCITY_MAX_ / 7.0f - gameVelocity_) * 0.1f;
 	}
 	else
 	{
-		gameVelocity_ = min(GAME_VELOCITY_MAX_, gameVelocity_);
+		velocity *= 3.0f;
 	}
+	gameVelocity_ += velocity;
+	gameVelocity_ = min(GAME_VELOCITY_MAX_, gameVelocity_);
 }
 
 float GameVelocityManager::GetVelocity()
@@ -35,10 +41,13 @@ float GameVelocityManager::GetVelocity()
 
 void GameVelocityManager::Update()
 {
-	//減らしていく
-	gameVelocity_ *= 0.95f;
-	//最低スピードは保つ
-	gameVelocity_ = max(GAME_VELOCITY_MIN_, gameVelocity_);
+	if (gameVelocity_ > GAME_VELOCITY_MIN_)
+	{
+		//減らしていく
+		gameVelocity_ *= 0.8f;
+		//最低スピードは保つ
+		gameVelocity_ = max(GAME_VELOCITY_MIN_, gameVelocity_);
+	}
 }
 
 
