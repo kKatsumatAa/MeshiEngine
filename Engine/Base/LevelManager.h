@@ -27,7 +27,7 @@ public:
 	void LoadLevelData();
 
 	//ファイル名によってクラス生成
-	void LoadCharacter(const LevelData::ObjectData& objData);
+	void LoadCharacter( LevelData::ObjectData& objData);
 
 	//読み込んだものを動かす
 	void Update();

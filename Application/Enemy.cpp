@@ -10,7 +10,7 @@
 using namespace DirectX;
 
 
-std::unique_ptr<Enemy> Enemy::Create()
+std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat)
 {
 	std::unique_ptr<Enemy> instance = std::make_unique<Enemy>();
 	if (instance.get() == nullptr)
@@ -19,7 +19,7 @@ std::unique_ptr<Enemy> Enemy::Create()
 	}
 
 	//‰Šú‰»
-	if (!instance->Initialize())
+	if (!instance->Initialize(std::move(worldMat)))
 	{
 		assert(0);
 	}
@@ -27,9 +27,9 @@ std::unique_ptr<Enemy> Enemy::Create()
 	return std::move(instance);
 }
 
-bool Enemy::Initialize()
+bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat)
 {
-	if (!Object::Initialize())
+	if (!Object::Initialize(std::move(worldMat)))
 	{
 		return false;
 	}

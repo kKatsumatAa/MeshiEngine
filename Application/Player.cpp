@@ -12,7 +12,7 @@
 using namespace DirectX;
 
 
-std::unique_ptr<Player> Player::Create()
+std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat)
 {
 	std::unique_ptr<Player> instance = std::make_unique<Player>();
 	if (instance.get() == nullptr)
@@ -21,7 +21,7 @@ std::unique_ptr<Player> Player::Create()
 	}
 
 	//‰Šú‰»
-	if (!instance->Initialize())
+	if (!instance->Initialize(std::move(worldMat)))
 	{
 		assert(0);
 	}
@@ -29,9 +29,9 @@ std::unique_ptr<Player> Player::Create()
 	return std::move(instance);
 }
 
-bool Player::Initialize()
+bool Player::Initialize(std::unique_ptr<WorldMat> worldMat)
 {
-	if (!Object::Initialize())
+	if (!Object::Initialize(std::move(worldMat)))
 	{
 		return false;
 	}

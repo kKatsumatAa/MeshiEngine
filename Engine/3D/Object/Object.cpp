@@ -191,8 +191,15 @@ void DrawInitialize()
 }
 
 //----------------------------------------------------------------
-bool Object::Initialize()
+bool Object::Initialize(std::unique_ptr<WorldMat> worldMat)
 {
+	if (worldMat == nullptr)
+	{
+		worldMat = std::move(worldMat_);
+	}
+
+	SetWorldMat(std::move(worldMat));
+
 	objName_ = typeid(*this).name();
 	return true;
 }
@@ -223,7 +230,7 @@ void Object::CulcFrontVec()
 void Object::Update()
 {
 	//行列更新
-	worldMat_->CulcAllTreeMat();
+	worldMat_->CulcWorldMat();
 	//当たり判定更新
 	if (collider_.get())
 	{
@@ -335,6 +342,12 @@ Object::Object()
 
 void Object::SendingMat(int32_t indexNum, Camera* camera)
 {
+
+	if (objName_ == "gun")
+	{
+		//変換行列をGPUに送信
+		worldMat_->CulcAllTreeMat();
+	}
 
 	//変換行列をGPUに送信
 	worldMat_->CulcAllTreeMat();

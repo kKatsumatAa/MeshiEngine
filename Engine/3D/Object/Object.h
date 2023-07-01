@@ -170,7 +170,7 @@ public:
 	void CulcTransMat() { worldMat_->CulcTransMat(); }
 	void CulcScaleMat() { worldMat_->CulcScaleMat(); }
 	//ワールド行列の中身コピー
-	void SetWorldMat_(WorldMat worldMat) { *worldMat_ = worldMat; }
+	void SetWorldMat(std::unique_ptr<WorldMat> worldMat) { worldMat_ = std::move(worldMat); }
 	//親
 	void SetParent(Object* obj) { worldMat_->parent_ = obj->GetWorldMat(); }
 	WorldMat* GetParent() { return worldMat_->parent_; }
@@ -205,7 +205,7 @@ public:
 	void SetMatRot(const M4& m) { worldMat_->SetRotMat(m); }
 
 	//初期化
-	virtual bool Initialize();
+	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr);
 
 	virtual void Update();
 

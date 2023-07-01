@@ -28,6 +28,7 @@ public:
 	Quaternion quaternion_;
 
 	WorldMat();
+	~WorldMat() { ; }
 	//s—ñŒvZ
 	void CulcScaleMat();
 	void CulcRotMat();

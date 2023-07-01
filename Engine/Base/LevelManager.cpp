@@ -44,13 +44,13 @@ void LevelManager::LoadLevelData()
 
 	//レベルデータからオブジェクトを生成、配置
 	for (auto& objData : JsonLevelLoader::Getinstance().levelData_->objects)
-	{		
+	{
 		//
 		LoadCharacter(*objData.get());
 	}
 }
 
-void LevelManager::LoadCharacter(const LevelData::ObjectData& objData)
+void LevelManager::LoadCharacter(LevelData::ObjectData& objData)
 {
 	//ファイル名から登録済みモデルを検索
 	Model* model = ModelManager::GetInstance().LoadModel(objData.fileName);
@@ -61,24 +61,28 @@ void LevelManager::LoadCharacter(const LevelData::ObjectData& objData)
 	if (objData.fileName == "player")
 	{
 		//playerはObjectクラスを継承してるのでポリモーフィズム
-		newObj = Player::Create();
+		newObj = Player::Create(std::move(objData.worldMat));
 	}
 	//敵の場合
 	else if (objData.fileName == "enemy")
 	{
 		//enemyもObjectクラスを継承してるのでポリモーフィズム
-		newObj = Enemy::Create();
+		newObj = Enemy::Create(std::move(objData.worldMat));
+		newObj->SetObjName("enemy");
+	}
+	//銃の場合
+	else if (objData.fileName == "gun")
+	{
+		newObj = std::make_unique<Object>();
+		newObj->SetObjName("gun");
+		newObj->SetWorldMat(std::move(objData.worldMat));
 	}
 	//特に当てはまらないとき
 	else
 	{
 		newObj = std::make_unique<Object>();
+		newObj->SetWorldMat(std::move(objData.worldMat));
 	}
-
-
-
-	//worldmat
-	newObj->SetWorldMat_(*objData.worldMat.get());
 
 	//正面ベクトル(objの角度によって回転,回転後のベクトルを基礎正面とする)
 	newObj->CulcFrontVec();

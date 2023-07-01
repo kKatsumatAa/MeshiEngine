@@ -32,7 +32,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Enemy> Create();
+	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat);
 
 private:
 	//ˆÚ“®
@@ -40,7 +40,7 @@ private:
 
 public:
 
-	bool Initialize() override;
+	bool Initialize(std::unique_ptr<WorldMat> worldMat) override;
 
 	void Update() override;
 

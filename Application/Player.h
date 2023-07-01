@@ -38,7 +38,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Player> Create();
+	static std::unique_ptr<Player> Create(std::unique_ptr<WorldMat> worldMat);
 
 private:
 	//ˆÚ“®
@@ -57,7 +57,7 @@ public:
 
 public:
 
-	bool Initialize() override;
+	bool Initialize(std::unique_ptr<WorldMat> worldMat) override;
 
 	void Update() override;
 
