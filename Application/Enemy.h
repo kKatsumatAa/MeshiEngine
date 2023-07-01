@@ -3,6 +3,7 @@
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
+#include "Gun.h"
 
 
 class Enemy :
@@ -26,21 +27,33 @@ private:
 	float damageCoolTime = 0;
 	float velocityLength = 0;
 
+	//銃
+	Gun* gun_ = nullptr;
+
 public:
 	/// <summary>
 	/// オブジェクト生成
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat);
+	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat, Gun* gun);
 
 private:
 	//移動
 	void Move();
 
+	//銃をノックバックして落とす
+	void KnockBack(const CollisionInfo& info);
+
+	//被弾時のパーティクル
+	void DamageParticle(const CollisionInfo& info);
+
+	//銃を解除
+	void GunRelease(const Vec3& directionVec);
+
 public:
 
-	bool Initialize(std::unique_ptr<WorldMat> worldMat) override;
+	bool Initialize(std::unique_ptr<WorldMat> worldMat, Gun* gun);
 
 	void Update() override;
 

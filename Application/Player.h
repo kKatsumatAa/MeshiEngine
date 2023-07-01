@@ -4,8 +4,10 @@
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
 #include "PlayerHandManager.h"
+#include "Gun.h"
 
 class PlayerAttackState;
+class PlayerState;
 
 class Player :
 	public Object
@@ -21,13 +23,19 @@ private:
 	//攻撃中か
 	bool isAttacking_ = false;
 	//攻撃可能か
-	bool isCanAttack_ = false;
+	bool isTarget_ = false;
 
 	//攻撃が届く距離
 	const float attackLength_ = 20.0f;
 
 	//手のマネージャークラス
 	std::unique_ptr<PlayerHandManager> handManager_ = nullptr;
+
+	//状態のステート
+	std::unique_ptr<PlayerState> state_ = nullptr;
+
+	//銃
+	Gun* gun_ = nullptr;
 
 public:
 
@@ -38,7 +46,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Player> Create(std::unique_ptr<WorldMat> worldMat);
+	static std::unique_ptr<Player> Create(std::unique_ptr<WorldMat> worldMat, Gun* gun);
 
 private:
 	//移動
@@ -48,20 +56,29 @@ private:
 
 public:
 	void SetIsAttacking(bool is) { isAttacking_ = is; }
-	void SetIsCanAttack(bool is) { isCanAttack_ = is; }
+	void SetIsTarget(bool is) { isTarget_ = is; }
 
 	bool GetIsAttacking() { return isAttacking_; }
-	bool GetIsCanAttack() { return isCanAttack_; }
+	bool GetIsCanAttack() { return isTarget_; }
 
 	float GetAttackLength() { return attackLength_; }
 
+	//銃
+	Gun* GetGun() { return gun_; }
+	void SetGun(Gun* gun) { gun_ = gun; }
+
+	//手のマネージャー
+	PlayerHandManager* GetHandManager() { return handManager_.get(); }
+
 public:
 
-	bool Initialize(std::unique_ptr<WorldMat> worldMat) override;
+	bool Initialize(std::unique_ptr<WorldMat> worldMat, Gun* gun);
 
 	void Update() override;
 
 	void Draw() override;
+
+	void ChangePlayerState(std::unique_ptr<PlayerState> state);
 
 	void OnCollision(const CollisionInfo& info) override;
 };

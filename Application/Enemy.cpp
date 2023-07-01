@@ -10,7 +10,7 @@
 using namespace DirectX;
 
 
-std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat)
+std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, Gun* gun)
 {
 	std::unique_ptr<Enemy> instance = std::make_unique<Enemy>();
 	if (instance.get() == nullptr)
@@ -19,7 +19,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat)
 	}
 
 	//初期化
-	if (!instance->Initialize(std::move(worldMat)))
+	if (!instance->Initialize(std::move(worldMat), gun))
 	{
 		assert(0);
 	}
@@ -27,7 +27,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat)
 	return std::move(instance);
 }
 
-bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat)
+bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Gun* gun)
 {
 	if (!Object::Initialize(std::move(worldMat)))
 	{
@@ -42,6 +42,8 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat)
 	//半径分だけ足元から浮いた座標を球の中心にする
 
 	SetCollider(std::make_unique<SphereCollider>());
+
+	gun_ = gun;
 
 	return true;
 }
@@ -58,7 +60,7 @@ void Enemy::Move()
 	//プレイヤーに向かわせる(とりあえずカメラから位置もらう)
 	Vec3 playerPos = CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
 	//敵からプレイヤーへのベクトル
-	Vec3 directionVec = playerPos - GetTrans();
+	directionVec = playerPos - GetTrans();
 	//正規化
 	//directionVec.y_ = 0;
 	directionVec.Normalized();
@@ -109,6 +111,14 @@ void Enemy::Update()
 	//移動
 	Move();
 
+	//銃で攻撃
+	if (gun_)
+	{
+		Vec3 playerPos = CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
+		Vec3 directionV = playerPos - gun_->GetWorldTrans();
+		gun_->Shot(directionV, 0);
+	}
+
 	//ダメージ受けるクールタイムもゲームスピードをかける
 	damageCoolTime -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
@@ -116,9 +126,54 @@ void Enemy::Update()
 }
 
 
+//----------------------------------------------------------------------------------
+void Enemy::KnockBack(const CollisionInfo& info)
+{
+	//長さ
+	float length = (info.object_->GetScale().x_ + GetScale().x_);
+	//距離のベクトル
+	Vec3 distanceVec = GetTrans() - info.object_->GetTrans();
+	//仮
+	distanceVec.y_ = 0;
+	velocity_.y_ = 0;
+	distanceVec.Normalized();
+	//ノックバック
+	velocity_ += distanceVec * length * 0.23f;
+	SetVelocity(velocity_);
+	//ダメージを受けるクールタイム
+	damageCoolTime = 20;
+
+	//銃持っていたら落とす
+	if (gun_)
+	{
+		gun_->SetFallVec(-distanceVec);
+		gun_->ChangeOwner(nullptr);
+		gun_ = nullptr;
+	}
+}
+
+void Enemy::DamageParticle(const CollisionInfo& info)
+{
+	for (int32_t i = 0; i < 30; ++i)
+	{
+		const float MD_VEL = 0.1f;
+		Vec3 vel{};
+		vel.x_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+
+		Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
+
+		float scale = (float)rand() / RAND_MAX;
+		float scale2 = (float)rand() / RAND_MAX;
+
+		ParticleManager::GetInstance()->Add(100, pos, vel, { 0,0,0 }, scale, scale2, { 2.0f,0,0,1.5f }, { 0,0,0,0.0f });
+	}
+}
+
 void Enemy::OnCollision(const CollisionInfo& info)
 {
-	//仮でプレイヤーに当たったら生きてるフラグオフ
+	//プレイヤーに当たったら
 	if (info.object_->GetObjName() == "player")
 	{
 		////長さ
@@ -129,10 +184,6 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		distanceVec.y_ = 0;
 		distanceVec.Normalized();
 
-		//めり込まないように位置セット(半径＋半径の長さをベクトルの方向を使って足す)
-		/*Vec3 ansPos = info.object_->GetTrans() + distanceVec * length * 1.001f;
-		SetTrans(ansPos);*/
-
 		//動けないようにする
 		isCantMove = true;
 	}
@@ -141,23 +192,11 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	{
 		if (damageCoolTime <= 0)
 		{
+			//ノックバック
+			KnockBack(info);
+
 			//hp減らす
 			hp--;
-
-			//長さ
-			float length = (info.object_->GetScale().x_ + GetScale().x_);
-			//距離のベクトル
-			Vec3 distanceVec = GetTrans() - info.object_->GetTrans();
-			//仮
-			distanceVec.y_ = 0;
-			velocity_.y_ = 0;
-			distanceVec.Normalized();
-			//ノックバック
-			velocity_ += distanceVec * length * 0.23f;
-			SetVelocity(velocity_);
-			//ダメージを受けるクールタイム
-			damageCoolTime = 20;
-
 			//死亡
 			if (hp <= 0)
 			{
@@ -165,32 +204,37 @@ void Enemy::OnCollision(const CollisionInfo& info)
 			}
 
 			//パーティクル
-			for (int32_t i = 0; i < 30; ++i)
-			{
-				const float MD_VEL = 0.1f;
-				Vec3 vel{};
-				vel.x_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-				vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-				vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-
-				Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
-
-				float scale = (float)rand() / RAND_MAX;
-				float scale2 = (float)rand() / RAND_MAX;
-
-				ParticleManager::GetInstance()->Add(100, pos, vel, { 0,0,0 }, scale, scale2, { 2.0f,0,0,1.5f }, { 0,0,0,0.0f });
-			}
+			DamageParticle(info);
 		}
+	}
+	//弾に当たったら
+	else if (info.object_->GetObjName() == "bullet")
+	{
+		SetIsAlive(false);
+
+		//ノックバック
+		KnockBack(info);
+
+		//パーティクル
+		DamageParticle(info);
+	}
+	//銃に当たったら
+	else if (info.object_->GetObjName() == "gun")
+	{
+		Gun* gun = dynamic_cast<Gun*>(info.object_);
+
+		//親がいる（持ってる人がいるときのみ）
+		if (gun->GetParent() && gun->GetFallVelocity().GetLength() == 0)
+		{
+			return;
+		}
+
+		//
+		KnockBack(info);
 	}
 	//敵同士で当たったらめり込まないようにする
 	else if (info.object_->GetObjName() == "enemy")
 	{
-		//自分の方が早かったら自分はよけない
-		/*if (GetVelocity().GetLength() > info.object_->GetVelocity().GetLength())
-		{
-			return;
-		}*/
-
 		//長さ
 		float length = (info.object_->GetScale().x_ + GetScale().x_);
 		//距離のベクトル
@@ -215,10 +259,5 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		SetVelocity((GetVelocity() + distanceVec.GetNormalized() * addLength * (1.0f - myLengthRatio)) * 0.63f);
 		//衝突後の相手のスピードベクトルは[現在のスピードベクトル]+[このインスタンスから相手へのベクトル]*[このインスタンスの長さの割合]
 		info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * 0.63f);
-
-		////ベクトルを足して
-		//Vec3 addVel = GetVelocity() + info.object_->GetVelocity() * 2.0f;
-		//SetVelocity(addVel);
-		//info.object_->SetVelocity(addVel);
 	}
 }

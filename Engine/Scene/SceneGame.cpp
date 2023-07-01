@@ -4,6 +4,7 @@
 #include "CameraManager.h"
 #include "CollisionManager.h"
 #include "GameVelocityManager.h"
+#include "BulletManager.h"
 
 
 void SceneGame::Finalize()
@@ -16,16 +17,18 @@ void SceneGame::Initialize()
 {
 	//json
 	JsonLevelLoader::Getinstance().Initialize();
-	JsonLevelLoader::Getinstance().LoadJsonFile("level");
 	//レベルマネージャー
 	LevelManager::GetInstance().StaticInitialize();
-	LevelManager::GetInstance().LoadLevelData();
+	LevelManager::GetInstance().LoadLevelData("level");
 
 	//カメラをセット
 	CameraManager::GetInstance().SetUsingCamera("playerCamera");
 
 	//ゲームスピード
 	GameVelocityManager::GetInstance().Initialize();
+
+	//弾
+	BulletManager::GetInstance().Initialize();
 }
 
 void SceneGame::Update(PostPera* postPera)
@@ -35,13 +38,20 @@ void SceneGame::Update(PostPera* postPera)
 	//リセット
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_R))
 	{
-		LevelManager::GetInstance().LoadLevelData();
+		LevelManager::GetInstance().LoadLevelData("level");
 		ParticleManager::GetInstance()->ClearParticles();
+		//弾
+		BulletManager::GetInstance().Initialize();
+		//ゲームスピード
+		GameVelocityManager::GetInstance().Initialize();
 	}
 #endif
 
 	//レベルデータで読み込んだオブジェクト等
 	LevelManager::GetInstance().Update();
+
+	//弾
+	BulletManager::GetInstance().Update();
 
 	//判定
 	CollisionManager::GetInstance()->CheckAllCollisions();
@@ -58,6 +68,9 @@ void SceneGame::Update(PostPera* postPera)
 
 void SceneGame::Draw()
 {
+	//ゲームスピード
+	BulletManager::GetInstance().Draw();
+
 	LevelManager::GetInstance().Draw();
 }
 

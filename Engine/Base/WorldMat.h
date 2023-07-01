@@ -45,4 +45,7 @@ public:
 
 	void SetRotMat(const M4& m) { matRot_ = m; }
 	const M4& GetRotMat() { return matRot_; }
+
+	//親子関係を考慮した位置を得る
+	 Vec3 GetWorldTrans();
 };

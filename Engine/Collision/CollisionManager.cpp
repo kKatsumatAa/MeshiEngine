@@ -9,7 +9,7 @@ CollisionManager* CollisionManager::GetInstance()
 	return &sInstance;
 }
 
-bool CollisionManager::Raycast(const Ray& ray, std::string notTargetName, RaycastHit* hitInfo,float maxDistance)
+bool CollisionManager::Raycast(const Ray& ray, std::string notTargetName, RaycastHit* hitInfo, float maxDistance)
 {
 	bool result = false;
 	//走査用のイテレータ

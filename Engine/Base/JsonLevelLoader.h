@@ -18,6 +18,8 @@ struct LevelData
 		std::unique_ptr<WorldMat> worldMat;
 		//ファイル名
 		std::string fileName;
+		//子のデータ
+		ObjectData* childData;
 	};
 
 	//カメラのデータ
@@ -43,7 +45,7 @@ private:
 
 public:
 	//レベルデータ
-	std::unique_ptr<LevelData> levelData_;
+	std::unique_ptr<LevelData> levelData_ = nullptr;
 
 private:
 	JsonLevelLoader() { ; }

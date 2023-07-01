@@ -173,9 +173,12 @@ public:
 	void SetWorldMat(std::unique_ptr<WorldMat> worldMat) { worldMat_ = std::move(worldMat); }
 	//親
 	void SetParent(Object* obj) { worldMat_->parent_ = obj->GetWorldMat(); }
+	void SetParent(WorldMat* worldMat) { worldMat_->parent_ = worldMat; }
 	WorldMat* GetParent() { return worldMat_->parent_; }
 	//
 	WorldMat* GetWorldMat() { return worldMat_.get(); }
+	//親子関係を考慮した位置をゲット
+	Vec3 GetWorldTrans() { return worldMat_->GetWorldTrans(); }
 
 	//オブジェクト名前
 	void SetObjName(std::string objName) { objName_ = objName; }

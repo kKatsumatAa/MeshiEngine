@@ -80,37 +80,18 @@ PlayerHand* PlayerHandManager::GetWitchUseHand()
 	return nullptr;
 }
 
+void PlayerHandManager::Attack(RaycastHit info)
+{
+	//手のどちらかが使えたら攻撃
+	if (GetIsUseWitchHand())
+	{
+		//攻撃
+		HandAttack(GetWitchUseHand(), info);
+	}
+}
+
 void PlayerHandManager::Update()
 {
-	//攻撃できるかどうか
-//レイにプレイヤーの正面ベクトル入れる
-	Ray ray;
-	ray.dir = { player_->GetFrontVec().x_,player_->GetFrontVec().y_,player_->GetFrontVec().z_ };
-	ray.start = { player_->GetTrans().x_,player_->GetTrans().y_,player_->GetTrans().z_ };
-
-	RaycastHit info;
-	//正面ベクトルに敵がいるか
-	bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, "player", &info, player_->GetAttackLength());
-
-	if (isRayHit)
-	{
-		//攻撃できるフラグオン
-		player_->SetIsCanAttack(true);
-
-		//手のどちらかが使えたら攻撃
-		if (GetIsUseWitchHand())
-		{
-			//攻撃
-			HandAttack(GetWitchUseHand(), info);
-		}
-	}
-	//攻撃できるフラグオフ
-	else
-	{
-		player_->SetIsCanAttack(false);
-	}
-
-
 	//手
 	handL->Update();
 	handR->Update();

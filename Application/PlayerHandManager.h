@@ -3,6 +3,7 @@
 #include "CollisionManager.h"
 
 
+
 class PlayerHandManager
 {
 private:
@@ -21,6 +22,10 @@ private:
 	bool GetIsUseWitchHand();
 	//UŒ‚’†‚¶‚á‚È‚¢è‚Ìƒ|ƒCƒ“ƒ^‚à‚ç‚¤
 	PlayerHand* GetWitchUseHand();
+
+public:
+	//‰£‚é
+	void Attack(RaycastHit info);
 
 public:
 	void Initialize(Player* player);

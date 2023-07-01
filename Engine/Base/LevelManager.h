@@ -2,6 +2,7 @@
 #include"JsonLevelLoader.h"
 #include"Object.h"
 #include"Camera.h"
+#include"Gun.h"
 
 //jsonで読み込んだレベルを管理する
 class LevelManager final
@@ -24,7 +25,7 @@ public:
 
 	void StaticInitialize();
 	//JsonLevelLoaderで読み込んだ内容を実際にエンジン上で読み込む
-	void LoadLevelData();
+	void LoadLevelData(std::string fileName);
 
 	//ファイル名によってクラス生成
 	void LoadCharacter( LevelData::ObjectData& objData);
@@ -34,4 +35,7 @@ public:
 	//読み込んだものを描画
 	void Draw(Camera* camera = nullptr);
 
+
+private://ゲームオリジナル
+	Gun* GetChildGun(const LevelData::ObjectData& objData);
 };

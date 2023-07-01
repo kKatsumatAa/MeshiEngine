@@ -7,12 +7,13 @@
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
 #include "PlayerAttackState.h"
+#include "PlayerState.h"
 
 
 using namespace DirectX;
 
 
-std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat)
+std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Gun* gun)
 {
 	std::unique_ptr<Player> instance = std::make_unique<Player>();
 	if (instance.get() == nullptr)
@@ -21,7 +22,7 @@ std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat)
 	}
 
 	//初期化
-	if (!instance->Initialize(std::move(worldMat)))
+	if (!instance->Initialize(std::move(worldMat), gun))
 	{
 		assert(0);
 	}
@@ -29,7 +30,7 @@ std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat)
 	return std::move(instance);
 }
 
-bool Player::Initialize(std::unique_ptr<WorldMat> worldMat)
+bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Gun* gun)
 {
 	if (!Object::Initialize(std::move(worldMat)))
 	{
@@ -52,9 +53,27 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat)
 	handManager_ = std::make_unique<PlayerHandManager>();
 	handManager_->Initialize(this);
 
+	gun_ = gun;
+
+	//銃持ってたらステートかえる
+	if (gun_ == nullptr)
+	{
+		ChangePlayerState(std::make_unique<PlayerStateBareHands>());
+	}
+	else
+	{
+		ChangePlayerState(std::make_unique<PlayerStateHaveGun>());
+	}
 	return true;
 }
 
+void Player::ChangePlayerState(std::unique_ptr<PlayerState> state)
+{
+	state_.reset();
+	state_ = std::move(state);
+	state_->SetPlayer(this);
+	state_->Initialize();
+}
 
 void Player::DirectionUpdate()
 {
@@ -154,6 +173,9 @@ void Player::Update()
 	//移動
 	Move();
 
+	//素手や銃などのステート
+	state_->Update();
+
 	Object::Update();
 
 	//手のアップデート
@@ -164,7 +186,7 @@ void Player::Draw()
 {
 	XMFLOAT4 col = { 1.0f,1.0f,1.0f,0.9f };
 
-	if (isCanAttack_)
+	if (isTarget_)
 	{
 		col = { 1.0f,0,0,1.0f };
 	}
@@ -193,8 +215,13 @@ void Player::OnCollision(const CollisionInfo& info)
 		Vec3 ansPosE = GetTrans() - distanceVec * length * 1.01f;
 		//SetTrans(ansPosP);
 		info.object_->SetTrans(ansPosE);
-		
+
 		//info.object_->SetTrans(ansPos);
 		info.object_->SetVelocity({ 0,0,0 });
+	}
+	//弾に当たったらダメージ
+	if (info.object_->GetObjName() == "bullet")
+	{
+		//SetIsAlive(false);
 	}
 }

@@ -100,12 +100,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application\Bullet.cpp" />
+    <ClCompile Include="Application\BulletManager.cpp" />
     <ClCompile Include="Application\Enemy.cpp" />
     <ClCompile Include="Application\GameVelocityManager.cpp" />
+    <ClCompile Include="Application\Gun.cpp" />
     <ClCompile Include="Application\Player.cpp" />
     <ClCompile Include="Application\PlayerAttackState.cpp" />
     <ClCompile Include="Application\PlayerHand.cpp" />
     <ClCompile Include="Application\PlayerHandManager.cpp" />
+    <ClCompile Include="Application\PlayerState.cpp" />
     <ClCompile Include="Engine\2D\DebugText.cpp" />
     <ClCompile Include="Engine\2D\DrawIntNumImage.cpp" />
     <ClCompile Include="Engine\2D\Sprite.cpp" />
@@ -169,12 +173,16 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\Bullet.h" />
+    <ClInclude Include="Application\BulletManager.h" />
     <ClInclude Include="Application\Enemy.h" />
     <ClInclude Include="Application\GameVelocityManager.h" />
+    <ClInclude Include="Application\Gun.h" />
     <ClInclude Include="Application\Player.h" />
     <ClInclude Include="Application\PlayerAttackState.h" />
     <ClInclude Include="Application\PlayerHand.h" />
     <ClInclude Include="Application\PlayerHandManager.h" />
+    <ClInclude Include="Application\PlayerState.h" />
     <ClInclude Include="Engine\2D\DebugText.h" />
     <ClInclude Include="Engine\2D\DrawIntNumImage.h" />
     <ClInclude Include="Engine\2D\Sprite.h" />

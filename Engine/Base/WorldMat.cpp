@@ -166,3 +166,10 @@ Quaternion WorldMat::GetQuaternion()
 
 	return Quaternion(qZ);
 }
+
+ Vec3 WorldMat::GetWorldTrans()
+{
+	CulcAllTreeMat();
+
+	return Vec3((float)matWorld_.m_[3][0], (float)matWorld_.m_[3][1], (float)matWorld_.m_[3][2]);
+}

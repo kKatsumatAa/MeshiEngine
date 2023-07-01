@@ -13,11 +13,14 @@ JsonLevelLoader& JsonLevelLoader::Getinstance()
 
 void JsonLevelLoader::Initialize()
 {
+	levelData_.reset();
 	levelData_ = std::make_unique<LevelData>();
 }
 
 void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 {
+	Initialize();
+
 	//連結してフルパスを得る
 	const std::string FULL_PATH = S_DEFAULT_BASE_DIRECTORY_ + fileName + S_EXTENSION_;
 
@@ -89,7 +92,6 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 		//ファイル名
 		objectData->fileName = (*object)["file_name"];
 	}
-
 	//トランスフォームのパラメータ読み込み
 	nlohmann::json transform = (*object)["transform"];
 
@@ -109,6 +111,14 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 	objectData->worldMat->scale_.x_ = (float)transform["scaling"][1];
 	objectData->worldMat->scale_.y_ = (float)transform["scaling"][2];
 	objectData->worldMat->scale_.z_ = (float)transform["scaling"][0];
+
+	//親がいたら、おやに自分のデータ入れる
+	if (parent)
+	{
+		auto itr = levelData_->objects.end();
+		std::advance(itr, -2);//endは何もなく、その一個前が今の自分が入ってるので二回戻す
+		itr->get()->childData = objectData.get();
+	}
 
 	//子がいたら
 	if ((*object).contains("children"))
