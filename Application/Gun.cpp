@@ -104,7 +104,7 @@ void Gun::NoParentMove()
 		fallVec_.z_ *= (0.99f);
 
 		//銃が地面についたら
-		if (GetTrans().y_ <= GetScale().x_)
+		if (GetWorldTrans().y_ <= GetScale().x_)
 		{
 			fallVec_ = { 0,0,0 };
 		}
@@ -119,7 +119,10 @@ void Gun::Update()
 	//親が亡くなった後の動き
 	NoParentMove();
 	//地面より下に行かないように
-	SetTransY(max(GetTrans().y_, GetScale().x_));
+	if (GetParent() == nullptr)
+	{
+		SetTransY(max(GetTrans().y_, GetScale().x_));
+	}
 
 	//クールタイムもゲームスピードをかける
 	shotCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();

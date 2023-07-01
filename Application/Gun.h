@@ -56,7 +56,9 @@ public:
 	//
 	void SetFallVec(const Vec3& fallVec) { fallVec_ = fallVec; }
 	//ローカル座標セット
-	void SetLocalPos(const Vec3& pos) { localPos_ = pos; }
+	void SetLocalPos(const Vec3& pos) { 
+		localPos_ = pos; 
+	}
 
 	//投げる、被弾して落ちるときのスピード
 	const Vec3& GetFallVelocity() { return fallVec_; }

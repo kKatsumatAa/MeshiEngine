@@ -40,9 +40,11 @@ void PlayerStateBareHands::Update()
 		{
 			Gun* gun = dynamic_cast<Gun*>(info_.object);
 			player_->SetGun(gun);
-			Vec3 localP = { player_->GetScale().x_ ,-player_->GetScale().y_ * 2.0f ,player_->GetScale().z_ * 2.0f };
+			Vec3 localP = { player_->GetScale().x_ ,-player_->GetScale().y_ / 2.0f ,player_->GetScale().z_ * 2.0f };
 			gun->SetLocalPos(localP);
 			gun->ChangeOwner(player_->GetWorldMat());
+			//プレイヤーは逆向きなので仮に
+			gun->SetRotY(PI);
 
 			//ステート変更(銃)
 			player_->ChangePlayerState(std::make_unique<PlayerStateHaveGun>());
