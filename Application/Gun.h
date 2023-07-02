@@ -13,7 +13,7 @@ private:
 	const float SHOT_COOL_TIME_MAX_ = 35;
 	float shotCoolTime_ = SHOT_COOL_TIME_MAX_;
 
-	const float BULLET_VELOCITY_ = 1.8f;
+	const float BULLET_VELOCITY_ = 2.3f;
 
 	//’e‚ÌŽc—Ê
 	const int32_t BULLETS_TMP_ = 3;

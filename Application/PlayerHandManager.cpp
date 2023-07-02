@@ -9,15 +9,15 @@
 
 void PlayerHandManager::Initialize(Player* player)
 {
-	handL.reset();
-	handR.reset();
+	handL_.reset();
+	handR_.reset();
 
 	//位置(ローカル座標をセット)
 	Vec3 playerPos = player->GetTrans();
 	Vec3 distance = player->GetScale();
 	//生成（仮）
-	handL = handL->Create(player, { -distance.x_ * 2.0f,0 - distance.y_,-distance.z_ });
-	handR = handR->Create(player, { +distance.x_ * 2.0f,0 - distance.y_,-distance.z_ });
+	handL_ = PlayerHand::Create(player, { -distance.x_ * 2.0f,0 - distance.y_,-distance.z_ });
+	handR_ = PlayerHand::Create(player, { +distance.x_ * 2.0f,0 - distance.y_,-distance.z_ });
 
 	player_ = player;
 }
@@ -41,12 +41,26 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 
 		//ステート内で呼び出す
 		std::function<void()>f = [=]() {
-			//当たり判定呼び出し処理で、プレイヤーの位置等を使い、敵に攻撃被弾時の処理をさせるため
-			CollisionInfo c = CollisionInfo(player_, player_->GetCollider(), info.inter);
-			c.object_->SetObjName("playerAttack");
-			info.collider->OnCollision(c);
-			c.object_->SetObjName("player");
+			//敵が銃で倒されてる可能性があるのでもう一回調べる
+			//レイにプレイヤーの正面ベクトル入れる
+			Ray ray;
+			ray.dir = { player_->GetFrontVec().x_,player_->GetFrontVec().y_,player_->GetFrontVec().z_ };
+			ray.start = { player_->GetTrans().x_,player_->GetTrans().y_,player_->GetTrans().z_ };
+
+			//正面ベクトルに何かあるか
+			RaycastHit info;
+			bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, "player", &info, player_->GetAttackLength());
+
+			if (isRayHit)
+			{
+				//当たり判定呼び出し処理で、プレイヤーの位置等を使い、敵に攻撃被弾時の処理をさせるため
+				c_ = CollisionInfo(player_, player_->GetCollider(), info.inter);
+				c_.object_->SetObjName("playerAttack");
+				info.collider->OnCollision(c_);
+				c_.object_->SetObjName("player");
+			}
 		};
+
 		//敵の被弾処理セット
 		hand->GetAttackState()->SetEnemyDamageFunc(f);
 
@@ -58,7 +72,7 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 bool PlayerHandManager::GetIsUseWitchHand()
 {
 	//手のどちらかが使えたら攻撃
-	if (!handR->GetIsAttacking() || !handL->GetIsAttacking())
+	if (!handR_->GetIsAttacking() || !handL_->GetIsAttacking())
 	{
 		return true;
 	}
@@ -68,13 +82,13 @@ bool PlayerHandManager::GetIsUseWitchHand()
 
 PlayerHand* PlayerHandManager::GetWitchUseHand()
 {
-	if (!handR->GetIsAttacking())
+	if (!handR_->GetIsAttacking())
 	{
-		return handR.get();
+		return handR_.get();
 	}
-	if (!handL->GetIsAttacking())
+	if (!handL_->GetIsAttacking())
 	{
-		return handL.get();
+		return handL_.get();
 	}
 
 	return nullptr;
@@ -93,12 +107,12 @@ void PlayerHandManager::Attack(RaycastHit info)
 void PlayerHandManager::Update()
 {
 	//手
-	handL->Update();
-	handR->Update();
+	handL_->Update();
+	handR_->Update();
 }
 
 void PlayerHandManager::Draw()
 {
-	handL->Draw();
-	handR->Draw();
+	handL_->Draw();
+	handR_->Draw();
 }

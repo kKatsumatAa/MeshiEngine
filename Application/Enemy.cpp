@@ -116,7 +116,7 @@ void Enemy::Update()
 	{
 		Vec3 playerPos = CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
 		Vec3 directionV = playerPos - gun_->GetWorldTrans();
-		gun_->Shot(directionV, 0);
+		gun_->Shot(directionV.GetNormalized(), 0);
 	}
 
 	//ダメージ受けるクールタイムもゲームスピードをかける
@@ -146,7 +146,8 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	//銃持っていたら落とす
 	if (gun_)
 	{
-		gun_->SetFallVec(-distanceVec);
+		distanceVec.y_ = 0.2f;
+		gun_->SetFallVec({ -distanceVec.x_,distanceVec.y_,-distanceVec.z_ });
 		gun_->ChangeOwner(nullptr);
 		gun_ = nullptr;
 	}

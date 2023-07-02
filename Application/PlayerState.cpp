@@ -86,8 +86,11 @@ void PlayerStateHaveGun::Update()
 		else if (MouseInput::GetInstance().GetTriggerClick(CLICK_RIGHT))
 		{
 			player_->GetGun()->ChangeOwner(nullptr);
-			player_->GetGun()->SetFallVec(player_->GetFrontVec() * 10.0f);
+			player_->GetGun()->SetFallVec(player_->GetFrontVec() * 5.0f);
 			player_->SetGun(nullptr);
+
+			//ゲームスピード加算
+			GameVelocityManager::GetInstance().AddGameVelocity(0.4f);
 
 			//ステート変更(素手)
 			player_->ChangePlayerState(std::make_unique<PlayerStateBareHands>());
