@@ -5,6 +5,7 @@
 #include "CollisionManager.h"
 #include "GameVelocityManager.h"
 #include "BulletManager.h"
+#include "ClearEffect.h"
 
 
 void SceneGame::Finalize()
@@ -29,6 +30,9 @@ void SceneGame::Initialize()
 
 	//弾
 	BulletManager::GetInstance().Initialize();
+
+	//
+	ClearEffect::GetInstance().Initialize();
 }
 
 void SceneGame::Update(PostPera* postPera)
@@ -59,10 +63,21 @@ void SceneGame::Update(PostPera* postPera)
 	//ゲームスピード
 	GameVelocityManager::GetInstance().Update();
 
+	ClearEffect::GetInstance().Update();
+
 	//シーン遷移
-	if (KeyboardInput::GetInstance().KeyTrigger(DIK_SPACE) || PadInput::GetInstance().GetTriggerButton(GAMEPAD_A))
+	if (LevelManager::GetInstance().GetGameOver())
 	{
-		//sceneM->ChangeScene("TITLE");
+		sceneM_->ChangeScene("TITLE");
+	}
+	else if (LevelManager::GetInstance().GetGameClear())
+	{
+		ClearEffect::GetInstance().Update();
+
+		if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
+		{
+			sceneM_->ChangeScene("TITLE");
+		}
 	}
 }
 
@@ -72,10 +87,16 @@ void SceneGame::Draw()
 	BulletManager::GetInstance().Draw();
 
 	LevelManager::GetInstance().Draw();
+
+	if (LevelManager::GetInstance().GetGameClear())
+	{
+		ClearEffect::GetInstance().Draw();
+	}
 }
 
 void SceneGame::DrawSprite()
 {
+
 }
 
 void SceneGame::DrawImgui()

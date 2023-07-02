@@ -222,6 +222,6 @@ void Player::OnCollision(const CollisionInfo& info)
 	//’e‚É“–‚½‚Á‚½‚çƒ_ƒ[ƒW
 	if (info.object_->GetObjName() == "bullet")
 	{
-		//SetIsAlive(false);
+		SetIsAlive(false);
 	}
 }

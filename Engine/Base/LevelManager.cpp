@@ -81,6 +81,39 @@ Gun* LevelManager::GetChildGun(const LevelData::ObjectData& objData)
 	return nullptr;
 }
 
+bool LevelManager::GetGameOver()
+{
+	Player* p = nullptr;
+
+	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	{
+		Object* obj = it->first.get();
+
+		if (obj->GetObjName() == "player")
+		{
+			p = dynamic_cast<Player*>(obj);
+			return !p->GetIsAlive();
+		}
+	}
+	return false;
+}
+
+bool LevelManager::GetGameClear()
+{
+	int count = 0;
+
+	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	{
+		Object* obj = it->first.get();
+
+		if (obj->GetObjName() == "enemy" && obj->GetIsAlive())
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 void LevelManager::LoadCharacter(LevelData::ObjectData& objData)
 {
 	//武器で親がいたらスキップ(登録済みならworldMatはmove()されてないので)

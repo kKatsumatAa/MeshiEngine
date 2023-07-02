@@ -32,7 +32,7 @@ void SceneManager::ChangeScene(std::string sceneName)
 
 void SceneManager::StopWaveAllScene()
 {
-	Sound::GetInstance().StopWave("Stage_BGM.wav");
+	//Sound::GetInstance().StopWave("Stage_BGM.wav");
 }
 
 void SceneManager::Initialize()

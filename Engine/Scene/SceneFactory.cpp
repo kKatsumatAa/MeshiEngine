@@ -14,6 +14,10 @@ std::unique_ptr<SceneState> SceneFactory::CreateScene(const std::string& sceneNa
     {
         newScene = std::make_unique<SceneGame>();
     }
+    else if (sceneName == "CLEAR")
+    {
+        newScene = std::make_unique<SceneGame>();
+    }
     else if (sceneName == "LOAD")
     {
         newScene = std::make_unique<SceneLoad>();

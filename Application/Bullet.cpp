@@ -58,6 +58,9 @@ void Bullet::Update()
 
 	Object::Update();
 
+	//’e“¹
+	ParticleManager::GetInstance()->Add(30, GetWorldTrans(), {0,0,0}, {0,0,0}, GetScale().x_, 0, {5.0f,0,0,4.5f}, { 5.0f,0,0,4.5f });
+
 
 	if (lifeTime_ <= 0)
 	{

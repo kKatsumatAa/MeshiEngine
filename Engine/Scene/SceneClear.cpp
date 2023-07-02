@@ -1,44 +1,44 @@
-#include "SceneTitle.h"
+#include "SceneClear.h"
 #include "SceneManager.h"
 
 
-void SceneTitle::Finalize()
+void SceneClear::Finalize()
 {
 }
 
 //---------------------------------------------------------------------------------------
-void SceneTitle::Initialize()
+void SceneClear::Initialize()
 {
 	sceneM_->StopWaveAllScene();
 	ParticleManager::GetInstance()->ClearParticles();
 }
 
-void SceneTitle::Update(PostPera* postPera)
+void SceneClear::Update(PostPera* postPera)
 {
 	//ƒV[ƒ“‘JˆÚ
 	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
 	{
-		sceneM_->ChangeScene("GAME");
+		sceneM_->ChangeScene("TITLE");
 	}
 }
 
-void SceneTitle::Draw()
+void SceneClear::Draw()
 {
 }
 
-void SceneTitle::DrawSprite()
+void SceneClear::DrawSprite()
 {
 }
 
-void SceneTitle::DrawImgui()
+void SceneClear::DrawImgui()
 {
 }
 
-void SceneTitle::DrawPostEffect()
+void SceneClear::DrawPostEffect()
 {
 }
 
-void SceneTitle::DrawPostEffect2()
+void SceneClear::DrawPostEffect2()
 {
 }
 

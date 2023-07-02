@@ -35,7 +35,9 @@ public:
 	//読み込んだものを描画
 	void Draw(Camera* camera = nullptr);
 
-
 private://ゲームオリジナル
 	Gun* GetChildGun(const LevelData::ObjectData& objData);
+public:
+	bool GetGameOver();
+	bool GetGameClear();
 };

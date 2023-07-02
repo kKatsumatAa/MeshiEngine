@@ -8,11 +8,15 @@ void MyGame::Initialize()
 	Framework::Initialize();
 
 	//ゲーム固有の初期化
+	CameraManager::GetInstance().Initialize();
+	CameraManager::GetInstance().AddCamera("camera");
+	CameraManager::GetInstance().SetUsingCamera("camera");
 
 	//シーンファクトリーを生成し、マネージャーにセット
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneM_->SetSceneFactory(sceneFactory_.get());
-	sceneM_->ChangeScene("GAME");
+	sceneM_->Initialize();
+	sceneM_->ChangeScene("TITLE");
 
 	postPera_[1]->effectFlags_.isBarrelCurve = true;
 	postPera_[0]->effectFlags_.isBloom = true;
