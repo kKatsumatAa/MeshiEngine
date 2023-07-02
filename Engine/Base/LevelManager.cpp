@@ -91,11 +91,10 @@ bool LevelManager::GetGameOver()
 
 		if (obj->GetObjName() == "player")
 		{
-			p = dynamic_cast<Player*>(obj);
-			return !p->GetIsAlive();
+			return false;
 		}
 	}
-	return false;
+	return true;
 }
 
 bool LevelManager::GetGameClear()

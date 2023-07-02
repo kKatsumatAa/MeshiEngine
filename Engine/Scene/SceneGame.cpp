@@ -72,9 +72,12 @@ void SceneGame::Update(PostPera* postPera)
 	}
 	else if (LevelManager::GetInstance().GetGameClear())
 	{
+		clearCoolTime_++;
+
 		ClearEffect::GetInstance().Update();
 
-		if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
+		//˜A‘Å‚µ‚Ä”ò‚Î‚³‚È‚¢‚æ‚¤‚É
+		if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) && clearCoolTime_ >= CLEAR_COOL_TIME_MAX_)
 		{
 			sceneM_->ChangeScene("TITLE");
 		}

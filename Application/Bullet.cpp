@@ -70,7 +70,7 @@ void Bullet::Update()
 
 void Bullet::Draw()
 {
-	DrawSphere();
+	DrawSphere(nullptr,{0.0f,0.0f,0.0f,1.0f});
 }
 
 

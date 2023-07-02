@@ -37,6 +37,10 @@ private:
 	//èe
 	Gun* gun_ = nullptr;
 
+	//
+	int32_t deadTimer_ = 50;
+	bool isDead_ = false;
+
 public:
 
 

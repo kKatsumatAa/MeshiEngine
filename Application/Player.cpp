@@ -164,8 +164,34 @@ void Player::Move()
 
 void Player::Update()
 {
-	//仮で小さくする
-	//SetScale({ 0,0,0 });
+	//ゲームオーバーまでの
+	if (isDead_)
+	{
+		SetScale({ 0,0,0 });
+
+		if (deadTimer_ <= 0)
+		{
+			SetIsAlive(false);
+		}
+
+		deadTimer_--;
+
+		//パーティクル
+		for (int32_t i = 0; i < 1; ++i)
+		{
+			const float MD_VEL = 0.6f;
+			Vec3 vel{};
+			vel.x_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+			vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+			vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+
+			float scale = (float)rand() / RAND_MAX * GetScale().x_;
+
+			ParticleManager::GetInstance()->Add(30, GetTrans(), vel, {0,0,0}, scale, 0, {2.0f,2.0f,2.0f,1.5f}, {0,0,0,0.0f});
+		}
+
+		return;
+	}
 
 	//カメラの向き変更
 	DirectionUpdate();
@@ -184,6 +210,11 @@ void Player::Update()
 
 void Player::Draw()
 {
+	if (isDead_)
+	{
+		return;
+	}
+
 	XMFLOAT4 col = { 0.4f,0.4f,0.4f,1.0f };
 
 	if (isTarget_)
@@ -222,6 +253,31 @@ void Player::OnCollision(const CollisionInfo& info)
 	//弾に当たったらダメージ
 	if (info.object_->GetObjName() == "bullet")
 	{
-		SetIsAlive(false);
+		isDead_ = true;
+
+		{
+			//被弾方向へのベクトル
+			Vec3 directionVec = info.object_->GetWorldTrans() - GetTrans();
+			//初期正面ベクトルとプレイヤーへのベクトル
+			Vec3 fVTmp = GetFrontVecTmp().GetNormalized();
+			Vec3 pDVTmp = directionVec.GetNormalized();
+
+			//正面ベクトルから被弾方向ベクトルへの回転クォータニオン
+			Quaternion q = Quaternion::DirectionToDirection(fVTmp, pDVTmp);
+			//回転後のベクトル
+			fVTmp = q.GetRotateVector(fVTmp);
+			//正面ベクトルセット
+			SetFrontVec(fVTmp);
+
+			//角度じゃなくて行列をそのまま使う
+			SetIsUseQuaternionMatRot(true);
+			SetMatRot(q.MakeRotateMatrix());
+
+			Object::Update();
+
+			//カメラの注視点に回転したベクトルセット
+			CameraManager::GetInstance().GetCamera("playerCamera")->SetTarget(GetTrans() + fVTmp.GetNormalized());
+			/*CameraManager::GetInstance().GetCamera("playerCamera")->Update();*/
+		}
 	}
 }

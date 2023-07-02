@@ -89,8 +89,11 @@ void Framework::Update()
 
 	//(imgui)
 	Object::StaticUpdate();
+
+#ifdef DEBUG
 	//(imgui)
 	sceneM_->DrawImgui();
+#endif // DEBUG
 
 	imguiM_->End();
 }

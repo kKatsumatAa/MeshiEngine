@@ -241,6 +241,8 @@ void Object::Update()
 void Object::StaticUpdate()
 {
 	sEffectFlags_.time++;
+
+#ifdef DEBUG
 	//imgui
 	ImGui::Begin("ObjectEffect");
 	ImGui::SliderInt("Fog", (int32_t*)&sEffectFlags_.isFog, 0, 1);
@@ -248,6 +250,7 @@ void Object::StaticUpdate()
 	ImGui::SliderInt("RimLight", (int32_t*)&sEffectFlags_.isRimLight, 0, 1);
 	ImGui::ColorEdit3("RimColor", sRimColorF3_);
 	ImGui::End();
+#endif // DEBUG
 
 	sEffectFlags_.rimColor = { sRimColorF3_[0],sRimColorF3_[1],sRimColorF3_[2] };
 
