@@ -45,7 +45,7 @@ struct EffectConstBuffer
 	//時間
 	uint32_t time = 0;
 	//ブルームの強さ
-	float bloomPow = 5.0f;
+	float bloomPow = 9.0f;
 };
 
 struct PeraVertex
@@ -100,6 +100,9 @@ private:
 
 	//ブルームの最大強さ
 	const float BLOOM_MAX_POW_ = 15.0f;
+
+	//
+	float peraExtend_ = 1.0f;
 
 public:
 	//画面効果用

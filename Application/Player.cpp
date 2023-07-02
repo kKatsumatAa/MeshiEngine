@@ -184,11 +184,11 @@ void Player::Update()
 
 void Player::Draw()
 {
-	XMFLOAT4 col = { 1.0f,1.0f,1.0f,0.9f };
+	XMFLOAT4 col = { 0.4f,0.4f,0.4f,1.0f };
 
 	if (isTarget_)
 	{
-		col = { 1.0f,0,0,1.0f };
+		col = { 1.5f,1.5f,0,1.0f };
 	}
 
 	Object::DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f, WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },

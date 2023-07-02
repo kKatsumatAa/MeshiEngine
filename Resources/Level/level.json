@@ -23,28 +23,6 @@
             }
         },
         {
-            "type": "MESH",
-            "name": "Sphere001",
-            "transform": {
-                "translation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    3.328249454498291,
-                    3.328249454498291,
-                    3.328249454498291
-                ]
-            },
-            "file_name": "skydome"
-        },
-        {
             "type": "CAMERA",
             "name": "カメラ.001",
             "transform": {
@@ -133,28 +111,6 @@
                     "file_name": "gun"
                 }
             ]
-        },
-        {
-            "type": "MESH",
-            "name": "Plane001",
-            "transform": {
-                "translation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    3.496753692626953,
-                    3.496753692626953,
-                    3.496753692626953
-                ]
-            },
-            "file_name": "ground"
         },
         {
             "type": "MESH",
@@ -513,6 +469,28 @@
                     "file_name": "gun"
                 }
             ]
+        },
+        {
+            "type": "MESH",
+            "name": "Cube",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    14.492429733276367
+                ],
+                "rotation": [
+                    90.00000762939453,
+                    -1.3435247651818333e-13,
+                    -179.99998474121094
+                ],
+                "scaling": [
+                    287.7203063964844,
+                    15.0,
+                    287.7200012207031
+                ]
+            },
+            "file_name": "stage"
         }
     ]
 }

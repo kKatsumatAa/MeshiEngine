@@ -55,13 +55,15 @@ void SceneManager::Initialize()
 	//インスタンス生成
 	lightManager_ = std::move(LightManager::Create());
 	//ライト色を設定
-	lightManager_->SetDirLightColor(0, { 1,1,1 });
+	lightManager_->SetDirLightColor(0, { 0.6f,0.6f,0.6f });
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
 	Object::SetLight(lightManager_.get());
 	lightManager_->SetDirLightActive(0, true);
 	lightManager_->SetDirLightActive(1, false);
 	lightManager_->SetDirLightActive(2, false);
-	lightManager_->SetDirLightDir(0, { 0, -1.0f, 0 });
+	Vec3 v = { 0, -1.0f, 1.0f };
+	v.Normalized();
+	lightManager_->SetDirLightDir(0, { v.x_,v.y_,v.z_ });
 	//点光源
 	for (int32_t i = 0; i < 6; i++)
 	{

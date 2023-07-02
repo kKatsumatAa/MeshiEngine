@@ -116,7 +116,7 @@ if (isVignette)
 	float2 samplePoint = input.uv;
 	float4 Tex = tex0.Sample(smp, input.uv);
 	float vignette = length(float2(0.5f, 0.5f) - input.uv);
-	vignette = clamp(vignette - 0.4f, 0, 1);
+	vignette = clamp(vignette - 0.45f, 0, 1);
 	Tex.rgb -= vignette;
 	ret = Tex;
 

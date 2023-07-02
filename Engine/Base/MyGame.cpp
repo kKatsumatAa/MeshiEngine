@@ -16,6 +16,7 @@ void MyGame::Initialize()
 
 	postPera_[1]->effectFlags_.isBarrelCurve = true;
 	postPera_[0]->effectFlags_.isBloom = true;
+	postPera_[0]->effectFlags_.isVignette = true;
 }
 
 void MyGame::Finalize()
