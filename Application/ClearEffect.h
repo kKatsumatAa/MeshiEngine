@@ -6,7 +6,7 @@ class ClearEffect final
 {
 private:
 	int32_t timer_ = 0;
-	const int32_t TIMER_MAX_ = 180;
+	const int32_t TIMER_MAX_ = 260;
 	float t_ = 0;
 
 	float scale_ = 0;

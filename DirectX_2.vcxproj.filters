@@ -330,7 +330,7 @@
     <ClCompile Include="Engine\Scene\SceneClear.cpp">
       <Filter>ソース ファイル\Engine\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\ClearEffect.cpp">
+    <ClCompile Include="Application\ClearEffect.cpp">
       <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
   </ItemGroup>

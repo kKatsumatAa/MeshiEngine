@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClCompile Include="Application\Bullet.cpp" />
     <ClCompile Include="Application\BulletManager.cpp" />
+    <ClCompile Include="Application\ClearEffect.cpp" />
     <ClCompile Include="Application\Enemy.cpp" />
     <ClCompile Include="Application\GameVelocityManager.cpp" />
     <ClCompile Include="Application\Gun.cpp" />
@@ -162,7 +163,6 @@
     <ClCompile Include="Engine\PostEffect\GausianBuffer.cpp" />
     <ClCompile Include="Engine\PostEffect\GlassFilter.cpp" />
     <ClCompile Include="Engine\PostEffect\PostPera.cpp" />
-    <ClCompile Include="Engine\Scene\ClearEffect.cpp" />
     <ClCompile Include="Engine\Scene\SceneClear.cpp" />
     <ClCompile Include="Engine\Scene\SceneFactory.cpp" />
     <ClCompile Include="Engine\Scene\SceneGame.cpp" />
