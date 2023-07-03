@@ -1,16 +1,16 @@
 #include "Primitive.h"
 #include "Util.h"
 
-static uint16_t sIndicesBox[6] =
+uint16_t Primitive::sIndicesBox_[6] =
 {
 	0,1,2,//三角形1つ目
 	2,1,3,//三角形2つ目
 };
-static uint16_t sIndicesTriangle[3] =
+uint16_t Primitive::sIndicesTriangle_[3] =
 {
 	0,1,2//三角形2つ目
 };
-static uint16_t sIndicesCube[36] =
+uint16_t Primitive::sIndicesCube_[36] =
 {
 	//前
 	0,1,2,//三角形1つ目
@@ -32,7 +32,7 @@ static uint16_t sIndicesCube[36] =
 	23,21,22,//三角形2つ目
 };
 
-static uint16_t sIndicesCircle[] =
+uint16_t Primitive::sIndicesCircle_[] =
 {
 	2,1,0,
 	3,2,0,
@@ -58,15 +58,15 @@ static uint16_t sIndicesCircle[] =
 	23,22,0,
 };
 
-static uint16_t sIndicesLine[2] =
+uint16_t Primitive::sIndicesLine_[2] =
 {
 	0,1//三角形2つ目
 };
 
-static uint16_t sIndicesSphere[Primitive::S_SPHERE_INDEX_NUM_ * 36];
+uint16_t Primitive::sIndicesSphere_[Primitive::S_SPHERE_INDEX_NUM_ * 36];
 
 
-uint32_t sizeVB;
+uint32_t Primitive::sizeVB_;
 
 //---------------------------------------------
 
@@ -94,12 +94,12 @@ void Primitive::InitializeTriangle()
 
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<uint32_t>(sizeof(verticesTriangle_[0]) * _countof(verticesTriangle_));
+	sizeVB_ = static_cast<uint32_t>(sizeof(verticesTriangle_[0]) * _countof(verticesTriangle_));
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB_);
 
 	//頂点バッファの生成
 	BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &vertBuffTriangle_);
@@ -108,7 +108,7 @@ void Primitive::InitializeTriangle()
 	// GPU仮想アドレス
 	vbTriangleView_.BufferLocation = vertBuffTriangle_->GetGPUVirtualAddress();
 	// 頂点バッファのサイズ
-	vbTriangleView_.SizeInBytes = sizeVB;
+	vbTriangleView_.SizeInBytes = sizeVB_;
 	// 頂点1つ分のデータサイズ
 	vbTriangleView_.StrideInBytes = sizeof(verticesTriangle_[0]);
 
@@ -116,7 +116,7 @@ void Primitive::InitializeTriangle()
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesTriangle));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesTriangle_));
 
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
@@ -127,9 +127,9 @@ void Primitive::InitializeTriangle()
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int32_t i = 0; i < _countof(sIndicesTriangle); i++)
+		for (int32_t i = 0; i < _countof(sIndicesTriangle_); i++)
 		{
-			indexMap[i] = sIndicesTriangle[i];//インデックスをコピー
+			indexMap[i] = sIndicesTriangle_[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
@@ -143,12 +143,12 @@ void Primitive::InitializeTriangle()
 
 	//06_03
 	{
-		for (int32_t i = 0; i < _countof(sIndicesTriangle) / 3; i++)
+		for (int32_t i = 0; i < _countof(sIndicesTriangle_) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = sIndicesTriangle[i * 3 + 0];
-			uint16_t index1 = sIndicesTriangle[i * 3 + 1];
-			uint16_t index2 = sIndicesTriangle[i * 3 + 2];
+			uint16_t index0 = sIndicesTriangle_[i * 3 + 0];
+			uint16_t index1 = sIndicesTriangle_[i * 3 + 1];
+			uint16_t index2 = sIndicesTriangle_[i * 3 + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesTriangle_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesTriangle_[index1].pos);
@@ -171,12 +171,12 @@ void Primitive::InitializeBox()
 	HRESULT result = {};
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<uint32_t>(sizeof(verticesBox_[0]) * _countof(verticesBox_));
+	sizeVB_ = static_cast<uint32_t>(sizeof(verticesBox_[0]) * _countof(verticesBox_));
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB_);
 
 	//頂点バッファの生成
 	BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &vertBuffBox_);
@@ -185,7 +185,7 @@ void Primitive::InitializeBox()
 	// GPU仮想アドレス
 	vbBoxView_.BufferLocation = vertBuffBox_->GetGPUVirtualAddress();
 	// 頂点バッファのサイズ
-	vbBoxView_.SizeInBytes = sizeVB;
+	vbBoxView_.SizeInBytes = sizeVB_;
 	// 頂点1つ分のデータサイズ
 	vbBoxView_.StrideInBytes = sizeof(verticesBox_[0]);
 
@@ -193,7 +193,7 @@ void Primitive::InitializeBox()
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesBox));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesBox_));
 
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
@@ -204,9 +204,9 @@ void Primitive::InitializeBox()
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int32_t i = 0; i < _countof(sIndicesBox); i++)
+		for (int32_t i = 0; i < _countof(sIndicesBox_); i++)
 		{
-			indexMap[i] = sIndicesBox[i];//インデックスをコピー
+			indexMap[i] = sIndicesBox_[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
@@ -220,12 +220,12 @@ void Primitive::InitializeBox()
 
 	//06_03
 	{
-		for (int32_t i = 0; i < _countof(sIndicesBox) / 3; i++)
+		for (int32_t i = 0; i < _countof(sIndicesBox_) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = sIndicesBox[i * 3 + 0];
-			uint16_t index1 = sIndicesBox[i * 3 + 1];
-			uint16_t index2 = sIndicesBox[i * 3 + 2];
+			uint16_t index0 = sIndicesBox_[i * 3 + 0];
+			uint16_t index1 = sIndicesBox_[i * 3 + 1];
+			uint16_t index2 = sIndicesBox_[i * 3 + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesBox_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesBox_[index1].pos);
@@ -257,12 +257,12 @@ void Primitive::InitializeCircle()
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<uint32_t>(sizeof(verticesCircle_[0]) * _countof(verticesCircle_));
+	sizeVB_ = static_cast<uint32_t>(sizeof(verticesCircle_[0]) * _countof(verticesCircle_));
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB_);
 
 	//頂点バッファの生成
 	BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &vertBuffCircle_);
@@ -271,7 +271,7 @@ void Primitive::InitializeCircle()
 	// GPU仮想アドレス
 	vbCircleView_.BufferLocation = vertBuffCircle_->GetGPUVirtualAddress();
 	// 頂点バッファのサイズ
-	vbCircleView_.SizeInBytes = sizeVB;
+	vbCircleView_.SizeInBytes = sizeVB_;
 	// 頂点1つ分のデータサイズ
 	vbCircleView_.StrideInBytes = sizeof(verticesCircle_[0]);
 
@@ -279,7 +279,7 @@ void Primitive::InitializeCircle()
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesCircle));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesCircle_));
 
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
@@ -290,9 +290,9 @@ void Primitive::InitializeCircle()
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int32_t i = 0; i < _countof(sIndicesCircle); i++)
+		for (int32_t i = 0; i < _countof(sIndicesCircle_); i++)
 		{
-			indexMap[i] = sIndicesCircle[i];//インデックスをコピー
+			indexMap[i] = sIndicesCircle_[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
@@ -306,12 +306,12 @@ void Primitive::InitializeCircle()
 
 	//06_03
 	{
-		for (int32_t i = 0; i < _countof(sIndicesCircle) / 3; i++)
+		for (int32_t i = 0; i < _countof(sIndicesCircle_) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = sIndicesCircle[i * 3 + 0];
-			uint16_t index1 = sIndicesCircle[i * 3 + 1];
-			uint16_t index2 = sIndicesCircle[i * 3 + 2];
+			uint16_t index0 = sIndicesCircle_[i * 3 + 0];
+			uint16_t index1 = sIndicesCircle_[i * 3 + 1];
+			uint16_t index2 = sIndicesCircle_[i * 3 + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesCircle_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesCircle_[index1].pos);
@@ -367,12 +367,12 @@ void Primitive::InitializeCube()
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<uint32_t>(sizeof(verticesCube_[0]) * _countof(verticesCube_));
+	sizeVB_ = static_cast<uint32_t>(sizeof(verticesCube_[0]) * _countof(verticesCube_));
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB_);
 
 	//頂点バッファの生成
 	BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &vertBuffCube_);
@@ -381,7 +381,7 @@ void Primitive::InitializeCube()
 	// GPU仮想アドレス
 	vbCubeView_.BufferLocation = vertBuffCube_->GetGPUVirtualAddress();
 	// 頂点バッファのサイズ
-	vbCubeView_.SizeInBytes = sizeVB;
+	vbCubeView_.SizeInBytes = sizeVB_;
 	// 頂点1つ分のデータサイズ
 	vbCubeView_.StrideInBytes = sizeof(verticesCube_[0]);
 
@@ -389,7 +389,7 @@ void Primitive::InitializeCube()
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesCube));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesCube_));
 
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
@@ -400,9 +400,9 @@ void Primitive::InitializeCube()
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int32_t i = 0; i < _countof(sIndicesCube); i++)
+		for (int32_t i = 0; i < _countof(sIndicesCube_); i++)
 		{
-			indexMap[i] = sIndicesCube[i];//インデックスをコピー
+			indexMap[i] = sIndicesCube_[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
@@ -418,12 +418,12 @@ void Primitive::InitializeCube()
 	//06_03
 		/*if (indexNum == SPHERE)*/
 	{
-		for (int32_t i = 0; i < _countof(sIndicesCube) / 3; i++)
+		for (int32_t i = 0; i < _countof(sIndicesCube_) / 3; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = sIndicesCube[i * 3 + 0];
-			uint16_t index1 = sIndicesCube[i * 3 + 1];
-			uint16_t index2 = sIndicesCube[i * 3 + 2];
+			uint16_t index0 = sIndicesCube_[i * 3 + 0];
+			uint16_t index1 = sIndicesCube_[i * 3 + 1];
+			uint16_t index2 = sIndicesCube_[i * 3 + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesCube_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesCube_[index1].pos);
@@ -452,7 +452,7 @@ void Primitive::InitializeLine()
 		//03_04
 		//インデックスデータ
 		//インデックスデータ全体のサイズ
-		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesLine));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesLine_));
 
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
@@ -463,9 +463,9 @@ void Primitive::InitializeLine()
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int32_t i = 0; i < _countof(sIndicesLine); i++)
+		for (int32_t i = 0; i < _countof(sIndicesLine_); i++)
 		{
-			indexMap[i] = sIndicesLine[i];//インデックスをコピー
+			indexMap[i] = sIndicesLine_[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
@@ -478,12 +478,12 @@ void Primitive::InitializeLine()
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<uint32_t>(sizeof(verticesLine_[0]) * _countof(verticesLine_));
+	sizeVB_ = static_cast<uint32_t>(sizeof(verticesLine_[0]) * _countof(verticesLine_));
 
 	//頂点バッファの設定		//ヒープ設定
 	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB);
+	ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB_);
 
 	//頂点バッファの生成
 	BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, &vertBuffLine_);
@@ -492,7 +492,7 @@ void Primitive::InitializeLine()
 	// GPU仮想アドレス
 	vbLineView_.BufferLocation = vertBuffLine_->GetGPUVirtualAddress();
 	// 頂点バッファのサイズ
-	vbLineView_.SizeInBytes = sizeVB;
+	vbLineView_.SizeInBytes = sizeVB_;
 	// 頂点1つ分のデータサイズ
 	vbLineView_.StrideInBytes = sizeof(verticesLine_[0]);
 }
@@ -504,12 +504,12 @@ void Primitive::InitializeSphere()
 	//球体用
 	{
 		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-		sizeVB = static_cast<uint32_t>(sizeof(verticesSphere_[0]) * (_countof(verticesSphere_)));
+		sizeVB_ = static_cast<uint32_t>(sizeof(verticesSphere_[0]) * (_countof(verticesSphere_)));
 
 		//頂点バッファの設定		//ヒープ設定
 		heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB);
+		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeVB_);
 
 		//頂点バッファの生成
 		BuffProperties(heapProp_, TextureManager::GetInstance().sResDesc_, vertBuffSphere_.GetAddressOf());
@@ -518,7 +518,7 @@ void Primitive::InitializeSphere()
 		// GPU仮想アドレス
 		vbViewSphere_.BufferLocation = vertBuffSphere_->GetGPUVirtualAddress();
 		// 頂点バッファのサイズ
-		vbViewSphere_.SizeInBytes = sizeVB;
+		vbViewSphere_.SizeInBytes = sizeVB_;
 		// 頂点1つ分のデータサイズ
 		vbViewSphere_.StrideInBytes = sizeof(verticesSphere_[0]);
 
@@ -553,7 +553,7 @@ void Primitive::InitializeSphere()
 		int32_t count4 = 0;
 		bool isLast = false;
 		//インデックス
-		for (int32_t i = 0; i < _countof(sIndicesSphere); i++)
+		for (int32_t i = 0; i < _countof(sIndicesSphere_); i++)
 		{
 			if (i % (S_SPHERE_INDEX_NUM_ * 35) == 0 && i != 0)//最後の縦の列
 			{
@@ -570,18 +570,18 @@ void Primitive::InitializeSphere()
 				{
 					if (isLast)
 					{
-						sIndicesSphere[i] = 2 + 34 * count + (count3);
-						sIndicesSphere[i + 1] = 2 + 0 + (count3);//一周してきたので一番最初の列を使う
-						sIndicesSphere[i + 2] = 2 + 34 * count + (count3 + 1);
+						sIndicesSphere_[i] = 2 + 34 * count + (count3);
+						sIndicesSphere_[i + 1] = 2 + 0 + (count3);//一周してきたので一番最初の列を使う
+						sIndicesSphere_[i + 2] = 2 + 34 * count + (count3 + 1);
 
 						count3++;
 						i += 2;
 					}
 					else
 					{
-						sIndicesSphere[i] = 2 + 34 * count + (count3);
-						sIndicesSphere[i + 1] = 2 + 34 * (count + 1) + (count3);
-						sIndicesSphere[i + 2] = 2 + 34 * count + (count3 + 1);
+						sIndicesSphere_[i] = 2 + 34 * count + (count3);
+						sIndicesSphere_[i + 1] = 2 + 34 * (count + 1) + (count3);
+						sIndicesSphere_[i + 2] = 2 + 34 * count + (count3 + 1);
 
 						count3++;
 						i += 2;
@@ -591,18 +591,18 @@ void Primitive::InitializeSphere()
 				{
 					if (isLast)
 					{
-						sIndicesSphere[i] = 2 + 0 + (count4 + 1);//一周してきたので一番最初の列を使う
-						sIndicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
-						sIndicesSphere[i + 2] = 2 + 0 + (count4);//一周してきたので一番最初の列を使う
+						sIndicesSphere_[i] = 2 + 0 + (count4 + 1);//一周してきたので一番最初の列を使う
+						sIndicesSphere_[i + 1] = 2 + 34 * count + (count4 + 1);
+						sIndicesSphere_[i + 2] = 2 + 0 + (count4);//一周してきたので一番最初の列を使う
 
 						count4++;
 						i += 2;
 					}
 					else
 					{
-						sIndicesSphere[i] = 2 + 34 * (count + 1) + (count4 + 1);
-						sIndicesSphere[i + 1] = 2 + 34 * count + (count4 + 1);
-						sIndicesSphere[i + 2] = 2 + 34 * (count + 1) + (count4);
+						sIndicesSphere_[i] = 2 + 34 * (count + 1) + (count4 + 1);
+						sIndicesSphere_[i + 1] = 2 + 34 * count + (count4 + 1);
+						sIndicesSphere_[i + 2] = 2 + 34 * (count + 1) + (count4);
 
 						count4++;
 						i += 2;
@@ -617,17 +617,17 @@ void Primitive::InitializeSphere()
 				{
 					if (isLast)
 					{
-						sIndicesSphere[i] = 0;
-						sIndicesSphere[i + 1] = 2 + 0;
-						sIndicesSphere[i + 2] = 2 + 34 * count;
+						sIndicesSphere_[i] = 0;
+						sIndicesSphere_[i + 1] = 2 + 0;
+						sIndicesSphere_[i + 2] = 2 + 34 * count;
 
 						i += 2;
 					}
 					else
 					{
-						sIndicesSphere[i] = 2 + 34 * (count + 1);
-						sIndicesSphere[i + 1] = 2 + 34 * count;
-						sIndicesSphere[i + 2] = 0;
+						sIndicesSphere_[i] = 2 + 34 * (count + 1);
+						sIndicesSphere_[i + 1] = 2 + 34 * count;
+						sIndicesSphere_[i + 2] = 0;
 
 						i += 2;
 					}
@@ -636,9 +636,9 @@ void Primitive::InitializeSphere()
 				{
 					if (isLast)
 					{
-						sIndicesSphere[i] = 1 + 34 * (count + 1);
-						sIndicesSphere[i + 1] = 35;
-						sIndicesSphere[i + 2] = 1;
+						sIndicesSphere_[i] = 1 + 34 * (count + 1);
+						sIndicesSphere_[i + 1] = 35;
+						sIndicesSphere_[i + 2] = 1;
 
 						i += 2;
 
@@ -649,9 +649,9 @@ void Primitive::InitializeSphere()
 					}
 					else
 					{
-						sIndicesSphere[i] = 1 + 34 * (count + 1);
-						sIndicesSphere[i + 1] = 1 + 34 * (count + 2);
-						sIndicesSphere[i + 2] = 1;
+						sIndicesSphere_[i] = 1 + 34 * (count + 1);
+						sIndicesSphere_[i + 1] = 1 + 34 * (count + 2);
+						sIndicesSphere_[i + 2] = 1;
 
 						i += 2;
 
@@ -664,7 +664,7 @@ void Primitive::InitializeSphere()
 			}
 		}
 
-		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesSphere));
+		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesSphere_));
 
 		//リソース設定
 		ResourceProperties(TextureManager::GetInstance().sResDesc_, sizeIB);
@@ -675,9 +675,9 @@ void Primitive::InitializeSphere()
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 		//全インデックスに対して
-		for (int32_t i = 0; i < _countof(sIndicesSphere); i++)
+		for (int32_t i = 0; i < _countof(sIndicesSphere_); i++)
 		{
-			indexMap[i] = sIndicesSphere[i];//インデックスをコピー
+			indexMap[i] = sIndicesSphere_[i];//インデックスをコピー
 
 		}
 		//マッピングを解除
@@ -692,12 +692,12 @@ void Primitive::InitializeSphere()
 		//06_03
 		/*if (indexNum == SPHERE)*/
 		{
-			for (int32_t i = 0; i < _countof(sIndicesSphere) / 3; i++)
+			for (int32_t i = 0; i < _countof(sIndicesSphere_) / 3; i++)
 			{//三角形一つごとに計算
 				//三角形のインデックスを取り出して、一時的な変数に入れる
-				uint16_t index0 = sIndicesSphere[i * 3 + 0];
-				uint16_t index1 = sIndicesSphere[i * 3 + 1];
-				uint16_t index2 = sIndicesSphere[i * 3 + 2];
+				uint16_t index0 = sIndicesSphere_[i * 3 + 0];
+				uint16_t index1 = sIndicesSphere_[i * 3 + 1];
+				uint16_t index2 = sIndicesSphere_[i * 3 + 2];
 				//三角形を構成する頂点座標をベクトルに代入
 				XMVECTOR p0 = XMLoadFloat3(&verticesSphere_[index0].pos);
 				XMVECTOR p1 = XMLoadFloat3(&verticesSphere_[index1].pos);
@@ -754,7 +754,7 @@ void Primitive::TriangleDraw(const std::function<void()>& setRootParam, const st
 {
 	DrawCommandPrimitive(vertBuffTriangle_.Get(), _countof(verticesTriangle_), verticesTriangle_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		vbTriangleView_, ibViewTriangle_,
-		_countof(sIndicesTriangle),
+		_countof(sIndicesTriangle_),
 		setRootParam, setMaterialLightTex);
 }
 
@@ -762,7 +762,7 @@ void Primitive::BoxDraw(const std::function<void()>& setRootParam, const std::fu
 {
 	DrawCommandPrimitive(vertBuffBox_.Get(), _countof(verticesBox_), verticesBox_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		vbBoxView_, ibViewBox_,
-		_countof(sIndicesBox),
+		_countof(sIndicesBox_),
 		setRootParam, setMaterialLightTex);
 }
 
@@ -770,7 +770,7 @@ void Primitive::CircleDraw(const std::function<void()>& setRootParam, const std:
 {
 	DrawCommandPrimitive(vertBuffCircle_.Get(), _countof(verticesCircle_), verticesCircle_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		vbCircleView_, ibViewCircle_,
-		_countof(sIndicesCircle),
+		_countof(sIndicesCircle_),
 		setRootParam, setMaterialLightTex);
 }
 
@@ -778,7 +778,7 @@ void Primitive::CubeDraw(const std::function<void()>& setRootParam, const std::f
 {
 	DrawCommandPrimitive(vertBuffCube_.Get(), _countof(verticesCube_), verticesCube_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		vbCubeView_, ibViewCube_,
-		_countof(sIndicesCube),
+		_countof(sIndicesCube_),
 		setRootParam, setMaterialLightTex);
 }
 
@@ -786,7 +786,7 @@ void Primitive::LineDraw(const std::function<void()>& setRootParam, const std::f
 {
 	DrawCommandPrimitive(vertBuffLine_.Get(), _countof(verticesLine_), verticesLine_, D3D_PRIMITIVE_TOPOLOGY_LINELIST,
 		vbLineView_, ibViewLine_,
-		_countof(sIndicesLine),
+		_countof(sIndicesLine_),
 		setRootParam, setMaterialLightTex);
 }
 
@@ -794,7 +794,7 @@ void Primitive::SphereDraw(const std::function<void()>& setRootParam, const std:
 {
 	DrawCommandPrimitive(vertBuffSphere_.Get(), _countof(verticesSphere_), verticesSphere_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		vbViewSphere_, ibViewSphere_,
-		_countof(sIndicesSphere),
+		_countof(sIndicesSphere_),
 		setRootParam, setMaterialLightTex);
 }
 

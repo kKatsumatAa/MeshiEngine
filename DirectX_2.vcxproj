@@ -142,6 +142,7 @@
     <ClCompile Include="Engine\Base\LevelManager.cpp" />
     <ClCompile Include="Engine\Base\MyGame.cpp" />
     <ClCompile Include="Engine\Base\ProjectionMat.cpp" />
+    <ClCompile Include="Engine\Base\RootPipe.cpp" />
     <ClCompile Include="Engine\Base\ViewMat.cpp" />
     <ClCompile Include="Engine\Base\WindowsApp.cpp" />
     <ClCompile Include="Engine\Base\WorldMat.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="Engine\Base\LevelManager.h" />
     <ClInclude Include="Engine\Base\MyGame.h" />
     <ClInclude Include="Engine\Base\ProjectionMat.h" />
+    <ClInclude Include="Engine\Base\RootPipe.h" />
     <ClInclude Include="Engine\Base\ViewMat.h" />
     <ClInclude Include="Engine\Base\WindowsApp.h" />
     <ClInclude Include="Engine\Base\WorldMat.h" />

@@ -14,7 +14,7 @@ void Framework::Initialize()
 
 	Sound::Initialize();
 
-	DrawInitialize();
+	Object::DrawInitialize();
 
 	//ポストエフェクト//
 	postPera_[0] = std::make_unique<PostPera>();

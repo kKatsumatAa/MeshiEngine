@@ -64,7 +64,7 @@ void Bullet::Update()
 
 	if (lifeTime_ <= 0)
 	{
-		isAlive_ = false;//
+		isAlive_ = false;
 	}
 }
 

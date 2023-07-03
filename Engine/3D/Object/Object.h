@@ -51,6 +51,29 @@ private:
 	//D3D12_RESOURCE_DESC resDesc{};
 	ConstBuffTransform cbt_;//ここをどうにかすれば、インスタンス一つでも色々描画
 
+	//図形のクラス
+	static Primitive primitive_;
+	static PipeLineSet pipelineSet_;
+	//al4_02_02
+	static PipeLineSet pipelineSetM_;
+	//FBX用
+	static PipeLineSet pipelineSetFBX_;
+	//ルートパラメータの設定
+	static D3D12_ROOT_PARAMETER rootParams_[7];
+	// パイプランステートの生成
+	static ComPtr < ID3D12PipelineState> pipelineState_[3];
+	// ルートシグネチャ
+	static ComPtr<ID3D12RootSignature> rootSignature_;
+	// グラフィックスパイプライン設定
+	static D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_;
+	static ComPtr<ID3DBlob> vsBlob_; // 頂点シェーダオブジェクト
+	static ComPtr<ID3DBlob> psBlob_; // ピクセルシェーダオブジェクト
+	static ComPtr<ID3DBlob> errorBlob_; // エラーオブジェクト
+	static ComPtr<ID3DBlob> rootSigBlob_;
+
+	// 2.描画先の変更
+		// レンダーターゲットビューのハンドルを取得
+	static D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 	//定数バッファの生成
 	ComPtr < ID3D12Resource> constBuffMaterial_ = nullptr;
@@ -136,6 +159,13 @@ private:
 	//マテリアル、ライト、テクスチャ系のコマンド
 	void SetMaterialLightMTexSkin(uint64_t textureHandle, ConstBuffTransform cbt);
 	void SetMaterialLightMTexSkinModel(uint64_t textureHandle, ConstBuffTransform cbt, Material* material);
+
+	//
+	static void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
+		ID3DBlob* vsBlob, ID3DBlob* psBlob, ID3DBlob* errorBlob, int32_t indexNum = NULL);
+
+	static void Blend(const D3D12_BLEND_OP& blendMode,
+		bool Inversion = 0, bool Translucent = 0);
 
 public:
 	//コンストラクタ
@@ -280,20 +310,13 @@ public:
 	/// <param name="light"></param>
 	static void SetLight(LightManager* lightManager) { Object::sLightManager_ = lightManager; }
 
+	//
+	//優先して最初の方に初期化
+	static void DrawInitialize();
+
 private:
 	void constBuffTransfer(const XMFLOAT4& plusRGBA);
 };
-
-//優先して最初の方に初期化
-void DrawInitialize();
-
-//
-void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
-	ID3DBlob* vsBlob, ID3DBlob* psBlob, int32_t indexNum = NULL);
-
-void Blend(const D3D12_BLEND_OP& blendMode,
-	bool Inversion = 0, bool Translucent = 0);
-
 void SetNormDigitalMat(XMMATRIX& mat);
 
-void Error(bool filed);
+void Error(bool filed, ID3DBlob* errorBlob);

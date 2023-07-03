@@ -7,8 +7,6 @@
 /// </summary>
 class Primitive
 {
-private:
-
 public:
 	//球のインデックス用
 	static const int32_t S_SPHERE_INDEX_NUM_ = 66 * 3 + 6;
@@ -63,6 +61,17 @@ public:
 	Vertex verticesLine_[2] = {};
 	//球体
 	Vertex verticesSphere_[2 + 34 * 36];
+
+private:
+	static uint16_t sIndicesBox_[6];
+	static uint16_t sIndicesTriangle_[3];
+	static uint16_t sIndicesCube_[36];
+	static uint16_t sIndicesCircle_[66];
+	static uint16_t sIndicesLine_[2];
+	static uint16_t sIndicesSphere_[Primitive::S_SPHERE_INDEX_NUM_ * 36];
+
+	static uint32_t sizeVB_;
+
 
 public:
 	//初期化系
