@@ -7,6 +7,7 @@
 #include "PostPera.h"
 #include <FbxLoader.h>
 #include "Camera.h"
+#include "RootPipe.h"
 
 class BaseCollider;
 
@@ -53,23 +54,18 @@ private:
 
 	//図形のクラス
 	static Primitive primitive_;
-	static PipeLineSet pipelineSet_;
+	//
+	static RootPipe objPipeLineSet_[3];
+	//
+	static RootPipe pipelineSet_;
 	//al4_02_02
-	static PipeLineSet pipelineSetM_;
+	static RootPipe pipelineSetM_;
 	//FBX用
-	static PipeLineSet pipelineSetFBX_;
+	static RootPipe pipelineSetFBX_;
 	//ルートパラメータの設定
 	static D3D12_ROOT_PARAMETER rootParams_[7];
-	// パイプランステートの生成
-	static ComPtr < ID3D12PipelineState> pipelineState_[3];
-	// ルートシグネチャ
-	static ComPtr<ID3D12RootSignature> rootSignature_;
 	// グラフィックスパイプライン設定
 	static D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_;
-	static ComPtr<ID3DBlob> vsBlob_; // 頂点シェーダオブジェクト
-	static ComPtr<ID3DBlob> psBlob_; // ピクセルシェーダオブジェクト
-	static ComPtr<ID3DBlob> errorBlob_; // エラーオブジェクト
-	static ComPtr<ID3DBlob> rootSigBlob_;
 
 	// 2.描画先の変更
 		// レンダーターゲットビューのハンドルを取得
@@ -161,8 +157,7 @@ private:
 	void SetMaterialLightMTexSkinModel(uint64_t textureHandle, ConstBuffTransform cbt, Material* material);
 
 	//
-	static void PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
-		ID3DBlob* vsBlob, ID3DBlob* psBlob, ID3DBlob* errorBlob, int32_t indexNum = NULL);
+	static void PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum = NULL);
 
 	static void Blend(const D3D12_BLEND_OP& blendMode,
 		bool Inversion = 0, bool Translucent = 0);

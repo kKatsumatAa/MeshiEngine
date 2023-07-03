@@ -10,6 +10,7 @@
 #include "ProjectionMat.h"
 #include "TextureManager.h"
 #include "Camera.h"
+#include "RootPipe.h"
 
 /// <summary>
 /// パーティクルマネージャ
@@ -32,6 +33,7 @@ public: // サブクラス
 		Vec3 pos; // xyz座標
 		float scale; // スケール
 		XMFLOAT4 color;//色
+		Vec3 rot;
 	};
 
 	// 定数バッファ用データ構造体
@@ -39,6 +41,14 @@ public: // サブクラス
 	{
 		XMMATRIX mat;	// ビュープロジェクション行列
 		XMMATRIX matBillboard;	// ビルボード行列
+	};
+
+	//ブレンドモード
+	enum BLEND_NUM
+	{
+		ADD,
+		SUB,
+		TRIANGLE
 	};
 
 	// パーティクル1粒
@@ -64,15 +74,15 @@ public: // サブクラス
 		// スケール
 		float scale_ = 1.0f;
 		// 回転
-		float rotation_ = 0.0f;
+		Vec3 rotation_ = { 0,0,0 };
 		// 初期値
 		XMFLOAT4 sColor_ = {};
 		float sScale_ = 1.0f;
-		float sRotation_ = 0.0f;
+		Vec3 sRotation_ = { 0,0,0 };
 		// 最終値
 		XMFLOAT4 eColor_ = {};
 		float eScale_ = 0.0f;
-		float eRotation_ = 0.0f;
+		Vec3 eRotation_ = { 0,0,0 };
 		// 現在フレーム
 		float frame_ = 0;
 		// 終了フレーム
@@ -113,7 +123,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(uint64_t texHandle);
+	void Draw(uint64_t texHandle = NULL);
 
 	/// <summary>
 	/// パーティクルの追加
@@ -125,7 +135,7 @@ public: // メンバ関数
 	/// <param name="start_scale">開始時スケール</param>
 	/// <param name="end_scale">終了時スケール</param>
 	void Add(int32_t life, const Vec3& position, const Vec3& velocity, const Vec3& accel, float start_scale, float end_scale
-		, const XMFLOAT4& start_color = { 1.0f,1.0f,1.0f,1.0f }, const XMFLOAT4& end_color = { 1.0f,1.0f,1.0f,1.0f }, float start_rot = 0.0f, float end_rot = 0.0f);
+		, const XMFLOAT4& start_color = { 1.0f,1.0f,1.0f,1.0f }, const XMFLOAT4& end_color = { 1.0f,1.0f,1.0f,1.0f }, float start_rot = PI * 2.0f, float end_rot = -PI * 2.0f);
 
 	//ランダムに生成
 	void GenerateRandomParticle(int32_t num, int32_t lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale
@@ -133,11 +143,12 @@ public: // メンバ関数
 
 	void ClearParticles() { particles_.clear(); }
 
+	void SetBlendNum(BLEND_NUM blendNum) { blendNum_ = blendNum; }
+
 private: // メンバ変数
-	// ルートシグネチャ
-	ComPtr<ID3D12RootSignature> rootsignature_;
-	// パイプラインステートオブジェクト
-	ComPtr<ID3D12PipelineState> pipelinestate_;
+	BLEND_NUM blendNum_ = ADD;
+	//ルートシグネチャ等
+	RootPipe rootPipe[BLEND_NUM::TRIANGLE + 1];
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff_;
 	// 頂点バッファビュー

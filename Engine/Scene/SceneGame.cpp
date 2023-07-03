@@ -33,6 +33,8 @@ void SceneGame::Initialize()
 
 	//
 	ClearEffect::GetInstance().Initialize();
+
+	ParticleManager::GetInstance()->SetBlendNum(ParticleManager::TRIANGLE);
 }
 
 void SceneGame::Update(PostPera* postPera)

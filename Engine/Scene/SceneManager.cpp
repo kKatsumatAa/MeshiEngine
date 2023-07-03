@@ -91,7 +91,7 @@ void SceneManager::Draw()
 {
 	state_->Draw();
 
-	ParticleManager::GetInstance()->Draw(texhandle_[1]);
+	ParticleManager::GetInstance()->Draw(/*texhandle_[1]*/);
 }
 
 void SceneManager::DrawPostEffect()

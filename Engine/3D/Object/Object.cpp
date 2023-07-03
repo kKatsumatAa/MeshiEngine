@@ -12,26 +12,19 @@
 //図形用
 Primitive Object::primitive_;
 
-PipeLineSet Object::pipelineSet_;
+RootPipe Object::objPipeLineSet_[3];
+RootPipe Object::pipelineSet_;
 //al4_02_02
-PipeLineSet Object::pipelineSetM_;
+RootPipe Object::pipelineSetM_;
 
 //FBX用
-PipeLineSet Object::pipelineSetFBX_;
+RootPipe Object::pipelineSetFBX_;
 
 //ルートパラメータの設定
 D3D12_ROOT_PARAMETER Object::rootParams_[7] = {};
 
-// パイプランステートの生成
-ComPtr < ID3D12PipelineState> Object::pipelineState_[3] = { nullptr };
-// ルートシグネチャ
-ComPtr<ID3D12RootSignature> Object::rootSignature_;
 // グラフィックスパイプライン設定
 D3D12_GRAPHICS_PIPELINE_STATE_DESC Object::pipelineDesc_{};
-ComPtr<ID3DBlob> Object::vsBlob_ = nullptr; // 頂点シェーダオブジェクト
-ComPtr<ID3DBlob> Object::psBlob_ = nullptr; // ピクセルシェーダオブジェクト
-ComPtr<ID3DBlob> Object::errorBlob_ = nullptr; // エラーオブジェクト
-ComPtr<ID3DBlob> Object::rootSigBlob_ = nullptr;
 
 //static
 LightManager* Object::sLightManager_ = nullptr;
@@ -46,6 +39,10 @@ float Object::sRimColorF3_[3] = { 1.0f,1.0f,1.0f };
 void Object::DrawInitialize()
 {
 	HRESULT result = {};
+
+	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
+	ComPtr<ID3DBlob> psBlob; // ピクセルシェーダオブジェクト
+	ComPtr<ID3DBlob> errorBlob; // エラーオブジェクト
 
 	//テクスチャ用のデスクリプタヒープ初期化
 	TextureManager::GetInstance().InitializeDescriptorHeap();
@@ -91,27 +88,21 @@ void Object::DrawInitialize()
 	rootParams_[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 
 	// パイプランステートの生成
-	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineState_->GetAddressOf(), rootSignature_.GetAddressOf(), vsBlob_.Get(), psBlob_.Get(), errorBlob_.Get());
+	PipeLineState(D3D12_FILL_MODE_SOLID, objPipeLineSet_[0]);
 
-	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState_ + 1)->GetAddressOf(), rootSignature_.GetAddressOf(), vsBlob_.Get(), psBlob_.Get(), errorBlob_.Get());
+	PipeLineState(D3D12_FILL_MODE_WIREFRAME, objPipeLineSet_[1]);
 
 	//line
-	PipeLineState(D3D12_FILL_MODE_WIREFRAME, (pipelineState_ + 2)->GetAddressOf(), rootSignature_.GetAddressOf(), vsBlob_.Get(), psBlob_.Get(), errorBlob_.Get(), LINE);
+	PipeLineState(D3D12_FILL_MODE_WIREFRAME, objPipeLineSet_[2], LINE);
 
 	//sprite用
-	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSet_.pipelineState.GetAddressOf(),
-		pipelineSet_.rootSignature.GetAddressOf(), pipelineSet_.vsBlob.Get(),
-		pipelineSet_.psBlob.Get(), errorBlob_.Get(), SPRITE);
+	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSet_, SPRITE);
 
 	//model用
-	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetM_.pipelineState.GetAddressOf(),
-		pipelineSetM_.rootSignature.GetAddressOf(), pipelineSetM_.vsBlob.Get(),
-		pipelineSetM_.psBlob.Get(), errorBlob_.Get(), MODEL);
+	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetM_, MODEL);
 
 	//FBX用
-	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetFBX_.pipelineState.GetAddressOf(),
-		pipelineSetFBX_.rootSignature.GetAddressOf(), pipelineSetFBX_.vsBlob.Get(),
-		pipelineSetFBX_.psBlob.Get(), errorBlob_.Get(), FBX);
+	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetFBX_, FBX);
 
 
 	//画面効果用
@@ -484,7 +475,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 	}
 
 	//ラムダ式でコマンド関数
-	std::function<void()>SetRootPipeR = [=]() {SetRootPipe(pipelineState_->Get(), pipelineNum, rootSignature_.Get()); };
+	std::function<void()>SetRootPipeR = [=]() {SetRootPipe(objPipeLineSet_->pipelineState.Get(), pipelineNum, objPipeLineSet_->rootSignature.Get()); };
 	std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkin(textureHandle_, constBuffTransform); };
 
 	if (indexNum == TRIANGLE)
@@ -666,101 +657,28 @@ void Object::DrawFBX(ModelFBX* modelFbx, Camera* camera, const XMFLOAT4& color, 
 	Update(FBX, pipelineNum, NULL, cbt_, camera, nullptr, modelFbx);
 }
 
-void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState** pipelineState, ID3D12RootSignature** rootSig,
-	ID3DBlob* vsBlob, ID3DBlob* psBlob, ID3DBlob* errorBlob, int32_t indexNum)
+void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum)
 {
 	HRESULT result = {};
 
 	if (indexNum == SPRITE)
 	{
-		// 頂点シェーダの読み込みとコンパイル
-		result = D3DCompileFromFile(
-			L"Resources/shaders/SpriteVS.hlsl", // シェーダファイル名
-			nullptr,
-			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-			"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
-			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-			0,
-			&vsBlob, &errorBlob);
-
-		// エラーなら
-		Error(FAILED(result), errorBlob);
-
-		// ピクセルシェーダの読み込みとコンパイル
-		result = D3DCompileFromFile(
-			L"Resources/shaders/SpritePS.hlsl", // シェーダファイル名
-			nullptr,
-			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-			"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
-			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-			0,
-			&psBlob, &errorBlob);
-
-		// エラーなら
-		Error(FAILED(result), errorBlob);
+		rootPipe.CreateBlob(L"Resources/shaders/SpriteVS.hlsl", L"Resources/shaders/SpritePS.hlsl");
 	}
 	else if (indexNum == MODEL || indexNum == FBX)
 	{
-		// 頂点シェーダの読み込みとコンパイル
-		result = D3DCompileFromFile(
-			L"Resources/shaders/OBJVertexShader.hlsl", // シェーダファイル名
-			nullptr,
-			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-			"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
-			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-			0,
-			&vsBlob, &errorBlob);
-
-		// エラーなら
-		Error(FAILED(result), errorBlob);
-
-		// ピクセルシェーダの読み込みとコンパイル
-		result = D3DCompileFromFile(
-			L"Resources/shaders/OBJPixelShader.hlsl", // シェーダファイル名
-			nullptr,
-			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-			"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
-			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-			0,
-			&psBlob, &errorBlob);
-
-		// エラーなら
-		Error(FAILED(result), errorBlob);
+		rootPipe.CreateBlob(L"Resources/shaders/OBJVertexShader.hlsl", L"Resources/shaders/OBJPixelShader.hlsl");
 	}
 	else
 	{
-		// 頂点シェーダの読み込みとコンパイル
-		result = D3DCompileFromFile(
-			L"Resources/shaders/BasicVS.hlsl", // シェーダファイル名
-			nullptr,
-			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-			"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
-			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-			0,
-			&vsBlob, &errorBlob);
-
-		// エラーなら
-		Error(FAILED(result), errorBlob);
-
-		// ピクセルシェーダの読み込みとコンパイル
-		result = D3DCompileFromFile(
-			L"Resources/shaders/BasicPS.hlsl", // シェーダファイル名
-			nullptr,
-			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-			"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
-			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-			0,
-			&psBlob, &errorBlob);
-
-		// エラーなら
-		Error(FAILED(result), errorBlob);
+		rootPipe.CreateBlob(L"Resources/shaders/BasicVS.hlsl", L"Resources/shaders/BasicPS.hlsl");
 	}
 
 	// シェーダーの設定
-	pipelineDesc_.VS.pShaderBytecode = vsBlob->GetBufferPointer();
-	pipelineDesc_.VS.BytecodeLength = vsBlob->GetBufferSize();
-	pipelineDesc_.PS.pShaderBytecode = psBlob->GetBufferPointer();
-	pipelineDesc_.PS.BytecodeLength = psBlob->GetBufferSize();
+	pipelineDesc_.VS.pShaderBytecode = rootPipe.vsBlob->GetBufferPointer();
+	pipelineDesc_.VS.BytecodeLength = rootPipe.vsBlob->GetBufferSize();
+	pipelineDesc_.PS.pShaderBytecode = rootPipe.psBlob->GetBufferPointer();
+	pipelineDesc_.PS.BytecodeLength = rootPipe.psBlob->GetBufferSize();
 
 	// サンプルマスクの設定
 	pipelineDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
@@ -840,10 +758,13 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState*
 
 	// 図形の形状設定
 	if (indexNum == LINE)
+	{
 		pipelineDesc_.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
-
+	}
 	else
+	{
 		pipelineDesc_.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	}
 
 	// その他の設定
 	pipelineDesc_.NumRenderTargets = 3; // 描画対象は2つ（ポストエフェクトの一枚目の3つ）
@@ -873,15 +794,16 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState*
 	rootSignatureDesc.pStaticSamplers = &samplerDesc;
 	rootSignatureDesc.NumStaticSamplers = 1;
 	// ルートシグネチャのシリアライズ
-	rootSigBlob_ = nullptr;
+	ComPtr<ID3DBlob> rootSigBlob;
+	rootSigBlob = nullptr;
 	result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
-		&rootSigBlob_, &errorBlob);
+		&rootSigBlob, &rootPipe.errorBlob);
 	assert(SUCCEEDED(result));
-	result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob_->GetBufferPointer(), rootSigBlob_->GetBufferSize(),
-		IID_PPV_ARGS(rootSig));
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
+		IID_PPV_ARGS(&rootPipe.rootSignature));
 	assert(SUCCEEDED(result));
 	// パイプラインにルートシグネチャをセット
-	pipelineDesc_.pRootSignature = *rootSig;
+	pipelineDesc_.pRootSignature = rootPipe.rootSignature.Get();
 
 	//06_01
 	//デプスステンシルステート
@@ -889,12 +811,16 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, ID3D12PipelineState*
 	pipelineDesc_.DepthStencilState.DepthEnable = true;//深度テストを行う
 	pipelineDesc_.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 	if (indexNum == SPRITE)
+	{
 		pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;//小さければ合格
-	else
+	}
+	else 
+	{
 		pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
+	}
 	pipelineDesc_.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 
-	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_, IID_PPV_ARGS(pipelineState));
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_, IID_PPV_ARGS(rootPipe.pipelineState.GetAddressOf()));
 	//assert(SUCCEEDED(result));
 }
 

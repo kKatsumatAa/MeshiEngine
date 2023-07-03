@@ -106,8 +106,9 @@ void ParticleManager::Update(Camera* camera)
 		// スケールの線形補間
 		it->scale_ = it->sScale_ + (it->eScale_ - it->sScale_) / f;
 
-		// スケールの線形補間
-		it->rotation_ = it->sRotation_ + (it->eRotation_ - it->sRotation_) / f;
+		// 回転の線形補間
+		float t = (float)it->frame_ / it->numFrame_;
+		it->rotation_ = LerpVec3(it->sRotation_, it->eRotation_, t);
 	}
 
 	// 頂点バッファへデータ転送
@@ -125,6 +126,8 @@ void ParticleManager::Update(Camera* camera)
 			vertMap->scale = it->scale_;
 			// 色
 			vertMap->color = it->color_;
+			// 色
+			vertMap->rot = it->rotation_;
 			// 次の頂点へ
 			vertMap++;
 			if (++vertCount >= S_VERTEX_COUNT_) {
@@ -146,6 +149,11 @@ void ParticleManager::Update(Camera* camera)
 
 void ParticleManager::Draw(uint64_t texHandle)
 {
+	if (texHandle == NULL)
+	{
+		texHandle = TextureManager::GetInstance().sWhiteTexHandle_;
+	}
+
 	uint32_t drawNum = (uint32_t)std::distance(particles_.begin(), particles_.end());
 	if (drawNum > S_VERTEX_COUNT_) {
 		drawNum = S_VERTEX_COUNT_;
@@ -157,9 +165,9 @@ void ParticleManager::Draw(uint64_t texHandle)
 	}
 
 	// パイプラインステートの設定
-	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(pipelinestate_.Get());
+	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(rootPipe[blendNum_].pipelineState.Get());
 	// ルートシグネチャの設定
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootsignature_.Get());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootPipe[blendNum_].rootSignature.Get());
 	// プリミティブ形状を設定
 	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 
@@ -197,86 +205,21 @@ void ParticleManager::Add(int32_t life, const Vec3& position, const Vec3& veloci
 	p.numFrame_ = life;
 	p.sColor_ = start_color;
 	p.eColor_ = end_color;
-	p.sRotation_ = start_rot;
-	p.eRotation_ = end_rot;
+
+	p.sRotation_.x_ = start_rot * GetRand(-1.0f, 1.0f);
+	p.sRotation_.y_ = start_rot * GetRand(-1.0f, 1.0f);
+	p.sRotation_.z_ = start_rot * GetRand(-1.0f, 1.0f);
+	p.eRotation_.x_ = end_rot * GetRand(-1.0f, 1.0f);
+	p.eRotation_.y_ = end_rot * GetRand(-1.0f, 1.0f);
+	p.eRotation_.z_ = end_rot * GetRand(-1.0f, 1.0f);
 }
 
 void ParticleManager::InitializeGraphicsPipeline()
 {
 	HRESULT result = S_FALSE;
-	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
-	ComPtr<ID3DBlob> psBlob;	// ピクセルシェーダオブジェクト
-	ComPtr<ID3DBlob> gsBlob;	// ジオメトリシェーダオブジェクト
-	ComPtr<ID3DBlob> errorBlob; // エラーオブジェクト
 
-	// 頂点シェーダの読み込みとコンパイル
-	result = D3DCompileFromFile(
-		L"Resources/shaders/ParticleVS.hlsl",	// シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-		0,
-		&vsBlob, &errorBlob);
-	if (FAILED(result)) {
-		// errorBlobからエラー内容をstring型にコピー
-		std::string errstr;
-		errstr.resize(errorBlob->GetBufferSize());
-
-		std::copy_n((char*)errorBlob->GetBufferPointer(),
-			errorBlob->GetBufferSize(),
-			errstr.begin());
-		errstr += "\n";
-		// エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(errstr.c_str());
-		exit(1);
-	}
-
-	// ピクセルシェーダの読み込みとコンパイル
-	result = D3DCompileFromFile(
-		L"Resources/shaders/ParticlePS.hlsl",	// シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-		0,
-		&psBlob, &errorBlob);
-	if (FAILED(result)) {
-		// errorBlobからエラー内容をstring型にコピー
-		std::string errstr;
-		errstr.resize(errorBlob->GetBufferSize());
-
-		std::copy_n((char*)errorBlob->GetBufferPointer(),
-			errorBlob->GetBufferSize(),
-			errstr.begin());
-		errstr += "\n";
-		// エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(errstr.c_str());
-		exit(1);
-	}
-
-	// ジオメトリシェーダの読み込みとコンパイル
-	result = D3DCompileFromFile(
-		L"Resources/shaders/ParticleGS.hlsl",	// シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", "gs_5_0",	// エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-		0,
-		&gsBlob, &errorBlob);
-	if (FAILED(result)) {
-		// errorBlobからエラー内容をstring型にコピー
-		std::string errstr;
-		errstr.resize(errorBlob->GetBufferSize());
-
-		std::copy_n((char*)errorBlob->GetBufferPointer(),
-			errorBlob->GetBufferSize(),
-			errstr.begin());
-		errstr += "\n";
-		// エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(errstr.c_str());
-		exit(1);
-	}
+	//シェーダ読み込み
+	rootPipe[ADD].CreateBlob(L"Resources/shaders/ParticleVS.hlsl", L"Resources/shaders/ParticlePS.hlsl", L"Resources/shaders/ParticleGS.hlsl");
 
 	// 頂点レイアウト
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
@@ -294,14 +237,19 @@ void ParticleManager::InitializeGraphicsPipeline()
 			"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-		}
+		},
+		{ // 角度
+			"ROT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+		},
 	};
 
 	// グラフィックスパイプラインの流れを設定
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC gpipeline{};
-	gpipeline.VS = CD3DX12_SHADER_BYTECODE(vsBlob.Get());
-	gpipeline.PS = CD3DX12_SHADER_BYTECODE(psBlob.Get());
-	gpipeline.GS = CD3DX12_SHADER_BYTECODE(gsBlob.Get());
+	gpipeline.VS = CD3DX12_SHADER_BYTECODE(rootPipe[ADD].vsBlob.Get());
+	gpipeline.PS = CD3DX12_SHADER_BYTECODE(rootPipe[ADD].psBlob.Get());
+	gpipeline.GS = CD3DX12_SHADER_BYTECODE(rootPipe[ADD].gsBlob.Get());
 
 	// サンプルマスク
 	gpipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
@@ -322,10 +270,6 @@ void ParticleManager::InitializeGraphicsPipeline()
 	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
 	blenddesc.SrcBlend = D3D12_BLEND_ONE;
 	blenddesc.DestBlend = D3D12_BLEND_ONE;
-	//// 減算ブレンディング
-	//blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
-	//blenddesc.SrcBlend = D3D12_BLEND_ONE;
-	//blenddesc.DestBlend = D3D12_BLEND_ONE;
 
 	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
 	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;
@@ -370,17 +314,61 @@ void ParticleManager::InitializeGraphicsPipeline()
 
 	ComPtr<ID3DBlob> rootSigBlob;
 	// バージョン自動判定のシリアライズ
-	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &errorBlob);
+	result = D3DX12SerializeVersionedRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0, &rootSigBlob, &rootPipe[ADD].errorBlob);
 	// ルートシグネチャの生成
-	result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootsignature_));
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootPipe[ADD].rootSignature));
 	if (FAILED(result)) {
 		assert(0);
 	}
 
-	gpipeline.pRootSignature = rootsignature_.Get();
+	gpipeline.pRootSignature = rootPipe[ADD].rootSignature.Get();
 
 	// グラフィックスパイプラインの生成
-	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelinestate_));
+	//加算
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(rootPipe[ADD].pipelineState.GetAddressOf()));
+
+	//減算
+	{
+		//減算
+		rootPipe[SUB] = rootPipe[ADD];
+		// ルートシグネチャの生成
+		result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
+			IID_PPV_ARGS(rootPipe[SUB].rootSignature.GetAddressOf()));
+		if (FAILED(result)) {
+			assert(0);
+		}
+		gpipeline.pRootSignature = rootPipe[SUB].rootSignature.Get();
+		// 減算ブレンディング
+		blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
+		blenddesc.SrcBlend = D3D12_BLEND_ONE;
+		blenddesc.DestBlend = D3D12_BLEND_ONE;
+		gpipeline.BlendState.RenderTarget[0] = blenddesc;
+		gpipeline.BlendState.RenderTarget[1] = blenddesc;
+		gpipeline.BlendState.RenderTarget[2] = blenddesc;
+		result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(rootPipe[SUB].pipelineState.GetAddressOf()));
+	}
+	//三角メッシュ
+	{
+		rootPipe[TRIANGLE] = rootPipe[SUB];
+		rootPipe[TRIANGLE].CreateBlob(L"Resources/shaders/ParticleVS.hlsl", L"Resources/shaders/ParticlePS.hlsl", L"Resources/shaders/ParticleTriangleGS.hlsl");
+		gpipeline.GS = CD3DX12_SHADER_BYTECODE(rootPipe[TRIANGLE].gsBlob.Get());
+		// スタティックサンプラー
+		CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
+
+		result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
+			IID_PPV_ARGS(rootPipe[TRIANGLE].rootSignature.GetAddressOf()));
+		gpipeline.pRootSignature = rootPipe[TRIANGLE].rootSignature.Get();
+		if (FAILED(result)) {
+			assert(0);
+		}
+		blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
+		blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+		gpipeline.BlendState.RenderTarget[0] = blenddesc;
+		gpipeline.BlendState.RenderTarget[1] = blenddesc;
+		gpipeline.BlendState.RenderTarget[2] = blenddesc;
+		result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(rootPipe[TRIANGLE].pipelineState.GetAddressOf()));
+	}
 
 	if (FAILED(result)) {
 		assert(0);

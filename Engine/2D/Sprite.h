@@ -35,7 +35,7 @@ public:
 };
 
 //‹¤’Ê‚Ìˆ—
-void SpriteCommonBeginDraw(PipeLineSet* pipelineSet);
+void SpriteCommonBeginDraw(RootPipe* pipelineSet);
 
 
 

@@ -168,7 +168,8 @@ void Enemy::DamageParticle(const CollisionInfo& info)
 		float scale = (float)rand() / RAND_MAX;
 		float scale2 = (float)rand() / RAND_MAX;
 
-		ParticleManager::GetInstance()->Add(100, pos, vel, { 0,0,0 }, scale, scale2, { 2.0f,0,0,1.5f }, { 0,0,0,0.0f });
+		ParticleManager::GetInstance()->Add(100, pos, vel, { 0,0,0 }, scale, scale2, { 3.0f,0,0,0.8f }, { 0,0,0,0.0f },
+			PI, -PI);
 	}
 }
 

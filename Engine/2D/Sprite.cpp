@@ -28,7 +28,7 @@ void Sprite::Initialize()
 	}
 }
 
-void SpriteCommonBeginDraw(PipeLineSet* pipelineSet)
+void SpriteCommonBeginDraw(RootPipe* pipelineSet)
 {
 	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(pipelineSet->pipelineState.Get());
 

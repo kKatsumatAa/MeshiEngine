@@ -1,5 +1,6 @@
 #include "Util.h"
 #include "WindowsApp.h"
+#include <random>
 
 void Vec4xM4(Vec4& v, const M4& m4)
 {
@@ -458,4 +459,12 @@ Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot)
 	ansFrontV = qY.GetRotateVector(ansFrontV);
 
 	return ansFrontV;
+}
+
+float GetRand(float min, float max)
+{
+	std::random_device rd;
+	std::mt19937_64 eng(rd());
+	std::uniform_real_distribution<float> distr(min, max);
+	return distr(eng);
 }
