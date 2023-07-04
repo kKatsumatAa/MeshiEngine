@@ -39,10 +39,9 @@ void PlayerStateBareHands::Update()
 			&& MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
 		{
 			Gun* gun = dynamic_cast<Gun*>(info_.object);
-			player_->SetWeapon(gun);
-			Vec3 localP = { player_->GetScale().x_ ,-player_->GetScale().y_ / 2.0f ,player_->GetScale().z_ * 2.0f };
-			gun->SetLocalPos(localP);
-			gun->ChangeOwner(player_->GetWorldMat());
+			//銃拾う
+			player_->PickUpWeapon(gun);
+
 			//プレイヤーは逆向きなので仮に
 			gun->SetRotY(PI);
 
@@ -85,9 +84,7 @@ void PlayerStateHaveGun::Update()
 		//右クリックで銃投げる
 		else if (MouseInput::GetInstance().GetTriggerClick(CLICK_RIGHT))
 		{
-			player_->GetWeapon()->ChangeOwner(nullptr);
-			player_->GetWeapon()->SetFallVec(player_->GetFrontVec() * 5.0f);
-			player_->SetWeapon(nullptr);
+			player_->FallWeapon(player_->GetFrontVec() * 5.0f);
 
 			//ゲームスピード加算
 			GameVelocityManager::GetInstance().AddGameVelocity(0.4f);

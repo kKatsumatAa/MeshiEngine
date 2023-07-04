@@ -45,6 +45,8 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 
 	weapon_ = weapon;
 
+	hp_ = HP_TMP_;
+
 	return true;
 }
 
@@ -147,9 +149,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	if (weapon_)
 	{
 		distanceVec.y_ = 0.2f;
-		weapon_->SetFallVec({ -distanceVec.x_,distanceVec.y_,-distanceVec.z_ });
-		weapon_->ChangeOwner(nullptr);
-		weapon_ = nullptr;
+		FallWeapon({ -distanceVec.x_,distanceVec.y_,-distanceVec.z_ });
 	}
 }
 
@@ -200,9 +200,9 @@ void Enemy::OnCollision(const CollisionInfo& info)
 			KnockBack(info);
 
 			//hpŒ¸‚ç‚·
-			hp--;
+			hp_--;
 			//Ž€–S
-			if (hp <= 0)
+			if (hp_ <= 0)
 			{
 				SetIsAlive(false);
 			}

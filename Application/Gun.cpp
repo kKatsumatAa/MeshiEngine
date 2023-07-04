@@ -113,7 +113,7 @@ void Gun::Update()
 void Gun::ParticleGenerate()
 {
 	//パーティクル
-	for (int32_t i = 0; i < 20; ++i)
+	for (int32_t i = 0; i < 40; ++i)
 	{
 		const float MD_VEL = 0.6f;
 		Vec3 vel{};
@@ -121,9 +121,9 @@ void Gun::ParticleGenerate()
 		vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
 		vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
 
-		float scale = (float)rand() / RAND_MAX * GetScale().x_;
+		float scale = GetRand(GetScale().x_ / 2.0f, GetScale().x_ * 2.0f);
 
-		ParticleManager::GetInstance()->Add(30, shotPos_, vel, { 0,0,0 }, scale, 0, { 2.0f,2.0f,2.0f,1.5f }, { 0,0,0,0.0f });
+		ParticleManager::GetInstance()->Add(40, shotPos_, vel, { 0,0,0 }, scale, 0, { 4.0f,4.0f,4.0f,1.5f }, { 0,0,0,0.0f });
 	}
 
 }

@@ -4,10 +4,11 @@
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
 #include "Gun.h"
+#include "Character.h"
 
 
 class Enemy :
-	public Object
+	public Character
 {
 private:
 	Vec3 velocity_ = { 0,0,0 };
@@ -22,13 +23,10 @@ private:
 	float directionRotTime = 0;
 	const float DIRCTION_ROT_TIME_ = 60;
 
-	//hp
-	int8_t hp = 3;
 	float damageCoolTime = 0;
 	float velocityLength = 0;
 
-	//ïêäÌ
-	Weapon* weapon_ = nullptr;
+	const int8_t HP_TMP_ = 3;
 
 public:
 	/// <summary>

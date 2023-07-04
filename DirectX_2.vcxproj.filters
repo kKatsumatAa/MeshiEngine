@@ -339,6 +339,9 @@
     <ClCompile Include="Application\Weapon.cpp">
       <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Character.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Player.h">
@@ -576,6 +579,9 @@
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
     </ClInclude>
     <ClInclude Include="Application\Weapon.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Character.h">
       <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
   </ItemGroup>

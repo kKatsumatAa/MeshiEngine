@@ -5,12 +5,14 @@
 #include "PlaneCollider.h"
 #include "PlayerHandManager.h"
 #include "Gun.h"
+#include "Character.h"
+
 
 class PlayerAttackState;
 class PlayerState;
 
 class Player :
-	public Object
+	public Character
 {
 private:
 	const float ANGLE_VEL_EXTEND_ = 0.003f;
@@ -33,9 +35,6 @@ private:
 
 	//状態のステート
 	std::unique_ptr<PlayerState> state_ = nullptr;
-
-	//銃
-	Weapon* weapon_ = nullptr;
 
 	//
 	int32_t deadTimer_ = 50;
@@ -66,10 +65,6 @@ public:
 	bool GetIsCanAttack() { return isTarget_; }
 
 	float GetAttackLength() { return attackLength_; }
-
-	//武器
-	Weapon* GetWeapon() { return weapon_; }
-	void SetWeapon(Weapon* weapon) { weapon_ = weapon; }
 
 	//手のマネージャー
 	PlayerHandManager* GetHandManager() { return handManager_.get(); }

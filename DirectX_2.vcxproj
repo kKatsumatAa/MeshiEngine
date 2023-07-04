@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClCompile Include="Application\Bullet.cpp" />
     <ClCompile Include="Application\BulletManager.cpp" />
+    <ClCompile Include="Application\Character.cpp" />
     <ClCompile Include="Application\ClearEffect.cpp" />
     <ClCompile Include="Application\Enemy.cpp" />
     <ClCompile Include="Application\GameVelocityManager.cpp" />
@@ -179,6 +180,7 @@
   <ItemGroup>
     <ClInclude Include="Application\Bullet.h" />
     <ClInclude Include="Application\BulletManager.h" />
+    <ClInclude Include="Application\Character.h" />
     <ClInclude Include="Application\ClearEffect.h" />
     <ClInclude Include="Application\Enemy.h" />
     <ClInclude Include="Application\GameVelocityManager.h" />
