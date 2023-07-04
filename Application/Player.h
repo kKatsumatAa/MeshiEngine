@@ -35,7 +35,7 @@ private:
 	std::unique_ptr<PlayerState> state_ = nullptr;
 
 	//銃
-	Gun* gun_ = nullptr;
+	Weapon* weapon_ = nullptr;
 
 	//
 	int32_t deadTimer_ = 50;
@@ -50,7 +50,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Player> Create(std::unique_ptr<WorldMat> worldMat, Gun* gun);
+	static std::unique_ptr<Player> Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon);
 
 private:
 	//移動
@@ -67,16 +67,16 @@ public:
 
 	float GetAttackLength() { return attackLength_; }
 
-	//銃
-	Gun* GetGun() { return gun_; }
-	void SetGun(Gun* gun) { gun_ = gun; }
+	//武器
+	Weapon* GetWeapon() { return weapon_; }
+	void SetWeapon(Weapon* weapon) { weapon_ = weapon; }
 
 	//手のマネージャー
 	PlayerHandManager* GetHandManager() { return handManager_.get(); }
 
 public:
 
-	bool Initialize(std::unique_ptr<WorldMat> worldMat, Gun* gun);
+	bool Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon);
 
 	void Update() override;
 

@@ -53,28 +53,43 @@ void LevelManager::LoadLevelData(std::string fileName)
 	}
 }
 
-Gun* LevelManager::GetChildGun(const LevelData::ObjectData& objData)
+Weapon* LevelManager::GetChildWeapon(const LevelData::ObjectData& objData)
 {
+	if (objData.childData == nullptr || (objData.childData->fileName != "gun" &&
+		objData.childData->fileName != "sword"))
+	{
+		return nullptr;
+	}
+
+	//ファイル名から登録済みモデルを検索
+	Model* model = ModelManager::GetInstance().LoadModel(objData.childData->fileName);
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr <Weapon> newObj = {};
+
 	//子が銃だった時
 	if (objData.childData && objData.childData->fileName == "gun")
 	{
-		//ファイル名から登録済みモデルを検索
-		Model* model = ModelManager::GetInstance().LoadModel(objData.childData->fileName);
-		//モデルを指定して3Dオブジェクトを生成
-		std::unique_ptr <Gun> newObj = {};
-
 		//インスタンス
 		newObj = Gun::Create(std::move(objData.childData->worldMat));
+	}
+	//違う武器
+	else
+	{
 
-		Gun* ans = newObj.get();
+	}
 
-		//正面ベクトル(objの角度によって回転,回転後のベクトルを基礎正面とする)
-		newObj->CulcFrontVec();
-		newObj->SetFrontVecTmp(newObj->GetFrontVec());
+	Weapon* ans = newObj.get();
 
-		//セットで登録
-		objAndModels_.insert(std::make_pair(std::move(newObj), model));
+	//正面ベクトル(objの角度によって回転,回転後のベクトルを基礎正面とする)
+	newObj->CulcFrontVec();
+	newObj->SetFrontVecTmp(newObj->GetFrontVec());
 
+	//セットで登録
+	objAndModels_.insert(std::make_pair(std::move(newObj), model));
+
+	if (ans != nullptr)
+	{
 		return ans;
 	}
 
@@ -132,13 +147,13 @@ void LevelManager::LoadCharacter(LevelData::ObjectData& objData)
 	if (objData.fileName == "player")
 	{
 		//playerはObjectクラスを継承してるのでポリモーフィズム
-		newObj = Player::Create(std::move(objData.worldMat), GetChildGun(objData));
+		newObj = Player::Create(std::move(objData.worldMat), GetChildWeapon(objData));
 	}
 	//敵の場合
 	else if (objData.fileName == "enemy")
 	{
 		//enemyもObjectクラスを継承してるのでポリモーフィズム
-		newObj = Enemy::Create(std::move(objData.worldMat), GetChildGun(objData));
+		newObj = Enemy::Create(std::move(objData.worldMat), GetChildWeapon(objData));
 		newObj->SetObjName("enemy");
 	}
 	//銃の場合(親がいる場合は既に登録してあるので飛ばされる)

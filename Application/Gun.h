@@ -3,10 +3,11 @@
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
+#include "Weapon.h"
 
 
 class Gun :
-	public Object
+	public Weapon
 {
 private:
 	//攻撃のクールタイム
@@ -19,16 +20,8 @@ private:
 	const int32_t BULLETS_TMP_ = 3;
 	int32_t remainingBullets_ = BULLETS_TMP_;
 
-	//球を打つか
-	bool isAlreadyShot_ = false;
-
-	//手を離れたときのベクトル
-	Vec3 fallVec_ = { 0,0,0 };
-
-	Vec3 localPos_ = { 0,0,0 };
-
 	//発射位置
-	Vec3 shotPos = { 0,0,0 };
+	Vec3 shotPos_ = { 0,0,0 };
 
 
 public:
@@ -40,28 +33,17 @@ public:
 	static std::unique_ptr<Gun> Create(std::unique_ptr<WorldMat> worldMat);
 
 private:
-	//所有者がいないときに飛んでいく
-	void NoParentMove();
+	////所有者がいないときに飛んでいく
+	//void NoParentMove() override;
 
-	void ParticleGenerate();
+	void ParticleGenerate() override;
 
 public:
 	//射撃
-	void Shot(const Vec3& directionVec, int32_t decreBullet = 1);
+	void Attack(const Vec3& directionVec, int32_t decreBullet = 1) override;
 
 	//持ち主変更
-	void ChangeOwner(WorldMat* parent);
-
-public:
-	//
-	void SetFallVec(const Vec3& fallVec) { fallVec_ = fallVec; }
-	//ローカル座標セット
-	void SetLocalPos(const Vec3& pos) { 
-		localPos_ = pos; 
-	}
-
-	//投げる、被弾して落ちるときのスピード
-	const Vec3& GetFallVelocity() { return fallVec_; }
+	void ChangeOwner(WorldMat* parent) override;
 
 public:
 

@@ -111,6 +111,7 @@
     <ClCompile Include="Application\PlayerHand.cpp" />
     <ClCompile Include="Application\PlayerHandManager.cpp" />
     <ClCompile Include="Application\PlayerState.cpp" />
+    <ClCompile Include="Application\Weapon.cpp" />
     <ClCompile Include="Engine\2D\DebugText.cpp" />
     <ClCompile Include="Engine\2D\DrawIntNumImage.cpp" />
     <ClCompile Include="Engine\2D\Sprite.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="Application\PlayerHand.h" />
     <ClInclude Include="Application\PlayerHandManager.h" />
     <ClInclude Include="Application\PlayerState.h" />
+    <ClInclude Include="Application\Weapon.h" />
     <ClInclude Include="Engine\2D\DebugText.h" />
     <ClInclude Include="Engine\2D\DrawIntNumImage.h" />
     <ClInclude Include="Engine\2D\Sprite.h" />

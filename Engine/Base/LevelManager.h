@@ -36,7 +36,8 @@ public:
 	void Draw(Camera* camera = nullptr);
 
 private://ゲームオリジナル
-	Gun* GetChildGun(const LevelData::ObjectData& objData);
+	//武器のポインタ返す
+	Weapon* GetChildWeapon(const LevelData::ObjectData& objData);
 public:
 	bool GetGameOver();
 	bool GetGameClear();

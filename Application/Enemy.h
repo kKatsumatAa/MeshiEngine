@@ -27,8 +27,8 @@ private:
 	float damageCoolTime = 0;
 	float velocityLength = 0;
 
-	//e
-	Gun* gun_ = nullptr;
+	//•Ší
+	Weapon* weapon_ = nullptr;
 
 public:
 	/// <summary>
@@ -36,7 +36,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat, Gun* gun);
+	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon);
 
 private:
 	//ˆÚ“®
@@ -53,7 +53,7 @@ private:
 
 public:
 
-	bool Initialize(std::unique_ptr<WorldMat> worldMat, Gun* gun);
+	bool Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon);
 
 	void Update() override;
 

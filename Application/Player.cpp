@@ -13,7 +13,7 @@
 using namespace DirectX;
 
 
-std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Gun* gun)
+std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 {
 	std::unique_ptr<Player> instance = std::make_unique<Player>();
 	if (instance.get() == nullptr)
@@ -22,7 +22,7 @@ std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Gun* 
 	}
 
 	//初期化
-	if (!instance->Initialize(std::move(worldMat), gun))
+	if (!instance->Initialize(std::move(worldMat), weapon))
 	{
 		assert(0);
 	}
@@ -30,7 +30,7 @@ std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Gun* 
 	return std::move(instance);
 }
 
-bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Gun* gun)
+bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 {
 	if (!Object::Initialize(std::move(worldMat)))
 	{
@@ -53,10 +53,10 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Gun* gun)
 	handManager_ = std::make_unique<PlayerHandManager>();
 	handManager_->Initialize(this);
 
-	gun_ = gun;
+	weapon_ = weapon;
 
 	//銃持ってたらステートかえる
-	if (gun_ == nullptr)
+	if (weapon_ == nullptr)
 	{
 		ChangePlayerState(std::make_unique<PlayerStateBareHands>());
 	}

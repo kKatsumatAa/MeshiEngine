@@ -10,7 +10,7 @@
 using namespace DirectX;
 
 
-std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, Gun* gun)
+std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 {
 	std::unique_ptr<Enemy> instance = std::make_unique<Enemy>();
 	if (instance.get() == nullptr)
@@ -19,7 +19,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, Gun* gu
 	}
 
 	//初期化
-	if (!instance->Initialize(std::move(worldMat), gun))
+	if (!instance->Initialize(std::move(worldMat), weapon))
 	{
 		assert(0);
 	}
@@ -27,7 +27,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, Gun* gu
 	return std::move(instance);
 }
 
-bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Gun* gun)
+bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 {
 	if (!Object::Initialize(std::move(worldMat)))
 	{
@@ -43,7 +43,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Gun* gun)
 
 	SetCollider(std::make_unique<SphereCollider>());
 
-	gun_ = gun;
+	weapon_ = weapon;
 
 	return true;
 }
@@ -111,12 +111,12 @@ void Enemy::Update()
 	//移動
 	Move();
 
-	//銃で攻撃
-	if (gun_)
+	//武器で攻撃
+	if (weapon_)
 	{
 		Vec3 playerPos = CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
-		Vec3 directionV = playerPos - gun_->GetWorldTrans();
-		gun_->Shot(directionV.GetNormalized(), 0);
+		Vec3 directionV = playerPos - weapon_->GetWorldTrans();
+		weapon_->Attack(directionV.GetNormalized(), 0);
 	}
 
 	//ダメージ受けるクールタイムもゲームスピードをかける
@@ -143,13 +143,13 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	//ダメージを受けるクールタイム
 	damageCoolTime = 20;
 
-	//銃持っていたら落とす
-	if (gun_)
+	//武器持っていたら落とす
+	if (weapon_)
 	{
 		distanceVec.y_ = 0.2f;
-		gun_->SetFallVec({ -distanceVec.x_,distanceVec.y_,-distanceVec.z_ });
-		gun_->ChangeOwner(nullptr);
-		gun_ = nullptr;
+		weapon_->SetFallVec({ -distanceVec.x_,distanceVec.y_,-distanceVec.z_ });
+		weapon_->ChangeOwner(nullptr);
+		weapon_ = nullptr;
 	}
 }
 
@@ -157,18 +157,20 @@ void Enemy::DamageParticle(const CollisionInfo& info)
 {
 	for (int32_t i = 0; i < 30; ++i)
 	{
-		const float MD_VEL = 0.1f;
-		Vec3 vel{};
-		vel.x_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-
 		Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
+
+		Vec3 addPos = Vec3(GetRand(-GetScale().x_, GetScale().x_), GetRand(-GetScale().y_, GetScale().y_), GetRand(-GetScale().z_, GetScale().z_)) / 2.0f;
+
+		pos += addPos;
+
+		const int32_t LIFE_TIME = 100;
+
+		Vec3 vel = (pos - GetTrans()) * GetRand(0.01f, 0.5f);
 
 		float scale = (float)rand() / RAND_MAX;
 		float scale2 = (float)rand() / RAND_MAX;
 
-		ParticleManager::GetInstance()->Add(100, pos, vel, { 0,0,0 }, scale, scale2, { 3.0f,0,0,0.8f }, { 0,0,0,0.0f },
+		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.001f,0 }, scale, scale2, { 3.0f,0,0,0.8f }, { 0,0,0,0.0f },
 			PI, -PI);
 	}
 }

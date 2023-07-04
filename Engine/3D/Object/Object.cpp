@@ -176,7 +176,7 @@ void Object::StaticUpdate()
 {
 	sEffectFlags_.time++;
 
-#ifdef DEBUG
+#ifdef _DEBUG
 	//imgui
 	ImGui::Begin("ObjectEffect");
 	ImGui::SliderInt("Fog", (int32_t*)&sEffectFlags_.isFog, 0, 1);

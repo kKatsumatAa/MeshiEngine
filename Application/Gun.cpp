@@ -50,8 +50,7 @@ bool Gun::Initialize(std::unique_ptr<WorldMat> worldMat)
 	return true;
 }
 
-
-void Gun::Shot(const Vec3& directionVec, int32_t decreBullet)
+void Gun::Attack(const Vec3& directionVec, int32_t decreBullet)
 {
 	//クールタイムじゃなく、残弾なかったら抜ける
 	if (shotCoolTime_ > 0 || remainingBullets_ <= 0)
@@ -60,7 +59,7 @@ void Gun::Shot(const Vec3& directionVec, int32_t decreBullet)
 	}
 
 	//弾うつ処理
-	BulletManager::GetInstance().CreateBullet(shotPos, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x_ * 0.7f, 300);
+	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x_ * 0.7f, 300);
 
 	//パーティクル
 	ParticleGenerate();
@@ -90,42 +89,10 @@ void Gun::ChangeOwner(WorldMat* parent)
 	SetParent(parent);
 }
 
-void Gun::NoParentMove()
-{
-	if (GetParent() == nullptr && GetWorldTrans().y_ > GetScale().x_)
-	{
-		//クールタイムもゲームスピードをかける
-		SetTrans(GetTrans() + fallVec_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
-
-		SetRot(GetRot() + fallVec_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
-
-		//だんだん弱く
-		fallVec_.x_ *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
-
-
-		if (fallVec_.y_ < 0.05f && fallVec_.y_ > -1.5f)
-		{
-			fallVec_.y_ = -(fabsf(fallVec_.y_) + fabsf(fallVec_.y_) * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
-		}
-		else if(fallVec_.y_ >= 0.05f)
-		{
-			fallVec_.y_ *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
-		}
-
-		fallVec_.z_ *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
-
-		//銃が地面についたら
-		if (GetWorldTrans().y_ <= GetScale().x_)
-		{
-			fallVec_ = { 0,0,0 };
-		}
-	}
-}
-
 void Gun::Update()
 {
 	//発射座標
-	shotPos = { GetWorldTrans().x_, GetWorldTrans().y_ + GetScale().y_, GetWorldTrans().z_ - GetScale().z_ };
+	shotPos_ = { GetWorldTrans().x_, GetWorldTrans().y_ + GetScale().y_, GetWorldTrans().z_ - GetScale().z_ };
 
 	//親が亡くなった後の動き
 	NoParentMove();
@@ -156,7 +123,7 @@ void Gun::ParticleGenerate()
 
 		float scale = (float)rand() / RAND_MAX * GetScale().x_;
 
-		ParticleManager::GetInstance()->Add(30, shotPos, vel, { 0,0,0 }, scale, 0, { 2.0f,2.0f,2.0f,1.5f }, { 0,0,0,0.0f });
+		ParticleManager::GetInstance()->Add(30, shotPos_, vel, { 0,0,0 }, scale, 0, { 2.0f,2.0f,2.0f,1.5f }, { 0,0,0,0.0f });
 	}
 
 }

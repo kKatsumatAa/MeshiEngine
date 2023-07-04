@@ -35,11 +35,11 @@ void PlayerStateBareHands::Update()
 		player_->SetIsTarget(true);
 
 		//銃を持ってなくて持ち主がいない銃に照準があってたら
-		if (info_.object->GetObjName() == "gun" && player_->GetGun() == nullptr && info_.object->GetParent() == nullptr
+		if (info_.object->GetObjName() == "gun" && player_->GetWeapon() == nullptr && info_.object->GetParent() == nullptr
 			&& MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
 		{
 			Gun* gun = dynamic_cast<Gun*>(info_.object);
-			player_->SetGun(gun);
+			player_->SetWeapon(gun);
 			Vec3 localP = { player_->GetScale().x_ ,-player_->GetScale().y_ / 2.0f ,player_->GetScale().z_ * 2.0f };
 			gun->SetLocalPos(localP);
 			gun->ChangeOwner(player_->GetWorldMat());
@@ -71,23 +71,23 @@ void PlayerStateHaveGun::Initialize()
 void PlayerStateHaveGun::Update()
 {
 	//プレイヤーが銃を持っていたら
-	if (player_->GetGun() != nullptr)
+	if (player_->GetWeapon() != nullptr)
 	{
 		player_->SetIsTarget(false);
 
 		//クリックで撃つ
 		if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
 		{
-			player_->GetGun()->Shot(player_->GetFrontVec());
+			player_->GetWeapon()->Attack(player_->GetFrontVec());
 			//ゲームスピード加算
 			GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
 		}
 		//右クリックで銃投げる
 		else if (MouseInput::GetInstance().GetTriggerClick(CLICK_RIGHT))
 		{
-			player_->GetGun()->ChangeOwner(nullptr);
-			player_->GetGun()->SetFallVec(player_->GetFrontVec() * 5.0f);
-			player_->SetGun(nullptr);
+			player_->GetWeapon()->ChangeOwner(nullptr);
+			player_->GetWeapon()->SetFallVec(player_->GetFrontVec() * 5.0f);
+			player_->SetWeapon(nullptr);
 
 			//ゲームスピード加算
 			GameVelocityManager::GetInstance().AddGameVelocity(0.4f);

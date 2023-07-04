@@ -90,7 +90,7 @@ void Framework::Update()
 	//(imgui)
 	Object::StaticUpdate();
 
-#ifdef DEBUG
+#ifdef _DEBUG
 	//(imgui)
 	sceneM_->DrawImgui();
 #endif // DEBUG
