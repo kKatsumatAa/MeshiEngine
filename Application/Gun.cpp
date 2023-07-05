@@ -59,7 +59,7 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet)
 	}
 
 	//弾うつ処理
-	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x_ * 0.7f, 300);
+	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x_ * 0.4f, 300);
 
 	//パーティクル
 	ParticleGenerate();
@@ -113,17 +113,17 @@ void Gun::Update()
 void Gun::ParticleGenerate()
 {
 	//パーティクル
-	for (int32_t i = 0; i < 40; ++i)
+	for (int32_t i = 0; i < 30; ++i)
 	{
 		const float MD_VEL = 0.6f;
 		Vec3 vel{};
-		vel.x_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.x_ = GetRand(-0.5f, 0.5f);
+		vel.y_ = GetRand(-0.5f, 0.5f);
+		vel.z_ = GetRand(-0.5f, 0.5f);
 
 		float scale = GetRand(GetScale().x_ / 2.0f, GetScale().x_ * 2.0f);
 
-		ParticleManager::GetInstance()->Add(40, shotPos_, vel, { 0,0,0 }, scale, 0, { 4.0f,4.0f,4.0f,1.5f }, { 0,0,0,0.0f });
+		ParticleManager::GetInstance()->Add(40, shotPos_, vel, { 0,0,0 }, scale, 0, { 4.0f,4.0f,4.0f,1.5f }, { 4.0f,4.0f,4.0f,0.0f });
 	}
 
 }

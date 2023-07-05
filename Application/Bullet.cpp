@@ -59,7 +59,7 @@ void Bullet::Update()
 	Object::Update();
 
 	//’e“¹
-	ParticleManager::GetInstance()->Add(30, GetWorldTrans(), {0,0,0}, {0,0,0}, GetScale().x_, 0, {5.0f,0,0,4.5f}, { 5.0f,0,0,4.5f });
+	ParticleManager::GetInstance()->Add(15, GetWorldTrans(), { 0,0,0 }, { 0,0,0 }, GetScale().x_ * 3.0f, 0, { 5.0f,0,0,4.5f }, { 5.0f,0,0,4.5f });
 
 
 	if (lifeTime_ <= 0)
@@ -70,7 +70,7 @@ void Bullet::Update()
 
 void Bullet::Draw()
 {
-	DrawSphere(nullptr,{0.0f,0.0f,0.0f,1.0f});
+	DrawSphere(nullptr, { 0.0f,0.0f,0.0f,1.0f });
 
 	//‹^Ž—ƒVƒ‹ƒGƒbƒg‰ðœ
 	SetIsSilhouette(false);

@@ -63,6 +63,7 @@ void Enemy::Move()
 	Vec3 playerPos = CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
 	//敵からプレイヤーへのベクトル
 	directionVec = playerPos - GetTrans();
+
 	//正規化
 	//directionVec.y_ = 0;
 	directionVec.Normalized();
@@ -74,10 +75,18 @@ void Enemy::Move()
 	//スピードがプラスになってたら
 	if (velocity_.Dot(directionVec) >= 0)
 	{
+		directionVec = playerPos - GetTrans();
+		//ある程度近づいたら止まる
+		if (directionVec.GetLength() < GetScale().GetLength() * 1.5f)
+		{
+			velocity_ = { 0,0,0 };
+		}
+		directionVec.Normalized();
+
 		//ダメージのクールリセット
 		damageCoolTime = 0;
 		//スピードの上限超えない
-		velocity_ = velocity_.GetNormalized() * min(length, GameVelocityManager::GetInstance().GetVelocity() * VELOCITY_TMP_ / 2.0f);
+		velocity_ = velocity_.GetNormalized() * min(length, GameVelocityManager::GetInstance().GetVelocity() * VELOCITY_TMP_ / 1.5f);
 	}
 
 	//当たり判定用にセット
@@ -156,7 +165,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 
 void Enemy::DamageParticle(const CollisionInfo& info)
 {
-	for (int32_t i = 0; i < 30; ++i)
+	for (int32_t i = 0; i < 50; ++i)
 	{
 		Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
 
@@ -168,13 +177,13 @@ void Enemy::DamageParticle(const CollisionInfo& info)
 
 		const int32_t LIFE_TIME = 100;
 
-		Vec3 vel = /*(GetTrans() - pos) * */{ GetRand(-0.5f, 0.5f),GetRand(-0.5f, 0.5f),GetRand(-0.5f, 0.5f) };
+		Vec3 vel = /*(GetTrans() - pos) * */Vec3(GetRand(-0.5f, 0.5f), GetRand(-0.5f, 0.5f), GetRand(-0.5f, 0.5f)) / 2.0f;
 
-		float scale = GetRand(scaleTmp / 20.0f, scaleTmp / 5.0f);
-		float scale2 = GetRand(0, scaleTmp / 20.0f);
+		float scale = GetRand(scaleTmp / 20.0f, scaleTmp / 15.0f);
+		float scale2 = GetRand(0, scaleTmp / 25.0f);
 
-		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.005f,0 }, scale, scale2, { 3.0f,0.0f,0.0f,0.5f }, { 0,0,0,0.0f },
-			PI, -PI);
+		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.002f,0 }, scale, scale2, { 3.0f,0.0f,0.0f,0.95f }, { 0,0,0,0.0f },
+			PI * 3.0f, -PI * 3.0f);
 	}
 }
 
