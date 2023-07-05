@@ -153,7 +153,7 @@ void Player::Move()
 	GameVelocityManager::GetInstance().AddGameVelocity(velocity_.GetLength() * 10.0f);
 
 	//位置セット(ゲームスピードをかける)
-	SetTrans(GetTrans() + velocity_ * GameVelocityManager::GetInstance().GetVelocity());
+	SetTrans(GetTrans() + velocity_* VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity());
 
 	//カメラをプレイヤーと同じ位置に
 	camera->SetEye(GetTrans());
@@ -231,24 +231,10 @@ void Player::Draw()
 
 void Player::OnCollision(const CollisionInfo& info)
 {
+	//敵と当たったら
 	if (info.object_->GetObjName() == "enemy")
 	{
-		////長さ
-		float length = (info.object_->GetScale().x_ + GetScale().x_);
-		//距離のベクトル
-		Vec3 distanceVec = GetTrans() - info.object_->GetTrans();
-		//仮でyは動かさない
-		distanceVec.y_ = 0;
-		distanceVec.Normalized();
 
-		//めり込まないように位置セット(半径＋半径の長さをベクトルの方向を使って足す)
-		//Vec3 ansPosP = info.object_->GetTrans() + distanceVec * length * 0.5f;
-		Vec3 ansPosE = GetTrans() - distanceVec * length * 1.01f;
-		//SetTrans(ansPosP);
-		info.object_->SetTrans(ansPosE);
-
-		//info.object_->SetTrans(ansPos);
-		info.object_->SetVelocity({ 0,0,0 });
 	}
 	//弾に当たったらダメージ
 	if (info.object_->GetObjName() == "bullet")

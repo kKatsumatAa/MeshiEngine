@@ -15,7 +15,12 @@ bool PlayerState::CheckEyeRayHit()
 
 	//正面ベクトルに何かあるか
 	bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, "player", &info_, player_->GetAttackLength());
-
+	//シルエット表示
+	if (isRayHit)
+	{
+		info_.object->SetIsSilhouette(true);
+		info_.object->Update();
+	}
 	return isRayHit;
 }
 

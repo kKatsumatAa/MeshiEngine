@@ -84,7 +84,9 @@ cbuffer ConstBufferEffectFlags : register(b4)
 	//リムライト
 	uint isRimLight;
 	//リムカラー
-	float3 rimColor;
+	float4 rimColor;
+	//疑似シルエット
+    uint isSilhouette;
 	//時間
 	uint time;
 }

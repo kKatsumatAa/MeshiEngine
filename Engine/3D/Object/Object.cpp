@@ -30,9 +30,9 @@ D3D12_GRAPHICS_PIPELINE_STATE_DESC Object::pipelineDesc_{};
 LightManager* Object::sLightManager_ = nullptr;
 
 //演出用
-ComPtr <ID3D12Resource> Object::sEffectFlagsBuff_ = nullptr;
-EffectOConstBuffer* Object::sMapEffectFlagsBuff_ = nullptr;
-EffectOConstBuffer Object::sEffectFlags_;
+//ComPtr <ID3D12Resource> Object::sEffectFlagsBuff_ = nullptr;
+//EffectOConstBuffer* Object::sMapEffectFlagsBuff_ = nullptr;
+//EffectOConstBuffer Object::sEffectFlags_;
 float Object::sRimColorF3_[3] = { 1.0f,1.0f,1.0f };
 
 
@@ -89,7 +89,7 @@ void Object::DrawInitialize()
 
 	// パイプランステートの生成
 	PipeLineState(D3D12_FILL_MODE_SOLID, objPipeLineSet_[0]);
-
+	//ワイヤーフレーム用
 	PipeLineState(D3D12_FILL_MODE_WIREFRAME, objPipeLineSet_[1]);
 
 	//line
@@ -105,23 +105,23 @@ void Object::DrawInitialize()
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetFBX_, FBX);
 
 
-	//画面効果用
-	{
-		//ヒープ設定
-		D3D12_HEAP_PROPERTIES cbHeapProp{};
-		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
-		//リソース設定
-		D3D12_RESOURCE_DESC cbResourceDesc{};
-		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
-		//リソース設定
-		ResourceProperties(cbResourceDesc,
-			((uint32_t)sizeof(EffectConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
-		//定数バッファの生成
-		BuffProperties(cbHeapProp, cbResourceDesc, &Object::sEffectFlagsBuff_);
-		//定数バッファのマッピング
-		result = Object::sEffectFlagsBuff_->Map(0, nullptr, (void**)&Object::sMapEffectFlagsBuff_);//マッピング
-		assert(SUCCEEDED(result));
-	}
+	////画面効果用
+	//{
+	//	//ヒープ設定
+	//	D3D12_HEAP_PROPERTIES cbHeapProp{};
+	//	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+	//	//リソース設定
+	//	D3D12_RESOURCE_DESC cbResourceDesc{};
+	//	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+	//	//リソース設定
+	//	ResourceProperties(cbResourceDesc,
+	//		((uint32_t)sizeof(EffectConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
+	//	//定数バッファの生成
+	//	BuffProperties(cbHeapProp, cbResourceDesc, &sEffectFlagsBuff_);
+	//	//定数バッファのマッピング
+	//	result = sEffectFlagsBuff_->Map(0, nullptr, (void**)&sMapEffectFlagsBuff_);//マッピング
+	//	assert(SUCCEEDED(result));
+	//}
 }
 
 //----------------------------------------------------------------
@@ -163,6 +163,33 @@ void Object::CulcFrontVec()
 
 void Object::Update()
 {
+	sEffectFlags_.time++;
+
+#ifdef _DEBUG
+	//imgui
+	/*ImGui::Begin("ObjectEffect");
+	ImGui::SliderInt("Fog", (int32_t*)&sEffectFlags_.isFog, 0, 1);
+	ImGui::SliderInt("Toon", (int32_t*)&sEffectFlags_.isToon, 0, 1);
+	ImGui::SliderInt("RimLight", (int32_t*)&sEffectFlags_.isRimLight, 0, 1);
+	ImGui::ColorEdit3("RimColor", sRimColorF3_);
+	ImGui::SliderInt("Silhouette", (int32_t*)&sEffectFlags_.isSilhouette, 0, 1);
+	ImGui::End();*/
+#endif // DEBUG
+
+	sEffectFlags_.rimColor = { sRimColorF3_[0],sRimColorF3_[1],sRimColorF3_[2],0 };
+
+
+
+	//画面効果用
+	{
+		sMapEffectFlagsBuff_->isFog = sEffectFlags_.isFog;
+		sMapEffectFlagsBuff_->isToon = sEffectFlags_.isToon;
+		sMapEffectFlagsBuff_->isRimLight = sEffectFlags_.isRimLight;
+		sMapEffectFlagsBuff_->rimColor = sEffectFlags_.rimColor;
+		sMapEffectFlagsBuff_->isSilhouette = sEffectFlags_.isSilhouette;
+		sMapEffectFlagsBuff_->time = sEffectFlags_.time;
+	}
+
 	//行列更新
 	worldMat_->CulcWorldMat();
 	//当たり判定更新
@@ -174,30 +201,32 @@ void Object::Update()
 
 void Object::StaticUpdate()
 {
-	sEffectFlags_.time++;
-
-#ifdef _DEBUG
-	//imgui
-	ImGui::Begin("ObjectEffect");
-	ImGui::SliderInt("Fog", (int32_t*)&sEffectFlags_.isFog, 0, 1);
-	ImGui::SliderInt("Toon", (int32_t*)&sEffectFlags_.isToon, 0, 1);
-	ImGui::SliderInt("RimLight", (int32_t*)&sEffectFlags_.isRimLight, 0, 1);
-	ImGui::ColorEdit3("RimColor", sRimColorF3_);
-	ImGui::End();
-#endif // DEBUG
-
-	sEffectFlags_.rimColor = { sRimColorF3_[0],sRimColorF3_[1],sRimColorF3_[2] };
-
-
-
-	//画面効果用
-	{
-		sMapEffectFlagsBuff_->isFog = sEffectFlags_.isFog;
-		sMapEffectFlagsBuff_->isToon = sEffectFlags_.isToon;
-		sMapEffectFlagsBuff_->isRimLight = sEffectFlags_.isRimLight;
-		sMapEffectFlagsBuff_->rimColor = sEffectFlags_.rimColor;
-		sMapEffectFlagsBuff_->time = sEffectFlags_.time;
-	}
+//	sEffectFlags_.time++;
+//
+//#ifdef _DEBUG
+//	//imgui
+//	ImGui::Begin("ObjectEffect");
+//	ImGui::SliderInt("Fog", (int32_t*)&sEffectFlags_.isFog, 0, 1);
+//	ImGui::SliderInt("Toon", (int32_t*)&sEffectFlags_.isToon, 0, 1);
+//	ImGui::SliderInt("RimLight", (int32_t*)&sEffectFlags_.isRimLight, 0, 1);
+//	ImGui::ColorEdit3("RimColor", sRimColorF3_);
+//	ImGui::SliderInt("Silhouette", (int32_t*)&sEffectFlags_.isSilhouette, 0, 1);
+//	ImGui::End();
+//#endif // DEBUG
+//
+//	sEffectFlags_.rimColor = { sRimColorF3_[0],sRimColorF3_[1],sRimColorF3_[2] };
+//
+//
+//
+//	//画面効果用
+//	{
+//		sMapEffectFlagsBuff_->isFog = sEffectFlags_.isFog;
+//		sMapEffectFlagsBuff_->isToon = sEffectFlags_.isToon;
+//		sMapEffectFlagsBuff_->isRimLight = sEffectFlags_.isRimLight;
+//		sMapEffectFlagsBuff_->rimColor = sEffectFlags_.rimColor;
+//		sMapEffectFlagsBuff_->isSilhouette = sEffectFlags_.isSilhouette;
+//		sMapEffectFlagsBuff_->time = sEffectFlags_.time;
+//	}
 }
 
 void Object::SetCollider(std::unique_ptr<BaseCollider> collider)
@@ -275,6 +304,24 @@ Object::Object()
 
 	//1フレーム分の時間を60fpsで設定
 	frameTime_.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+
+	//画面効果用
+	{
+		//ヒープ設定
+		D3D12_HEAP_PROPERTIES cbHeapProp{};
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+		//リソース設定
+		D3D12_RESOURCE_DESC cbResourceDesc{};
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+		//リソース設定
+		ResourceProperties(cbResourceDesc,
+			((uint32_t)sizeof(EffectConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
+		//定数バッファの生成
+		BuffProperties(cbHeapProp, cbResourceDesc, &sEffectFlagsBuff_);
+		//定数バッファのマッピング
+		result = sEffectFlagsBuff_->Map(0, nullptr, (void**)&sMapEffectFlagsBuff_);//マッピング
+		assert(SUCCEEDED(result));
+	}
 }
 
 void Object::SendingMat(int32_t indexNum, Camera* camera)

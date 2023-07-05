@@ -39,8 +39,9 @@ struct EffectOConstBuffer
 	uint32_t isRimLight = false;
 	float pad1;
 	//リムの色
-	XMFLOAT3 rimColor = { 1.0f,1.0f,1.0f };
-	float pad2;
+	XMFLOAT4 rimColor = { 1.0f,1.0f,1.0f,0 };
+	//疑似シルエット
+	uint32_t isSilhouette = false;
 	//時間
 	uint32_t time = 0;
 };
@@ -120,10 +121,10 @@ private:
 public://変数
 	bool isWireFrame_ = 0;
 	//画面効果用
-	static EffectOConstBuffer sEffectFlags_;
+	EffectOConstBuffer sEffectFlags_;
 	//画面効果用
-	static ComPtr <ID3D12Resource> sEffectFlagsBuff_;
-	static EffectOConstBuffer* sMapEffectFlagsBuff_;
+	ComPtr <ID3D12Resource> sEffectFlagsBuff_;
+	EffectOConstBuffer* sMapEffectFlagsBuff_;
 
 public:
 	//定数バッファ用データ構造体（スキニング）
@@ -260,6 +261,9 @@ public:
 		bool isLoop = false, bool isReverse = false);
 	void PlayAnimation(ModelFBX* model, bool isLoop = false);
 	void PlayReverseAnimation(ModelFBX* model, bool isLoop = false);
+
+	//フォグとかのフラグ
+	void SetIsSilhouette(bool is) { sEffectFlags_.isSilhouette = is; }
 
 	//-------------
 

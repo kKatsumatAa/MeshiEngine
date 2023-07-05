@@ -181,6 +181,12 @@ PSOutput main(VSOutput input)
 	float3 RGB = RGBA.rgb;
 	float  A = RGBA.a;
 
+		//疑似シルエット
+    if (isSilhouette)
+    {
+        RGBA = float4(1, 0, 0, 1);
+    }
+	
 	if (isFog == true)
 	{
 		//フォグ

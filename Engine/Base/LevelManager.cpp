@@ -185,6 +185,14 @@ void LevelManager::Update()
 	{
 		Object* obj = it->first.get();
 
+		obj->SetIsSilhouette(false);
+	}
+
+	//.Obj‚ğXV
+	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	{
+		Object* obj = it->first.get();
+
 		obj->Update();
 	}
 

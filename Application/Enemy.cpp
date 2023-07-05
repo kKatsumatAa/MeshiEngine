@@ -72,13 +72,14 @@ void Enemy::Move()
 	//スピードの上限は超えないように
 	float length = velocity_.GetLength();
 	//スピードがプラスになってたら
-	if (velocity_.Dot(directionVec) > 0)
+	if (velocity_.Dot(directionVec) >= 0)
 	{
 		//ダメージのクールリセット
 		damageCoolTime = 0;
 		//スピードの上限超えない
-		velocity_ = velocity_.GetNormalized() * min(length, GameVelocityManager::GetInstance().GetVelocity() * VELOCITY_TMP_);
+		velocity_ = velocity_.GetNormalized() * min(length, GameVelocityManager::GetInstance().GetVelocity() * VELOCITY_TMP_ / 2.0f);
 	}
+
 	//当たり判定用にセット
 	SetVelocity(velocity_);
 
@@ -159,18 +160,20 @@ void Enemy::DamageParticle(const CollisionInfo& info)
 	{
 		Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
 
-		Vec3 addPos = Vec3(GetRand(-GetScale().x_, GetScale().x_), GetRand(-GetScale().y_, GetScale().y_), GetRand(-GetScale().z_, GetScale().z_)) / 2.0f;
+		float scaleTmp = GetScale().GetLength();
+
+		Vec3 addPos = Vec3(GetRand(-GetScale().x_, GetScale().x_), GetRand(-GetScale().y_, GetScale().y_), GetRand(-GetScale().z_, GetScale().z_)) / 4.0f;
 
 		pos += addPos;
 
 		const int32_t LIFE_TIME = 100;
 
-		Vec3 vel = (pos - GetTrans()) * GetRand(0.01f, 0.5f);
+		Vec3 vel = /*(GetTrans() - pos) * */{ GetRand(-0.5f, 0.5f),GetRand(-0.5f, 0.5f),GetRand(-0.5f, 0.5f) };
 
-		float scale = (float)rand() / RAND_MAX;
-		float scale2 = (float)rand() / RAND_MAX;
+		float scale = GetRand(scaleTmp / 20.0f, scaleTmp / 5.0f);
+		float scale2 = GetRand(0, scaleTmp / 20.0f);
 
-		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.001f,0 }, scale, scale2, { 3.0f,0,0,0.8f }, { 0,0,0,0.0f },
+		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.005f,0 }, scale, scale2, { 3.0f,0.0f,0.0f,0.5f }, { 0,0,0,0.0f },
 			PI, -PI);
 	}
 }
@@ -181,12 +184,21 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	if (info.object_->GetObjName() == "player")
 	{
 		////長さ
-		float length = (/*info.object_->GetScale().x_*/ +GetScale().x_);
+		float length = (info.object_->GetScale().x_ + GetScale().x_);
 		//距離のベクトル
 		Vec3 distanceVec = GetTrans() - info.object_->GetTrans();
 		//仮でyは動かさない
 		distanceVec.y_ = 0;
 		distanceVec.Normalized();
+
+		//めり込まないように位置セット(半径＋半径の長さをベクトルの方向を使って足す)
+		//Vec3 ansPosP = info.object_->GetTrans() + distanceVec * length * 0.5f;
+		Vec3 ansPosE = info.object_->GetTrans() + distanceVec * length * 1.001f;
+		//SetTrans(ansPosP);
+		SetTrans(ansPosE);
+
+		//info.object_->SetTrans(ansPos);
+		SetVelocity({ 0,0,0 });
 
 		//動けないようにする
 		isCantMove = true;

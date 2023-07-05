@@ -15,6 +15,7 @@ class Player :
 	public Character
 {
 private:
+	const float VELOCITY_TMP_ = 1.15f;
 	const float ANGLE_VEL_EXTEND_ = 0.003f;
 	Vec3 cameraRot_ = { 0,0,0 };
 
