@@ -46,6 +46,9 @@ public:
 	//‚¿å•ÏX
 	void ChangeOwner(WorldMat* parent) override;
 
+	//
+	int32_t GetBulletNum() { return remainingBullets_; }
+
 public:
 
 	bool Initialize(std::unique_ptr<WorldMat> worldMat) override;
