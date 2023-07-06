@@ -82,7 +82,7 @@ void PlayerStateHaveGun::Update()
 		//クリックで撃つ
 		if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
 		{
-			player_->GetWeapon()->Attack(player_->GetFrontVec());
+			player_->GetWeapon()->Attack(player_->GetFrontVec(), 1, player_);
 			//ゲームスピード加算
 			GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
 		}

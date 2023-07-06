@@ -8,6 +8,7 @@
 #include "GameVelocityManager.h"
 #include "PlayerAttackState.h"
 #include "PlayerState.h"
+#include "Bullet.h"
 
 
 using namespace DirectX;
@@ -153,7 +154,7 @@ void Player::Move()
 	GameVelocityManager::GetInstance().AddGameVelocity(velocity_.GetLength() * 10.0f);
 
 	//位置セット(ゲームスピードをかける)
-	SetTrans(GetTrans() + velocity_* VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity());
+	SetTrans(GetTrans() + velocity_ * VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity());
 
 	//カメラをプレイヤーと同じ位置に
 	camera->SetEye(GetTrans());
@@ -187,7 +188,7 @@ void Player::Update()
 
 			float scale = (float)rand() / RAND_MAX * GetScale().x_;
 
-			ParticleManager::GetInstance()->Add(30, GetTrans(), vel, {0,0,0}, scale, 0, {2.0f,2.0f,2.0f,1.5f}, {0,0,0,0.0f});
+			ParticleManager::GetInstance()->Add(30, GetTrans(), vel, { 0,0,0 }, scale, 0, { 2.0f,2.0f,2.0f,1.5f }, { 0,0,0,0.0f });
 		}
 
 		return;
@@ -242,8 +243,16 @@ void Player::OnCollision(const CollisionInfo& info)
 		isDead_ = true;
 
 		{
-			//被弾方向へのベクトル
-			Vec3 directionVec = info.object_->GetWorldTrans() - GetTrans();
+			Bullet* bullet = dynamic_cast<Bullet*>(info.object_);
+
+			////弾の方向へのベクトル
+			Vec3 directionVec;
+			//所有者がまだ生きていたら
+			//if (!bullet->GetOwner()->GetIsAlive())
+			{
+				directionVec = bullet->GetOwnerPos() - GetTrans();
+			}
+
 			//初期正面ベクトルとプレイヤーへのベクトル
 			Vec3 fVTmp = GetFrontVecTmp().GetNormalized();
 			Vec3 pDVTmp = directionVec.GetNormalized();

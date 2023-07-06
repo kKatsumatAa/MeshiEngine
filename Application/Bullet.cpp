@@ -10,7 +10,7 @@
 using namespace DirectX;
 
 
-std::unique_ptr<Bullet> Bullet::Create(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime)
+std::unique_ptr<Bullet> Bullet::Create(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, Object* owner)
 {
 	std::unique_ptr<Bullet> instance = std::make_unique<Bullet>();
 	if (instance.get() == nullptr)
@@ -19,7 +19,7 @@ std::unique_ptr<Bullet> Bullet::Create(const Vec3& pos, const Vec3& directionVec
 	}
 
 	//初期化
-	if (!instance->Initialize(pos, directionVec, scale, lifeTime))
+	if (!instance->Initialize(pos, directionVec, scale, lifeTime, owner))
 	{
 		assert(0);
 	}
@@ -27,7 +27,7 @@ std::unique_ptr<Bullet> Bullet::Create(const Vec3& pos, const Vec3& directionVec
 	return std::move(instance);
 }
 
-bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime)
+bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, Object* owner)
 {
 	if (!Object::Initialize())
 	{
@@ -44,12 +44,19 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	directionVec_ = directionVec;
 	SetScale({ scale,scale,scale });
 	lifeTime_ = lifeTime;
+	owner_ = owner;
+	ownerPos_ = owner->GetTrans();
 
 	return true;
 }
 
 void Bullet::Update()
 {
+	/*if (owner_)
+	{
+		ownerPos_ = owner_->GetTrans();
+	}*/
+
 	//クールタイムもゲームスピードをかける
 	lifeTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 

@@ -38,7 +38,7 @@ private:
 	std::unique_ptr<PlayerState> state_ = nullptr;
 
 	//
-	int32_t deadTimer_ = 50;
+	int32_t deadTimer_ = 70;
 	bool isDead_ = false;
 
 public:

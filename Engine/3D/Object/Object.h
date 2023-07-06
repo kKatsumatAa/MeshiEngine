@@ -185,7 +185,7 @@ public:
 	void SetTransX(float pos) { worldMat_->trans_.x_ = pos; }
 	void SetTransY(float pos) { worldMat_->trans_.y_ = pos; }
 	void SetTransZ(float pos) { worldMat_->trans_.z_ = pos; }
-	const Vec3& GetTrans() { return worldMat_->trans_; }
+	Vec3 GetTrans() { return worldMat_->trans_; }
 	//ƒXƒP[ƒ‹
 	void SetScale(const Vec3& scale) { worldMat_->scale_ = scale; }
 	void SetScaleX(float scale) { worldMat_->scale_.x_ = scale; }

@@ -18,6 +18,11 @@ private:
 	//ê∂Ç´ÇƒÇÈÇ©
 	bool isAlive_ = true;
 
+	//èäóLé“
+	Object* owner_ = nullptr;
+
+	Vec3 ownerPos_ = { 0,0,0 };
+
 
 public:
 	/// <summary>
@@ -25,16 +30,20 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Bullet> Create(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime);
+	static std::unique_ptr<Bullet> Create(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, Object* owner);
 
 private:
 
 public:
 	bool GetIsAlive() { return isAlive_; }
 
+	Object* GetOwner() { return owner_; }
+
+	const Vec3& GetOwnerPos() { return ownerPos_; }
+
 public:
 
-	bool Initialize(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime);
+	bool Initialize(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, Object* owner);
 
 	void Update() override;
 

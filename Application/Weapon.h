@@ -13,6 +13,8 @@ protected:
 	Vec3 fallVec_ = { 0,0,0 };
 	//ローカル座標
 	Vec3 localPos_ = { 0,0,0 };
+	//持ち主
+	Object* owner_ = nullptr;
 
 
 public:
@@ -31,7 +33,7 @@ protected:
 
 public:
 	//射撃
-	virtual void Attack(const Vec3& directionVec, int32_t decreBullet = 1) = 0;
+	virtual void Attack(const Vec3& directionVec, int32_t decreBullet = 1, Object* owner = nullptr) = 0;
 
 	//持ち主変更
 	virtual void ChangeOwner(WorldMat* parent) = 0;

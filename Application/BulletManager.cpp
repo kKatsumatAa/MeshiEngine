@@ -2,38 +2,38 @@
 
 BulletManager& BulletManager::GetInstance()
 {
-    static BulletManager inst;
-    return inst;
+	static BulletManager inst;
+	return inst;
 }
 
 void BulletManager::Initialize()
 {
-    bullets_.clear();
+	bullets_.clear();
 }
 
-void BulletManager::CreateBullet(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime)
+void BulletManager::CreateBullet(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, Object* owner)
 {
-    std::unique_ptr<Bullet>bullet = Bullet::Create(pos, directionVec, scale, lifeTime);
-    bullets_.push_back(std::move(bullet));
+	std::unique_ptr<Bullet>bullet = Bullet::Create(pos, directionVec, scale, lifeTime, owner);
+	bullets_.push_back(std::move(bullet));
 }
 
 void BulletManager::Update()
 {
-    //フラグがたってなかったら消す
-    bullets_.remove_if(
-        [](auto& b) { return !b->GetIsAlive(); }
-    );
+	//フラグがたってなかったら消す
+	bullets_.remove_if(
+		[](auto& b) { return !b->GetIsAlive(); }
+	);
 
-    for (auto& bullet : bullets_)
-    {
-        bullet->Update();
-    }
+	for (auto& bullet : bullets_)
+	{
+		bullet->Update();
+	}
 }
 
 void BulletManager::Draw()
 {
-    for (auto& bullet : bullets_)
-    {
-        bullet->Draw();
-    }
+	for (auto& bullet : bullets_)
+	{
+		bullet->Draw();
+	}
 }

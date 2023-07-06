@@ -36,11 +36,12 @@ private:
 	////Š—LÒ‚ª‚¢‚È‚¢‚Æ‚«‚É”ò‚ñ‚Å‚¢‚­
 	//void NoParentMove() override;
 
-	void ParticleGenerate() override;
+	void ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor);
+	void ParticleGenerate()override { ; }
 
 public:
 	//ËŒ‚
-	void Attack(const Vec3& directionVec, int32_t decreBullet = 1) override;
+	void Attack(const Vec3& directionVec, int32_t decreBullet = 1, Object* owner = nullptr) override;
 
 	//‚¿å•ÏX
 	void ChangeOwner(WorldMat* parent) override;

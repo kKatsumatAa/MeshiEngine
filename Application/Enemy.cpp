@@ -128,7 +128,7 @@ void Enemy::Update()
 	{
 		Vec3 playerPos = CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
 		Vec3 directionV = playerPos - weapon_->GetWorldTrans();
-		weapon_->Attack(directionV.GetNormalized(), 0);
+		weapon_->Attack(directionV.GetNormalized(), 0, this);
 	}
 
 	//ダメージ受けるクールタイムもゲームスピードをかける

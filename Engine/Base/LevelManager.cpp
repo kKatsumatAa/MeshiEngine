@@ -3,6 +3,8 @@
 #include "CameraManager.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "BulletManager.h"
+
 
 LevelManager::~LevelManager()
 {
