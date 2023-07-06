@@ -6,6 +6,10 @@
 class TextureManager
 {
 private:
+	//Microsoft::WRL::を省略
+	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
+private:
 	static int32_t sCount_;
 
 	//テクスチャデータの連想配列
@@ -23,7 +27,7 @@ public:
 	//リソース設定
 	static D3D12_RESOURCE_DESC sResDesc_;
 	//設定をもとにSRV用デスクリプタヒープを生成
-	static ComPtr < ID3D12DescriptorHeap> sSrvHeap_;
+	static  ComPtr < ID3D12DescriptorHeap> sSrvHeap_;
 	static D3D12_CPU_DESCRIPTOR_HANDLE sSrvHandle_;
 
 	static const int32_t S_SRV_COUNT_ = 512;

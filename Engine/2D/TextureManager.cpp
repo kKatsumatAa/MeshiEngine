@@ -2,6 +2,7 @@
 #include <d3dx12.h>
 #include "Util.h"
 using namespace DirectX;
+using namespace Microsoft::WRL;
 
 int32_t TextureManager::sCount_ = 0;
 //ƒŠƒ\[ƒXİ’è

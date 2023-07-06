@@ -1,7 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
 #include "Util.h"
-using namespace DirectX;
 
 class WorldMat
 {

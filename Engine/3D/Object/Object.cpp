@@ -8,6 +8,8 @@
 #include "ImguiManager.h"
 #include "CameraManager.h"
 
+using namespace DirectX;
+
 
 //図形用
 Primitive Object::primitive_;

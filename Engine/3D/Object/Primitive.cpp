@@ -1,6 +1,9 @@
 #include "Primitive.h"
 #include "Util.h"
 
+using namespace DirectX;
+
+
 uint16_t Primitive::sIndicesBox_[6] =
 {
 	0,1,2,//ŽOŠpŒ`1‚Â–Ú

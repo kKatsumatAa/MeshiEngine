@@ -6,6 +6,9 @@
 #include <d3dx12.h>
 #include <algorithm>
 
+
+using namespace DirectX;
+
 /// <summary>
 /// Ã“Iƒƒ“ƒo•Ï”‚ÌÀ‘Ì
 /// </summary>

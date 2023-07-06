@@ -4,6 +4,8 @@
 struct RootPipe
 {
 private:
+	//Microsoft::WRL::を省略
+	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 public:
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob; // ピクセルシェーダオブジェクト

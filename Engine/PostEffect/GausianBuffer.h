@@ -6,14 +6,12 @@
 #include <DirectXMath.h>
 #include <DirectXTex.h>
 #include "KeyboardInput.h"
-using namespace DirectX;
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #include"Sound.h"
 #include <wrl.h>
-using namespace Microsoft::WRL;
 #include<chrono>
 
 
@@ -30,7 +28,7 @@ public:
 
 	std::vector<float> weights_;
 
-	ComPtr <ID3D12Resource> buff_;
+	Microsoft::WRL::ComPtr <ID3D12Resource> buff_;
 };
 
 

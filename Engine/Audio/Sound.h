@@ -5,13 +5,16 @@
 #include <fstream>
 #include <string>
 #include <wrl.h>
-using namespace Microsoft::WRL;
 #include <map>
 #include <vector>
 
 
 class Sound final
 {
+private:
+	//Microsoft::WRL::Çè»ó™
+	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 public:
 	//âπ
 	static IXAudio2MasteringVoice* sMasterVoice_;

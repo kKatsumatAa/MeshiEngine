@@ -2,6 +2,9 @@
 #include "WindowsApp.h"
 #include <random>
 
+using namespace DirectX;
+
+
 void Vec4xM4(Vec4& v, const M4& m4)
 {
 	float v4[2][4] = {

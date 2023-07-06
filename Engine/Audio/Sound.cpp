@@ -1,6 +1,8 @@
 #include "Sound.h"
 #include <iostream>
 
+using namespace Microsoft::WRL;
+
 IXAudio2MasteringVoice* Sound::sMasterVoice_;
 ComPtr<IXAudio2> Sound::sXAudio2_;
 std::map < std::string, Sound::SoundData> Sound::sSoundDatas_;

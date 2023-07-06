@@ -50,12 +50,16 @@ struct EffectConstBuffer
 
 struct PeraVertex
 {
-	XMFLOAT3 pos;
-	XMFLOAT2 uv;
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;
 };
 
 class PostPera
 {
+private:
+	//Microsoft::WRL::Çè»ó™
+	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 private:
 	PeraVertex pVertices_[4] = {
 		{{-1.0f, -1.0f,0},{0,1.0f}},//ç∂â∫

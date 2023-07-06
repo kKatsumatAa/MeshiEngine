@@ -2,6 +2,8 @@
 
 ID3D12Device* LightManager::sDevice_ = nullptr;
 
+using namespace DirectX;
+
 
 void LightManager::StaticInitialize()
 {

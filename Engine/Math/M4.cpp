@@ -1,5 +1,9 @@
 #include "M4.h"
 
+using namespace DirectX;
+
+
+
 M4::M4()
 {
 	for (int32_t i = 0; i < 4; i++)

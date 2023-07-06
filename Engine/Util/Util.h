@@ -46,7 +46,7 @@ bool CollisionBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t r1, in
 float sign(float num);
 
 //変換
-Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection);
+Vec2 Vec3toVec2(const Vec3& v, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection);
 /// <summary>
 /// distanceは、projectionのnearPosからの位置!!
 /// </summary>
@@ -55,7 +55,7 @@ Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 /// <param name="projection"></param>
 /// <param name="distance"></param>
 /// <returns></returns>
-Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection, float distance);
+Vec3 Vec2toVec3(const Vec2& v, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection, float distance);
 
 /// <summary>
 /// スクリーン座標をprojectionのnear,farの位置に変換してreturn...Posに代入
@@ -65,7 +65,7 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 /// <param name="returnFarPos"></param>
 /// <param name="view"></param>
 /// <param name="projection"></param>
-void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, const XMMATRIX& view, const XMMATRIX& projection);
+void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection);
 
 
 //アライメントにそろえたサイズを返す

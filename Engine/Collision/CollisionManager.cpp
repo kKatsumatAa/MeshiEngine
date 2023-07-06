@@ -2,6 +2,8 @@
 #include "BaseCollider.h"
 #include "Collision.h"
 
+using namespace DirectX;
+
 
 CollisionManager* CollisionManager::GetInstance()
 {

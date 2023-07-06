@@ -1,7 +1,7 @@
 #pragma once
 #include<DirectXMath.h>
 #include <wrl.h>
-using namespace Microsoft::WRL;
+
 
 /// <summary>
 /// 照明(様々なライトを作るときはポリモーフィズムで継承するといい)

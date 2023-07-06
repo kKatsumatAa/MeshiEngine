@@ -1,5 +1,8 @@
 #include "ProjectionMat.h"
 
+using namespace DirectX;
+
+
 ProjectionMat::ProjectionMat():
 	nearPos_(0.1f), farPos_(10000.0f), aspect_({ WindowsApp::GetInstance().WINDOW_WIDTH_ , WindowsApp::GetInstance().WINDOW_HEIGHT_ }),
 	fovY_(XMConvertToRadians(45.0f))

@@ -13,8 +13,8 @@ public:
 	static const int32_t S_POINT_LIGHT_NUM_ = 6;
 
 private://エイリアス
-//Microsoft::WRL::を省略
-	template<class T> using Comptr = Microsoft::WRL::ComPtr<T>;
+	//Microsoft::WRL::を省略
+	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	//DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;

@@ -1,7 +1,6 @@
 #pragma once
 #include<DirectXMath.h>
 #include <wrl.h>
-using namespace Microsoft::WRL;
 
 /// <summary>
 /// “_ŒõŒ¹

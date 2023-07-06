@@ -1,5 +1,6 @@
 #include "Sprite.h"
 
+using namespace DirectX;
 
 
 void Sprite::Initialize()

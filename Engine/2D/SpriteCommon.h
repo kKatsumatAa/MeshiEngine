@@ -5,14 +5,18 @@
 #include "ViewMat.h"
 #include "ProjectionMat.h"
 #include "RootPipe.h"
-using namespace Microsoft::WRL;//
+
 
 struct ConstBufferDataMaterial
 {
-	XMFLOAT4 color;//色(RGBA)
+	DirectX::XMFLOAT4 color;//色(RGBA)
 };
 struct SpriteBuff
 {
+private://エイリアス
+	//Microsoft::WRL::を省略
+	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+public:
 	//頂点バッファ
 	ComPtr < ID3D12Resource> vertBuff = nullptr;
 	// 頂点バッファビューの作成
@@ -21,8 +25,8 @@ struct SpriteBuff
 };
 struct VertexSprite
 {
-	XMFLOAT3 pos;//xyz座標
-	XMFLOAT2 uv;//uv座標
+	DirectX::XMFLOAT3 pos;//xyz座標
+	DirectX::XMFLOAT2 uv;//uv座標
 };
 
 class SpriteCommon

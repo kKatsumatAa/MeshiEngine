@@ -39,7 +39,7 @@ struct EffectOConstBuffer
 	uint32_t isRimLight = false;
 	float pad1;
 	//リムの色
-	XMFLOAT4 rimColor = { 1.0f,1.0f,1.0f,0 };
+	DirectX::XMFLOAT4 rimColor = { 1.0f,1.0f,1.0f,0 };
 	//疑似シルエット
 	uint32_t isSilhouette = false;
 	//時間
@@ -48,6 +48,16 @@ struct EffectOConstBuffer
 
 class Object
 {
+protected://エイリアス
+	//Microsoft::WRL::を省略
+	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+	//DirectX::を省略
+	using XMFLOAT2 = DirectX::XMFLOAT2;
+	using XMFLOAT3 = DirectX::XMFLOAT3;
+	using XMFLOAT4 = DirectX::XMFLOAT4;
+	using XMVECTOR = DirectX::XMVECTOR;
+	using XMMATRIX = DirectX::XMMATRIX;
+
 private:
 	//リソース設定
 	//D3D12_RESOURCE_DESC resDesc{};
@@ -316,6 +326,6 @@ public:
 private:
 	void constBuffTransfer(const XMFLOAT4& plusRGBA);
 };
-void SetNormDigitalMat(XMMATRIX& mat);
+void SetNormDigitalMat(DirectX::XMMATRIX& mat);
 
 void Error(bool filed, ID3DBlob* errorBlob);
