@@ -1,7 +1,6 @@
 #pragma once
 #include <Windows.h>
 #include <d3d12.h>
-#pragma comment(lib,"winmm.lib")
 #include<stdint.h>
 
 

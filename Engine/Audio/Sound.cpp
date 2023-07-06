@@ -3,6 +3,8 @@
 
 using namespace Microsoft::WRL;
 
+#pragma comment(lib,"xaudio2.lib")
+
 IXAudio2MasteringVoice* Sound::sMasterVoice_;
 ComPtr<IXAudio2> Sound::sXAudio2_;
 std::map < std::string, Sound::SoundData> Sound::sSoundDatas_;

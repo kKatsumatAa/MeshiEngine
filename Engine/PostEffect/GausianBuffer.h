@@ -7,9 +7,6 @@
 #include <DirectXTex.h>
 #include "KeyboardInput.h"
 #include <d3dcompiler.h>
-#pragma comment(lib, "d3dcompiler.lib")
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
 #include"Sound.h"
 #include <wrl.h>
 #include<chrono>

@@ -130,7 +130,14 @@ void Gun::ParticleGenerate()
 
 void Gun::OnCollision(const CollisionInfo& info)
 {
-	if (info.object_->GetObjName() == "enemy")
+	if (info.object_->GetObjName() == "bullet")
+	{
+		//パーティクル
+		ParticleGenerate();
+
+		SetIsAlive(false);
+	}
+	else if (info.object_->GetObjName() == "enemy")
 	{
 		//持ってる人がいるときはしない
 		if (GetParent() && fallVec_.GetLength() == 0)

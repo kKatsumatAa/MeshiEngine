@@ -2,8 +2,6 @@
 #include <d3dcompiler.h>
 #include <cassert>
 
-#pragma comment(lib, "d3dcompiler.lib")
-
 using namespace DirectX;
 
 /// <summary>

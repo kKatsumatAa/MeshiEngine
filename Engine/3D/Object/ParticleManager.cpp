@@ -4,8 +4,6 @@
 #include "CameraManager.h"
 #include "GameVelocityManager.h"
 
-#pragma comment(lib, "d3dcompiler.lib")
-
 using namespace DirectX;
 
 XMMATRIX ParticleManager::sMatBillboard_ = XMMatrixIdentity();
