@@ -342,6 +342,12 @@
     <ClCompile Include="Application\Character.cpp">
       <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Collision\MeshCollider.cpp">
+      <Filter>ソース ファイル\Engine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Object\TouchableObject.cpp">
+      <Filter>ソース ファイル\Engine\3D\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Player.h">
@@ -583,6 +589,12 @@
     </ClInclude>
     <ClInclude Include="Application\Character.h">
       <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\MeshCollider.h">
+      <Filter>ヘッダー ファイル\Engine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Object\TouchableObject.h">
+      <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

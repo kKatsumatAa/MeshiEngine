@@ -134,6 +134,7 @@
     <ClCompile Include="Engine\3D\Object\Object.cpp" />
     <ClCompile Include="Engine\3D\Object\ParticleManager.cpp" />
     <ClCompile Include="Engine\3D\Object\Primitive.cpp" />
+    <ClCompile Include="Engine\3D\Object\TouchableObject.cpp" />
     <ClCompile Include="Engine\Audio\Sound.cpp" />
     <ClCompile Include="Engine\Base\Async.cpp" />
     <ClCompile Include="Engine\Base\ConstBuffTransform.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="Engine\Collision\Collision.cpp" />
     <ClCompile Include="Engine\Collision\CollisionManager.cpp" />
     <ClCompile Include="Engine\Collision\CollisionPrimitive.cpp" />
+    <ClCompile Include="Engine\Collision\MeshCollider.cpp" />
     <ClCompile Include="Engine\Collision\PlaneCollider.cpp" />
     <ClCompile Include="Engine\Collision\SphereCollider.cpp" />
     <ClCompile Include="Engine\Collision\TriangleCollider.cpp" />
@@ -212,6 +214,7 @@
     <ClInclude Include="Engine\3D\Object\Object.h" />
     <ClInclude Include="Engine\3D\Object\ParticleManager.h" />
     <ClInclude Include="Engine\3D\Object\Primitive.h" />
+    <ClInclude Include="Engine\3D\Object\TouchableObject.h" />
     <ClInclude Include="Engine\Audio\Sound.h" />
     <ClInclude Include="Engine\Base\Async.h" />
     <ClInclude Include="Engine\Base\ConstBuffTransform.h" />
@@ -232,6 +235,7 @@
     <ClInclude Include="Engine\Collision\CollisionManager.h" />
     <ClInclude Include="Engine\Collision\CollisionPrimitive.h" />
     <ClInclude Include="Engine\Collision\CollisionTypes.h" />
+    <ClInclude Include="Engine\Collision\MeshCollider.h" />
     <ClInclude Include="Engine\Collision\PlaneCollider.h" />
     <ClInclude Include="Engine\Collision\RaycastHit.h" />
     <ClInclude Include="Engine\Collision\SphereCollider.h" />

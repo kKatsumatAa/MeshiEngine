@@ -1,6 +1,7 @@
 #include "CollisionManager.h"
 #include "BaseCollider.h"
 #include "Collision.h"
+#include "MeshCollider.h"
 
 using namespace DirectX;
 
@@ -83,6 +84,25 @@ bool CollisionManager::Raycast(const Ray& ray, std::string notTargetName, Raycas
 			inter = tempInter;
 			it_hit = it;
 		}
+
+		//メッシュコライダーの場合
+		if (colA->GetShapeType() == COLLISIONSHAPE_MESH && colA->GetIsValid() && !colA->GetIs2D() && colA->GetObject3d()->GetObjName() != notTargetName) {
+			MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(colA);
+
+			float tempDistance;
+			XMVECTOR tempInter;
+
+			//当たらなければ除外
+			if (!meshCollider->CheckCollisionRay(ray, &tempDistance, &tempInter)) continue;
+			//距離が最小でなければ除外
+			if (tempDistance >= distance) continue;
+
+			//今までで最も近いので記録する
+			result = true;
+			distance = tempDistance;
+			inter = tempInter;
+			it_hit = it;
+		}
 	}
 
 	//最終的に何かにあたっていれば結果を書き込む
@@ -140,8 +160,8 @@ void CollisionManager::CheckAllCollisions()
 				&&
 				(!colA->GetIs2D() && !colB->GetIs2D()))
 			{
-				Sphere* SphereA = dynamic_cast<Sphere*>(colA);
-				Plane* PlaneB = dynamic_cast<Plane*>(colB);
+				Sphere* SphereA = nullptr;
+				Plane* PlaneB = nullptr;
 				DirectX::XMVECTOR inter;
 
 				//Aが球の時
@@ -156,7 +176,8 @@ void CollisionManager::CheckAllCollisions()
 					SphereA = dynamic_cast<Sphere*>(colB);
 					PlaneB = dynamic_cast<Plane*>(colA);
 				}
-				if (Collision::CheckSphere2Plane(*SphereA, *PlaneB, &inter))
+				if (SphereA && PlaneB &&
+					Collision::CheckSphere2Plane(*SphereA, *PlaneB, &inter))
 				{
 					colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
 					colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
@@ -170,8 +191,8 @@ void CollisionManager::CheckAllCollisions()
 				&&
 				(!colA->GetIs2D() && !colB->GetIs2D()))
 			{
-				Sphere* SphereA = dynamic_cast<Sphere*>(colA);
-				Triangle* TriangleB = dynamic_cast<Triangle*>(colB);
+				Sphere* SphereA = nullptr;
+				Triangle* TriangleB = nullptr;
 				DirectX::XMVECTOR inter;
 
 				//Aが球の時
@@ -186,7 +207,39 @@ void CollisionManager::CheckAllCollisions()
 					SphereA = dynamic_cast<Sphere*>(colB);
 					TriangleB = dynamic_cast<Triangle*>(colA);
 				}
-				if (Collision::CheckSphere2Triangle(*SphereA, *TriangleB, &inter))
+				if (SphereA && TriangleB &&
+					Collision::CheckSphere2Triangle(*SphereA, *TriangleB, &inter))
+				{
+					colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
+					colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
+				}
+			}
+
+			//メッシュと球の判定
+			if ((typeA == COLLISIONSHAPE_MESH || typeB == COLLISIONSHAPE_MESH)
+				&&
+				(colA->GetIsValid() && colB->GetIsValid())
+				&&
+				(!colA->GetIs2D() && !colB->GetIs2D()))
+			{
+				Sphere* SphereA = nullptr;
+				MeshCollider* meshCollider = nullptr;
+				DirectX::XMVECTOR inter;
+
+				//Aが球の時
+				if (typeA == COLLISIONSHAPE_SPHERE && typeB == COLLISIONSHAPE_MESH)
+				{
+					SphereA = dynamic_cast<Sphere*>(colA);
+					meshCollider = dynamic_cast<MeshCollider*>(colB);
+				}
+				//Aがメッシュコライダーの時
+				else if (typeA == COLLISIONSHAPE_MESH && typeB == COLLISIONSHAPE_SPHERE)
+				{
+					SphereA = dynamic_cast<Sphere*>(colB);
+					meshCollider = dynamic_cast<MeshCollider*>(colA);
+				}
+				if (SphereA && meshCollider &&
+					meshCollider->CheckCollisionSphere(*SphereA, &inter))
 				{
 					colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
 					colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));

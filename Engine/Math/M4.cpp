@@ -4,124 +4,7 @@ using namespace DirectX;
 
 
 
-M4::M4()
-{
-	for (int32_t i = 0; i < 4; i++)
-	{
-		for (int32_t j = 0; j < 4; j++)
-		{
-			m_[i][j] = 0;
-		}
-	}
-}
-
-M4::M4(float m00, float m01, float m02, float m03,
-	float m10, float m11, float m12, float m13,
-	float m20, float m21, float m22, float m23,
-	float m30, float m31, float m32, float m33)
-{
-	m_[0][0] = m00;
-	m_[0][1] = m01;
-	m_[0][2] = m02;
-	m_[0][3] = m03;
-	m_[1][0] = m10;
-	m_[1][1] = m11;
-	m_[1][2] = m12;
-	m_[1][3] = m13;
-	m_[2][0] = m20;
-	m_[2][1] = m21;
-	m_[2][2] = m22;
-	m_[2][3] = m23;
-	m_[3][0] = m30;
-	m_[3][1] = m31;
-	m_[3][2] = m32;
-	m_[3][3] = m33;
-}
-
-M4::M4(const float(*other)[4])
-{
-	for (int32_t i = 0; i < 4; i++)
-	{
-		for (int32_t j = 0; j < 4; j++)
-		{
-			m_[i][j] = other[i][j];
-		}
-	}
-}
-
-
-//-----------------------------------------------------------
-
-void M4::TransposeM4()
-{
-	M4 M = *this;
-
-	for (int32_t i = 0; i < 4; i++)
-	{
-		for (int32_t j = 0; j < 4; j++)
-		{
-			m_[i][j] = M.m_[j][i];
-		}
-	}
-}
-
-
-//------------------------------------------------------
-
-void M4::SetScaleMatrix(const Vec3& v3)
-{
-	*this = {
-		v3.x_,0,0,0,
-		0,v3.y_,0,0,
-		0,0,v3.z_,0,
-		0,0,0,1
-	};
-}
-
-void M4::SetRotationMatrix(float angle, char axis)
-{
-	if (axis == 'x' || axis == 'X')
-	{
-		*this = {
-			1,0,0,0,
-			0,cosf(angle),sinf(angle),0,
-			0,-sinf(angle),cosf(angle),0,
-			0,0,0,1
-		};
-	}
-
-	if (axis == 'y' || axis == 'Y')
-	{
-		*this = {
-			cosf(angle),0,-sinf(angle),0,
-			0,1,0,0,
-			sinf(angle),0,cosf(angle),0,
-			0,0,0,1
-		};
-	}
-
-	if (axis == 'z' || axis == 'Z')
-	{
-		*this = {
-			cosf(angle),sinf(angle),0,0,
-			-sinf(angle),cosf(angle),0,0,
-			0,0,1,0,
-			0,0,0,1
-		};
-	}
-}
-
-void M4::SetTranslationMatrix(const Vec3& v3)
-{
-	*this = {
-		1,0,0,0,
-		0,1,0,0,
-		0,0,1,0,
-		v3.x_,v3.y_,v3.z_,1
-	};
-}
-
-void M4::SetInverseMatrix()
+void M4::CulcInvMat(M4& mat)
 {
 	double inv[16], det;
 	double m[16];
@@ -130,7 +13,7 @@ void M4::SetInverseMatrix()
 	{
 		for (int32_t j = 0; j < 4; j++)
 		{
-			m[i * 4 + j] = m_[i][j];
+			m[i * 4 + j] = mat.m_[i][j];
 		}
 	}
 
@@ -257,9 +140,140 @@ void M4::SetInverseMatrix()
 	{
 		for (int32_t j = 0; j < 4; j++)
 		{
-			m_[i][j] = inv[i * 4 + j] * det;
+			mat.m_[i][j] = inv[i * 4 + j] * det;
 		}
 	}
+}
+
+M4::M4()
+{
+	for (int32_t i = 0; i < 4; i++)
+	{
+		for (int32_t j = 0; j < 4; j++)
+		{
+			m_[i][j] = 0;
+		}
+	}
+}
+
+M4::M4(float m00, float m01, float m02, float m03,
+	float m10, float m11, float m12, float m13,
+	float m20, float m21, float m22, float m23,
+	float m30, float m31, float m32, float m33)
+{
+	m_[0][0] = m00;
+	m_[0][1] = m01;
+	m_[0][2] = m02;
+	m_[0][3] = m03;
+	m_[1][0] = m10;
+	m_[1][1] = m11;
+	m_[1][2] = m12;
+	m_[1][3] = m13;
+	m_[2][0] = m20;
+	m_[2][1] = m21;
+	m_[2][2] = m22;
+	m_[2][3] = m23;
+	m_[3][0] = m30;
+	m_[3][1] = m31;
+	m_[3][2] = m32;
+	m_[3][3] = m33;
+}
+
+M4::M4(const float(*other)[4])
+{
+	for (int32_t i = 0; i < 4; i++)
+	{
+		for (int32_t j = 0; j < 4; j++)
+		{
+			m_[i][j] = other[i][j];
+		}
+	}
+}
+
+
+//-----------------------------------------------------------
+
+void M4::TransposeM4()
+{
+	M4 M = *this;
+
+	for (int32_t i = 0; i < 4; i++)
+	{
+		for (int32_t j = 0; j < 4; j++)
+		{
+			m_[i][j] = M.m_[j][i];
+		}
+	}
+}
+
+
+//------------------------------------------------------
+
+void M4::SetScaleMatrix(const Vec3& v3)
+{
+	*this = {
+		v3.x_,0,0,0,
+		0,v3.y_,0,0,
+		0,0,v3.z_,0,
+		0,0,0,1
+	};
+}
+
+void M4::SetRotationMatrix(float angle, char axis)
+{
+	if (axis == 'x' || axis == 'X')
+	{
+		*this = {
+			1,0,0,0,
+			0,cosf(angle),sinf(angle),0,
+			0,-sinf(angle),cosf(angle),0,
+			0,0,0,1
+		};
+	}
+
+	if (axis == 'y' || axis == 'Y')
+	{
+		*this = {
+			cosf(angle),0,-sinf(angle),0,
+			0,1,0,0,
+			sinf(angle),0,cosf(angle),0,
+			0,0,0,1
+		};
+	}
+
+	if (axis == 'z' || axis == 'Z')
+	{
+		*this = {
+			cosf(angle),sinf(angle),0,0,
+			-sinf(angle),cosf(angle),0,0,
+			0,0,1,0,
+			0,0,0,1
+		};
+	}
+}
+
+void M4::SetTranslationMatrix(const Vec3& v3)
+{
+	*this = {
+		1,0,0,0,
+		0,1,0,0,
+		0,0,1,0,
+		v3.x_,v3.y_,v3.z_,1
+	};
+}
+
+void M4::SetInverseMatrix()
+{
+	CulcInvMat(*this);
+}
+
+M4 M4::GetInverseMatrix()const
+{
+	M4 mat = *this;
+
+	CulcInvMat(mat);
+
+	return M4(mat);
 }
 
 //M4& M4::operator=(const float (*other)[4])
@@ -312,7 +326,7 @@ M4& M4::operator*=(const M4& other)
 	return *this;
 }
 
-void M4::PutinXMMATRIX(const XMMATRIX& xM)
+void M4::PutInXMMATRIX(const XMMATRIX& xM)
 {
 	*this = {
 		(float)xM.r[0].m128_f32[0],(float)xM.r[0].m128_f32[1],(float)xM.r[0].m128_f32[2],(float)xM.r[0].m128_f32[3],
@@ -320,6 +334,15 @@ void M4::PutinXMMATRIX(const XMMATRIX& xM)
 		(float)xM.r[2].m128_f32[0],(float)xM.r[2].m128_f32[1],(float)xM.r[2].m128_f32[2],(float)xM.r[2].m128_f32[3],
 		(float)xM.r[3].m128_f32[0],(float)xM.r[3].m128_f32[1],(float)xM.r[3].m128_f32[2],(float)xM.r[3].m128_f32[3]
 	};
+}
+
+void M4::MatIntoXMMATRIX(XMMATRIX& xM)const
+{
+	xM = { (float)m_[0][0],(float)m_[0][1],(float)m_[0][2],(float)m_[0][3],
+				 (float)m_[1][0],(float)m_[1][1],(float)m_[1][2],(float)m_[1][3],
+				 (float)m_[2][0],(float)m_[2][1],(float)m_[2][2],(float)m_[2][3],
+				 (float)m_[3][0],(float)m_[3][1],(float)m_[3][2],(float)m_[3][3] };
+
 }
 
 //void M4::Normalize()

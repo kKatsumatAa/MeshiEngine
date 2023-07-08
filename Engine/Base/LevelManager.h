@@ -28,7 +28,7 @@ public:
 	void LoadLevelData(std::string fileName);
 
 	//ファイル名によってクラス生成
-	void LoadCharacter( LevelData::ObjectData& objData);
+	void LoadObj( LevelData::ObjectData& objData);
 
 	//読み込んだものを動かす
 	void Update();

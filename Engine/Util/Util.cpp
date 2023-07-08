@@ -227,7 +227,7 @@ Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 		(float)mVPVp.r[3].m128_f32[0],(float)mVPVp.r[3].m128_f32[1],(float)mVPVp.r[3].m128_f32[2],(float)mVPVp.r[3].m128_f32[3]
 	};*/
 	M4 m4;
-	m4.PutinXMMATRIX(mVPVp);
+	m4.PutInXMMATRIX(mVPVp);
 
 	Vec3xM4andDivisionW(vec3, m4, 1);
 
@@ -254,7 +254,7 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 	XMMATRIX mInverseVPVp = XMMatrixInverse(nullptr, mVPVp);
 	//m4.SetInverseMatrix();
 
-	m4.PutinXMMATRIX(mInverseVPVp);
+	m4.PutInXMMATRIX(mInverseVPVp);
 
 	//スクリーン座標
 	Vec3 posNear = { v.x_,v.y_,0 };
@@ -296,7 +296,7 @@ void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, 
 	XMMATRIX mInverseVPVp = XMMatrixInverse(nullptr, mVPVp);
 	//m4.SetInverseMatrix();
 
-	m4.PutinXMMATRIX(mInverseVPVp);
+	m4.PutInXMMATRIX(mInverseVPVp);
 
 	//スクリーン座標
 	Vec3 posNear = { pos.x_,pos.y_,0 };

@@ -109,7 +109,7 @@ void WorldMat::CulcAllTreeMat()
 	CulcWorldMat();
 
 	//親がいたら
-	if (parent_)
+	if (parent_ != nullptr)
 	{
 		//親の行列も計算(重いかも)
 		SetParentWorld(parent_);
@@ -167,7 +167,7 @@ Quaternion WorldMat::GetQuaternion()
 	return Quaternion(qZ);
 }
 
- Vec3 WorldMat::GetWorldTrans()
+Vec3 WorldMat::GetWorldTrans()
 {
 	CulcAllTreeMat();
 

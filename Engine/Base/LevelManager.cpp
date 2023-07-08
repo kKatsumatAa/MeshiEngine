@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "BulletManager.h"
+#include "TouchableObject.h"
 
 
 LevelManager::~LevelManager()
@@ -51,7 +52,7 @@ void LevelManager::LoadLevelData(std::string fileName)
 	for (auto& objData : JsonLevelLoader::Getinstance().levelData_->objects)
 	{
 		//
-		LoadCharacter(*objData.get());
+		LoadObj(*objData.get());
 	}
 }
 
@@ -130,7 +131,7 @@ bool LevelManager::GetGameClear()
 	return true;
 }
 
-void LevelManager::LoadCharacter(LevelData::ObjectData& objData)
+void LevelManager::LoadObj(LevelData::ObjectData& objData)
 {
 	//武器で親がいたらスキップ(登録済みならworldMatはmove()されてないので)
 	if (objData.fileName == "gun" && !objData.worldMat)
@@ -164,6 +165,12 @@ void LevelManager::LoadCharacter(LevelData::ObjectData& objData)
 		newObj = std::make_unique<Object>();
 		newObj->SetObjName("gun");
 		newObj->SetWorldMat(std::move(objData.worldMat));
+	}
+	//地面だったら
+	else if (objData.fileName == "stage")
+	{
+		newObj = TouchableObject::Create(std::move(objData.worldMat), model);
+		newObj->SetObjName("stage");
 	}
 	//特に当てはまらないとき
 	else

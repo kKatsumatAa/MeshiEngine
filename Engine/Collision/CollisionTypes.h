@@ -13,4 +13,6 @@ enum CollisionShapeType
 	COLLISIONSHAPE_PLANE, // 平面
 
 	COLLISIONSHAPE_TRIANGLE, // 三角形
+
+	COLLISIONSHAPE_MESH,//メッシュ
 };

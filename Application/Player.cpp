@@ -275,4 +275,13 @@ void Player::OnCollision(const CollisionInfo& info)
 			/*CameraManager::GetInstance().GetCamera("playerCamera")->Update();*/
 		}
 	}
+
+	if (info.object_->GetObjName() == "stage")
+	{
+		Vec3 interPos = { info.inter_.m128_f32[0], info.inter_.m128_f32[1], info.inter_.m128_f32[2] };
+		Vec3 distanceVec = GetWorldTrans() - interPos;
+		distanceVec = distanceVec.GetNormalized() * GetScale().x_;
+
+		SetTrans(interPos + distanceVec);
+	}
 }

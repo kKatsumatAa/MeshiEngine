@@ -16,6 +16,11 @@ public:
 	//行列
 	double m_[4][4];
 
+public:
+	static void CulcInvMat(M4& mat);
+
+public:
+
 	//関数
 	M4();
 	M4(float m00, float m01, float m02, float m03,
@@ -26,7 +31,7 @@ public:
 	/*void Normalize();*/
 
 	//自作
-	
+
 	void TransposeM4();
 
 	//行列セット
@@ -36,12 +41,17 @@ public:
 
 	void SetInverseMatrix();
 
+	M4 GetInverseMatrix() const;
+
 	//
 	/*M4& operator=(const float (*other)[4]);*/
 	M4 operator*(const M4& other);
 	M4& operator*=(const M4& other);
 
-	void PutinXMMATRIX(const XMMATRIX& xM);
+	//このマトリックスクラスにXMMATRIXの中身を入れる
+	void PutInXMMATRIX(const XMMATRIX& xM);
+	//M4の中身をXMMATRIXに入れる
+	void MatIntoXMMATRIX(XMMATRIX& xM)const;
 };
 
 const Vec3 operator*(const Vec3& v, const M4& m2);

@@ -74,6 +74,13 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
 	void Draw(uint32_t indexNum = 1);
+
+public:
+	/// <summary>
+	/// メッシュコンテナを取得
+	/// </summary>
+	/// <returns></returns>
+	inline const std::vector<std::unique_ptr<Mesh>>& GetMeshes() { return meshes_; }
 };
 
 

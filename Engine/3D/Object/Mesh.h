@@ -131,6 +131,20 @@ public: // メンバ関数
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 
+public:
+	/// <summary>
+	/// 頂点配列を取得
+	/// </summary>
+	/// <returns></returns>
+	inline const std::vector<VertexPosNormalUvSkin>& GetVertices() { return vertices_; }
+
+	/// <summary>
+	/// インデックス配列を取得
+	/// </summary>
+	/// <returns></returns>
+	inline const std::vector<unsigned short>& GetIndices() { return indices_; }
+
+
 private: // メンバ変数
 	// 名前
 	std::string name_;

@@ -128,6 +128,9 @@ private:
 	//仮
 	Vec3 velocity_ = { 0,0,0 };
 
+	//モデルのポインタ
+	Model* model_ = nullptr;
+
 public://変数
 	bool isWireFrame_ = 0;
 	//画面効果用
@@ -221,6 +224,9 @@ public:
 	const std::string& GetObjName() { return objName_; }
 	//コライダー
 	BaseCollider* GetCollider() { return collider_.get(); }
+
+	//モデルのポインタ
+	void SetModel(Model* model) { model_ = model; }
 
 	//生きてるか
 	inline void SetIsAlive(bool isAlive) { isAlive_ = isAlive; }

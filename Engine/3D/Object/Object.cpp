@@ -180,8 +180,6 @@ void Object::Update()
 
 	sEffectFlags_.rimColor = { sRimColorF3_[0],sRimColorF3_[1],sRimColorF3_[2],0 };
 
-
-
 	//画面効果用
 	{
 		sMapEffectFlagsBuff_->isFog = sEffectFlags_.isFog;
@@ -192,8 +190,8 @@ void Object::Update()
 		sMapEffectFlagsBuff_->time = sEffectFlags_.time;
 	}
 
-	//行列更新
-	worldMat_->CulcWorldMat();
+	//行列更新（ワールド座標系にして当たり判定を行う）
+	worldMat_->CulcAllTreeMat();
 	//当たり判定更新
 	if (collider_.get())
 	{
@@ -203,32 +201,6 @@ void Object::Update()
 
 void Object::StaticUpdate()
 {
-//	sEffectFlags_.time++;
-//
-//#ifdef _DEBUG
-//	//imgui
-//	ImGui::Begin("ObjectEffect");
-//	ImGui::SliderInt("Fog", (int32_t*)&sEffectFlags_.isFog, 0, 1);
-//	ImGui::SliderInt("Toon", (int32_t*)&sEffectFlags_.isToon, 0, 1);
-//	ImGui::SliderInt("RimLight", (int32_t*)&sEffectFlags_.isRimLight, 0, 1);
-//	ImGui::ColorEdit3("RimColor", sRimColorF3_);
-//	ImGui::SliderInt("Silhouette", (int32_t*)&sEffectFlags_.isSilhouette, 0, 1);
-//	ImGui::End();
-//#endif // DEBUG
-//
-//	sEffectFlags_.rimColor = { sRimColorF3_[0],sRimColorF3_[1],sRimColorF3_[2] };
-//
-//
-//
-//	//画面効果用
-//	{
-//		sMapEffectFlagsBuff_->isFog = sEffectFlags_.isFog;
-//		sMapEffectFlagsBuff_->isToon = sEffectFlags_.isToon;
-//		sMapEffectFlagsBuff_->isRimLight = sEffectFlags_.isRimLight;
-//		sMapEffectFlagsBuff_->rimColor = sEffectFlags_.rimColor;
-//		sMapEffectFlagsBuff_->isSilhouette = sEffectFlags_.isSilhouette;
-//		sMapEffectFlagsBuff_->time = sEffectFlags_.time;
-//	}
 }
 
 void Object::SetCollider(std::unique_ptr<BaseCollider> collider)
@@ -348,10 +320,7 @@ void Object::SendingMat(int32_t indexNum, Camera* camera)
 		}
 
 		XMMATRIX matW;
-		matW = { (float)worldMat_->matWorld_.m_[0][0],(float)worldMat_->matWorld_.m_[0][1],(float)worldMat_->matWorld_.m_[0][2],(float)worldMat_->matWorld_.m_[0][3],
-				 (float)worldMat_->matWorld_.m_[1][0],(float)worldMat_->matWorld_.m_[1][1],(float)worldMat_->matWorld_.m_[1][2],(float)worldMat_->matWorld_.m_[1][3],
-				 (float)worldMat_->matWorld_.m_[2][0],(float)worldMat_->matWorld_.m_[2][1],(float)worldMat_->matWorld_.m_[2][2],(float)worldMat_->matWorld_.m_[2][3],
-				 (float)worldMat_->matWorld_.m_[3][0],(float)worldMat_->matWorld_.m_[3][1],(float)worldMat_->matWorld_.m_[3][2],(float)worldMat_->matWorld_.m_[3][3] };
+		worldMat_->matWorld_.MatIntoXMMATRIX(matW);
 
 		cbt_.constMapTransform_->world = matW;
 		cbt_.constMapTransform_->viewproj = lCamera->viewMat_.matView_ * lCamera->projectionMat_.matProjection_;
@@ -694,6 +663,18 @@ void Object::DrawSphere(Camera* camera,
 void Object::DrawModel(Model* model, Camera* camera,
 	const XMFLOAT4& color, int32_t pipelineNum)
 {
+	if (model == nullptr)
+	{
+		if (model_)
+		{
+			model = model_;
+		}
+		else
+		{
+			assert(true);
+		}
+	}
+
 	constMapMaterial_->color = color;
 
 	Update(MODEL, pipelineNum, NULL, cbt_, camera, model);
@@ -863,7 +844,7 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 	{
 		pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;//小さければ合格
 	}
-	else 
+	else
 	{
 		pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
 	}

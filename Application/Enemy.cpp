@@ -124,7 +124,7 @@ void Enemy::Update()
 	Move();
 
 	//武器で攻撃
-	if (weapon_)
+	if (weapon_ != nullptr && weapon_->GetIsAlive())
 	{
 		Vec3 playerPos = CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
 		Vec3 directionV = playerPos - weapon_->GetWorldTrans();
@@ -284,5 +284,14 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		SetVelocity((GetVelocity() + distanceVec.GetNormalized() * addLength * (1.0f - myLengthRatio)) * 0.63f);
 		//衝突後の相手のスピードベクトルは[現在のスピードベクトル]+[このインスタンスから相手へのベクトル]*[このインスタンスの長さの割合]
 		info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * 0.63f);
+	}
+	//ステージと当たったら
+	if (info.object_->GetObjName() == "stage")
+	{
+		Vec3 interPos = { info.inter_.m128_f32[0], info.inter_.m128_f32[1], info.inter_.m128_f32[2] };
+		Vec3 distanceVec = GetWorldTrans() - interPos;
+		distanceVec = distanceVec.GetNormalized() * GetScale().x_;
+
+		SetTrans(interPos + distanceVec);
 	}
 }
