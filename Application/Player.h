@@ -29,7 +29,10 @@ private:
 	bool isTarget_ = false;
 
 	//攻撃が届く距離
-	const float attackLength_ = 20.0f;
+	const float ATTACK_LENGTH_ = 20.0f;
+
+	//
+	const float MOUSE_VELOCITY_TMP_ = 0.5f;
 
 	//手のマネージャークラス
 	std::unique_ptr<PlayerHandManager> handManager_ = nullptr;
@@ -65,7 +68,7 @@ public:
 	bool GetIsAttacking() { return isAttacking_; }
 	bool GetIsCanAttack() { return isTarget_; }
 
-	float GetAttackLength() { return attackLength_; }
+	float GetAttackLength() { return ATTACK_LENGTH_; }
 
 	//手のマネージャー
 	PlayerHandManager* GetHandManager() { return handManager_.get(); }

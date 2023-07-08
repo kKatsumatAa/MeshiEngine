@@ -82,7 +82,7 @@ void Player::DirectionUpdate()
 	Camera* camera = CameraManager::GetInstance().GetCamera("playerCamera");
 
 	//マウスの動きでカメラ角度変更
-	Vec2 vel = MouseInput::GetInstance().GetCursorVelocity();
+	Vec2 vel = MouseInput::GetInstance().GetCursorVelocity() * MOUSE_VELOCITY_TMP_;
 
 	//マウスの動きでゲームスピードを足す
 	GameVelocityManager::GetInstance().AddGameVelocity(vel.GetLength(), "mouse");
