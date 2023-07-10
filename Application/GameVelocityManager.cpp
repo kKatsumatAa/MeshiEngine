@@ -26,12 +26,10 @@ void GameVelocityManager::AddGameVelocity(float velocity, std::string velName)
 	{
 		velocity = (GAME_VELOCITY_MAX_ / 7.0f - gameVelocity_) * 0.1f;
 	}
-	else
-	{
-		velocity *= 3.0f;
-	}
+
 	gameVelocity_ += velocity;
-	gameVelocity_ = min(GAME_VELOCITY_MAX_, gameVelocity_);
+	gameVelocity_ = min(gameVelocity_, GAME_VELOCITY_MAX_);
+	gameVelocity_ = max(gameVelocity_,GAME_VELOCITY_MIN_);
 }
 
 float GameVelocityManager::GetVelocity()

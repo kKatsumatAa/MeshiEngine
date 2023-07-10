@@ -28,6 +28,8 @@ private:
 
 	const int8_t HP_TMP_ = 3;
 
+	const float KNOCK_BACK_POW_ = 0.23f;
+
 public:
 	/// <summary>
 	/// オブジェクト生成

@@ -102,6 +102,9 @@ void Enemy::Move()
 	//位置セット
 	SetTrans(GetTrans() + velocity_);
 
+	//地面との判定
+	GroundUpdate(GetScale().y_, GameVelocityManager::GetInstance().GetVelocity());
+
 	////プレイヤーの方を向かせる
 	//directionRotTime += GameVelocityManager::GetInstance().GetVelocity();
 	//if (directionRotTime > DIRCTION_ROT_TIME_) { directionRotTime = 0; }
@@ -157,7 +160,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	velocity_.y_ = 0;
 	distanceVec.Normalized();
 	//ノックバック
-	velocity_ += distanceVec * length * 0.23f;
+	velocity_ += distanceVec * length * KNOCK_BACK_POW_;
 	SetVelocity(velocity_);
 	//ダメージを受けるクールタイム
 	damageCoolTime = 20;

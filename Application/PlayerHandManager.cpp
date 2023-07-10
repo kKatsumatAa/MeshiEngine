@@ -15,7 +15,7 @@ void PlayerHandManager::Initialize(Player* player)
 
 	//位置(ローカル座標をセット)
 	Vec3 playerPos = player->GetTrans();
-	Vec3 distance = player->GetScale();
+	Vec3 distance = {1.0f,1.0f,1.0f};
 	//生成（仮）
 	handL_ = PlayerHand::Create(player, { -distance.x_ * 2.0f,0 - distance.y_,-distance.z_ });
 	handR_ = PlayerHand::Create(player, { +distance.x_ * 2.0f,0 - distance.y_,-distance.z_ });
@@ -67,7 +67,7 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 		hand->GetAttackState()->SetEnemyDamageFunc(f);
 
 		//ゲームのスピード(仮)
-		GameVelocityManager::GetInstance().AddGameVelocity(0.5f);
+		GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
 	}
 }
 

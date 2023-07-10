@@ -92,7 +92,7 @@ void Player::DirectionUpdate()
 	Vec2 vel = MouseInput::GetInstance().GetCursorVelocity() * MOUSE_VELOCITY_TMP_;
 
 	//マウスの動きでゲームスピードを足す
-	GameVelocityManager::GetInstance().AddGameVelocity(vel.GetLength(), "mouse");
+	GameVelocityManager::GetInstance().AddGameVelocity(vel.GetLength() * 2.0f, "mouse");
 
 	//回転
 	Vec3 rotMove = {
@@ -163,11 +163,24 @@ void Player::Move()
 		velocity_ += { rightVec_.x_, 0, rightVec_.z_ };
 	}
 
-	//ゲームスピードを移動で足す
-	GameVelocityManager::GetInstance().AddGameVelocity(velocity_.GetLength() * 10.0f);
+	//ゲームスピードを移動で足す(ジャンプ中でスペース押してなければ)
+	if (!(!isOnGround_ && KeyboardInput::GetInstance().KeyPush(DIK_SPACE)))
+	{
+		GameVelocityManager::GetInstance().AddGameVelocity(velocity_.GetLength() * 10.0f);
+	}
+
+	//ジャンプ中でスペース押しっぱなしだったら
+	if (!isOnGround_ && KeyboardInput::GetInstance().KeyPush(DIK_SPACE))
+	{
+		GameVelocityManager::GetInstance().AddGameVelocity(-0.03f);
+	}
 
 	//位置セット(ゲームスピードをかける)
 	SetTrans(GetTrans() + velocity_ * VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity());
+
+	//地面との判定
+	std::function<void()>gameSpeedAddFunc = [=]() {GameVelocityManager::GetInstance().AddGameVelocity(1.0f); };
+	GroundUpdate(4.0f, GameVelocityManager::GetInstance().GetVelocity(), KeyboardInput::GetInstance().KeyPush(DIK_SPACE), gameSpeedAddFunc);
 
 	//カメラをプレイヤーと同じ位置に
 	camera->SetEye(GetTrans());

@@ -30,7 +30,7 @@ void PlayerState::ThrowGun()
 	player_->FallWeapon(player_->GetFrontVec() * 5.0f);
 
 	//ゲームスピード加算
-	GameVelocityManager::GetInstance().AddGameVelocity(0.4f);
+	GameVelocityManager::GetInstance().AddGameVelocity(0.9f);
 
 	//ステート変更(素手)
 	player_->ChangePlayerState(std::make_unique<PlayerStateBareHands>());

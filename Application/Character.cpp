@@ -28,23 +28,77 @@ void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 	SetWeapon(nullptr);
 }
 
-//void Character::GroundCollision()
-//{
-//	SetVelocity({ GetVelocity().x_,max(GetVelocity().y_ + 0.001f,-0.5f), GetVelocity().z_ });
-//
-//	Ray ray;
-//	ray.start = { GetWorldTrans().x_,GetWorldTrans().y_,GetWorldTrans().z_ };
-//	ray.dir = { 0,-1.0f,0 };
-//	RaycastHit info;
-//	bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, "player", &info);
-//
-//	if (isRayHit && info.object->GetObjName() == "stage")
-//	{
-//
-//	}
-//
-//	if (isOnGround)
-//	{
-//
-//	}
-//}
+void Character::GroundUpdate(float LengthY, float velocityYPow, bool isJump, std::function<void()>f)
+{
+	//落下処理
+	if (!isOnGround_)
+	{
+		//加速
+		fallVec_.y_ = max((fallVec_.y_ + FALL_ACC_ * velocityYPow) , FALL_V_Y_MIN_);
+		//移動
+		SetTrans(GetTrans() + fallVec_ * velocityYPow);
+		//ジャンプの条件トリガー満たしてなかったら
+		if (f && !isJump)
+		{
+			f();
+		}
+	}
+	//ジャンプ操作
+	else if (isJump)
+	{
+		isOnGround_ = false;
+		fallVec_ = { 0,JUMP_V_Y_FIST_,0 };
+		//関数の処理実行
+		if (f)
+		{
+			f();
+		}
+	}
+
+	Object::Update();
+
+	//上端から下端までのレイキャスト用レイを準備(当たり判定は親子関係も考慮)
+	Ray ray;
+	ray.start = { GetWorldTrans().x_,GetWorldTrans().y_, GetWorldTrans().z_ };
+	//上端
+	ray.start.m128_f32[1] += LengthY;
+	ray.dir = { 0,-1.0f,0 };
+	RaycastHit info;
+
+	//接地状態
+	if (isOnGround_)
+	{
+		//スムーズに坂を下るための吸着処理(少し長めにすることで)
+		const float adsDistance = LengthY * 0.2f;
+		//接地を維持
+		if (CollisionManager::GetInstance()->Raycast(
+			ray, COLLISION_ATTR_LANDSHAPE, &info, LengthY * 2.0f + adsDistance))
+		{
+			isOnGround_ = true;
+			//めり込み分上に
+			SetTrans(GetTrans() - Vec3(0, info.distance - LengthY * 2.0f, 0));
+			//
+			Object::Update();
+		}
+		//地面がないので落下
+		else
+		{
+			isOnGround_ = false;
+			//初速を0
+			fallVec_ = {};
+		}
+	}
+	//落下状態
+	else if (fallVec_.y_ <= 0.0f)
+	{
+		if (CollisionManager::GetInstance()->Raycast(
+			ray, COLLISION_ATTR_LANDSHAPE, &info, LengthY * 2.0f))
+		{
+			//着地
+			isOnGround_ = true;
+			SetTrans(GetTrans() - Vec3(0, info.distance - LengthY * 2.0f, 0));
+			Object::Update();
+		}
+	}
+
+}
