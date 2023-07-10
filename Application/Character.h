@@ -23,6 +23,9 @@ protected:
 
 	const float JUMP_V_Y_FIST_ = 0.7f;//ジャンプ時上向き初速
 
+	//壁と認識する角度
+	static const float IS_WALL_ROT_;
+
 protected:
 
 public:
@@ -35,6 +38,9 @@ public:
 	//武器落とす、投げる
 	void FallWeapon(const Vec3& directionVec, Vec3* localPos = nullptr);
 
-	//地面との判定
-	void GroundUpdate(float LengthY, float velocityYPow, bool isJump = false, std::function<void()>f = nullptr);
+	//地面と壁との判定
+	void OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool isJump = false, std::function<void()>f = nullptr);
+
+	//クエリコールバック
+	void QueryCallBackUpdate();
 };

@@ -132,12 +132,6 @@ void Player::DirectionUpdate()
 
 void Player::Move()
 {
-	/*if (isCannotMove)
-	{
-		isCannotMove = false;
-		return;
-	}*/
-
 	//キー入力
 	KeyboardInput* input = &KeyboardInput::GetInstance();
 
@@ -180,7 +174,10 @@ void Player::Move()
 
 	//地面との判定
 	std::function<void()>gameSpeedAddFunc = [=]() {GameVelocityManager::GetInstance().AddGameVelocity(1.0f); };
-	GroundUpdate(4.0f, GameVelocityManager::GetInstance().GetVelocity(), KeyboardInput::GetInstance().KeyPush(DIK_SPACE), gameSpeedAddFunc);
+	OnGroundAndWallUpdate(4.0f, GameVelocityManager::GetInstance().GetVelocity(), KeyboardInput::GetInstance().KeyPush(DIK_SPACE), gameSpeedAddFunc);
+
+	//コライダー更新
+	Object::WorldMatColliderUpdate();
 
 	//カメラをプレイヤーと同じ位置に
 	camera->SetEye(GetTrans());
@@ -258,11 +255,6 @@ void Player::Draw()
 
 void Player::OnCollision(const CollisionInfo& info)
 {
-	//敵と当たったら
-	if (info.object_->GetObjName() == "enemy")
-	{
-
-	}
 	//弾に当たったらダメージ
 	if (info.object_->GetObjName() == "bullet")
 	{
@@ -294,20 +286,12 @@ void Player::OnCollision(const CollisionInfo& info)
 			SetIsUseQuaternionMatRot(true);
 			SetMatRot(q.MakeRotateMatrix());
 
-			Object::Update();
+			//行列更新
+			Object::WorldMatColliderUpdate();
 
 			//カメラの注視点に回転したベクトルセット
 			CameraManager::GetInstance().GetCamera("playerCamera")->SetTarget(GetTrans() + fVTmp.GetNormalized());
 			/*CameraManager::GetInstance().GetCamera("playerCamera")->Update();*/
 		}
-	}
-	//仮（うまくいってない）
-	if (info.object_->GetObjName() == "stage")
-	{
-		Vec3 interPos = { info.inter_.m128_f32[0], info.inter_.m128_f32[1], info.inter_.m128_f32[2] };
-		Vec3 distanceVec = GetWorldTrans() - interPos;
-		distanceVec = distanceVec.GetNormalized() * GetScale().x_;
-
-		SetTrans(interPos + distanceVec * 1.01f);
 	}
 }

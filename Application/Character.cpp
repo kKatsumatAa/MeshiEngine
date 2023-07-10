@@ -1,5 +1,10 @@
 #include "Character.h"
 
+using namespace DirectX;
+
+
+const float Character::IS_WALL_ROT_ = 30.0f;
+
 void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 {
 	SetWeapon(weapon);
@@ -28,13 +33,13 @@ void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 	SetWeapon(nullptr);
 }
 
-void Character::GroundUpdate(float LengthY, float velocityYPow, bool isJump, std::function<void()>f)
+void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool isJump, std::function<void()>f)
 {
 	//落下処理
 	if (!isOnGround_)
 	{
 		//加速
-		fallVec_.y_ = max((fallVec_.y_ + FALL_ACC_ * velocityYPow) , FALL_V_Y_MIN_);
+		fallVec_.y_ = max((fallVec_.y_ + FALL_ACC_ * velocityYPow), FALL_V_Y_MIN_);
 		//移動
 		SetTrans(GetTrans() + fallVec_ * velocityYPow);
 		//ジャンプの条件トリガー満たしてなかったら
@@ -54,8 +59,11 @@ void Character::GroundUpdate(float LengthY, float velocityYPow, bool isJump, std
 			f();
 		}
 	}
+	//行列更新
+	Object::WorldMatColliderUpdate();
 
-	Object::Update();
+	//壁との当たり判定
+	QueryCallBackUpdate();
 
 	//上端から下端までのレイキャスト用レイを準備(当たり判定は親子関係も考慮)
 	Ray ray;
@@ -77,8 +85,8 @@ void Character::GroundUpdate(float LengthY, float velocityYPow, bool isJump, std
 			isOnGround_ = true;
 			//めり込み分上に
 			SetTrans(GetTrans() - Vec3(0, info.distance - LengthY * 2.0f, 0));
-			//
-			Object::Update();
+			//行列更新
+			Object::WorldMatColliderUpdate();
 		}
 		//地面がないので落下
 		else
@@ -97,8 +105,56 @@ void Character::GroundUpdate(float LengthY, float velocityYPow, bool isJump, std
 			//着地
 			isOnGround_ = true;
 			SetTrans(GetTrans() - Vec3(0, info.distance - LengthY * 2.0f, 0));
-			Object::Update();
+			Object::WorldMatColliderUpdate();
 		}
 	}
 
+}
+
+void Character::QueryCallBackUpdate()
+{
+	//球コライダー取得
+	SphereCollider* sphereColl = dynamic_cast<SphereCollider*>(GetCollider());
+
+	//クエリーコールバッククラス
+	class CharacterQueryCallBack :public QueryCallback
+	{
+	public:
+		CharacterQueryCallBack(Sphere* sphere) : sphere(sphere) {};
+
+		// 衝突時コールバック関数
+		bool OnQueryHit(const QueryHit& info)
+		{
+			//上方向
+			const XMVECTOR up = { 0,1.0f,0,0 };
+			//排斥方向
+			XMVECTOR rejectDir = XMVector3Normalize(info.reject);
+			//上方向と排斥方向の角度差のコサイン値
+			float cos = XMVector3Dot(rejectDir, up).m128_f32[0];
+
+			// 地面判定しきい値角度
+			const float threshold = cosf(XMConvertToRadians(IS_WALL_ROT_));
+			//角度差によって天井または地面と判定される場合を除いて
+			if (-threshold < cos && cos < threshold) {
+				sphere->center += info.reject;
+				move += info.reject;
+			}
+
+			return true;
+		}
+
+		Sphere* sphere = nullptr;
+		DirectX::XMVECTOR move = {};
+	};
+
+	//クエリーコールバックの関数オブジェクト
+	CharacterQueryCallBack callback(sphereColl);
+
+	// 球と地形の交差を全検索
+	CollisionManager::GetInstance()->QuerySphere(*sphereColl, &callback, COLLISION_ATTR_LANDSHAPE);
+	// 交差による排斥分動かす
+	SetTrans(GetTrans()
+		+ Vec3(callback.move.m128_f32[0], callback.move.m128_f32[1], callback.move.m128_f32[2]));
+	// ワールド行列更新
+	Object::WorldMatColliderUpdate();
 }

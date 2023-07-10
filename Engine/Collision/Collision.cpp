@@ -2,22 +2,29 @@
 #include "Vec3.h"
 using namespace DirectX;
 
-bool Collision::CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2, DirectX::XMVECTOR* inter)
+bool Collision::CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2, DirectX::XMVECTOR* inter,
+	DirectX::XMVECTOR* reject)
 {
 	XMVECTOR length = sphere.center - sphere2.center;
 	Vec3 vec = { length.m128_f32[0],length.m128_f32[1],length.m128_f32[2] };
 
-	XMVECTOR Vec = sphere2.center - sphere.center;
-	Vec3 v = { Vec.m128_f32[0],Vec.m128_f32[1], Vec.m128_f32[2] };
-	v.Normalized();
-	v *= sphere.radius;
 	if (inter)
 	{
-		*inter = sphere.center + XMVECTOR{ v.x_, v.y_, v.z_ };
+		// Aの半径が0の時座標はBの中心　Bの半径が0の時座標はAの中心　となるよう補完
+		float t = sphere2.radius / (sphere.radius + sphere2.radius);
+		*inter = XMVectorLerp(sphere.center, sphere2.center, t);
 	}
 
 	if (vec.GetLength() <= sphere.radius + sphere2.radius)
 	{
+		//押し出すベクトルを計算
+		if (reject)
+		{
+			float rejectLen = sphere.radius + sphere2.radius - sqrtf(vec.GetLength());
+			*reject = XMVector3Normalize(sphere.center - sphere2.center);
+			*reject *= rejectLen;
+		}
+
 		return true;
 	}
 
@@ -117,7 +124,8 @@ void Collision::ClosestPtPoint2Triangle(const DirectX::XMVECTOR& point, const Tr
 	*closest = triangle.p0 + p0_p1 * v + p0_p2 * w;
 }
 
-bool Collision::CheckSphere2Triangle(const Sphere& sphere, const Triangle& triangle, DirectX::XMVECTOR* inter)
+bool Collision::CheckSphere2Triangle(const Sphere& sphere, const Triangle& triangle,
+	DirectX::XMVECTOR* inter, DirectX::XMVECTOR* reject)
 {
 	XMVECTOR p;
 	//弾の中心に対する最近接点である三角形上にある点pを見つける
@@ -128,12 +136,24 @@ bool Collision::CheckSphere2Triangle(const Sphere& sphere, const Triangle& trian
 	//（同じベクトル同士の内積は三平方の定理のルート内部の式と一致する）
 	v = XMVector3Dot(v, v);
 	//球と三角形の距離が半径以下なら当たっていない
-	if (v.m128_f32[0] > sphere.radius * sphere.radius)return false;
+	if (v.m128_f32[0] > sphere.radius * sphere.radius)
+	{
+		return false;
+	}
 	//疑似交点を計算
 	if (inter)
 	{
 		//三角形上の最近接点pを疑似交点とする
 		*inter = p;
+	}
+	//押し出すベクトルを計算
+	if (reject)
+	{
+		float ds = XMVector3Dot(sphere.center, triangle.normal).m128_f32[0];
+		float dt = XMVector3Dot(triangle.p0,triangle.normal).m128_f32[0];
+		//球の半径-球と三角形の距離
+		float recectLen = dt - ds + sphere.radius;
+		*reject = triangle.normal * recectLen;
 	}
 
 	return true;

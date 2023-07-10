@@ -238,6 +238,7 @@
     <ClInclude Include="Engine\Collision\CollisionTypes.h" />
     <ClInclude Include="Engine\Collision\MeshCollider.h" />
     <ClInclude Include="Engine\Collision\PlaneCollider.h" />
+    <ClInclude Include="Engine\Collision\QueryCallback.h" />
     <ClInclude Include="Engine\Collision\RaycastHit.h" />
     <ClInclude Include="Engine\Collision\SphereCollider.h" />
     <ClInclude Include="Engine\Collision\TriangleCollider.h" />

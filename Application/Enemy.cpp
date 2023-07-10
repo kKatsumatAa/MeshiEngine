@@ -102,13 +102,9 @@ void Enemy::Move()
 	//位置セット
 	SetTrans(GetTrans() + velocity_);
 
-	//地面との判定
-	GroundUpdate(GetScale().y_, GameVelocityManager::GetInstance().GetVelocity());
+	//地面と壁との判定
+	OnGroundAndWallUpdate(GetScale().y_, GameVelocityManager::GetInstance().GetVelocity());
 
-	////プレイヤーの方を向かせる
-	//directionRotTime += GameVelocityManager::GetInstance().GetVelocity();
-	//if (directionRotTime > DIRCTION_ROT_TIME_) { directionRotTime = 0; }
-	//float t = directionRotTime / DIRCTION_ROT_TIME_;
 
 	//敵からプレイヤーへのベクトル
 	directionVec = playerPos - GetTrans();
@@ -294,14 +290,5 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		SetVelocity((GetVelocity() + distanceVec.GetNormalized() * addLength * (1.0f - myLengthRatio)) * 0.63f);
 		//衝突後の相手のスピードベクトルは[現在のスピードベクトル]+[このインスタンスから相手へのベクトル]*[このインスタンスの長さの割合]
 		info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * 0.63f);
-	}
-	//ステージと当たったら
-	if (info.object_->GetObjName() == "stage")
-	{
-		Vec3 interPos = { info.inter_.m128_f32[0], info.inter_.m128_f32[1], info.inter_.m128_f32[2] };
-		Vec3 distanceVec = GetWorldTrans() - interPos;
-		distanceVec = distanceVec.GetNormalized() * GetScale().x_;
-
-		SetTrans(interPos + distanceVec);
 	}
 }

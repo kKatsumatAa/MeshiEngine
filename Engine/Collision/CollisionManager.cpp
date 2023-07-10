@@ -129,6 +129,71 @@ bool CollisionManager::Raycast(const Ray& ray, uint16_t attribute, RaycastHit* h
 	return result;
 }
 
+void CollisionManager::QuerySphere(const Sphere& sphere, QueryCallback* callBack, uint16_t attribute)
+{
+	assert(callBack);
+
+	std::forward_list<BaseCollider*>::iterator it;
+
+	//全てのコライダーと総当たりチェック
+	it = colliders_.begin();
+	for (; it != colliders_.end(); ++it)
+	{
+		BaseCollider* col = *it;
+
+		//属性が合わなければスキップ
+		if (!(col->attribute_ & attribute))
+		{
+			continue;
+		}
+
+		// 球
+		if (col->GetShapeType() == COLLISIONSHAPE_SPHERE) {
+			Sphere* sphereB = dynamic_cast<Sphere*>(col);
+
+			XMVECTOR tempInter;
+			XMVECTOR tempReject;
+			//当たってなかったら
+			if (!Collision::CheckSphere2Sphere(sphere, *sphereB, &tempInter, &tempReject)) { continue; }
+
+			// 交差情報をセット
+			QueryHit info;
+			info.collider = col;
+			info.object = col->GetObject3d();
+			info.inter = tempInter;
+			info.reject = tempReject;
+
+			// クエリーコールバック呼び出し
+			if (!callBack->OnQueryHit(info)) {
+				// 戻り値がfalseの場合、継続せず終了
+				return;
+			}
+		}
+		// メッシュ
+		else if (col->GetShapeType() == COLLISIONSHAPE_MESH) {
+			MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(col);
+
+			XMVECTOR tempInter;
+			XMVECTOR tempReject;
+			//当たってなかったら
+			if (!meshCollider->CheckCollisionSphere(sphere, &tempInter, &tempReject)) { continue; }
+
+			// 交差情報をセット
+			QueryHit info;
+			info.collider = col;
+			info.object = col->GetObject3d();
+			info.inter = tempInter;
+			info.reject = tempReject;
+
+			// クエリーコールバック呼び出し
+			if (!callBack->OnQueryHit(info)) {
+				// 戻り値がfalseの場合、継続せず終了
+				return;
+			}
+		}
+	}
+}
+
 void CollisionManager::CheckAllCollisions()
 {
 	std::forward_list<BaseCollider*>::iterator itA;

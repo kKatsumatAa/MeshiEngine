@@ -13,7 +13,8 @@ public:
 	/// <param name="sphere"></param>
 	/// <param name="sphere"></param>
 	/// <returns></returns>
-	static bool CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2, DirectX::XMVECTOR* inter);
+	static bool CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2, DirectX::XMVECTOR* inter
+		, DirectX::XMVECTOR* reject = nullptr);
 	/// <summary>
 	/// ‹…‚Æ•½–Ê‚Ì“–‚½‚è”»’è
 	/// </summary>
@@ -41,7 +42,7 @@ public:
 	/// <param name="inter"></param>
 	/// <returns></returns>
 	static bool CheckSphere2Triangle(const Sphere& sphere, const Triangle& triangle,
-		DirectX::XMVECTOR* inter = nullptr);
+		DirectX::XMVECTOR* inter = nullptr, DirectX::XMVECTOR* reject = nullptr);
 
 	/// <summary>
 	/// ƒŒƒC‚Æ•½–Ê‚Ì“–‚½‚è”»’è

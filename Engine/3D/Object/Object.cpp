@@ -165,6 +165,13 @@ void Object::CulcFrontVec()
 
 void Object::Update()
 {
+	EffectUpdate();
+
+	WorldMatColliderUpdate();
+}
+
+void Object::EffectUpdate()
+{
 	sEffectFlags_.time++;
 
 #ifdef _DEBUG
@@ -189,7 +196,10 @@ void Object::Update()
 		sMapEffectFlagsBuff_->isSilhouette = sEffectFlags_.isSilhouette;
 		sMapEffectFlagsBuff_->time = sEffectFlags_.time;
 	}
+}
 
+void Object::WorldMatColliderUpdate()
+{
 	//行列更新（ワールド座標系にして当たり判定を行う）
 	worldMat_->CulcAllTreeMat();
 	//当たり判定更新
@@ -209,8 +219,8 @@ void Object::SetCollider(std::unique_ptr<BaseCollider> collider)
 	collider_ = std::move(collider);
 	//コリジョンマネージャーに登録
 	CollisionManager::GetInstance()->AddCollider(collider_.get());
-	//コライダーを更新
-	collider_->Update();
+	//行列,コライダーの更新
+	Object::WorldMatColliderUpdate();
 }
 
 void Object::SetIsValid(bool isValid)

@@ -20,7 +20,7 @@ bool PlayerState::CheckEyeRayHit()
 	if (isRayHit)
 	{
 		info_.object->SetIsSilhouette(true);
-		info_.object->Update();
+		info_.object->EffectUpdate();
 	}
 	return isRayHit;
 }

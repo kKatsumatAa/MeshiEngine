@@ -65,7 +65,8 @@ void MeshCollider::Update()
 	invMatWorld_ = XMMatrixInverse(nullptr, m);
 }
 
-bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR* inter)
+bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR* inter,
+	DirectX::XMVECTOR* reject)
 {
 	// オブジェクトのローカル座標系（このオブジェクトを中心とした座標系？）
 	//での球を得る（半径はXスケールを参照)
@@ -80,12 +81,20 @@ bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR*
 		const Triangle& triangle = *it;
 
 		//球と三角形の当たり判定
-		if (Collision::CheckSphere2Triangle(localSphere, triangle, inter)) {
+		if (Collision::CheckSphere2Triangle(localSphere, triangle, inter, reject)) {
 			if (inter) {
 				XMMATRIX matWorld;
 				GetObject3d()->GetMatWorld().MatIntoXMMATRIX(matWorld);
 				//ワールド座標で(逆行列でローカルにしたのを戻す?)
 				*inter = XMVector3Transform(*inter, matWorld);
+			}
+			if (reject)
+			{
+				//排斥
+				XMMATRIX matWorld;
+				GetObject3d()->GetMatWorld().MatIntoXMMATRIX(matWorld);
+				//ワールド座標系での排斥ベクトルに変換(法線を変換)
+				*reject = XMVector3TransformNormal(*reject, matWorld);
 			}
 			return true;
 		}

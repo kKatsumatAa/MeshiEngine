@@ -3,6 +3,7 @@
 #include<forward_list>
 #include"CollisionPrimitive.h"
 #include"RaycastHit.h"
+#include"QueryCallback.h"
 
 #include<d3d12.h>
 
@@ -67,6 +68,14 @@ public://ŠÖ”
 	/// <param name="maxDistance">Å‘å‹——£</param>
 	/// <returns></returns>
 	bool Raycast(const Ray& ray, uint16_t attribute, RaycastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
+
+	/// <summary>
+	/// ‹…‚É‚æ‚éÕ“Ë‘SŒŸõ
+	/// </summary>
+	/// <param name="sphere"></param>
+	/// <param name="callBack"></param>
+	/// <param name="attribute"></param>
+	void QuerySphere(const Sphere& sphere, QueryCallback* callBack, uint16_t attribute = (uint16_t)0xffffffff);
 
 	void CheckAllCollisions();
 

@@ -253,6 +253,10 @@ public:
 	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr);
 
 	virtual void Update();
+	//演出系のアップデート
+	void EffectUpdate();
+	//行列を更新、それに伴いコライダーも
+	void WorldMatColliderUpdate();
 
 	static void StaticUpdate();
 
