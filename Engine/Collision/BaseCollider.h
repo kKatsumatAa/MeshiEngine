@@ -10,6 +10,9 @@
 class BaseCollider
 {
 public:
+	friend class CollisionManager;
+
+public:
 	BaseCollider() = default;
 	virtual ~BaseCollider() = default;
 
@@ -44,6 +47,16 @@ public:
 		object_->OnCollision(info);
 	}
 
+	//判定属性セット
+	inline void SetAttribute(uint16_t attribute) { attribute_ = attribute; }
+	//当たり判定の属性を増やす
+	inline void AttAttribute(uint16_t attribute) { attribute_ |= attribute; }
+	//
+	inline void RemoveAttribute(uint16_t attribute) { attribute_ &= attribute; }
+	//
+	inline uint16_t GetAttribute() { return attribute_; }
+
+
 protected:
 	//持ち主のObjectのポインタを入れる
 	Object* object_ = nullptr;
@@ -53,5 +66,7 @@ protected:
 	bool isValid_ = true;
 	//スプライト用の二次元かどうかフラグ
 	bool is2D_ = false;
+	//当たり判定属性
+	uint16_t attribute_ = 0b111111111111111;
 };
 

@@ -42,8 +42,15 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	//”¼Œa•ª‚¾‚¯‘«Œ³‚©‚ç•‚‚¢‚½À•W‚ğ‹…‚Ì’†S‚É‚·‚é
 
 	SetCollider(std::make_unique<SphereCollider>());
+	//”»’è‘®«
+	GetCollider()->SetAttribute(COLLISION_ATTR_ENEMYS);
 
-	weapon_ = weapon;
+	if (weapon)
+	{
+		weapon_ = weapon;
+		//•Ší‚ğ”Xİ’è
+		PickUpWeapon(weapon_);
+	}
 
 	hp_ = HP_TMP_;
 

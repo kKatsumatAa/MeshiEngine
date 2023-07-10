@@ -12,7 +12,13 @@ CollisionManager* CollisionManager::GetInstance()
 	return &sInstance;
 }
 
-bool CollisionManager::Raycast(const Ray& ray, std::string notTargetName, RaycastHit* hitInfo, float maxDistance)
+bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDistance)
+{
+	//全属性を有効にして
+	return Raycast(ray, 0xffff, hitInfo, maxDistance);
+}
+
+bool CollisionManager::Raycast(const Ray& ray, uint16_t attribute, RaycastHit* hitInfo, float maxDistance)
 {
 	bool result = false;
 	//走査用のイテレータ
@@ -28,8 +34,15 @@ bool CollisionManager::Raycast(const Ray& ray, std::string notTargetName, Raycas
 	it = colliders_.begin();
 	for (; it != colliders_.end(); ++it) {
 		BaseCollider* colA = *it;
+
+		//属性が合わなければスキップする
+		if (!(colA->attribute_ & attribute))
+		{
+			continue;
+		}
+
 		//球の場合
-		if (colA->GetShapeType() == COLLISIONSHAPE_SPHERE && colA->GetIsValid() && !colA->GetIs2D() && colA->GetObject3d()->GetObjName() != notTargetName) {
+		if (colA->GetShapeType() == COLLISIONSHAPE_SPHERE && colA->GetIsValid() && !colA->GetIs2D()) {
 			Sphere* sphere = dynamic_cast<Sphere*>(colA);
 
 			float tempDistance;
@@ -48,7 +61,7 @@ bool CollisionManager::Raycast(const Ray& ray, std::string notTargetName, Raycas
 		}
 
 		//面の場合
-		if (colA->GetShapeType() == COLLISIONSHAPE_PLANE && colA->GetIsValid() && !colA->GetIs2D() && colA->GetObject3d()->GetObjName() != notTargetName) {
+		if (colA->GetShapeType() == COLLISIONSHAPE_PLANE && colA->GetIsValid() && !colA->GetIs2D()) {
 			Plane* plane = dynamic_cast<Plane*>(colA);
 
 			float tempDistance;
@@ -67,7 +80,7 @@ bool CollisionManager::Raycast(const Ray& ray, std::string notTargetName, Raycas
 		}
 
 		//三角の場合
-		if (colA->GetShapeType() == COLLISIONSHAPE_TRIANGLE && colA->GetIsValid() && !colA->GetIs2D() && colA->GetObject3d()->GetObjName() != notTargetName) {
+		if (colA->GetShapeType() == COLLISIONSHAPE_TRIANGLE && colA->GetIsValid() && !colA->GetIs2D()) {
 			Triangle* triangle = dynamic_cast<Triangle*>(colA);
 
 			float tempDistance;
@@ -86,7 +99,7 @@ bool CollisionManager::Raycast(const Ray& ray, std::string notTargetName, Raycas
 		}
 
 		//メッシュコライダーの場合
-		if (colA->GetShapeType() == COLLISIONSHAPE_MESH && colA->GetIsValid() && !colA->GetIs2D() && colA->GetObject3d()->GetObjName() != notTargetName) {
+		if (colA->GetShapeType() == COLLISIONSHAPE_MESH && colA->GetIsValid() && !colA->GetIs2D()) {
 			MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(colA);
 
 			float tempDistance;

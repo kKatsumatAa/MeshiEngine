@@ -23,6 +23,8 @@ private:
 	Vec3 upVec_ = { 0,1.0f,0 };
 	Vec3 rightVec_ = { 0,0,0 };
 
+	bool isCannotMove = false;
+
 	//UŒ‚’†‚©
 	bool isAttacking_ = false;
 	//UŒ‚‰Â”\‚©

@@ -44,7 +44,7 @@ public:
 	void Attack(const Vec3& directionVec, int32_t decreBullet = 1, Object* owner = nullptr) override;
 
 	//‚¿å•ÏX
-	void ChangeOwner(WorldMat* parent) override;
+	void ChangeOwner(Object* parent) override;
 
 	//
 	int32_t GetBulletNum() { return remainingBullets_; }

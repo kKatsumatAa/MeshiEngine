@@ -1,6 +1,7 @@
 #pragma once
 #include"Object.h"
 #include"Weapon.h"
+#include"CollisionManager.h"
 
 
 class Character : public Object
@@ -10,6 +11,9 @@ protected:
 	Weapon* weapon_ = nullptr;
 	//hp
 	int8_t hp_ = 0;
+
+	bool isOnGround = false;
+	bool isOldOnGround = false;
 
 protected:
 
@@ -22,4 +26,7 @@ public:
 	void PickUpWeapon(Weapon* weapon, Vec3* localPos = nullptr);
 	//•Ší—‚Æ‚·A“Š‚°‚é
 	void FallWeapon(const Vec3& directionVec, Vec3* localPos = nullptr);
+
+	//’n–Ê‚Æ‚Ì”»’è
+	void GroundCollision();
 };

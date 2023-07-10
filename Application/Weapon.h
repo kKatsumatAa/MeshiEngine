@@ -32,11 +32,14 @@ protected:
 	virtual void ParticleGenerate() = 0;
 
 public:
-	//射撃
+	//攻撃
 	virtual void Attack(const Vec3& directionVec, int32_t decreBullet = 1, Object* owner = nullptr) = 0;
 
 	//持ち主変更
-	virtual void ChangeOwner(WorldMat* parent) = 0;
+	virtual void ChangeOwner(Object* parent);
+
+	//判定属性
+	void SetAttribute(uint16_t attribute) { GetCollider()->SetAttribute(attribute); }
 
 public:
 	//
@@ -45,6 +48,8 @@ public:
 	virtual  void SetLocalPos(const Vec3& pos) {
 		localPos_ = pos;
 	}
+
+	Vec3 GetLocalPos() { return localPos_; }
 
 	//投げる、被弾して落ちるときのスピード
 	virtual const Vec3& GetFallVelocity() { return fallVec_; }

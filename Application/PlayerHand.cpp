@@ -27,6 +27,9 @@ bool PlayerHand::Initialize(Player* player, const Vec3& transTmp)
 		return false;
 	}
 
+	//“–‚½‚è”»’è‚Í‚È‚¢‚Ì‚Å‘®«‚à‚È‚µ
+
+
 	SetObjName("playerHand");
 
 	//“–‚½‚è”»’è‚Ég‚í‚È‚¢

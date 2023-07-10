@@ -4,6 +4,7 @@
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
 #include "PlayerAttackState.h"
+#include "CollisionAttribute.h"
 
 
 
@@ -49,7 +50,8 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 
 			//³–ÊƒxƒNƒgƒ‹‚É‰½‚©‚ ‚é‚©
 			RaycastHit info;
-			bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, "player", &info, player_->GetAttackLength());
+			uint16_t attribute = COLLISION_ATTR_ENEMYS | COLLISION_ATTR_ITEMS;
+			bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, attribute, &info, player_->GetAttackLength());
 
 			if (isRayHit)
 			{

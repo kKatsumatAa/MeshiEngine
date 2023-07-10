@@ -27,6 +27,9 @@ public://静的メンバ関数
 
 	static CollisionManager* GetInstance();
 
+private:
+	
+
 public://関数
 	/// <summary>
 	/// コライダーの追加
@@ -53,7 +56,17 @@ public://関数
 	/// <param name="hitInfo">衝突情報</param>
 	/// <param name="maxDistance">最大距離</param>
 	/// <returns>レイが任意のコライダーと交わる場合はtrue</returns>
-	bool Raycast(const Ray& ray, std::string notTargetName, RaycastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
+	bool Raycast(const Ray& ray, RaycastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
+
+	/// <summary>
+	/// レイキャスト判定属性指定版
+	/// </summary>
+	/// <param name="ray">レイ</param>
+	/// <param name="attribute">判定属性</param>
+	/// <param name="hitInfo">衝突情報</param>
+	/// <param name="maxDistance">最大距離</param>
+	/// <returns></returns>
+	bool Raycast(const Ray& ray, uint16_t attribute, RaycastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
 
 	void CheckAllCollisions();
 

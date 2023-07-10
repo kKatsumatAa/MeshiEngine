@@ -171,6 +171,7 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	{
 		newObj = TouchableObject::Create(std::move(objData.worldMat), model);
 		newObj->SetObjName("stage");
+		newObj->GetCollider()->SetAttribute(COLLISION_ATTR_LANDSHAPE);
 	}
 	//“Á‚É“–‚Ä‚Í‚Ü‚ç‚È‚¢‚Æ‚«
 	else

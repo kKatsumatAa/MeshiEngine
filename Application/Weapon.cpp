@@ -34,3 +34,25 @@ void Weapon::NoParentMove()
 		}
 	}
 }
+
+void Weapon::ChangeOwner(Object* parent)
+{
+	if (parent == nullptr)
+	{
+		//離れた瞬間にワールド座標を入れる(親がいなくなるので)
+		SetTrans(GetWorldTrans());
+		//親をnull
+		SetParent((WorldMat*)nullptr);
+	}
+	else
+	{
+		//拾われ、親がはいったらローカル座標に切り替え
+		SetTrans(localPos_);
+		//親設定
+		SetParent(parent->GetWorldMat());
+	}
+	//所有者も設定
+	owner_ = parent;
+
+	Update();
+}

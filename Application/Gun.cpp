@@ -7,6 +7,7 @@
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
 #include "BulletManager.h"
+#include "Character.h"
 
 using namespace DirectX;
 
@@ -68,25 +69,13 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, Object* owner)
 	remainingBullets_ -= decreBullet;
 }
 
-void Gun::ChangeOwner(WorldMat* parent)
+void Gun::ChangeOwner(Object* parent)
 {
 	SetRot({ 0,0,0 });
 	remainingBullets_ = BULLETS_TMP_;
 	shotCoolTime_ = 0;
 
-	if (parent == nullptr)
-	{
-		//離れた瞬間にワールド座標を入れる(親がいなくなるので)
-		SetTrans(GetWorldTrans());
-	}
-	else
-	{
-		//拾われ、親がはいったらローカル座標に切り替え
-		SetTrans(localPos_);
-	}
-
-
-	SetParent(parent);
+	Weapon::ChangeOwner(parent);
 }
 
 void Gun::Update()
@@ -134,6 +123,13 @@ void Gun::OnCollision(const CollisionInfo& info)
 	{
 		//パーティクル
 		ParticleGenerate({ 0,0,0,1.5f }, { 0,0,0,0 });
+
+		//持ち主がまだいたら持ち主の武器ポインタをnullptrに
+		if (owner_)
+		{
+			Character* character = dynamic_cast<Character*>(owner_);
+			character->FallWeapon({ 0,0,0 });
+		}
 
 		SetIsAlive(false);
 	}

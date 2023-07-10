@@ -1,5 +1,8 @@
 ﻿#include "TouchableObject.h"
 #include "MeshCollider.h"
+#include "CollisionAttribute.h"
+
+
 
 std::unique_ptr<TouchableObject> TouchableObject::Create(
 	std::unique_ptr<WorldMat>worldMat, Model * model)

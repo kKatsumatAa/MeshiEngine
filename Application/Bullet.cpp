@@ -46,6 +46,8 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	lifeTime_ = lifeTime;
 	owner_ = owner;
 	ownerPos_ = owner->GetTrans();
+	//Œ‚‚Á‚½l‚Ì”»’è‘®«‚ğ©•ª‚Ì‘®«‚É
+	GetCollider()->SetAttribute(owner->GetCollider()->GetAttribute());
 
 	return true;
 }

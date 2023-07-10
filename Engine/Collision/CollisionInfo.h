@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include "CollisionAttribute.h"
 
 class Object;
 class BaseCollider;

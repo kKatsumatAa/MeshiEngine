@@ -14,8 +14,9 @@ bool PlayerState::CheckEyeRayHit()
 	ray.start = { player_->GetTrans().x_,player_->GetTrans().y_,player_->GetTrans().z_ };
 
 	//正面ベクトルに何かあるか
-	bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, "player", &info_, player_->GetAttackLength());
-	//シルエット表示
+	uint16_t attribute = COLLISION_ATTR_ENEMYS | COLLISION_ATTR_ITEMS;
+	bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, attribute, &info_, player_->GetAttackLength());
+
 	if (isRayHit)
 	{
 		info_.object->SetIsSilhouette(true);
@@ -56,7 +57,8 @@ void PlayerStateBareHands::Update()
 		{
 			Gun* gun = dynamic_cast<Gun*>(info_.object);
 			//銃拾う
-			player_->PickUpWeapon(gun);
+			Vec3 localPos = { player_->GetScale().x_ ,-player_->GetScale().y_ / 2.0f ,player_->GetScale().z_ * 2.0f };
+			player_->PickUpWeapon(gun, &localPos);
 
 			//プレイヤーは逆向きなので仮に
 			gun->SetRotY(PI);

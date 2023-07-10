@@ -45,6 +45,8 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	//半径分だけ足元から浮いた座標を球の中心にする
 
 	SetCollider(std::make_unique<SphereCollider>(XMVECTOR({ 0,radius,0,0 }), radius));
+	//判定属性
+	GetCollider()->SetAttribute(COLLISION_ATTR_ALLIES);
 
 	//カメラの位置と合わせる
 	SetTrans(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
@@ -54,7 +56,12 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	handManager_ = std::make_unique<PlayerHandManager>();
 	handManager_->Initialize(this);
 
-	weapon_ = weapon;
+	if (weapon)
+	{
+		weapon_ = weapon;
+		//武器の諸々設定
+		PickUpWeapon(weapon_);
+	}
 
 	//銃持ってたらステートかえる
 	if (weapon_ == nullptr)
@@ -125,6 +132,12 @@ void Player::DirectionUpdate()
 
 void Player::Move()
 {
+	/*if (isCannotMove)
+	{
+		isCannotMove = false;
+		return;
+	}*/
+
 	//キー入力
 	KeyboardInput* input = &KeyboardInput::GetInstance();
 
@@ -275,13 +288,13 @@ void Player::OnCollision(const CollisionInfo& info)
 			/*CameraManager::GetInstance().GetCamera("playerCamera")->Update();*/
 		}
 	}
-
+	//仮（うまくいってない）
 	if (info.object_->GetObjName() == "stage")
 	{
 		Vec3 interPos = { info.inter_.m128_f32[0], info.inter_.m128_f32[1], info.inter_.m128_f32[2] };
 		Vec3 distanceVec = GetWorldTrans() - interPos;
 		distanceVec = distanceVec.GetNormalized() * GetScale().x_;
 
-		SetTrans(interPos + distanceVec);
+		SetTrans(interPos + distanceVec * 1.01f);
 	}
 }
