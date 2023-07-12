@@ -5,6 +5,7 @@
 #include "Enemy.h"
 #include "BulletManager.h"
 #include "TouchableObject.h"
+#include "MeshCollider.h"
 
 
 LevelManager::~LevelManager()
@@ -56,7 +57,7 @@ void LevelManager::LoadLevelData(std::string fileName)
 	}
 }
 
-Weapon* LevelManager::GetChildWeapon(const LevelData::ObjectData& objData)
+Weapon* LevelManager::GetChildWeapon(LevelData::ObjectData& objData)
 {
 	if (objData.childData == nullptr || (objData.childData->fileName != "gun" &&
 		objData.childData->fileName != "sword"))
@@ -84,6 +85,12 @@ Weapon* LevelManager::GetChildWeapon(const LevelData::ObjectData& objData)
 
 	Weapon* ans = newObj.get();
 
+	//名前
+	newObj->SetObjName(objData.childData->fileName);
+
+	//判定系
+	SetCollider(newObj.get(), objData, true);
+
 	//正面ベクトル(objの角度によって回転,回転後のベクトルを基礎正面とする)
 	newObj->CulcFrontVec();
 	newObj->SetFrontVecTmp(newObj->GetFrontVec());
@@ -97,6 +104,60 @@ Weapon* LevelManager::GetChildWeapon(const LevelData::ObjectData& objData)
 	}
 
 	return nullptr;
+}
+
+void LevelManager::CheckLandShapeObject(const LevelData::ObjectData& objData, bool& isLandShape)
+{
+	//地形オブジェクト
+	if (objData.colliderData.attribute & COLLISION_ATTR_LANDSHAPE)
+	{
+		isLandShape = true;
+	}
+	else
+	{
+		isLandShape = false;
+	}
+}
+
+void LevelManager::SetCollider(Object* obj, const LevelData::ObjectData& objData, bool isSettingCollider)
+{
+	//タイプがなければコライダー無しなので
+	if (objData.colliderData.colliderType != CollisionShapeType::SHAPE_UNKNOWN)
+	{
+		CollisionShapeType type = objData.colliderData.colliderType;
+		uint16_t attribute = objData.colliderData.attribute;
+
+		if (isSettingCollider)
+		{
+			//球コライダー
+			if (type == COLLISIONSHAPE_SPHERE)
+			{
+				obj->SetCollider(std::make_unique<SphereCollider>());
+			}
+			//メッシュコライダー
+			else if (type == COLLISIONSHAPE_MESH)
+			{
+				obj->SetCollider(std::make_unique<MeshCollider>());
+			}
+		}
+		//判定属性セット
+		obj->GetCollider()->SetAttribute(attribute);
+	}
+}
+
+void LevelManager::CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, Model* model)
+{
+	//地形オブジェクトとして使うのなら
+	if (isLandShape_)
+	{
+		obj = TouchableObject::Create(std::move(objData.worldMat), model);
+	}
+	//それ以外は普通のObject
+	else
+	{
+		obj = std::make_unique<Object>();
+		obj->SetWorldMat(std::move(objData.worldMat));
+	}
 }
 
 bool LevelManager::GetGameOver()
@@ -133,18 +194,19 @@ bool LevelManager::GetGameClear()
 
 void LevelManager::LoadObj(LevelData::ObjectData& objData)
 {
-	//武器で親がいたらスキップ(登録済みならworldMatはmove()されてないので)
-	if (objData.fileName == "gun" && !objData.worldMat)
+	//親がいたらスキップ(登録済みならworldMatはmove()されて無いので)
+	if (/*objData.fileName == "gun" &&*/ !objData.worldMat)
 	{
 		return;
 	}
-
 
 	//ファイル名から登録済みモデルを検索
 	Model* model = ModelManager::GetInstance().LoadModel(objData.fileName);
 	//モデルを指定して3Dオブジェクトを生成
 	std::unique_ptr <Object> newObj = {};
 
+	//地形オブジェクトとして使うか
+	CheckLandShapeObject(objData, isLandShape_);
 
 	//プレイヤーの場合
 	if (objData.fileName == "player")
@@ -157,32 +219,30 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	{
 		//enemyもObjectクラスを継承してるのでポリモーフィズム
 		newObj = Enemy::Create(std::move(objData.worldMat), GetChildWeapon(objData));
-		newObj->SetObjName("enemy");
 	}
-	//銃の場合(親がいる場合は既に登録してあるので飛ばされる)
+	//銃の場合(親がいる場合は既に登録してあるので通らない)
 	else if (objData.fileName == "gun")
 	{
-		newObj = std::make_unique<Object>();
-		newObj->SetObjName("gun");
-		newObj->SetWorldMat(std::move(objData.worldMat));
+		newObj = Gun::Create(std::move(objData.worldMat));
 	}
-	//地面だったら
-	else if (objData.fileName == "stage")
-	{
-		newObj = TouchableObject::Create(std::move(objData.worldMat), model);
-		newObj->SetObjName("stage");
-		newObj->GetCollider()->SetAttribute(COLLISION_ATTR_LANDSHAPE);
-	}
-	//特に当てはまらないとき
+	//それ以外のオブジェクト生成
 	else
 	{
-		newObj = std::make_unique<Object>();
-		newObj->SetWorldMat(std::move(objData.worldMat));
+		CreateObjectOrTouchableObject(newObj, objData, isLandShape_, model);
 	}
 
-	//正面ベクトル(objの角度によって回転,回転後のベクトルを基礎正面とする)
-	newObj->CulcFrontVec();
-	newObj->SetFrontVecTmp(newObj->GetFrontVec());
+	//名前
+	newObj->SetObjName(objData.fileName);
+
+	//判定系
+	SetCollider(newObj.get(), objData, !isLandShape_);
+
+	//仮で正面ベクトル(objの角度によって回転,回転後のベクトルを基礎正面とする)
+	if (objData.fileName == "player")
+	{
+		newObj->CulcFrontVec();
+		newObj->SetFrontVecTmp(newObj->GetFrontVec());
+	}
 
 	//セットで登録
 	objAndModels_.insert(std::make_pair(std::move(newObj), model));

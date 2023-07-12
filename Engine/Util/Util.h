@@ -90,5 +90,8 @@ bool Approximately(float a, float b);
 //ベクトルを角度を使ってクォータニオンで回転
 Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot);
 
+////ベクトルをこっちからあっち
+//Quaternion DirectionToDirectionUtil(const Vec3& u,const Vec3& v);
+
 //ランダム
 float GetRand(float min, float max);

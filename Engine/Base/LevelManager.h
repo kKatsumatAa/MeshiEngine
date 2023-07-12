@@ -11,6 +11,9 @@ private://変数
 	//Objectとモデルポインタのセット
 	std::map<std::unique_ptr<Object>, Model*> objAndModels_;
 
+	//地形オブジェクトとして使うか
+	bool isLandShape_ = false;
+
 
 private://関数
 	LevelManager() { ; }
@@ -28,7 +31,7 @@ public:
 	void LoadLevelData(std::string fileName);
 
 	//ファイル名によってクラス生成
-	void LoadObj( LevelData::ObjectData& objData);
+	void LoadObj(LevelData::ObjectData& objData);
 
 	//読み込んだものを動かす
 	void Update();
@@ -37,7 +40,15 @@ public:
 
 private://ゲームオリジナル
 	//武器のポインタ返す
-	Weapon* GetChildWeapon(const LevelData::ObjectData& objData);
+	Weapon* GetChildWeapon(LevelData::ObjectData& objData);
+
+	//地形オブジェクトとして使うかチェック
+	void CheckLandShapeObject(const LevelData::ObjectData& objData, bool& isLandShape);
+	//コライダー系のセット
+	void SetCollider(Object* obj, const LevelData::ObjectData& objData, bool isSettingCollider);
+	//引数によってObjectかTouchObjectを作る
+	void CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, Model* model);
+
 public:
 	bool GetGameOver();
 	bool GetGameClear();

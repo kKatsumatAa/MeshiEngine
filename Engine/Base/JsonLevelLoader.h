@@ -7,10 +7,26 @@
 #include "WorldMat.h"
 #include "Camera.h"
 #include <functional>
+#include "CollisionTypes.h"
 
 
 struct LevelData
 {
+	//コライダーデータ
+	struct ColliderData
+	{
+		//コライダー使うか
+		bool isVailid = false;
+		//中心座標
+		Vec3 center = { 0,0,0 };
+		//スケール
+		Vec3 size = { 1,1,1 };
+		//コライダータイプ
+		CollisionShapeType colliderType = SHAPE_UNKNOWN;
+		//地面や、壁として扱うか
+		uint16_t attribute = 0;
+	};
+
 	//オブジェクト一個分のデータ
 	struct ObjectData
 	{
@@ -18,6 +34,8 @@ struct LevelData
 		std::unique_ptr<WorldMat> worldMat;
 		//ファイル名
 		std::string fileName;
+		//コライダーのデータ
+		ColliderData colliderData;
 		//子のデータ
 		ObjectData* childData;
 	};

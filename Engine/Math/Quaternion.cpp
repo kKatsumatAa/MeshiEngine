@@ -111,18 +111,21 @@ M4 Quaternion::MakeRotateMatrix() const
 {
 	M4 ans = {
 		w_ * w_ + x_ * x_ - y_ * y_ - z_ * z_,
-		2 * (x_ * y_ + w_ * z_),
-		2 * (x_ * z_ - w_ * y_),
+		2.0f * (x_ * y_ + w_ * z_),
+		2.0f * (x_ * z_ - w_ * y_),
 		0,
-		2 * (x_ * y_ - w_ * z_),
+
+		2.0f * (x_ * y_ - w_ * z_),
 		w_ * w_ - x_ * x_ + y_ * y_ - z_ * z_,
-		2 * (y_ * z_ + w_ * x_),
+		2.0f * (y_ * z_ + w_ * x_),
 		0,
-		2 * (x_ * z_ + w_ * y_),
-		2 * (y_ * z_ - w_ * x_),
+
+		2.0f * (x_ * z_ + w_ * y_),
+		2.0f * (y_ * z_ - w_ * x_),
 		w_ * w_ - x_ * x_ - y_ * y_ + z_ * z_,
 		0,
-		0,0,0,1
+
+		0,0,0,1.0f
 	};
 
 	return M4(ans);

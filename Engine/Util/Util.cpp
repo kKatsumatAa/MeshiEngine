@@ -464,6 +464,28 @@ Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot)
 	return ansFrontV;
 }
 
+//Quaternion DirectionToDirectionUtil(const Vec3& u, const Vec3& v)
+//{
+//	Vec3 U = u.GetNormalized();
+//	Vec3 V = v.GetNormalized();
+//
+//	Vec3 uX = { U.x_,0,0 };
+//	Vec3 uY = { 0,U.y_,0 };
+//	Vec3 uZ = { 0,0,U.z_ };
+//
+//	Vec3 vX = { V.x_,0,0 };
+//	Vec3 vY = { 0,V.y_,0 };
+//	Vec3 vZ = { 0,0,V.z_ };
+//
+//	Quaternion qZ = Quaternion::DirectionToDirection(uZ, vZ);
+//	Quaternion qX = Quaternion::DirectionToDirection(uX, vX);
+//	Quaternion qY = Quaternion::DirectionToDirection(uY, vY);
+//
+//	Quaternion q = qZ * qX * qY;
+//
+//	return Quaternion(q);
+//}
+
 float GetRand(float min, float max)
 {
 	std::random_device rd;

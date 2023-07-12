@@ -1,5 +1,8 @@
 #include "JsonLevelLoader.h"
 #include "Util.h"
+#include "CollisionManager.h"
+#include <fstream>
+#include <sstream>
 
 const std::string JsonLevelLoader::S_DEFAULT_BASE_DIRECTORY_ = "Resources/Level/";
 const std::string JsonLevelLoader::S_EXTENSION_ = ".json";
@@ -111,6 +114,59 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 	objectData->worldMat->scale_.x_ = (float)transform["scaling"][1];
 	objectData->worldMat->scale_.y_ = (float)transform["scaling"][2];
 	objectData->worldMat->scale_.z_ = (float)transform["scaling"][0];
+
+	//当たり判定データ
+	//トランスフォームのパラメータ読み込み
+	nlohmann::json collider = (*object)["collider"];
+	if(collider.size())
+	{
+		//コライダー種類
+		std::string typeStr = collider["type"];
+		if (typeStr == "SPHERE")
+		{
+			objectData->colliderData.colliderType = CollisionShapeType::COLLISIONSHAPE_SPHERE;
+		}
+		else if (typeStr == "MESH")
+		{
+			objectData->colliderData.colliderType = CollisionShapeType::COLLISIONSHAPE_MESH;
+		}
+		//判定属性
+		std::string line = (std::string)collider["attribute"];
+		// 1行分の文字列をストリームに変換して解析しやすくする
+		std::istringstream line_stream(line);
+		// ','区切りで行の先頭文字列を取得
+		std::string key;
+		uint16_t attribute = 0;
+		while (std::getline(line_stream, key, ','))
+		{
+			if (key == "ALLIES")
+			{
+				attribute |= COLLISION_ATTR_ALLIES;
+			}
+			else if (key == "ENEMYS")
+			{
+				attribute |= COLLISION_ATTR_ENEMYS;
+			}
+			else if (key == "LANDSHAPE")
+			{
+				attribute |= COLLISION_ATTR_LANDSHAPE;
+			}
+			else if (key == "ITEMS")
+			{
+				attribute |= COLLISION_ATTR_ITEMS;
+			}
+		}
+		objectData->colliderData.attribute = attribute;
+
+		//中心位置
+		objectData->colliderData.center.x_ = (float)collider["center"][1];
+		objectData->colliderData.center.y_ = (float)collider["center"][2];
+		objectData->colliderData.center.z_ = -(float)collider["center"][0];
+		//スケール
+		objectData->colliderData.size.x_ = (float)collider["size"][1];
+		objectData->colliderData.size.y_ = (float)collider["size"][2];
+		objectData->colliderData.size.z_ = (float)collider["size"][0];
+	}
 
 	//親がいたら、おやに自分のデータ入れる
 	if (parent)

@@ -16,7 +16,10 @@ void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 
 	weapon_->ChangeOwner(this);
 	//Š—LŽÒ‚Ì”»’è‘®«‚ð“ü‚ê‚é
-	weapon_->SetAttribute(GetCollider()->GetAttribute());
+	if (GetCollider())
+	{
+		weapon_->SetAttribute(GetCollider()->GetAttribute());
+	}
 }
 
 void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)

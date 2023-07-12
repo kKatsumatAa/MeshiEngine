@@ -149,8 +149,12 @@
     <ClCompile Include="Engine\Base\ViewMat.cpp" />
     <ClCompile Include="Engine\Base\WindowsApp.cpp" />
     <ClCompile Include="Engine\Base\WorldMat.cpp" />
-    <ClCompile Include="Engine\Collision\Collision.cpp" />
-    <ClCompile Include="Engine\Collision\CollisionManager.cpp" />
+    <ClCompile Include="Engine\Collision\Collision.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Collision\CollisionManager.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
+    </ClCompile>
     <ClCompile Include="Engine\Collision\CollisionPrimitive.cpp" />
     <ClCompile Include="Engine\Collision\MeshCollider.cpp" />
     <ClCompile Include="Engine\Collision\PlaneCollider.cpp" />

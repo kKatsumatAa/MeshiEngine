@@ -34,16 +34,6 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 		return false;
 	}
 
-	//名前
-	SetObjName("enemy");
-
-	//コライダーの追加
-	//float radius = 0.6f;
-	//半径分だけ足元から浮いた座標を球の中心にする
-
-	SetCollider(std::make_unique<SphereCollider>());
-	//判定属性
-	GetCollider()->SetAttribute(COLLISION_ATTR_ENEMYS);
 
 	if (weapon)
 	{

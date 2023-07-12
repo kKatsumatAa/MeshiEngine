@@ -36,15 +36,6 @@ bool Gun::Initialize(std::unique_ptr<WorldMat> worldMat)
 		return false;
 	}
 
-	//名前
-	SetObjName("gun");
-
-	//コライダーの追加
-	//float radius = 0.6f;
-	//半径分だけ足元から浮いた座標を球の中心にする
-
-	SetCollider(std::make_unique<SphereCollider>());
-
 	//ローカル座標
 	localPos_ = GetTrans();
 
