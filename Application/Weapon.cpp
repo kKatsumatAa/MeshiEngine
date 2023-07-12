@@ -1,12 +1,16 @@
 #include "Weapon.h"
 #include "GameVelocityManager.h"
-
+#include "CollisionManager.h"
+#include "ParticleManager.h"
 
 
 void Weapon::NoParentMove()
 {
-	if (GetParent() == nullptr && GetWorldTrans().y_ > GetScale().x_)
+	if (GetParent() == nullptr)
 	{
+		//前回の位置
+		oldPos_ = GetTrans();
+
 		//クールタイムもゲームスピードをかける
 		SetTrans(GetTrans() + fallVec_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
 
@@ -27,10 +31,15 @@ void Weapon::NoParentMove()
 
 		fallVec_.z_ *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
 
-		//地面についたら
-		if (GetWorldTrans().y_ <= GetScale().x_)
+
+		//前回の位置から今の位置のベクトルをレイとして判定
 		{
-			fallVec_ = { 0,0,0 };
+			RaycastHit info;
+
+			if (CollisionManager::GetInstance()->RaycastUtil(GetTrans(), oldPos_, COLLISION_ATTR_LANDSHAPE, &info))
+			{
+				OnLandShape({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
+			}
 		}
 	}
 }

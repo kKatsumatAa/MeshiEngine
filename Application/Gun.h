@@ -23,7 +23,6 @@ private:
 	//発射位置
 	Vec3 shotPos_ = { 0,0,0 };
 
-
 public:
 	/// <summary>
 	/// オブジェクト生成
@@ -38,6 +37,10 @@ private:
 
 	void ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor);
 	void ParticleGenerate()override { ; }
+
+	//地形と当たった時の処理
+	void OnLandShape(const Vec3& interPos)override;
+
 
 public:
 	//射撃

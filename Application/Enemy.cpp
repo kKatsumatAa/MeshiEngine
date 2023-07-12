@@ -244,14 +244,12 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	{
 		Gun* gun = dynamic_cast<Gun*>(info.object_);
 
-		//e‚ª‚¢‚éiŽ‚Á‚Ä‚él‚ª‚¢‚é‚Æ‚«‚Ì‚Ýj
-		if (gun->GetParent() && gun->GetFallVelocity().GetLength() == 0)
+		//“Š‚°‚ç‚ê‚Ä‚¢‚é‚Æ‚«‚Ì‚Ý
+		if (gun->GetParent() == nullptr && gun->GetIsThrowing() && gun->GetFallVelocity().GetLength() != 0)
 		{
-			return;
+			//
+			KnockBack(info);
 		}
-
-		//
-		KnockBack(info);
 	}
 	//“G“¯Žm‚Å“–‚½‚Á‚½‚ç‚ß‚èž‚Ü‚È‚¢‚æ‚¤‚É‚·‚é
 	else if (info.object_->GetObjName() == "enemy")

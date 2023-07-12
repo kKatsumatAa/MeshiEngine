@@ -70,6 +70,16 @@ public://関数
 	bool Raycast(const Ray& ray, uint16_t attribute, RaycastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
 
 	/// <summary>
+	///　レイキャストの便利版
+	/// </summary>
+	/// <param name="pos">終点</param>
+	/// <param name="oldPos">始点</param>
+	/// <param name="attribute">判定属性</param>
+	/// <param name="info"></param>
+	/// <returns></returns>
+	bool RaycastUtil(const Vec3& endPos, const Vec3& startPos, uint16_t attribute, RaycastHit* info);
+
+	/// <summary>
 	/// 球による衝突全検索
 	/// </summary>
 	/// <param name="sphere"></param>

@@ -27,7 +27,7 @@ bool PlayerState::CheckEyeRayHit()
 
 void PlayerState::ThrowGun()
 {
-	player_->FallWeapon(player_->GetFrontVec() * 5.0f);
+	player_->FallWeapon(player_->GetFrontVec() * 8.0f);
 
 	//ゲームスピード加算
 	GameVelocityManager::GetInstance().AddGameVelocity(0.9f);

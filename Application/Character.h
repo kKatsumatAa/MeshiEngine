@@ -28,6 +28,10 @@ protected:
 
 protected:
 
+
+public:
+	~Character() { ; }
+
 public:
 	//•Ší
 	Weapon* GetWeapon() { return weapon_; }

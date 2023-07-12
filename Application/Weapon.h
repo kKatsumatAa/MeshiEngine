@@ -16,16 +16,20 @@ protected:
 	//持ち主
 	Object* owner_ = nullptr;
 
+	//前回の位置
+	Vec3 oldPos_ = { 0,0,0 };
+
+	//投げられているか
+	bool isThrowing_ = false;
 
 public:
-	/*/// <summary>
-	/// オブジェクト生成
-	/// </summary>
-	/// <param name="model"></param>
-	/// <returns></returns>
-	virtual std::unique_ptr<Weapon> Create(std::unique_ptr<WorldMat> worldMat) = 0;*/
+	Weapon() { ; }
+	virtual ~Weapon() { ; }
 
 protected:
+	//地形と当たった時に呼び出す
+	virtual void OnLandShape(const Vec3& interPos) = 0;
+
 	//所有者がいないときに飛んでいく
 	virtual void NoParentMove();
 
@@ -53,6 +57,9 @@ public:
 
 	//投げる、被弾して落ちるときのスピード
 	virtual const Vec3& GetFallVelocity() { return fallVec_; }
+
+	bool GetIsThrowing() { return isThrowing_; }
+	void SetIsThrowing(bool isThrowing) { isThrowing_ = isThrowing; }
 
 public:
 

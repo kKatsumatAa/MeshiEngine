@@ -48,9 +48,6 @@ private:
 	//被弾時のパーティクル
 	void DamageParticle(const CollisionInfo& info);
 
-	//銃を解除
-	void GunRelease(const Vec3& directionVec);
-
 public:
 
 	bool Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon);

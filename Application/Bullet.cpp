@@ -6,6 +6,7 @@
 #include "PadInput.h"
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
+#include "CollisionManager.h"
 
 using namespace DirectX;
 
@@ -52,12 +53,28 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	return true;
 }
 
+void Bullet::Dead(const Vec3& interPos)
+{
+	SetIsAlive(false);
+
+	//パーティクル
+	for (int32_t i = 0; i < 20; ++i)
+	{
+		Vec3 vel{};
+		vel.x_ = GetRand(-0.2f, 0.2f);
+		vel.y_ = GetRand(-0.2f, 0.2f);
+		vel.z_ = GetRand(-0.2f, 0.2f);
+
+		float scale = GetRand(GetScale().x_ / 2.0f, GetScale().x_ * 4.0f);
+
+		ParticleManager::GetInstance()->Add(30, interPos, vel, { 0,0,0 }, scale, 0, { 0,0,0,1.5f }, { 0,0,0,0.0f });
+	}
+}
+
 void Bullet::Update()
 {
-	/*if (owner_)
-	{
-		ownerPos_ = owner_->GetTrans();
-	}*/
+	//前回の位置を記録
+	oldPos_ = GetTrans();
 
 	//クールタイムもゲームスピードをかける
 	lifeTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
@@ -67,13 +84,24 @@ void Bullet::Update()
 
 	Object::Update();
 
+	//前回の位置から今の位置のベクトルをレイとして判定
+	{
+		RaycastHit info;
+
+		if (CollisionManager::GetInstance()->RaycastUtil(GetTrans(), oldPos_, COLLISION_ATTR_LANDSHAPE, &info))
+		{
+			Dead({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
+		}
+	}
+
+
 	//弾道
 	ParticleManager::GetInstance()->Add(15, GetWorldTrans(), { 0,0,0 }, { 0,0,0 }, GetScale().x_ * 3.0f, 0, { 5.0f,0,0,4.5f }, { 5.0f,0,0,4.5f });
 
-
+	//生存時間超えたら
 	if (lifeTime_ <= 0)
 	{
-		isAlive_ = false;
+		SetIsAlive(false);
 	}
 }
 
@@ -88,21 +116,5 @@ void Bullet::Draw()
 
 void Bullet::OnCollision(const CollisionInfo& info)
 {
-	isAlive_ = false;
-
-	//パーティクル
-	for (int32_t i = 0; i < 20; ++i)
-	{
-		const float MD_VEL = 0.2f;
-		Vec3 vel{};
-		vel.x_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-
-		Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
-
-		float scale = (float)rand() / RAND_MAX * GetScale().x_;
-
-		ParticleManager::GetInstance()->Add(30, pos, vel, { 0,0,0 }, scale, 0, { 2.0f,2.0f,2.0f,1.5f }, { 0,0,0,0.0f });
-	}
+	Dead({ info.inter_.m128_f32[0],info.inter_.m128_f32[1], info.inter_.m128_f32[2] });
 }

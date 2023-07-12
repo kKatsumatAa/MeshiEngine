@@ -50,6 +50,11 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, Object* owner)
 		return;
 	}
 
+	//発射座標
+	shotPos_ = { GetWorldTrans().x_ + directionVec.GetNormalized().x_ * GetScale().x_ * 1.1f,
+		GetWorldTrans().y_ + GetScale().y_,
+		GetWorldTrans().z_ + directionVec.GetNormalized().z_ * GetScale().z_ * 1.1f };
+
 	//弾うつ処理
 	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x_ * 0.4f, 300, owner);
 
@@ -71,9 +76,6 @@ void Gun::ChangeOwner(Object* parent)
 
 void Gun::Update()
 {
-	//発射座標
-	shotPos_ = { GetWorldTrans().x_, GetWorldTrans().y_ + GetScale().y_, GetWorldTrans().z_ - GetScale().z_ };
-
 	//親が亡くなった後の動き
 	NoParentMove();
 	//地面より下に行かないように
@@ -106,6 +108,24 @@ void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor)
 		ParticleManager::GetInstance()->Add(40, shotPos_, vel, { 0,0,0 }, scale, 0, sColor, eColor);
 	}
 
+}
+
+void Gun::OnLandShape(const Vec3& interPos)
+{
+	SetIsAlive(false);
+
+	//パーティクル
+	for (int32_t i = 0; i < 20; ++i)
+	{
+		Vec3 vel{};
+		vel.x_ = GetRand(-0.2f, 0.2f);
+		vel.y_ = GetRand(-0.2f, 0.2f);
+		vel.z_ = GetRand(-0.2f, 0.2f);
+
+		float scale = GetRand(GetScale().x_ / 2.0f, GetScale().x_ * 4.0f);
+
+		ParticleManager::GetInstance()->Add(30, interPos, vel, { 0,0,0 }, scale, 0, { 0,0,0,1.5f }, { 0,0,0,0.0f });
+	}
 }
 
 void Gun::OnCollision(const CollisionInfo& info)

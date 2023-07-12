@@ -129,6 +129,18 @@ bool CollisionManager::Raycast(const Ray& ray, uint16_t attribute, RaycastHit* h
 	return result;
 }
 
+bool CollisionManager::RaycastUtil(const Vec3& endPos, const Vec3& startPos, uint16_t attribute, RaycastHit* info)
+{
+	Ray ray;
+	Vec3 dir = endPos - startPos;
+	dir.Normalized();
+
+	ray.dir = { dir.x_,dir.y_,dir.z_ };
+	ray.start = { startPos.x_,startPos.y_,startPos.z_ };
+
+	return Raycast(ray, attribute, info, dir.GetLength());
+}
+
 void CollisionManager::QuerySphere(const Sphere& sphere, QueryCallback* callBack, uint16_t attribute)
 {
 	assert(callBack);
