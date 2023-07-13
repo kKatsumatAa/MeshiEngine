@@ -57,45 +57,31 @@ void MeshCollider::ConstructTriangles(Model* model)
 
 void MeshCollider::Update()
 {
-	//逆行列を計算
-	M4 m4 = GetObject3d()->GetMatWorld();
-	XMMATRIX m;
-	m4.MatIntoXMMATRIX(m);
-
-	invMatWorld_ = XMMatrixInverse(nullptr, m);
 }
 
 bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR* inter,
 	DirectX::XMVECTOR* reject)
 {
-	// オブジェクトのローカル座標系（このオブジェクトを中心とした座標系？）
-	//での球を得る（半径はXスケールを参照)
-	Sphere localSphere;
-	localSphere.center = XMVector3Transform(sphere.center, invMatWorld_);
-	//localSphere.radius *= XMVector3Length(invMatWorld_.r[0]).m128_f32[0];
-	localSphere.radius = sphere.radius * XMVector3Length(invMatWorld_.r[0]).m128_f32[0];
 
-	//ローカル座標系で交差をチェック
+	//ワールド座標
+	XMMATRIX matWorld;
+	GetObject3d()->GetMatWorld().MatIntoXMMATRIX(matWorld);
+
+	//ワールド座標系で交差をチェック
 	std::vector<Triangle>::const_iterator it = triangles_.cbegin();
 	for (; it != triangles_.cend(); ++it) {
 		const Triangle& triangle = *it;
 
+		//ワールドに変換
+		Triangle worldTriangle = triangle;
+
+		worldTriangle.p0 = XMVector3Transform({ triangle.p0 }, matWorld);
+		worldTriangle.p1 = XMVector3Transform({ triangle.p1 }, matWorld);
+		worldTriangle.p2 = XMVector3Transform({ triangle.p2 }, matWorld);
+		worldTriangle.ComputeNormal();
+
 		//球と三角形の当たり判定
-		if (Collision::CheckSphere2Triangle(localSphere, triangle, inter, reject)) {
-			if (inter) {
-				XMMATRIX matWorld;
-				GetObject3d()->GetMatWorld().MatIntoXMMATRIX(matWorld);
-				//ワールド座標で(逆行列でローカルにしたのを戻す?)
-				*inter = XMVector3Transform(*inter, matWorld);
-			}
-			if (reject)
-			{
-				//排斥
-				XMMATRIX matWorld;
-				GetObject3d()->GetMatWorld().MatIntoXMMATRIX(matWorld);
-				//ワールド座標系での排斥ベクトルに変換(法線を変換)
-				*reject = XMVector3TransformNormal(*reject, matWorld);
-			}
+		if (Collision::CheckSphere2Triangle(sphere, worldTriangle, inter, reject)) {
 			return true;
 		}
 	}
@@ -105,29 +91,32 @@ bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR*
 
 bool MeshCollider::CheckCollisionRay(const Ray& ray, float* distance, DirectX::XMVECTOR* inter)
 {
-	// オブジェクトのローカル座標系でのレイを得る
-	Ray localRay;
-	localRay.start = XMVector3Transform(ray.start, invMatWorld_);
-	localRay.dir = XMVector3TransformNormal(ray.dir, invMatWorld_);
 
 	//最短距離を保存する
 	float minDistance = 999999;
 	bool isReturn = false;
 
-	//ローカル座標系で交差をチェック
-	std::vector<Triangle>::const_iterator it = triangles_.cbegin();
+	//ワールド座標
+	XMMATRIX matWorld;
+	GetObject3d()->GetMatWorld().MatIntoXMMATRIX(matWorld);
 
+	//ワールド座標系で交差をチェック
+	std::vector<Triangle>::const_iterator it = triangles_.cbegin();
 	for (; it != triangles_.cend(); ++it) {
 		const Triangle& triangle = *it;
 
+		//ワールドに変換
+		Triangle worldTriangle = triangle;
+
+		worldTriangle.p0 = XMVector3Transform({ triangle.p0 }, matWorld);
+		worldTriangle.p1 = XMVector3Transform({ triangle.p1 }, matWorld);
+		worldTriangle.p2 = XMVector3Transform({ triangle.p2 }, matWorld);
+		worldTriangle.ComputeNormal();
+
+
 		XMVECTOR tempInter;
 		//レイと三角形の当たり判定
-		if (Collision::CheckRay2Triangle(localRay, triangle, nullptr, &tempInter)) {
-
-			//ワールド座標系での交点を得る
-			XMMATRIX matWorld;
-			GetObject3d()->GetMatWorld().MatIntoXMMATRIX(matWorld);
-			tempInter = XMVector3Transform(tempInter, matWorld);
+		if (Collision::CheckRay2Triangle(ray, worldTriangle, nullptr, &tempInter)) {
 
 			//ワールド座標系での交点とレイの距離を計算
 			XMVECTOR length = tempInter - ray.start;
