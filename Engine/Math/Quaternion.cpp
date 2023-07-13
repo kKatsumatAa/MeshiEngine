@@ -82,10 +82,22 @@ Quaternion Quaternion::MakeAxisAngle(const Vec3& axis, float angle)
 
 Quaternion Quaternion::DirectionToDirection(const Vec3& u, const Vec3& v)
 {
+	Vec3 U = u;
+	Vec3 V = v;
+
+	//向かせたい向きが真逆の時はy成分はゼロにして回させる
+	const float DOT_MIN = 0.5f;
+	float dot = Vec3(U.x_, U.y_, U.z_).Dot(Vec3(V.x_, V.y_, V.z_));
+	if (dot <= -DOT_MIN)
+	{
+		U = { U.x_,0,U.z_ };
+		V = { V.x_,0,V.z_ };
+	}
+
 	//uとvを正規化して内積を求める
-	float dot = u.GetNormalized().Dot(v.GetNormalized());
+	dot = U.GetNormalized().Dot(V.GetNormalized());
 	//u,vの外積をとる(回転軸を出す)
-	Vec3 cross = u.GetNormalized().Cross(v.GetNormalized());
+	Vec3 cross = U.GetNormalized().Cross(V.GetNormalized());
 	//軸は単位ベクトルである必要があるので正規化
 	//uとvが単位ベクトルあっても、外積が単位ベクトルとは限らないのでここの正規化は必須
 	Vec3 axis = cross.GetNormalized();
@@ -109,20 +121,22 @@ Vec3 Quaternion::GetRotateVector(const Vec3& vector) const
 
 M4 Quaternion::MakeRotateMatrix() const
 {
+	Quaternion q = GetNormalize();
+
 	M4 ans = {
-		w_ * w_ + x_ * x_ - y_ * y_ - z_ * z_,
-		2.0f * (x_ * y_ + w_ * z_),
-		2.0f * (x_ * z_ - w_ * y_),
+		q.w_ * q.w_ + q.x_ * q.x_ - q.y_ * q.y_ - q.z_ * q.z_,
+		2.0f * (q.x_ * q.y_ + q.w_ * q.z_),
+		2.0f * (q.x_ * q.z_ - q.w_ * q.y_),
 		0,
 
-		2.0f * (x_ * y_ - w_ * z_),
-		w_ * w_ - x_ * x_ + y_ * y_ - z_ * z_,
-		2.0f * (y_ * z_ + w_ * x_),
+		2.0f * (q.x_ * q.y_ - q.w_ * q.z_),
+		q.w_ * q.w_ - q.x_ * q.x_ + q.y_ * q.y_ - q.z_ * q.z_,
+		2.0f * (q.y_ * q.z_ + q.w_ * q.x_),
 		0,
 
-		2.0f * (x_ * z_ + w_ * y_),
-		2.0f * (y_ * z_ - w_ * x_),
-		w_ * w_ - x_ * x_ - y_ * y_ + z_ * z_,
+		2.0f * (q.x_ * q.z_ + q.w_ * q.y_),
+		2.0f * (q.y_ * q.z_ - q.w_ * q.x_),
+		q.w_ * q.w_ - q.x_ * q.x_ - q.y_ * q.y_ + q.z_ * q.z_,
 		0,
 
 		0,0,0,1.0f

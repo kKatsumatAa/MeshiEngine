@@ -133,6 +133,10 @@ void Enemy::Update()
 	Object::Update();
 }
 
+void Enemy::Draw()
+{
+}
+
 
 //----------------------------------------------------------------------------------
 void Enemy::KnockBack(const CollisionInfo& info)

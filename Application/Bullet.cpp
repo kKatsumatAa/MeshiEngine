@@ -42,6 +42,9 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	SetCollider(std::make_unique<SphereCollider>());
 
 	SetTrans(pos);
+	//仮で銃はキャラの手前にあるので少し後ろをレイの始点にするため
+	oldPos_ = GetTrans() - directionVec;
+
 	directionVec_ = directionVec;
 	SetScale({ scale,scale,scale });
 	lifeTime_ = lifeTime;
@@ -73,9 +76,6 @@ void Bullet::Dead(const Vec3& interPos)
 
 void Bullet::Update()
 {
-	//前回の位置を記録
-	oldPos_ = GetTrans();
-
 	//クールタイムもゲームスピードをかける
 	lifeTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
@@ -93,6 +93,9 @@ void Bullet::Update()
 			Dead({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
 		}
 	}
+
+	//前回の位置を記録
+	oldPos_ = GetTrans();
 
 
 	//弾道

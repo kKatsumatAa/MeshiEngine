@@ -54,6 +54,8 @@ public:
 
 	void Update() override;
 
+	void Draw()override;
+
 	void OnCollision(const CollisionInfo& info) override;
 };
 
