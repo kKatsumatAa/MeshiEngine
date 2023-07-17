@@ -147,7 +147,7 @@ void Gun::OnCollision(const CollisionInfo& info)
 	else if (info.object_->GetObjName() == "enemy")
 	{
 		//‚Á‚Ä‚él‚ª‚¢‚é‚Æ‚«‚Í‚µ‚È‚¢
-		if (GetParent() && fallVec_.GetLength() == 0)
+		if (GetParent() != nullptr || fallVec_.GetLength() == 0 || !GetIsThrowing())
 		{
 			return;
 		}
