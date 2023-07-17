@@ -23,6 +23,11 @@ private:
 	//前のフレームの位置
 	Vec3 oldPos_ = { 0,0,0 };
 
+	//弾道
+	Object ballisticsObj_;
+	float ballisticsLength = 0;
+	const float BALLISTICS_LENGTH_MAX_ = 10;
+
 
 public:
 	/// <summary>
@@ -34,6 +39,9 @@ public:
 
 private:
 	void Dead(const Vec3& interPos);
+
+	//弾道用のオブジェクトの位置など
+	void BallisticsUpdate();
 
 public:
 	Object* GetOwner() { return owner_; }

@@ -7,6 +7,7 @@
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
 #include "CollisionManager.h"
+#include "ModelManager.h"
 
 using namespace DirectX;
 
@@ -53,6 +54,10 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	//撃った人の判定属性を自分の属性に
 	GetCollider()->SetAttribute(owner->GetCollider()->GetAttribute());
 
+	//弾道モデル
+	ballisticsObj_.Initialize();
+	ballisticsObj_.SetModel(ModelManager::GetInstance().LoadModel("ballistics"));
+
 	return true;
 }
 
@@ -74,6 +79,33 @@ void Bullet::Dead(const Vec3& interPos)
 	}
 }
 
+void Bullet::BallisticsUpdate()
+{
+	ballisticsObj_.SetIsSilhouette(true);
+
+	//位置セット(今の位置から方向のベクトルの逆ベクトルに長さ分進めた場所)
+	ballisticsObj_.SetTrans({ GetWorldTrans() - GetFrontVec() * ballisticsLength });
+
+	//ｚのみ弾道の長さを設定
+	ballisticsObj_.SetScale({ GetScale().x_, GetScale().y_,ballisticsLength });
+
+	//正面の基ベクトルはｚ軸の奥
+	ballisticsObj_.SetFrontVecTmp({ 0,0,1.0f });
+
+	//弾が向かってる方向に回転させるクォータニオン
+	Quaternion directionQ = Quaternion::DirectionToDirection(ballisticsObj_.GetFrontVecTmp(), GetFrontVec());
+
+	//行列をそのまま使う
+	ballisticsObj_.SetIsUseQuaternionMatRot(true);
+	ballisticsObj_.SetMatRot(directionQ.MakeRotateMatrix());
+
+	ballisticsObj_.Update();
+
+	//弾道を少しずつ伸ばす
+	ballisticsLength += GameVelocityManager::GetInstance().GetVelocity();
+	ballisticsLength = min(ballisticsLength, BALLISTICS_LENGTH_MAX_);
+}
+
 void Bullet::Update()
 {
 	//クールタイムもゲームスピードをかける
@@ -83,6 +115,12 @@ void Bullet::Update()
 	SetTrans(GetTrans() + directionVec_ * GameVelocityManager::GetInstance().GetVelocity());
 
 	Object::Update();
+
+	//正面ベクトルには向かってる方向のベクトル
+	SetFrontVec((GetWorldTrans() - oldPos_).GetNormalized());
+
+	//弾道
+	BallisticsUpdate();
 
 	//前回の位置から今の位置のベクトルをレイとして判定
 	{
@@ -97,10 +135,6 @@ void Bullet::Update()
 	//前回の位置を記録
 	oldPos_ = GetTrans();
 
-
-	//弾道
-	ParticleManager::GetInstance()->Add(15, GetWorldTrans(), { 0,0,0 }, { 0,0,0 }, GetScale().x_ * 3.0f, 0, { 5.0f,0,0,4.5f }, { 5.0f,0,0,4.5f });
-
 	//生存時間超えたら
 	if (lifeTime_ <= 0)
 	{
@@ -110,6 +144,9 @@ void Bullet::Update()
 
 void Bullet::Draw()
 {
+	//弾道
+	ballisticsObj_.DrawModel(nullptr, nullptr, { 3.0f,0,0,0.9f });
+
 	DrawSphere(nullptr, { 0.0f,0.0f,0.0f,1.0f });
 
 	//疑似シルエット解除

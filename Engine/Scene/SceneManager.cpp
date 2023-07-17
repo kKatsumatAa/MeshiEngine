@@ -48,8 +48,6 @@ void SceneManager::Initialize()
 		TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle_);
 
 		TextureManager::LoadGraph(L"Resources/image/effect1.png", texhandle_[1]);
-		TextureManager::LoadGraph(L"Resources/image/a.png", texhandle_[2]);
-		TextureManager::LoadGraph(L"Resources/image/test.jpg", texhandle_[4]);
 	}
 
 	//インスタンス生成
