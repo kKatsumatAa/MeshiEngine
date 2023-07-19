@@ -1,6 +1,7 @@
 #include "Basic.hlsli"
 
 Texture2D<float4> tex : register(t0); //0番スロットに設定されたテクスチャ
+Texture2D<float4> tex2 : register(t1); //1番スロットに設定されたテクスチャ
 SamplerState smp : register(s0);      //0番スロットに設定されたサンプラー
 
 struct PSOutput
@@ -206,6 +207,14 @@ PSOutput main(VSOutput input)
 
 		RGBA = RGBA * f + m_FogColor * (1.0f - f);
 	}
+	
+		//ディゾルブ
+    if (isDissolve)
+    {
+        float4 mask = tex2.Sample(smp, input.uv);
+		//R値が0.5超えると描画破棄する
+        clip(mask.r - dissolveT);
+    }
 
 	//一枚目の一つ目
 	output.col = RGBA;

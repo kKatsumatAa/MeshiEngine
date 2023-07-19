@@ -11,7 +11,7 @@ void ClearEffect::Initialize()
 	timer_ = 0;
 	t_ = 0;
 	scale_ = 0;
-	TextureManager::LoadGraph(L"Resources/image/clear.png", texHandle_);
+	TextureManager::LoadGraph(L"clear.png", texHandle_);
 	alpha_ = 0.0f;
 }
 

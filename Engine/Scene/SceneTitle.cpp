@@ -12,7 +12,7 @@ void SceneTitle::Initialize()
 	sceneM_->StopWaveAllScene();
 	ParticleManager::GetInstance()->ClearParticles();
 
-	TextureManager::LoadGraph(L"Resources/image/title.png", titleTex_);
+	TextureManager::LoadGraph(L"title.png", titleTex_);
 }
 
 void SceneTitle::Update(PostPera* postPera)

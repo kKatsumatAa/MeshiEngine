@@ -87,6 +87,10 @@ cbuffer ConstBufferEffectFlags : register(b4)
 	float4 rimColor;
 	//疑似シルエット
     uint isSilhouette;
+	//ディゾルブ
+    uint isDissolve = false;
+	//ディゾルブ割合
+    float dissolveT = 0;
 	//時間
 	uint time;
 }

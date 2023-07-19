@@ -24,7 +24,7 @@ enum indices
 	CIRCLE,
 	SPHERE,
 	SPRITE,
-	MODEL,
+	OBJ,
 	FBX
 };
 
@@ -42,6 +42,10 @@ struct EffectOConstBuffer
 	DirectX::XMFLOAT4 rimColor = { 1.0f,1.0f,1.0f,0 };
 	//疑似シルエット
 	uint32_t isSilhouette = false;
+	//ディゾルブ
+	uint32_t isDissolve = false;
+	//ディゾルブ割合
+	float dissolveT = 0;
 	//時間
 	uint32_t time = 0;
 };
@@ -74,7 +78,7 @@ private:
 	//FBX用
 	static RootPipe pipelineSetFBX_;
 	//ルートパラメータの設定
-	static D3D12_ROOT_PARAMETER rootParams_[7];
+	static D3D12_ROOT_PARAMETER rootParams_[8];
 	// グラフィックスパイプライン設定
 	static D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_;
 
@@ -131,13 +135,16 @@ private:
 	//モデルのポインタ
 	Model* model_ = nullptr;
 
+	//ディゾルブの画像ハンドル
+	uint64_t dissolveTextureHandle_ = NULL;
+
 public://変数
 	bool isWireFrame_ = 0;
 	//画面効果用
-	EffectOConstBuffer sEffectFlags_;
+	EffectOConstBuffer effectFlags_;
 	//画面効果用
-	ComPtr <ID3D12Resource> sEffectFlagsBuff_;
-	EffectOConstBuffer* sMapEffectFlagsBuff_;
+	ComPtr <ID3D12Resource> effectFlagsBuff_;
+	EffectOConstBuffer* mapEffectFlagsBuff_;
 
 public:
 	//定数バッファ用データ構造体（スキニング）
@@ -167,8 +174,8 @@ private:
 	//ルートシグネチャ系のコマンド
 	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
 	//マテリアル、ライト、テクスチャ系のコマンド
-	void SetMaterialLightMTexSkin(uint64_t textureHandle, ConstBuffTransform cbt);
-	void SetMaterialLightMTexSkinModel(uint64_t textureHandle, ConstBuffTransform cbt, Material* material);
+	void SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, ConstBuffTransform cbt);
+	void SetMaterialLightMTexSkinModel(uint64_t textureHandle, uint64_t dissolveTexHandle, ConstBuffTransform cbt, Material* material);
 
 	//
 	static void PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum = NULL);
@@ -249,6 +256,12 @@ public:
 	void SetIsUseQuaternionMatRot(bool is) { worldMat_->SetIsUseQuaMatRot(is); }
 	void SetMatRot(const M4& m) { worldMat_->SetRotMat(m); }
 
+	//ディゾルブ画像ハンドル
+	void SetDissolveTexHandle(uint64_t dissolveTextureHandle) { dissolveTextureHandle_ = dissolveTextureHandle; }
+	//ディゾルブ割合
+	void SetDissolveT(float t) { effectFlags_.dissolveT = t; }
+	void SetisDissolve(bool isDissolve) { effectFlags_.isDissolve = isDissolve; }
+
 	//初期化
 	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr);
 
@@ -283,7 +296,7 @@ public:
 	void PlayReverseAnimation(ModelFBX* model, bool isLoop = false);
 
 	//フォグとかのフラグ
-	void SetIsSilhouette(bool is) { sEffectFlags_.isSilhouette = is; }
+	void SetIsSilhouette(bool is) { effectFlags_.isSilhouette = is; }
 
 	//-------------
 

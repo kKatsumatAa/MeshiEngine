@@ -44,6 +44,13 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 
 	hp_ = HP_TMP_;
 
+	//ディゾルブ
+	SetisDissolve(true);
+	//ディゾルブ画像
+	uint64_t handle;
+	TextureManager::LoadGraph(L"dissolveMask2.jpg", handle);
+	SetDissolveTexHandle(handle);
+
 	return true;
 }
 
@@ -126,6 +133,9 @@ void Enemy::Update()
 		Vec3 directionV = playerPos - weapon_->GetWorldTrans();
 		weapon_->Attack(directionV.GetNormalized(), 0, this);
 	}
+
+	//hpによってディゾルブ
+	SetDissolveT((1.0f - (float)hp_ / (float)HP_TMP_) * 1.2f);
 
 	//ダメージ受けるクールタイムもゲームスピードをかける
 	damageCoolTime -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();

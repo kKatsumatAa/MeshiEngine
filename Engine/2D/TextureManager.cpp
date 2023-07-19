@@ -4,6 +4,10 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
+
+//格納先
+const std::string TextureManager::sDirectoryPath_ = "Resources/image/";
+
 int32_t TextureManager::sCount_ = 0;
 //リソース設定
 D3D12_RESOURCE_DESC TextureManager::sResDesc_;
@@ -54,7 +58,7 @@ void TextureManager::InitializeDescriptorHeap()
 
 
 	//デスクリプタレンジの設定
-	sDescriptorRange_.NumDescriptors = 100;   //一度の描画に使うテクスチャの枚数
+	sDescriptorRange_.NumDescriptors = 1;   //一度の描画に使うテクスチャの枚数
 	sDescriptorRange_.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	sDescriptorRange_.BaseShaderRegister = 0;  //テクスチャレジスタ0番(t0)
 	sDescriptorRange_.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
@@ -74,6 +78,17 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 	ConstWCharTToChar(name, namec);
 
 	std::string fileName = namec;
+
+	//格納先が指定されてなければimage内にあるので
+	if (fileName.find("Resources") == std::string::npos)
+	{
+		fileName = sDirectoryPath_ + fileName;
+	}
+
+	//wchar_tに戻す
+	wchar_t nameWc[128] = {};
+	ConstCharToWcharT(fileName.c_str(), nameWc);
+
 	{
 		//ファイル名から探す
 		std::map<std::string, uint64_t>::iterator it = sTextureDatas_.find(fileName);
@@ -90,7 +105,7 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 	ScratchImage scratchImg{};
 	//WICのテクスチャのロード
 	result = LoadFromWICFile(
-		name,
+		nameWc,
 		WIC_FLAGS_NONE,
 		&metadata, scratchImg
 	);
@@ -209,7 +224,7 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 
 		{
 			//名前とデータを紐づけて保存
-			//サウンドデータを連想配列に格納(複製してセットでマップに格納)
+			//テクスチャを連想配列に格納(セットでマップに格納)
 			sTextureDatas_.insert(std::make_pair(fileName, textureHandle));
 		}
 
@@ -255,4 +270,12 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle)
 
 	//バッファ用のカウント
 	sCount_++;
+}
+
+void TextureManager::CheckTexHandle(uint64_t& texHandle)
+{
+	if (texHandle == NULL)
+	{
+		texHandle = sWhiteTexHandle_;
+	}
 }

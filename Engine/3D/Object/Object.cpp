@@ -23,7 +23,7 @@ RootPipe Object::pipelineSetM_;
 RootPipe Object::pipelineSetFBX_;
 
 //ルートパラメータの設定
-D3D12_ROOT_PARAMETER Object::rootParams_[7] = {};
+D3D12_ROOT_PARAMETER Object::rootParams_[8] = {};
 
 // グラフィックスパイプライン設定
 D3D12_GRAPHICS_PIPELINE_STATE_DESC Object::pipelineDesc_{};
@@ -32,7 +32,7 @@ D3D12_GRAPHICS_PIPELINE_STATE_DESC Object::pipelineDesc_{};
 LightManager* Object::sLightManager_ = nullptr;
 
 //演出用
-//ComPtr <ID3D12Resource> Object::sEffectFlagsBuff_ = nullptr;
+//ComPtr <ID3D12Resource> Object::effectFlagsBuff_ = nullptr;
 //EffectOConstBuffer* Object::sMapEffectFlagsBuff_ = nullptr;
 //EffectOConstBuffer Object::sEffectFlags_;
 float Object::sRimColorF3_[3] = { 1.0f,1.0f,1.0f };
@@ -88,6 +88,13 @@ void Object::DrawInitialize()
 	rootParams_[6].Descriptor.ShaderRegister = 5;//定数バッファ番号(b5)
 	rootParams_[6].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams_[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//テクスチャレジスタ1番（ディゾルブ用テクスチャ）
+	rootParams_[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	D3D12_DESCRIPTOR_RANGE dissolveDHRange = TextureManager::GetInstance().sDescriptorRange_;
+	dissolveDHRange.BaseShaderRegister++;
+	rootParams_[7].DescriptorTable.pDescriptorRanges = &dissolveDHRange;//デスクリプタレンジ
+	rootParams_[7].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 
 	// パイプランステートの生成
 	PipeLineState(D3D12_FILL_MODE_SOLID, objPipeLineSet_[0]);
@@ -101,29 +108,10 @@ void Object::DrawInitialize()
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSet_, SPRITE);
 
 	//model用
-	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetM_, MODEL);
+	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetM_, OBJ);
 
 	//FBX用
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetFBX_, FBX);
-
-
-	////画面効果用
-	//{
-	//	//ヒープ設定
-	//	D3D12_HEAP_PROPERTIES cbHeapProp{};
-	//	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
-	//	//リソース設定
-	//	D3D12_RESOURCE_DESC cbResourceDesc{};
-	//	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
-	//	//リソース設定
-	//	ResourceProperties(cbResourceDesc,
-	//		((uint32_t)sizeof(EffectConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
-	//	//定数バッファの生成
-	//	BuffProperties(cbHeapProp, cbResourceDesc, &sEffectFlagsBuff_);
-	//	//定数バッファのマッピング
-	//	result = sEffectFlagsBuff_->Map(0, nullptr, (void**)&sMapEffectFlagsBuff_);//マッピング
-	//	assert(SUCCEEDED(result));
-	//}
 }
 
 //----------------------------------------------------------------
@@ -172,7 +160,7 @@ void Object::Update()
 
 void Object::EffectUpdate()
 {
-	sEffectFlags_.time++;
+	effectFlags_.time++;
 
 #ifdef _DEBUG
 	//imgui
@@ -185,16 +173,18 @@ void Object::EffectUpdate()
 	ImGui::End();*/
 #endif // DEBUG
 
-	sEffectFlags_.rimColor = { sRimColorF3_[0],sRimColorF3_[1],sRimColorF3_[2],0 };
+	effectFlags_.rimColor = { sRimColorF3_[0],sRimColorF3_[1],sRimColorF3_[2],0 };
 
 	//画面効果用
 	{
-		sMapEffectFlagsBuff_->isFog = sEffectFlags_.isFog;
-		sMapEffectFlagsBuff_->isToon = sEffectFlags_.isToon;
-		sMapEffectFlagsBuff_->isRimLight = sEffectFlags_.isRimLight;
-		sMapEffectFlagsBuff_->rimColor = sEffectFlags_.rimColor;
-		sMapEffectFlagsBuff_->isSilhouette = sEffectFlags_.isSilhouette;
-		sMapEffectFlagsBuff_->time = sEffectFlags_.time;
+		mapEffectFlagsBuff_->isFog = effectFlags_.isFog;
+		mapEffectFlagsBuff_->isToon = effectFlags_.isToon;
+		mapEffectFlagsBuff_->isRimLight = effectFlags_.isRimLight;
+		mapEffectFlagsBuff_->rimColor = effectFlags_.rimColor;
+		mapEffectFlagsBuff_->isSilhouette = effectFlags_.isSilhouette;
+		mapEffectFlagsBuff_->isDissolve = effectFlags_.isDissolve;
+		mapEffectFlagsBuff_->dissolveT = effectFlags_.dissolveT;
+		mapEffectFlagsBuff_->time = effectFlags_.time;
 	}
 }
 
@@ -301,9 +291,9 @@ Object::Object()
 		ResourceProperties(cbResourceDesc,
 			((uint32_t)sizeof(EffectConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
 		//定数バッファの生成
-		BuffProperties(cbHeapProp, cbResourceDesc, &sEffectFlagsBuff_);
+		BuffProperties(cbHeapProp, cbResourceDesc, &effectFlagsBuff_);
 		//定数バッファのマッピング
-		result = sEffectFlagsBuff_->Map(0, nullptr, (void**)&sMapEffectFlagsBuff_);//マッピング
+		result = effectFlagsBuff_->Map(0, nullptr, (void**)&mapEffectFlagsBuff_);//マッピング
 		assert(SUCCEEDED(result));
 	}
 }
@@ -447,33 +437,35 @@ void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature);
 }
 
-void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, ConstBuffTransform cbt)
+void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, ConstBuffTransform cbt)
 {
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 
 	sLightManager_->Draw(4);
 
-	//04_02
-	{
+	//テクスチャ
 		//SRVヒープの設定コマンド
-		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
-		//SRVヒープの先頭ハンドルを取得
-		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-		srvGpuHandle.ptr = textureHandle;
-		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
-	}
+	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
+	//SRVヒープの先頭ハンドルを取得
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+	srvGpuHandle.ptr = textureHandle;
+	//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+
+	//ディゾルブテクスチャ
+	srvGpuHandle.ptr = dissolveTex;
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(7, srvGpuHandle);
 
 	//定数バッファビュー(CBV)の設定コマンド
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, cbt.constBuffTransform_->GetGPUVirtualAddress());
 
 	//演出フラグ
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, sEffectFlagsBuff_->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff_->GetGPUVirtualAddress());
 }
 
-void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle, ConstBuffTransform cbt, Material* material)
+void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle, uint64_t dissolveTexHandle, ConstBuffTransform cbt, Material* material)
 {
-	SetMaterialLightMTexSkin(textureHandle, cbt);
+	SetMaterialLightMTexSkin(textureHandle, dissolveTexHandle, cbt);
 
 	//アンビエントとか
 	material->Update();
@@ -492,19 +484,14 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 	SendingMat(indexNum, camera);
 
 	//テクスチャを設定していなかったら
-	uint64_t textureHandle_;
-	if (textureHandle == NULL)
-	{
-		textureHandle_ = TextureManager::GetInstance().sWhiteTexHandle_;
-	}
-	else
-	{
-		textureHandle_ = textureHandle;
-	}
+	uint64_t textureHandleL = textureHandle;
+	TextureManager::CheckTexHandle(textureHandleL);
+	uint64_t dissolveTextureHandleL = dissolveTextureHandle_;
+	TextureManager::CheckTexHandle(dissolveTextureHandleL);
 
 	//ラムダ式でコマンド関数
 	std::function<void()>SetRootPipeR = [=]() {SetRootPipe(objPipeLineSet_->pipelineState.Get(), pipelineNum, objPipeLineSet_->rootSignature.Get()); };
-	std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkin(textureHandle_, constBuffTransform); };
+	std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkin(textureHandleL, dissolveTextureHandleL, constBuffTransform); };
 
 	if (indexNum == TRIANGLE)
 	{
@@ -536,23 +523,21 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 
-
-		//04_02
-		{
+		//テクスチャ
 			//SRVヒープの設定コマンド
-			DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
-			//SRVヒープの先頭ハンドルを取得
-			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-			srvGpuHandle.ptr = textureHandle_;
-			//(インスタンスで読み込んだテクスチャ用のSRVを指定)
-			DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
-		}
+		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
+		//SRVヒープの先頭ハンドルを取得
+		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+		srvGpuHandle.ptr = textureHandleL;
+		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+
 		//定数バッファビュー(CBV)の設定コマンド
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform_->GetGPUVirtualAddress());
 
 		sprite_->SpriteDraw();
 	}
-	else if (indexNum == MODEL)
+	else if (indexNum == OBJ)
 	{
 		// パイプラインステートとルートシグネチャの設定コマンド
 		SetRootPipe(pipelineSetM_.pipelineState.Get(), pipelineNum, pipelineSetM_.rootSignature.Get());
@@ -563,10 +548,15 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 
 		sLightManager_->Draw(4);
 
+		//ディゾルブテクスチャ
+		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+		srvGpuHandle.ptr = dissolveTextureHandleL;
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(7, srvGpuHandle);
+
 		//定数バッファビュー(CBV)の設定コマンド
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform_->GetGPUVirtualAddress());
-		//ポストエフェクトフラグ用
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, sEffectFlagsBuff_->GetGPUVirtualAddress());
+		//エフェクトフラグ用
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff_->GetGPUVirtualAddress());
 
 		//スキニング用
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(6, constBuffSkin_->GetGPUVirtualAddress());
@@ -580,7 +570,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 
 		//ラムダ式でコマンド関数
 		std::function<void()>SetRootPipeR = [=]() {SetRootPipe(pipelineSetFBX_.pipelineState.Get(), 0, pipelineSetFBX_.rootSignature.Get()); };
-		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(fbx->material_->textureHandle_, constBuffTransform, fbx->material_.get()); };
+		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(fbx->material_->textureHandle_, dissolveTextureHandleL, constBuffTransform, fbx->material_.get()); };
 
 		fbx->Draw(SetRootPipeR, SetMaterialTex);
 	}
@@ -687,7 +677,7 @@ void Object::DrawModel(Model* model, Camera* camera,
 
 	constMapMaterial_->color = color;
 
-	Update(MODEL, pipelineNum, NULL, cbt_, camera, model);
+	Update(OBJ, pipelineNum, NULL, cbt_, camera, model);
 }
 
 void Object::DrawFBX(ModelFBX* modelFbx, Camera* camera, const XMFLOAT4& color, int32_t pipelineNum)
@@ -705,7 +695,7 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 	{
 		rootPipe.CreateBlob(L"Resources/shaders/SpriteVS.hlsl", L"Resources/shaders/SpritePS.hlsl");
 	}
-	else if (indexNum == MODEL || indexNum == FBX)
+	else if (indexNum == OBJ || indexNum == FBX)
 	{
 		rootPipe.CreateBlob(L"Resources/shaders/OBJVertexShader.hlsl", L"Resources/shaders/OBJPixelShader.hlsl");
 	}
@@ -807,7 +797,7 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 	}
 
 	// その他の設定
-	pipelineDesc_.NumRenderTargets = 3; // 描画対象は2つ（ポストエフェクトの一枚目の3つ）
+	pipelineDesc_.NumRenderTargets = 3; // 描画対象は3つ（ポストエフェクトの一枚目の3つ）
 	pipelineDesc_.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
 	pipelineDesc_.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
 	pipelineDesc_.RTVFormats[2] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
@@ -837,7 +827,7 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 	ComPtr<ID3DBlob> rootSigBlob;
 	rootSigBlob = nullptr;
 	result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
-		&rootSigBlob, &rootPipe.errorBlob);
+		rootSigBlob.ReleaseAndGetAddressOf(), rootPipe.errorBlob.ReleaseAndGetAddressOf());
 	assert(SUCCEEDED(result));
 	result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootPipe.rootSignature));

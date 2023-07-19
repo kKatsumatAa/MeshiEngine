@@ -10,6 +10,9 @@ private:
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 private:
+	//格納先
+	static const std::string sDirectoryPath_;
+
 	static int32_t sCount_;
 
 	//テクスチャデータの連想配列
@@ -22,7 +25,6 @@ private:
 
 public:
 	static uint64_t sWhiteTexHandle_;
-
 
 	//リソース設定
 	static D3D12_RESOURCE_DESC sResDesc_;
@@ -54,5 +56,8 @@ public:
 	static void LoadGraph(const wchar_t* name, uint64_t& textureHandle);
 
 	static void AddSrvHandleCount() { sCount_++; }
+
+	//テクスチャハンドルが何も入ってなかったら白い画像のハンドル入れる
+	static void CheckTexHandle(uint64_t& texHandle);
 };
 

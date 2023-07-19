@@ -40,14 +40,14 @@ void SceneManager::Initialize()
 	//Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
 
 	{
-		TextureManager::LoadGraph(L"Resources/image/loading.png", texhandle_[3]);
+		TextureManager::LoadGraph(L"loading.png", texhandle_[3]);
 		//白い画像
-		TextureManager::LoadGraph(L"Resources/image/white.png", TextureManager::GetInstance().sWhiteTexHandle_);
+		TextureManager::LoadGraph(L"white.png", TextureManager::GetInstance().sWhiteTexHandle_);
 
 		//画像
-		TextureManager::LoadGraph(L"Resources/ascii.png", debugTextHandle_);
+		TextureManager::LoadGraph(L"ascii.png", debugTextHandle_);
 
-		TextureManager::LoadGraph(L"Resources/image/effect1.png", texhandle_[1]);
+		TextureManager::LoadGraph(L"effect1.png", texhandle_[1]);
 	}
 
 	//インスタンス生成
