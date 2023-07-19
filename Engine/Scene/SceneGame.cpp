@@ -35,6 +35,11 @@ void SceneGame::Initialize()
 	ClearEffect::GetInstance().Initialize();
 
 	ParticleManager::GetInstance()->SetBlendNum(ParticleManager::TRIANGLE);
+
+	fbx = ModelManager::GetInstance().LoadModelFBX("enemy2");
+
+	obj.SetScale({ 0.1f, 0.1f, 0.1f });
+	obj.PlayAnimation(fbx, true);
 }
 
 void SceneGame::Update(PostPera* postPera)
@@ -67,6 +72,8 @@ void SceneGame::Update(PostPera* postPera)
 
 	ClearEffect::GetInstance().Update();
 
+	obj.Update();
+
 	//シーン遷移
 	if (LevelManager::GetInstance().GetGameOver())
 	{
@@ -88,7 +95,9 @@ void SceneGame::Update(PostPera* postPera)
 
 void SceneGame::Draw()
 {
-	//ゲームスピード
+	obj.DrawFBX(fbx);
+
+	//弾
 	BulletManager::GetInstance().Draw();
 
 	LevelManager::GetInstance().Draw();
