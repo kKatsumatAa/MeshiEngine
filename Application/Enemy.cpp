@@ -48,8 +48,14 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	SetisDissolve(true);
 	//ディゾルブ画像
 	uint64_t handle;
-	TextureManager::LoadGraph(L"dissolveMask2.jpg", handle);
+	TextureManager::LoadGraph(L"dissolveMask.png", handle);
 	SetDissolveTexHandle(handle);
+
+	//supecularMap
+	SetIsSpecularMap(true);
+	//tex
+	TextureManager::GetInstance().LoadGraph(L"specularMap.jpg", handle);
+	SetSpecularMapTexHandle(handle);
 
 	return true;
 }
@@ -135,7 +141,7 @@ void Enemy::Update()
 	}
 
 	//hpによってディゾルブ
-	SetDissolveT((1.0f - (float)hp_ / (float)HP_TMP_) * 1.2f);
+	SetDissolveT((1.0f - (float)hp_ / (float)HP_TMP_) * DISSOLVE_POW_);
 
 	//ダメージ受けるクールタイムもゲームスピードをかける
 	damageCoolTime -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();

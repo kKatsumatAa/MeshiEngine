@@ -46,6 +46,8 @@ struct EffectOConstBuffer
 	uint32_t isDissolve = false;
 	//ディゾルブ割合
 	float dissolveT = 0;
+	//スペキュラマップ
+	uint32_t isSpecularMap = false;
 	//時間
 	uint32_t time = 0;
 };
@@ -78,7 +80,7 @@ private:
 	//FBX用
 	static RootPipe pipelineSetFBX_;
 	//ルートパラメータの設定
-	static D3D12_ROOT_PARAMETER rootParams_[8];
+	static D3D12_ROOT_PARAMETER rootParams_[9];
 	// グラフィックスパイプライン設定
 	static D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_;
 
@@ -137,6 +139,8 @@ private:
 
 	//ディゾルブの画像ハンドル
 	uint64_t dissolveTextureHandle_ = NULL;
+	//スペキュラマップの画像
+	uint64_t specularMapTextureHandle_ = NULL;
 
 public://変数
 	bool isWireFrame_ = 0;
@@ -174,8 +178,9 @@ private:
 	//ルートシグネチャ系のコマンド
 	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
 	//マテリアル、ライト、テクスチャ系のコマンド
-	void SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, ConstBuffTransform cbt);
-	void SetMaterialLightMTexSkinModel(uint64_t textureHandle, uint64_t dissolveTexHandle, ConstBuffTransform cbt, Material* material);
+	void SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex, ConstBuffTransform cbt);
+	void SetMaterialLightMTexSkinModel(uint64_t textureHandle, uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
+		ConstBuffTransform cbt, Material* material);
 
 	//
 	static void PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum = NULL);
@@ -261,6 +266,10 @@ public:
 	//ディゾルブ割合
 	void SetDissolveT(float t) { effectFlags_.dissolveT = t; }
 	void SetisDissolve(bool isDissolve) { effectFlags_.isDissolve = isDissolve; }
+
+	//スペキュラマップ
+	void SetIsSpecularMap(bool isSpecularMap) { effectFlags_.isSpecularMap = isSpecularMap; }
+	void SetSpecularMapTexHandle(uint64_t specularMapTextureHandle) { specularMapTextureHandle_ = specularMapTextureHandle; }
 
 	//初期化
 	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr);

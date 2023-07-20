@@ -23,7 +23,7 @@ RootPipe Object::pipelineSetM_;
 RootPipe Object::pipelineSetFBX_;
 
 //ルートパラメータの設定
-D3D12_ROOT_PARAMETER Object::rootParams_[8] = {};
+D3D12_ROOT_PARAMETER Object::rootParams_[9] = {};
 
 // グラフィックスパイプライン設定
 D3D12_GRAPHICS_PIPELINE_STATE_DESC Object::pipelineDesc_{};
@@ -95,6 +95,13 @@ void Object::DrawInitialize()
 	rootParams_[7].DescriptorTable.pDescriptorRanges = &dissolveDHRange;//デスクリプタレンジ
 	rootParams_[7].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//テクスチャレジスタ2番（スペキュラマップ用テクスチャ）
+	rootParams_[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	D3D12_DESCRIPTOR_RANGE dissolveDHRange2 = TextureManager::GetInstance().sDescriptorRange_;
+	dissolveDHRange2.BaseShaderRegister += 2;
+	rootParams_[8].DescriptorTable.pDescriptorRanges = &dissolveDHRange2;//デスクリプタレンジ
+	rootParams_[8].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 
 	// パイプランステートの生成
 	PipeLineState(D3D12_FILL_MODE_SOLID, objPipeLineSet_[0]);
@@ -184,6 +191,7 @@ void Object::EffectUpdate()
 		mapEffectFlagsBuff_->isSilhouette = effectFlags_.isSilhouette;
 		mapEffectFlagsBuff_->isDissolve = effectFlags_.isDissolve;
 		mapEffectFlagsBuff_->dissolveT = effectFlags_.dissolveT;
+		mapEffectFlagsBuff_->isSpecularMap = effectFlags_.isSpecularMap;
 		mapEffectFlagsBuff_->time = effectFlags_.time;
 	}
 }
@@ -437,7 +445,7 @@ void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature);
 }
 
-void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, ConstBuffTransform cbt)
+void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex, ConstBuffTransform cbt)
 {
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 
@@ -456,6 +464,10 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveT
 	srvGpuHandle.ptr = dissolveTex;
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(7, srvGpuHandle);
 
+	//スペキュラマップテクスチャ
+	srvGpuHandle.ptr = specularMapTex;
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(8, srvGpuHandle);
+
 	//定数バッファビュー(CBV)の設定コマンド
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, cbt.constBuffTransform_->GetGPUVirtualAddress());
 
@@ -463,9 +475,9 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveT
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff_->GetGPUVirtualAddress());
 }
 
-void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle, uint64_t dissolveTexHandle, ConstBuffTransform cbt, Material* material)
+void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle, uint64_t dissolveTexHandle, uint64_t specularMapTexhandle, ConstBuffTransform cbt, Material* material)
 {
-	SetMaterialLightMTexSkin(textureHandle, dissolveTexHandle, cbt);
+	SetMaterialLightMTexSkin(textureHandle, dissolveTexHandle, specularMapTexhandle, cbt);
 
 	//アンビエントとか
 	material->Update();
@@ -488,10 +500,12 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 	TextureManager::CheckTexHandle(textureHandleL);
 	uint64_t dissolveTextureHandleL = dissolveTextureHandle_;
 	TextureManager::CheckTexHandle(dissolveTextureHandleL);
+	uint64_t specularMapTextureHandleL = specularMapTextureHandle_;
+	TextureManager::CheckTexHandle(specularMapTextureHandleL);
 
 	//ラムダ式でコマンド関数
 	std::function<void()>SetRootPipeR = [=]() {SetRootPipe(objPipeLineSet_->pipelineState.Get(), pipelineNum, objPipeLineSet_->rootSignature.Get()); };
-	std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkin(textureHandleL, dissolveTextureHandleL, constBuffTransform); };
+	std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkin(textureHandleL, dissolveTextureHandleL, specularMapTextureHandleL, constBuffTransform); };
 
 	if (indexNum == TRIANGLE)
 	{
@@ -553,6 +567,10 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 		srvGpuHandle.ptr = dissolveTextureHandleL;
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(7, srvGpuHandle);
 
+		//スペキュラマップテクスチャ
+		srvGpuHandle.ptr = specularMapTextureHandleL;
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(8, srvGpuHandle);
+
 		//定数バッファビュー(CBV)の設定コマンド
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform_->GetGPUVirtualAddress());
 		//エフェクトフラグ用
@@ -570,7 +588,8 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 
 		//ラムダ式でコマンド関数
 		std::function<void()>SetRootPipeR = [=]() {SetRootPipe(pipelineSetFBX_.pipelineState.Get(), 0, pipelineSetFBX_.rootSignature.Get()); };
-		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(fbx->material_->textureHandle_, dissolveTextureHandleL, constBuffTransform, fbx->material_.get()); };
+		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(fbx->material_->textureHandle_, dissolveTextureHandleL, specularMapTextureHandleL,
+			constBuffTransform, fbx->material_.get()); };
 
 		fbx->Draw(SetRootPipeR, SetMaterialTex);
 	}

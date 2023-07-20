@@ -664,5 +664,8 @@
       <Filter>リソース ファイル\shaders</Filter>
     </None>
     <None Include="packages.config" />
+    <None Include="Resources\shaders\CommonHeader.hlsli">
+      <Filter>リソース ファイル\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

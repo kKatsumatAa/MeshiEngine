@@ -30,6 +30,8 @@ private:
 
 	const float KNOCK_BACK_POW_ = 0.165f;
 
+	const float DISSOLVE_POW_ = 0.93f;
+
 public:
 	/// <summary>
 	/// オブジェクト生成

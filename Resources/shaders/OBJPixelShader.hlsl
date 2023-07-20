@@ -1,16 +1,6 @@
 
 #include "OBJShaderHeader.hlsli"
 
-Texture2D<float4> tex : register(t0); //0番スロットに設定されたテクスチャ
-Texture2D<float4> tex2 : register(t1); //1番スロットに設定されたテクスチャ
-SamplerState smp : register(s0); //0番スロットに設定されたサンプラー
-
-struct PSOutput
-{
-    float4 col : SV_TARGET0; //通常のレンダリング
-    float4 col2 : SV_TARGET1; //色２
-    float4 highLumi : SV_TARGET2; //高輝度
-};
 
 PSOutput main(VSOutput input)
 {
@@ -29,6 +19,9 @@ PSOutput main(VSOutput input)
 
 	// シェーディングによる色
     float4 shadecolor = { 0, 0, 0, m_alpha };
+    
+    //スペキュラマップの色
+    float4 specularMapCol = { 0, 0, 0, 0 };
 
 	//平行光源
     for (int i = 0; i < S_DIRLIGHT_NUM; i++)
@@ -55,6 +48,13 @@ PSOutput main(VSOutput input)
 
 			// 全て加算する
             shadecolor.rgb += (diffuse + specular) * dirLights[i].lightcolor;
+            
+            //スペキュラマップ
+            if(isSpecularMap)
+            {
+                float4 specularMap = GetSpecularMapColor(specular, diffuse, tex2.Sample(smp, input.uv));
+                specularMapCol += specularMap;
+            }
         }
     }
 
@@ -92,6 +92,13 @@ PSOutput main(VSOutput input)
 
 			// 全て加算する
             shadecolor.rgb += atten * (diffuse + specular) * pointLights[i].lightcolor;
+            
+                        //スペキュラマップ
+            if(isSpecularMap)
+            {
+                float4 specularMap = GetSpecularMapColor(specular, diffuse, tex2.Sample(smp, input.uv));
+                specularMapCol += specularMap;
+            }
         }
     }
 
@@ -134,6 +141,13 @@ PSOutput main(VSOutput input)
             specular = specular * m_specular * specularColor;
 			//全て加算する
             shadecolor.rgb += atten * (diffuse + specular) * spotLights[i].lightcolor;
+            
+            //スペキュラマップ
+            if(isSpecularMap)
+            {
+                float4 specularMap = GetSpecularMapColor(specular, diffuse, tex2.Sample(smp, input.uv));
+                specularMapCol += specularMap;
+            }
         }
     }
 
@@ -189,6 +203,13 @@ PSOutput main(VSOutput input)
     float3 RGB = RGBA.rgb;
     float A = RGBA.a;
 
+    
+    //スペキュラマップ
+    if(isSpecularMap)
+    {
+        RGBA += saturate(specularMapCol);
+    }
+    
 		//疑似シルエット
     if (isSilhouette)
     {
@@ -220,6 +241,7 @@ PSOutput main(VSOutput input)
 		//R値が0.5超えると描画破棄する
         clip(mask.r - dissolveT);
     }
+   
 
 	//一枚目の一つ目
     output.col = RGBA;
