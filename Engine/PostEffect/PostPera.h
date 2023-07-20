@@ -14,6 +14,10 @@ struct EffectConstBuffer
 	uint32_t isGaussian = false;
 	//ガウシアンぼかし
 	uint32_t isGaussian2 = false;
+	//ラジアルブラー
+	uint32_t isRadialBlur = false;
+	//ラジアル強さ
+	float radialPow = 1.0f;
 	//エンボス
 	uint32_t isEmboss = false;
 	//シャープネス
@@ -104,6 +108,8 @@ private:
 
 	//ブルームの最大強さ
 	const float BLOOM_MAX_POW_ = 15.0f;
+	//ラジアルの最大強さ
+	const float RADIAL_MAX_POW_ = 1.0f;
 
 	//
 	float peraExtend_ = 1.0f;
