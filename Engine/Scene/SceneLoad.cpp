@@ -19,7 +19,7 @@ void SceneLoad::Initialize()
 	async_.StartAsyncFunction([=]() { Load(); });
 }
 
-void SceneLoad::Update(PostPera* postPera)
+void SceneLoad::Update()
 {
 
 

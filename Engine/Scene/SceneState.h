@@ -14,7 +14,7 @@ public:
 	virtual void Initialize() = 0;
 
 	void SetScene(SceneManager* sceneM);
-	virtual void Update(PostPera* postPera) = 0;
+	virtual void Update() = 0;
 	virtual void Draw() = 0;
 	virtual void DrawSprite() = 0;
 

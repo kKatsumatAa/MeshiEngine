@@ -5,6 +5,7 @@
 #include"AbstractSceneFactory.h"
 #include"CameraManager.h"
 #include"MouseInput.h"
+#include"PostEffectManager.h"
 
 
 //ゲーム全体（共通処理）
@@ -17,8 +18,6 @@ protected:
 
 	//シーンファクトリー
 	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
-
-	std::unique_ptr<PostPera> postPera_[2];
 
 	std::unique_ptr <ImGuiManager> imguiM_;
 

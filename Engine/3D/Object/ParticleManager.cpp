@@ -2,7 +2,6 @@
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
 #include "CameraManager.h"
-#include "GameVelocityManager.h"
 
 using namespace DirectX;
 
@@ -65,7 +64,7 @@ void ParticleManager::Initialize()
 	BuffProperties(cbHeapProp, cbResourceDesc, &constBuff_);
 }
 
-void ParticleManager::Update(Camera* camera)
+void ParticleManager::Update(float speed, Camera* camera)
 {
 	HRESULT result;
 
@@ -83,11 +82,9 @@ void ParticleManager::Update(Camera* camera)
 		it != particles_.end();
 		it++) {
 
-		//ゲームスピード
-		float gameVel[2] = { GameVelocityManager::GetInstance().GetVelocity(),1.0f - GameVelocityManager::GetInstance().GetVelocity() };
 
 		// 経過フレーム数をカウント
-		it->frame_ += 1.0f * gameVel[0];
+		it->frame_ += 1.0f * speed;
 		// 進行度を0～1の範囲に換算
 		float f = (float)it->numFrame_ / it->frame_;
 
@@ -95,7 +92,7 @@ void ParticleManager::Update(Camera* camera)
 		it->velocity_ = it->velocity_ + it->accel_;
 
 		// 速度による移動
-		it->position_ = it->position_ + it->velocity_ * gameVel[0];
+		it->position_ = it->position_ + it->velocity_ * speed;
 
 		// カラーの線形補間
 		it->color_ = it->sColor_ + (it->eColor_ - it->sColor_) / f;

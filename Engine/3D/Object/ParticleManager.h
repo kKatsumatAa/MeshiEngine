@@ -118,7 +118,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update(Camera* camera = nullptr);
+	void Update(float speed, Camera* camera = nullptr);
 
 	/// <summary>
 	/// 描画

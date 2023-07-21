@@ -30,6 +30,7 @@ struct EffectConstBuffer
 	uint32_t isVignette = false;
 	//樽状湾曲
 	uint32_t isBarrelCurve = false;
+	float barrelCurvePow = 1.0f;
 	//走査線
 	uint32_t isScanningLine = false;
 	//グレースケール

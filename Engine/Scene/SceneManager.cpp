@@ -71,14 +71,11 @@ void SceneManager::Initialize()
 	lightManager_->SetCircleShadowActive(0, false);
 }
 
-void SceneManager::Update(PostPera* postPera)
+void SceneManager::Update()
 {
-	//パーティクル
-	ParticleManager::GetInstance()->Update();
-
 	lightManager_->Update();
 
-	state_->Update(postPera);
+	state_->Update();
 
 	lightManager_->SetAmbientColor({ ambientColor_[0],ambientColor_[1], ambientColor_[2] });
 	lightManager_->SetDiffuseColor({ diffuseColor_[0],diffuseColor_[1], diffuseColor_[2] });

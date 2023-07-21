@@ -1,5 +1,6 @@
 #include "MyGame.h"
 #include"SceneFactory.h"
+#include"GameVelocityManager.h"
 
 
 void MyGame::Initialize()
@@ -17,10 +18,6 @@ void MyGame::Initialize()
 	sceneM_->SetSceneFactory(sceneFactory_.get());
 	sceneM_->Initialize();
 	sceneM_->ChangeScene("TITLE");
-
-	postPera_[1]->effectFlags_.isBarrelCurve = true;
-	postPera_[0]->effectFlags_.isBloom = true;
-	postPera_[0]->effectFlags_.isVignette = true;
 }
 
 void MyGame::Finalize()
@@ -39,24 +36,15 @@ void MyGame::Update()
 
 	//ゲーム固有の更新処理
 		//パーティクル
-	ParticleManager::GetInstance()->Update();
+	ParticleManager::GetInstance()->Update(GameVelocityManager::GetInstance().GetVelocity());
 }
 
 void MyGame::Draw()
 {
-	//1枚目に描画
+	//ポストペラに描画する
 	{
 		std::function<void()>f = [=]() {sceneM_->Draw(); };
-		postPera_[0]->DrawToPostpera(f);
-		postPera_[0]->DrawShrinkTextureForBlur();
-		//一枚目に描画結果、二枚目も描画する
-		std::function<void()>f2 = [=]() { postPera_[0]->Draw2();  };
-		postPera_[1]->DrawToPostpera(f2);
-	}
-
-	//ブルーム用
-	{
-		postPera_[1]->DrawShrinkTextureForBlur();
+		PostEffectManager::GetInstance().BeforeDraw(f);
 	}
 
 	//実際に描画
@@ -64,8 +52,8 @@ void MyGame::Draw()
 		//実際に描画----------------
 		DirectXWrapper::GetInstance().PreDraw();
 
-		//実際に描画
-		postPera_[1]->Draw2();
+		//ポストペラ実際に描画
+		PostEffectManager::GetInstance().DrawDisplay();
 
 		sceneM_->DrawSprite();
 

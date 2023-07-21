@@ -25,6 +25,7 @@ cbuffer ConstBufferEffectFlags : register(b0)
     unsigned int isVignette;
 	//樽状湾曲
     unsigned int isBarrelCurve;
+    float barrelCurvePow;
 	//走査線
     unsigned int isScanningLine;
 	//グレースケール

@@ -16,11 +16,8 @@ void Framework::Initialize()
 
 	Object::DrawInitialize();
 
-	//ポストエフェクト//
-	postPera_[0] = std::make_unique<PostPera>();
-	postPera_[1] = std::make_unique<PostPera>();
-	postPera_[0]->Initialize(L"Resources/image/normalImage.jpg", 0.9f);
-	postPera_[1]->Initialize(L"Resources/image/normalImage.jpg");
+	//ポストエフェクト
+	PostEffectManager::GetInstance().Initialize();
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
@@ -75,7 +72,7 @@ void Framework::Update()
 	MouseInput::GetInstance().Update();
 
 	//更新処理
-	sceneM_->Update(postPera_->get());
+	sceneM_->Update();
 
 	//カメラマネージャー
 	CameraManager::GetInstance().Update();
@@ -83,9 +80,8 @@ void Framework::Update()
 	//imgui
 	imguiM_->Begin();
 
-	//ポストエフェクト(imgui)
-	postPera_[0]->Update();
-	postPera_[1]->Update();
+	//ポストエフェクト
+	PostEffectManager::GetInstance().Update();
 
 	//(imgui)
 	Object::StaticUpdate();

@@ -13,7 +13,7 @@ void SceneClear::Initialize()
 	ParticleManager::GetInstance()->ClearParticles();
 }
 
-void SceneClear::Update(PostPera* postPera)
+void SceneClear::Update()
 {
 	//ƒV[ƒ“‘JˆÚ
 	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))

@@ -42,7 +42,7 @@ void SceneGame::Initialize()
 	obj.PlayAnimation(fbx, true);
 }
 
-void SceneGame::Update(PostPera* postPera)
+void SceneGame::Update()
 {
 
 #ifdef _DEBUG

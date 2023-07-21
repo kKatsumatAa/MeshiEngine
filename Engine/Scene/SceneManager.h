@@ -11,6 +11,7 @@
 #include "ModelManager.h"
 #include "LevelManager.h"
 #include "MouseInput.h"
+#include "PostEffectManager.h"
 
 
 
@@ -80,7 +81,7 @@ public:
 	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
 
 	void Initialize();
-	void Update(PostPera* postPera);
+	void Update();
 	void Draw();
 	void DrawPostEffect();
 	void DrawPostEffect2();

@@ -13,13 +13,15 @@ void SceneTitle::Initialize()
 	ParticleManager::GetInstance()->ClearParticles();
 
 	TextureManager::LoadGraph(L"title.png", titleTex_);
+
+	PostEffectManager::GetInstance().GetPostPera1()->effectFlags_.isBloom = true;
+	PostEffectManager::GetInstance().GetPostPera1()->effectFlags_.isVignette = true;
+	PostEffectManager::GetInstance().GetPostPera1()->effectFlags_.isScanningLine = true;
+	PostEffectManager::GetInstance().GetPostPera2()->effectFlags_.isBarrelCurve = true;
 }
 
-void SceneTitle::Update(PostPera* postPera)
+void SceneTitle::Update()
 {
-	//走査線
-	postPera[0].effectFlags_.isScanningLine = true;
-
 	//タイトル画面
 	if (t_ < 1.0f)
 	{
@@ -33,7 +35,7 @@ void SceneTitle::Update(PostPera* postPera)
 	//シーン遷移
 	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || KeyboardInput::GetInstance().KeyTrigger(DIK_R))
 	{
-		postPera[0].effectFlags_.isScanningLine = false;
+		PostEffectManager::GetInstance().GetPostPera1()->effectFlags_.isScanningLine = false;
 
 		sceneM_->ChangeScene("GAME");
 	}
