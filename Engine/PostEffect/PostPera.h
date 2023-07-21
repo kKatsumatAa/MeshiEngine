@@ -66,15 +66,40 @@ private:
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 private:
-	PeraVertex pVertices_[4] = {
-		{{-1.0f, -1.0f,0},{0,1.0f}},//左下
-		{{-1.0f, +1.0f,0},{0,0}},//左上
-		{{+1.0f, -1.0f,0},{1.0f,1.0f}},//右下
-		{{+1.0f, +1.0f,0},{1.0f,0}}//右上
+	//ペラの拡大率
+	float pera1Extend_ = 1.0f;
+	float peraGExtend_ = 1.0f;
+	float pera2Extend_ = 1.0f;
+	//一枚目の頂点
+	PeraVertex p1Vertices_[4] = {
+			{{-1.0f, -1.0f,0},{0,1.0f}},//左下
+			{{-1.0f, +1.0f,0},{0,0}},//左上
+			{{+1.0f, -1.0f,0},{1.0f,1.0f}},//右下
+			{{+1.0f, +1.0f,0},{1.0f,0}}//右上
+	};
+	//ガウシアン用の頂点
+	PeraVertex pGVertices_[4] = {
+			{{-1.0f, -1.0f,0},{0,1.0f}},//左下
+			{{-1.0f, +1.0f,0},{0,0}},//左上
+			{{+1.0f, -1.0f,0},{1.0f,1.0f}},//右下
+			{{+1.0f, +1.0f,0},{1.0f,0}}//右上
+	};
+	//二枚目の頂点
+	PeraVertex p2Vertices_[4] = {
+			{{-1.0f, -1.0f,0},{0,1.0f}},//左下
+			{{-1.0f, +1.0f,0},{0,0}},//左上
+			{{+1.0f, -1.0f,0},{1.0f,1.0f}},//右下
+			{{+1.0f, +1.0f,0},{1.0f,0}}//右上
 	};
 
-	ComPtr<ID3D12Resource> peraVB_;
-	D3D12_VERTEX_BUFFER_VIEW peraVBV_;
+	ComPtr<ID3D12Resource> pera1VB_;
+	D3D12_VERTEX_BUFFER_VIEW pera1VBV_;
+	ComPtr<ID3D12Resource> peraGVB_;
+	D3D12_VERTEX_BUFFER_VIEW peraGVBV_;
+	ComPtr<ID3D12Resource> pera2VB_;
+	D3D12_VERTEX_BUFFER_VIEW pera2VBV_;
+
+
 
 	ComPtr<ID3DBlob> vs_;
 	ComPtr<ID3DBlob> ps_;
@@ -122,6 +147,11 @@ public:
 
 
 private://関数
+	//頂点バッファ作成
+	void CreateVertexBuff(PeraVertex* vertex, int32_t vertexCount, ID3D12Resource** vB, D3D12_VERTEX_BUFFER_VIEW* vBV);
+	//頂点バッファマッピング
+	void MappingVertexBuff(PeraVertex* vertex, int32_t vertexCount, float peraExtend, ID3D12Resource* vB);
+
 	void InitializeBuffRTV(const wchar_t* normalImageFileName);
 	void GenerateRSPL();
 	void GlassFilterBuffGenerate(const wchar_t* fileName);
@@ -149,7 +179,7 @@ private://関数
 	void SetHeapAllBuffView(bool isPost2 = false);
 
 public:
-	void Initialize(const wchar_t* normalImageFileName, float vertexExtend = 1.0f);
+	void Initialize(const wchar_t* normalImageFileName);
 
 	void Update();
 
@@ -161,5 +191,10 @@ public:
 
 	//一枚目と二枚目を描画する(引数の描画関数を一枚目に描画)
 	void DrawToPostpera(const std::function<void()>& f);
+
+public:
+	void SetPera1Extend(float extend) { pera1Extend_ = extend; }
+	void SetPeraGExtend(float extend) { peraGExtend_ = extend; }
+	void SetPera2Extend(float extend) { pera2Extend_ = extend; }
 };
 

@@ -70,6 +70,7 @@ void SceneGame::Update()
 	//ゲームスピード
 	GameVelocityManager::GetInstance().Update();
 
+	//クリア演出用
 	ClearEffect::GetInstance().Update();
 
 	obj.Update();

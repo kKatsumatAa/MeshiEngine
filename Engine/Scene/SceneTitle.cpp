@@ -1,5 +1,6 @@
 #include "SceneTitle.h"
 #include "SceneManager.h"
+#include "GameVelocityManager.h"
 
 
 void SceneTitle::Finalize()
@@ -14,10 +15,13 @@ void SceneTitle::Initialize()
 
 	TextureManager::LoadGraph(L"title.png", titleTex_);
 
-	PostEffectManager::GetInstance().GetPostPera1()->effectFlags_.isBloom = true;
-	PostEffectManager::GetInstance().GetPostPera1()->effectFlags_.isVignette = true;
-	PostEffectManager::GetInstance().GetPostPera1()->effectFlags_.isScanningLine = true;
-	PostEffectManager::GetInstance().GetPostPera2()->effectFlags_.isBarrelCurve = true;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = true;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isVignette = true;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isScanningLine = true;
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;
+
+	//ポストエフェクト
+	PostEffectManager::GetInstance().GetPostEffect1()->SetPera2Extend(GameVelocityManager::GetInstance().DISPLAY_SIZE_MIN_);
 }
 
 void SceneTitle::Update()
@@ -35,7 +39,7 @@ void SceneTitle::Update()
 	//シーン遷移
 	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || KeyboardInput::GetInstance().KeyTrigger(DIK_R))
 	{
-		PostEffectManager::GetInstance().GetPostPera1()->effectFlags_.isScanningLine = false;
+		PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isScanningLine = false;
 
 		sceneM_->ChangeScene("GAME");
 	}

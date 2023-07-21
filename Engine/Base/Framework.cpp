@@ -17,12 +17,12 @@ void Framework::Initialize()
 	Object::DrawInitialize();
 
 	//ポストエフェクト
-	PostEffectManager::GetInstance().Initialize();
+	PostEffectManager::GetInstance().Initialize(L"Resources/image/normalImage.jpg");
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
 	//trueにすることでマウスがほかのアプリで使用されない
-	MouseInput::GetInstance().CreateDevice(/*true*/);
+	MouseInput::GetInstance().CreateDevice(true);
 
 	//
 	ParticleManager::GetInstance()->Initialize();

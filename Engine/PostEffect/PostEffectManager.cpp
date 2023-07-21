@@ -6,13 +6,13 @@ PostEffectManager& PostEffectManager::GetInstance()
 	return inst;
 }
 
-void PostEffectManager::Initialize()
+void PostEffectManager::Initialize(const wchar_t* normalTexHandle)
 {
 	//ポストエフェクト
 	postPera_[0] = std::make_unique<PostPera>();
 	postPera_[1] = std::make_unique<PostPera>();
-	postPera_[0]->Initialize(L"Resources/image/normalImage.jpg", 0.9f);
-	postPera_[1]->Initialize(L"Resources/image/normalImage.jpg");
+	postPera_[0]->Initialize(normalTexHandle);
+	postPera_[1]->Initialize(normalTexHandle);
 }
 
 void PostEffectManager::Update()

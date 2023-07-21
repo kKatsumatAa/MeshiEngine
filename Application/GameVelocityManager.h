@@ -10,7 +10,8 @@ public:
 	const float GAME_VELOCITY_MAX_ = 1.0f;
 	const float GAME_VELOCITY_MIN_ = 0.03f;
 
-
+	//演出用の画面の最低サイズ
+	const float DISPLAY_SIZE_MIN_ = 0.9f;
 
 private:
 	GameVelocityManager() { ; }

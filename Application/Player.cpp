@@ -150,11 +150,11 @@ void Player::Move()
 	//ゲームスピードを移動で足す(ジャンプ中でスペース押してなければ)
 	if (!(!isOnGround_ && KeyboardInput::GetInstance().KeyPush(DIK_SPACE)))
 	{
-		GameVelocityManager::GetInstance().AddGameVelocity(velocity_.GetLength() * 10.0f);
+		GameVelocityManager::GetInstance().AddGameVelocity(velocity_.GetLength() * MOVE_ADD_VEL_EXTEND_);
 	}
 
 	//ジャンプ中でスペース押しっぱなしだったら
-	if (!isOnGround_ && KeyboardInput::GetInstance().KeyPush(DIK_SPACE))
+	if (!isOnGround_ && KeyboardInput::GetInstance().KeyPush(DIK_SPACE) && velocity_.GetLength())
 	{
 		GameVelocityManager::GetInstance().AddGameVelocity(-0.03f);
 	}

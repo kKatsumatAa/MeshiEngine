@@ -31,8 +31,10 @@ private:
 	//攻撃が届く距離
 	const float ATTACK_LENGTH_ = 20.0f;
 
-	//
+	//マウスのカメラ移動スピード
 	const float MOUSE_VELOCITY_TMP_ = 0.5f;
+	//移動によるゲームスピード加算の倍率
+	const float MOVE_ADD_VEL_EXTEND_ = 0.2f;
 
 	//手のマネージャークラス
 	std::unique_ptr<PlayerHandManager> handManager_ = nullptr;

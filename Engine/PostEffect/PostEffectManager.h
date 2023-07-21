@@ -19,7 +19,7 @@ public:
 	static PostEffectManager& GetInstance();
 
 public:
-	void Initialize();
+	void Initialize(const wchar_t* normalTexHandle);
 	void Update();
 	//シーンのものをポストペラに描画する
 	void BeforeDraw(std::function<void()>drawSceneF);
@@ -27,6 +27,6 @@ public:
 	void DrawDisplay();
 
 public:
-	PostPera* GetPostPera1() { return postPera_[0].get(); }
-	PostPera* GetPostPera2() { return postPera_[1].get(); }
+	PostPera* GetPostEffect1() { return postPera_[0].get(); }
+	PostPera* GetPostEffect2() { return postPera_[1].get(); }
 };
