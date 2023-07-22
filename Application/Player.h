@@ -17,6 +17,9 @@ class Player :
 private:
 	const float VELOCITY_TMP_ = 1.15f;
 	const float ANGLE_VEL_EXTEND_ = 0.003f;
+	//マウスでのゲームスピード加算倍率
+	const float MOUSE_GAME_VEL_EXTEND_ = 0.001f;
+
 	Vec3 cameraRot_ = { 0,0,0 };
 
 	Vec3 frontVec_ = { 0,0,1.0f };
@@ -34,7 +37,7 @@ private:
 	//マウスのカメラ移動スピード
 	const float MOUSE_VELOCITY_TMP_ = 0.5f;
 	//移動によるゲームスピード加算の倍率
-	const float MOVE_ADD_VEL_EXTEND_ = 0.2f;
+	const float MOVE_ADD_VEL_EXTEND_ = 0.13f;
 
 	//手のマネージャークラス
 	std::unique_ptr<PlayerHandManager> handManager_ = nullptr;
