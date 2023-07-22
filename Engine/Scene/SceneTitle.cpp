@@ -19,6 +19,7 @@ void SceneTitle::Initialize()
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isVignette = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isScanningLine = true;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.barrelCurvePow = 1.0f;
 
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect1()->SetPera2Extend(GameVelocityManager::GetInstance().DISPLAY_SIZE_MIN_);

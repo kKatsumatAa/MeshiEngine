@@ -50,7 +50,7 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, Object* owner)
 		return;
 	}
 
-	//î≠éÀç¿ïW
+	//î≠éÀç¿ïW(èeñ{ëÃÇ…ìñÇΩÇÁÇ»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ)
 	shotPos_ = { GetWorldTrans().x_ + directionVec.GetNormalized().x_ * GetScale().x_ * 1.1f,
 		GetWorldTrans().y_ + GetScale().y_,
 		GetWorldTrans().z_ + directionVec.GetNormalized().z_ * GetScale().z_ * 1.1f };

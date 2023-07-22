@@ -80,15 +80,14 @@ Quaternion Quaternion::MakeAxisAngle(const Vec3& axis, float angle)
 	return Quaternion(ans);
 }
 
-Quaternion Quaternion::DirectionToDirection(const Vec3& u, const Vec3& v)
+Quaternion Quaternion::DirectionToDirection(const Vec3& u, const Vec3& v, float dotRimitMin)
 {
 	Vec3 U = u;
 	Vec3 V = v;
 
 	//Œü‚©‚¹‚½‚¢Œü‚«‚ª^‹t‚Ì‚Íy¬•ª‚Íƒ[ƒ‚É‚µ‚Ä‰ñ‚³‚¹‚é
-	const float DOT_MIN = 0.5f;
 	float dot = Vec3(U.x_, U.y_, U.z_).Dot(Vec3(V.x_, V.y_, V.z_));
-	if (dot <= -DOT_MIN)
+	if (dot <= dotRimitMin)
 	{
 		U = { U.x_,0,U.z_ };
 		V = { V.x_,0,V.z_ };

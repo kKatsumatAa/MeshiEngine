@@ -20,15 +20,16 @@ void Weapon::NoParentMove()
 		fallVec_.x_ *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
 
 
-		if (fallVec_.y_ < 0.05f && fallVec_.y_ > -1.5f)
+		if (fallVec_.y_ < 0.1f && fallVec_.y_ > FALL_VEC_Y_MIN_)
 		{
 			fallVec_.y_ = -(fabsf(fallVec_.y_) + fabsf(fallVec_.y_) * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
 		}
-		else if (fallVec_.y_ >= 0.05f)
+		else if (fallVec_.y_ >= 0.1f)
 		{
 			fallVec_.y_ *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
 		}
 
+		//‚¾‚ñ‚¾‚ñŽã‚­
 		fallVec_.z_ *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
 
 
@@ -36,7 +37,7 @@ void Weapon::NoParentMove()
 		{
 			RaycastHit info;
 
-			if (CollisionManager::GetInstance()->RaycastUtil(GetTrans(), oldPos_, COLLISION_ATTR_LANDSHAPE, &info))
+			if (CollisionManager::GetInstance()->RaycastUtil(GetTrans() + fallVec_ * GetScale().GetLength(), oldPos_, COLLISION_ATTR_LANDSHAPE, &info))
 			{
 				OnLandShape({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
 			}

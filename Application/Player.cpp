@@ -102,13 +102,8 @@ void Player::DirectionUpdate()
 	//正面ベクトルセット
 	SetFrontVec(frontVec_);
 
-	{
-		//元となる正面ベクトルからプレイヤーの方向ベクトルへの回転クォータニオン
-		Quaternion q = Quaternion::DirectionToDirection(GetFrontVecTmp(), frontVec_);
-		//角度じゃなくて行列をそのまま使う
-		SetIsUseQuaternionMatRot(true);
-		SetMatRot(q.MakeRotateMatrix());
-	}
+	//角度
+	SetRot(cameraRot_);
 
 
 	//カメラの右方向ベクトルを出す

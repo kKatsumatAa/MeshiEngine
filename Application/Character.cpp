@@ -34,6 +34,7 @@ void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 	//‰¼‚ÅŽè‚©‚ç—£‚ê‚½‚çƒAƒCƒeƒ€‚Ì‘®«‚É‚·‚é
 	weapon_->SetAttribute(COLLISION_ATTR_ITEMS);
 	weapon_->SetIsThrowing(true);
+	weapon_->Update();
 	SetWeapon(nullptr);
 }
 

@@ -41,7 +41,7 @@ public:
 class PlayerAttackStateDoing : public PlayerAttackState
 {
 private:
-	const int32_t TIMER_MAX_ = 4;
+	const int32_t TIMER_MAX_ = 3;
 
 public:
 	void Initialize() override;

@@ -96,13 +96,17 @@ void PlayerStateHaveGun::Update()
 		if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
 		{
 			//’e‚ª‚à‚¤‚È‚¯‚ê‚Î“Š‚°‚é
-			Gun* gun = dynamic_cast<Gun*>(player_->GetWeapon());
-			if (gun->GetBulletNum() <= 0)
+			if (player_->GetWeapon()->GetObjName() == "gun")
 			{
-				ThrowGun();
-				return;
+				Gun* gun = dynamic_cast<Gun*>(player_->GetWeapon());
+				if (gun->GetBulletNum() <= 0)
+				{
+					ThrowGun();
+					return;
+				}
 			}
 
+			//UŒ‚
 			player_->GetWeapon()->Attack(player_->GetFrontVec(), 1, player_);
 			//ƒQ[ƒ€ƒXƒs[ƒh‰ÁZ
 			GameVelocityManager::GetInstance().AddGameVelocity(1.0f);

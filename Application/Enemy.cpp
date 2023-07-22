@@ -175,7 +175,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	if (weapon_)
 	{
 		distanceVec.y_ = 0.2f;
-		FallWeapon({ -distanceVec.x_,distanceVec.y_,-distanceVec.z_ });
+		FallWeapon({ -distanceVec.x_ * WEAPON_FALL_VEL_EXTEND_,distanceVec.y_,-distanceVec.z_ * WEAPON_FALL_VEL_EXTEND_ });
 	}
 }
 

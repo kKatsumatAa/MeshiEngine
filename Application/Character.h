@@ -17,11 +17,11 @@ protected:
 	bool isOnGround_ = false;
 
 	//下向き加速度
-	const float FALL_ACC_ = -0.03f;
-	const float FALL_V_Y_MIN_ = -0.8f;
+	const float FALL_ACC_ = -0.15f;
+	const float FALL_V_Y_MIN_ = -3.5f;
 	Vec3 fallVec_;
 
-	const float JUMP_V_Y_FIST_ = 0.7f;//ジャンプ時上向き初速
+	const float JUMP_V_Y_FIST_ = 1.7f;//ジャンプ時上向き初速
 
 	//壁と認識する角度
 	static const float IS_WALL_ROT_;

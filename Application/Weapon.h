@@ -11,6 +11,7 @@ class Weapon :
 protected:
 	//手を離れたときのベクトル
 	Vec3 fallVec_ = { 0,0,0 };
+	const float FALL_VEC_Y_MIN_ = -4.0f;
 	//ローカル座標
 	Vec3 localPos_ = { 0,0,0 };
 	//持ち主

@@ -52,13 +52,13 @@ public://静的メンバ関数
 	static Quaternion MakeAxisAngle(const Vec3& axis, float angle);
 
 	//uからvへの回転を生成
-	static Quaternion DirectionToDirection(const Vec3& u, const Vec3& v);
+	static Quaternion DirectionToDirection(const Vec3& u, const Vec3& v, float dotRimitMin = -0.5f);
 
 
 public://オバロ演算子
 	Quaternion  operator+();
 	Quaternion& operator+=(const Quaternion& other);
-	 Quaternion  operator-()const;
+	Quaternion  operator-()const;
 	Quaternion& operator-=(const Quaternion& other);
 	Quaternion  operator*(float other);
 	Quaternion& operator*=(float other);
