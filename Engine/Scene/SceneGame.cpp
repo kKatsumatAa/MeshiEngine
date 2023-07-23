@@ -35,6 +35,10 @@ void SceneGame::Initialize()
 	ClearEffect::GetInstance().Initialize();
 
 	ParticleManager::GetInstance()->SetBlendNum(ParticleManager::TRIANGLE);
+
+	fbxModel_ = ModelManager::GetInstance().LoadModelFBX("enemy2");
+	obj_.PlayAnimation(fbxModel_, true);
+	obj_.SetScale({ 0.2f,0.2f,0.2f });
 }
 
 void SceneGame::Update()
@@ -68,6 +72,8 @@ void SceneGame::Update()
 	//クリア演出用
 	ClearEffect::GetInstance().Update();
 
+	obj_.Update();
+
 	//シーン遷移
 	if (LevelManager::GetInstance().GetGameOver())
 	{
@@ -89,6 +95,8 @@ void SceneGame::Update()
 
 void SceneGame::Draw()
 {
+	obj_.DrawFBX(fbxModel_);
+
 	//弾
 	BulletManager::GetInstance().Draw();
 

@@ -3,14 +3,14 @@
 
 using namespace DirectX;
 
-const std::string FbxLoader::S_DEFAULT_TEX_FILE_NAME_ = "image/white.png";
+const std::string FbxLoader::S_DEFAULT_TEX_FILE_NAME_ = "white.png";
 
 
 
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-const std::string FbxLoader::S_BASE_DIRECTORY_ = "Resources/";
+const std::string FbxLoader::S_BASE_DIRECTORY_ = "Resources/model/fbx/";
 
 FbxLoader::~FbxLoader()
 {
@@ -327,7 +327,7 @@ void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
 		//テクスチャがない場合は白テクスチャを貼る
 		if (!textureLoaded)
 		{
-			LoadTexture(model, S_BASE_DIRECTORY_ + S_DEFAULT_TEX_FILE_NAME_);
+			LoadTexture(model, S_DEFAULT_TEX_FILE_NAME_);
 		}
 	}
 }

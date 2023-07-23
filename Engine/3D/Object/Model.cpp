@@ -12,7 +12,7 @@ using namespace DirectX;
 /// <summary>
 /// Ã“Iƒƒ“ƒo•Ï”‚ÌÀ‘Ì
 /// </summary>
-const std::string Model::S_BASE_DIRECTORY_ = "Resources/";
+const std::string Model::S_BASE_DIRECTORY_ = "Resources/model/obj/";
 uint32_t Model::sDescriptorHandleIncrementSize_ = 0;
 
 

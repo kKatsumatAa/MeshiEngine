@@ -40,6 +40,6 @@ void Async::EndThread()
 		isLoading_ = false;
 
 		//èIÇÌÇ¡ÇΩÇÁ
-		//loadFunc_.get();
+		loadFunc_.get();
 	}
 }

@@ -56,11 +56,6 @@ Material::~Material()
 
 void Material::LoadTexture(const std::string& directoryPath, const CD3DX12_CPU_DESCRIPTOR_HANDLE& cpuHandle, const CD3DX12_GPU_DESCRIPTOR_HANDLE& gpuHandle)
 {
-	// テクスチャなし
-	if (textureFilename_.size() == 0) {
-		textureFilename_ = "image/white.png";
-	}
-
 	cpuDescHandleSRV_ = cpuHandle;
 	gpuDescHandleSRV_ = gpuHandle;
 
@@ -72,6 +67,10 @@ void Material::LoadTexture(const std::string& directoryPath, const CD3DX12_CPU_D
 
 	// ファイルパスを結合
 	string filepath = directoryPath + textureFilename_;
+	// テクスチャなし
+	if (textureFilename_.size() == 0) {
+		filepath = "white.png";
+	}
 
 	const char* NAME = filepath.c_str();
 	wchar_t wchar[128];
