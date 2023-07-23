@@ -35,11 +35,6 @@ void SceneGame::Initialize()
 	ClearEffect::GetInstance().Initialize();
 
 	ParticleManager::GetInstance()->SetBlendNum(ParticleManager::TRIANGLE);
-
-	fbx = ModelManager::GetInstance().LoadModelFBX("enemy2");
-
-	obj.SetScale({ 0.1f, 0.1f, 0.1f });
-	obj.PlayAnimation(fbx, true);
 }
 
 void SceneGame::Update()
@@ -73,12 +68,10 @@ void SceneGame::Update()
 	//クリア演出用
 	ClearEffect::GetInstance().Update();
 
-	obj.Update();
-
 	//シーン遷移
 	if (LevelManager::GetInstance().GetGameOver())
 	{
-		sceneM_->ChangeScene("TITLE");
+		sceneM_->SetNextScene("TITLE");
 	}
 	else if (LevelManager::GetInstance().GetGameClear())
 	{
@@ -89,15 +82,13 @@ void SceneGame::Update()
 		//連打して飛ばさないように
 		if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) && clearCoolTime_ >= CLEAR_COOL_TIME_MAX_)
 		{
-			sceneM_->ChangeScene("TITLE");
+			sceneM_->SetNextScene("TITLE");
 		}
 	}
 }
 
 void SceneGame::Draw()
 {
-	obj.DrawFBX(fbx);
-
 	//弾
 	BulletManager::GetInstance().Draw();
 
@@ -117,14 +108,4 @@ void SceneGame::DrawSprite()
 void SceneGame::DrawImgui()
 {
 	GameVelocityManager::GetInstance().UpdateImGui();
-}
-
-void SceneGame::DrawPostEffect()
-{
-	//postPera.Draw();
-}
-
-void SceneGame::DrawPostEffect2()
-{
-	//postPera.Draw2All();
 }

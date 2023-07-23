@@ -53,14 +53,14 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 		PickUpWeapon(weapon_);
 	}
 
-	//銃持ってたらステートかえる
+	//武器持ってたらステートかえる
 	if (weapon_ == nullptr)
 	{
 		ChangePlayerState(std::make_unique<PlayerStateBareHands>());
 	}
 	else
 	{
-		ChangePlayerState(std::make_unique<PlayerStateHaveGun>());
+		ChangePlayerState(std::make_unique<PlayerStateHaveWeapon>());
 	}
 	return true;
 }

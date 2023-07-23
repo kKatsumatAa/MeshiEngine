@@ -12,9 +12,6 @@ private:
 	int32_t clearCoolTime_ = 0;
 	const int32_t CLEAR_COOL_TIME_MAX_ = 20;
 
-	ModelFBX* fbx;
-	Object obj;
-
 public:
 	void Finalize()override;
 	void Initialize()override;
@@ -23,8 +20,5 @@ public:
 	void DrawSprite()override;
 
 	void DrawImgui()override;
-
-	void DrawPostEffect()override;
-	void DrawPostEffect2()override;
 };
 

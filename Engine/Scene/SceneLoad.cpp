@@ -14,22 +14,19 @@ void SceneLoad::Finalize()
 
 void SceneLoad::Initialize()
 {
-
-	//非同期処理(ステージ作成中にもロード画面出す的な)
-	async_.StartAsyncFunction([=]() { Load(); });
+	////非同期処理(ステージ作成中にもロード画面出す的な)
+	//async_.StartAsyncFunction([=]() { sceneM_->GetLoadFunc(); });
 }
 
 void SceneLoad::Update()
 {
-
-
 	////シーン遷移
-	//if (async.GetLockFlag())
+	//if (async_.GetLockFlag())
 	//{
-	//	async.EndThread();
+	//	async_.EndThread();
 
-	//	//ステージ作り終わったら
-	//	sceneM->ChangeState(new Scene5);
+	//	//ロード終わったら
+	//	sceneM_->ChangeScene(sceneM_->GetAfterLoadNextSceneName());
 	//}
 }
 
@@ -39,18 +36,8 @@ void SceneLoad::Draw()
 
 void SceneLoad::DrawSprite()
 {
-	count_++;
-	loadObj_.DrawBoxSprite({ 0,0 + sinf(count_ * 0.1f) * 3.0f }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, sceneM_->texhandle_[3]);
 }
 
 void SceneLoad::DrawImgui()
-{
-}
-
-void SceneLoad::DrawPostEffect()
-{
-}
-
-void SceneLoad::DrawPostEffect2()
 {
 }

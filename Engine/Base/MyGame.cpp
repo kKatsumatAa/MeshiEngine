@@ -17,7 +17,7 @@ void MyGame::Initialize()
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneM_->SetSceneFactory(sceneFactory_.get());
 	sceneM_->Initialize();
-	sceneM_->ChangeScene("TITLE");
+	sceneM_->SetNextScene("TITLE");
 }
 
 void MyGame::Finalize()

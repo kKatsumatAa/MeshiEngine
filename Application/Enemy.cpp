@@ -187,7 +187,7 @@ void Enemy::DamageParticle(const CollisionInfo& info)
 
 		float scaleTmp = GetScale().GetLength();
 
-		Vec3 addPos = Vec3(GetRand(-GetScale().x_, GetScale().x_), GetRand(-GetScale().y_, GetScale().y_), GetRand(-GetScale().z_, GetScale().z_)) / 4.0f;
+		Vec3 addPos = Vec3(GetRand(-GetScale().x_, GetScale().x_), GetRand(-GetScale().y_, GetScale().y_), GetRand(-GetScale().z_, GetScale().z_)) / 2.0f;
 
 		pos += addPos;
 
@@ -195,7 +195,7 @@ void Enemy::DamageParticle(const CollisionInfo& info)
 
 		Vec3 vel = /*(GetTrans() - pos) * */Vec3(GetRand(-0.5f, 0.5f), GetRand(-0.5f, 0.5f), GetRand(-0.5f, 0.5f)) / 2.0f;
 
-		float scale = GetRand(scaleTmp / 20.0f, scaleTmp / 15.0f);
+		float scale = GetRand(scaleTmp / 15.0f, scaleTmp / 5.0f);
 		float scale2 = GetRand(0, scaleTmp / 25.0f);
 
 		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.002f,0 }, scale, scale2, { 3.0f,0.0f,0.0f,0.95f }, { 0,0,0,0.0f },

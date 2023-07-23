@@ -18,7 +18,7 @@ public:
 
 	bool CheckEyeRayHit();
 
-	void ThrowGun();
+	void ThrowWeapon();
 
 	virtual void Initialize() = 0;
 	virtual void Update() = 0;
@@ -34,7 +34,7 @@ public:
 };
 
 //e‚Á‚Ä‚é
-class PlayerStateHaveGun :public PlayerState
+class PlayerStateHaveWeapon :public PlayerState
 {
 
 public:

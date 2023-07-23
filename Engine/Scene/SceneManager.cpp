@@ -7,7 +7,9 @@
 #include "FbxLoader.h"
 #include "JsonLevelLoader.h"
 #include "CameraManager.h"
-
+#include "GameVelocityManager.h"
+#include "BulletManager.h"
+#include "ClearEffect.h"
 
 //---------------------------------------------------------------------------------------
 //デストラクタ
@@ -16,18 +18,36 @@ SceneManager::~SceneManager()
 	state_->Finalize();
 }
 
-void SceneManager::ChangeScene(std::string sceneName)
+void SceneManager::SetNextScene(std::string sceneName)
 {
-	assert(sceneFactory_);
-
-	if (state_) {
-		state_->Finalize();
-		state_.reset();
+	nextScene_ = sceneFactory_->CreateScene(sceneName);
+	//ローディングフラグをオフにする
+	if (nextScene_)
+	{
+		async_.SetIsLoading(false);
 	}
-	//シーンファクトリーでシーン生成
-	state_ = sceneFactory_->CreateScene(sceneName);
-	state_->SetScene(this);
-	state_->Initialize();
+}
+
+
+void SceneManager::ChangeScene()
+{
+	if (nextScene_)
+	{
+		//非同期で初期化関数を実行する
+		async_.StartAsyncFunction([=]()
+			{
+				if (state_) {
+					state_->Finalize();
+					state_.reset();
+				}
+				//シーンファクトリーでシーン生成
+				state_ = std::move(nextScene_);
+				state_->SetSceneManager(this);
+				state_->Initialize();
+				//画像アップロード
+				DirectXWrapper::GetInstance().UpLoadTexture();
+			});
+	}
 }
 
 void SceneManager::StopWaveAllScene()
@@ -35,17 +55,20 @@ void SceneManager::StopWaveAllScene()
 	//Sound::GetInstance().StopWave("Stage_BGM.wav");
 }
 
+
+//---------------------------------------------------------------------------------------------------
 void SceneManager::Initialize()
 {
 	//Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
 
 	{
-		TextureManager::LoadGraph(L"loading.png", texhandle_[3]);
+		//画像
+		TextureManager::LoadGraph(L"ascii.png", debugTextHandle_);
+
 		//白い画像
 		TextureManager::LoadGraph(L"white.png", TextureManager::GetInstance().sWhiteTexHandle_);
 
-		//画像
-		TextureManager::LoadGraph(L"ascii.png", debugTextHandle_);
+		TextureManager::LoadGraph(L"loading.png", loadTexHandle_);
 
 		TextureManager::LoadGraph(L"effect1.png", texhandle_[1]);
 	}
@@ -69,39 +92,58 @@ void SceneManager::Initialize()
 	}
 	//丸影
 	lightManager_->SetCircleShadowActive(0, false);
+
+	//画像アップロード
+	DirectXWrapper::GetInstance().UpLoadTexture();
 }
 
 void SceneManager::Update()
 {
-	lightManager_->Update();
+	//次のシーンがセットされていればシーン切り替え（非同期）
+	ChangeScene();
 
-	state_->Update();
+	//ロード終わった瞬間
+	if (async_.GetFinishedAsync())
+	{
+		async_.EndThread();
+	}
+	//ロード終わったら
+	if (!async_.GetIsLoading())
+	{
+		state_->Update();
+	}
 
 	lightManager_->SetAmbientColor({ ambientColor_[0],ambientColor_[1], ambientColor_[2] });
 	lightManager_->SetDiffuseColor({ diffuseColor_[0],diffuseColor_[1], diffuseColor_[2] });
 	lightManager_->SetSpecularColor({ specularColor_[0],specularColor_[1], specularColor_[2] });
+
+	lightManager_->Update();
 }
 
 void SceneManager::Draw()
 {
-	state_->Draw();
+	//ロードしてなければ
+	if (!async_.GetIsLoading())
+	{
+		state_->Draw();
+	}
 
 	ParticleManager::GetInstance()->Draw(/*texhandle_[1]*/);
 }
 
-void SceneManager::DrawPostEffect()
-{
-	state_->DrawPostEffect();
-}
-
-void SceneManager::DrawPostEffect2()
-{
-	state_->DrawPostEffect2();
-}
-
 void SceneManager::DrawSprite()
 {
-	state_->DrawSprite();
+	//ロードしてなければ
+	if (!async_.GetIsLoading())
+	{
+		state_->DrawSprite();
+	}
+	//ロード中なら
+	else
+	{
+		loadCount_++;
+		loadObj_.DrawBoxSprite({ 0,0 + sinf(loadCount_ * 0.1f) * 3.0f }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, loadTexHandle_);
+	}
 
 	debugText_.DrawAll(debugTextHandle_);
 }
@@ -116,7 +158,11 @@ void SceneManager::DrawImgui()
 
 	ImGui::End();
 
-	state_->DrawImgui();
+	//ロードしてなければ
+	if (!async_.GetIsLoading())
+	{
+		state_->DrawImgui();
+	}
 }
 
 

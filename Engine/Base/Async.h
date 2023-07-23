@@ -2,27 +2,28 @@
 #include<thread>
 #include<mutex>
 #include<functional>
+#include <future>
 
 
 class Async
 {
 private:
-	bool isLoaded_ = false;
+	bool isLoading_ = false;
 	std::mutex isLoadedMutex_;
-	std::thread th1_;
+	std::future<void> loadFunc_;
 
 
 private:
 	//処理をしてくれる関数
 	void AsyncLoad(std::function<void()> p);
 
-
 public:
-	//非同期処理が終わったかどうか
-	bool GetLockFlag();
+	//非同期処理をしているか
+	bool GetIsLoading();
+	void SetIsLoading(bool isLoading) { isLoading_ = isLoading; }
 
-	//フラグをセット
-	void SetLockFlag(bool islock);
+	//非同期が終わった瞬間か
+	bool GetFinishedAsync();
 
 	//非同期を開始
 	void StartAsyncFunction(const std::function<void()>& p);

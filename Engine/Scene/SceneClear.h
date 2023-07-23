@@ -14,7 +14,4 @@ public:
 	void DrawSprite()override;
 
 	void DrawImgui()override;
-
-	void DrawPostEffect()override;
-	void DrawPostEffect2()override;
 };

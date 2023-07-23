@@ -562,6 +562,10 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 
 		sLightManager_->Draw(4);
 
+		//テクスチャ
+	//SRVヒープの設定コマンド
+		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
+
 		//ディゾルブテクスチャ
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 		srvGpuHandle.ptr = dissolveTextureHandleL;

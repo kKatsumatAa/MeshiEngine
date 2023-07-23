@@ -7,9 +7,6 @@
 class SceneLoad : public SceneState
 {
 private:
-	int32_t count_ = 0;
-	Async async_;
-	Object loadObj_;
 
 public:
 	void Load();
@@ -21,7 +18,4 @@ public:
 	void DrawSprite()override;
 
 	void DrawImgui()override;
-
-	void DrawPostEffect()override;
-	void DrawPostEffect2()override;
 };

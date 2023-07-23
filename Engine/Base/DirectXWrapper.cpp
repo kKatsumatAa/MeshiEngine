@@ -63,22 +63,19 @@ void DirectXWrapper::InitializeDevice()
 
 void DirectXWrapper::InitializeCommand()
 {
-	// コマンドアロケータを生成
-	result_ = device_->CreateCommandAllocator(
-		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		IID_PPV_ARGS(&commandAllocator_));
-	assert(SUCCEEDED(result_));
-	// コマンドリストを生成
-	result_ = device_->CreateCommandList(0,
-		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		commandAllocator_.Get(), nullptr,
-		IID_PPV_ARGS(&commandList_));
-	assert(SUCCEEDED(result_));
+	// 描画コマンド系を生成
+	CreateCommandLA(commandAllocator_.GetAddressOf(), commandList_.GetAddressOf());
+
+	//テクスチャのコマンド系
+	CreateCommandLA(texCommandAllocator_.GetAddressOf(), texCommandList_.GetAddressOf());
 
 	//コマンドキューの設定
 	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
 	//コマンドキューを生成
 	result_ = device_->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
+	assert(SUCCEEDED(result_));
+	//テクスチャ用も
+	result_ = device_->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&texCommandQueue_));
 	assert(SUCCEEDED(result_));
 }
 
@@ -184,6 +181,8 @@ void DirectXWrapper::InitializeFence()
 {
 	//フェンス生成
 	result_ = device_->CreateFence(fenceVal_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
+
+	result_ = device_->CreateFence(texFenceVal_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&texFence_));
 }
 
 void DirectXWrapper::InitializeFixFPS()
@@ -217,6 +216,21 @@ void DirectXWrapper::UpdateFixFPS()
 	}
 	//現在の時間を記録
 	reference_ = std::chrono::steady_clock::now();
+}
+
+void DirectXWrapper::CreateCommandLA(ID3D12CommandAllocator** texCommandAllocator, ID3D12GraphicsCommandList** texCommandList)
+{
+	// コマンドアロケータを生成
+	result_ = device_->CreateCommandAllocator(
+		D3D12_COMMAND_LIST_TYPE_DIRECT,
+		IID_PPV_ARGS(texCommandAllocator));
+	assert(SUCCEEDED(result_));
+	// コマンドリストを生成
+	result_ = device_->CreateCommandList(0,
+		D3D12_COMMAND_LIST_TYPE_DIRECT,
+		(*texCommandAllocator), nullptr,
+		IID_PPV_ARGS(texCommandList));
+	assert(SUCCEEDED(result_));
 }
 
 void DirectXWrapper::Initialize()
@@ -302,6 +316,38 @@ void DirectXWrapper::CommandReset()
 void DirectXWrapper::DrawInitialize()
 {
 
+}
+
+void DirectXWrapper::UpLoadTexture()
+{
+	// 命令のクローズ
+#pragma region CmdClose
+	HRESULT result = texCommandList_->Close();
+	assert(SUCCEEDED(result));
+	// 溜めていたコマンドリストの実行(close必須)
+	ID3D12CommandList* commandLists[] = { texCommandList_.Get() };
+	texCommandQueue_->ExecuteCommandLists(1, commandLists);
+#pragma endregion CmdClose
+
+#pragma region ChangeScreen
+	// コマンドの実行完了を待つ
+	texCommandQueue_->Signal(texFence_.Get(), ++texFenceVal_);
+	if (texFence_->GetCompletedValue() != texFenceVal_)	//	GPUの処理が完了したか判定
+	{
+		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+		texFence_->SetEventOnCompletion(texFenceVal_, event);
+		if (event != 0) {
+			WaitForSingleObject(event, INFINITE);
+			CloseHandle(event);
+		}
+	}
+	// キューをクリア
+	result = texCommandAllocator_->Reset();
+	assert(SUCCEEDED(result));
+	// 再びコマンドリストを貯める準備
+	result = texCommandList_->Reset(texCommandAllocator_.Get(), nullptr);
+	assert(SUCCEEDED(result));
+	texUploadBuff_.clear();
 }
 
 //一枚目のテクスチャに描画

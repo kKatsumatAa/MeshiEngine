@@ -15,13 +15,13 @@ void SceneTitle::Initialize()
 
 	TextureManager::LoadGraph(L"title.png", titleTex_);
 
+	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isVignette = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isScanningLine = true;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.barrelCurvePow = 1.0f;
-
-	//ポストエフェクト
+	//画面サイズ
 	PostEffectManager::GetInstance().GetPostEffect1()->SetPera2Extend(GameVelocityManager::GetInstance().DISPLAY_SIZE_MIN_);
 }
 
@@ -42,7 +42,7 @@ void SceneTitle::Update()
 	{
 		PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isScanningLine = false;
 
-		sceneM_->ChangeScene("GAME");
+		sceneM_->SetNextScene("GAME");
 	}
 }
 
@@ -57,14 +57,6 @@ void SceneTitle::DrawSprite()
 }
 
 void SceneTitle::DrawImgui()
-{
-}
-
-void SceneTitle::DrawPostEffect()
-{
-}
-
-void SceneTitle::DrawPostEffect2()
 {
 }
 

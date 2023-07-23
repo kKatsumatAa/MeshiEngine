@@ -1,7 +1,7 @@
 #include "SceneState.h"
 
 
-void SceneState::SetScene(SceneManager* sceneM)
+void SceneState::SetSceneManager(SceneManager* sceneM)
 {
 	//stateではなくSceneクラスのインスタンス//
 	sceneM_ = sceneM;

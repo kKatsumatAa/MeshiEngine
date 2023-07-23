@@ -25,7 +25,7 @@ bool PlayerState::CheckEyeRayHit()
 	return isRayHit;
 }
 
-void PlayerState::ThrowGun()
+void PlayerState::ThrowWeapon()
 {
 	player_->FallWeapon(player_->GetFrontVec() * 8.0f);
 
@@ -51,20 +51,21 @@ void PlayerStateBareHands::Update()
 	{
 		player_->SetIsTarget(true);
 
-		//銃を持ってなくて持ち主がいない銃に照準があってたら
-		if (info_.object->GetObjName() == "gun" && player_->GetWeapon() == nullptr && info_.object->GetParent() == nullptr
+		//武器を持ってなくて持ち主がいない武器に照準があってたら
+		if ((info_.object->GetObjName() == "gun" || info_.object->GetObjName() == "sword")
+			&& player_->GetWeapon() == nullptr && info_.object->GetParent() == nullptr
 			&& MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
 		{
-			Gun* gun = dynamic_cast<Gun*>(info_.object);
-			//銃拾う
+			Weapon* weapon = dynamic_cast<Weapon*>(info_.object);
+			//武器拾う
 			Vec3 localPos = { player_->GetScale().x_ ,-player_->GetScale().y_ / 2.0f ,player_->GetScale().z_ * 2.0f };
-			player_->PickUpWeapon(gun, &localPos);
+			player_->PickUpWeapon(weapon, &localPos);
 
 			//プレイヤーは逆向きなので仮に
-			gun->SetRotY(PI);
+			weapon->SetRotY(PI);
 
-			//ステート変更(銃)
-			player_->ChangePlayerState(std::make_unique<PlayerStateHaveGun>());
+			//ステート変更
+			player_->ChangePlayerState(std::make_unique<PlayerStateHaveWeapon>());
 		}
 		//敵が照準にあったら殴る
 		else if (info_.object->GetObjName() == "enemy")
@@ -80,19 +81,19 @@ void PlayerStateBareHands::Update()
 }
 
 
-//銃持ってる状態-----------------------------------------------------------------------
-void PlayerStateHaveGun::Initialize()
+//武器持ってる状態-----------------------------------------------------------------------
+void PlayerStateHaveWeapon::Initialize()
 {
 }
 
-void PlayerStateHaveGun::Update()
+void PlayerStateHaveWeapon::Update()
 {
 	//プレイヤーが銃を持っていたら
 	if (player_->GetWeapon() != nullptr)
 	{
 		player_->SetIsTarget(false);
 
-		//クリックで撃つ
+		//クリックで攻撃
 		if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
 		{
 			//弾がもうなければ投げる
@@ -101,7 +102,7 @@ void PlayerStateHaveGun::Update()
 				Gun* gun = dynamic_cast<Gun*>(player_->GetWeapon());
 				if (gun->GetBulletNum() <= 0)
 				{
-					ThrowGun();
+					ThrowWeapon();
 					return;
 				}
 			}
@@ -111,10 +112,10 @@ void PlayerStateHaveGun::Update()
 			//ゲームスピード加算
 			GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
 		}
-		//右クリックで銃投げる
+		//右クリックで武器投げる
 		else if (MouseInput::GetInstance().GetTriggerClick(CLICK_RIGHT))
 		{
-			ThrowGun();
+			ThrowWeapon();
 		}
 	}
 }

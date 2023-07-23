@@ -23,16 +23,17 @@ class SceneManager final
 private:
 	//シーンの状態（行動）
 	std::unique_ptr<SceneState> state_;
+	std::unique_ptr<SceneState> nextScene_;
 	//シーンファクトリー（ポインタを借りる）
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 
+	//非同期用
+	int32_t loadCount_ = 0;
+	Async async_;
+	Object loadObj_;
+	uint64_t loadTexHandle_ = 0;
+
 public:
-	Model* model_[20];
-
-	Object draw_[10];
-
-	ModelFBX* modelFBX_;
-
 	DebugText debugText_;
 
 	//デバッグテキスト
@@ -73,9 +74,12 @@ public:
 	//代入演算子も
 	SceneManager& operator=(const SceneManager& obj) = delete;
 
-public:
 	//シーンステート変更
-	void ChangeScene(std::string sceneName);
+	void ChangeScene();
+
+public:
+	//次のシーンセット
+	void SetNextScene(std::string sceneName);
 
 	//シーンファクトリーのセッター
 	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
@@ -83,8 +87,6 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
-	void DrawPostEffect();
-	void DrawPostEffect2();
 	void DrawSprite();
 
 	void DrawImgui();

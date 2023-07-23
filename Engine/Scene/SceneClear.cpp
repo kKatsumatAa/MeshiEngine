@@ -18,7 +18,7 @@ void SceneClear::Update()
 	//ƒV[ƒ“‘JˆÚ
 	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
 	{
-		sceneM_->ChangeScene("TITLE");
+		sceneM_->SetNextScene("TITLE");
 	}
 }
 
@@ -31,14 +31,6 @@ void SceneClear::DrawSprite()
 }
 
 void SceneClear::DrawImgui()
-{
-}
-
-void SceneClear::DrawPostEffect()
-{
-}
-
-void SceneClear::DrawPostEffect2()
 {
 }
 
