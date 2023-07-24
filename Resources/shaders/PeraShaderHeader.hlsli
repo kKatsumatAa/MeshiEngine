@@ -224,5 +224,5 @@ float noise(float2 st, float extend = 1.0f);
 float noise(float2 st, float extend)
 {
     float2 p = floor(st);
-    return random(p, extend);
+    return random(p, extend);//
 }
