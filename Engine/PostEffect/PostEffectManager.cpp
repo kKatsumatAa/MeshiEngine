@@ -22,6 +22,13 @@ void PostEffectManager::Update()
 	postPera_[1]->Update();
 }
 
+void PostEffectManager::ImGuiUpdate()
+{
+	//ポストエフェクト(imgui)
+	postPera_[0]->ImGuiUpdate();
+	postPera_[1]->ImGuiUpdate();
+}
+
 void PostEffectManager::BeforeDraw(std::function<void()> drawSceneF)
 {
 	//1枚目に描画

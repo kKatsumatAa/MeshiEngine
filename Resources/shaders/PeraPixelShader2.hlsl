@@ -50,7 +50,16 @@ float4 PS2(Output input) : SV_TARGET
 
 		//nmTexの範囲は-1～1だが、幅1がテクスチャ1枚の
 		//大きさであり-1～1では歪みすぎるため0.1を乗算している
-        return tex0.Sample(smp, input.uv + nmTex * 0.1f);
+        ret = tex0.Sample(smp, input.uv + nmTex * 0.1f);
+        
+        isEffect = true;
+    }
+    
+     //ノイズ
+    if (isNoise)
+    {
+        float c = noise(input.uv * 256.0f, time);
+        return float4(c, c, c, 1.0f);
     }
 
 	//ブルーム
@@ -130,7 +139,7 @@ float4 PS2(Output input) : SV_TARGET
 
         return float4(color.rgb, 1);
     }
-
+    
     if (isEffect)
     {
         return ret;

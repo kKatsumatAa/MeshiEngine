@@ -180,6 +180,8 @@
     <ClCompile Include="Engine\Scene\SceneManager.cpp" />
     <ClCompile Include="Engine\Scene\SceneState.cpp" />
     <ClCompile Include="Engine\Scene\SceneTitle.cpp" />
+    <ClCompile Include="Engine\Scene\SceneTransitionManager.cpp" />
+    <ClCompile Include="Engine\Scene\SceneTransitionEffectState.cpp" />
     <ClCompile Include="Engine\Util\Shake.cpp" />
     <ClCompile Include="Engine\Util\Util.cpp" />
     <ClCompile Include="main.cpp" />
@@ -268,6 +270,8 @@
     <ClInclude Include="Engine\Scene\SceneManager.h" />
     <ClInclude Include="Engine\Scene\SceneState.h" />
     <ClInclude Include="Engine\Scene\SceneTitle.h" />
+    <ClInclude Include="Engine\Scene\SceneTransitionManager.h" />
+    <ClInclude Include="Engine\Scene\SceneTransitionEffectState.h" />
     <ClInclude Include="Engine\Util\Shake.h" />
     <ClInclude Include="Engine\Util\Util.h" />
   </ItemGroup>

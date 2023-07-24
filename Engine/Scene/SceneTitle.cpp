@@ -16,13 +16,11 @@ void SceneTitle::Initialize()
 	TextureManager::LoadGraph(L"title.png", titleTex_);
 
 	//ポストエフェクト
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = true;
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isVignette = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isScanningLine = true;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.barrelCurvePow = 1.0f;
 	//画面サイズ
-	PostEffectManager::GetInstance().GetPostEffect1()->SetPera2Extend(GameVelocityManager::GetInstance().DISPLAY_SIZE_MIN_);
+	PostEffectManager::GetInstance().GetPostEffect1()->SetPera2Extend(PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_);
 }
 
 void SceneTitle::Update()

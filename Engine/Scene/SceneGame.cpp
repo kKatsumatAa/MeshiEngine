@@ -39,6 +39,10 @@ void SceneGame::Initialize()
 	fbxModel_ = ModelManager::GetInstance().LoadModelFBX("enemy2");
 	obj_.PlayAnimation(fbxModel_, true);
 	obj_.SetScale({ 0.2f,0.2f,0.2f });
+
+	//ポストエフェクト
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = true;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isVignette = true;
 }
 
 void SceneGame::Update()

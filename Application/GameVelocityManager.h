@@ -13,9 +13,6 @@ public:
 	//マウスのみの最大速度
 	const float MOUSE_VEL_MAX_ = GAME_VELOCITY_MAX_ / 7.0f;
 
-	//演出用の画面の最低サイズ
-	const float DISPLAY_SIZE_MIN_ = 0.9f;
-
 private:
 	GameVelocityManager() { ; }
 	~GameVelocityManager() { ; }

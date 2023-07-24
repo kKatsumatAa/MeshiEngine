@@ -27,12 +27,6 @@ private:
 	//シーンファクトリー（ポインタを借りる）
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 
-	//非同期用
-	int32_t loadCount_ = 0;
-	Async async_;
-	Object loadObj_;
-	uint64_t loadTexHandle_ = 0;
-
 public:
 	DebugText debugText_;
 

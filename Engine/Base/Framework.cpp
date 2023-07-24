@@ -74,24 +74,11 @@ void Framework::Update()
 	//更新処理
 	sceneM_->Update();
 
-	//カメラマネージャー
-	CameraManager::GetInstance().Update();
-
-	//imgui
-	imguiM_->Begin();
-
 	//ポストエフェクト
 	PostEffectManager::GetInstance().Update();
 
-	//(imgui)
-	Object::StaticUpdate();
-
-#ifdef _DEBUG
-	//(imgui)
-	sceneM_->DrawImgui();
-#endif // DEBUG
-
-	imguiM_->End();
+	//カメラマネージャー
+	CameraManager::GetInstance().Update();
 }
 
 void Framework::Run()

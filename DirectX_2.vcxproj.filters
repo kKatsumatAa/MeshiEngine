@@ -351,6 +351,12 @@
     <ClCompile Include="Engine\PostEffect\PostEffectManager.cpp">
       <Filter>ソース ファイル\Engine\PostEffect</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Scene\SceneTransitionManager.cpp">
+      <Filter>ソース ファイル\Engine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\SceneTransitionEffectState.cpp">
+      <Filter>ソース ファイル\Engine\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Player.h">
@@ -607,6 +613,12 @@
     </ClInclude>
     <ClInclude Include="Engine\PostEffect\PostEffectManager.h">
       <Filter>ヘッダー ファイル\Engine\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Scene\SceneTransitionManager.h">
+      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Scene\SceneTransitionEffectState.h">
+      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,9 @@
 #include "GameVelocityManager.h"
 #include "BulletManager.h"
 #include "ClearEffect.h"
+#include "SceneTransitionManager.h"
+#include "SceneTransitionEffectState.h"
+
 
 //---------------------------------------------------------------------------------------
 //デストラクタ
@@ -21,11 +24,9 @@ SceneManager::~SceneManager()
 void SceneManager::SetNextScene(std::string sceneName)
 {
 	nextScene_ = sceneFactory_->CreateScene(sceneName);
-	//ローディングフラグをオフにする
-	if (nextScene_)
-	{
-		async_.SetIsLoading(false);
-	}
+
+	//遷移演出開始
+	ChangeScene();
 }
 
 
@@ -33,8 +34,8 @@ void SceneManager::ChangeScene()
 {
 	if (nextScene_)
 	{
-		//非同期で初期化関数を実行する
-		async_.StartAsyncFunction([=]()
+		//シーン遷移演出時に非同期でロード
+		SceneTransitionManager::GetInstance().BeginSceneTransition([=]()
 			{
 				if (state_) {
 					state_->Finalize();
@@ -68,8 +69,6 @@ void SceneManager::Initialize()
 		//白い画像
 		TextureManager::LoadGraph(L"white.png", TextureManager::GetInstance().sWhiteTexHandle_);
 
-		TextureManager::LoadGraph(L"loading.png", loadTexHandle_);
-
 		TextureManager::LoadGraph(L"effect1.png", texhandle_[1]);
 	}
 
@@ -93,22 +92,20 @@ void SceneManager::Initialize()
 	//丸影
 	lightManager_->SetCircleShadowActive(0, false);
 
+	//シーン遷移マネージャ
+	SceneTransitionManager::GetInstance().Initialize();
+
 	//画像アップロード
 	DirectXWrapper::GetInstance().UpLoadTexture();
 }
 
 void SceneManager::Update()
 {
-	//次のシーンがセットされていればシーン切り替え（非同期）
-	ChangeScene();
+	//シーン遷移マネージャ
+	SceneTransitionManager::GetInstance().Update();
 
-	//ロード終わった瞬間
-	if (async_.GetFinishedAsync())
-	{
-		async_.EndThread();
-	}
-	//ロード終わったら
-	if (!async_.GetIsLoading())
+	//シーン遷移演出終わったら
+	if (!SceneTransitionManager::GetInstance().GetIsDoingEffect() && state_)
 	{
 		state_->Update();
 	}
@@ -122,8 +119,8 @@ void SceneManager::Update()
 
 void SceneManager::Draw()
 {
-	//ロードしてなければ
-	if (!async_.GetIsLoading())
+	//ロードしてなければ描画だけ
+	if (!SceneTransitionManager::GetInstance().GetIsLoadingOnly() && state_)
 	{
 		state_->Draw();
 	}
@@ -133,17 +130,14 @@ void SceneManager::Draw()
 
 void SceneManager::DrawSprite()
 {
-	//ロードしてなければ
-	if (!async_.GetIsLoading())
+	//ロードしてなければ描画だけ
+	if (!SceneTransitionManager::GetInstance().GetIsLoadingOnly() && state_)
 	{
 		state_->DrawSprite();
 	}
-	//ロード中なら
-	else
-	{
-		loadCount_++;
-		loadObj_.DrawBoxSprite({ 0,0 + sinf(loadCount_ * 0.1f) * 3.0f }, 1.0f, { 1.0f,1.0f,1.0f,1.0f }, loadTexHandle_);
-	}
+
+	//シーン遷移マネージャ
+	SceneTransitionManager::GetInstance().Draw();
 
 	debugText_.DrawAll(debugTextHandle_);
 }
@@ -159,7 +153,7 @@ void SceneManager::DrawImgui()
 	ImGui::End();
 
 	//ロードしてなければ
-	if (!async_.GetIsLoading())
+	if (!SceneTransitionManager::GetInstance().GetIsLoadingOnly() && state_)
 	{
 		state_->DrawImgui();
 	}

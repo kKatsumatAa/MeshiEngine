@@ -47,10 +47,12 @@ struct EffectConstBuffer
 	uint32_t isBloom = false;
 	//クロスフィルタ
 	uint32_t isCrossFilter = false;
-	//時間
-	uint32_t time = 0;
 	//ブルームの強さ
 	float bloomPow = 9.0f;
+	//ノイズ
+	uint32_t isNoise = false;
+	//時間
+	uint32_t time = 0;
 };
 
 struct PeraVertex
@@ -182,6 +184,7 @@ public:
 	void Initialize(const wchar_t* normalImageFileName);
 
 	void Update();
+	void ImGuiUpdate();
 
 	//縮小バッファ書き込み
 	void DrawShrinkTextureForBlur();

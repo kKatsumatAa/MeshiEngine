@@ -42,10 +42,12 @@ cbuffer ConstBufferEffectFlags : register(b0)
     unsigned int isBloom;
 	//クロスフィルタ
     unsigned int isCrossFilter;
+    //ブルームの強さ
+    float bloomPow;
+    //ノイズ
+    uint isNoise;
 	//時間
     uint time;
-	//ブルームの強さ
-    float bloomPow;
 }
 
 cbuffer PostEffect : register(b1)
@@ -208,4 +210,19 @@ float4 GetRadialBlur(Texture2D<float4> tex, SamplerState smp, float2 center, flo
     Color[9] = tex.Sample(smp, uv + dir * 9.0f) * 0.01f;
    
     return Color[0] + Color[1] + Color[2] + Color[3] + Color[4] + Color[5] + Color[6] + Color[7] + Color[8] + Color[9];
+}
+
+//ランダム
+float random(float2 p, float extend = 1.0f);
+float random(float2 p, float extend)
+{
+    return frac(sin(dot(p, float2(12.9898f, 78.233f))) * (43758.5453f + extend));
+}
+
+//ノイズ
+float noise(float2 st, float extend = 1.0f);
+float noise(float2 st, float extend)
+{
+    float2 p = floor(st);
+    return random(p, extend);
 }
