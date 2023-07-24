@@ -97,6 +97,8 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle, ID3
 	wchar_t nameWc[128] = {};
 	ConstCharToWcharT(fileName.c_str(), nameWc);
 
+	//srvHandleが指定されていたら新たにsrv作る前提なのでhandleは別のものにするため
+	if (texBuff == nullptr && srvDesc == nullptr && srvHandle == nullptr)
 	{
 		//ファイル名から探す
 		std::map<std::string, uint64_t>::iterator it = sTextureDatas_.find(fileName);
