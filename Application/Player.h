@@ -15,6 +15,8 @@ class Player :
 	public Character
 {
 private:
+	const int32_t HP_TMP_ = 1;
+
 	const float VELOCITY_TMP_ = 1.15f;
 	const float ANGLE_VEL_EXTEND_ = 0.003f;
 	//マウスでのゲームスピード加算倍率
@@ -65,6 +67,8 @@ private:
 	void Move();
 	//向きを変える
 	void DirectionUpdate();
+	//倒されたあとに呼び出す
+	void Dead(const CollisionInfo& info);
 
 public:
 	void SetIsAttacking(bool is) { isAttacking_ = is; }
@@ -85,6 +89,8 @@ public:
 	void Update() override;
 
 	void Draw() override;
+
+	void DrawImGui() override;
 
 	void ChangePlayerState(std::unique_ptr<PlayerState> state);
 

@@ -237,12 +237,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 			KnockBack(info);
 
 			//hp減らす
-			hp_--;
-			//死亡
-			if (hp_ <= 0)
-			{
-				SetIsAlive(false);
-			}
+			Damaged(1, [=]() {SetIsAlive(false); });
 
 			//パーティクル
 			DamageParticle(info);
@@ -251,7 +246,8 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	//弾に当たったら
 	else if (info.object_->GetObjName() == "bullet")
 	{
-		SetIsAlive(false);
+		//今のhp分ダメージ受けて倒れる
+		Damaged(hp_, [=]() {SetIsAlive(false); });
 
 		//ノックバック
 		KnockBack(info);

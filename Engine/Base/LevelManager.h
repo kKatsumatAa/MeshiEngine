@@ -37,6 +37,7 @@ public:
 	void Update();
 	//読み込んだものを描画
 	void Draw(Camera* camera = nullptr);
+	void DrawImGui();
 
 private://ゲームオリジナル
 	//武器のポインタ返す

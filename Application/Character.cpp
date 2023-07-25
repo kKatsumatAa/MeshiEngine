@@ -5,6 +5,21 @@ using namespace DirectX;
 
 const float Character::IS_WALL_ROT_ = 30.0f;
 
+
+void Character::Damaged(int32_t damage, std::function<void()> deadFunc)
+{
+	//ダメージ有効でなければ抜ける
+	if (!isValidDamage_) { return; }
+
+	hp_ -= damage;
+
+	//死んだときの処理
+	if (hp_ <= 0)
+	{
+		deadFunc();
+	}
+}
+
 void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 {
 	SetWeapon(weapon);

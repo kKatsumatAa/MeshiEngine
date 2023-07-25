@@ -343,6 +343,8 @@ public:
 	void DrawFBX(ModelFBX* modelFbx, Camera* camera = nullptr,
 		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
 
+	virtual void DrawImGui() { ; }
+
 	//F‚ð•Ô‚·
 	const XMFLOAT4& GetColor() { return constMapMaterial_->color; }
 	/// <summary>

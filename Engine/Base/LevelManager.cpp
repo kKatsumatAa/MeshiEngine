@@ -291,3 +291,13 @@ void LevelManager::Draw(Camera* camera)
 		obj->Draw();
 	}
 }
+
+void LevelManager::DrawImGui()
+{
+	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	{
+		Object* obj = it->first.get();
+		
+		obj->DrawImGui();
+	}
+}

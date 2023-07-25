@@ -46,6 +46,9 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	handManager_ = std::make_unique<PlayerHandManager>();
 	handManager_->Initialize(this);
 
+	//hp
+	hp_ = HP_TMP_;
+
 	if (weapon)
 	{
 		weapon_ = weapon;
@@ -238,45 +241,58 @@ void Player::Draw()
 	handManager_->Draw();
 }
 
+void Player::DrawImGui()
+{
+	ImGui::Begin("Player");
+	ImGui::Checkbox("ValidDamage", &isValidDamage_);
+	ImGui::End();
+}
+
+
+void Player::Dead(const CollisionInfo& info)
+{
+	//hpが0になったら
+	isDead_ = true;
+
+	Bullet* bullet = dynamic_cast<Bullet*>(info.object_);
+
+	////弾の方向へのベクトル
+	Vec3 directionVec;
+	//所有者がまだ生きていたら
+	//if (!bullet->GetOwner()->GetIsAlive())
+	{
+		directionVec = bullet->GetOwnerPos() - GetTrans();
+	}
+
+	//初期正面ベクトルとプレイヤーへのベクトル
+	Vec3 fVTmp = GetFrontVecTmp().GetNormalized();
+	Vec3 pDVTmp = directionVec.GetNormalized();
+
+	//正面ベクトルから被弾方向ベクトルへの回転クォータニオン
+	Quaternion q = Quaternion::DirectionToDirection(fVTmp, pDVTmp);
+	//回転後のベクトル
+	fVTmp = q.GetRotateVector(fVTmp);
+	//正面ベクトルセット
+	SetFrontVec(fVTmp);
+
+	//角度じゃなくて行列をそのまま使う
+	SetIsUseQuaternionMatRot(true);
+	SetMatRot(q.MakeRotateMatrix());
+
+	//行列更新
+	Object::WorldMatColliderUpdate();
+
+	//カメラの注視点に回転したベクトルセット
+	CameraManager::GetInstance().GetCamera("playerCamera")->SetTarget(GetTrans() + fVTmp.GetNormalized());
+	/*CameraManager::GetInstance().GetCamera("playerCamera")->Update();*/
+}
+
 void Player::OnCollision(const CollisionInfo& info)
 {
 	//弾に当たったらダメージ
 	if (info.object_->GetObjName() == "bullet")
 	{
-		isDead_ = true;
-
-		{
-			Bullet* bullet = dynamic_cast<Bullet*>(info.object_);
-
-			////弾の方向へのベクトル
-			Vec3 directionVec;
-			//所有者がまだ生きていたら
-			//if (!bullet->GetOwner()->GetIsAlive())
-			{
-				directionVec = bullet->GetOwnerPos() - GetTrans();
-			}
-
-			//初期正面ベクトルとプレイヤーへのベクトル
-			Vec3 fVTmp = GetFrontVecTmp().GetNormalized();
-			Vec3 pDVTmp = directionVec.GetNormalized();
-
-			//正面ベクトルから被弾方向ベクトルへの回転クォータニオン
-			Quaternion q = Quaternion::DirectionToDirection(fVTmp, pDVTmp);
-			//回転後のベクトル
-			fVTmp = q.GetRotateVector(fVTmp);
-			//正面ベクトルセット
-			SetFrontVec(fVTmp);
-
-			//角度じゃなくて行列をそのまま使う
-			SetIsUseQuaternionMatRot(true);
-			SetMatRot(q.MakeRotateMatrix());
-
-			//行列更新
-			Object::WorldMatColliderUpdate();
-
-			//カメラの注視点に回転したベクトルセット
-			CameraManager::GetInstance().GetCamera("playerCamera")->SetTarget(GetTrans() + fVTmp.GetNormalized());
-			/*CameraManager::GetInstance().GetCamera("playerCamera")->Update();*/
-		}
+		//ダメージ
+		Damaged(hp_, [=]() { Dead(info); });
 	}
 }

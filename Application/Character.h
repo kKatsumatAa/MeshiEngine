@@ -3,6 +3,7 @@
 #include"Weapon.h"
 #include"CollisionManager.h"
 #include<functional>
+#include"ImGuiManager.h"
 
 
 class Character : public Object
@@ -26,11 +27,19 @@ protected:
 	//壁と認識する角度
 	static const float IS_WALL_ROT_;
 
-protected:
+	//ダメージ受けるかどうか(デバッグ用)
+	bool isValidDamage_ = true;
 
+protected:
+	/// <summary>
+	/// ダメージ受ける処理
+	/// </summary>
+	/// <param name="damage">ダメージ量</param>
+	/// <param name="deadFunc">死んだときに呼び出す処理</param>
+	virtual void Damaged(int32_t damage, std::function<void()> deadFunc);
 
 public:
-	~Character() { ; }
+	virtual ~Character() { ; }
 
 public:
 	//武器

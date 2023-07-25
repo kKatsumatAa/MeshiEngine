@@ -49,7 +49,7 @@ public:
 class TransitionEffectBeginState : public SceneTransitionEffectState
 {
 private:
-	const int32_t TIMER_MAX_ = 30;
+	const int32_t TIMER_MAX_ = 40;
 
 public:
 	void Initialize()override;
@@ -61,7 +61,7 @@ public:
 class TransitionEffectDoingState : public SceneTransitionEffectState
 {
 private:
-	const int32_t TIMER_MAX_ = 30;
+	const int32_t TIMER_MAX_ = 40;
 
 public:
 	void Initialize()override;
@@ -73,7 +73,7 @@ public:
 class TransitionEffectEndState : public SceneTransitionEffectState
 {
 private:
-	const int32_t TIMER_MAX_ = 30;
+	const int32_t TIMER_MAX_ = 40;
 
 public:
 	void Initialize()override;

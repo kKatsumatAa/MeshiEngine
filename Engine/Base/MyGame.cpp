@@ -56,22 +56,24 @@ void MyGame::Draw()
 		PostEffectManager::GetInstance().DrawDisplay();
 
 		sceneM_->DrawSprite();
-		
+
+#ifdef _DEBUG
 		{
 			//imgui
 			imguiM_->Begin();
 
-#ifdef _DEBUG
+
 			//(imgui)
 			sceneM_->DrawImgui();
 			//ポストエフェクト
 			PostEffectManager::GetInstance().ImGuiUpdate();
-#endif // DEBUG
+
 
 			imguiM_->End();
 
 			imguiM_->Draw();
 		}
+#endif // DEBUG
 
 		// 4.描画コマンドここまで //
 		DirectXWrapper::GetInstance().PostDraw();

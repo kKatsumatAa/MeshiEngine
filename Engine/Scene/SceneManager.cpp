@@ -156,6 +156,7 @@ void SceneManager::DrawImgui()
 	if (!SceneTransitionManager::GetInstance().GetIsLoadingOnly() && state_)
 	{
 		state_->DrawImgui();
+		LevelManager::GetInstance().DrawImGui();
 	}
 }
 
