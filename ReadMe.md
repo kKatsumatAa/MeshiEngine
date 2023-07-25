@@ -1,7 +1,14 @@
 # MeshiEngine
-![顔](https://github.com/kKatsumatAa/TextureRipo/blob/master/image/walter.png "顔")
+![ロゴ](https://github.com/kKatsumatAa/TextureRipo/blob/master/image/walter.png "ロゴ")
 
-| レベルエディター | ポストエフェクト |
-| ----------- | -------------- |
-| ![レベルエディタ](https://github.com/kKatsumatAa/TextureRipo/blob/master/image/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202023-07-25%20155338.png "レベルエディタ") | ![ポストエフェクト](https://github.com/kKatsumatAa/MeshiEngine/blob/master/Resources/image/walter.png "ポストエフェクト") |
-| ![レベルエディタ2](https://github.com/kKatsumatAa/TextureRipo/blob/master/image/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202023-07-25%20155643.png "レベルエディタ2") | |
+| レベルエディター |
+| ----------- |
+| ![レベルエディタ](https://github.com/kKatsumatAa/TextureRipo/blob/master/image/levelEditor.png "レベルエディタ") 
+| ブレンダーでレベルデータを編集、出力。そのデータをエンジンに読み込むことでゲームに反映。 |
+| ![レベルエディタ2](https://github.com/kKatsumatAa/TextureRipo/blob/master/image/levelEditor2.png "レベルエディタ2") |
+| ファイル名を指定することでエンジン側でモデルデータも読み込み。コライダーのタイプ（球など）、判定属性も設定できるように。 |
+
+| ポストエフェクト |
+| -------------- |
+| ![ポストエフェクト](https://github.com/kKatsumatAa/TextureRipo/blob/master/image/posteffect.png "ポストエフェクト") |
+| この写真では、「ブルーム」「ビネット」「湾曲」を行っている。その他にもポストエフェクトは実装できており、imguiで切り替えたり数値をいじれる。 |
