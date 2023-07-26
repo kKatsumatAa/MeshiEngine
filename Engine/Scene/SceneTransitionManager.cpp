@@ -44,7 +44,7 @@ void SceneTransitionManager::BeginSceneTransition(const std::function<void()>& l
 void SceneTransitionManager::BeginAsyncLoad(std::function<void()> loadFunc)
 {
 	//”ñ“¯Šú‚Å“Ç‚İ‚İŠJn
-	async_.StartAsyncFunction(loadFunc_);
+	async_.StartAsyncFunction(loadFunc);
 }
 
 //---------------------------------------------

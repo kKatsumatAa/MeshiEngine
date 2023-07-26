@@ -59,6 +59,7 @@ public://サブクラス
 	{
 		DirectX::XMFLOAT3 pos;//座標
 		DirectX::XMFLOAT3 normal;//法線ベクトル
+		DirectX::XMFLOAT4 tangent;//法線の接線
 		DirectX::XMFLOAT2 uv;//uv座標
 		uint32_t boneIndex[S_MAX_BONE_INDICES_] = { 0 };//影響を受けるボーン　番号
 		float boneWeight[S_MAX_BONE_INDICES_] = { 1.0f,0,0,0 };//ボーン　重み

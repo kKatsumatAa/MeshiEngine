@@ -209,6 +209,9 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing/*,
 		mesh->CalculateSmoothedVertexNormals();
 	}
 
+	//ƒƒbƒVƒ…‚ÌÚü
+	mesh->CalculateTangent();
+
 	//Š—LŒ –ß‚·
 	meshes_[meshes_.size() - 1] = std::move(mesh);
 }

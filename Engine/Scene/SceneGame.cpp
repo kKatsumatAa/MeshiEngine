@@ -92,6 +92,7 @@ void SceneGame::Update()
 		//˜A‘Å‚µ‚Ä”ò‚Î‚³‚È‚¢‚æ‚¤‚É
 		if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) && clearCoolTime_ >= CLEAR_COOL_TIME_MAX_)
 		{
+			ParticleManager::GetInstance()->ClearParticles();
 			sceneM_->SetNextScene("TITLE");
 		}
 	}

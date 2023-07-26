@@ -8,37 +8,6 @@ using namespace DirectX;
 XMMATRIX ParticleManager::sMatBillboard_ = XMMatrixIdentity();
 XMMATRIX ParticleManager::sMatBillboardY_ = XMMatrixIdentity();
 
-static const DirectX::XMFLOAT4 operator+(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs)
-{
-	XMFLOAT4 result;
-	result.x = lhs.x + rhs.x;
-	result.y = lhs.y + rhs.y;
-	result.z = lhs.z + rhs.z;
-	result.w = lhs.w + rhs.w;
-	return result;
-}
-
-static const DirectX::XMFLOAT4 operator-(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs)
-{
-	XMFLOAT4 result;
-	result.x = lhs.x - rhs.x;
-	result.y = lhs.y - rhs.y;
-	result.z = lhs.z - rhs.z;
-	result.w = lhs.w - rhs.w;
-	return result;
-}
-
-const DirectX::XMFLOAT4 operator/(const DirectX::XMFLOAT4& lhs, float RHS)
-{
-	XMFLOAT4 result;
-	result.x = lhs.x / RHS;
-	result.y = lhs.y / RHS;
-	result.z = lhs.z / RHS;
-	result.w = lhs.w / RHS;
-	return result;
-}
-
-
 ParticleManager* ParticleManager::GetInstance()
 {
 	static ParticleManager sInstance;

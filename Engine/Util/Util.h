@@ -95,3 +95,23 @@ Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot);
 
 //ƒ‰ƒ“ƒ_ƒ€
 float GetRand(float min, float max);
+
+
+//
+const DirectX::XMFLOAT4 operator+(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs);
+
+const DirectX::XMFLOAT4 operator-(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs);
+
+const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs);
+
+const DirectX::XMFLOAT3 operator-(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs);
+
+const DirectX::XMFLOAT2 operator+(const DirectX::XMFLOAT2& lhs, const DirectX::XMFLOAT2& rhs);
+
+const DirectX::XMFLOAT2 operator-(const DirectX::XMFLOAT2& lhs, const DirectX::XMFLOAT2& rhs);
+
+const DirectX::XMFLOAT4 operator/(const DirectX::XMFLOAT4& lhs, float RHS);
+
+const DirectX::XMFLOAT3 operator*(const DirectX::XMFLOAT3& lhs, float rhs);
+
+const DirectX::XMFLOAT2 operator*(const DirectX::XMFLOAT2& lhs, float rhs);

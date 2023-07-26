@@ -6,6 +6,8 @@ struct VSOutput
 {
     float4 svpos : SV_POSITION; //システム用頂点座標
     float4 worldpos : POSITION; //ワールド座標
-    float3 normal : NORMAL; //ワールド座標
+    float3 normal : NORMAL; //法線
+    float3 tangent : TANGENT; //法線の接線
+    float3 binormal : BINORMAL; //従法線
     float2 uv : TEXCOORD; //uv座標
 };

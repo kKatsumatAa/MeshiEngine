@@ -3,6 +3,7 @@
 Texture2D<float4> tex : register(t0); //0番スロットに設定されたテクスチャ
 Texture2D<float4> tex2 : register(t1); //1番スロットに設定されたテクスチャ(ディゾルブ)
 Texture2D<float4> tex3 : register(t2); //2番スロットに設定されたテクスチャ(スペキュラマップテクスチャ)
+Texture2D<float4> tex4 : register(t3); //3番スロットに設定されたテクスチャ(ノーマルマップマップテクスチャ)
 SamplerState smp : register(s0); //0番スロットに設定されたサンプラー
 
 struct PSOutput
@@ -18,6 +19,29 @@ float4 GetSpecularMapColor(float3 specular, float3 diffuse, float4 maskCol)
 {
     float4 col = float4(float3(maskCol.r, maskCol.r, maskCol.r) * (specular + diffuse), 0);
     return col;
+}
+
+//ノーマルマップ
+float3 GetNormalMapWorldNormalVec(float4 normalMapCol, float3 tangent,
+float3 binormal, float3 normal, float4x4 world)
+{
+    //ノーマルマップ画像の色を法線ベクトルに変換(-1～1)
+    float3 nMap = normalMapCol.rgb * 2.0 - 1.0;
+    //接線をノーマライズ
+    float3 tangentL = normalize(tangent);
+    //従法線もノーマライズ
+    float3 binormalL = normalize(binormal);
+    //頂点の法線もノーマライズ
+    float3 normalL = normalize(normal);
+    
+    //ノーマルマップから算出した法線ベクトルは接空間にあるので、ローカル空間に変換
+    float4 lNormal = float4(normalize(tangentL * nMap.r + binormalL * nMap.g + normalL * nMap.b), 0);
+    
+    //ローカルからワールドへ
+    //法線にワールド行列によるスケーリング・回転を適用
+    float4 wNormal = mul(world, lNormal);
+    
+    return wNormal.rgb;
 }
 
 
@@ -111,6 +135,8 @@ cbuffer ConstBufferEffectFlags : register(b4)
     float dissolveT = 0;
     //スペキュラマップ
     uint isSpecularMap = false;
+    //ノーマルマップ
+    uint isNormalMap = false;
 	//時間
     uint time;
 }

@@ -10,7 +10,7 @@ PSOutput main(VSOutput input)
     float4 texcolor = tex.Sample(smp, input.uv);
 
 	// 光沢度
-    const float SHININESS = 4.0f;
+    const float SHININESS = 20.0f;
 	// 頂点から視点への方向ベクトル
     float3 eyedir = normalize(cameraPos - input.worldpos.xyz);
 
@@ -22,16 +22,29 @@ PSOutput main(VSOutput input)
     
     //スペキュラマップの色
     float4 specularMapCol = { 0, 0, 0, 0 };
+    
+    //ワールドの法線
+    float3 wNormal = normalize(mul(world, float4(input.normal, 0)));
+    
+    float3 lightNormal = wNormal;
+    
+    //ノーマルマップが有効ならライトの計算に使う法線を算出
+    if (isNormalMap)
+    {        
+        //ローカルの法線を使わないといけない
+        lightNormal = GetNormalMapWorldNormalVec(tex4.Sample(smp, input.uv), input.tangent,
+            input.binormal, input.normal, world);
+    }
 
 	//平行光源
     for (int i = 0; i < S_DIRLIGHT_NUM; i++)
     {
         if (dirLights[i].active)
-        {
+        {            
 			// ライトに向かうベクトルと法線の内積
-            float3 dotlightnormal = dot(dirLights[i].lightv, input.normal);
+            float3 dotlightnormal = dot(dirLights[i].lightv, lightNormal);
 			// 反射光ベクトル
-            float3 reflect = normalize(-dirLights[i].lightv + 2 * dotlightnormal * input.normal);
+            float3 reflect = normalize(-dirLights[i].lightv + 2 * dotlightnormal * lightNormal);
             float3 specular = pow(saturate(dot(reflect, eyedir)), SHININESS);
 			//トゥーン
             if (isToon)
@@ -50,7 +63,7 @@ PSOutput main(VSOutput input)
             shadecolor.rgb += (diffuse + specular) * dirLights[i].lightcolor;
             
             //スペキュラマップ
-            if(isSpecularMap)
+            if (isSpecularMap)
             {
                 float4 specularMap = GetSpecularMapColor(specular, diffuse, tex2.Sample(smp, input.uv));
                 specularMapCol += specularMap;
@@ -73,9 +86,9 @@ PSOutput main(VSOutput input)
             float atten = 1.0f / (pointLights[i].lightatten.x + pointLights[i].lightatten.y * d +
 				pointLights[i].lightatten.z * d * d);
 			// ライトに向かうベクトルと法線の内積
-            float3 dotlightnormal = dot(lightv, input.normal);
+            float3 dotlightnormal = dot(lightv, lightNormal);
 			// 反射光ベクトル
-            float3 reflect = normalize(-lightv + 2 * dotlightnormal * input.normal);
+            float3 reflect = normalize(-lightv + 2 * dotlightnormal * lightNormal);
             float3 specular = pow(saturate(dot(reflect, eyedir)), SHININESS);
 			//トゥーン
             if (isToon)
@@ -94,7 +107,7 @@ PSOutput main(VSOutput input)
             shadecolor.rgb += atten * (diffuse + specular) * pointLights[i].lightcolor;
             
                         //スペキュラマップ
-            if(isSpecularMap)
+            if (isSpecularMap)
             {
                 float4 specularMap = GetSpecularMapColor(specular, diffuse, tex2.Sample(smp, input.uv));
                 specularMapCol += specularMap;
@@ -123,9 +136,9 @@ PSOutput main(VSOutput input)
 			//角度減衰を乗算
             atten *= angleatten;
 			//ライトに向かうベクトルと法線の内積
-            float3 dotlightnormal = dot(lightv, input.normal);
+            float3 dotlightnormal = dot(lightv, lightNormal);
 			//反射光ベクトル　
-            float3 reflect = normalize(-lightv + 2 * dotlightnormal * input.normal);
+            float3 reflect = normalize(-lightv + 2 * dotlightnormal * lightNormal);
             float3 specular = pow(saturate(dot(reflect, eyedir)), SHININESS);
 			//トゥーン
             if (isToon)
@@ -143,7 +156,7 @@ PSOutput main(VSOutput input)
             shadecolor.rgb += atten * (diffuse + specular) * spotLights[i].lightcolor;
             
             //スペキュラマップ
-            if(isSpecularMap)
+            if (isSpecularMap)
             {
                 float4 specularMap = GetSpecularMapColor(specular, diffuse, tex2.Sample(smp, input.uv));
                 specularMapCol += specularMap;
@@ -192,11 +205,11 @@ PSOutput main(VSOutput input)
     float dotL = 1.0f;
     if (isRimLight)
     {
-        dotL = smoothstep(0.5f, 0.55f, dot(eyedir, input.normal));
+        dotL = smoothstep(0.5f, 0.55f, dot(eyedir, wNormal));
     }
 
 	// シェーディングによる色で描画
-    float4 DSC = dotL * shadecolor;
+    float4 DSC = /*dotL **/ shadecolor;
     float4 RIM = float4(rimColor.rgb, 1.0f) * (1.0f - dotL);
     float4 RGBA = (DSC * texcolor * color) + RIM;
     float4 RGBA2 = (DSC * color) + RIM;
@@ -205,7 +218,7 @@ PSOutput main(VSOutput input)
 
     
     //スペキュラマップ
-    if(isSpecularMap)
+    if (isSpecularMap)
     {
         RGBA += saturate(specularMapCol);
     }

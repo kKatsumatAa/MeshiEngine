@@ -48,6 +48,8 @@ struct EffectOConstBuffer
 	float dissolveT = 0;
 	//スペキュラマップ
 	uint32_t isSpecularMap = false;
+	//ノーマルマップ
+	uint32_t isNormalMap = false;
 	//時間
 	uint32_t time = 0;
 };
@@ -80,7 +82,7 @@ private:
 	//FBX用
 	static RootPipe pipelineSetFBX_;
 	//ルートパラメータの設定
-	static D3D12_ROOT_PARAMETER rootParams_[9];
+	static D3D12_ROOT_PARAMETER rootParams_[10];
 	// グラフィックスパイプライン設定
 	static D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_;
 
@@ -141,6 +143,8 @@ private:
 	uint64_t dissolveTextureHandle_ = NULL;
 	//スペキュラマップの画像
 	uint64_t specularMapTextureHandle_ = NULL;
+	//ノーマルマップの画像
+	uint64_t normalMapTextureHandle_ = NULL;
 
 public://変数
 	bool isWireFrame_ = 0;
@@ -178,9 +182,10 @@ private:
 	//ルートシグネチャ系のコマンド
 	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
 	//マテリアル、ライト、テクスチャ系のコマンド
-	void SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex, ConstBuffTransform cbt);
+	void SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
+		uint64_t normalMapTex, ConstBuffTransform cbt);
 	void SetMaterialLightMTexSkinModel(uint64_t textureHandle, uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
-		ConstBuffTransform cbt, Material* material);
+		uint64_t normalMapTexHandle, ConstBuffTransform cbt, Material* material);
 
 	//
 	static void PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum = NULL);
@@ -270,6 +275,11 @@ public:
 	//スペキュラマップ
 	void SetIsSpecularMap(bool isSpecularMap) { effectFlags_.isSpecularMap = isSpecularMap; }
 	void SetSpecularMapTexHandle(uint64_t specularMapTextureHandle) { specularMapTextureHandle_ = specularMapTextureHandle; }
+
+	//ノーマルマップ
+	void SetIsNormalMap(bool isNormalMap) { effectFlags_.isNormalMap = isNormalMap; }
+	void SetNormalMapTexHandle(uint64_t normalMapTextureHandle) { normalMapTextureHandle_ = normalMapTextureHandle; }
+
 
 	//初期化
 	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr);

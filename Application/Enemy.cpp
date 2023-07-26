@@ -51,11 +51,11 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	TextureManager::LoadGraph(L"dissolveMask.png", handle);
 	SetDissolveTexHandle(handle);
 
-	//supecularMap
-	SetIsSpecularMap(true);
+	//ノーマルマップ
+	SetIsNormalMap(true);
 	//tex
-	TextureManager::GetInstance().LoadGraph(L"specularMap.jpg", handle);
-	SetSpecularMapTexHandle(handle);
+	TextureManager::GetInstance().LoadGraph(L"StainedGlassNormal.png", handle);
+	SetNormalMapTexHandle(handle);
 
 	return true;
 }

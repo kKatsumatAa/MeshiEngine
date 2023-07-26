@@ -23,7 +23,7 @@ RootPipe Object::pipelineSetM_;
 RootPipe Object::pipelineSetFBX_;
 
 //ルートパラメータの設定
-D3D12_ROOT_PARAMETER Object::rootParams_[9] = {};
+D3D12_ROOT_PARAMETER Object::rootParams_[10] = {};
 
 // グラフィックスパイプライン設定
 D3D12_GRAPHICS_PIPELINE_STATE_DESC Object::pipelineDesc_{};
@@ -102,6 +102,13 @@ void Object::DrawInitialize()
 	rootParams_[8].DescriptorTable.pDescriptorRanges = &dissolveDHRange2;//デスクリプタレンジ
 	rootParams_[8].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//テクスチャレジスタ3番（ノーマルマップ用テクスチャ）
+	rootParams_[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	D3D12_DESCRIPTOR_RANGE dissolveDHRange3 = TextureManager::GetInstance().sDescriptorRange_;
+	dissolveDHRange3.BaseShaderRegister += 3;
+	rootParams_[9].DescriptorTable.pDescriptorRanges = &dissolveDHRange3;//デスクリプタレンジ
+	rootParams_[9].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[9].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 
 	// パイプランステートの生成
 	PipeLineState(D3D12_FILL_MODE_SOLID, objPipeLineSet_[0]);
@@ -192,6 +199,7 @@ void Object::EffectUpdate()
 		mapEffectFlagsBuff_->isDissolve = effectFlags_.isDissolve;
 		mapEffectFlagsBuff_->dissolveT = effectFlags_.dissolveT;
 		mapEffectFlagsBuff_->isSpecularMap = effectFlags_.isSpecularMap;
+		mapEffectFlagsBuff_->isNormalMap = effectFlags_.isNormalMap;
 		mapEffectFlagsBuff_->time = effectFlags_.time;
 	}
 }
@@ -445,7 +453,8 @@ void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature);
 }
 
-void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex, ConstBuffTransform cbt)
+void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
+	uint64_t normalMapTex, ConstBuffTransform cbt)
 {
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 
@@ -468,6 +477,10 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveT
 	srvGpuHandle.ptr = specularMapTex;
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(8, srvGpuHandle);
 
+	//ノーマルマップテクスチャ
+	srvGpuHandle.ptr = normalMapTex;
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(9, srvGpuHandle);
+
 	//定数バッファビュー(CBV)の設定コマンド
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, cbt.constBuffTransform_->GetGPUVirtualAddress());
 
@@ -475,9 +488,10 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveT
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff_->GetGPUVirtualAddress());
 }
 
-void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle, uint64_t dissolveTexHandle, uint64_t specularMapTexhandle, ConstBuffTransform cbt, Material* material)
+void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle, uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
+	uint64_t normalMapTexHandle, ConstBuffTransform cbt, Material* material)
 {
-	SetMaterialLightMTexSkin(textureHandle, dissolveTexHandle, specularMapTexhandle, cbt);
+	SetMaterialLightMTexSkin(textureHandle, dissolveTexHandle, specularMapTexhandle, normalMapTexHandle, cbt);
 
 	//アンビエントとか
 	material->Update();
@@ -502,10 +516,13 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 	TextureManager::CheckTexHandle(dissolveTextureHandleL);
 	uint64_t specularMapTextureHandleL = specularMapTextureHandle_;
 	TextureManager::CheckTexHandle(specularMapTextureHandleL);
+	uint64_t normalMapTextureHandleL = normalMapTextureHandle_;
+	TextureManager::CheckTexHandle(normalMapTextureHandleL);
 
 	//ラムダ式でコマンド関数
 	std::function<void()>SetRootPipeR = [=]() {SetRootPipe(objPipeLineSet_->pipelineState.Get(), pipelineNum, objPipeLineSet_->rootSignature.Get()); };
-	std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkin(textureHandleL, dissolveTextureHandleL, specularMapTextureHandleL, constBuffTransform); };
+	std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkin(textureHandleL, dissolveTextureHandleL, specularMapTextureHandleL,
+		normalMapTextureHandleL, constBuffTransform); };
 
 	if (indexNum == TRIANGLE)
 	{
@@ -575,6 +592,10 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 		srvGpuHandle.ptr = specularMapTextureHandleL;
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(8, srvGpuHandle);
 
+		//ノーマルマップテクスチャ
+		srvGpuHandle.ptr = normalMapTextureHandleL;
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(9, srvGpuHandle);
+
 		//定数バッファビュー(CBV)の設定コマンド
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform_->GetGPUVirtualAddress());
 		//エフェクトフラグ用
@@ -593,7 +614,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 		//ラムダ式でコマンド関数
 		std::function<void()>SetRootPipeR = [=]() {SetRootPipe(pipelineSetFBX_.pipelineState.Get(), 0, pipelineSetFBX_.rootSignature.Get()); };
 		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(fbx->material_->textureHandle_, dissolveTextureHandleL, specularMapTextureHandleL,
-			constBuffTransform, fbx->material_.get()); };
+			normalMapTextureHandleL, constBuffTransform, fbx->material_.get()); };
 
 		fbx->Draw(SetRootPipeR, SetMaterialTex);
 	}
@@ -752,7 +773,7 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 
 	// 頂点レイアウトの設定
 	// 頂点レイアウト
-	D3D12_INPUT_ELEMENT_DESC inputLayout[5] = {
+	D3D12_INPUT_ELEMENT_DESC inputLayout[6] = {
 	{//xyz座標
 	 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
@@ -761,6 +782,12 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 
 		{//法線ベクトル
 	 "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
+	 D3D12_APPEND_ALIGNED_ELEMENT,
+	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+	}, // (1行で書いたほうが見やすい)
+
+		{//法線の接線
+	 "TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
 	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 	}, // (1行で書いたほうが見やすい)

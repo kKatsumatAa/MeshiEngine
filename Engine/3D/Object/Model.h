@@ -8,6 +8,7 @@ struct Vertex
 {
 	DirectX::XMFLOAT3 pos;   //xyz座標
 	DirectX::XMFLOAT3 normal;//法線ベクトル
+	DirectX::XMFLOAT4 tangent;//法線の接線
 	DirectX::XMFLOAT2 uv;    //uv座標
 };
 //頂点データ

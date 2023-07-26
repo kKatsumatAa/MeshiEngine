@@ -43,6 +43,7 @@ public:
 	float ambientColor_[3] = { 1,1,1 };
 	float diffuseColor_[3] = { 1,1,1 };
 	float specularColor_[3] = { 1,1,1 };
+	float DirlightDir[3] = { 0,-1.0f,1.0f };
 
 	//ŠÛ‰e
 	float circleShadowDir_[3] = { 0,-1,0 };

@@ -113,6 +113,8 @@ void SceneManager::Update()
 	lightManager_->SetAmbientColor({ ambientColor_[0],ambientColor_[1], ambientColor_[2] });
 	lightManager_->SetDiffuseColor({ diffuseColor_[0],diffuseColor_[1], diffuseColor_[2] });
 	lightManager_->SetSpecularColor({ specularColor_[0],specularColor_[1], specularColor_[2] });
+	Vec3 dir = { DirlightDir[0],DirlightDir[1], DirlightDir[2] };
+	lightManager_->SetDirLightDir(0, { dir.GetNormalized().x_ ,dir.GetNormalized().y_ ,dir.GetNormalized().z_ });
 
 	lightManager_->Update();
 }
@@ -149,6 +151,7 @@ void SceneManager::DrawImgui()
 	ImGui::SliderFloat3("ambientColor", ambientColor_, 0, 1.0f);
 	ImGui::SliderFloat3("diffuseColor", diffuseColor_, 0, 1.0f);
 	ImGui::SliderFloat3("specularColor", specularColor_, 0, 1.0f);
+	ImGui::SliderFloat3("DirlightDir", DirlightDir, -1.0f, 1.0f);
 
 	ImGui::End();
 

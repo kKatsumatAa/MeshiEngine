@@ -493,3 +493,84 @@ float GetRand(float min, float max)
 	std::uniform_real_distribution<float> distr(min, max);
 	return distr(eng);
 }
+
+const DirectX::XMFLOAT4 operator+(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs)
+{
+	DirectX::XMFLOAT4 result;
+	result.x = lhs.x + rhs.x;
+	result.y = lhs.y + rhs.y;
+	result.z = lhs.z + rhs.z;
+	result.w = lhs.w + rhs.w;
+	return result;
+}
+
+const DirectX::XMFLOAT4 operator-(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs)
+{
+	DirectX::XMFLOAT4 result;
+	result.x = lhs.x - rhs.x;
+	result.y = lhs.y - rhs.y;
+	result.z = lhs.z - rhs.z;
+	result.w = lhs.w - rhs.w;
+	return result;
+}
+
+const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
+{
+	DirectX::XMFLOAT3 result;
+	result.x = lhs.x + rhs.x;
+	result.y = lhs.y + rhs.y;
+	result.z = lhs.z + rhs.z;
+	return result;
+}
+
+const DirectX::XMFLOAT3 operator-(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
+{
+	DirectX::XMFLOAT3 result;
+	result.x = lhs.x - rhs.x;
+	result.y = lhs.y - rhs.y;
+	result.z = lhs.z - rhs.z;
+	return result;
+}
+
+const DirectX::XMFLOAT2 operator+(const DirectX::XMFLOAT2& lhs, const DirectX::XMFLOAT2& rhs)
+{
+	DirectX::XMFLOAT2 result;
+	result.x = lhs.x + rhs.x;
+	result.y = lhs.y + rhs.y;
+	return result;
+}
+
+const DirectX::XMFLOAT2 operator-(const DirectX::XMFLOAT2& lhs, const DirectX::XMFLOAT2& rhs)
+{
+	DirectX::XMFLOAT2 result;
+	result.x = lhs.x - rhs.x;
+	result.y = lhs.y - rhs.y;
+	return result;
+}
+
+const DirectX::XMFLOAT4 operator/(const DirectX::XMFLOAT4& lhs, float RHS)
+{
+	DirectX::XMFLOAT4 result;
+	result.x = lhs.x / RHS;
+	result.y = lhs.y / RHS;
+	result.z = lhs.z / RHS;
+	result.w = lhs.w / RHS;
+	return result;
+}
+
+const DirectX::XMFLOAT3 operator*(const DirectX::XMFLOAT3& lhs, float rhs)
+{
+	DirectX::XMFLOAT3 result;
+	result.x = lhs.x * rhs;
+	result.y = lhs.y * rhs;
+	result.z = lhs.z * rhs;
+	return result;
+}
+
+const DirectX::XMFLOAT2 operator*(const DirectX::XMFLOAT2& lhs, float rhs)
+{
+	DirectX::XMFLOAT2 result;
+	result.x = lhs.x * rhs;
+	result.y = lhs.y * rhs;
+	return result;
+}
