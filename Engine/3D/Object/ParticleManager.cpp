@@ -43,9 +43,6 @@ void ParticleManager::Update(float speed, Camera* camera)
 		camera = CameraManager::GetInstance().usingCamera_;
 	}
 
-	// 寿命が尽きたパーティクルを全削除
-	particles_.remove_if([](Particle& x) { return x.frame_ >= x.numFrame_; });
-
 	// 全パーティクル更新
 	for (std::forward_list<Particle>::iterator it = particles_.begin();
 		it != particles_.end();
@@ -73,6 +70,9 @@ void ParticleManager::Update(float speed, Camera* camera)
 		float t = (float)it->frame_ / it->numFrame_;
 		it->rotation_ = LerpVec3(it->sRotation_, it->eRotation_, t);
 	}
+
+	// 寿命が尽きたパーティクルを全削除
+	particles_.remove_if([](Particle& x) { return x.frame_ >= x.numFrame_; });
 
 	// 頂点バッファへデータ転送
 	int32_t vertCount = 0;
@@ -169,12 +169,12 @@ void ParticleManager::Add(int32_t life, const Vec3& position, const Vec3& veloci
 	p.sColor_ = start_color;
 	p.eColor_ = end_color;
 
-	p.sRotation_.x_ = start_rot * GetRand(-1.0f, 1.0f);
-	p.sRotation_.y_ = start_rot * GetRand(-1.0f, 1.0f);
-	p.sRotation_.z_ = start_rot * GetRand(-1.0f, 1.0f);
-	p.eRotation_.x_ = end_rot * GetRand(-1.0f, 1.0f);
-	p.eRotation_.y_ = end_rot * GetRand(-1.0f, 1.0f);
-	p.eRotation_.z_ = end_rot * GetRand(-1.0f, 1.0f);
+	p.sRotation_.x_ = start_rot * GetRand(-2.0f, 2.0f);
+	p.sRotation_.y_ = start_rot * GetRand(-2.0f, 2.0f);
+	p.sRotation_.z_ = start_rot * GetRand(-2.0f, 2.0f);
+	p.eRotation_.x_ = end_rot * GetRand(-2.0f, 2.0f);
+	p.eRotation_.y_ = end_rot * GetRand(-2.0f, 2.0f);
+	p.eRotation_.z_ = end_rot * GetRand(-2.0f, 2.0f);
 }
 
 void ParticleManager::InitializeGraphicsPipeline()

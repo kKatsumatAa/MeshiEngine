@@ -11,7 +11,6 @@ void SceneTitle::Finalize()
 void SceneTitle::Initialize()
 {
 	sceneM_->StopWaveAllScene();
-	ParticleManager::GetInstance()->ClearParticles();
 
 	TextureManager::LoadGraph(L"title.png", titleTex_);
 

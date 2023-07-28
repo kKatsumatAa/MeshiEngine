@@ -1,5 +1,6 @@
 ﻿#include "FbxLoader.h"
 #include"TextureManager.h"
+#include"Util.h"
 
 using namespace DirectX;
 
@@ -161,6 +162,9 @@ void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode)
 	ParseMaterial(model, fbxNode);
 	//スキニング情報の読み取り
 	PerseSkin(model, fbxMesh);
+
+	//メッシュの接線
+	CalcMeshTangent(model, fbxMesh);
 }
 
 void FbxLoader::ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh)
@@ -265,6 +269,70 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh)
 	}
 }
 
+void FbxLoader::CalcMeshTangent(ModelFBX* model, FbxMesh* fbxMesh)
+{
+	//面の数
+	const int32_t POLYGON_COUNT = fbxMesh->GetPolygonCount();
+	//uvデータの数
+	const int32_t TEXTURE_UV_COUNT = fbxMesh->GetTextureUVCount();
+	//UV名リスト
+	FbxStringList uvNames;
+	fbxMesh->GetUVSetNames(uvNames);
+
+	//面ごとの情報読み取り
+	for (int32_t i = 0; i < POLYGON_COUNT; i++)
+	{
+		//面を構成する頂点の数を取得（3なら三角形ポリゴン,4なら四角形）
+		const int32_t POLYGON_SIZE = fbxMesh->GetPolygonSize(i);
+		assert(POLYGON_SIZE <= 4);
+
+		if (POLYGON_SIZE == 3)
+		{
+			//面のj番目の頂点
+			int32_t index0 = fbxMesh->GetPolygonVertex(i, 0);
+			int32_t index1 = fbxMesh->GetPolygonVertex(i, 1);
+			int32_t index2 = fbxMesh->GetPolygonVertex(i, 2);
+
+
+			// Shortcuts for vertices
+			XMFLOAT3& v0 = model->vertices_[index0].pos;
+			XMFLOAT3& v1 = model->vertices_[index1].pos;
+			XMFLOAT3& v2 = model->vertices_[index2].pos;
+
+			// Shortcuts for UVs
+			XMFLOAT2& uv0 = model->vertices_[index0].uv;
+			XMFLOAT2& uv1 = model->vertices_[index1].uv;
+			XMFLOAT2& uv2 = model->vertices_[index2].uv;
+
+			// Edges of the triangle : postion delta
+			XMFLOAT3 deltaPos1 = v1 - v0;
+			XMFLOAT3 deltaPos2 = v2 - v0;
+
+			// UV delta
+			XMFLOAT2 deltaUV1 = uv1 - uv0;
+			XMFLOAT2 deltaUV2 = uv2 - uv0;
+
+			float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+			XMFLOAT3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+
+			Vec3 tanN = { tangent.x,tangent.y,tangent.z };
+			tanN.Normalized();
+
+			Vec3 tan0 = { model->vertices_[index0].tangent.x,model->vertices_[index0].tangent.y,model->vertices_[index0].tangent.z };
+			Vec3 tan1 = { model->vertices_[index1].tangent.x,model->vertices_[index1].tangent.y,model->vertices_[index1].tangent.z };
+			Vec3 tan2 = { model->vertices_[index2].tangent.x,model->vertices_[index2].tangent.y,model->vertices_[index2].tangent.z };
+
+			tan0.Normalized();
+			tan1.Normalized();
+			tan2.Normalized();
+
+			model->vertices_[index0].tangent = XMFLOAT4(tan0.x_, tan0.y_, tan0.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
+			model->vertices_[index1].tangent = XMFLOAT4(tan1.x_, tan1.y_, tan1.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
+			model->vertices_[index2].tangent = XMFLOAT4(tan2.x_, tan2.y_, tan2.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
+		}
+	}
+}
+
 void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
 {
 	const int32_t MATERIAL_COUNT = fbxNode->GetMaterialCount();
@@ -288,9 +356,9 @@ void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
 				}
 				//環境光係数
 				FbxPropertyT<FbxDouble3> ambient = lambert->Ambient;
-				model->material_->ambient_.x = 0.06f;
-				model->material_->ambient_.y = 0.06f;
-				model->material_->ambient_.z = 0.06f;
+				model->material_->ambient_.x = (float)ambient.Get()[0];
+				model->material_->ambient_.y = (float)ambient.Get()[1];
+				model->material_->ambient_.z = (float)ambient.Get()[2];
 
 				//拡散反射光係数
 				FbxPropertyT<FbxDouble3> diffuse = lambert->Diffuse;
@@ -384,7 +452,7 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 	//スキニング情報
 	FbxSkin* fbxSkin =
 		static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
-	
+
 	//スキニング情報がなければ終了
 	if (fbxSkin == nullptr)
 	{
@@ -444,7 +512,7 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 	//list  :頂点が影響を受けるボーンの全リスト
 	//vector:それを全頂点分
 	std::vector<std::list<WeightSet>> weightLists(model->vertices_.size());
-	
+
 	//全てのボーンについて
 	for (int32_t i = 0; i < clusterCount; i++)
 	{

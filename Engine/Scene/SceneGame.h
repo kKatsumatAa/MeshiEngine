@@ -12,9 +12,6 @@ private:
 	int32_t clearCoolTime_ = 0;
 	const int32_t CLEAR_COOL_TIME_MAX_ = 20;
 
-	Object obj_;
-	ModelFBX* fbxModel_;
-
 public:
 	void Finalize()override;
 	void Initialize()override;

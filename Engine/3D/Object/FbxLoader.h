@@ -80,6 +80,9 @@ public:
 	//面情報読み取り
 	void ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh);
 
+	//メッシュの接線取得
+	void CalcMeshTangent(ModelFBX* model, FbxMesh* fbxMesh);
+
 	//マテリアル読み取り
 	void ParseMaterial(ModelFBX* model, FbxNode* fbxNode);
 

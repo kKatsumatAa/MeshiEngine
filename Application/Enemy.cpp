@@ -181,7 +181,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 
 void Enemy::DamageParticle(const CollisionInfo& info)
 {
-	for (int32_t i = 0; i < 50; ++i)
+	for (int32_t i = 0; i < 80; ++i)
 	{
 		Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
 
@@ -191,15 +191,15 @@ void Enemy::DamageParticle(const CollisionInfo& info)
 
 		pos += addPos;
 
-		const int32_t LIFE_TIME = 100;
+		const int32_t LIFE_TIME = 40;
 
 		Vec3 vel = /*(GetTrans() - pos) * */Vec3(GetRand(-0.5f, 0.5f), GetRand(-0.5f, 0.5f), GetRand(-0.5f, 0.5f)) / 2.0f;
 
-		float scale = GetRand(scaleTmp / 15.0f, scaleTmp / 5.0f);
-		float scale2 = GetRand(0, scaleTmp / 25.0f);
+		float scale = GetRand(scaleTmp / 50.0f, scaleTmp / 15.0f);
+		float scale2 = GetRand(0, scaleTmp / 80.0f);
 
 		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.002f,0 }, scale, scale2, { 3.0f,0.0f,0.0f,0.95f }, { 0,0,0,0.0f },
-			PI * 3.0f, -PI * 3.0f);
+			PI * 10.0f, -PI * 10.0f);
 	}
 }
 

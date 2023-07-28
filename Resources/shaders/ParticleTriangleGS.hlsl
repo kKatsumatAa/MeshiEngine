@@ -46,7 +46,8 @@ void main(
         //疑似的に回転
         offset.r = sin(input[0].rot.r) * offset.r;
         offset.g = cos(input[0].rot.g) * offset.g;
-        offset.b = sin(input[0].rot.b) * offset.b;
+        offset.b = -sin(input[0].rot.b) * offset.b;
+        offset.a = -cos(input[0].rot.b) * offset.a;
 		// オフセット分ずらす（ワールド座標）
         element.svpos = input[0].pos + offset;
 		// ビュープロジェクション変換

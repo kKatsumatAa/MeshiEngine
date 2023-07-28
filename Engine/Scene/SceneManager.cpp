@@ -150,7 +150,7 @@ void SceneManager::DrawImgui()
 
 	ImGui::SliderFloat3("ambientColor", ambientColor_, 0, 1.0f);
 	ImGui::SliderFloat3("diffuseColor", diffuseColor_, 0, 1.0f);
-	ImGui::SliderFloat3("specularColor", specularColor_, 0, 1.0f);
+	ImGui::SliderFloat3("specularColor", specularColor_, 0, 10.0f);
 	ImGui::SliderFloat3("DirlightDir", DirlightDir, -1.0f, 1.0f);
 
 	ImGui::End();
