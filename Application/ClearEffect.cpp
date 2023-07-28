@@ -1,4 +1,6 @@
 #include "ClearEffect.h"
+#include "ClearEffectState.h"
+#include "LevelManager.h"
 
 ClearEffect& ClearEffect::GetInstance()
 {
@@ -6,33 +8,53 @@ ClearEffect& ClearEffect::GetInstance()
 	return inst;
 }
 
+void ClearEffect::ChangeState(std::unique_ptr<ClearEffectState> state)
+{
+	state_.reset();
+	state_ = std::move(state);
+	state_->SetClearEffect(this);
+	state_->Initialize();
+}
+
+void ClearEffect::BeginClearEffect()
+{
+	if (!isEffect_)
+	{
+		isEffect_ = true;
+		//ステート変更
+		ChangeState(ClearEffectState::GetState("HYPER"));
+	}
+}
+
 void ClearEffect::Initialize()
 {
-	timer_ = 0;
-	t_ = 0;
-	scale_ = 0;
-	TextureManager::LoadGraph(L"clear.png", texHandle_);
-	alpha_ = 0.0f;
+	Sound::GetInstance().LoadWave("hyper.wav", false);
+	Sound::GetInstance().LoadWave("hot.wav", false);
+
+	if (state_)
+	{
+		state_.reset();
+		state_ = nullptr;
+	}
+
+	isEffect_ = false;
+
+	TextureManager::LoadGraph(L"hyper.png");
+	TextureManager::LoadGraph(L"hot.png");
 }
 
 void ClearEffect::Update()
 {
-	t_ = (float)timer_ / (float)TIMER_MAX_;
-
-	scale_ = LerpVec3({ MAX_SCALE_,0,0 }, { 1.0f,0,0 }, EaseOut(t_)).x_;
-
-	alpha_ = t_;
-
-	if (t_ > 1.0f)
+	//クリア演出開始
+	if (!GetIsEffect() && LevelManager::GetInstance().GetGameClear())
 	{
-		timer_ = 0;
+		BeginClearEffect();
 	}
 
-	timer_++;
+	state_->Update();
 }
 
 void ClearEffect::Draw()
 {
-	obj_.DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },
-		scale_, { 2.5f,2.5f,2.5f,alpha_ }, texHandle_, { 0.5f,0.5f });
+	state_->Draw();
 }

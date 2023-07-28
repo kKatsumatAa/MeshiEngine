@@ -50,6 +50,8 @@ private://ゲームオリジナル
 	//引数によってObjectかTouchObjectを作る
 	void CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, Model* model);
 
+
+
 public:
 	bool GetGameOver();
 	bool GetGameClear();

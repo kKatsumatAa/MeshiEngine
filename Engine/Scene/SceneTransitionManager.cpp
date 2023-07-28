@@ -2,6 +2,9 @@
 #include "SceneTransitionEffectState.h"
 
 
+const std::string SceneTransitionManager::TRANSITION_SOUND_NAME_ = "noise.wav";
+
+
 
 SceneTransitionManager& SceneTransitionManager::GetInstance()
 {
@@ -12,6 +15,9 @@ SceneTransitionManager& SceneTransitionManager::GetInstance()
 void SceneTransitionManager::Initialize()
 {
 	isDoingEffect_ = false;
+
+	//シーン遷移音
+	Sound::GetInstance().LoadWave(TRANSITION_SOUND_NAME_, false);
 
 	//ステート
 	ChangeEffectState(std::make_unique<TransitionEffectNothingState>());

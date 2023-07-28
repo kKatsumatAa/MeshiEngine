@@ -18,8 +18,6 @@ public:
 
 	bool CheckEyeRayHit();
 
-	void ThrowWeapon();
-
 	virtual void Initialize() = 0;
 	virtual void Update() = 0;
 };

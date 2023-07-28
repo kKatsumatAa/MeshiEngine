@@ -22,6 +22,9 @@ private:
 	//“Ç‚İ‚İ‚ÌŠÖ”•Û‘¶—p
 	std::function<void()>loadFunc_;
 
+public:
+	static const std::string TRANSITION_SOUND_NAME_;
+
 
 private:
 	SceneTransitionManager() { ; }

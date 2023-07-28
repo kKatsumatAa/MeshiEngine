@@ -6,6 +6,7 @@
 #include "GameVelocityManager.h"
 #include "BulletManager.h"
 #include "ClearEffect.h"
+#include "ClearEffectState.h"
 
 
 void SceneGame::Finalize()
@@ -69,9 +70,6 @@ void SceneGame::Update()
 	//ゲームスピード
 	GameVelocityManager::GetInstance().Update();
 
-	//クリア演出用
-	ClearEffect::GetInstance().Update();
-
 	//シーン遷移
 	if (LevelManager::GetInstance().GetGameOver())
 	{
@@ -81,6 +79,7 @@ void SceneGame::Update()
 	{
 		clearCoolTime_++;
 
+		//クリア演出用
 		ClearEffect::GetInstance().Update();
 
 		//連打して飛ばさないように
@@ -99,6 +98,8 @@ void SceneGame::Draw()
 
 	LevelManager::GetInstance().Draw();
 
+	ParticleManager::GetInstance()->Draw();
+
 	if (LevelManager::GetInstance().GetGameClear())
 	{
 		ClearEffect::GetInstance().Draw();
@@ -107,7 +108,6 @@ void SceneGame::Draw()
 
 void SceneGame::DrawSprite()
 {
-
 }
 
 void SceneGame::DrawImgui()

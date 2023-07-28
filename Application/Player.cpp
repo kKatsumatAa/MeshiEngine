@@ -183,6 +183,7 @@ void Player::Update()
 
 		if (deadTimer_ <= 0)
 		{
+			FallWeapon({ 0,0,0 });
 			SetIsAlive(false);
 		}
 
@@ -285,6 +286,17 @@ void Player::Dead(const CollisionInfo& info)
 	//カメラの注視点に回転したベクトルセット
 	CameraManager::GetInstance().GetCamera("playerCamera")->SetTarget(GetTrans() + fVTmp.GetNormalized());
 	/*CameraManager::GetInstance().GetCamera("playerCamera")->Update();*/
+}
+
+void Player::ThrowWeapon()
+{
+	FallWeapon(GetFrontVec() * FALL_VEL_POW_);
+
+	//ゲームスピード加算
+	GameVelocityManager::GetInstance().AddGameVelocity(0.9f);
+
+	//ステート変更(素手)
+	ChangePlayerState(std::make_unique<PlayerStateBareHands>());
 }
 
 void Player::OnCollision(const CollisionInfo& info)

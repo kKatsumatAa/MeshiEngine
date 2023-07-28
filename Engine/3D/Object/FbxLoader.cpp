@@ -406,7 +406,7 @@ void FbxLoader::LoadTexture(ModelFBX* model, const std::string& fullpath)
 	wchar_t wfilepath[128];
 	MultiByteToWideChar(CP_ACP, 0, fullpath.c_str(), -1, wfilepath, _countof(wfilepath));
 
-	TextureManager::GetInstance().LoadGraph(wfilepath, model->material_->textureHandle_);
+	model->material_->textureHandle_ = TextureManager::GetInstance().LoadGraph(wfilepath);
 
 }
 

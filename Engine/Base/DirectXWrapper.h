@@ -94,7 +94,7 @@ public:
 
 	void DrawInitialize();
 
-	//テクスチャをアップロードするコマンド
+	//テクスチャを描画とは別のコマンドリストでアップするコマンド
 	void UpLoadTexture();
 
 	//1枚目のテクスチャに描画

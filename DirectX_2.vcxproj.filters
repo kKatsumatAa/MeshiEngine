@@ -357,6 +357,9 @@
     <ClCompile Include="Engine\Scene\SceneTransitionEffectState.cpp">
       <Filter>ソース ファイル\Engine\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Application\ClearEffectState.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Player.h">
@@ -619,6 +622,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Scene\SceneTransitionEffectState.h">
       <Filter>ヘッダー ファイル\Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\ClearEffectState.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

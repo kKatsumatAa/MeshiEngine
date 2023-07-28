@@ -51,6 +51,8 @@ private:
 	int32_t deadTimer_ = 70;
 	bool isDead_ = false;
 
+	const float FALL_VEL_POW_ = 8.0f;
+
 public:
 
 
@@ -83,7 +85,6 @@ public:
 	PlayerHandManager* GetHandManager() { return handManager_.get(); }
 
 public:
-
 	bool Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon);
 
 	void Update() override;
@@ -95,5 +96,8 @@ public:
 	void ChangePlayerState(std::unique_ptr<PlayerState> state);
 
 	void OnCollision(const CollisionInfo& info) override;
+
+public:
+	void ThrowWeapon();
 };
 

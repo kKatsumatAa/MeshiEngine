@@ -104,6 +104,7 @@
     <ClCompile Include="Application\BulletManager.cpp" />
     <ClCompile Include="Application\Character.cpp" />
     <ClCompile Include="Application\ClearEffect.cpp" />
+    <ClCompile Include="Application\ClearEffectState.cpp" />
     <ClCompile Include="Application\Enemy.cpp" />
     <ClCompile Include="Application\GameVelocityManager.cpp" />
     <ClCompile Include="Application\Gun.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="Application\BulletManager.h" />
     <ClInclude Include="Application\Character.h" />
     <ClInclude Include="Application\ClearEffect.h" />
+    <ClInclude Include="Application\ClearEffectState.h" />
     <ClInclude Include="Application\Enemy.h" />
     <ClInclude Include="Application\GameVelocityManager.h" />
     <ClInclude Include="Application\Gun.h" />

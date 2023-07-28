@@ -19,6 +19,9 @@ void SceneTransitionEffectState::Update()
 //‰½‚à‚µ‚Ä‚¢‚È‚¢
 void TransitionEffectNothingState::Initialize()
 {
+	//‰¹Ž~‚ß‚é
+	Sound::GetInstance().StopWave(SceneTransitionManager::TRANSITION_SOUND_NAME_);
+
 	//ƒmƒCƒY
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isNoise = false;
 
@@ -40,6 +43,9 @@ void TransitionEffectNothingState::Draw()
 //‰‰oŽn‚ß
 void TransitionEffectBeginState::Initialize()
 {
+	//‰¹—¬‚·
+	Sound::GetInstance().PlayWave(SceneTransitionManager::TRANSITION_SOUND_NAME_, true);
+
 	//ƒmƒCƒY
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isNoise = true;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;

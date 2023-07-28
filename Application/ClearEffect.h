@@ -2,32 +2,36 @@
 #include"Object.h"
 
 
+class ClearEffectState;
+
 class ClearEffect final
 {
 private:
-	int32_t timer_ = 0;
-	const int32_t TIMER_MAX_ = 260;
-	float t_ = 0;
-
-	float scale_ = 0;
-
-	const float MAX_SCALE_ = 1.5f;
-
 	Object obj_;
 
-	uint64_t texHandle_ = NULL;
+	//ステート
+	std::unique_ptr<ClearEffectState> state_ = nullptr;
 
-	float alpha_ = 0.0f;
+	bool isEffect_ = false;
 
 private:
 	ClearEffect() { ; }
 	~ClearEffect() { ; }
 
 public:
+	void SetIsEffect(bool isEffect) { isEffect_ = isEffect; }
+	bool GetIsEffect() { return isEffect_; }
+
+
+public:
 	ClearEffect& operator=(const ClearEffect& obj) = delete;
 	ClearEffect(const ClearEffect& obj) = delete;
 
 	static ClearEffect& GetInstance();
+
+	void ChangeState(std::unique_ptr<ClearEffectState> state);
+	
+	void BeginClearEffect();
 
 	void Initialize();
 	void Update();

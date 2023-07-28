@@ -25,17 +25,6 @@ bool PlayerState::CheckEyeRayHit()
 	return isRayHit;
 }
 
-void PlayerState::ThrowWeapon()
-{
-	player_->FallWeapon(player_->GetFrontVec() * 8.0f);
-
-	//ゲームスピード加算
-	GameVelocityManager::GetInstance().AddGameVelocity(0.9f);
-
-	//ステート変更(素手)
-	player_->ChangePlayerState(std::make_unique<PlayerStateBareHands>());
-}
-
 
 //素手状態-----------------------------------------------------------------------
 void PlayerStateBareHands::Initialize()
@@ -102,7 +91,7 @@ void PlayerStateHaveWeapon::Update()
 				Gun* gun = dynamic_cast<Gun*>(player_->GetWeapon());
 				if (gun->GetBulletNum() <= 0)
 				{
-					ThrowWeapon();
+					player_->ThrowWeapon();
 					return;
 				}
 			}
@@ -115,7 +104,7 @@ void PlayerStateHaveWeapon::Update()
 		//右クリックで武器投げる
 		else if (MouseInput::GetInstance().GetTriggerClick(CLICK_RIGHT))
 		{
-			ThrowWeapon();
+			player_->ThrowWeapon();
 		}
 	}
 }

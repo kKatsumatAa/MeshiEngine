@@ -10,6 +10,8 @@ protected:
 	SceneManager* sceneM_;
 
 public:
+	virtual ~SceneState() { ; }
+
 	virtual void Finalize() = 0;
 	virtual void Initialize() = 0;
 

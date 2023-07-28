@@ -10,6 +10,8 @@ protected:
 	CameraManager* cameraM_ = nullptr;
 
 public:
+	virtual ~UsingCameraState() { ; }
+
 	void SetCameraM(CameraManager* cameraM);
 	virtual void Update() = 0;
 };

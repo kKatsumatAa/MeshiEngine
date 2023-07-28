@@ -16,6 +16,8 @@ protected:
 	std::function<void()> enemyDamageFunc_ = nullptr;
 
 public:
+	virtual ~PlayerAttackState() { ; }
+
 	void SetEnemyDamageFunc(std::function<void()> f) { enemyDamageFunc_ = f; }
 
 	void SetPlayerHand(PlayerHand* playerHand) { playerHand_ = playerHand; }

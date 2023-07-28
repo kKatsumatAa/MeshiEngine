@@ -67,7 +67,7 @@ void TextureManager::InitializeDescriptorHeap()
 }
 
 
-void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle, ID3D12Resource** texBuff,
+uint64_t TextureManager::LoadGraph(const wchar_t* name, ID3D12Resource** texBuff,
 	D3D12_SHADER_RESOURCE_VIEW_DESC* srvDesc, D3D12_CPU_DESCRIPTOR_HANDLE* srvHandle)
 {
 	assert(sCount_ <= S_SRV_COUNT_ - 1);
@@ -105,8 +105,7 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle, ID3
 		//すでに読み込まれていたらそのハンドルを返す
 		if (it != sTextureDatas_.end())
 		{
-			textureHandle = it->second;
-			return;
+			return it->second;
 		}
 	}
 
@@ -242,6 +241,8 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle, ID3
 
 	DirectXWrapper::GetInstance().GetTexCommandList()->ResourceBarrier(1, &copyBarrier);
 
+	uint64_t textureHandle;
+
 	//SRV
 	{
 		//04_03
@@ -300,6 +301,8 @@ void TextureManager::LoadGraph(const wchar_t* name, uint64_t& textureHandle, ID3
 		//元データ解放
 		scratchImg.Release();
 	}
+
+	return textureHandle;
 }
 
 void TextureManager::CheckTexHandle(uint64_t& texHandle)

@@ -39,6 +39,12 @@ void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 
 void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 {
+	//•ŠíŽ‚Á‚Ä‚È‚¯‚ê‚Î
+	if (GetWeapon() == nullptr)
+	{
+		return;
+	}
+
 	if (localPos)
 	{
 		GetWeapon()->SetLocalPos(*localPos);

@@ -12,7 +12,7 @@ void SceneTitle::Initialize()
 {
 	sceneM_->StopWaveAllScene();
 
-	TextureManager::LoadGraph(L"title.png", titleTex_);
+	titleTex_ = TextureManager::LoadGraph(L"title.png");
 
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isScanningLine = true;

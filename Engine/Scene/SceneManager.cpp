@@ -10,6 +10,7 @@
 #include "GameVelocityManager.h"
 #include "BulletManager.h"
 #include "ClearEffect.h"
+#include "ClearEffectState.h"
 #include "SceneTransitionManager.h"
 #include "SceneTransitionEffectState.h"
 
@@ -64,12 +65,12 @@ void SceneManager::Initialize()
 
 	{
 		//画像
-		TextureManager::LoadGraph(L"ascii.png", debugTextHandle_);
+		debugTextHandle_ = TextureManager::LoadGraph(L"ascii.png");
 
 		//白い画像
-		TextureManager::LoadGraph(L"white.png", TextureManager::GetInstance().sWhiteTexHandle_);
+		TextureManager::GetInstance().sWhiteTexHandle_ = TextureManager::LoadGraph(L"white.png");
 
-		TextureManager::LoadGraph(L"effect1.png", texhandle_[1]);
+		texhandle_[1] = TextureManager::LoadGraph(L"effect1.png");
 	}
 
 	//インスタンス生成
@@ -126,8 +127,6 @@ void SceneManager::Draw()
 	{
 		state_->Draw();
 	}
-
-	ParticleManager::GetInstance()->Draw(/*texhandle_[1]*/);
 }
 
 void SceneManager::DrawSprite()

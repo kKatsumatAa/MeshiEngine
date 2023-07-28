@@ -64,6 +64,9 @@ private:
 	Sound();
 	~Sound();
 
+private:
+	SoundData* GetSoundData(const std::string& name);
+
 public://メンバ関数
 
 	static void Initialize(const std::string& directoryPath = "Resources/sound/");
@@ -92,6 +95,9 @@ public://メンバ関数
 	void PlayWave(const std::string& filename, float volume = 1.0f, bool Loop = false);
 
 	void StopWave(const std::string& filename);
+
+	//再生止まったか
+	bool CheckPlayingWave(const std::string& name);
 
 
 public://シングルトン

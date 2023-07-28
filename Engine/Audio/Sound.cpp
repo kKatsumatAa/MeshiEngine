@@ -190,9 +190,9 @@ void Sound::PlayWave(const std::string& filename, float volume, bool Loop)
 	soundData.pSourceVoice.push_back(sourceVoice);
 }
 
-void Sound::StopWave(const std::string& filename)
+Sound::SoundData* Sound::GetSoundData(const std::string& name)
 {
-	std::string fullpath = sDirectoryPath_ + filename;
+	std::string fullpath = sDirectoryPath_ + name;
 
 	//ファイル名から探す
 	std::map < std::string, Sound::SoundData>::iterator it
@@ -201,27 +201,50 @@ void Sound::StopWave(const std::string& filename)
 	assert(it != sSoundDatas_.end());
 
 	//そのファイル名があれば
-	SoundData& soundData_ = it->second;
+	return &it->second;
+}
 
-	if (soundData_.pSourceVoice.size() > 0)
+void Sound::StopWave(const std::string& filename)
+{
+	//そのファイル名があれば
+	SoundData* soundData = GetSoundData(filename);
+
+	if (soundData->pSourceVoice.size() > 0)
 	{
-		for (IXAudio2SourceVoice* source : soundData_.pSourceVoice)
+		for (IXAudio2SourceVoice* source : soundData->pSourceVoice)
 		{
 			//再生中の同じ名前のをすべて止める
 			if (source != nullptr) { source->Stop(); }
 		}
 
 		//vectorを空にする
-		soundData_.pSourceVoice.clear();
+		soundData->pSourceVoice.clear();
 	}
+}
+bool Sound::CheckPlayingWave(const std::string& name)
+{
+	SoundData* soundData = GetSoundData(name);
+
+	if (soundData->pSourceVoice.size() > 0)
+	{
+		for (IXAudio2SourceVoice* source : soundData->pSourceVoice)
+		{
+			if (source != nullptr)
+			{
+				//再生が終わってなければ
+				HRESULT result = source->ExitLoop();
+				if (result == S_OK)
+				{
+					return false;
+				}
+			}
+		}
+	}
+
+	return true;
 }
 Sound& Sound::GetInstance()
 {
 	static Sound sInst; // private なコンストラクタを呼び出す。
 	return sInst;
 }
-
-//void SetpSourceVoice(SoundData& soundData, IXAudio2SourceVoice* pSourceVoice)
-//{
-//    soundData.pSourceVoice = pSourceVoice;
-//}
