@@ -94,20 +94,23 @@ void Mesh::CalculateTangent()
 
 		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
 		XMFLOAT3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
-		Vec3 tanN = { tangent.x,tangent.y,tangent.z };
-		tanN.Normalized();
+		XMFLOAT3 biTangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
 
-		Vec3 tan0 = { vertices_[index0].tangent.x,vertices_[index0].tangent.y,vertices_[index0].tangent.z };
-		Vec3 tan1 = { vertices_[index1].tangent.x,vertices_[index1].tangent.y,vertices_[index1].tangent.z };
-		Vec3 tan2 = { vertices_[index2].tangent.x,vertices_[index2].tangent.y,vertices_[index2].tangent.z };
+		Vec3 n = { vertices_[index0].normal.x,vertices_[index0].normal.y,vertices_[index0].normal.z };
+		Vec3 t = { tangent.x,tangent.y,tangent.z };
+		Vec3 b = { biTangent.x,biTangent.y,biTangent.z };
 
-		tan0.Normalized();
-		tan1.Normalized();
-		tan2.Normalized();
+		// Gram-Schmidt orthogonalize
+		t = (t - n * n.Dot(t)).GetNormalized();
 
-		vertices_[index0].tangent = XMFLOAT4(tan0.x_, tan0.y_, tan0.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
-		vertices_[index1].tangent = XMFLOAT4(tan1.x_, tan1.y_, tan1.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
-		vertices_[index2].tangent = XMFLOAT4(tan2.x_, tan2.y_, tan2.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
+		// Calculate handedness
+		if (n.Cross(t).Dot(b) < 0.0f) {
+			t = t * -1.0f;
+		}
+
+		vertices_[index0].tangent = { t.x_,t.y_,t.z_,0 };
+		vertices_[index1].tangent = { t.x_,t.y_,t.z_,0 };
+		vertices_[index2].tangent = { t.x_,t.y_,t.z_,0 };
 	}
 }
 

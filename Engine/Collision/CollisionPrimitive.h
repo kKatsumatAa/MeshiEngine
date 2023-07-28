@@ -10,6 +10,9 @@
 /// </summary>
 struct Sphere
 {
+public:
+	virtual ~Sphere() { ; }
+
 	//中心座標
 	DirectX::XMVECTOR center = { 0,0,0,1 };
 	//半径
@@ -21,6 +24,10 @@ struct Sphere
 /// </summary>
 struct Plane
 {
+public:
+	virtual ~Plane() { ; }
+
+public:
 	//法線ベクトル
 	DirectX::XMVECTOR normal = { 0,1,0,0 };
 	//原点(0,0,0)からの距離
@@ -40,6 +47,8 @@ struct Triangle
 	DirectX::XMVECTOR normal;
 
 public:
+	virtual ~Triangle() { ; }
+
 	/// <summary>
 	/// 法線の計算
 	/// </summary>
@@ -51,6 +60,10 @@ public:
 /// </summary>
 struct Ray
 {
+public:
+	virtual ~Ray() { ; }
+
+public:
 	//視点座標
 	DirectX::XMVECTOR start = { 0,0,0,1.0f };
 	//方向

@@ -14,6 +14,8 @@ protected:
 	RaycastHit info_;
 
 public:
+	virtual ~PlayerState() { ; }
+
 	void SetPlayer(Player* player) { player_ = player; }
 
 	bool CheckEyeRayHit();

@@ -23,10 +23,10 @@ float4 GetSpecularMapColor(float3 specular, float3 diffuse, float4 maskCol)
 
 //ノーマルマップ
 float3 GetNormalMapWorldNormalVec(float4 normalMapCol, float3 tangent,
-float3 binormal, float3 normal, float4x4 world)
+    float3 binormal, float3 normal, float4x4 world)
 {
     //ノーマルマップ画像の色を法線ベクトルに変換(-1～1)
-    float3 nMap = normalMapCol.rgb * 2.0 - 1.0;
+    float3 nMap = normalize(normalMapCol.rgb * 2.0f - 1.0f);
     //接線をノーマライズ
     float3 tangentL = normalize(tangent);
     //従法線もノーマライズ
@@ -35,13 +35,13 @@ float3 binormal, float3 normal, float4x4 world)
     float3 normalL = normalize(normal);
     
     //ノーマルマップから算出した法線ベクトルは接空間にあるので、ローカル空間に変換
-    float4 lNormal = float4(normalize(tangentL * nMap.r + binormalL * nMap.g + normalL * nMap.b), 0);
+    float3 lNormal = normalize(tangentL * nMap.r + binormalL * nMap.g + normalL * nMap.b);
     
     //ローカルからワールドへ
     //法線にワールド行列によるスケーリング・回転を適用
-    float4 wNormal = mul(world, lNormal);
+    float3 wNormal = mul((float3x3) world, lNormal);
     
-    return wNormal.rgb;
+    return wNormal;
 }
 
 

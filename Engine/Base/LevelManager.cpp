@@ -6,6 +6,7 @@
 #include "BulletManager.h"
 #include "TouchableObject.h"
 #include "MeshCollider.h"
+#include "LandShape.h"
 
 
 LevelManager::~LevelManager()
@@ -225,10 +226,10 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	{
 		newObj = Gun::Create(std::move(objData.worldMat));
 	}
-	//それ以外のオブジェクト生成
-	else
+	//地形オブジェクトなら
+	else if (isLandShape_)
 	{
-		CreateObjectOrTouchableObject(newObj, objData, isLandShape_, model);
+		newObj = LandShape::Create(std::move(objData.worldMat), model);
 	}
 
 	//名前

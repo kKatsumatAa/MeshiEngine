@@ -108,6 +108,7 @@
     <ClCompile Include="Application\Enemy.cpp" />
     <ClCompile Include="Application\GameVelocityManager.cpp" />
     <ClCompile Include="Application\Gun.cpp" />
+    <ClCompile Include="Application\LandShape.cpp" />
     <ClCompile Include="Application\Player.cpp" />
     <ClCompile Include="Application\PlayerAttackState.cpp" />
     <ClCompile Include="Application\PlayerHand.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="Application\Enemy.h" />
     <ClInclude Include="Application\GameVelocityManager.h" />
     <ClInclude Include="Application\Gun.h" />
+    <ClInclude Include="Application\LandShape.h" />
     <ClInclude Include="Application\Player.h" />
     <ClInclude Include="Application\PlayerAttackState.h" />
     <ClInclude Include="Application\PlayerHand.h" />

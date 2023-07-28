@@ -16,8 +16,8 @@ struct VSOutput
     float4 worldpos : POSITION; //ワールド座標
     float3 normal : NORMAL; //法線
     float3 tangent : TANGENT; //法線の接線
-    float3 binormal : BINORMAL; //従法線
-    float2 uv : TEXCOORD; //uv座標
+    float3 binormal : TEXCOORD0; //従法線
+    float2 uv : TEXCOORD1; //uv座標
 };
 
 //ボーンの最大数(Object.hと合わせる)

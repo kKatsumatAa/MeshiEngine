@@ -316,13 +316,6 @@ Object::Object()
 
 void Object::SendingMat(int32_t indexNum, Camera* camera)
 {
-
-	if (objName_ == "gun")
-	{
-		//変換行列をGPUに送信
-		worldMat_->CulcAllTreeMat();
-	}
-
 	//変換行列をGPUに送信
 	worldMat_->CulcAllTreeMat();
 	//スプライトじゃない場合

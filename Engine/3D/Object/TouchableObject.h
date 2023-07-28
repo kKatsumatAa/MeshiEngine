@@ -6,6 +6,8 @@ class TouchableObject :
 	public Object
 {
 public:
+	virtual ~TouchableObject() { ; }
+
 	/// <summary>
 	/// オブジェクト生成
 	/// </summary>

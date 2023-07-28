@@ -79,7 +79,7 @@ void SceneManager::Initialize()
 	lightManager_->SetDirLightColor(0, { 0.6f,0.6f,0.6f });
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
 	Object::SetLight(lightManager_.get());
-	lightManager_->SetDirLightActive(0, true);
+	lightManager_->SetDirLightActive(0, false);
 	lightManager_->SetDirLightActive(1, false);
 	lightManager_->SetDirLightActive(2, false);
 	Vec3 v = { 0, -1.0f, 1.0f };
@@ -90,6 +90,8 @@ void SceneManager::Initialize()
 	{
 		lightManager_->SetPointLightActive(i, false);
 	}
+	lightManager_->SetPointLightActive(0, true);
+
 	//丸影
 	lightManager_->SetCircleShadowActive(0, false);
 
@@ -114,8 +116,11 @@ void SceneManager::Update()
 	lightManager_->SetAmbientColor({ ambientColor_[0],ambientColor_[1], ambientColor_[2] });
 	lightManager_->SetDiffuseColor({ diffuseColor_[0],diffuseColor_[1], diffuseColor_[2] });
 	lightManager_->SetSpecularColor({ specularColor_[0],specularColor_[1], specularColor_[2] });
-	Vec3 dir = { DirlightDir[0],DirlightDir[1], DirlightDir[2] };
+	Vec3 dir = { DirlightDir_[0],DirlightDir_[1], DirlightDir_[2] };
 	lightManager_->SetDirLightDir(0, { dir.GetNormalized().x_ ,dir.GetNormalized().y_ ,dir.GetNormalized().z_ });
+
+	lightManager_->SetPointLightAtten(0, { pointAtten_[0],pointAtten_[1],pointAtten_[2]});
+	lightManager_->SetPointLightPos(0, { pointPos_[0],pointPos_[1],pointPos_[2]});
 
 	lightManager_->Update();
 }
@@ -150,7 +155,9 @@ void SceneManager::DrawImgui()
 	ImGui::SliderFloat3("ambientColor", ambientColor_, 0, 1.0f);
 	ImGui::SliderFloat3("diffuseColor", diffuseColor_, 0, 1.0f);
 	ImGui::SliderFloat3("specularColor", specularColor_, 0, 10.0f);
-	ImGui::SliderFloat3("DirlightDir", DirlightDir, -1.0f, 1.0f);
+	ImGui::SliderFloat3("DirlightDir", DirlightDir_, -1.0f, 1.0f);
+	ImGui::SliderFloat3("PointAtten", pointAtten_, 0.0f, 3.0f);
+	ImGui::SliderFloat3("PointPos", pointPos_, -100.0f, 100.0f);
 
 	ImGui::End();
 
