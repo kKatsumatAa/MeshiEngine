@@ -254,7 +254,7 @@ void DirectXWrapper::Initialize()
 	{
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);//‚â‚Î‚¢ƒGƒ‰[ŽžŽ~‚Ü‚é
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);//ƒGƒ‰[ŽžŽ~‚Ü‚é
-		//infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);//ŒxŽžŽ~‚Ü‚é
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);//ŒxŽžŽ~‚Ü‚é
 		infoQueue->Release();
 	}
 
