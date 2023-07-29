@@ -14,6 +14,7 @@ private://変数
 	//地形オブジェクトとして使うか
 	bool isLandShape_ = false;
 
+	const std::string FILE_NAME_ = "level";
 
 private://関数
 	LevelManager() { ; }
@@ -27,8 +28,12 @@ public:
 	static LevelManager& GetInstance();
 
 	void StaticInitialize();
-	//JsonLevelLoaderで読み込んだ内容を実際にエンジン上で読み込む
-	void LoadLevelData(std::string fileName);
+	
+	/// <summary>
+	///JsonLevelLoaderで読み込んだ内容を実際にエンジン上で読み込む
+	/// </summary>
+	/// <param name="fileIndex">ファイルの後につく数字</param>
+	void LoadLevelData(int32_t fileIndex);
 
 	//ファイル名によってクラス生成
 	void LoadObj(LevelData::ObjectData& objData);

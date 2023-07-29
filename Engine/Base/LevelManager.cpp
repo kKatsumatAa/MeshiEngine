@@ -24,12 +24,12 @@ void LevelManager::StaticInitialize()
 {
 }
 
-void LevelManager::LoadLevelData(std::string fileName)
+void LevelManager::LoadLevelData(int32_t fileIndex)
 {
 	//json読み込み
-	JsonLevelLoader::Getinstance().LoadJsonFile(fileName);
+	JsonLevelLoader::Getinstance().LoadJsonFile(FILE_NAME_ + std::to_string(fileIndex));
 
-	//initializeの度,毎回やっちゃうとおかしくなる
+	//セットで保存してるのをクリア
 	objAndModels_.clear();
 	CameraManager::GetInstance().Initialize();
 
@@ -298,7 +298,7 @@ void LevelManager::DrawImGui()
 	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
-		
+
 		obj->DrawImGui();
 	}
 }

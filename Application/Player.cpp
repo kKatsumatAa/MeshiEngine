@@ -154,7 +154,7 @@ void Player::Move()
 	//ジャンプ中でスペース押しっぱなしだったら
 	if (!isOnGround_ && KeyboardInput::GetInstance().KeyPush(DIK_SPACE) && velocity_.GetLength())
 	{
-		GameVelocityManager::GetInstance().AddGameVelocity(-0.03f);
+		GameVelocityManager::GetInstance().AddGameVelocity(-0.001f);
 	}
 
 	//位置セット(ゲームスピードをかける)

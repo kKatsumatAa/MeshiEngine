@@ -1,12 +1,6 @@
 #include "SceneGame.h"
 #include "SceneManager.h"
-#include "JsonLevelLoader.h"
-#include "CameraManager.h"
-#include "CollisionManager.h"
-#include "GameVelocityManager.h"
-#include "BulletManager.h"
-#include "ClearEffect.h"
-#include "ClearEffectState.h"
+#include "StageManager.h"
 
 
 void SceneGame::Finalize()
@@ -17,20 +11,8 @@ void SceneGame::Finalize()
 //---------------------------------------------------------------------------------------
 void SceneGame::Initialize()
 {
-	//json
-	JsonLevelLoader::Getinstance().Initialize();
-	//レベルマネージャー
-	LevelManager::GetInstance().StaticInitialize();
-	LevelManager::GetInstance().LoadLevelData("level");
-
-	//カメラをセット
-	CameraManager::GetInstance().SetUsingCamera("playerCamera");
-
-	//ゲームスピード
-	GameVelocityManager::GetInstance().Initialize();
-
-	//弾
-	BulletManager::GetInstance().Initialize();
+	//ステージ読み込み
+	StageManager::GetInstance().LoadStage(1);
 
 	//
 	ClearEffect::GetInstance().Initialize();
@@ -45,30 +27,16 @@ void SceneGame::Initialize()
 void SceneGame::Update()
 {
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	//リセット
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_R))
 	{
-		LevelManager::GetInstance().LoadLevelData("level");
-		ParticleManager::GetInstance()->ClearParticles();
-		//弾
-		BulletManager::GetInstance().Initialize();
-		//ゲームスピード
-		GameVelocityManager::GetInstance().Initialize();
+		sceneM_->SetNextScene("GAME");
 	}
-#endif
+//#endif
 
-	//レベルデータで読み込んだオブジェクト等
-	LevelManager::GetInstance().Update();
-
-	//弾
-	BulletManager::GetInstance().Update();
-
-	//判定
-	CollisionManager::GetInstance()->CheckAllCollisions();
-
-	//ゲームスピード
-	GameVelocityManager::GetInstance().Update();
+	//ステージアップデート
+	StageManager::GetInstance().Update();
 
 	//シーン遷移
 	if (LevelManager::GetInstance().GetGameOver())
@@ -93,24 +61,15 @@ void SceneGame::Update()
 
 void SceneGame::Draw()
 {
-	//弾
-	BulletManager::GetInstance().Draw();
-
-	LevelManager::GetInstance().Draw();
-
-	ParticleManager::GetInstance()->Draw();
-
-	if (LevelManager::GetInstance().GetGameClear())
-	{
-		ClearEffect::GetInstance().Draw();
-	}
+	StageManager::GetInstance().Draw();
 }
 
 void SceneGame::DrawSprite()
 {
+	StageManager::GetInstance().DrawSprite();
 }
 
 void SceneGame::DrawImgui()
 {
-	GameVelocityManager::GetInstance().UpdateImGui();
+	StageManager::GetInstance().DrawImGui();
 }
