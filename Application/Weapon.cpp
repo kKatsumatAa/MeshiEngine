@@ -37,8 +37,10 @@ void Weapon::NoParentMove()
 		{
 			RaycastHit info;
 
-			if (CollisionManager::GetInstance()->RaycastUtil(GetTrans() + fallVec_ * GetScale().GetLength(), oldPos_, COLLISION_ATTR_LANDSHAPE, &info))
+			//“G‚Æ’nŒ`‚Æ”»’è‚ð‚Æ‚é
+			if (CollisionManager::GetInstance()->RaycastUtil(GetTrans() + fallVec_ * GetScale().GetLength(), oldPos_, COLLISION_ATTR_LANDSHAPE | COLLISION_ATTR_ENEMYS, &info))
 			{
+				info.collider->OnCollision(CollisionInfo(this, GetCollider(), info.inter));
 				OnLandShape({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
 			}
 		}

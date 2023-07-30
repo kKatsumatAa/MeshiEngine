@@ -144,17 +144,4 @@ void Gun::OnCollision(const CollisionInfo& info)
 
 		SetIsAlive(false);
 	}
-	else if (info.object_->GetObjName() == "enemy")
-	{
-		//持ってる人がいるときはしない
-		if (GetParent() != nullptr || fallVec_.GetLength() == 0 || !GetIsThrowing())
-		{
-			return;
-		}
-
-		//パーティクル
-		ParticleGenerate({ 0,0,0,1.5f }, { 0,0,0,0 });
-
-		SetIsAlive(false);
-	}
 }
