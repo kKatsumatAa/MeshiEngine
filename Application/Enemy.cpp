@@ -261,7 +261,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		Gun* gun = dynamic_cast<Gun*>(info.object_);
 
 		//“Š‚°‚ç‚ê‚Ä‚¢‚é‚Æ‚«‚Ì‚Ý
-		if (gun->GetParent() == nullptr && gun->GetIsThrowing() && gun->GetFallVelocity().GetLength() != 0)
+		if (gun != nullptr && gun->GetParent() == nullptr && gun->GetIsThrowing() && gun->GetFallVelocity().GetLength() != 0)
 		{
 			//
 			KnockBack(info);

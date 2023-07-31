@@ -55,7 +55,11 @@ private://ゲームオリジナル
 	//引数によってObjectかTouchObjectを作る
 	void CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, Model* model);
 
-
+public://ゲームオリジナル
+	//引数の判定属性のものをディゾルブ
+	void SetObjectIsDissolve(bool isDissolve, uint16_t attribute);
+	//引数の判定属性のもののディゾルブ度合
+	void SetIsDissolveT(float dissolveT, uint16_t attribute);
 
 public:
 	bool GetGameOver();

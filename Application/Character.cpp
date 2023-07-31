@@ -39,24 +39,22 @@ void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 
 void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 {
-	//武器持ってなければ
-	if (GetWeapon() == nullptr)
+	//武器持ってたら
+	if (weapon_)
 	{
-		return;
-	}
+		if (localPos)
+		{
+			GetWeapon()->SetLocalPos(*localPos);
+		}
 
-	if (localPos)
-	{
-		GetWeapon()->SetLocalPos(*localPos);
+ 		GetWeapon()->SetFallVec(directionVec);
+		GetWeapon()->ChangeOwner(nullptr);
+		//仮で手から離れたらアイテムの属性にする
+		weapon_->SetAttribute(COLLISION_ATTR_ITEMS);
+		weapon_->SetIsThrowing(true);
+		weapon_->Update();
+		SetWeapon(nullptr);
 	}
-
-	GetWeapon()->ChangeOwner(nullptr);
-	GetWeapon()->SetFallVec(directionVec);
-	//仮で手から離れたらアイテムの属性にする
-	weapon_->SetAttribute(COLLISION_ATTR_ITEMS);
-	weapon_->SetIsThrowing(true);
-	weapon_->Update();
-	SetWeapon(nullptr);
 }
 
 void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool isJump, std::function<void()>f)

@@ -9,8 +9,6 @@
 class SceneGame : public SceneState
 {
 private:
-	int32_t clearCoolTime_ = 0;
-	const int32_t CLEAR_COOL_TIME_MAX_ = 20;
 
 public:
 	void Finalize()override;

@@ -1,4 +1,5 @@
 #include "StageManager.h"
+#include "StageState.h"
 
 
 StageManager& StageManager::GetInstance()
@@ -26,57 +27,43 @@ void StageManager::Initialize()
 {
 	//カメラをセット
 	CameraManager::GetInstance().SetUsingCamera("playerCamera");
-
 	//ゲームスピード
 	GameVelocityManager::GetInstance().Initialize();
-
 	//弾
 	BulletManager::GetInstance().Initialize();
+
+	//フラグ
+	isClear_ = false;
+	isGameOver_ = false;
+
+	//
+	ChangeState("BEGINING");
 }
 
 
+void StageManager::ChangeState(const std::string& name)
+{
+	state_.reset();
+	state_ = std::move(StageState::GetState(name));
+	state_->Initialize();
+}
+
 void StageManager::Update()
 {
-	//レベルデータで読み込んだオブジェクト等
-	LevelManager::GetInstance().Update();
-
-	//弾
-	BulletManager::GetInstance().Update();
-
-	//判定
-	CollisionManager::GetInstance()->CheckAllCollisions();
-
-	//ゲームスピード
-	GameVelocityManager::GetInstance().Update();
-
-	//チュートリアル
-	Tutorial::GetInstance().Update();
+	state_->Update();
 }
 
 void StageManager::Draw()
 {
-	//弾
-	BulletManager::GetInstance().Draw();
-
-	LevelManager::GetInstance().Draw();
-
-	ParticleManager::GetInstance()->Draw();
-
-	//チュートリアル
-	Tutorial::GetInstance().Draw();
-
-	//クリア演出
-	if (LevelManager::GetInstance().GetGameClear())
-	{
-		ClearEffect::GetInstance().Draw();
-	}
+	state_->Draw();
 }
 
 void StageManager::DrawSprite()
 {
+	state_->DrawSprite();
 }
 
 void StageManager::DrawImGui()
 {
-	GameVelocityManager::GetInstance().UpdateImGui();
+	state_->DrawImgui();
 }

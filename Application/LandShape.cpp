@@ -40,13 +40,6 @@ bool LandShape::Initialize(std::unique_ptr<WorldMat> worldMat, Model* model)
 
 void LandShape::Update()
 {
-	float t = generateTimer_ / GENERATE_TIMER_MAX_;
-
-	SetDissolveT(1.0f - EaseOut(t));
-
-	generateTimer_ += 1.0f * GetRand(0.001f, 1.5f);
-	generateTimer_ = min(generateTimer_, GENERATE_TIMER_MAX_);
-
 	Object::Update();
 }
 

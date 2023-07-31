@@ -193,6 +193,33 @@ bool LevelManager::GetGameClear()
 	return true;
 }
 
+void LevelManager::SetObjectIsDissolve(bool isDissolve, uint16_t attribute)
+{
+	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	{
+		Object* obj = it->first.get();
+
+		if (obj->GetCollider()->GetAttribute() == attribute)
+		{
+			obj->SetisDissolve(isDissolve);
+		}
+	}
+}
+
+void LevelManager::SetIsDissolveT(float dissolveT, uint16_t attribute)
+{
+	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	{
+		Object* obj = it->first.get();
+
+		if (obj->GetCollider()->GetAttribute() == attribute)
+		{
+			obj->SetDissolveT(dissolveT);
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------
 void LevelManager::LoadObj(LevelData::ObjectData& objData)
 {
 	//親がいたらスキップ(登録済みならworldMatはmove()されて無いので)

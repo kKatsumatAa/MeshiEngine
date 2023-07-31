@@ -5,6 +5,8 @@ class GameVelocityManager final
 {
 private:
 	float gameVelocity_ = 0;
+	//ゲームスピードの加算無効
+	bool isInvalidAddGameVel_ = false;
 
 public:
 	const float GAME_VELOCITY_MAX_ = 1.0f;
@@ -33,4 +35,8 @@ public:
 	float GetVelocity();
 
 	void UpdateImGui();
+
+public:
+	void SetIsInvalidAddGameVel(bool is) { isInvalidAddGameVel_ = is; }
+	bool GetIsInvalidAddGameVel() { return isInvalidAddGameVel_; }
 };

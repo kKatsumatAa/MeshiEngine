@@ -65,6 +65,4 @@ void Weapon::ChangeOwner(Object* parent)
 	}
 	//Š—LÒ‚àİ’è
 	owner_ = parent;
-
-	Update();
 }

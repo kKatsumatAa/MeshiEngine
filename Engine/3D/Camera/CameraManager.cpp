@@ -46,15 +46,10 @@ void CameraManager::Initialize()
 
 	cameraAndNames_.clear();
 
-	//何かしらカメラのポインタ入れる
-/*CameraManager::GetInstance().AddCamera("mainCamera");
-CameraManager::GetInstance().SetUsingCamera("mainCamera");*/
-
 #ifdef _DEBUG
 
 	AddCamera("debugCamera");
 	GetCamera("debugCamera")->Initialize();
-	//SetUsingCamera("debugCamera");
 
 #endif
 

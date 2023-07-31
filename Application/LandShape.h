@@ -5,9 +5,6 @@
 class LandShape : public TouchableObject
 {
 private:
-	//オブジェクト生成時のタイマー
-	float generateTimer_ = 0;
-	const float GENERATE_TIMER_MAX_ = 45.0f;
 
 public:
 

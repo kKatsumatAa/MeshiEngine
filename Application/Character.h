@@ -47,13 +47,13 @@ public:
 	void SetWeapon(Weapon* weapon) { weapon_ = weapon; }
 
 	//武器拾う
-	void PickUpWeapon(Weapon* weapon, Vec3* localPos = nullptr);
+	virtual void PickUpWeapon(Weapon* weapon, Vec3* localPos = nullptr);
 	//武器落とす、投げる
-	void FallWeapon(const Vec3& directionVec, Vec3* localPos = nullptr);
+	virtual void FallWeapon(const Vec3& directionVec, Vec3* localPos = nullptr);
 
 	//地面と壁との判定
-	void OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool isJump = false, std::function<void()>f = nullptr);
+	virtual void OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool isJump = false, std::function<void()>f = nullptr);
 
 	//クエリコールバック
-	void QueryCallBackUpdate();
+	virtual void QueryCallBackUpdate();
 };

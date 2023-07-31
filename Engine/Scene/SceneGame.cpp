@@ -1,6 +1,7 @@
 #include "SceneGame.h"
 #include "SceneManager.h"
 #include "StageManager.h"
+#include "StageState.h"
 
 
 void SceneGame::Finalize()
@@ -27,35 +28,26 @@ void SceneGame::Initialize()
 void SceneGame::Update()
 {
 
-//#ifdef _DEBUG
-	//リセット
+	//#ifdef _DEBUG
+		//リセット
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_R))
 	{
 		sceneM_->SetNextScene("GAME");
 	}
-//#endif
+	//#endif
 
-	//ステージアップデート
+		//ステージアップデート
 	StageManager::GetInstance().Update();
 
 	//シーン遷移
-	if (LevelManager::GetInstance().GetGameOver())
+	if (StageManager::GetInstance().GetIsGameOver())
 	{
-		sceneM_->SetNextScene("TITLE");
+		sceneM_->SetNextScene("GAME");
 	}
-	else if (LevelManager::GetInstance().GetGameClear())
+	else if (StageManager::GetInstance().GetIsGameClear())
 	{
-		clearCoolTime_++;
-
-		//クリア演出用
-		ClearEffect::GetInstance().Update();
-
-		//連打して飛ばさないように
-		if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) && clearCoolTime_ >= CLEAR_COOL_TIME_MAX_)
-		{
-			ParticleManager::GetInstance()->ClearParticles();
-			sceneM_->SetNextScene("TITLE");
-		}
+		ParticleManager::GetInstance()->ClearParticles();
+		sceneM_->SetNextScene("TITLE");
 	}
 }
 

@@ -17,7 +17,7 @@ void GameVelocityManager::Initialize()
 
 void GameVelocityManager::AddGameVelocity(float velocity, std::string velName)
 {
-	if (velocity == 0)
+	if (velocity == 0 || isInvalidAddGameVel_)
 	{
 		return;
 	}
@@ -46,7 +46,7 @@ void GameVelocityManager::Update()
 	//‰æ–Ê‚Ì‘å‚«‚³‚à
 	PostEffectManager::GetInstance().GetPostEffect1()->SetPera2Extend(
 		LerpVec3({ PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ ,0,0 }, { 1.0f,0,0 },
-		(gameVelocity_ / GAME_VELOCITY_MAX_)).x_);
+			(gameVelocity_ / GAME_VELOCITY_MAX_)).x_);
 
 	if (gameVelocity_ > GAME_VELOCITY_MIN_)
 	{
