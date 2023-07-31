@@ -42,7 +42,7 @@ void SceneGame::Update()
 	//ƒV[ƒ“‘JˆÚ
 	if (StageManager::GetInstance().GetIsGameOver())
 	{
-		sceneM_->SetNextScene("GAME");
+		sceneM_->SetNextScene("TITLE");
 	}
 	else if (StageManager::GetInstance().GetIsGameClear())
 	{

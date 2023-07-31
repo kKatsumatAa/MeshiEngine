@@ -54,7 +54,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	//ノーマルマップ
 	SetIsNormalMap(true);
 	//tex
-	handle = TextureManager::GetInstance().LoadGraph(L"StainedGlassNormal.png");
+	handle = TextureManager::GetInstance().LoadGraph(L"EnemyNormalMap.png");
 	SetNormalMapTexHandle(handle);
 
 	return true;
