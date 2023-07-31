@@ -76,9 +76,6 @@ void Framework::Update()
 
 	//ポストエフェクト
 	PostEffectManager::GetInstance().Update();
-
-	//カメラマネージャー
-	CameraManager::GetInstance().Update();
 }
 
 void Framework::Run()

@@ -123,6 +123,9 @@ void SceneManager::Update()
 	lightManager_->SetPointLightPos(0, { pointPos_[0],pointPos_[1],pointPos_[2]});
 
 	lightManager_->Update();
+
+	//カメラマネージャー
+	CameraManager::GetInstance().Update();
 }
 
 void SceneManager::Draw()

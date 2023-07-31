@@ -112,13 +112,70 @@
     <Filter Include="ソース ファイル\Engine\3D\Assimp">
       <UniqueIdentifier>{d1a202a8-3aef-44d7-8270-435847bd333e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Application\Character">
+      <UniqueIdentifier>{203ceeb8-626e-4f6e-9671-3b464cdb538c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\Character\Player">
+      <UniqueIdentifier>{2cc1ec89-1401-408e-8f6b-45f0b22636d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\Character">
+      <UniqueIdentifier>{07f3b572-bdbe-4902-8443-b43bb448406a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\Character\Player">
+      <UniqueIdentifier>{9adbaad1-1568-4ac3-b015-9f8fcc47fed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\Character\Enemy">
+      <UniqueIdentifier>{79b3f594-abf3-4815-b810-37360f4540eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\Character\Enemy">
+      <UniqueIdentifier>{fb9301f5-c476-436f-a5a1-7b2ee46966a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\Weapon">
+      <UniqueIdentifier>{3fc90253-c0d7-4e82-a2ec-62c3f2c4ad5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\Weapon\Gun">
+      <UniqueIdentifier>{23509c09-0a50-457e-a93b-0b32a62ecbb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\Weapon">
+      <UniqueIdentifier>{12bb3a41-b07c-41a8-bf29-7b25c6fc201b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\Weapon\Gun">
+      <UniqueIdentifier>{3bb1bcce-5a4f-4efb-8497-2f87cee59ba5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\System">
+      <UniqueIdentifier>{6def36e3-01d1-4baf-877b-70851430c130}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\Stage">
+      <UniqueIdentifier>{b03e6bf6-e755-4fd7-a6cc-f848c9f546ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\Effect">
+      <UniqueIdentifier>{c1c146f7-dbcf-4f72-b9e1-fa050662cb33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\Effect">
+      <UniqueIdentifier>{2a9de20a-f92c-48ff-8ed3-fa2f30a67faa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\Stage">
+      <UniqueIdentifier>{ce27b5e4-e062-439a-ad78-8ecb36b9bd2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\System">
+      <UniqueIdentifier>{e1742c9d-b33e-4471-9ea2-ef98ec70f7cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\System\Gamevelocity">
+      <UniqueIdentifier>{09ea3bf5-1683-432d-8fc4-ed2d3bac06b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\System\Tutorial">
+      <UniqueIdentifier>{12358189-c0b7-4e0f-9d52-569ce7972364}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\System\Tutorial">
+      <UniqueIdentifier>{562a8ff9-68fc-4bfc-a114-1b66579b94ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\System\GameVelocity">
+      <UniqueIdentifier>{db69a53e-5fea-4761-aa20-cbf010356c32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Player.cpp">
-      <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Util\Shake.cpp">
       <Filter>ソース ファイル\Engine\Util</Filter>
@@ -300,47 +357,11 @@
     <ClCompile Include="Engine\Input\MouseInput.cpp">
       <Filter>ソース ファイル\Engine\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Enemy.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\GameVelocityManager.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\PlayerAttackState.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\PlayerHand.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\PlayerHandManager.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Gun.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Bullet.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\BulletManager.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\PlayerState.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Scene\SceneClear.cpp">
       <Filter>ソース ファイル\Engine\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Application\ClearEffect.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Base\RootPipe.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Weapon.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Character.cpp">
-      <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Collision\MeshCollider.cpp">
       <Filter>ソース ファイル\Engine\Collision</Filter>
@@ -357,29 +378,65 @@
     <ClCompile Include="Engine\Scene\SceneTransitionEffectState.cpp">
       <Filter>ソース ファイル\Engine\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Application\ClearEffectState.cpp">
-      <Filter>ソース ファイル\Application</Filter>
+    <ClCompile Include="Application\Character\Character.cpp">
+      <Filter>ソース ファイル\Application\Character</Filter>
     </ClCompile>
-    <ClCompile Include="Application\LandShape.cpp">
-      <Filter>ソース ファイル\Application</Filter>
+    <ClCompile Include="Application\Character\Player\Player.cpp">
+      <Filter>ソース ファイル\Application\Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Tutorial.cpp">
-      <Filter>ソース ファイル\Application</Filter>
+    <ClCompile Include="Application\Character\Player\PlayerAttackState.cpp">
+      <Filter>ソース ファイル\Application\Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Application\TutorialState.cpp">
-      <Filter>ソース ファイル\Application</Filter>
+    <ClCompile Include="Application\Character\Player\PlayerHand.cpp">
+      <Filter>ソース ファイル\Application\Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Application\StageManager.cpp">
-      <Filter>ソース ファイル\Application</Filter>
+    <ClCompile Include="Application\Character\Player\PlayerHandManager.cpp">
+      <Filter>ソース ファイル\Application\Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Application\StageState.cpp">
-      <Filter>ソース ファイル\Application</Filter>
+    <ClCompile Include="Application\Character\Player\PlayerState.cpp">
+      <Filter>ソース ファイル\Application\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Character\Enemy\Enemy.cpp">
+      <Filter>ソース ファイル\Application\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Weapon\Weapon.cpp">
+      <Filter>ソース ファイル\Application\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Weapon\Gun\Bullet.cpp">
+      <Filter>ソース ファイル\Application\Weapon\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Weapon\Gun\BulletManager.cpp">
+      <Filter>ソース ファイル\Application\Weapon\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Weapon\Gun\Gun.cpp">
+      <Filter>ソース ファイル\Application\Weapon\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Effect\ClearEffect.cpp">
+      <Filter>ソース ファイル\Application\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Effect\ClearEffectState.cpp">
+      <Filter>ソース ファイル\Application\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Stage\LandShape.cpp">
+      <Filter>ソース ファイル\Application\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Stage\StageManager.cpp">
+      <Filter>ソース ファイル\Application\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Stage\StageState.cpp">
+      <Filter>ソース ファイル\Application\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\System\GameVelocity\GameVelocityManager.cpp">
+      <Filter>ソース ファイル\Application\System\Gamevelocity</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\System\Tutorial\Tutorial.cpp">
+      <Filter>ソース ファイル\Application\System\Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\System\Tutorial\TutorialState.cpp">
+      <Filter>ソース ファイル\Application\System\Tutorial</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\Player.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Util\Shake.h">
       <Filter>ヘッダー ファイル\Engine\Util</Filter>
     </ClInclude>
@@ -575,47 +632,11 @@
     <ClInclude Include="Engine\Input\MouseInput.h">
       <Filter>ヘッダー ファイル\Engine\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Enemy.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\GameVelocityManager.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\PlayerAttackState.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\PlayerHand.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\PlayerHandManager.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Gun.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Bullet.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\BulletManager.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\PlayerState.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Scene\SceneClear.h">
       <Filter>ヘッダー ファイル\Engine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Application\ClearEffect.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Base\RootPipe.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Weapon.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Character.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Collision\MeshCollider.h">
       <Filter>ヘッダー ファイル\Engine\Collision</Filter>
@@ -638,23 +659,62 @@
     <ClInclude Include="Engine\Scene\SceneTransitionEffectState.h">
       <Filter>ヘッダー ファイル\Engine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Application\ClearEffectState.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
+    <ClInclude Include="Application\Character\Character.h">
+      <Filter>ヘッダー ファイル\Application\Character</Filter>
     </ClInclude>
-    <ClInclude Include="Application\LandShape.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
+    <ClInclude Include="Application\Character\Player\Player.h">
+      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Tutorial.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
+    <ClInclude Include="Application\Character\Player\PlayerAttackState.h">
+      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Application\TutorialState.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
+    <ClInclude Include="Application\Character\Player\PlayerHand.h">
+      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Application\StageManager.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
+    <ClInclude Include="Application\Character\Player\PlayerHandManager.h">
+      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Application\StageState.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
+    <ClInclude Include="Application\Character\Player\PlayerState.h">
+      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Character\Enemy\Enemy.h">
+      <Filter>ヘッダー ファイル\Application\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Weapon\Weapon.h">
+      <Filter>ヘッダー ファイル\Application\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Weapon\Gun\Bullet.h">
+      <Filter>ヘッダー ファイル\Application\Weapon\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Weapon\Gun\BulletManager.h">
+      <Filter>ヘッダー ファイル\Application\Weapon\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Weapon\Gun\Gun.h">
+      <Filter>ヘッダー ファイル\Application\Weapon\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Effect\ClearEffect.h">
+      <Filter>ヘッダー ファイル\Application\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Effect\ClearEffectState.h">
+      <Filter>ヘッダー ファイル\Application\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\System\GameVelocity\GameVelocityManager.h">
+      <Filter>ヘッダー ファイル\Application\System\GameVelocity</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\System\Tutorial\Tutorial.h">
+      <Filter>ヘッダー ファイル\Application\System\Tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\System\Tutorial\TutorialState.h">
+      <Filter>ヘッダー ファイル\Application\System\Tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Stage\LandShape.h">
+      <Filter>ヘッダー ファイル\Application\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Stage\StageManager.h">
+      <Filter>ヘッダー ファイル\Application\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Stage\StageState.h">
+      <Filter>ヘッダー ファイル\Application\Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

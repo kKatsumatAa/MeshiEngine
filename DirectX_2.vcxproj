@@ -65,7 +65,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -100,25 +100,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Application\Bullet.cpp" />
-    <ClCompile Include="Application\BulletManager.cpp" />
-    <ClCompile Include="Application\Character.cpp" />
-    <ClCompile Include="Application\ClearEffect.cpp" />
-    <ClCompile Include="Application\ClearEffectState.cpp" />
-    <ClCompile Include="Application\Enemy.cpp" />
-    <ClCompile Include="Application\GameVelocityManager.cpp" />
-    <ClCompile Include="Application\Gun.cpp" />
-    <ClCompile Include="Application\LandShape.cpp" />
-    <ClCompile Include="Application\Player.cpp" />
-    <ClCompile Include="Application\PlayerAttackState.cpp" />
-    <ClCompile Include="Application\PlayerHand.cpp" />
-    <ClCompile Include="Application\PlayerHandManager.cpp" />
-    <ClCompile Include="Application\PlayerState.cpp" />
-    <ClCompile Include="Application\StageManager.cpp" />
-    <ClCompile Include="Application\StageState.cpp" />
-    <ClCompile Include="Application\Tutorial.cpp" />
-    <ClCompile Include="Application\TutorialState.cpp" />
-    <ClCompile Include="Application\Weapon.cpp" />
+    <ClCompile Include="Application\Character\Character.cpp" />
+    <ClCompile Include="Application\Character\Enemy\Enemy.cpp" />
+    <ClCompile Include="Application\Character\Player\Player.cpp" />
+    <ClCompile Include="Application\Character\Player\PlayerAttackState.cpp" />
+    <ClCompile Include="Application\Character\Player\PlayerHand.cpp" />
+    <ClCompile Include="Application\Character\Player\PlayerHandManager.cpp" />
+    <ClCompile Include="Application\Character\Player\PlayerState.cpp" />
+    <ClCompile Include="Application\Effect\ClearEffect.cpp" />
+    <ClCompile Include="Application\Effect\ClearEffectState.cpp" />
+    <ClCompile Include="Application\Stage\LandShape.cpp" />
+    <ClCompile Include="Application\Stage\StageManager.cpp" />
+    <ClCompile Include="Application\Stage\StageState.cpp" />
+    <ClCompile Include="Application\System\GameVelocity\GameVelocityManager.cpp" />
+    <ClCompile Include="Application\System\Tutorial\Tutorial.cpp" />
+    <ClCompile Include="Application\System\Tutorial\TutorialState.cpp" />
+    <ClCompile Include="Application\Weapon\Gun\Bullet.cpp" />
+    <ClCompile Include="Application\Weapon\Gun\BulletManager.cpp" />
+    <ClCompile Include="Application\Weapon\Gun\Gun.cpp" />
+    <ClCompile Include="Application\Weapon\Weapon.cpp" />
     <ClCompile Include="Engine\2D\DebugText.cpp" />
     <ClCompile Include="Engine\2D\DrawIntNumImage.cpp" />
     <ClCompile Include="Engine\2D\Sprite.cpp" />
@@ -193,25 +193,25 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\Bullet.h" />
-    <ClInclude Include="Application\BulletManager.h" />
-    <ClInclude Include="Application\Character.h" />
-    <ClInclude Include="Application\ClearEffect.h" />
-    <ClInclude Include="Application\ClearEffectState.h" />
-    <ClInclude Include="Application\Enemy.h" />
-    <ClInclude Include="Application\GameVelocityManager.h" />
-    <ClInclude Include="Application\Gun.h" />
-    <ClInclude Include="Application\LandShape.h" />
-    <ClInclude Include="Application\Player.h" />
-    <ClInclude Include="Application\PlayerAttackState.h" />
-    <ClInclude Include="Application\PlayerHand.h" />
-    <ClInclude Include="Application\PlayerHandManager.h" />
-    <ClInclude Include="Application\PlayerState.h" />
-    <ClInclude Include="Application\StageManager.h" />
-    <ClInclude Include="Application\StageState.h" />
-    <ClInclude Include="Application\Tutorial.h" />
-    <ClInclude Include="Application\TutorialState.h" />
-    <ClInclude Include="Application\Weapon.h" />
+    <ClInclude Include="Application\Character\Character.h" />
+    <ClInclude Include="Application\Character\Enemy\Enemy.h" />
+    <ClInclude Include="Application\Character\Player\Player.h" />
+    <ClInclude Include="Application\Character\Player\PlayerAttackState.h" />
+    <ClInclude Include="Application\Character\Player\PlayerHand.h" />
+    <ClInclude Include="Application\Character\Player\PlayerHandManager.h" />
+    <ClInclude Include="Application\Character\Player\PlayerState.h" />
+    <ClInclude Include="Application\Effect\ClearEffect.h" />
+    <ClInclude Include="Application\Effect\ClearEffectState.h" />
+    <ClInclude Include="Application\Stage\LandShape.h" />
+    <ClInclude Include="Application\Stage\StageManager.h" />
+    <ClInclude Include="Application\Stage\StageState.h" />
+    <ClInclude Include="Application\System\GameVelocity\GameVelocityManager.h" />
+    <ClInclude Include="Application\System\Tutorial\Tutorial.h" />
+    <ClInclude Include="Application\System\Tutorial\TutorialState.h" />
+    <ClInclude Include="Application\Weapon\Gun\Bullet.h" />
+    <ClInclude Include="Application\Weapon\Gun\BulletManager.h" />
+    <ClInclude Include="Application\Weapon\Gun\Gun.h" />
+    <ClInclude Include="Application\Weapon\Weapon.h" />
     <ClInclude Include="Engine\2D\DebugText.h" />
     <ClInclude Include="Engine\2D\DrawIntNumImage.h" />
     <ClInclude Include="Engine\2D\Sprite.h" />
