@@ -25,9 +25,12 @@ Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t);
 //スプライン補間
 Vec3 SplinePosition(const std::vector<Vec3>& points, int32_t startIndex, float t);
 
+//イージング
 float EaseIn(float t);
-
 float EaseOut(float t);
+float EaseInOutBack(float t);
+float EaseInOut(float t);
+
 
 //衝突
 bool CollisionCircleCircle(const Vec3& pos1, float r1,

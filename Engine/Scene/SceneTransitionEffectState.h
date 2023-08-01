@@ -14,6 +14,9 @@ protected:
 	//読み込み用関数
 	std::function<void()>loadFunc_;
 
+	//演出の画面サイズ倍率
+	const float WINDOW_SIZE_EXTEND_ = 0.9f;
+
 
 public:
 	virtual ~SceneTransitionEffectState() { ; }

@@ -56,11 +56,11 @@ void TransitionEffectBeginState::Update()
 	SceneTransitionEffectState::Update();
 
 	//湾曲を徐々につよく
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.barrelCurvePow = EaseOut(GetTimerT(timer_, TIMER_MAX_));
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.barrelCurvePow = EaseInOutBack(GetTimerT(timer_, TIMER_MAX_));
 	//一枚目の画面の大きさを徐々に小さく
 	PostEffectManager::GetInstance().GetPostEffect1()->SetPera2Extend(LerpVec3(
-		{ 1.0f ,0,0 }, { PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_,0,0 },
-		EaseOut(GetTimerT(timer_, TIMER_MAX_))).x_);
+		{ 1.0f ,0,0 }, { PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 },
+		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x_);
 
 	//時間が終わったら
 	if (GetIsTimeOver(timer_, TIMER_MAX_))
@@ -108,6 +108,11 @@ void TransitionEffectEndState::Initialize()
 void TransitionEffectEndState::Update()
 {
 	SceneTransitionEffectState::Update();
+
+	//一枚目の画面の大きさを徐々に大きく
+	PostEffectManager::GetInstance().GetPostEffect1()->SetPera2Extend(LerpVec3(
+		{ PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 }, { PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ ,0,0 },
+		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x_);
 
 	//時間が終わったら
 	if (GetIsTimeOver(timer_, TIMER_MAX_))

@@ -147,6 +147,8 @@ Vec3 SplinePosition(const std::vector<Vec3>& points, int32_t startIndex, float t
 	return position;
 }
 
+
+//---------------------------------------------------------------------------------
 float EaseIn(float t)
 {
 	return 1 - cos((t * 3.14f) / 2.0f);
@@ -157,6 +159,28 @@ float EaseOut(float t)
 	return sin((t * 3.14f) / 2.0f);
 }
 
+float EaseInOutBack(float t)
+{
+	const float c1 = 1.70158f;
+	const float c2 = c1 * 1.525f;
+
+	return t < 0.5f
+		? (powf(2.0f * t, 2.0f) * ((c2 + 1.0f) * 2.0f * t - c2)) / 2.0f
+		: (powf(2.0f * t - 2.0f, 2.0f) * ((c2 + 1.0f) * (t * 2.0f - 2.0f) + c2) + 2.0f) / 2.0f;
+}
+
+float EaseInOut(float t)
+{
+	return t == 0.0f
+		? 0.0f
+		: t == 1.0f
+		? 1.0f
+		: t < 0.5f ? powf(2, 20.0f * t - 10.0f) / 2.0f
+		: (2.0f - powf(2.0f, -20 * t + 10.0f)) / 2.0f;
+}
+
+
+//-----------------------------------------------------------------------------------
 bool CollisionCircleCircle(const Vec3& pos1, float r1, const Vec3& pos2, float r2)
 {
 	if (pow(pos2.x_ - pos1.x_, 2) + pow(pos2.y_ - pos1.y_, 2) + pow(pos2.z_ - pos1.z_, 2)
@@ -172,20 +196,12 @@ bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, float r, const Vec3& pos
 {
 	//ƒŒƒC‚Æ‚Ì“–‚½‚è”»’è
 	Vec3 rayLength = ev - sv;
-	/*Vec3 ev = { worldTransform2_.translation_.x + rayLength.x,
-		worldTransform2_.translation_.y + rayLength.y,
-		worldTransform2_.translation_.z + rayLength.z / 2 };
-	Vec3 sv = { worldTransform2_.translation_.x,
-		worldTransform2_.translation_.y - rayLength.y,
-		worldTransform2_.translation_.z - rayLength.z / 2 };*/
 	rayLength.Normalized();
 	Vec3 objLength = pos - sv;
 	Vec3 dotPos = sv + rayLength * rayLength.Dot(objLength);
 	Vec3 dotVec = pos - dotPos;
 	float dotLength = dotVec.GetLength();
-	if (dotLength <= r + r2
-		/*&& (worldTransform_.translation_.z + worldTransform_.scale_.z > sv.z
-			&& worldTransform_.translation_.z - worldTransform_.scale_.z < ev.z)*/)
+	if (dotLength <= r + r2)
 	{
 		return true;
 	}
@@ -220,12 +236,6 @@ Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 
 	Vec3 vec3 = v;
 
-	/*M4 m4 = {
-		(float)mVPVp.r[0].m128_f32[0],(float)mVPVp.r[0].m128_f32[1],(float)mVPVp.r[0].m128_f32[2],(float)mVPVp.r[0].m128_f32[3],
-		(float)mVPVp.r[1].m128_f32[0],(float)mVPVp.r[1].m128_f32[1],(float)mVPVp.r[1].m128_f32[2],(float)mVPVp.r[1].m128_f32[3],
-		(float)mVPVp.r[2].m128_f32[0],(float)mVPVp.r[2].m128_f32[1],(float)mVPVp.r[2].m128_f32[2],(float)mVPVp.r[2].m128_f32[3],
-		(float)mVPVp.r[3].m128_f32[0],(float)mVPVp.r[3].m128_f32[1],(float)mVPVp.r[3].m128_f32[2],(float)mVPVp.r[3].m128_f32[3]
-	};*/
 	M4 m4;
 	m4.PutInXMMATRIX(mVPVp);
 
@@ -248,11 +258,9 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 	//‡¬s—ñ
 	XMMATRIX mVPVp = view * projection * viewPort;
 	M4 m4;
-	//m4.PutinXMMATRIX(mVPVp);
 
 	//‹ts—ñŒvŽZ
 	XMMATRIX mInverseVPVp = XMMatrixInverse(nullptr, mVPVp);
-	//m4.SetInverseMatrix();
 
 	m4.PutInXMMATRIX(mInverseVPVp);
 
@@ -290,11 +298,9 @@ void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, 
 	//‡¬s—ñ
 	XMMATRIX mVPVp = view * projection * viewPort;
 	M4 m4;
-	//m4.PutinXMMATRIX(mVPVp);
 
 	//‹ts—ñŒvŽZ
 	XMMATRIX mInverseVPVp = XMMatrixInverse(nullptr, mVPVp);
-	//m4.SetInverseMatrix();
 
 	m4.PutInXMMATRIX(mInverseVPVp);
 
@@ -413,10 +419,6 @@ Vec3 GetRotFromQuaternion(Quaternion q)
 		tz = atan2(m01, m11);
 	}
 
-	//tx *= Rad2Deg;
-	//ty *= Rad2Deg;
-	//tz *= Rad2Deg;
-
 	return Vec3(tx, ty, tz);
 }
 
@@ -463,28 +465,6 @@ Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot)
 
 	return ansFrontV;
 }
-
-//Quaternion DirectionToDirectionUtil(const Vec3& u, const Vec3& v)
-//{
-//	Vec3 U = u.GetNormalized();
-//	Vec3 V = v.GetNormalized();
-//
-//	Vec3 uX = { U.x_,0,0 };
-//	Vec3 uY = { 0,U.y_,0 };
-//	Vec3 uZ = { 0,0,U.z_ };
-//
-//	Vec3 vX = { V.x_,0,0 };
-//	Vec3 vY = { 0,V.y_,0 };
-//	Vec3 vZ = { 0,0,V.z_ };
-//
-//	Quaternion qZ = Quaternion::DirectionToDirection(uZ, vZ);
-//	Quaternion qX = Quaternion::DirectionToDirection(uX, vX);
-//	Quaternion qY = Quaternion::DirectionToDirection(uY, vY);
-//
-//	Quaternion q = qZ * qX * qY;
-//
-//	return Quaternion(q);
-//}
 
 float GetRand(float min, float max)
 {

@@ -17,9 +17,6 @@ void SceneTitle::Initialize()
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isScanningLine = true;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.barrelCurvePow = 1.0f;
-	//画面サイズ
-	PostEffectManager::GetInstance().GetPostEffect1()->SetPera2Extend(PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_);
 }
 
 void SceneTitle::Update()
