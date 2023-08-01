@@ -5,6 +5,7 @@
 #include "GameVelocityManager.h"
 #include "PlayerAttackState.h"
 #include "CollisionAttribute.h"
+#include "CameraManager.h"
 
 
 
@@ -60,6 +61,9 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 				c_.object_->SetObjName("playerAttack");
 				info.collider->OnCollision(c_);
 				c_.object_->SetObjName("player");
+
+				//カメラシェイク
+				CameraManager::GetInstance().GetCamera("playerCamera")->CameraShake(10, 0.45f);
 			}
 		};
 
