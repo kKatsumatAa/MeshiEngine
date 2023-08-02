@@ -63,7 +63,7 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 				c_.object_->SetObjName("player");
 
 				//カメラシェイク
-				CameraManager::GetInstance().GetCamera("playerCamera")->CameraShake(10, 0.45f);
+				CameraManager::GetInstance().GetCamera("playerCamera")->CameraShake(5, 1.05f);
 			}
 		};
 
