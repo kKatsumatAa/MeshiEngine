@@ -15,7 +15,7 @@ using namespace DirectX;
 Primitive Object::primitive_;
 
 RootPipe Object::objPipeLineSet_[3];
-RootPipe Object::pipelineSet_;
+RootPipe Object::spritePipelineSet_;
 //al4_02_02
 RootPipe Object::pipelineSetM_;
 
@@ -119,7 +119,7 @@ void Object::DrawInitialize()
 	PipeLineState(D3D12_FILL_MODE_WIREFRAME, objPipeLineSet_[2], LINE);
 
 	//sprite用
-	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSet_, SPRITE);
+	PipeLineState(D3D12_FILL_MODE_SOLID, spritePipelineSet_, SPRITE);
 
 	//model用
 	PipeLineState(D3D12_FILL_MODE_SOLID, pipelineSetM_, OBJ);
@@ -543,7 +543,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 	}
 	else if (indexNum == SPRITE)
 	{
-		SpriteCommonBeginDraw(&pipelineSet_);
+		SpriteCommonBeginDraw(&spritePipelineSet_);
 
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 

@@ -51,6 +51,8 @@ struct EffectConstBuffer
 	float bloomPow = 9.0f;
 	//ノイズ
 	uint32_t isNoise = false;
+	//被写界深度
+	uint32_t isDepthField = false;
 	//時間
 	uint32_t time = 0;
 };
@@ -163,9 +165,11 @@ private://関数
 	bool CreateBloomBuffer();
 	//ブルーム用のバッファ作成
 	bool CreateBloomBuffView();
+	//深度値テクスチャ用SRV
+	bool CreateDepthBuffAndSRV();
 
 	//一枚目に描画
-	void PreDraw();
+	void PreDraw(bool isFirstPostPera);
 	void PostDraw();
 
 	//二枚目に描画
@@ -174,17 +178,17 @@ private://関数
 	//二回目のエフェクトかける
 	void Draw();
 
-	//二回目のエフェクトかける用の描画
-	void Draw2All();
-
-	//全てのビュー等をセット
-	void SetHeapAllBuffView(bool isPost2 = false);
+	//ヒープとヒープ上に作ったバッファビュー等をセット
+	void SetHeapAllBuffView(bool isPost2 = false, bool isPost1 = false);
 
 public:
 	void Initialize(const wchar_t* normalImageFileName);
 
 	void Update();
 	void ImGuiUpdate();
+
+	//二回目のエフェクトかける用の描画
+	void DrawToBlurAll();
 
 	//縮小バッファ書き込み
 	void DrawShrinkTextureForBlur();
@@ -193,7 +197,7 @@ public:
 	void Draw2();
 
 	//一枚目と二枚目を描画する(引数の描画関数を一枚目に描画)
-	void DrawToPostpera(const std::function<void()>& f);
+	void DrawToPostpera(const std::function<void()>& f, bool isFirstPostPera = false);
 
 public:
 	void SetPera1Extend(float extend) { pera1Extend_ = extend; }

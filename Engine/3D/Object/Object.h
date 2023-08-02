@@ -76,7 +76,7 @@ private:
 	//
 	static RootPipe objPipeLineSet_[3];
 	//
-	static RootPipe pipelineSet_;
+	static RootPipe spritePipelineSet_;
 	//al4_02_02
 	static RootPipe pipelineSetM_;
 	//FBX—p

@@ -55,7 +55,8 @@ void MyGame::Draw()
 		//ポストペラ実際に描画
 		PostEffectManager::GetInstance().DrawDisplay();
 
-		sceneM_->DrawSprite();
+		//深度関係でエラー起きる
+		//sceneM_->DrawSprite();
 
 #ifdef _DEBUG
 		{

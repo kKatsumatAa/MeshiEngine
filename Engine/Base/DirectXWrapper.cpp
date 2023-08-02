@@ -135,14 +135,13 @@ void DirectXWrapper::InitializeRendertargetView()
 
 void DirectXWrapper::InitializeDepthBuffer()
 {
-
 	//06_01
 	D3D12_RESOURCE_DESC depthResourceDesc{};
 	depthResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	depthResourceDesc.Width = (uint16_t)WindowsApp::GetInstance().WINDOW_WIDTH_;//レンダーターゲットに合わせる
 	depthResourceDesc.Height = (uint32_t)WindowsApp::GetInstance().WINDOW_HEIGHT_;//レンダーターゲットに合わせる
 	depthResourceDesc.DepthOrArraySize = 1;
-	depthResourceDesc.Format = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
+	depthResourceDesc.Format = DXGI_FORMAT_R32_TYPELESS;//深度値フォーマット(バッファーとしてのビット数は32だがビット数以外の扱いは最終的に決められる)
 	depthResourceDesc.SampleDesc.Count = 1;
 	depthResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;//デプスステンシル
 	//深度値ヒーププロパティ
@@ -157,7 +156,7 @@ void DirectXWrapper::InitializeDepthBuffer()
 		&depthHeapProp,//ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
 		&depthResourceDesc,//リソース設定
-		D3D12_RESOURCE_STATE_DEPTH_WRITE,//<-ここが、_GENERIC_READになってた！！
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		&depthClearValue,
 		IID_PPV_ARGS(&depthBuff_));
 	assert(SUCCEEDED(result_));
@@ -166,6 +165,8 @@ void DirectXWrapper::InitializeDepthBuffer()
 	dsvHeapDesc.NumDescriptors = 1;//深度ビューは一つ
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;//デプスステンシルビュー
 	result_ = device_->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(dsvHeap_.GetAddressOf()));
+	assert(SUCCEEDED(result_));
+
 	//深度ビュー作成
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
@@ -175,6 +176,27 @@ void DirectXWrapper::InitializeDepthBuffer()
 		&dsvDesc,//深度ビュー
 		dsvHeap_->GetCPUDescriptorHandleForHeapStart()//ヒープの先頭に作る
 	);
+
+	//---------
+
+	//深度値をテクスチャとして使うためのSRVのヒープ作成
+	dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	dsvHeapDesc.NodeMask = 0;
+	dsvHeapDesc.NumDescriptors = 1;
+	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+
+	result_ = device_->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&depthSRVHeap_));
+	assert(SUCCEEDED(result_));
+
+	//srv作成
+	D3D12_SHADER_RESOURCE_VIEW_DESC resDesc = {};
+	resDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	resDesc.Texture2D.MipLevels = 1;
+	resDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	resDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+
+	device_->CreateShaderResourceView(depthBuff_.Get(), &resDesc,
+		depthSRVHeap_->GetCPUDescriptorHandleForHeapStart());
 }
 
 void DirectXWrapper::InitializeFence()
@@ -350,7 +372,7 @@ void DirectXWrapper::UpLoadTexture()
 	texUploadBuff_.clear();
 }
 
-//一枚目のテクスチャに描画
+//実際に描画のpre
 void DirectXWrapper::PreDraw()
 {
 	// バックバッファの番号を取得(2つなので0番か1番)
@@ -366,18 +388,13 @@ void DirectXWrapper::PreDraw()
 	barrierDesc_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
 	commandList_->ResourceBarrier(1, &barrierDesc_);
 
-	// 3 パス 目 
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap_->GetCPUDescriptorHandleForHeapStart();
+	//レンダーターゲット(ポストペラの一枚目でdsvと紐づけるのでここではなし)
 	commandList_->OMSetRenderTargets(
-		1, &rtvHandle_, false, &dsvHandle
+		1, &rtvHandle_, false, nullptr
 	);
 
 	// 3.画面クリア R G B A
 	commandList_->ClearRenderTargetView(rtvHandle_, clearColor_, 0, nullptr);
-	//06_01(dsv)
-	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH,
-		1.0f, 0, 0, nullptr);
-	//毎フレーム深度バッファの値が描画範囲で最も奥(1.0)にリセットされる
 
 	// ビューポート設定コマンドを、コマンドリストに積む
 	commandList_->RSSetViewports(1, &WindowsApp::GetInstance().viewport_);
@@ -427,6 +444,16 @@ void DirectXWrapper::PostDraw()
 	CommandReset();
 
 	assert(SUCCEEDED(result_));
+}
+
+void DirectXWrapper::ResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState, ID3D12Resource* buff)
+{
+	D3D12_RESOURCE_BARRIER barrierDesc{};
+
+	barrierDesc.Transition.pResource = buff;
+	barrierDesc.Transition.StateBefore = beforeState; // 描画状態から
+	barrierDesc.Transition.StateAfter = afterState; // 表示状態へ
+	commandList_->ResourceBarrier(1, &barrierDesc);
 }
 
 void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuff)

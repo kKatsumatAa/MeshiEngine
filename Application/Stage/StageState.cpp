@@ -148,13 +148,12 @@ void StageStateBattle::Draw()
 {
 	//共通
 	StageState::Draw();
-
-	//チュートリアル
-	Tutorial::GetInstance().Draw();
 }
 
 void StageStateBattle::DrawSprite()
 {
+	//チュートリアル
+	Tutorial::GetInstance().Draw();
 }
 
 
@@ -228,11 +227,10 @@ void StageStateClear::Draw()
 {
 	//共通
 	StageState::Draw();
-
-	//クリア演出
-	ClearEffect::GetInstance().Draw();
 }
 
 void StageStateClear::DrawSprite()
 {
+	//クリア演出
+	ClearEffect::GetInstance().Draw();
 }

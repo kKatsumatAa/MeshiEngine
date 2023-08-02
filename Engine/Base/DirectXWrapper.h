@@ -26,8 +26,10 @@ private:
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle_;
 	// バックバッファ
 	std::vector< ComPtr <ID3D12Resource>> backBuffers_;
-	//
+	//深度バッファビュー用
 	ComPtr < ID3D12DescriptorHeap> dsvHeap_ = nullptr;
+	//深度値テクスチャ用
+	ComPtr < ID3D12DescriptorHeap> depthSRVHeap_ = nullptr;
 
 	// フェンスの生成
 	ComPtr < ID3D12Fence> fence_ = nullptr;
@@ -101,6 +103,9 @@ public:
 	void PreDraw();
 	void PostDraw();
 
+	//リソースバリア
+	void ResourceBarrier(D3D12_RESOURCE_STATES beforeState,
+		D3D12_RESOURCE_STATES afterState,ID3D12Resource* buff );
 
 	//getter
 	ID3D12Device* GetDevice() const { return device_.Get(); }
@@ -113,6 +118,9 @@ public:
 	float* GetClearColor() { return clearColor_; }
 	std::vector< ComPtr <ID3D12Resource>>& GetBackBuffer() { return backBuffers_; }
 	ID3D12DescriptorHeap* GetDSVHeap() { return dsvHeap_.Get(); }
+	ID3D12Resource* GetDepthBuff() { return depthBuff_.Get(); }
+	ID3D12DescriptorHeap* GetDepthSRVHeap() { return depthSRVHeap_.Get(); }
+	ID3D12DescriptorHeap** GetDepthSRVHeapPP() { return depthSRVHeap_.GetAddressOf(); }
 	ID3D12Resource** GetTexUploadBuffPP() { return texUploadBuff_.back().GetAddressOf(); }
 	ID3D12Resource* GetTexUploadBuffP() { return texUploadBuff_.back().Get(); }
 	void UploatBuffEmplaceBack() { return texUploadBuff_.emplace_back(); }

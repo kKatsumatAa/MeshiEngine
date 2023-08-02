@@ -46,6 +46,8 @@ cbuffer ConstBufferEffectFlags : register(b0)
     float bloomPow;
     //ノイズ
     uint isNoise;
+    //被写界深度
+    uint isDepthField;
 	//時間
     uint time;
 }
@@ -74,6 +76,8 @@ Texture2D<float4> tex3 : register(t3);
 Texture2D<float4> tex4 : register(t4);
 //ガラスフィルター
 Texture2D<float4> effectTex : register(t5);
+//深度値(floatなのでR値のみ)
+Texture2D<float> depthTex : register(t6);
 
 
 //ぼかした後の画像を返す

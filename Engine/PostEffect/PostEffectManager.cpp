@@ -32,11 +32,25 @@ void PostEffectManager::ImGuiUpdate()
 void PostEffectManager::BeforeDraw(std::function<void()> drawSceneF)
 {
 	//1枚目に描画
-	postPera_[0]->DrawToPostpera(drawSceneF);
+	postPera_[0]->DrawToPostpera(drawSceneF, true);
+
+	//深度バッファ
+	DirectXWrapper::GetInstance().ResourceBarrier(
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		DirectXWrapper::GetInstance().GetDepthBuff());
+
+	//ぼかしテクスチャに描画
+	postPera_[0]->DrawToBlurAll();
+	//ぼかし
 	postPera_[0]->DrawShrinkTextureForBlur();
+
 	//一枚目に描画結果、二枚目も描画する
 	std::function<void()>f2 = [=]() { postPera_[0]->Draw2();  };
+
 	postPera_[1]->DrawToPostpera(f2);
+	//ブラー用に書き込み
+	postPera_[1]->DrawToBlurAll();
 
 	//ブルーム用(ブラー)
 	postPera_[1]->DrawShrinkTextureForBlur();
@@ -45,4 +59,10 @@ void PostEffectManager::BeforeDraw(std::function<void()> drawSceneF)
 void PostEffectManager::DrawDisplay()
 {
 	postPera_[1]->Draw2();
+
+	//深度バッファ
+	DirectXWrapper::GetInstance().ResourceBarrier(
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,
+		DirectXWrapper::GetInstance().GetDepthBuff());
 }

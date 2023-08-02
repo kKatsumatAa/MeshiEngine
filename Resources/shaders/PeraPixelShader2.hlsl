@@ -21,6 +21,12 @@ float4 PS2(Output input) : SV_TARGET
 
     bool isEffect = false;
 
+        //深度値
+    if (isDepthField)
+    {
+        float dep = pow(depthTex.Sample(smp, input.uv), 20);
+        return float4(dep, dep, dep, 1);
+    }
 
     if (isGaussian2)
     {
@@ -126,18 +132,6 @@ float4 PS2(Output input) : SV_TARGET
         return tex0.Sample(smp, input.uv) //通常テクスチャ
 			+ saturate(bloomAccum[0]) / bloomPow //縮小ぼかし済み(/ で強さ調整)
 			+ saturate(bloomAccum[1]) / bloomPow; //縮小ぼかし済み(/ で強さ調整)
-    }
-
-	//課題用のマルチテクスチャ組み合わせ
-    if (isMultiTex)
-    {
-        float4 color = tex1.Sample(smp, input.uv);
-        if (fmod(input.uv.y, 0.1f) < 0.05f)
-        {
-            color = tex0.Sample(smp, input.uv);
-        }
-
-        return float4(color.rgb, 1);
     }
     
     if (isEffect)
