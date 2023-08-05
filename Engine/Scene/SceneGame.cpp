@@ -21,8 +21,12 @@ void SceneGame::Initialize()
 	ParticleManager::GetInstance()->SetBlendNum(ParticleManager::TRIANGLE);
 
 	//ポストエフェクト
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isVignette = true;
+
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isDepthField = true;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.focusDepth = 0.965f;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.nFocusWidth = 0.538f;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.focusDiffPow = 0.568f;
 }
 
 void SceneGame::Update()

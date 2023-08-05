@@ -21,13 +21,6 @@ float4 PS2(Output input) : SV_TARGET
 
     bool isEffect = false;
 
-        //深度値
-    if (isDepthField)
-    {
-        float dep = pow(depthTex.Sample(smp, input.uv), 20);
-        return float4(dep, dep, dep, 1);
-    }
-
     if (isGaussian2)
     {
         ret += bkweights[0] * col;
@@ -67,6 +60,63 @@ float4 PS2(Output input) : SV_TARGET
         float c = noise(input.uv * 256.0f, time);
         return float4(c, c, c, 1.0f);
     }
+   
+        
+    //深度値
+    if (isDepthField)
+    {
+       // 深度値
+        float depth = depthTex.Sample(smp, input.uv).r;
+       // フォーカスあってる
+        float inFocus = 1.0f - smoothstep(0, nFocusWidth, abs(depth - focusDepth));
+        //フォーカスからの深度の差を測る
+        float depthDiff = abs(inFocus - depth);
+        //近い値でも差が出るようにpow
+        depthDiff = pow(depthDiff, focusDiffPow);
+        
+        float2 uvSize = float2(1.0f, 0.5);
+        float2 uvOfst = float2(0, 0);
+        //最大1.0f のdepth値の差を複数の縮小バッファとブレンドできるように倍
+        const int SHRINK_EXTEND = 6;
+        float t = depthDiff * SHRINK_EXTEND;
+        
+        float no;
+        //tの整数部分をnoへ、 小数部分をtへ分ける
+
+        t = modf(t, no);
+        
+        float4 retColor[2];
+        
+        retColor[0] = tex0.Sample(smp, input.uv); //通常テクスチャ
+        //整数部分が０
+
+        if (no == 0.0f)
+        {
+            retColor[1] = Get5x5GaussianBlur(tex5, smp, input.uv * uvSize + uvOfst, dx, dy, float4(uvOfst, uvOfst + uvSize));
+        }
+        //整数部分があれば
+        else
+        {
+            for (int i = 1; i <= SHRINK_EXTEND; ++i)
+            {
+                if (i - no < 0)
+                {
+                    continue;
+                }
+                retColor[i - no] = Get5x5GaussianBlur(tex5, smp, input.uv * uvSize + uvOfst, dx, dy, float4(uvOfst, uvOfst + uvSize));
+                uvOfst.y += uvSize.y;
+                uvSize *= 0.5f;
+                if (i - no > 1.0f)
+                {
+                    break;
+                }
+            }
+        }
+        ret = lerp(retColor[0], retColor[1], t);
+        
+        isEffect = true;
+    }
+
 
 	//ブルーム
     if (isBloom)

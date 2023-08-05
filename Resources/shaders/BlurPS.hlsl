@@ -3,11 +3,12 @@
 //サンプラー
 SamplerState smp : register(s0);
 
-//クロスフィルタ用に二枚
+//クロスフィルタ用に二枚+被写界深度用
 struct PSOutput
 {
 	float4 blur : SV_TARGET0;//高輝度ぼかし
 	float4 blur2 : SV_TARGET1;//高輝度ぼかし２
+	float4 col : SV_TARGET2;//通常ぼかし（被写界深度用）
 };
 
 //メインテクスチャをぼかす
@@ -36,6 +37,11 @@ PSOutput BlurPS(Output input)
 		output.blur2 = GaussianAngle(tex2, smp, -45, input.uv);
 		output.blur2 += GaussianAngle(tex2, smp, -90, input.uv);
 	}
+	//被写界深度用
+	if(isDepthField)
+    {
+        output.col = Gaussian2(tex0, smp, input.uv);
+    }
 
 	return output;
 }

@@ -44,7 +44,8 @@ void MyGame::Draw()
 	//ポストペラに描画する
 	{
 		std::function<void()>f = [=]() {sceneM_->Draw(); };
-		PostEffectManager::GetInstance().BeforeDraw(f);
+		std::function<void()>spriteF = [=]() {sceneM_->DrawSprite(); };
+		PostEffectManager::GetInstance().BeforeDraw(f, spriteF);
 	}
 
 	//実際に描画
@@ -55,8 +56,6 @@ void MyGame::Draw()
 		//ポストペラ実際に描画
 		PostEffectManager::GetInstance().DrawDisplay();
 
-		//深度関係でエラー起きる
-		//sceneM_->DrawSprite();
 
 #ifdef _DEBUG
 		{

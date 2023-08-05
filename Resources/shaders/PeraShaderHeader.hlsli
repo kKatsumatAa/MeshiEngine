@@ -48,6 +48,12 @@ cbuffer ConstBufferEffectFlags : register(b0)
     uint isNoise;
     //被写界深度
     uint isDepthField;
+    //フォーカス合わせる深度値
+    float focusDepth;
+	//フォーカスのスムースステップの幅の下限
+    float nFocusWidth;
+	//フォーカスのスムースステップの幅の上限
+    float focusDiffPow;
 	//時間
     uint time;
 }
@@ -74,10 +80,12 @@ Texture2D<float4> tex2 : register(t2);
 Texture2D<float4> tex3 : register(t3);
 //一枚目の5つ目(縮小バッファ高輝度2)
 Texture2D<float4> tex4 : register(t4);
+//6つ目(通常ぼかし（被写界深度用）)
+Texture2D<float4> tex5 : register(t5);
 //ガラスフィルター
-Texture2D<float4> effectTex : register(t5);
+Texture2D<float4> effectTex : register(t6);
 //深度値(floatなのでR値のみ)
-Texture2D<float> depthTex : register(t6);
+Texture2D<float> depthTex : register(t7);
 
 
 //ぼかした後の画像を返す
@@ -136,12 +144,12 @@ float4 Get5x5GaussianBlur(Texture2D<float4> tex, SamplerState smp, float2 uv, fl
 float4 GaussianTmp(float2 drawUV, float2 pickUV, float sigma)
 {
     float d = distance(drawUV, pickUV);
-    return exp(-(d * d) / (2 * sigma * sigma));
+    return exp(-(d * d) / (2.0 * sigma * sigma));
 }
 
 float4 Gaussian2(Texture2D<float4> tex, SamplerState smp, float2 uv)
 {
-    float totalWeight = 0, sigma = 0.005, stepWidth = 0.001;
+    float totalWeight = 0, sigma = 0.03, stepWidth = 0.005;
     float4 col = float4(0, 0, 0, 0);
 
     for (float py = -sigma * 2; py <= sigma * 2; py += stepWidth)
@@ -228,5 +236,5 @@ float noise(float2 st, float extend = 1.0f);
 float noise(float2 st, float extend)
 {
     float2 p = floor(st);
-    return random(p, extend);//
+    return random(p, extend); //
 }

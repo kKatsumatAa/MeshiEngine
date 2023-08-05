@@ -881,14 +881,16 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 	//06_01
 	//デプスステンシルステート
 	pipelineDesc_.DepthStencilState = D3D12_DEPTH_STENCIL_DESC();
-	pipelineDesc_.DepthStencilState.DepthEnable = true;//深度テストを行う
+
 	pipelineDesc_.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 	if (indexNum == SPRITE)
 	{
-		pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;//小さければ合格
+		pipelineDesc_.DepthStencilState.DepthEnable = false;
+		pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 	}
 	else
 	{
+		pipelineDesc_.DepthStencilState.DepthEnable = true;//深度テストを行う
 		pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
 	}
 	pipelineDesc_.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット

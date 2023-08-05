@@ -53,6 +53,12 @@ struct EffectConstBuffer
 	uint32_t isNoise = false;
 	//被写界深度
 	uint32_t isDepthField = false;
+	//フォーカス合わせる深度値
+	float focusDepth = 0.05f;
+	//フォーカスのスムースステップの幅の下限
+	float nFocusWidth = 0.005f;
+	//フォーカスのスムースステップの幅の上限
+	float focusDiffPow = 0.01f;
 	//時間
 	uint32_t time = 0;
 };
@@ -141,7 +147,10 @@ private:
 	//ラジアルの最大強さ
 	const float RADIAL_MAX_POW_ = 1.0f;
 
-	//
+	//被写界深度バッファ
+	ComPtr<ID3D12Resource>dofBuffer_;
+
+	//テクスチャの大きさ
 	float peraExtend_ = 1.0f;
 
 public:
@@ -162,11 +171,17 @@ private://関数
 	//ガラス用のバッファとビュー作成
 	bool CreateEffectBufferAndView(const wchar_t* fileName);
 	//ブルーム用のバッファ作成
-	bool CreateBloomBuffer();
-	//ブルーム用のバッファ作成
+	bool CreateBloomBuffer(const D3D12_RESOURCE_DESC& resDesc,
+		const D3D12_HEAP_PROPERTIES& heapProp, D3D12_CLEAR_VALUE clearValue);
 	bool CreateBloomBuffView();
+	//被写界深度用バッファ作成
+	bool CreateDofBuffer(const D3D12_RESOURCE_DESC& resDesc,
+		const D3D12_HEAP_PROPERTIES& heapProp, D3D12_CLEAR_VALUE clearValue);
+	//被写界深度用SRV
+	bool CreateDofSRV();
+
 	//深度値テクスチャ用SRV
-	bool CreateDepthBuffAndSRV();
+	bool CreateDepthTexBuffAndSRV();
 
 	//一枚目に描画
 	void PreDraw(bool isFirstPostPera);
@@ -197,7 +212,7 @@ public:
 	void Draw2();
 
 	//一枚目と二枚目を描画する(引数の描画関数を一枚目に描画)
-	void DrawToPostpera(const std::function<void()>& f, bool isFirstPostPera = false);
+	void DrawToPostpera(const std::function<void()>& f, bool isFirstPostPera = false, const std::function<void()>& drawSpriteF = nullptr);
 
 public:
 	void SetPera1Extend(float extend) { pera1Extend_ = extend; }
