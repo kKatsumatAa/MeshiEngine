@@ -402,12 +402,7 @@ void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
 
 void FbxLoader::LoadTexture(ModelFBX* model, const std::string& fullpath)
 {
-	//ユニコード文字列に変換
-	wchar_t wfilepath[128];
-	MultiByteToWideChar(CP_ACP, 0, fullpath.c_str(), -1, wfilepath, _countof(wfilepath));
-
-	model->material_->textureHandle_ = TextureManager::GetInstance().LoadGraph(wfilepath);
-
+	model->material_->textureHandle_ = TextureManager::GetInstance().LoadGraph(fullpath.c_str());
 }
 
 std::string FbxLoader::ExtractFileName(const std::string& path)

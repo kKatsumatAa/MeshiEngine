@@ -29,6 +29,11 @@ std::unique_ptr<Gun> Gun::Create(std::unique_ptr<WorldMat> worldMat)
 	return std::move(instance);
 }
 
+float Gun::GetAttackCoolTimeRatio()
+{
+	return 1.0f - min((float)max(attackCoolTime_, 0.0f) / (float)SHOT_COOL_TIME_MAX_, 1.0f);
+}
+
 bool Gun::Initialize(std::unique_ptr<WorldMat> worldMat)
 {
 	if (!Object::Initialize(std::move(worldMat)))
@@ -44,8 +49,8 @@ bool Gun::Initialize(std::unique_ptr<WorldMat> worldMat)
 
 void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, Object* owner)
 {
-	//クールタイムじゃなく、残弾なかったら抜ける
-	if (shotCoolTime_ > 0 || remainingBullets_ <= 0)
+	//クールタイムがまだあったり、残弾なかったら抜ける
+	if (attackCoolTime_ > 0 || remainingBullets_ <= 0)
 	{
 		return;
 	}
@@ -61,7 +66,7 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, Object* owner)
 	//パーティクル
 	ParticleGenerate({ 4.0f,4.0f,4.0f,1.5f }, { 4.0f,4.0f,4.0f,0 });
 
-	shotCoolTime_ = SHOT_COOL_TIME_MAX_;
+	attackCoolTime_ = SHOT_COOL_TIME_MAX_;
 	remainingBullets_ -= decreBullet;
 }
 
@@ -69,7 +74,7 @@ void Gun::ChangeOwner(Object* parent)
 {
 	SetRot({ 0,0,0 });
 	remainingBullets_ = BULLETS_TMP_;
-	shotCoolTime_ = 0;
+	attackCoolTime_ = 0;
 
 	Weapon::ChangeOwner(parent);
 }
@@ -85,9 +90,14 @@ void Gun::Update()
 	}
 
 	//クールタイムもゲームスピードをかける
-	shotCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
+	attackCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
 	Object::Update();
+}
+
+void Gun::Draw()
+{
+	Object::DrawModel(nullptr);
 }
 
 

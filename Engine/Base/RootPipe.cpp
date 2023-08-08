@@ -1,13 +1,17 @@
 #include "RootPipe.h"
+#include "Util.h"
 
-void RootPipe::CreateBlob(const wchar_t* vsName, const wchar_t* psName, const wchar_t* gsName,
+void RootPipe::CreateBlob(const char* vsName, const char* psName, const char* gsName,
 	std::string vEPName, std::string pEPName, std::string gEPName)
 {
 	HRESULT result = {};
 
+	wchar_t vsNameL[128];
+	ConstCharToWcharT(vsName, vsNameL);
+
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		vsName,	// シェーダファイル名
+		vsNameL,	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		vEPName.c_str(), "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -28,9 +32,13 @@ void RootPipe::CreateBlob(const wchar_t* vsName, const wchar_t* psName, const wc
 		exit(1);
 	}
 
+
+
 	// ピクセルシェーダの読み込みとコンパイル
+	wchar_t psNameL[128];
+	ConstCharToWcharT(psName, psNameL);
 	result = D3DCompileFromFile(
-		psName,	// シェーダファイル名
+		psNameL,	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		pEPName.c_str(), "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -53,9 +61,12 @@ void RootPipe::CreateBlob(const wchar_t* vsName, const wchar_t* psName, const wc
 	//ジオメトリシェーダは基本読み込まない
 	if (gsName != nullptr)
 	{
+		wchar_t gsNameL[128];
+		ConstCharToWcharT(gsName, gsNameL);
+
 		// ジオメトリシェーダの読み込みとコンパイル
 		result = D3DCompileFromFile(
-			gsName,	// シェーダファイル名
+			gsNameL,	// シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 			gEPName.c_str(), "gs_5_0",	// エントリーポイント名、シェーダーモデル指定

@@ -53,7 +53,7 @@ public:
 
 	//デスクリプタヒープ初期化
 	static void InitializeDescriptorHeap();
-	static uint64_t LoadGraph(const wchar_t* name, ID3D12Resource** texBuff = nullptr,
+	static uint64_t LoadGraph(const char* name, ID3D12Resource** texBuff = nullptr,
 		D3D12_SHADER_RESOURCE_VIEW_DESC* srvDesc = nullptr, D3D12_CPU_DESCRIPTOR_HANDLE* srvHandle = nullptr);
 
 	static void AddSrvHandleCount() { sCount_++; }

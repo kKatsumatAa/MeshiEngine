@@ -12,11 +12,12 @@ void SceneTitle::Initialize()
 {
 	sceneM_->StopWaveAllScene();
 
-	titleTex_ = TextureManager::LoadGraph(L"title.png");
+	titleTex_ = TextureManager::LoadGraph("title.png");
 
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isScanningLine = true;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isDepthField = false;
 }
 
 void SceneTitle::Update()

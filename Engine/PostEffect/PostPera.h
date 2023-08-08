@@ -165,11 +165,11 @@ private://関数
 	//頂点バッファマッピング
 	void MappingVertexBuff(PeraVertex* vertex, int32_t vertexCount, float peraExtend, ID3D12Resource* vB);
 
-	void InitializeBuffRTV(const wchar_t* normalImageFileName);
+	void InitializeBuffRTV(const char* normalImageFileName);
 	void GenerateRSPL();
-	void GlassFilterBuffGenerate(const wchar_t* fileName);
+	void GlassFilterBuffGenerate(const char* fileName);
 	//ガラス用のバッファとビュー作成
-	bool CreateEffectBufferAndView(const wchar_t* fileName);
+	bool CreateEffectBufferAndView(const char* fileName);
 	//ブルーム用のバッファ作成
 	bool CreateBloomBuffer(const D3D12_RESOURCE_DESC& resDesc,
 		const D3D12_HEAP_PROPERTIES& heapProp, D3D12_CLEAR_VALUE clearValue);
@@ -197,7 +197,7 @@ private://関数
 	void SetHeapAllBuffView(bool isPost2 = false, bool isPost1 = false);
 
 public:
-	void Initialize(const wchar_t* normalImageFileName);
+	void Initialize(const char* normalImageFileName);
 
 	void Update();
 	void ImGuiUpdate();

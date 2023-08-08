@@ -18,7 +18,7 @@ void DrawIntNumImage::Initialize(uint64_t texhandle)
 	}
 }
 
-void DrawIntNumImage::SetNum(int32_t num, const Vec2& pos, const Vec2& sizeUV, const Vec2& numImageSize, float scale, const XMFLOAT4& color)
+void DrawIntNumImage::SetNum(int32_t num, const Vec2& pos, const Vec2& sizeUV, const Vec2& numImageSize, float scale, const Vec4& color)
 {
 	//Å‰‚É”š‘S•”“ü‚ê‚é
 	numRemainder_ = num;

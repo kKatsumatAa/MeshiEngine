@@ -15,7 +15,7 @@ public:
 	virtual void Initialize();
 	virtual void Update();
 	virtual void Draw();
-	virtual void DrawSprite() = 0;
+	virtual void DrawSprite();
 	virtual void DrawImgui();
 
 public:

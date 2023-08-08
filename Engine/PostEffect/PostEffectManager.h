@@ -23,7 +23,7 @@ public:
 	static PostEffectManager& GetInstance();
 
 public:
-	void Initialize(const wchar_t* normalTexHandle);
+	void Initialize(const char* normalTexHandle);
 	void Update();
 	void ImGuiUpdate();
 	//シーンのものをポストペラに描画する

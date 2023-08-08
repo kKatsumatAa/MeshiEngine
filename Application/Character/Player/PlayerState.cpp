@@ -2,6 +2,8 @@
 #include "Player.h"
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
+#include "PlayerUI.h"
+#include "PlayerUIState.h"
 
 
 
@@ -42,29 +44,43 @@ void PlayerStateBareHands::Update()
 
 		//武器を持ってなくて持ち主がいない武器に照準があってたら
 		if ((info_.object->GetObjName() == "gun" || info_.object->GetObjName() == "sword")
-			&& player_->GetWeapon() == nullptr && info_.object->GetParent() == nullptr
-			&& MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
+			&& player_->GetWeapon() == nullptr && info_.object->GetParent() == nullptr)
 		{
-			Weapon* weapon = dynamic_cast<Weapon*>(info_.object);
-			//武器拾う
-			Vec3 localPos = { player_->GetScale().x_ ,-player_->GetScale().y_ / 2.0f ,player_->GetScale().z_ * 2.0f };
-			player_->PickUpWeapon(weapon, &localPos);
+			//ui変更
+			PlayerUI::GetInstance().ChangeState("PICKUP");
 
-			//プレイヤーは逆向きなので仮に
-			weapon->SetRotY(PI);
+			if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
+			{
+				Weapon* weapon = dynamic_cast<Weapon*>(info_.object);
+				//武器拾う
+				Vec3 localPos = { player_->GetScale().x_ ,-player_->GetScale().y_ / 2.0f ,player_->GetScale().z_ * 2.0f };
+				player_->PickUpWeapon(weapon, &localPos);
 
-			//ステート変更
-			player_->ChangePlayerState(std::make_unique<PlayerStateHaveWeapon>());
+				//プレイヤーは逆向きなので仮に
+				weapon->SetRotY(PI);
+
+				//ui変更
+				PlayerUI::GetInstance().ChangeState("GUN");
+
+				//ステート変更
+				player_->ChangePlayerState(std::make_unique<PlayerStateHaveWeapon>());
+			}
 		}
 		//敵が照準にあったら殴る
 		else if (info_.object->GetObjName() == "enemy")
 		{
+			//ui変更
+			PlayerUI::GetInstance().ChangeState("PUNCH");
+
 			player_->GetHandManager()->Attack(info_);
 		}
 	}
 	//なければ
 	else
 	{
+		//ui変更
+		PlayerUI::GetInstance().ChangeState("NORMAL");
+
 		player_->SetIsTarget(false);
 	}
 }
@@ -77,10 +93,13 @@ void PlayerStateHaveWeapon::Initialize()
 
 void PlayerStateHaveWeapon::Update()
 {
-	//プレイヤーが銃を持っていたら
+	//プレイヤーが武器を持っていたら
 	if (player_->GetWeapon() != nullptr)
 	{
 		player_->SetIsTarget(false);
+
+		//クールタイムでUI回転
+		PlayerUI::GetInstance().SetAngle(-360.0f * player_->GetWeapon()->GetAttackCoolTimeRatio());
 
 		//クリックで攻撃
 		if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))

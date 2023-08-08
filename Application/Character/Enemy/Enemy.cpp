@@ -48,13 +48,13 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	SetisDissolve(true);
 	//ディゾルブ画像
 	uint64_t handle;
-	handle = TextureManager::LoadGraph(L"dissolveMask.png");
+	handle = TextureManager::LoadGraph("dissolveMask.png");
 	SetDissolveTexHandle(handle);
 
 	//ノーマルマップ
 	SetIsNormalMap(true);
 	//tex
-	handle = TextureManager::GetInstance().LoadGraph(L"EnemyNormalMap.png");
+	handle = TextureManager::GetInstance().LoadGraph("EnemyNormalMap.png");
 	SetNormalMapTexHandle(handle);
 
 	return true;
@@ -151,6 +151,7 @@ void Enemy::Update()
 
 void Enemy::Draw()
 {
+	Object::DrawModel(nullptr);
 }
 
 

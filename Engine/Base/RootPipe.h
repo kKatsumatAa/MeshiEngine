@@ -18,6 +18,6 @@ public:
 private:
 
 public:
-	void CreateBlob(const wchar_t* vsName, const wchar_t* psName, const wchar_t* gsName = nullptr, 
+	void CreateBlob(const char* vsName, const char* psName, const char* gsName = nullptr, 
 		std::string vEPName = "main", std::string pEPName = "main", std::string gEPName = "main");
 };

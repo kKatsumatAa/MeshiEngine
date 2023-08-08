@@ -172,20 +172,14 @@ void Object::Update()
 	WorldMatColliderUpdate();
 }
 
+void Object::Draw()
+{
+}
+
 void Object::EffectUpdate()
 {
 	effectFlags_.time++;
 
-#ifdef _DEBUG
-	//imgui
-	/*ImGui::Begin("ObjectEffect");
-	ImGui::SliderInt("Fog", (int32_t*)&sEffectFlags_.isFog, 0, 1);
-	ImGui::SliderInt("Toon", (int32_t*)&sEffectFlags_.isToon, 0, 1);
-	ImGui::SliderInt("RimLight", (int32_t*)&sEffectFlags_.isRimLight, 0, 1);
-	ImGui::ColorEdit3("RimColor", sRimColorF3_);
-	ImGui::SliderInt("Silhouette", (int32_t*)&sEffectFlags_.isSilhouette, 0, 1);
-	ImGui::End();*/
-#endif // DEBUG
 
 	effectFlags_.rimColor = { sRimColorF3_[0],sRimColorF3_[1],sRimColorF3_[2],0 };
 
@@ -614,7 +608,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 }
 
 void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-	Camera* camera, const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
+	Camera* camera, const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	constMapMaterial_->color = color;
 
@@ -622,7 +616,7 @@ void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
 }
 
 void Object::DrawBox(Camera* camera,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
-	const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
+	const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	constMapMaterial_->color = color;
 
@@ -630,7 +624,7 @@ void Object::DrawBox(Camera* camera,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& 
 }
 
 void Object::DrawBoxSprite(const Vec2& pos, float scale,
-	const XMFLOAT4& color, uint64_t textureHandle, const Vec2& ancorUV, bool isReverseX, bool isReverseY,
+	const Vec4& color, uint64_t textureHandle, const Vec2& ancorUV, bool isReverseX, bool isReverseY,
 	float rotation, int32_t pipelineNum)
 {
 	if (sprite_.get() == nullptr)
@@ -644,14 +638,8 @@ void Object::DrawBoxSprite(const Vec2& pos, float scale,
 	Update(SPRITE, pipelineNum, textureHandle, cbt_, nullptr);
 }
 
-void Object::Draw()
-{
-}
-
-
-
 void Object::DrawClippingBoxSprite(const Vec2& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	const XMFLOAT4& color, uint64_t textureHandle, bool isPosLeftTop, bool isReverseX, bool isReverseY,
+	const Vec4& color, uint64_t textureHandle, bool isPosLeftTop, bool isReverseX, bool isReverseY,
 	float rotation, int32_t pipelineNum)
 {
 	if (sprite_.get() == nullptr)
@@ -666,14 +654,14 @@ void Object::DrawClippingBoxSprite(const Vec2& leftTop, float scale, const XMFLO
 	Update(SPRITE, pipelineNum, textureHandle, cbt_, nullptr);
 }
 
-void Object::DrawCube3D(Camera* camera, const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
+void Object::DrawCube3D(Camera* camera, const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	constMapMaterial_->color = color;
 
 	Update(CUBE, pipelineNum, textureHandle, cbt_, camera);
 }
 
-void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  Camera* camera, const XMFLOAT4& color,
+void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  Camera* camera, const Vec4& color,
 	uint64_t textureHandle)
 {
 	constMapMaterial_->color = color;
@@ -682,7 +670,7 @@ void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  Camera* camera, c
 }
 
 void Object::DrawCircle(Camera* camera,
-	const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
+	const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	constMapMaterial_->color = color;
 
@@ -690,7 +678,7 @@ void Object::DrawCircle(Camera* camera,
 }
 
 void Object::DrawSphere(Camera* camera,
-	const XMFLOAT4& color, uint64_t textureHandle, int32_t pipelineNum)
+	const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	constMapMaterial_->color = color;
 
@@ -698,7 +686,7 @@ void Object::DrawSphere(Camera* camera,
 }
 
 void Object::DrawModel(Model* model, Camera* camera,
-	const XMFLOAT4& color, int32_t pipelineNum)
+	const Vec4& color, int32_t pipelineNum)
 {
 	if (model == nullptr)
 	{
@@ -717,7 +705,7 @@ void Object::DrawModel(Model* model, Camera* camera,
 	Update(OBJ, pipelineNum, NULL, cbt_, camera, model);
 }
 
-void Object::DrawFBX(ModelFBX* modelFbx, Camera* camera, const XMFLOAT4& color, int32_t pipelineNum)
+void Object::DrawFBX(ModelFBX* modelFbx, Camera* camera, const Vec4& color, int32_t pipelineNum)
 {
 	constMapMaterial_->color = color;
 
@@ -730,15 +718,15 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 
 	if (indexNum == SPRITE)
 	{
-		rootPipe.CreateBlob(L"Resources/shaders/SpriteVS.hlsl", L"Resources/shaders/SpritePS.hlsl");
+		rootPipe.CreateBlob("Resources/shaders/SpriteVS.hlsl", "Resources/shaders/SpritePS.hlsl");
 	}
 	else if (indexNum == OBJ || indexNum == FBX)
 	{
-		rootPipe.CreateBlob(L"Resources/shaders/OBJVertexShader.hlsl", L"Resources/shaders/OBJPixelShader.hlsl");
+		rootPipe.CreateBlob("Resources/shaders/OBJVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl");
 	}
 	else
 	{
-		rootPipe.CreateBlob(L"Resources/shaders/BasicVS.hlsl", L"Resources/shaders/BasicPS.hlsl");
+		rootPipe.CreateBlob("Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl");
 	}
 
 	// シェーダーの設定
@@ -929,19 +917,6 @@ void Object::Blend(const D3D12_BLEND_OP& blendMode, bool Inversion, bool Translu
 	//ポストエフェクトの一枚目の二つ目用に
 	pipelineDesc_.BlendState.RenderTarget[1] = blendDesc;
 }
-
-void Object::constBuffTransfer(const XMFLOAT4& plusRGBA)
-{
-	if (constMapMaterial_->color.x <= 1.0f && constMapMaterial_->color.x >= 0.0f)
-		constMapMaterial_->color.x += plusRGBA.x;
-	if (constMapMaterial_->color.y <= 1.0f && constMapMaterial_->color.y >= 0.0f)
-		constMapMaterial_->color.y += plusRGBA.y;
-	if (constMapMaterial_->color.z <= 1.0f && constMapMaterial_->color.z >= 0.0f)
-		constMapMaterial_->color.z += plusRGBA.z;
-	if (constMapMaterial_->color.w <= 1.0f && constMapMaterial_->color.w >= 0.0f)
-		constMapMaterial_->color.w += plusRGBA.w;
-}
-
 
 
 void SetNormDigitalMat(XMMATRIX& mat)

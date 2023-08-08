@@ -280,19 +280,21 @@ public:
 	void SetIsNormalMap(bool isNormalMap) { effectFlags_.isNormalMap = isNormalMap; }
 	void SetNormalMapTexHandle(uint64_t normalMapTextureHandle) { normalMapTextureHandle_ = normalMapTextureHandle; }
 
-
+	//--------------------------------------------------------
 	//初期化
 	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr);
 
 	virtual void Update();
+
+	virtual void Draw();
+
 	//演出系のアップデート
 	void EffectUpdate();
 	//行列を更新、それに伴いコライダーも
 	void WorldMatColliderUpdate();
 
 	static void StaticUpdate();
-
-	virtual void Draw();
+	//--------------------------------------------------------
 
 	//ワールド行列の取得
 	const M4& GetMatWorld() { return worldMat_->matWorld_; }
@@ -320,43 +322,43 @@ public:
 	//-------------
 
 	void DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-		Camera* camera = nullptr, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },
+		Camera* camera = nullptr, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f },
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawBox(Camera* camera = nullptr, /*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,*/
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f },
+		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f },
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawBoxSprite(const Vec2& pos, float scale, const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }
+	void DrawBoxSprite(const Vec2& pos, float scale, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }
 		, uint64_t textureHandle = NULL, const Vec2& ancorUV = { 0,0 }, bool isReverseX = false, bool isReverseY = false,
 		float rotation = 0.0f, int32_t pipelineNum = 0);
 
 	void DrawClippingBoxSprite(const Vec2& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, bool isPosLeftTop = true,
+		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, bool isPosLeftTop = true,
 		bool isReverseX = false, bool isReverseY = false, float rotation = 0.0f, int32_t pipelineNum = 0);
 
 	void DrawCube3D(Camera* camera = nullptr,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */Camera* camera = nullptr, const XMFLOAT4& color
+	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */Camera* camera = nullptr, const Vec4& color
 		= { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL);
 
 	void DrawCircle(Camera* camera = nullptr,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawSphere(Camera* camera = nullptr,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawModel(Model* model, Camera* camera = nullptr,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
+		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
 
 	void DrawFBX(ModelFBX* modelFbx, Camera* camera = nullptr,
-		const XMFLOAT4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
+		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
 
 	virtual void DrawImGui() { ; }
 
 	//色を返す
-	const XMFLOAT4& GetColor() { return constMapMaterial_->color; }
+	const Vec4& GetColor() { return constMapMaterial_->color; }
 	/// <summary>
 	/// ライトのセット
 	/// </summary>
@@ -367,8 +369,6 @@ public:
 	//優先して最初の方に初期化
 	static void DrawInitialize();
 
-private:
-	void constBuffTransfer(const XMFLOAT4& plusRGBA);
 };
 void SetNormDigitalMat(DirectX::XMMATRIX& mat);
 

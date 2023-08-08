@@ -33,18 +33,14 @@ public:
 	void SpriteDraw();
 
 	void Update(const Vec2& pos,  float scale,
-		const XMFLOAT4& color, uint64_t textureHandle, const Vec2& ancorUV,
+		const Vec4& color, uint64_t textureHandle, const Vec2& ancorUV,
 		 bool isReverseX, bool isReverseY, float rotation,
 		ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
 
 	void UpdateClipping(const Vec2& leftTop,  float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-		const XMFLOAT4& color, uint64_t textureHandle, bool isPosLeftTop,
+		const Vec4& color, uint64_t textureHandle, bool isPosLeftTop,
 		 bool isReverseX, bool isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
 };
 
 //ã§í ÇÃèàóù
 void SpriteCommonBeginDraw(RootPipe* pipelineSet);
-
-
-
-//void SpriteCommonCreate(SpriteSet* spriteSet);

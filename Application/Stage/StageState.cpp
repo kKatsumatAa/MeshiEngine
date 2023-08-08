@@ -1,6 +1,7 @@
 #include "StageState.h"
 #include "StageManager.h"
 #include "MouseInput.h"
+#include "PlayerUI.h"
 
 
 //共通の処理
@@ -22,6 +23,9 @@ void StageState::Update()
 
 	//ゲームスピード
 	GameVelocityManager::GetInstance().Update();
+
+	//プレイヤーui
+	PlayerUI::GetInstance().Update();
 }
 
 //共通の処理
@@ -33,6 +37,10 @@ void StageState::Draw()
 	LevelManager::GetInstance().Draw();
 
 	ParticleManager::GetInstance()->Draw();
+}
+
+void StageState::DrawSprite()
+{
 }
 
 //共通の処理
@@ -99,6 +107,9 @@ void StageStateBegining::Draw()
 
 void StageStateBegining::DrawSprite()
 {
+	PlayerUI::GetInstance().DrawSprite();
+
+	StageState::DrawSprite();
 }
 
 
@@ -152,6 +163,10 @@ void StageStateBattle::Draw()
 
 void StageStateBattle::DrawSprite()
 {
+	StageState::DrawSprite();
+
+	PlayerUI::GetInstance().DrawSprite();
+
 	//チュートリアル
 	Tutorial::GetInstance().Draw();
 }
@@ -193,6 +208,7 @@ void StageStateDead::Draw()
 
 void StageStateDead::DrawSprite()
 {
+	StageState::DrawSprite();
 }
 
 
@@ -231,6 +247,8 @@ void StageStateClear::Draw()
 
 void StageStateClear::DrawSprite()
 {
+	StageState::DrawSprite();
+
 	//クリア演出
 	ClearEffect::GetInstance().Draw();
 }

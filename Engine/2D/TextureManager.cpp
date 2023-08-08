@@ -67,7 +67,7 @@ void TextureManager::InitializeDescriptorHeap()
 }
 
 
-uint64_t TextureManager::LoadGraph(const wchar_t* name, ID3D12Resource** texBuff,
+uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	D3D12_SHADER_RESOURCE_VIEW_DESC* srvDesc, D3D12_CPU_DESCRIPTOR_HANDLE* srvHandle)
 {
 	assert(sCount_ <= S_SRV_COUNT_ - 1);
@@ -82,10 +82,7 @@ uint64_t TextureManager::LoadGraph(const wchar_t* name, ID3D12Resource** texBuff
 	}
 
 	//“Ç‚Ýž‚Ü‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©
-	char namec[128] = {};
-	ConstWCharTToChar(name, namec);
-
-	std::string fileName = namec;
+	std::string fileName = name;
 
 	//Ši”[æ‚ªŽw’è‚³‚ê‚Ä‚È‚¯‚ê‚Îimage“à‚É‚ ‚é‚Ì‚Å
 	if (fileName.find("Resources") == std::string::npos)

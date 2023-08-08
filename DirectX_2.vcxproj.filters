@@ -435,6 +435,12 @@
     <ClCompile Include="Application\System\Tutorial\TutorialState.cpp">
       <Filter>ソース ファイル\Application\System\Tutorial</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Character\Player\PlayerUI.cpp">
+      <Filter>ソース ファイル\Application\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Character\Player\PlayerUIState.cpp">
+      <Filter>ソース ファイル\Application\Character\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -715,6 +721,12 @@
     </ClInclude>
     <ClInclude Include="Application\Stage\StageState.h">
       <Filter>ヘッダー ファイル\Application\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Character\Player\PlayerUI.h">
+      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Character\Player\PlayerUIState.h">
+      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

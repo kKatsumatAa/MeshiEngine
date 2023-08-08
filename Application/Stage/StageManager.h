@@ -10,6 +10,8 @@
 #include "TutorialState.h"
 #include "Tutorial.h"
 #include "ParticleManager.h"
+#include "PlayerUI.h"
+#include "PlayerUIState.h"
 
 
 class StageState;

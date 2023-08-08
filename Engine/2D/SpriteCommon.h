@@ -9,7 +9,7 @@
 
 struct ConstBufferDataMaterial
 {
-	DirectX::XMFLOAT4 color;//êF(RGBA)
+	Vec4 color;//êF(RGBA)
 };
 struct SpriteBuff
 {

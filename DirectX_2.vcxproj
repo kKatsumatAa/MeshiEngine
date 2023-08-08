@@ -107,6 +107,8 @@
     <ClCompile Include="Application\Character\Player\PlayerHand.cpp" />
     <ClCompile Include="Application\Character\Player\PlayerHandManager.cpp" />
     <ClCompile Include="Application\Character\Player\PlayerState.cpp" />
+    <ClCompile Include="Application\Character\Player\PlayerUI.cpp" />
+    <ClCompile Include="Application\Character\Player\PlayerUIState.cpp" />
     <ClCompile Include="Application\Effect\ClearEffect.cpp" />
     <ClCompile Include="Application\Effect\ClearEffectState.cpp" />
     <ClCompile Include="Application\Stage\LandShape.cpp" />
@@ -200,6 +202,8 @@
     <ClInclude Include="Application\Character\Player\PlayerHand.h" />
     <ClInclude Include="Application\Character\Player\PlayerHandManager.h" />
     <ClInclude Include="Application\Character\Player\PlayerState.h" />
+    <ClInclude Include="Application\Character\Player\PlayerUI.h" />
+    <ClInclude Include="Application\Character\Player\PlayerUIState.h" />
     <ClInclude Include="Application\Effect\ClearEffect.h" />
     <ClInclude Include="Application\Effect\ClearEffectState.h" />
     <ClInclude Include="Application\Stage\LandShape.h" />

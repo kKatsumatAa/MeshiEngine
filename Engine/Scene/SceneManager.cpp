@@ -54,23 +54,21 @@ void SceneManager::ChangeScene()
 
 void SceneManager::StopWaveAllScene()
 {
-	//Sound::GetInstance().StopWave("Stage_BGM.wav");
 }
 
 
 //---------------------------------------------------------------------------------------------------
 void SceneManager::Initialize()
 {
-	//Sound::GetInstance().LoadWave("Stage_BGM.wav", false);
 
 	{
 		//画像
-		debugTextHandle_ = TextureManager::LoadGraph(L"ascii.png");
+		debugTextHandle_ = TextureManager::LoadGraph("ascii.png");
 
 		//白い画像
-		TextureManager::GetInstance().sWhiteTexHandle_ = TextureManager::LoadGraph(L"white.png");
+		TextureManager::GetInstance().sWhiteTexHandle_ = TextureManager::LoadGraph("white.png");
 
-		texhandle_[1] = TextureManager::LoadGraph(L"effect1.png");
+		texhandle_[1] = TextureManager::LoadGraph("effect1.png");
 	}
 
 	//インスタンス生成

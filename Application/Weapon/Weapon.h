@@ -23,6 +23,9 @@ protected:
 	//投げられているか
 	bool isThrowing_ = false;
 
+	//クールタイム
+	float attackCoolTime_ = 0;
+
 public:
 	Weapon() { ; }
 	virtual ~Weapon() { ; }
@@ -61,6 +64,9 @@ public:
 
 	bool GetIsThrowing() { return isThrowing_; }
 	void SetIsThrowing(bool isThrowing) { isThrowing_ = isThrowing; }
+
+	//クールタイムの終わりまでの割合(0~1.0f)
+	virtual float GetAttackCoolTimeRatio() = 0;
 
 public:
 

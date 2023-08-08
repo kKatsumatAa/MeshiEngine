@@ -6,7 +6,7 @@ PostEffectManager& PostEffectManager::GetInstance()
 	return inst;
 }
 
-void PostEffectManager::Initialize(const wchar_t* normalTexHandle)
+void PostEffectManager::Initialize(const char* normalTexHandle)
 {
 	//ポストエフェクト
 	postPera_[0] = std::make_unique<PostPera>();

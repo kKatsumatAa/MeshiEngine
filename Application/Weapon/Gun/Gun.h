@@ -12,7 +12,6 @@ class Gun :
 private:
 	//攻撃のクールタイム
 	const float SHOT_COOL_TIME_MAX_ = 35;
-	float shotCoolTime_ = SHOT_COOL_TIME_MAX_;
 
 	const float BULLET_VELOCITY_ = 2.3f;
 
@@ -51,12 +50,16 @@ public:
 
 	//
 	int32_t GetBulletNum() { return remainingBullets_; }
+	//クールタイムの終わりまでの割合(0~1.0f)
+	float GetAttackCoolTimeRatio() override;
 
 public:
 
 	bool Initialize(std::unique_ptr<WorldMat> worldMat) override;
 
 	void Update() override;
+
+	void Draw() override;
 
 	void OnCollision(const CollisionInfo& info) override;
 };

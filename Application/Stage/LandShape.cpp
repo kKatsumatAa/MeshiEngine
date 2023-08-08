@@ -29,11 +29,11 @@ bool LandShape::Initialize(std::unique_ptr<WorldMat> worldMat, Model* model)
 	//ディゾルブの画像
 	SetisDissolve(true);
 	SetDissolveT(0);
-	SetDissolveTexHandle(TextureManager::GetInstance().LoadGraph(L"dissolveMask.png"));
+	SetDissolveTexHandle(TextureManager::GetInstance().LoadGraph("dissolveMask.png"));
 
 	//ノーマルマップ
 	SetIsNormalMap(true);
-	SetNormalMapTexHandle(TextureManager::GetInstance().LoadGraph(L"landShapeNormal.jpg"));
+	SetNormalMapTexHandle(TextureManager::GetInstance().LoadGraph("landShapeNormal.jpg"));
 
 	return true;
 }
@@ -45,4 +45,5 @@ void LandShape::Update()
 
 void LandShape::Draw()
 {
+	Object::DrawModel(nullptr);
 }

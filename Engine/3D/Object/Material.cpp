@@ -72,10 +72,7 @@ void Material::LoadTexture(const std::string& directoryPath, const CD3DX12_CPU_D
 		filepath = "white.png";
 	}
 
-	const char* NAME = filepath.c_str();
-	wchar_t wchar[128];
-	ConstCharToWcharT(NAME, wchar);
-	textureHandle_ = TextureManager::LoadGraph(wchar);
+	textureHandle_ = TextureManager::LoadGraph(filepath.c_str());
 }
 
 void Material::Update()

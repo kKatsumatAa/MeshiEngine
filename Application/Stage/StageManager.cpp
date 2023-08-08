@@ -32,6 +32,9 @@ void StageManager::Initialize()
 	//弾
 	BulletManager::GetInstance().Initialize();
 
+	//プレイヤーui
+	PlayerUI::GetInstance().Initialize();
+
 	//フラグ
 	isClear_ = false;
 	isGameOver_ = false;

@@ -1,6 +1,7 @@
 #include "DirectXWrapper.h"
 #include <thread>
 #include <d3dx12.h>
+#include "Util.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -456,16 +457,19 @@ void DirectXWrapper::ResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RE
 	commandList_->ResourceBarrier(1, &barrierDesc);
 }
 
-void LoadPictureFromFile(const wchar_t* fileName, ComPtr<ID3D12Resource>& texBuff)
+void LoadPictureFromFile(const char* fileName, ComPtr<ID3D12Resource>& texBuff)
 {
 	HRESULT result = {};
+
+	wchar_t fileNameL[128];
+	ConstCharToWcharT(fileName, fileNameL);
 
 	// 04_03
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 	//WICのテクスチャのロード
 	result = LoadFromWICFile(
-		fileName,
+		fileNameL,
 		WIC_FLAGS_NONE,
 		&metadata, scratchImg
 	);

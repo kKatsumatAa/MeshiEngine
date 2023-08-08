@@ -116,7 +116,7 @@ void TutorialStateNone::Draw()
 //基本操作説明
 void TutorialStateOperation::Initialize()
 {
-	texHandle_ = TextureManager::GetInstance().LoadGraph(L"tutorial1.png");
+	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial1.png");
 	rateMax_ = 100;
 }
 
@@ -143,7 +143,7 @@ void TutorialStateOperation::Draw()
 //ゲームスピード説明
 void TutorialStateGameSpeed::Initialize()
 {
-	texHandle_ = TextureManager::GetInstance().LoadGraph(L"tutorial2.png");
+	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial2.png");
 	rateMax_ = 60;
 }
 
@@ -165,7 +165,7 @@ void TutorialStateGameSpeed::Draw()
 //マウス説明
 void TutorialStateMouse::Initialize()
 {
-	texHandle_ = TextureManager::GetInstance().LoadGraph(L"tutorial3.png");
+	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial3.png");
 	rateMax_ = 100;
 }
 

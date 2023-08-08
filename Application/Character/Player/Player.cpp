@@ -228,16 +228,6 @@ void Player::Draw()
 		return;
 	}
 
-	XMFLOAT4 col = { 0.4f,0.4f,0.4f,1.0f };
-
-	if (isTarget_)
-	{
-		col = { 1.5f,1.5f,0,1.0f };
-	}
-
-	Object::DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f, WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },
-		0.05f, col, TextureManager::GetInstance().sWhiteTexHandle_, { 0.5f,0.5f });
-
 	//Žè‚Ì•`‰æ
 	handManager_->Draw();
 }

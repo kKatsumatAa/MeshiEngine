@@ -75,9 +75,9 @@ void Tutorial::LoadTutorialData(int32_t fileIndex)
 //-------------------------------------------------------------------------------------
 void Tutorial::Initialize()
 {
-	TextureManager::GetInstance().LoadGraph(L"tutorial1.png");
-	TextureManager::GetInstance().LoadGraph(L"tutorial2.png");
-	TextureManager::GetInstance().LoadGraph(L"tutorial3.png");
+	TextureManager::GetInstance().LoadGraph("tutorial1.png");
+	TextureManager::GetInstance().LoadGraph("tutorial2.png");
+	TextureManager::GetInstance().LoadGraph("tutorial3.png");
 
 	//一番目のステートに
 	ToNextState();
