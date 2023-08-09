@@ -13,6 +13,10 @@
 /// </summary>
 class Mesh
 {
+public:
+	//フレンドクラス
+	friend class FbxLoader;
+
 private: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;

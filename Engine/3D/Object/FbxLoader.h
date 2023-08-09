@@ -21,6 +21,9 @@ private://変数
 	//テクスチャがない場合の標準テクスチャファイル名
 	static const string S_DEFAULT_TEX_FILE_NAME_;
 
+	//スムージング処理するか
+	bool isSmoothing_ = false;
+
 public://定数
 	//モデル格納ルートパス
 	static const string S_BASE_DIRECTORY_;
@@ -54,12 +57,21 @@ public:
 	/// </summary>
 	void Finalize();
 
+public:
 	/// <summary>
 	/// ファイルからfbxモデル読み込み
 	/// </summary>
 	/// <param name="modelName"></param>
-	std::unique_ptr<ModelFBX> LoadModelFromFile(const string& modelName);
+	std::unique_ptr<ModelFBX> LoadModelFromFile(const string& modelName, bool smoothing = false);
 
+	/// <summary>
+/// FBXの行列をXMMATRIXに変更
+/// </summary>
+/// <param name="dst">書き込み先</param>
+/// <param name="src">元となるFBX行列</param>
+	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
+
+private:
 	/// <summary>
 	/// 再帰的にノード構成を解析
 	/// </summary>
@@ -75,30 +87,17 @@ public:
 	void ParseMesh(ModelFBX* model, FbxNode* fbxNode);
 
 	//頂点座標読み取り
-	void ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh);
+	void ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
 
 	//面情報読み取り
-	void ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh);
+	void ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
 
 	//メッシュの接線取得
-	void CalcMeshTangent(ModelFBX* model, FbxMesh* fbxMesh);
+	void CalcMeshTangent(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
 
 	//マテリアル読み取り
-	void ParseMaterial(ModelFBX* model, FbxNode* fbxNode);
-
-	//テクスチャ読み込み
-	void LoadTexture(ModelFBX* model, const std::string& fullpath);
-
-	//ディレクトリを含んだファイルパスからファイル名(***.pmg)を抽出する
-	std::string ExtractFileName(const std::string& path);
-
-	/// <summary>
-	/// FBXの行列をXMMATRIXに変更
-	/// </summary>
-	/// <param name="dst">書き込み先</param>
-	/// <param name="src">元となるFBX行列</param>
-	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
+	void ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode);
 
 	//スキニング情報の読み取り
-	void PerseSkin(ModelFBX* model, FbxMesh* fbxMesh);
+	void PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
 };

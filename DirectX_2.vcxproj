@@ -134,9 +134,10 @@
     <ClCompile Include="Engine\3D\Light\PointLight.cpp" />
     <ClCompile Include="Engine\3D\Light\SpotLight.cpp" />
     <ClCompile Include="Engine\3D\Object\FbxLoader.cpp" />
+    <ClCompile Include="Engine\3D\Object\IModel.cpp" />
     <ClCompile Include="Engine\3D\Object\Material.cpp" />
     <ClCompile Include="Engine\3D\Object\Mesh.cpp" />
-    <ClCompile Include="Engine\3D\Object\Model.cpp" />
+    <ClCompile Include="Engine\3D\Object\ModelObj.cpp" />
     <ClCompile Include="Engine\3D\Object\ModelFBX.cpp" />
     <ClCompile Include="Engine\3D\Object\ModelManager.cpp" />
     <ClCompile Include="Engine\3D\Object\Object.cpp" />
@@ -229,9 +230,10 @@
     <ClInclude Include="Engine\3D\Light\PointLight.h" />
     <ClInclude Include="Engine\3D\Light\SpotLight.h" />
     <ClInclude Include="Engine\3D\Object\FbxLoader.h" />
+    <ClInclude Include="Engine\3D\Object\IModel.h" />
     <ClInclude Include="Engine\3D\Object\Material.h" />
     <ClInclude Include="Engine\3D\Object\Mesh.h" />
-    <ClInclude Include="Engine\3D\Object\Model.h" />
+    <ClInclude Include="Engine\3D\Object\ModelObj.h" />
     <ClInclude Include="Engine\3D\Object\ModelFBX.h" />
     <ClInclude Include="Engine\3D\Object\ModelManager.h" />
     <ClInclude Include="Engine\3D\Object\Object.h" />

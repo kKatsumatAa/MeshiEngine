@@ -12,6 +12,10 @@
 /// </summary>
 class Material
 {
+public:
+	//フレンドクラス
+	friend class FbxLoader;
+
 private: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -81,7 +85,7 @@ public:
 	/// <param name="directoryPath">読み込みディレクトリパス</param>
 	/// <param name="cpuHandle">CPUデスクリプタハンドル</param>
 	/// <param name="gpuHandle">GPUデスクリプタハンドル</param>
-	void LoadTexture(const std::string& directoryPath, const CD3DX12_CPU_DESCRIPTOR_HANDLE& cpuHandle, const CD3DX12_GPU_DESCRIPTOR_HANDLE& gpuHandle);
+	void LoadTexture(const std::string& directoryPath);
 
 
 	/// <summary>
@@ -89,18 +93,9 @@ public:
 	/// </summary>
 	void Update();
 
-	const CD3DX12_CPU_DESCRIPTOR_HANDLE& GetCpuHandle() { return cpuDescHandleSRV_; }
-	const CD3DX12_GPU_DESCRIPTOR_HANDLE& GetGpuHandle();
-
 private:
-	// テクスチャバッファ
-	ComPtr<ID3D12Resource> texbuff_;
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuff_;
-	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV_;
-	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV_;
 
 private:
 	/// <summary>

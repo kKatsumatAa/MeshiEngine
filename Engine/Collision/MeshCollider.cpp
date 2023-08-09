@@ -3,7 +3,7 @@
 
 using namespace DirectX;
 
-void MeshCollider::ConstructTriangles(Model* model)
+void MeshCollider::ConstructTriangles(IModel* model)
 {
 	//三角形リストをクリア
 	triangles_.clear();

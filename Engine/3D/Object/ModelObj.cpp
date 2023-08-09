@@ -1,4 +1,4 @@
-#include "Model.h"
+#include "ModelObj.h"
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -6,20 +6,43 @@
 #include <d3dx12.h>
 #include <algorithm>
 
-
 using namespace DirectX;
 
-/// <summary>
-/// 静的メンバ変数の実体
-/// </summary>
-const std::string Model::S_BASE_DIRECTORY_ = "Resources/model/obj/";
-uint32_t Model::sDescriptorHandleIncrementSize_ = 0;
+
+//参照先のパス一部（objかfbxか）
+const std::string ModelObj::S_TYPE_DIRECTORY_ = "obj/";
 
 
-void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing/*, bool modelType*/)
+std::unique_ptr<ModelObj> ModelObj::LoadFromOBJ(const std::string& folderName, bool smoothing)
+{
+	//新たなModel型のインスタンスのメモリを確保
+	std::unique_ptr<ModelObj> model = std::make_unique<ModelObj>();
+	model->InitializeInternal(folderName, smoothing);
+
+	//所有権渡す
+	return std::move(model);
+}
+
+void ModelObj::InitializeInternal(const std::string& folderName, bool smoothing)
+{
+	//モデル読み込み
+	LoadFromOBJInternal(folderName, smoothing);
+
+	//継承した初期化関数
+	IModel::Initialize();
+}
+
+void ModelObj::LoadTextures()
+{
+	std::string directoryPathL = IModel::S_BASE_DIRECTORY_ + S_TYPE_DIRECTORY_ + name_ + "/";
+
+	IModel::LoadTexturesInternal(directoryPathL);
+}
+
+void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing)
 {
 	const std::string FILE_NAME = folderName + ".obj";
-	const std::string DIRECTORY_PATH = S_BASE_DIRECTORY_ + folderName + "/";
+	const std::string DIRECTORY_PATH = IModel::S_BASE_DIRECTORY_ + S_TYPE_DIRECTORY_ + folderName + "/";
 
 	// ファイルストリーム
 	std::ifstream file;
@@ -33,7 +56,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing/*,
 	name_ = folderName;
 
 	// メッシュ生成
-	meshes_.emplace_back(std::move(std::make_unique < Mesh>()));
+	meshes_.emplace_back(std::move(std::make_unique <Mesh>()));
 	//所有権をいったん与える
 	std::unique_ptr<Mesh> mesh = std::move(meshes_.back());
 	int32_t indexCount = 0;
@@ -219,7 +242,7 @@ void Model::LoadFromOBJInternal(const std::string& folderName, bool smoothing/*,
 	meshes_[meshes_.size() - 1] = std::move(mesh);
 }
 
-void Model::LoadMaterial(const std::string& directoryPath, const std::string& filename)
+void ModelObj::LoadMaterial(const std::string& directoryPath, const std::string& filename)
 {
 	// ファイルストリーム
 	std::ifstream file;
@@ -286,17 +309,11 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 			line_stream >> material->textureFilename_;
 
 			// フルパスからファイル名を取り出す
-			size_t pos1;
-			pos1 = material->textureFilename_.rfind('\\');
-			if (pos1 != std::string::npos) {
-				material->textureFilename_ = material->textureFilename_.substr(pos1 + 1, material->textureFilename_.size() - pos1 - 1);
-			}
+			//'\\'以外を取得
+			material->textureFilename_ = MySubstr(material->textureFilename_, '\\');
 
-			pos1 = material->textureFilename_.rfind('/');
-			if (pos1 != std::string::npos) {
-				material->textureFilename_ = material->textureFilename_.substr(pos1 + 1, material->textureFilename_.size() - pos1 - 1);
-			}
-
+			//'/'以外を取得
+			material->textureFilename_ = MySubstr(material->textureFilename_, '/');
 		}
 	}
 	// ファイルを閉じる
@@ -305,115 +322,5 @@ void Model::LoadMaterial(const std::string& directoryPath, const std::string& fi
 	if (material.get()) {
 		// マテリアルを登録（所有権を渡す）
 		AddMaterial(std::move(material));
-	}
-}
-
-void Model::AddMaterial(std::unique_ptr<Material> material)
-{
-	// コンテナに登録
-	materials_.emplace(material->name_, std::move(material));
-}
-
-void Model::LoadTextures()
-{
-	std::string directoryPath = S_BASE_DIRECTORY_ + name_ + "/";
-
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-
-	for (auto& m : materials_) {
-		Material* material = m.second.get();
-		srvGpuHandle.ptr = material->textureHandle_;
-
-		// テクスチャあり
-		if (material->textureFilename_.size() > 0) {
-			CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV; cpuDescHandleSRV.ptr = 0;
-			CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV; gpuDescHandleSRV.ptr = 0;
-			// マテリアルにテクスチャ読み込み
-			material->LoadTexture(directoryPath, cpuDescHandleSRV, gpuDescHandleSRV);
-		}
-		// テクスチャなし
-		else {
-			CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV; cpuDescHandleSRV.ptr = 0;
-			CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV; gpuDescHandleSRV.ptr = 0;
-			// マテリアルにテクスチャ読み込み
-			material->LoadTexture(S_BASE_DIRECTORY_, cpuDescHandleSRV, gpuDescHandleSRV);
-		}
-	}
-}
-
-
-std::unique_ptr<Model> Model::LoadFromOBJ(const std::string& folderName, bool smoothing, bool modelType)
-{
-	//新たなModel型のインスタンスのメモリを確保
-	std::unique_ptr<Model> model = std::make_unique<Model>();
-	model->Initialize(folderName, smoothing);
-
-	//所有権渡す
-	return std::move(model);
-}
-
-
-Model::~Model()
-{
-	meshes_.clear();
-	materials_.clear();
-}
-
-void Model::StaticInitialize()
-{
-	Mesh::StaticInitialize(DirectXWrapper::GetInstance().GetDevice());
-}
-
-void Model::Initialize(const std::string& foldername, bool smoothing)
-{
-	// モデル読み込み
-	LoadFromOBJInternal(foldername.c_str(), smoothing);
-
-	// メッシュのマテリアルチェック
-	for (auto& m : meshes_) {
-		// マテリアルの割り当てがない
-		if (m && m->GetMaterial() == nullptr) {
-			if (defaultMaterial_ == nullptr) {
-				// デフォルトマテリアルを生成
-				defaultMaterial_ = Material::Create();
-				defaultMaterial_->name_ = "no material";
-
-				// デフォルトマテリアルをセット(メッシュに渡すのはポインタのみ（所有権は渡さない）)
-				m->SetMaterial(defaultMaterial_.get());
-
-				//追加（所有権渡す）
-				materials_.emplace(defaultMaterial_->name_, std::move(defaultMaterial_));
-			}
-			//// デフォルトマテリアルをセット(メッシュに渡すのはポインタのみ（所有権は渡さない）)
-			//m->SetMaterial(defaultMaterial_.get());
-		}
-	}
-
-	// メッシュのバッファ生成
-	for (auto& m : meshes_) {
-		if (m) {
-			m->CreateBuffers();
-		}
-	}
-	// マテリアルの数値を定数バッファに反映
-	for (auto& m : materials_) {
-		m.second->Update();
-	}
-
-	// テクスチャの読み込み
-	LoadTextures();
-}
-
-void Model::Draw(uint32_t indexNum)
-{
-	// デスクリプタヒープの配列
-	if (TextureManager::GetInstance().sSrvHeap_) {
-		ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetInstance().sSrvHeap_.Get() };
-		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(indexNum, ppHeaps);
-	}
-
-	// 全メッシュを描画
-	for (auto& mesh : meshes_) {
-		mesh->Draw(DirectXWrapper::GetInstance().GetCommandList());
 	}
 }

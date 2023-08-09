@@ -31,7 +31,7 @@ void Framework::Initialize()
 	LightManager::StaticInitialize();
 
 	//model
-	Model::StaticInitialize();
+	IModel::StaticInitialize();
 
 	//ÉVÅ[Éì
 	sceneM_ = &SceneManager::GetInstance();

@@ -1,5 +1,5 @@
 #pragma once
-#include"Model.h"
+#include"ModelObj.h"
 
 
 /// <summary>

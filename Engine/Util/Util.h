@@ -74,6 +74,7 @@ void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, 
 //アライメントにそろえたサイズを返す
 int32_t AligmentSize(int32_t size, int32_t aligment);
 
+//-----------------------------------------------------------
 //文字変換系
 //char* を const wchar_t* に変換
 void ConstCharToWcharT(const char* string, wchar_t(&wString)[128]);
@@ -81,6 +82,13 @@ void ConstCharToWcharT(const char* string, wchar_t(&wString)[128]);
 //const wchar_t* を char* に変換
 void ConstWCharTToChar(const wchar_t* wString, char(&string)[128]);
 
+//文字列からfindChar以外を抜き取る(その文字から後ろのみ)
+std::string MySubstr(const std::string& str, char findChar);
+
+//ディレクトリを含んだファイルパスからファイル名(***.pmg)を抽出する
+std::string ExtractFileName(const std::string& path);
+
+//-------------------------------------------------------------
 //スムースステップ
 float SmoothStep(float Min, float Max, float V);
 

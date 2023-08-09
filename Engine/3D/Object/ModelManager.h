@@ -1,12 +1,12 @@
 #pragma once
-#include"Model.h"
+#include"ModelObj.h"
 #include"ModelFBX.h"
 
 class ModelManager final
 {
 private:
 	//モデル名とobj
-	std::map<std::string, std::unique_ptr<Model>>nameAndModels_;
+	std::map<std::string, std::unique_ptr<ModelObj>>nameAndModels_;
 	//モデル名とfbx
 	std::map<std::string, std::unique_ptr<ModelFBX>>nameAndModelFBXs_;
 
@@ -17,6 +17,11 @@ private:
 	ModelManager() { ; }
 	~ModelManager();
 
+private:
+
+	ModelObj* LoadModelObj(const std::string& fileName, bool smoothing = false);
+	ModelFBX* LoadModelFBX(const std::string& fileName, bool smoothing = false);
+
 public:
 	ModelManager& operator=(const ModelManager& inst) = delete;
 	ModelManager(const ModelManager& inst) = delete;
@@ -26,6 +31,6 @@ public:
 	//後始末
 	void Finalize();
 
-	Model* LoadModel(std::string fileName, bool smoothing = false, bool modelType = false);
-	ModelFBX* LoadModelFBX(std::string fileName);
+	//fbxでもobjでも読み込み（fbxの場合は "xxx.fbx"とする）
+	IModel* LoadModel(const std::string& fileName, bool smoothing = false);
 };

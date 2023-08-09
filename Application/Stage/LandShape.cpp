@@ -2,7 +2,7 @@
 #include "GameVelocityManager.h"
 
 
-std::unique_ptr<LandShape> LandShape::Create(std::unique_ptr<WorldMat> worldMat, Model* model)
+std::unique_ptr<LandShape> LandShape::Create(std::unique_ptr<WorldMat> worldMat, IModel* model)
 {
 	// オブジェクトのインスタンスを生成
 	std::unique_ptr<LandShape> instance = std::make_unique<LandShape>();
@@ -19,7 +19,7 @@ std::unique_ptr<LandShape> LandShape::Create(std::unique_ptr<WorldMat> worldMat,
 	return instance;
 }
 
-bool LandShape::Initialize(std::unique_ptr<WorldMat> worldMat, Model* model)
+bool LandShape::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 {
 	if (!TouchableObject::Initialize(std::move(worldMat), model))
 	{

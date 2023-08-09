@@ -64,7 +64,6 @@ void PlayerHand::Update()
 
 void PlayerHand::Draw()
 {
-	Object::Draw();
 	attackState_->Draw();
 
 	DrawCube3D();

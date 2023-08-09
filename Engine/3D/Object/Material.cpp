@@ -54,17 +54,8 @@ Material::~Material()
 
 }
 
-void Material::LoadTexture(const std::string& directoryPath, const CD3DX12_CPU_DESCRIPTOR_HANDLE& cpuHandle, const CD3DX12_GPU_DESCRIPTOR_HANDLE& gpuHandle)
+void Material::LoadTexture(const std::string& directoryPath)
 {
-	cpuDescHandleSRV_ = cpuHandle;
-	gpuDescHandleSRV_ = gpuHandle;
-
-	HRESULT result = S_FALSE;
-
-	// WICテクスチャのロード
-	TexMetadata metadata{};
-	ScratchImage scratchImg{};
-
 	// ファイルパスを結合
 	string filepath = directoryPath + textureFilename_;
 	// テクスチャなし
@@ -88,10 +79,4 @@ void Material::Update()
 		constMap->alpha = alpha_;
 		constBuff_->Unmap(0, nullptr);
 	}
-}
-
-const CD3DX12_GPU_DESCRIPTOR_HANDLE& Material::GetGpuHandle()
-{
-	gpuDescHandleSRV_.ptr = textureHandle_;
-	return gpuDescHandleSRV_;
 }

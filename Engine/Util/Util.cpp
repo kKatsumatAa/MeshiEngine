@@ -344,6 +344,41 @@ void ConstWCharTToChar(const wchar_t* wString, char(&string)[128])
 	wcstombs_s(&size, string, wString, size);
 }
 
+std::string MySubstr(const std::string& str, char findChar)
+{
+	// フルパスからファイル名を取り出す
+	size_t pos1;
+	//文字列の位置を取得し、見つかれば
+	pos1 = str.rfind(findChar);
+	if (pos1 != std::string::npos) {
+		//その位置の一つ後ろからその位置からのサイズ(-1)分取得？（余分な文字列を抜いてる）
+		return str.substr(pos1 + 1, str.size() - pos1 - 1);
+	}
+
+	return str;
+}
+
+std::string ExtractFileName(const std::string& path)
+{
+	//区切り文字が出てくる一番最後の一つ後ろからの文字列を返す（Resources'/'[***.png]みたいな）
+
+	size_t pos1;
+	//区切り文字 '\\'が出てくる一番最後の部分を検索
+	pos1 = path.rfind('\\');
+	if (pos1 != std::string::npos)
+	{
+		return path.substr(pos1 + 1, path.size() - pos1 - 1);
+	}
+	//区切り文字 '/'が出てくる一番最後の部分を検索
+	pos1 = path.rfind('/');
+	if (pos1 != std::string::npos)
+	{
+		return path.substr(pos1 + 1, path.size() - pos1 - 1);
+	}
+
+	return path;
+}
+
 float SmoothStep(float Min, float Max, float V)
 {
 	V = (V - Min) / (Max - Min);

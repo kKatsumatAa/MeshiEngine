@@ -9,7 +9,7 @@ class LevelManager final
 {
 private://変数
 	//Objectとモデルポインタのセット
-	std::map<std::unique_ptr<Object>, Model*> objAndModels_;
+	std::map<std::unique_ptr<Object>, IModel*> objAndModels_;
 
 	//地形オブジェクトとして使うか
 	bool isLandShape_ = false;
@@ -53,7 +53,7 @@ private://ゲームオリジナル
 	//コライダー系のセット
 	void SetCollider(Object* obj, const LevelData::ObjectData& objData, bool isSettingCollider);
 	//引数によってObjectかTouchObjectを作る
-	void CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, Model* model);
+	void CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model);
 
 public://ゲームオリジナル
 	//引数の判定属性のものをディゾルブ

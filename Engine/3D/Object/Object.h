@@ -15,7 +15,7 @@ class BaseCollider;
 /// <summary>
 /// 頂点インデックス用
 /// </summary>
-enum indices
+enum objType
 {
 	TRIANGLE,
 	BOX,
@@ -137,7 +137,7 @@ private:
 	Vec3 velocity_ = { 0,0,0 };
 
 	//モデルのポインタ
-	Model* model_ = nullptr;
+	IModel* model_ = nullptr;
 
 	//ディゾルブの画像ハンドル
 	uint64_t dissolveTextureHandle_ = NULL;
@@ -171,7 +171,7 @@ protected://継承先まで公開
 private:
 	//--------------------
 	void Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
-		Camera* camera, Model* model = nullptr, ModelFBX* fbx = nullptr, bool primitiveMode = true);
+		Camera* camera, IModel* model = nullptr, bool primitiveMode = true);
 
 	//行列送信
 	void SendingMat(int32_t indexNum, Camera* camera);
@@ -183,9 +183,13 @@ private:
 	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
 	//マテリアル、ライト、テクスチャ系のコマンド
 	void SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
-		uint64_t normalMapTex, ConstBuffTransform cbt);
-	void SetMaterialLightMTexSkinModel(uint64_t textureHandle, uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
-		uint64_t normalMapTexHandle, ConstBuffTransform cbt, Material* material);
+		uint64_t normalMapTex, ConstBuffTransform cbt, bool setTex = true);
+	void SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
+		uint64_t normalMapTexHandle, ConstBuffTransform cbt);
+
+	//アニメーション開始
+	void PlayAnimationInternal(FbxTime& sTime, FbxTime& eTime,
+		bool isLoop = false, bool isReverse = false);
 
 	//
 	static void PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum = NULL);
@@ -243,7 +247,7 @@ public:
 	BaseCollider* GetCollider() { return collider_.get(); }
 
 	//モデルのポインタ
-	void SetModel(Model* model) { model_ = model; }
+	void SetModel(IModel* model) { model_ = model; }
 
 	//生きてるか
 	inline void SetIsAlive(bool isAlive) { isAlive_ = isAlive; }
@@ -311,18 +315,15 @@ public:
 	virtual void OnCollision(const CollisionInfo& info) {}
 
 	//アニメーション開始
-	void PlayAnimationInternal(ModelFBX* model, FbxTime& sTime, FbxTime& eTime,
-		bool isLoop = false, bool isReverse = false);
-	void PlayAnimation(ModelFBX* model, bool isLoop = false);
-	void PlayReverseAnimation(ModelFBX* model, bool isLoop = false);
+	void PlayAnimation(bool isLoop = false);
+	void PlayReverseAnimation(bool isLoop = false);
 
 	//フォグとかのフラグ
 	void SetIsSilhouette(bool is) { effectFlags_.isSilhouette = is; }
 
 	//-------------
 
-	void DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-		Camera* camera = nullptr, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f },
+	void DrawTriangle(Camera* camera = nullptr, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f },
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawBox(Camera* camera = nullptr, /*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4,*/
@@ -340,7 +341,7 @@ public:
 	void DrawCube3D(Camera* camera = nullptr,
 		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawLine(/*const Vec3& pos1, const Vec3& pos2, */Camera* camera = nullptr, const Vec4& color
+	void DrawLine(Camera* camera = nullptr, const Vec4& color
 		= { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL);
 
 	void DrawCircle(Camera* camera = nullptr,
@@ -349,10 +350,7 @@ public:
 	void DrawSphere(Camera* camera = nullptr,
 		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawModel(Model* model, Camera* camera = nullptr,
-		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
-
-	void DrawFBX(ModelFBX* modelFbx, Camera* camera = nullptr,
+	void DrawModel(IModel* model, Camera* camera = nullptr,
 		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
 
 	virtual void DrawImGui() { ; }

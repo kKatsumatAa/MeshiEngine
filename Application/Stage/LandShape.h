@@ -14,9 +14,9 @@ private:
 
 
 public:
-	static std::unique_ptr<LandShape> Create(std::unique_ptr<WorldMat> worldMat, Model* model);
+	static std::unique_ptr<LandShape> Create(std::unique_ptr<WorldMat> worldMat, IModel* model);
 
-	bool Initialize(std::unique_ptr<WorldMat> worldMat, Model* model);
+	bool Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model);
 
 	void Update()override;
 

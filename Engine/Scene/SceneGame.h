@@ -1,7 +1,7 @@
 #pragma once
 #include"SceneState.h"
 #include"PostPera.h"
-#include"Model.h"
+#include"ModelObj.h"
 #include"Object.h"
 #include"Player.h"
 

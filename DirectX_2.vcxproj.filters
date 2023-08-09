@@ -228,7 +228,7 @@
     <ClCompile Include="Engine\3D\Object\Mesh.cpp">
       <Filter>ソース ファイル\Engine\3D\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\3D\Object\Model.cpp">
+    <ClCompile Include="Engine\3D\Object\ModelObj.cpp">
       <Filter>ソース ファイル\Engine\3D\Object</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Object\ModelFBX.cpp">
@@ -441,6 +441,9 @@
     <ClCompile Include="Application\Character\Player\PlayerUIState.cpp">
       <Filter>ソース ファイル\Application\Character\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\3D\Object\IModel.cpp">
+      <Filter>ソース ファイル\Engine\3D\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -494,7 +497,7 @@
     <ClInclude Include="Engine\3D\Object\Mesh.h">
       <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\3D\Object\Model.h">
+    <ClInclude Include="Engine\3D\Object\ModelObj.h">
       <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Object\ModelFBX.h">
@@ -727,6 +730,9 @@
     </ClInclude>
     <ClInclude Include="Application\Character\Player\PlayerUIState.h">
       <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Object\IModel.h">
+      <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

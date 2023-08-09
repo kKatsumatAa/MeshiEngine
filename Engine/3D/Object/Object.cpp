@@ -174,6 +174,7 @@ void Object::Update()
 
 void Object::Draw()
 {
+	DrawModel(nullptr);
 }
 
 void Object::EffectUpdate()
@@ -332,9 +333,17 @@ void Object::SendingMat(int32_t indexNum, Camera* camera)
 	}
 }
 
-void Object::PlayAnimationInternal(ModelFBX* model, FbxTime& sTime, FbxTime& eTime,
+void Object::PlayAnimationInternal(FbxTime& sTime, FbxTime& eTime,
 	bool isLoop, bool isReverse)
 {
+	if (model_ == nullptr || !model_->GetIsFbx())
+	{
+		return;
+	}
+
+	//子クラスに変換
+	ModelFBX* model = dynamic_cast<ModelFBX*>(model_);
+
 	//アニメーションが1つしかない前提
 
 	FbxScene* fbxScene = model->GetFbxScene();
@@ -362,14 +371,14 @@ void Object::PlayAnimationInternal(ModelFBX* model, FbxTime& sTime, FbxTime& eTi
 	isReverse_ = isReverse;
 }
 
-void Object::PlayAnimation(ModelFBX* model, bool isLoop)
+void Object::PlayAnimation(bool isLoop)
 {
-	PlayAnimationInternal(model, startTime_, endTime_, isLoop);
+	PlayAnimationInternal(startTime_, endTime_, isLoop);
 }
 
-void Object::PlayReverseAnimation(ModelFBX* model, bool isLoop)
+void Object::PlayReverseAnimation(bool isLoop)
 {
-	PlayAnimationInternal(model, endTime_, startTime_, isLoop, true);
+	PlayAnimationInternal(endTime_, startTime_, isLoop, true);
 }
 
 void Object::SendingBoneData(ModelFBX* model)
@@ -406,7 +415,6 @@ void Object::SendingBoneData(ModelFBX* model)
 		}
 	}
 
-
 	//モデルのボーン配列
 	std::vector<ModelFBX::Bone>& bones = model->GetBones();
 
@@ -423,8 +431,6 @@ void Object::SendingBoneData(ModelFBX* model)
 		//xmmatrixに変換
 		FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
-		////メッシュノードのグローバルトランスフォーム
-		//model->GetFbxScene()->GetNode()->GetMesh()
 
 		//初期姿勢の逆行列と今の姿勢行列を合成してスキニング行列に
 		constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
@@ -441,7 +447,7 @@ void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum
 }
 
 void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
-	uint64_t normalMapTex, ConstBuffTransform cbt)
+	uint64_t normalMapTex, ConstBuffTransform cbt, bool setTex)
 {
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 
@@ -450,11 +456,17 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveT
 	//テクスチャ
 		//SRVヒープの設定コマンド
 	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
+
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-	srvGpuHandle.ptr = textureHandle;
-	//(インスタンスで読み込んだテクスチャ用のSRVを指定)
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+
+	//モデル用に
+	if (setTex)
+	{
+		srvGpuHandle.ptr = textureHandle;
+		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+	}
 
 	//ディゾルブテクスチャ
 	srvGpuHandle.ptr = dissolveTex;
@@ -475,15 +487,13 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveT
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff_->GetGPUVirtualAddress());
 }
 
-void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle, uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
-	uint64_t normalMapTexHandle, ConstBuffTransform cbt, Material* material)
+void Object::SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
+	uint64_t normalMapTexHandle, ConstBuffTransform cbt)
 {
-	SetMaterialLightMTexSkin(textureHandle, dissolveTexHandle, specularMapTexhandle, normalMapTexHandle, cbt);
+	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	//アンビエントとか
-	material->Update();
-	ID3D12Resource* constBuff = material->GetConstantBuffer();
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(3, constBuff->GetGPUVirtualAddress());
+	SetMaterialLightMTexSkin(NULL, dissolveTexHandle, specularMapTexhandle, normalMapTexHandle, cbt
+		, false);
 
 	//スキニング用
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(6, constBuffSkin_->GetGPUVirtualAddress());
@@ -491,7 +501,7 @@ void Object::SetMaterialLightMTexSkinModel(uint64_t textureHandle, uint64_t diss
 }
 
 void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
-	Camera* camera, Model* model, ModelFBX* fbx, bool primitiveMode)
+	Camera* camera, IModel* model, bool primitiveMode)
 {
 	//行列送信
 	SendingMat(indexNum, camera);
@@ -510,6 +520,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 	std::function<void()>SetRootPipeR = [=]() {SetRootPipe(objPipeLineSet_->pipelineState.Get(), pipelineNum, objPipeLineSet_->rootSignature.Get()); };
 	std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkin(textureHandleL, dissolveTextureHandleL, specularMapTextureHandleL,
 		normalMapTextureHandleL, constBuffTransform); };
+
 
 	if (indexNum == TRIANGLE)
 	{
@@ -555,68 +566,31 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 
 		sprite_->SpriteDraw();
 	}
-	else if (indexNum == OBJ)
+	else if (indexNum == OBJ || indexNum == FBX)
 	{
-		// パイプラインステートとルートシグネチャの設定コマンド
-		SetRootPipe(pipelineSetM_.pipelineState.Get(), pipelineNum, pipelineSetM_.rootSignature.Get());
-
-		DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
-
-		sLightManager_->Draw(4);
-
-		//テクスチャ
-	//SRVヒープの設定コマンド
-		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
-
-		//ディゾルブテクスチャ
-		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-		srvGpuHandle.ptr = dissolveTextureHandleL;
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(7, srvGpuHandle);
-
-		//スペキュラマップテクスチャ
-		srvGpuHandle.ptr = specularMapTextureHandleL;
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(8, srvGpuHandle);
-
-		//ノーマルマップテクスチャ
-		srvGpuHandle.ptr = normalMapTextureHandleL;
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(9, srvGpuHandle);
-
-		//定数バッファビュー(CBV)の設定コマンド
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform_->GetGPUVirtualAddress());
-		//エフェクトフラグ用
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff_->GetGPUVirtualAddress());
-
-		//スキニング用
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(6, constBuffSkin_->GetGPUVirtualAddress());
-
-		//モデル用描画
-		model->Draw();
-	}
-	else if (indexNum == FBX)
-	{
-		SendingBoneData(fbx);
-
+		//モデル用
 		//ラムダ式でコマンド関数
-		std::function<void()>SetRootPipeR = [=]() {SetRootPipe(pipelineSetFBX_.pipelineState.Get(), 0, pipelineSetFBX_.rootSignature.Get()); };
-		std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTexSkinModel(fbx->material_->textureHandle_, dissolveTextureHandleL, specularMapTextureHandleL,
-			normalMapTextureHandleL, constBuffTransform, fbx->material_.get()); };
+		std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(pipelineSetFBX_.pipelineState.Get(), pipelineNum, pipelineSetFBX_.rootSignature.Get()); };
+		std::function<void()>SetMaterialTexM = [=]() {SetMaterialLightMTexSkinModel(dissolveTextureHandleL, specularMapTextureHandleL,
+			normalMapTextureHandleL, constBuffTransform); };
 
-		fbx->Draw(SetRootPipeR, SetMaterialTex);
+		if (indexNum == FBX)
+		{
+			SendingBoneData(dynamic_cast<ModelFBX*>(model));
+		}
+		model->Draw(SetRootPipeRM, SetMaterialTexM);
 	}
+
 }
 
-void Object::DrawTriangle(/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3,*/
-	Camera* camera, const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
+void Object::DrawTriangle(Camera* camera, const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	constMapMaterial_->color = color;
 
 	Update(TRIANGLE, pipelineNum, textureHandle, cbt_, camera);
 }
 
-void Object::DrawBox(Camera* camera,/*XMFLOAT3& pos1, XMFLOAT3& pos2, XMFLOAT3& pos3, XMFLOAT3& pos4, */
-	const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
+void Object::DrawBox(Camera* camera, const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	constMapMaterial_->color = color;
 
@@ -661,12 +635,12 @@ void Object::DrawCube3D(Camera* camera, const Vec4& color, uint64_t textureHandl
 	Update(CUBE, pipelineNum, textureHandle, cbt_, camera);
 }
 
-void Object::DrawLine(/*const Vec3& pos1, const Vec3& pos2,*/  Camera* camera, const Vec4& color,
+void Object::DrawLine(Camera* camera, const Vec4& color,
 	uint64_t textureHandle)
 {
 	constMapMaterial_->color = color;
 
-	Update(LINE, 2, textureHandle, cbt_, camera, nullptr, nullptr, false);
+	Update(LINE, 2, textureHandle, cbt_, camera, nullptr, false);
 }
 
 void Object::DrawCircle(Camera* camera,
@@ -685,7 +659,7 @@ void Object::DrawSphere(Camera* camera,
 	Update(SPHERE, pipelineNum, textureHandle, cbt_, camera);
 }
 
-void Object::DrawModel(Model* model, Camera* camera,
+void Object::DrawModel(IModel* model, Camera* camera,
 	const Vec4& color, int32_t pipelineNum)
 {
 	if (model == nullptr)
@@ -696,20 +670,19 @@ void Object::DrawModel(Model* model, Camera* camera,
 		}
 		else
 		{
-			assert(true);
+			assert(false);
 		}
 	}
 
 	constMapMaterial_->color = color;
 
-	Update(OBJ, pipelineNum, NULL, cbt_, camera, model);
-}
+	objType type = OBJ;
+	if (model->GetIsFbx())
+	{
+		type = FBX;
+	}
 
-void Object::DrawFBX(ModelFBX* modelFbx, Camera* camera, const Vec4& color, int32_t pipelineNum)
-{
-	constMapMaterial_->color = color;
-
-	Update(FBX, pipelineNum, NULL, cbt_, camera, nullptr, modelFbx);
+	Update(type, pipelineNum, NULL, cbt_, camera, model);
 }
 
 void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum)

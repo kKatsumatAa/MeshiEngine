@@ -44,8 +44,11 @@ void FbxLoader::Finalize()
 	fbxManager_->Destroy();
 }
 
-std::unique_ptr<ModelFBX> FbxLoader::LoadModelFromFile(const string& modelName)
+std::unique_ptr<ModelFBX> FbxLoader::LoadModelFromFile(const string& modelName, bool smoothing)
 {
+	//スムージングするかどうか
+	isSmoothing_ = smoothing;
+
 	//モデルと同じ名前のフォルダから読み込む
 	const string DIRECTORY_PATH = S_BASE_DIRECTORY_ + modelName + "/";
 	//拡張子.fbxを付加
@@ -77,8 +80,8 @@ std::unique_ptr<ModelFBX> FbxLoader::LoadModelFromFile(const string& modelName)
 	//fbxシーンをモデルに持たせて、モデルごとに解放
 	model->fbxScene_ = fbxScene;
 
-	//バッファ生成
-	model->CreateBuffers();
+	//初期化
+	model->Initialize();
 
 	//所有権渡す
 	return std::move(model);
@@ -154,29 +157,44 @@ void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode)
 	//ノードのメッシュを取得
 	FbxMesh* fbxMesh = fbxNode->GetMesh();
 
+	//メッシュ配列に追加
+	model->meshes_.emplace_back(std::move(std::make_unique <Mesh>()));
+	//所有権をいったん与える
+	std::unique_ptr<Mesh> mesh = std::move(model->meshes_.back());
+
+
 	//頂点座標読み取り
-	ParseMeshVertices(model, fbxMesh);
+	ParseMeshVertices(model, fbxMesh, mesh.get());
 	//面を構成するデータの読み取り
-	ParseMeshFaces(model, fbxMesh);
+	ParseMeshFaces(model, fbxMesh, mesh.get());
 	//マテリアルの読み取り
-	ParseMaterial(model, fbxNode);
+	ParseMaterial(model, mesh.get(), fbxNode);
 	//スキニング情報の読み取り
-	PerseSkin(model, fbxMesh);
+	PerseSkin(model, fbxMesh, mesh.get());
 
 	//メッシュの接線
-	CalcMeshTangent(model, fbxMesh);
+	mesh->CalculateTangent();
+
+	// 頂点法線の平均によるエッジの平滑化
+	if (isSmoothing_) {
+		mesh->CalculateSmoothedVertexNormals();
+	}
+
+	//所有権戻す
+	model->meshes_[model->meshes_.size() - 1] = std::move(mesh);
 }
 
-void FbxLoader::ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh)
+void FbxLoader::ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 {
-	std::vector<ModelFBX::VertexPosNormalUvSkin>& vertices = model->vertices_;
+	std::vector<Mesh::VertexPosNormalUvSkin>& vertices = mesh->vertices_;
 
 	//頂点座標データの数(コントロールポイントとは、1つ分の頂点データのこと)
 	const int32_t CONTROL_POINTS_COUNT =
 		fbxMesh->GetControlPointsCount();
+
 	//必要数だけ頂点データ配列を確保
-	ModelFBX::VertexPosNormalUvSkin vert{};
-	model->vertices_.resize(CONTROL_POINTS_COUNT, vert);
+	Mesh::VertexPosNormalUvSkin vert{};
+	vertices.resize(CONTROL_POINTS_COUNT, vert);
 
 	//FBXメッシュの頂点座標配列を取得
 	FbxVector4* coord = fbxMesh->GetControlPoints();
@@ -184,22 +202,20 @@ void FbxLoader::ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh)
 	//fbxメッシュの全頂点座標をモデル内の配列にコピーする
 	for (int32_t i = 0; i < CONTROL_POINTS_COUNT; i++)
 	{
-		ModelFBX::VertexPosNormalUvSkin& vertex = vertices[i];
+		Mesh::VertexPosNormalUvSkin& vertex = vertices[i];
 		//座標のコピー
 		vertex.pos.x = (float)coord[i][0];
 		vertex.pos.y = (float)coord[i][1];
 		vertex.pos.z = (float)coord[i][2];
 	}
-
 }
 
-void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh)
+void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 {
-	std::vector<ModelFBX::VertexPosNormalUvSkin>& vertices = model->vertices_;
-	std::vector<uint16_t>& indices = model->indices_;
+	//参照渡し
+	std::vector<Mesh::VertexPosNormalUvSkin>& vertices = mesh->vertices_;
+	std::vector<uint16_t>& indices = mesh->indices_;
 
-	//1ファイルに複数メッシュのモデルは非対応
-	assert(indices.size() == 0);
 	//面の数
 	const int32_t POLYGON_COUNT = fbxMesh->GetPolygonCount();
 	//uvデータの数
@@ -223,7 +239,7 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh)
 			assert(index >= 0);
 
 			//頂点法線読み込み
-			ModelFBX::VertexPosNormalUvSkin& vertex = vertices[index];
+			Mesh::VertexPosNormalUvSkin& vertex = vertices[index];
 			FbxVector4 normal;
 			//取得できれば
 			if (fbxMesh->GetPolygonVertexNormal(i, j, normal))
@@ -269,15 +285,12 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh)
 	}
 }
 
-void FbxLoader::CalcMeshTangent(ModelFBX* model, FbxMesh* fbxMesh)
+void FbxLoader::CalcMeshTangent(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 {
 	//面の数
 	const int32_t POLYGON_COUNT = fbxMesh->GetPolygonCount();
 	//uvデータの数
 	const int32_t TEXTURE_UV_COUNT = fbxMesh->GetTextureUVCount();
-	//UV名リスト
-	FbxStringList uvNames;
-	fbxMesh->GetUVSetNames(uvNames);
 
 	//面ごとの情報読み取り
 	for (int32_t i = 0; i < POLYGON_COUNT; i++)
@@ -295,14 +308,14 @@ void FbxLoader::CalcMeshTangent(ModelFBX* model, FbxMesh* fbxMesh)
 
 
 			// Shortcuts for vertices
-			XMFLOAT3& v0 = model->vertices_[index0].pos;
-			XMFLOAT3& v1 = model->vertices_[index1].pos;
-			XMFLOAT3& v2 = model->vertices_[index2].pos;
+			XMFLOAT3& v0 = mesh->vertices_[index0].pos;
+			XMFLOAT3& v1 = mesh->vertices_[index1].pos;
+			XMFLOAT3& v2 = mesh->vertices_[index2].pos;
 
 			// Shortcuts for UVs
-			XMFLOAT2& uv0 = model->vertices_[index0].uv;
-			XMFLOAT2& uv1 = model->vertices_[index1].uv;
-			XMFLOAT2& uv2 = model->vertices_[index2].uv;
+			XMFLOAT2& uv0 = mesh->vertices_[index0].uv;
+			XMFLOAT2& uv1 = mesh->vertices_[index1].uv;
+			XMFLOAT2& uv2 = mesh->vertices_[index2].uv;
 
 			// Edges of the triangle : postion delta
 			XMFLOAT3 deltaPos1 = v1 - v0;
@@ -318,30 +331,31 @@ void FbxLoader::CalcMeshTangent(ModelFBX* model, FbxMesh* fbxMesh)
 			Vec3 tanN = { tangent.x,tangent.y,tangent.z };
 			tanN.Normalized();
 
-			Vec3 tan0 = { model->vertices_[index0].tangent.x,model->vertices_[index0].tangent.y,model->vertices_[index0].tangent.z };
-			Vec3 tan1 = { model->vertices_[index1].tangent.x,model->vertices_[index1].tangent.y,model->vertices_[index1].tangent.z };
-			Vec3 tan2 = { model->vertices_[index2].tangent.x,model->vertices_[index2].tangent.y,model->vertices_[index2].tangent.z };
+			Vec3 tan0 = { mesh->vertices_[index0].tangent.x,mesh->vertices_[index0].tangent.y,mesh->vertices_[index0].tangent.z };
+			Vec3 tan1 = { mesh->vertices_[index1].tangent.x,mesh->vertices_[index1].tangent.y,mesh->vertices_[index1].tangent.z };
+			Vec3 tan2 = { mesh->vertices_[index2].tangent.x,mesh->vertices_[index2].tangent.y,mesh->vertices_[index2].tangent.z };
 
 			tan0.Normalized();
 			tan1.Normalized();
 			tan2.Normalized();
 
-			model->vertices_[index0].tangent = XMFLOAT4(tan0.x_, tan0.y_, tan0.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
-			model->vertices_[index1].tangent = XMFLOAT4(tan1.x_, tan1.y_, tan1.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
-			model->vertices_[index2].tangent = XMFLOAT4(tan2.x_, tan2.y_, tan2.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
+			mesh->vertices_[index0].tangent = XMFLOAT4(tan0.x_, tan0.y_, tan0.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
+			mesh->vertices_[index1].tangent = XMFLOAT4(tan1.x_, tan1.y_, tan1.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
+			mesh->vertices_[index2].tangent = XMFLOAT4(tan2.x_, tan2.y_, tan2.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
 		}
 	}
 }
 
-void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
+void FbxLoader::ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode)
 {
 	const int32_t MATERIAL_COUNT = fbxNode->GetMaterialCount();
 	if (MATERIAL_COUNT > 0)
 	{
 		//先頭のマテリアルを取得
 		FbxSurfaceMaterial* material = fbxNode->GetMaterial(0);
-		//テクスチャを読み込んたかどうかを表すフラグ
-		bool textureLoaded = false;
+
+		//モデル用マテリアル作成
+		std::unique_ptr<Material> materialM = Material::Create();
 
 		if (material)
 		{
@@ -350,27 +364,23 @@ void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
 			{
 				FbxSurfaceLambert* lambert = static_cast<FbxSurfaceLambert*>(material);
 
-				if (model->material_ == nullptr)
-				{
-					model->material_ = Material::Create();
-				}
 				//環境光係数
 				FbxPropertyT<FbxDouble3> ambient = lambert->Ambient;
-				model->material_->ambient_.x = (float)ambient.Get()[0];
-				model->material_->ambient_.y = (float)ambient.Get()[1];
-				model->material_->ambient_.z = (float)ambient.Get()[2];
+				materialM->ambient_.x = (float)ambient.Get()[0];
+				materialM->ambient_.y = (float)ambient.Get()[1];
+				materialM->ambient_.z = (float)ambient.Get()[2];
 
 				//拡散反射光係数
 				FbxPropertyT<FbxDouble3> diffuse = lambert->Diffuse;
-				model->material_->diffuse_.x = (float)diffuse.Get()[0];
-				model->material_->diffuse_.y = (float)diffuse.Get()[1];
-				model->material_->diffuse_.z = (float)diffuse.Get()[2];
+				materialM->diffuse_.x = (float)diffuse.Get()[0];
+				materialM->diffuse_.y = (float)diffuse.Get()[1];
+				materialM->diffuse_.z = (float)diffuse.Get()[2];
 
 				//alpha
-				model->material_->alpha_ = 1.0f;
+				materialM->alpha_ = 1.0f;
 
 				//specular
-				model->material_->specular_ = XMFLOAT3{ 0.1f,0.1f,0.1f };
+				materialM->specular_ = XMFLOAT3{ 0.1f,0.1f,0.1f };
 			}
 
 			//ディフューズテクスチャを取り出す
@@ -386,44 +396,24 @@ void FbxLoader::ParseMaterial(ModelFBX* model, FbxNode* fbxNode)
 					//ファイルパスからファイル名抽出
 					string path_str(FILE_PATH);
 					string name = ExtractFileName(path_str);
-					//texture読み込み
-					LoadTexture(model, S_BASE_DIRECTORY_ + model->name_ + "/" + name);
-					textureLoaded = true;
+
+					//画像名保存(モデルの方でフルパスにしてくれる)
+					materialM->textureFilename_ = name;
 				}
 			}
+			//テクスチャがない場合は白テクスチャを貼る
+			else
+			{
+				materialM->textureFilename_ = S_DEFAULT_TEX_FILE_NAME_;
+			}
 		}
-		//テクスチャがない場合は白テクスチャを貼る
-		if (!textureLoaded)
-		{
-			LoadTexture(model, S_DEFAULT_TEX_FILE_NAME_);
-		}
+
+		//メッシュにマテリアルセット
+		mesh->SetMaterial(materialM.get());
+
+		//マテリアル配列に追加
+		model->AddMaterial(std::move(materialM));
 	}
-}
-
-void FbxLoader::LoadTexture(ModelFBX* model, const std::string& fullpath)
-{
-	model->material_->textureHandle_ = TextureManager::GetInstance().LoadGraph(fullpath.c_str());
-}
-
-std::string FbxLoader::ExtractFileName(const std::string& path)
-{
-	//区切り文字が出てくる一番最後の一つ後ろからの文字列を返す（Resources'/'[***.png]みたいな）
-
-	size_t pos1;
-	//区切り文字 '\\'が出てくる一番最後の部分を検索
-	pos1 = path.rfind('\\');
-	if (pos1 != string::npos)
-	{
-		return path.substr(pos1 + 1, path.size() - pos1 - 1);
-	}
-	//区切り文字 '/'が出てくる一番最後の部分を検索
-	pos1 = path.rfind('/');
-	if (pos1 != string::npos)
-	{
-		return path.substr(pos1 + 1, path.size() - pos1 - 1);
-	}
-
-	return path;
 }
 
 void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src)
@@ -440,7 +430,7 @@ void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& s
 	}
 }
 
-void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
+void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 {
 	//(今は１スキンのみの前提で実装)
 
@@ -452,11 +442,11 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 	if (fbxSkin == nullptr)
 	{
 		//各頂点について処理
-		for (int32_t i = 0; i < model->vertices_.size(); i++)
+		for (int32_t i = 0; i < mesh->vertices_.size(); i++)
 		{
 			//最初のボーン(ないが、単位行列が入ってる)のみ影響100%にする
-			model->vertices_[i].boneIndex[0] = 0;
-			model->vertices_[i].boneWeight[0] = 1.0f;
+			mesh->vertices_[i].boneIndex[0] = 0;
+			mesh->vertices_[i].boneWeight[0] = 1.0f;
 		}
 
 		return;
@@ -506,7 +496,7 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 	//二次元配列（ジャグ配列）
 	//list  :頂点が影響を受けるボーンの全リスト
 	//vector:それを全頂点分
-	std::vector<std::list<WeightSet>> weightLists(model->vertices_.size());
+	std::vector<std::list<WeightSet>> weightLists(mesh->vertices_.size());
 
 	//全てのボーンについて
 	for (int32_t i = 0; i < clusterCount; i++)
@@ -532,7 +522,7 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 	}
 
 	//頂点配列書き換え用の参照
-	auto& vertices = model->vertices_;
+	auto& vertices = mesh->vertices_;
 	//各頂点について処理
 	for (int32_t i = 0; i < vertices.size(); i++)
 	{
@@ -555,11 +545,11 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 			vertices[i].boneIndex[weightArrayIndex] = weightSet.index;
 			vertices[i].boneWeight[weightArrayIndex] = weightSet.weight;
 			//4つに達したら終了
-			if (++weightArrayIndex >= ModelFBX::S_MAX_BONE_INDICES_)
+			if (++weightArrayIndex >= Mesh::S_MAX_BONE_INDICES_)
 			{
 				float weight = 0.0f;
 				//2番目以降のウェイトを合計
-				for (int32_t j = 1; j < ModelFBX::S_MAX_BONE_INDICES_; j++)
+				for (int32_t j = 1; j < Mesh::S_MAX_BONE_INDICES_; j++)
 				{
 					weight += vertices[i].boneWeight[j];
 				}

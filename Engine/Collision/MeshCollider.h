@@ -21,7 +21,7 @@ public:
 	/// <summary>
 	/// 三角形の配列を構築する
 	/// </summary>
-	void ConstructTriangles(Model* model);
+	void ConstructTriangles(IModel* model);
 
 	/// <summary>
 	/// 更新

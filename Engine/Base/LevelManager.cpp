@@ -67,7 +67,7 @@ Weapon* LevelManager::GetChildWeapon(LevelData::ObjectData& objData)
 	}
 
 	//ファイル名から登録済みモデルを検索
-	Model* model = ModelManager::GetInstance().LoadModel(objData.childData->fileName);
+	IModel* model = ModelManager::GetInstance().LoadModel(objData.childData->fileName);
 
 	//モデルを指定して3Dオブジェクトを生成
 	std::unique_ptr <Weapon> newObj = {};
@@ -149,7 +149,7 @@ void LevelManager::SetCollider(Object* obj, const LevelData::ObjectData& objData
 	}
 }
 
-void LevelManager::CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, Model* model)
+void LevelManager::CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model)
 {
 	//地形オブジェクトとして使うのなら
 	if (isLandShape_)
@@ -168,7 +168,7 @@ bool LevelManager::GetGameOver()
 {
 	Player* p = nullptr;
 
-	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
 
@@ -184,7 +184,7 @@ bool LevelManager::GetGameClear()
 {
 	int count = 0;
 
-	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
 
@@ -198,7 +198,7 @@ bool LevelManager::GetGameClear()
 
 void LevelManager::SetObjectIsDissolve(bool isDissolve, uint16_t attribute)
 {
-	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
 
@@ -211,11 +211,11 @@ void LevelManager::SetObjectIsDissolve(bool isDissolve, uint16_t attribute)
 
 void LevelManager::SetIsDissolveT(float dissolveT, uint16_t attribute)
 {
-	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
 
-		if (obj->GetCollider()->GetAttribute() == attribute)
+		if (obj->GetCollider() && obj->GetCollider()->GetAttribute() == attribute)
 		{
 			obj->SetDissolveT(dissolveT);
 		}
@@ -232,7 +232,7 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	}
 
 	//ファイル名から登録済みモデルを検索
-	Model* model = ModelManager::GetInstance().LoadModel(objData.fileName);
+	IModel* model = ModelManager::GetInstance().LoadModel(objData.fileName);
 	//モデルを指定して3Dオブジェクトを生成
 	std::unique_ptr <Object> newObj = {};
 
@@ -261,6 +261,11 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	{
 		newObj = LandShape::Create(std::move(objData.worldMat), model);
 	}
+	//ただのオブジェクト(仮)
+	else
+	{
+		newObj = std::make_unique<Object>();
+	}
 
 	//名前
 	newObj->SetObjName(objData.fileName);
@@ -278,6 +283,8 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	//モデルセット
 	newObj->SetModel(model);
 
+	newObj->PlayAnimation(true);
+
 	//セットで登録
 	objAndModels_.insert(std::make_pair(std::move(newObj), model));
 }
@@ -285,7 +292,7 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 void LevelManager::Update()
 {
 	//.Objを更新
-	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
 
@@ -293,7 +300,7 @@ void LevelManager::Update()
 	}
 
 	//.Objを更新
-	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
 
@@ -301,7 +308,7 @@ void LevelManager::Update()
 	}
 
 	//コライダーで生きてるフラグオフになったら消す
-	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
 
@@ -316,7 +323,7 @@ void LevelManager::Update()
 void LevelManager::Draw(Camera* camera)
 {
 	//描画
-	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
 
@@ -326,7 +333,7 @@ void LevelManager::Draw(Camera* camera)
 
 void LevelManager::DrawImGui()
 {
-	for (std::map<std::unique_ptr<Object>, Model*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
+	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
 	{
 		Object* obj = it->first.get();
 

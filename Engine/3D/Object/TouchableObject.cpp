@@ -5,7 +5,7 @@
 
 
 std::unique_ptr<TouchableObject> TouchableObject::Create(
-	std::unique_ptr<WorldMat>worldMat, Model * model)
+	std::unique_ptr<WorldMat>worldMat, IModel * model)
 {
 	// オブジェクトのインスタンスを生成
 	std::unique_ptr<TouchableObject> instance = std::make_unique<TouchableObject>();
@@ -22,7 +22,7 @@ std::unique_ptr<TouchableObject> TouchableObject::Create(
 	return instance;
 }
 
-bool TouchableObject::Initialize(std::unique_ptr<WorldMat>worldMat, Model * model)
+bool TouchableObject::Initialize(std::unique_ptr<WorldMat>worldMat, IModel* model)
 {
 	if (!Object::Initialize(std::move(worldMat)))
 	{
