@@ -87,10 +87,6 @@ void WorldMat::CulcQuaternionRotMat()
 
 		matWorld_ *= matRot_;
 	}
-
-	//çáê¨
-	//qZ = qZ * qY * qX;
-	//matWorld_ *= qZ.MakeRotateMatrix();
 }
 
 void WorldMat::CulcTransMat()

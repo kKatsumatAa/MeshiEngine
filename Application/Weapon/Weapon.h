@@ -72,7 +72,7 @@ public:
 
 	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat) override = 0;
 
-	virtual void Update() override = 0;
+	virtual void Update();
 
 	virtual void OnCollision(const CollisionInfo& info) override = 0;
 };

@@ -188,6 +188,8 @@ private:
 	//アニメーション開始
 	void PlayAnimationInternal(FbxTime& sTime, FbxTime& eTime,
 		bool isLoop = false, bool isReverse = false);
+	//アニメーションリセット
+	void AnimationReset(FbxTime& sTime, FbxTime& eTime);
 
 	//
 	static void PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum = NULL);
@@ -352,7 +354,7 @@ public:
 		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
 
 	//デバッグ用の表示
-	virtual void DrawImGui();
+	virtual void DrawImGui(std::function<void()>imguiF = NULL);
 
 	//色を返す
 	const Vec4& GetColor() { return constMapMaterial_->color; }

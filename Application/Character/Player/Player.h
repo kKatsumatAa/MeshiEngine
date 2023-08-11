@@ -91,8 +91,6 @@ public:
 
 	void Draw() override;
 
-	void DrawImGui() override;
-
 	void ChangePlayerState(std::unique_ptr<PlayerState> state);
 
 	void OnCollision(const CollisionInfo& info) override;

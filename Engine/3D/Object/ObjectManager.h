@@ -26,9 +26,10 @@ public:
 	void Update();
 	void Draw();
 	void DrawImGui();
+	void PostUpdate();
 
 public:
-	//デバッグ用アップデート
+	//デバッグ用アップデート(コライダーがないとクリックしても反応しない)
 	void DebugUpdate();
 
 private:
@@ -69,7 +70,7 @@ public:
 	std::vector<Object*>GetObjs();
 
 	//objクリア
-	void ClearAllObj() { objsGroups_.clear(); }
+	void ClearAllObj();
 	//グループクリア
 	void ClearGroup(const std::string& groupName);
 };

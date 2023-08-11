@@ -42,6 +42,7 @@ private:
 	//デバッグ用
 	WorldMat debugWorldMat_;
 	const Vec3 CAMERA_POS_ = { 0,0,-100 };
+	bool isDebugCamera_ = false;
 
 	//カメラと名前をセットで持っておく
 	std::map< std::string, std::unique_ptr<Camera>> cameraAndNames_;
@@ -87,6 +88,7 @@ public:
 
 	void ImguiUpdate();
 
+public:
 	//移動の線形補完を始める
 	void BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endEye, const Vec3& startTarget, const Vec3& endTarget, const Vec3& startUp, const Vec3& endUp, int32_t time, Camera* afterCamera = nullptr, int32_t afterCount = 0);
 
@@ -94,6 +96,11 @@ public:
 	void AddCamera(std::string cameraName);
 	//名前を指定してカメラを取得
 	Camera* GetCamera(std::string cameraName);
+	//usingCameraにセットされてるカメラ取得
+	Camera* GetCamera();
 	//カメラを使用しているカメラにセット
 	void SetUsingCamera(std::string cameraName);
+
+public:
+	bool GetIsDebugCamera() { return isDebugCamera_; }
 };

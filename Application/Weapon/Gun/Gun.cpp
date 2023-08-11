@@ -92,7 +92,7 @@ void Gun::Update()
 	//クールタイムもゲームスピードをかける
 	attackCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
-	Object::Update();
+	Weapon::Update();
 }
 
 void Gun::Draw()

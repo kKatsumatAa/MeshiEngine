@@ -61,7 +61,7 @@ void CameraManager::Initialize()
 
 void CameraManager::Update()
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	{
 		Camera* debugCamera = GetCamera("debugCamera");
 
@@ -70,11 +70,13 @@ void CameraManager::Update()
 			//デバッグカメラに変更
 			if (usingCamera_ != debugCamera)
 			{
+				isDebugCamera_ = true;
 				afterCamera_ = usingCamera_;
 				usingCamera_ = debugCamera;
 			}
 			else if (afterCamera_)
 			{
+				isDebugCamera_ = false;
 				usingCamera_ = afterCamera_;
 			}
 		}
@@ -96,13 +98,14 @@ void CameraManager::Update()
 			debugWorldMat_.rot_.x_ = max(debugWorldMat_.rot_.x_, -PI / 2.0f);
 
 			debugWorldMat_.CulcWorldMat();
-			debugCamera->viewMat_.eye_ = CAMERA_POS_;
-			Vec3xM4(debugCamera->viewMat_.eye_, debugWorldMat_.matWorld_, 0);
+			Vec3 pos = CAMERA_POS_;
+			Vec3xM4(pos, debugWorldMat_.matWorld_, 0);
+			debugCamera->SetEye(pos);
 			debugCamera->UpdateViewMatrix();
 		}
 	}
-	#endif
-		//カメラ切り替え
+#endif
+	//カメラ切り替え
 	ChangeCamera();
 
 
@@ -153,6 +156,11 @@ Camera* CameraManager::GetCamera(std::string cameraName)
 	//なければnullptr
 	assert(false);
 	return nullptr;
+}
+
+Camera* CameraManager::GetCamera()
+{
+	return usingCamera_;
 }
 
 void CameraManager::SetUsingCamera(std::string cameraName)

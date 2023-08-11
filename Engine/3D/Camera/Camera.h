@@ -135,9 +135,13 @@ protected: // メンバ変数
 	// 射影行列ダーティフラグ
 	bool projectionDirty_ = false;
 
-public:
+private:
 	ViewMat viewMat_;
 	ProjectionMat projectionMat_;
+
+public:
+	const XMMATRIX& GetViewMat() { return viewMat_.matView_; }
+	const XMMATRIX& GetProjMat() { return projectionMat_.matProjection_; }
 };
 
 

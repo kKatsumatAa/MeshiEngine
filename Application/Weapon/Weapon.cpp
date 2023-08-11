@@ -2,6 +2,7 @@
 #include "GameVelocityManager.h"
 #include "CollisionManager.h"
 #include "ParticleManager.h"
+#include "Character.h"
 
 
 void Weapon::NoParentMove()
@@ -65,4 +66,17 @@ void Weapon::ChangeOwner(Object* parent)
 	}
 	//Š—LÒ‚àİ’è
 	owner_ = parent;
+}
+
+void Weapon::Update()
+{
+	//Á‚¦‚½‚çe‚ğ‰ğœ
+	if (!GetIsAlive() && owner_)
+	{
+		Character* chara = dynamic_cast<Character*>(owner_);
+
+		chara->FallWeapon({ 0,0,0 });
+	}
+
+	Object::Update();
 }

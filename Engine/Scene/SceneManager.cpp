@@ -111,6 +111,9 @@ void SceneManager::Update()
 		//objマネージャ
 		ObjectManager::GetInstance().Update();
 		state_->Update();
+
+		//オブジェマネージャーのデバッグ用アップデート
+		ObjectManager::GetInstance().DebugUpdate();
 	}
 
 	lightManager_->SetAmbientColor({ ambientColor_[0],ambientColor_[1], ambientColor_[2] });

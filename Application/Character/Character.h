@@ -42,6 +42,11 @@ public:
 	virtual ~Character() { ; }
 
 public:
+	virtual void Update();
+
+	void DrawImGui(std::function<void()>imguiF = NULL)override;
+
+public:
 	//•Ší
 	Weapon* GetWeapon() { return weapon_; }
 	void SetWeapon(Weapon* weapon) { weapon_ = weapon; }

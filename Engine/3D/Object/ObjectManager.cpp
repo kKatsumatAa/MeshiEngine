@@ -1,6 +1,8 @@
 #include "ObjectManager.h"
 #include "CameraManager.h"
 #include "CollisionManager.h"
+#include "MouseInput.h"
+#include "ImGuiManager.h"
 
 
 ObjectManager& ObjectManager::GetInstance()
@@ -16,6 +18,7 @@ void ObjectManager::Initialize()
 
 void ObjectManager::Update()
 {
+	//アップデート
 	for (std::map<std::string, std::vector<std::unique_ptr<Object>>>::iterator itM = objsGroups_.begin();
 		itM != objsGroups_.end(); itM++)
 	{
@@ -26,33 +29,64 @@ void ObjectManager::Update()
 		}
 	}
 
-	//コライダーで生きてるフラグオフになったら消す
-	for (std::map<std::string, std::vector<std::unique_ptr<Object>>>::iterator itM = objsGroups_.begin();
-		itM != objsGroups_.end(); itM++)
-	{
-		for (std::vector<std::unique_ptr<Object>>::iterator itG = itM->second.begin();
-			itG != itM->second.end(); itG++)
-		{
-			if (!itG->get()->GetIsAlive())
-			{
-				itG->reset();
-				*itG = nullptr;
-				itM->second.erase(itG);
-				itG = itM->second.begin();
-			}
-		}
-	}
-
-
-#ifdef _DEBUG
-
-	DebugUpdate();
-
-#endif // _DEBUG
+	PostUpdate();
 }
 
 void ObjectManager::DebugUpdate()
 {
+#ifdef _DEBUG
+
+	//左クリックして、デバッグカメラになっていて、imgui上にカーソルがなければ
+	if (CameraManager::GetInstance().GetIsDebugCamera() && MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT)
+		&& ImGui::GetIO().WantCaptureMouse == false)
+	{
+		Camera* camera = CameraManager::GetInstance().GetCamera();
+
+		//クリックした場所にレイをだす
+		Vec3 nearPos;
+		Vec3 farPos;
+		Vec2toNearFarPos(MouseInput::GetInstance().GetCurcorPos(), nearPos, farPos, camera->GetViewMat(), camera->GetProjMat());
+
+		Ray ray;
+		ray.start = { camera->GetEye().x_,camera->GetEye().y_,camera->GetEye().z_ };
+
+		Vec3 dirV = (farPos - camera->GetEye()).GetNormalized();
+		ray.dir = { dirV.x_,dirV.y_,dirV.z_ };
+
+		RaycastHit info;
+		//何かあったら
+		if (CollisionManager::GetInstance()->Raycast(ray, &info, 1000))
+		{
+			if (selectObj_)
+			{
+				selectObj_->effectFlags_.isSilhouette = false;
+			}
+
+			//前回と同じだったら解除
+			if (selectObj_ == info.object)
+			{
+				selectObj_ = nullptr;
+			}
+			else
+			{
+				selectObj_ = info.object;
+			}
+		}
+
+	}
+	else if (!CameraManager::GetInstance().GetIsDebugCamera())
+	{
+		selectObj_ = nullptr;
+	}
+
+	if (selectObj_)
+	{
+		selectObj_->effectFlags_.isSilhouette = true;
+
+		selectObj_->EffectUpdate();
+	}
+
+#endif // _DEBUG
 }
 
 
@@ -72,10 +106,50 @@ void ObjectManager::Draw()
 
 void ObjectManager::DrawImGui()
 {
-	//仮(クリックで選択したものの出したい)
-	if (objsGroups_.size())
+	//クリックで選択したものを出す
+	if (selectObj_)
 	{
-		objsGroups_.begin()->second.begin()->get()->DrawImGui();
+		selectObj_->DrawImGui();
+	}
+
+
+	for (std::map<std::string, std::vector<std::unique_ptr<Object>>>::iterator itM = objsGroups_.begin();
+		itM != objsGroups_.end(); itM++)
+	{
+		//グループごとに
+		if (ImGui::TreeNode(itM->first.c_str()))
+		{
+			for (std::vector<std::unique_ptr<Object>>::iterator itG = itM->second.begin();
+				itG != itM->second.end(); itG++)
+			{
+				itG->get()->DrawImGui();
+			}
+
+			ImGui::TreePop();
+		}
+	}
+}
+
+void ObjectManager::PostUpdate()
+{
+	//コライダーで生きてるフラグオフになったら消す
+	for (std::map<std::string, std::vector<std::unique_ptr<Object>>>::iterator itM = objsGroups_.begin();
+		itM != objsGroups_.end(); itM++)
+	{
+		for (std::vector<std::unique_ptr<Object>>::iterator itG = itM->second.begin();
+			itG != itM->second.end(); itG++)
+		{
+			if (!itG->get()->GetIsAlive())
+			{
+				if (itG->get() == selectObj_)
+				{
+					selectObj_ = nullptr;
+				}
+
+				itM->second.erase(itG);
+				itG = itM->second.begin();
+			}
+		}
 	}
 }
 
@@ -230,10 +304,18 @@ std::vector<Object*> ObjectManager::GetObjectInternal(const std::string& groupNa
 }
 
 //---------------------------------------------------------------------------------------------
+void ObjectManager::ClearAllObj()
+{
+	selectObj_ = nullptr;
+	objsGroups_.clear();
+}
+
+//グループごとに削除
 void ObjectManager::ClearGroup(const std::string& groupName)
 {
 	if (FindObjGroup(groupName))
 	{
+		selectObj_ = nullptr;
 		GetObjGroup(groupName)->second.clear();
 	}
 }

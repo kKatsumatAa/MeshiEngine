@@ -146,7 +146,7 @@ void Enemy::Update()
 	//ダメージ受けるクールタイムもゲームスピードをかける
 	damageCoolTime -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
-	Object::Update();
+	Character::Update();
 }
 
 void Enemy::Draw()

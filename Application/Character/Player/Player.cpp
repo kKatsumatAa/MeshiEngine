@@ -215,7 +215,7 @@ void Player::Update()
 	//素手や銃などのステート
 	state_->Update();
 
-	Object::Update();
+	Character::Update();
 
 	//手のアップデート
 	handManager_->Update();
@@ -231,16 +231,6 @@ void Player::Draw()
 	//手の描画
 	handManager_->Draw();
 }
-
-void Player::DrawImGui()
-{
-	ImGui::Begin("Player");
-	ImGui::Checkbox("ValidDamage", &isValidDamage_);
-	ImGui::End();
-
-	Object::DrawImGui();
-}
-
 
 void Player::Dead(const CollisionInfo& info)
 {

@@ -13,11 +13,13 @@ void Vec3xM4(Vec3& v, const M4& m4, bool w);
 Vec3 GetVec3xM4(Vec3 v, const M4& m4, bool w);
 void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w);
 
+//--------------------------------------------------------------------------------------------------
 //ラジアン系
 float AngletoRadi(float angle);
 float RaditoAngle(float radian);
 float GetRadianVec3(const Vec3& v1, const Vec3& v2);
 
+//--------------------------------------------------------------------------------------------------
 //線形補完
 Vec3 LerpVec3(const Vec3& v1, const Vec3& v2, float t);
 Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t);
@@ -31,7 +33,7 @@ float EaseOut(float t);
 float EaseInOutBack(float t);
 float EaseInOut(float t);
 
-
+//--------------------------------------------------------------------------------------------------
 //衝突
 bool CollisionCircleCircle(const Vec3& pos1, float r1,
 	const Vec3& pos2, float r2);
@@ -40,7 +42,7 @@ bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, float r, const Vec3& pos
 
 bool CollisionBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t r1, int32_t r2);
 
-
+//--------------------------------------------------------------------------------------------------
 //便利
 /// <summary>
 /// 1か‐1で返す（0は0）
@@ -48,6 +50,7 @@ bool CollisionBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t r1, in
 /// <returns></returns>
 float sign(float num);
 
+//--------------------------------------------------------------------------------------------------
 //変換
 Vec2 Vec3toVec2(const Vec3& v, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection);
 /// <summary>
@@ -70,7 +73,7 @@ Vec3 Vec2toVec3(const Vec2& v, const DirectX::XMMATRIX& view, const DirectX::XMM
 /// <param name="projection"></param>
 void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection);
 
-
+//--------------------------------------------------------------------------------------------------
 //アライメントにそろえたサイズを返す
 int32_t AligmentSize(int32_t size, int32_t aligment);
 
@@ -92,6 +95,10 @@ std::string ExtractFileName(const std::string& path);
 //スムースステップ
 float SmoothStep(float Min, float Max, float V);
 
+//ランダム
+float GetRand(float min, float max);
+
+//------------------------------------------------------------------------
 //回転行列から角度を求める
 Vec3 GetRotFromQuaternion(Quaternion q);
 Vec3 GetRotFromMat(M4 m);
@@ -101,14 +108,8 @@ bool Approximately(float a, float b);
 //ベクトルを角度を使ってクォータニオンで回転
 Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot);
 
-////ベクトルをこっちからあっち
-//Quaternion DirectionToDirectionUtil(const Vec3& u,const Vec3& v);
 
-//ランダム
-float GetRand(float min, float max);
-
-
-//
+//--------------------------------------------------------------------------------------------------
 const DirectX::XMFLOAT4 operator+(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs);
 
 const DirectX::XMFLOAT4 operator-(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs);

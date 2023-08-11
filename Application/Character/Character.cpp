@@ -20,6 +20,62 @@ void Character::Damaged(int32_t damage, std::function<void()> deadFunc)
 	}
 }
 
+void Character::Update()
+{
+	//死んだら武器落とす
+	if (!GetIsAlive())
+	{
+		FallWeapon({ 0,0,0 });
+	}
+
+	Object::Update();
+}
+
+void Character::DrawImGui(std::function<void()> imguiF)
+{
+	std::function<void()> f = [=]() {
+
+		//トランスなど
+		if (ImGui::TreeNode("Character")) {
+
+			ImGui::Checkbox("isVailidDamage", &isValidDamage_);
+
+			ImGui::Text("HP : %d", hp_);
+
+			std::string weaponSTmp = "weapon : ";
+			std::string weaponS;
+			if (weapon_ == nullptr)
+			{
+				weaponS = weaponSTmp + "NULL";
+			}
+			else
+			{
+				weaponS = weaponSTmp + weapon_->GetObjName();
+			}
+			ImGui::Text(weaponS.c_str());
+
+			ImGui::Text("isOnGround : %d", isOnGround_);
+
+			ImGui::Text("fallVec : %.2f", fallVec_.y_);
+
+			ImGui::TreePop();
+		}
+
+		//持ってる武器のimguiも
+		if (weapon_) 
+		{
+			if (ImGui::TreeNode(weapon_->GetObjName().c_str())) 
+			{
+				weapon_->DrawImGui();
+
+				ImGui::TreePop();
+			}
+		}
+	};
+
+	Object::DrawImGui(f);
+}
+
 void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 {
 	SetWeapon(weapon);
@@ -50,7 +106,7 @@ void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 			GetWeapon()->SetLocalPos(*localPos);
 		}
 
- 		GetWeapon()->SetFallVec(directionVec);
+		GetWeapon()->SetFallVec(directionVec);
 		GetWeapon()->ChangeOwner(nullptr);
 		//仮で手から離れたらアイテムの属性にする
 		weapon_->SetAttribute(COLLISION_ATTR_ITEMS);

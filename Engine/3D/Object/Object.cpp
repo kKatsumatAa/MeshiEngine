@@ -309,14 +309,27 @@ void Object::SendingMat(int32_t indexNum, Camera* camera)
 		worldMat_->matWorld_.MatIntoXMMATRIX(matW);
 
 		cbt_.constMapTransform_->world = matW;
-		cbt_.constMapTransform_->viewproj = lCamera->viewMat_.matView_ * lCamera->projectionMat_.matProjection_;
-		XMFLOAT3 cPos = { lCamera->viewMat_.eye_.x_,lCamera->viewMat_.eye_.y_,lCamera->viewMat_.eye_.z_ };
+		cbt_.constMapTransform_->viewproj = lCamera->GetViewMat() * lCamera->GetProjMat();
+		XMFLOAT3 cPos = { lCamera->GetEye().x_,lCamera->GetEye().y_,lCamera->GetEye().z_ };
 		cbt_.constMapTransform_->cameraPos = cPos;
 	}
 }
 
 void Object::PlayAnimationInternal(FbxTime& sTime, FbxTime& eTime,
 	bool isLoop, bool isReverse)
+{
+	//アニメーションのリセット
+	AnimationReset(sTime, eTime);
+
+	//再生中状態
+	isPlay_ = true;
+	//ループ
+	isLoop_ = isLoop;
+	//逆再生
+	isReverse_ = isReverse;
+}
+
+void Object::AnimationReset(FbxTime& sTime, FbxTime& eTime)
 {
 	if (model_ == nullptr || !model_->GetIsFbx())
 	{
@@ -327,7 +340,6 @@ void Object::PlayAnimationInternal(FbxTime& sTime, FbxTime& eTime,
 	ModelFBX* model = dynamic_cast<ModelFBX*>(model_);
 
 	//アニメーションが1つしかない前提
-
 	FbxScene* fbxScene = model->GetFbxScene();
 	//0番のアニメーション取得
 	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(0);
@@ -345,12 +357,6 @@ void Object::PlayAnimationInternal(FbxTime& sTime, FbxTime& eTime,
 	eTime = takeInfo->mLocalTimeSpan.GetStop();
 	//開始時間取得
 	currentTime_ = startTime_;
-	//再生中状態
-	isPlay_ = true;
-	//ループ
-	isLoop_ = isLoop;
-	//逆再生
-	isReverse_ = isReverse;
 }
 
 void Object::PlayAnimation(bool isLoop)
@@ -370,6 +376,28 @@ void Object::SendingBoneData(ModelFBX* model)
 	//アニメーション
 	if (isPlay_)
 	{
+		//最後まで再生したら
+		if ((!isReverse_ && currentTime_ >= endTime_)
+			|| (isReverse_ && currentTime_ <= startTime_))
+		{
+			if (!isReverse_)
+			{
+				//先頭に戻す
+				currentTime_ = startTime_;
+			}
+			else
+			{
+				//最後に戻す
+				currentTime_ = endTime_;
+			}
+
+			//終了
+			if (!isLoop_)
+			{
+				isPlay_ = false;
+			}
+		}
+
 		//逆再生
 		if (isReverse_)
 		{
@@ -379,21 +407,6 @@ void Object::SendingBoneData(ModelFBX* model)
 		{
 			//1フレーム進める
 			currentTime_ += frameTime_;
-		}
-		//最後まで再生したら
-		if ((!isReverse_ && currentTime_ > endTime_)
-			|| (isReverse_ && currentTime_ < endTime_))
-		{
-			//先頭に戻す
-			if (isLoop_)
-			{
-				currentTime_ = startTime_;
-			}
-			//終了
-			else
-			{
-				isPlay_ = false;
-			}
 		}
 	}
 
@@ -667,9 +680,9 @@ void Object::DrawModel(IModel* model, Camera* camera,
 	Update(type, pipelineNum, NULL, cbt_, camera, model);
 }
 
-void Object::DrawImGui()
+void Object::DrawImGui(std::function<void()>imguiF)
 {
-	ImGui::Begin("Object");
+	ImGui::Begin(objName_.c_str());
 
 	//生死フラグ
 	ImGui::Checkbox("isAlive: ", &isAlive_);
@@ -711,7 +724,10 @@ void Object::DrawImGui()
 		ImGui::Checkbox("isReverse", &isReverse_);
 		if (currentTime_ - startTime_ > 0 && endTime_ - startTime_ > 0)
 		{
-			ImGui::Text("animationTimeRatio: %.2f", (currentTime_ - startTime_) / (endTime_ - startTime_));
+			float timer = (float)(currentTime_ - startTime_).GetSecondDouble();
+			float timerMax = (float)(endTime_ - startTime_).GetSecondDouble();
+
+			ImGui::Text("animationTimeRatio: %.2f", timer / timerMax);
 		}
 		ImGui::TreePop();
 	}
@@ -729,6 +745,12 @@ void Object::DrawImGui()
 		ImGui::Checkbox("isSpecularMap", (bool*)&effectFlags_.isSpecularMap);
 
 		ImGui::TreePop();
+	}
+
+	//派生クラスごとの
+	if (imguiF)
+	{
+		imguiF();
 	}
 
 	ImGui::End();
