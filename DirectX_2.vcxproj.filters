@@ -444,6 +444,9 @@
     <ClCompile Include="Engine\3D\Object\IModel.cpp">
       <Filter>ソース ファイル\Engine\3D\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\3D\Object\ObjectManager.cpp">
+      <Filter>ソース ファイル\Engine\3D\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -732,6 +735,9 @@
       <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Object\IModel.h">
+      <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Object\ObjectManager.h">
       <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
     </ClInclude>
   </ItemGroup>

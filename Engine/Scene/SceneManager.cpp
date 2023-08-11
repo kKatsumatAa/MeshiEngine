@@ -108,6 +108,8 @@ void SceneManager::Update()
 	//シーン遷移演出終わったら
 	if (!SceneTransitionManager::GetInstance().GetIsDoingEffect() && state_)
 	{
+		//objマネージャ
+		ObjectManager::GetInstance().Update();
 		state_->Update();
 	}
 
@@ -132,6 +134,10 @@ void SceneManager::Draw()
 	if (!SceneTransitionManager::GetInstance().GetIsLoadingOnly() && state_)
 	{
 		state_->Draw();
+		//objマネージャ
+		ObjectManager::GetInstance().Draw();
+		//パーティクル
+		ParticleManager::GetInstance()->Draw();
 	}
 }
 
@@ -167,6 +173,8 @@ void SceneManager::DrawImgui()
 	{
 		state_->DrawImgui();
 		LevelManager::GetInstance().DrawImGui();
+		//objマネージャ
+		ObjectManager::GetInstance().DrawImGui();
 	}
 }
 

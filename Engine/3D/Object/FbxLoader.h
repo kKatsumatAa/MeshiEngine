@@ -18,9 +18,6 @@ private://変数
 	//fbxインポーター(.fbxを読み込むのに必要)
 	FbxImporter* fbxImporter_ = nullptr;
 
-	//テクスチャがない場合の標準テクスチャファイル名
-	static const string S_DEFAULT_TEX_FILE_NAME_;
-
 	//スムージング処理するか
 	bool isSmoothing_ = false;
 

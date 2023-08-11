@@ -22,7 +22,7 @@ void Framework::Initialize()
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
 	//trueにすることでマウスがほかのアプリで使用されない
-	MouseInput::GetInstance().CreateDevice(true);
+	MouseInput::GetInstance().CreateDevice(/*true*/);
 
 	//
 	ParticleManager::GetInstance()->Initialize();
@@ -39,6 +39,9 @@ void Framework::Initialize()
 
 	imguiM_ = std::make_unique<ImGuiManager>();
 	imguiM_->Initialize();
+
+	//objマネージャ
+	ObjectManager::GetInstance().Initialize();
 }
 
 void Framework::Finalize()

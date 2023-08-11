@@ -3,7 +3,7 @@
 #include "Player.h"
 
 
-std::unique_ptr<PlayerHand> PlayerHand::Create(Player* player, const Vec3& transTmp)
+std::unique_ptr<PlayerHand> PlayerHand::Create(Player* player, const Vec3& transTmp, const std::string& objName)
 {
 	std::unique_ptr<PlayerHand> instance = std::make_unique<PlayerHand>();
 	if (instance.get() == nullptr)
@@ -12,7 +12,7 @@ std::unique_ptr<PlayerHand> PlayerHand::Create(Player* player, const Vec3& trans
 	}
 
 	//‰Šú‰»
-	if (!instance->Initialize(player, transTmp))
+	if (!instance->Initialize(player, transTmp, objName))
 	{
 		assert(0);
 	}
@@ -20,7 +20,7 @@ std::unique_ptr<PlayerHand> PlayerHand::Create(Player* player, const Vec3& trans
 	return std::move(instance);
 }
 
-bool PlayerHand::Initialize(Player* player, const Vec3& transTmp)
+bool PlayerHand::Initialize(Player* player, const Vec3& transTmp, const std::string& objName)
 {
 	if (!Object::Initialize())
 	{
@@ -30,7 +30,7 @@ bool PlayerHand::Initialize(Player* player, const Vec3& transTmp)
 	//“–‚½‚è”»’è‚Í‚È‚¢‚Ì‚Å‘®«‚à‚È‚µ
 
 
-	SetObjName("playerHand");
+	SetObjName(objName.c_str());
 
 	//“–‚½‚è”»’è‚Ég‚í‚È‚¢
 	SetIsValid(false);

@@ -3,18 +3,22 @@
 #include"Object.h"
 #include"Camera.h"
 #include"Gun.h"
+#include"ObjectManager.h"
+
 
 //jsonで読み込んだレベルを管理する
 class LevelManager final
 {
 private://変数
-	//Objectとモデルポインタのセット
-	std::map<std::unique_ptr<Object>, IModel*> objAndModels_;
-
 	//地形オブジェクトとして使うか
 	bool isLandShape_ = false;
 
 	const std::string FILE_NAME_ = "level";
+
+public:
+	//オブジェクトのグループ名
+	static const std::string S_OBJ_GROUP_NAME_;
+
 
 private://関数
 	LevelManager() { ; }
@@ -54,14 +58,4 @@ private://ゲームオリジナル
 	void SetCollider(Object* obj, const LevelData::ObjectData& objData, bool isSettingCollider);
 	//引数によってObjectかTouchObjectを作る
 	void CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model);
-
-public://ゲームオリジナル
-	//引数の判定属性のものをディゾルブ
-	void SetObjectIsDissolve(bool isDissolve, uint16_t attribute);
-	//引数の判定属性のもののディゾルブ度合
-	void SetIsDissolveT(float dissolveT, uint16_t attribute);
-
-public:
-	bool GetGameOver();
-	bool GetGameClear();
 };

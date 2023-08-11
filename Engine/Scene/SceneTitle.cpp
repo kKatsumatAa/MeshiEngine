@@ -10,6 +10,9 @@ void SceneTitle::Finalize()
 //---------------------------------------------------------------------------------------
 void SceneTitle::Initialize()
 {
+	ObjectManager::GetInstance().ClearAllObj();
+	ParticleManager::GetInstance()->ClearParticles();
+
 	sceneM_->StopWaveAllScene();
 
 	titleTex_ = TextureManager::LoadGraph("title.png");

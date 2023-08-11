@@ -7,11 +7,14 @@
 #include "TouchableObject.h"
 #include "MeshCollider.h"
 #include "LandShape.h"
+#include "ObjectManager.h"
+
+
+const std::string LevelManager::S_OBJ_GROUP_NAME_ = LevelManager::GetInstance().FILE_NAME_;
 
 
 LevelManager::~LevelManager()
 {
-	objAndModels_.clear();
 }
 
 LevelManager& LevelManager::GetInstance()
@@ -29,8 +32,8 @@ void LevelManager::LoadLevelData(int32_t fileIndex)
 	//json読み込み
 	JsonLevelLoader::Getinstance().LoadJsonFile(FILE_NAME_ + std::to_string(fileIndex));
 
-	//セットで保存してるのをクリア
-	objAndModels_.clear();
+	//オブジェクト、カメラをクリア
+	ObjectManager::GetInstance().ClearAllObj();
 	CameraManager::GetInstance().Initialize();
 
 	//レベルデータからカメラを取得
@@ -99,8 +102,8 @@ Weapon* LevelManager::GetChildWeapon(LevelData::ObjectData& objData)
 	//モデルセット
 	newObj->SetModel(model);
 
-	//セットで登録
-	objAndModels_.insert(std::make_pair(std::move(newObj), model));
+	//登録
+	ObjectManager::GetInstance().AddObject(S_OBJ_GROUP_NAME_, std::move(newObj));
 
 	if (ans != nullptr)
 	{
@@ -161,64 +164,6 @@ void LevelManager::CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, L
 	{
 		obj = std::make_unique<Object>();
 		obj->SetWorldMat(std::move(objData.worldMat));
-	}
-}
-
-bool LevelManager::GetGameOver()
-{
-	Player* p = nullptr;
-
-	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
-	{
-		Object* obj = it->first.get();
-
-		if (obj->GetObjName() == "player")
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-bool LevelManager::GetGameClear()
-{
-	int count = 0;
-
-	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
-	{
-		Object* obj = it->first.get();
-
-		if (obj->GetObjName() == "enemy" && obj->GetIsAlive())
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-void LevelManager::SetObjectIsDissolve(bool isDissolve, uint16_t attribute)
-{
-	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
-	{
-		Object* obj = it->first.get();
-
-		if (obj->GetCollider()->GetAttribute() == attribute)
-		{
-			obj->SetisDissolve(isDissolve);
-		}
-	}
-}
-
-void LevelManager::SetIsDissolveT(float dissolveT, uint16_t attribute)
-{
-	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
-	{
-		Object* obj = it->first.get();
-
-		if (obj->GetCollider() && obj->GetCollider()->GetAttribute() == attribute)
-		{
-			obj->SetDissolveT(dissolveT);
-		}
 	}
 }
 
@@ -285,58 +230,18 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 
 	newObj->PlayAnimation(true);
 
-	//セットで登録
-	objAndModels_.insert(std::make_pair(std::move(newObj), model));
+	//obj登録
+	ObjectManager::GetInstance().AddObject(S_OBJ_GROUP_NAME_, std::move(newObj));
 }
 
 void LevelManager::Update()
 {
-	//.Objを更新
-	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
-	{
-		Object* obj = it->first.get();
-
-		obj->SetIsSilhouette(false);
-	}
-
-	//.Objを更新
-	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
-	{
-		Object* obj = it->first.get();
-
-		obj->Update();
-	}
-
-	//コライダーで生きてるフラグオフになったら消す
-	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
-	{
-		Object* obj = it->first.get();
-
-		if (!obj->GetIsAlive())
-		{
-			objAndModels_.erase(it);
-			it = objAndModels_.begin();
-		}
-	}
 }
 
 void LevelManager::Draw(Camera* camera)
 {
-	//描画
-	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
-	{
-		Object* obj = it->first.get();
-
-		obj->Draw();
-	}
 }
 
 void LevelManager::DrawImGui()
 {
-	for (std::map<std::unique_ptr<Object>, IModel*>::iterator it = objAndModels_.begin(); it != objAndModels_.end(); it++)
-	{
-		Object* obj = it->first.get();
-
-		obj->DrawImGui();
-	}
 }

@@ -5,23 +5,26 @@
 #include "GameVelocityManager.h"
 #include "PlayerAttackState.h"
 #include "CollisionAttribute.h"
+#include "ObjectManager.h"
 #include "CameraManager.h"
 
 
 
 void PlayerHandManager::Initialize(Player* player)
 {
-	handL_.reset();
-	handR_.reset();
+	player_ = player;
 
 	//位置(ローカル座標をセット)
 	Vec3 playerPos = player->GetTrans();
-	Vec3 distance = {1.0f,1.0f,1.0f};
+	Vec3 distance = { 1.0f,1.0f,1.0f };
 	//生成（仮）
-	handL_ = PlayerHand::Create(player, { -distance.x_ * 2.0f,0 - distance.y_,-distance.z_ });
-	handR_ = PlayerHand::Create(player, { +distance.x_ * 2.0f,0 - distance.y_,-distance.z_ });
+	ObjectManager::GetInstance().AddObject(OBJ_GROUP_NAME_,
+		std::move(PlayerHand::Create(player, { -distance.x_ * 2.0f,0 - distance.y_,-distance.z_ }, HAND_R_NAME_)));
+	ObjectManager::GetInstance().AddObject(OBJ_GROUP_NAME_,
+		std::move(PlayerHand::Create(player, { +distance.x_ * 2.0f,0 - distance.y_,-distance.z_ }, HAND_L_NAME_)));
 
-	player_ = player;
+	handL_ = dynamic_cast<PlayerHand*>(*ObjectManager::GetInstance().GetObjs(OBJ_GROUP_NAME_, HAND_L_NAME_).begin());
+	handR_ = dynamic_cast<PlayerHand*>(*ObjectManager::GetInstance().GetObjs(OBJ_GROUP_NAME_, HAND_R_NAME_).begin());
 }
 
 void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
@@ -32,7 +35,7 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 	}
 
 	//クリックしたら攻撃
-	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) && info.collider->GetObject3d()->GetObjName() == "enemy")
+	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) && info.collider->GetObject3d()->GetObjName() == "enemy" && player_)
 	{
 		//衝突点までの距離
 		Vec3 lengthV = Vec3(info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2]) - player_->GetTrans();
@@ -90,11 +93,11 @@ PlayerHand* PlayerHandManager::GetWitchUseHand()
 {
 	if (!handR_->GetIsAttacking())
 	{
-		return handR_.get();
+		return handR_;
 	}
 	if (!handL_->GetIsAttacking())
 	{
-		return handL_.get();
+		return handL_;
 	}
 
 	return nullptr;
@@ -112,13 +115,13 @@ void PlayerHandManager::Attack(RaycastHit info)
 
 void PlayerHandManager::Update()
 {
-	//手
-	handL_->Update();
-	handR_->Update();
 }
 
 void PlayerHandManager::Draw()
 {
-	handL_->Draw();
-	handR_->Draw();
+}
+
+void PlayerHandManager::DeleteHands()
+{
+	ObjectManager::GetInstance().ClearGroup(OBJ_GROUP_NAME_);
 }

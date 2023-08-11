@@ -24,6 +24,9 @@ void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 {
 	SetWeapon(weapon);
 
+	//シルエット解除
+	weapon->SetIsSilhouette(false);
+
 	if (localPos)
 	{
 		weapon_->SetLocalPos(*localPos);

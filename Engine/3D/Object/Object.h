@@ -122,9 +122,6 @@ private:
 	//逆再生
 	bool isReverse_ = false;
 
-	//
-	static float sRimColorF3_[3];
-
 	//生きてるフラグ
 	bool isAlive_ = true;
 	//
@@ -146,13 +143,14 @@ private:
 	//ノーマルマップの画像
 	uint64_t normalMapTextureHandle_ = NULL;
 
+	//画面効果用
+	ComPtr <ID3D12Resource> effectFlagsBuff_;
+	EffectOConstBuffer* mapEffectFlagsBuff_;
+
 public://変数
 	bool isWireFrame_ = 0;
 	//画面効果用
 	EffectOConstBuffer effectFlags_;
-	//画面効果用
-	ComPtr <ID3D12Resource> effectFlagsBuff_;
-	EffectOConstBuffer* mapEffectFlagsBuff_;
 
 public:
 	//定数バッファ用データ構造体（スキニング）
@@ -353,7 +351,8 @@ public:
 	void DrawModel(IModel* model, Camera* camera = nullptr,
 		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
 
-	virtual void DrawImGui() { ; }
+	//デバッグ用の表示
+	virtual void DrawImGui();
 
 	//色を返す
 	const Vec4& GetColor() { return constMapMaterial_->color; }

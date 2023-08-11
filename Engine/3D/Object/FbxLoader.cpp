@@ -4,8 +4,6 @@
 
 using namespace DirectX;
 
-const std::string FbxLoader::S_DEFAULT_TEX_FILE_NAME_ = "white.png";
-
 
 
 /// <summary>
@@ -359,6 +357,8 @@ void FbxLoader::ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode)
 
 		if (material)
 		{
+			materialM->name_ = material->GetName();
+
 			//fbxSurfaceLambertクラスかどうかを調べる
 			if (material->GetClassId().Is(FbxSurfaceLambert::ClassId))
 			{
@@ -400,11 +400,7 @@ void FbxLoader::ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode)
 					//画像名保存(モデルの方でフルパスにしてくれる)
 					materialM->textureFilename_ = name;
 				}
-			}
-			//テクスチャがない場合は白テクスチャを貼る
-			else
-			{
-				materialM->textureFilename_ = S_DEFAULT_TEX_FILE_NAME_;
+				//テクスチャがない場合はそのままで白い画像が適用
 			}
 		}
 

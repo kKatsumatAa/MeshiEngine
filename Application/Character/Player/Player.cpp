@@ -237,6 +237,8 @@ void Player::DrawImGui()
 	ImGui::Begin("Player");
 	ImGui::Checkbox("ValidDamage", &isValidDamage_);
 	ImGui::End();
+
+	Object::DrawImGui();
 }
 
 
@@ -244,6 +246,9 @@ void Player::Dead(const CollisionInfo& info)
 {
 	//hp‚ª0‚É‚È‚Á‚½‚ç
 	isDead_ = true;
+
+	//Žè‚ðíœ
+	handManager_->DeleteHands();
 
 	Bullet* bullet = dynamic_cast<Bullet*>(info.object_);
 

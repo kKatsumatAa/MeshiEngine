@@ -24,6 +24,9 @@ private:
 
 
 public:
+	//テクスチャがない場合の標準テクスチャファイル名
+	static const std::string S_DEFAULT_TEX_FILE_NAME_;
+
 	static uint64_t sWhiteTexHandle_;
 
 	//リソース設定

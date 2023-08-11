@@ -39,8 +39,8 @@ public:
 
 
 public:
-	static std::unique_ptr<PlayerHand> Create(Player* player, const Vec3& transTmp);
-	bool Initialize(Player* player, const Vec3& transTmp);
+	static std::unique_ptr<PlayerHand> Create(Player* player, const Vec3& transTmp, const std::string& objName);
+	bool Initialize(Player* player, const Vec3& transTmp, const std::string& objName);
 
 	void Update()override;
 

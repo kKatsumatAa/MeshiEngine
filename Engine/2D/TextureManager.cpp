@@ -8,6 +8,8 @@ using namespace Microsoft::WRL;
 //Ši”[æ
 const std::string TextureManager::sDirectoryPath_ = "Resources/image/";
 
+const std::string TextureManager::S_DEFAULT_TEX_FILE_NAME_ = "white.png";
+
 int32_t TextureManager::sCount_ = 0;
 //ƒŠƒ\[ƒXİ’è
 D3D12_RESOURCE_DESC TextureManager::sResDesc_;
@@ -116,7 +118,11 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 		&metadata, scratchImg
 	);
 
-	assert(SUCCEEDED(result));
+	//¸”s‚µ‚½‚ç”’‚¢‰æ‘œ“Ç‚İ‚Ü‚¹‚Ä”²‚¯‚é
+	if (!SUCCEEDED(result))
+	{
+		return LoadGraph(S_DEFAULT_TEX_FILE_NAME_.c_str());
+	}
 
 	ScratchImage mipChain{};
 	//mipmap¶¬

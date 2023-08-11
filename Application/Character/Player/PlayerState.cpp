@@ -4,6 +4,7 @@
 #include "GameVelocityManager.h"
 #include "PlayerUI.h"
 #include "PlayerUIState.h"
+#include "ObjectManager.h"
 
 
 
@@ -19,6 +20,14 @@ bool PlayerState::CheckEyeRayHit()
 	uint16_t attribute = COLLISION_ATTR_ENEMYS | COLLISION_ATTR_ITEMS;
 	bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, attribute, &info_, player_->GetAttackLength());
 
+	//シルエットオフ
+	auto objs = ObjectManager::GetInstance().GetObjs();
+	for (auto obj : objs)
+	{
+		obj->effectFlags_.isSilhouette = false;
+	}
+
+	//シルエット
 	if (isRayHit)
 	{
 		info_.object->SetIsSilhouette(true);

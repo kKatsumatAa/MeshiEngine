@@ -7,6 +7,7 @@
 #include "CollisionManager.h"
 #include "ImguiManager.h"
 #include "CameraManager.h"
+#include "ObjectManager.h"
 
 using namespace DirectX;
 
@@ -30,12 +31,6 @@ D3D12_GRAPHICS_PIPELINE_STATE_DESC Object::pipelineDesc_{};
 
 //static
 LightManager* Object::sLightManager_ = nullptr;
-
-//演出用
-//ComPtr <ID3D12Resource> Object::effectFlagsBuff_ = nullptr;
-//EffectOConstBuffer* Object::sMapEffectFlagsBuff_ = nullptr;
-//EffectOConstBuffer Object::sEffectFlags_;
-float Object::sRimColorF3_[3] = { 1.0f,1.0f,1.0f };
 
 
 void Object::DrawInitialize()
@@ -138,7 +133,6 @@ bool Object::Initialize(std::unique_ptr<WorldMat> worldMat)
 
 	SetWorldMat(std::move(worldMat));
 
-	objName_ = typeid(*this).name();
 	return true;
 }
 
@@ -181,21 +175,9 @@ void Object::EffectUpdate()
 {
 	effectFlags_.time++;
 
-
-	effectFlags_.rimColor = { sRimColorF3_[0],sRimColorF3_[1],sRimColorF3_[2],0 };
-
 	//画面効果用
 	{
-		mapEffectFlagsBuff_->isFog = effectFlags_.isFog;
-		mapEffectFlagsBuff_->isToon = effectFlags_.isToon;
-		mapEffectFlagsBuff_->isRimLight = effectFlags_.isRimLight;
-		mapEffectFlagsBuff_->rimColor = effectFlags_.rimColor;
-		mapEffectFlagsBuff_->isSilhouette = effectFlags_.isSilhouette;
-		mapEffectFlagsBuff_->isDissolve = effectFlags_.isDissolve;
-		mapEffectFlagsBuff_->dissolveT = effectFlags_.dissolveT;
-		mapEffectFlagsBuff_->isSpecularMap = effectFlags_.isSpecularMap;
-		mapEffectFlagsBuff_->isNormalMap = effectFlags_.isNormalMap;
-		mapEffectFlagsBuff_->time = effectFlags_.time;
+		*mapEffectFlagsBuff_ = effectFlags_;
 	}
 }
 
@@ -683,6 +665,73 @@ void Object::DrawModel(IModel* model, Camera* camera,
 	}
 
 	Update(type, pipelineNum, NULL, cbt_, camera, model);
+}
+
+void Object::DrawImGui()
+{
+	ImGui::Begin("Object");
+
+	//生死フラグ
+	ImGui::Checkbox("isAlive: ", &isAlive_);
+
+	//トランスなど
+	if (ImGui::TreeNode("TransScaleRot")) {
+
+		ImGui::Text("Trans: %.2f %.2f %.2f", GetTrans().x_, GetTrans().y_, GetTrans().z_);
+		ImGui::Text("Scale: %.2f %.2f %.2f", GetScale().x_, GetScale().y_, GetScale().z_);
+		ImGui::Text("Rot: %.2f %.2f %.2f", GetRot().x_, GetRot().y_, GetRot().z_);
+
+		ImGui::TreePop();
+	}
+
+	//正面ベクトル
+	if (ImGui::TreeNode("FrontVec")) {
+
+		ImGui::Text("FrontVec: %.2f %.2f %.2f", frontVec_.x_, frontVec_.y_, frontVec_.z_);
+		ImGui::Text("FrontVecTmp: %.2f %.2f %.2f", frontVecTmp_.x_, frontVecTmp_.y_, frontVecTmp_.z_);
+
+		ImGui::TreePop();
+	}
+
+	//モデル
+	if (ImGui::TreeNode("Model")) {
+
+		std::string modelPState = "MODEL_NULL";
+		if (model_ != nullptr)
+		{
+			modelPState = "MODEL_SET";
+		}
+		ImGui::Text(modelPState.c_str());
+		if (model_ != nullptr)
+		{
+			ImGui::Text("modelIsFbx: %d", model_->GetIsFbx());
+		}
+		ImGui::Checkbox("isPlay", &isPlay_);
+		ImGui::Checkbox("isLoop", &isLoop_);
+		ImGui::Checkbox("isReverse", &isReverse_);
+		if (currentTime_ - startTime_ > 0 && endTime_ - startTime_ > 0)
+		{
+			ImGui::Text("animationTimeRatio: %.2f", (currentTime_ - startTime_) / (endTime_ - startTime_));
+		}
+		ImGui::TreePop();
+	}
+
+	//演出
+	if (ImGui::TreeNode("Effect")) {
+
+		ImGui::Checkbox("isDissolve", (bool*)&effectFlags_.isDissolve);
+		ImGui::SliderFloat("dissolveT", &effectFlags_.dissolveT, 0, 1.0f);
+		ImGui::Checkbox("isFog", (bool*)&effectFlags_.isFog);
+		ImGui::Checkbox("isNormalMap", (bool*)&effectFlags_.isNormalMap);
+		ImGui::Checkbox("isRimLight", (bool*)&effectFlags_.isRimLight);
+		ImGui::SliderFloat4("rimLightColor", &effectFlags_.rimColor.x, 0, 1.0f);
+		ImGui::Checkbox("isSilhouette", (bool*)&effectFlags_.isSilhouette);
+		ImGui::Checkbox("isSpecularMap", (bool*)&effectFlags_.isSpecularMap);
+
+		ImGui::TreePop();
+	}
+
+	ImGui::End();
 }
 
 void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum)

@@ -8,8 +8,12 @@
 class PlayerHandManager
 {
 private:
-	std::unique_ptr<PlayerHand> handR_ = nullptr;
-	std::unique_ptr<PlayerHand> handL_ = nullptr;
+	PlayerHand* handR_ = nullptr;
+	PlayerHand* handL_ = nullptr;
+
+	const std::string OBJ_GROUP_NAME_ = "playerHand";
+	const std::string HAND_R_NAME_ = "handR";
+	const std::string HAND_L_NAME_ = "handL";
 
 	Player* player_ = nullptr;
 
@@ -39,4 +43,6 @@ public:
 	void Update();
 
 	void Draw();
+
+	void DeleteHands();
 };

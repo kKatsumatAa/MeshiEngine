@@ -35,8 +35,6 @@ void StageState::Draw()
 	BulletManager::GetInstance().Draw();
 
 	LevelManager::GetInstance().Draw();
-
-	ParticleManager::GetInstance()->Draw();
 }
 
 void StageState::DrawSprite()
@@ -89,7 +87,12 @@ void StageStateBegining::Update()
 
 	//ステージを徐々にディゾルブ(そのオブジェクトがディゾルブ画像読み込んでいる前提)
 	float t = (float)timer_ / (float)EFFECT_TIMER_MAX_;
-	LevelManager::GetInstance().SetIsDissolveT(1.0f - t, COLLISION_ATTR_LANDSHAPE);
+
+	auto objs = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
+	for (auto obj : objs)
+	{
+		obj->effectFlags_.dissolveT = 1.0f - t;
+	}
 
 	//時間超えたら
 	if (timer_ >= EFFECT_TIMER_MAX_)
@@ -129,12 +132,12 @@ void StageStateBattle::Update()
 	Tutorial::GetInstance().Update();
 
 	//ゲームオーバー
-	if (LevelManager::GetInstance().GetGameOver())
+	if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_ALLIES).size() <= 0)
 	{
 		StageManager::GetInstance().ChangeState("GAMEOVER");
 	}
 	//ゲームクリア
-	else if (LevelManager::GetInstance().GetGameClear())
+	else if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_ENEMYS).size() <= 0)
 	{
 		//ゲームスピードの加算無効
 		GameVelocityManager::GetInstance().SetIsInvalidAddGameVel(true);
@@ -179,7 +182,12 @@ void StageStateDead::Initialize()
 	StageState::Initialize();
 
 	//ステージを徐々にディゾルブ(そのオブジェクトがディゾルブ画像読み込んでいる前提)
-	LevelManager::GetInstance().SetObjectIsDissolve(true, COLLISION_ATTR_LANDSHAPE);
+	auto objs = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
+
+	for (auto obj : objs)
+	{
+		obj->effectFlags_.isDissolve = true;
+	}
 }
 
 void StageStateDead::Update()
@@ -189,7 +197,12 @@ void StageStateDead::Update()
 
 	//ステージを徐々にディゾルブ(そのオブジェクトがディゾルブ画像読み込んでいる前提)
 	float t = (float)timer_ / (float)EFFECT_TIMER_MAX_;
-	LevelManager::GetInstance().SetIsDissolveT(t, COLLISION_ATTR_LANDSHAPE);
+
+	auto objs = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
+	for (auto obj : objs)
+	{
+		obj->effectFlags_.dissolveT = t;
+	}
 
 	//一定時間たったらフラグ立てる
 	if (timer_ >= EFFECT_TIMER_MAX_)
