@@ -189,3 +189,8 @@ Vec2 MouseInput::GetCursorVelocity()
 {
 	return Vec2((float)mouseData_.lX, (float)mouseData_.lY);
 }
+
+long MouseInput::GetWheelAmountOfRot()
+{
+	return mouseData_.lZ;
+}

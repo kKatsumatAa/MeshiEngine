@@ -428,7 +428,7 @@ void Object::SendingBoneData(ModelFBX* model)
 
 
 		//初期姿勢の逆行列と今の姿勢行列を合成してスキニング行列に
-		constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
+		constMapSkin->bones[i] = model->GetMeshNode().globalTransform * bones[i].invInitialPose * matCurrentPose * XMMatrixInverse(nullptr, model->GetMeshNode().globalTransform);
 	}
 	constBuffSkin_->Unmap(0, nullptr);
 }
@@ -798,7 +798,7 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 
 	// 頂点レイアウトの設定
 	// 頂点レイアウト
-	D3D12_INPUT_ELEMENT_DESC inputLayout[6] = {
+	D3D12_INPUT_ELEMENT_DESC inputLayout[7] = {
 	{//xyz座標
 	 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
@@ -807,12 +807,6 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 
 		{//法線ベクトル
 	 "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	}, // (1行で書いたほうが見やすい)
-
-		{//法線の接線
-	 "TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
 	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 	}, // (1行で書いたほうが見やすい)
@@ -833,7 +827,20 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 	 "BONEWEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
 	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	}
+	},
+
+	{//接線
+	 "TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
+	 D3D12_APPEND_ALIGNED_ELEMENT,
+	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+	}, // (1行で書いたほうが見やすい)
+
+	{//従法線
+	 "BINORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
+	 D3D12_APPEND_ALIGNED_ELEMENT,
+	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+	}, // (1行で書いたほうが見やすい)
+
 	};
 
 	//sprite

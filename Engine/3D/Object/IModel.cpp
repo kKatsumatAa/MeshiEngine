@@ -35,7 +35,7 @@ void IModel::Initialize()
 				m->SetMaterial(defaultMaterial_.get());
 
 				//配列に追加（所有権渡す）
-				materials_.emplace(defaultMaterial_->name_, std::move(defaultMaterial_));
+				materials_.insert(std::make_pair(defaultMaterial_->name_, std::move(defaultMaterial_)));
 			}
 			else
 			{
@@ -74,7 +74,7 @@ void IModel::LoadTexturesInternal(const std::string& directoryPath)
 void IModel::AddMaterial(std::unique_ptr<Material> material)
 {
 	// コンテナに登録
-	materials_.emplace(material->name_, std::move(material));
+	materials_.insert(std::make_pair(material->name_, std::move(material)));
 }
 
 

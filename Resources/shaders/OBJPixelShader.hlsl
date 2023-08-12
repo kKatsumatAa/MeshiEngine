@@ -27,20 +27,20 @@ PSOutput main(VSOutput input)
     float3 wNormal = normalize(mul(world, float4(input.normal, 0)));
     
     float3 lightNormal = wNormal;
-    
+          
     //ノーマルマップが有効ならライトの計算に使う法線を算出
     if (isNormalMap)
-    {        
+    {
         //ローカルの法線を使わないといけない
         lightNormal = GetNormalMapWorldNormalVec(tex4.Sample(smp, input.uv), input.tangent,
             input.binormal, input.normal, world);
     }
-
+    
 	//平行光源
     for (int i = 0; i < S_DIRLIGHT_NUM; i++)
     {
         if (dirLights[i].active)
-        {            
+        {
 			// ライトに向かうベクトルと法線の内積
             float3 dotlightnormal = dot(dirLights[i].lightv, lightNormal);
 			// 反射光ベクトル
@@ -85,10 +85,13 @@ PSOutput main(VSOutput input)
 			//距離減衰係数
             float atten = 1.0f / (pointLights[i].lightatten.x + pointLights[i].lightatten.y * d +
 				pointLights[i].lightatten.z * d * d);
+                       
 			// ライトに向かうベクトルと法線の内積
             float3 dotlightnormal = dot(lightv, lightNormal);
+            
 			// 反射光ベクトル
             float3 reflect = normalize(-lightv + 2 * dotlightnormal * lightNormal);
+                        
             float3 specular = pow(saturate(dot(reflect, eyedir)), SHININESS);
 			//トゥーン
             if (isToon)
@@ -102,18 +105,20 @@ PSOutput main(VSOutput input)
             float3 diffuse = dotlightnormal * m_diffuse * diffuseColor;
 			// 鏡面反射光
             specular = specular * m_specular * specularColor;
-
+            
 			// 全て加算する
             shadecolor.rgb += atten * (diffuse + specular) * pointLights[i].lightcolor;
-            
-                        //スペキュラマップ
+                       
+            //スペキュラマップ
             if (isSpecularMap)
             {
                 float4 specularMap = GetSpecularMapColor(specular, diffuse, tex2.Sample(smp, input.uv));
                 specularMapCol += specularMap;
             }
+
         }
     }
+    
 
 	//スポットライト
     for (int i = 0; i < S_SPOTLIGHT_NUM; i++)
@@ -209,14 +214,14 @@ PSOutput main(VSOutput input)
     }
 
 	// シェーディングによる色で描画
-    float4 DSC = /*dotL **/ shadecolor;
+    float4 DSC = dotL * shadecolor;
     float4 RIM = float4(rimColor.rgb, 1.0f) * (1.0f - dotL);
     float4 RGBA = (DSC * texcolor * color) + RIM;
     float4 RGBA2 = (DSC * color) + RIM;
     float3 RGB = RGBA.rgb;
     float A = RGBA.a;
-
     
+      
     //スペキュラマップ
     if (isSpecularMap)
     {

@@ -70,6 +70,7 @@ void ObjectManager::DebugUpdate()
 			else
 			{
 				selectObj_ = info.object;
+				CameraManager::GetInstance().GetCamera()->SetTarget(selectObj_->GetWorldTrans());
 			}
 		}
 

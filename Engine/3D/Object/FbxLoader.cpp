@@ -170,13 +170,13 @@ void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode)
 	//スキニング情報の読み取り
 	PerseSkin(model, fbxMesh, mesh.get());
 
-	//メッシュの接線
-	mesh->CalculateTangent();
-
 	// 頂点法線の平均によるエッジの平滑化
 	if (isSmoothing_) {
 		mesh->CalculateSmoothedVertexNormals();
 	}
+
+	//メッシュの接線
+	CalcMeshTangent(model, fbxMesh, mesh.get());
 
 	//所有権戻す
 	model->meshes_[model->meshes_.size() - 1] = std::move(mesh);
@@ -355,12 +355,41 @@ void FbxLoader::ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode)
 		//モデル用マテリアル作成
 		std::unique_ptr<Material> materialM = Material::Create();
 
+		std::string mName;
+
 		if (material)
 		{
 			materialM->name_ = material->GetName();
+			mName = materialM->name_;
 
-			//fbxSurfaceLambertクラスかどうかを調べる
-			if (material->GetClassId().Is(FbxSurfaceLambert::ClassId))
+			//FbxSurfacePhongクラスかどうかを調べる
+			if (material->GetClassId().Is(FbxSurfacePhong::ClassId))
+			{
+				FbxSurfacePhong* phong = static_cast<FbxSurfacePhong*>(material);
+
+				//環境光係数
+				FbxPropertyT<FbxDouble3> ambient = phong->Ambient;
+				materialM->ambient_.x = (float)ambient.Get()[0];
+				materialM->ambient_.y = (float)ambient.Get()[1];
+				materialM->ambient_.z = (float)ambient.Get()[2];
+
+				//拡散反射光係数
+				FbxPropertyT<FbxDouble3> diffuse = phong->Diffuse;
+				materialM->diffuse_.x = (float)diffuse.Get()[0];
+				materialM->diffuse_.y = (float)diffuse.Get()[1];
+				materialM->diffuse_.z = (float)diffuse.Get()[2];
+
+				//鏡面反射光係数
+				FbxPropertyT<FbxDouble3> specular = phong->Specular;
+				materialM->specular_.x = (float)specular.Get()[0];
+				materialM->specular_.y = (float)specular.Get()[1];
+				materialM->specular_.z = (float)specular.Get()[2];
+
+				//alpha
+				materialM->alpha_ = 1.0f;
+			}
+			//lambert
+			else if (material->GetClassId().Is(FbxSurfaceLambert::ClassId))
 			{
 				FbxSurfaceLambert* lambert = static_cast<FbxSurfaceLambert*>(material);
 
@@ -380,7 +409,7 @@ void FbxLoader::ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode)
 				materialM->alpha_ = 1.0f;
 
 				//specular
-				materialM->specular_ = XMFLOAT3{ 0.1f,0.1f,0.1f };
+				materialM->specular_ = XMFLOAT3{ 0.3f,0.3f,0.3f };
 			}
 
 			//ディフューズテクスチャを取り出す
@@ -405,10 +434,13 @@ void FbxLoader::ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode)
 		}
 
 		//メッシュにマテリアルセット
-		mesh->SetMaterial(materialM.get());
-
-		//マテリアル配列に追加
 		model->AddMaterial(std::move(materialM));
+
+		// マテリアル名で検索し、マテリアルを割り当てる
+		auto itr = model->materials_.find(mName);
+		if (itr != model->materials_.end()) {
+			mesh->SetMaterial(itr->second.get());
+		}
 	}
 }
 

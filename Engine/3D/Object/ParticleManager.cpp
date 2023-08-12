@@ -37,6 +37,11 @@ void ParticleManager::Update(float speed, Camera* camera)
 {
 	HRESULT result;
 
+	if (particles_.empty())
+	{
+		return;
+	}
+
 	//カメラがセットされてなかったら
 	if (camera == nullptr)
 	{

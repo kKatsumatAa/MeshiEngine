@@ -41,7 +41,7 @@ private:
 
 	//デバッグ用
 	WorldMat debugWorldMat_;
-	const Vec3 CAMERA_POS_ = { 0,0,-100 };
+	Vec3 cameraPos_ = { 0,0,-100 };
 	bool isDebugCamera_ = false;
 
 	//カメラと名前をセットで持っておく

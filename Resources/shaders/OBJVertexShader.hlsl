@@ -8,6 +8,7 @@ struct SkinOutput
     float3 normal;
     uint4 boneIndices; //ボーンの番号
     float4 boneWeights; //ボーンのスキンウェイト
+    float3 tangent;
 };
 
 //スキニング計算
@@ -26,6 +27,7 @@ SkinOutput ComputeSkin(SkinOutput input)
     m = matSkinning[iBone];
     output.pos += weight * mul(m, input.pos);
     output.normal += weight * mul((float3x3) m, input.normal);
+    output.tangent += weight * mul((float3x3) m, input.tangent);
 
 	//ボーン1
     iBone = input.boneIndices.y;
@@ -33,6 +35,7 @@ SkinOutput ComputeSkin(SkinOutput input)
     m = matSkinning[iBone];
     output.pos += weight * mul(m, input.pos);
     output.normal += weight * mul((float3x3) m, input.normal);
+    output.tangent += weight * mul((float3x3) m, input.tangent);
 
 	//ボーン2
     iBone = input.boneIndices.z;
@@ -40,23 +43,24 @@ SkinOutput ComputeSkin(SkinOutput input)
     m = matSkinning[iBone];
     output.pos += weight * mul(m, input.pos);
     output.normal += weight * mul((float3x3) m, input.normal);
-
+    output.tangent += weight * mul((float3x3) m, input.tangent);
+    
 	//ボーン3
     iBone = input.boneIndices.w;
     weight = input.boneWeights.w;
     m = matSkinning[iBone];
     output.pos += weight * mul(m, input.pos);
     output.normal += weight * mul((float3x3) m, input.normal);
+    output.tangent += weight * mul((float3x3) m, input.tangent);
 
     return output;
 }
 
 
-VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float4 tangent : TANGENT,
-	float2 uv : TEXCOORD, uint4 boneIndices : BONEINDICES,
-	float4 boneWeights : BONEWEIGHTS)
+VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD, uint4 boneIndices : BONEINDICES,
+	float4 boneWeights : BONEWEIGHTS, float4 tangent : TANGENT, float4 binormal : BINORMAL)
 {
-    SkinOutput input = { pos, normal, boneIndices, boneWeights };
+    SkinOutput input = { pos, normal, boneIndices, boneWeights, tangent.rgb };
 	//スキニング計算
     SkinOutput skinned = ComputeSkin(input);
 
@@ -69,8 +73,8 @@ VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float4 tangent : TA
     output.worldpos = wpos;
     //ローカルの法線を送り、ピクセルシェーダでワールド変換
     output.normal = normalize(skinned.normal);
-    output.tangent = normalize(tangent).rgb;
-    output.binormal = normalize(cross(output.normal, output.tangent));
+    output.tangent = normalize(skinned.tangent).rgb;
+    output.binormal = normalize(cross(normalize(skinned.normal), normalize(skinned.tangent.rgb)));
     output.uv = uv;
 
     return output;

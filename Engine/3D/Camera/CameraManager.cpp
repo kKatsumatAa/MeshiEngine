@@ -82,25 +82,33 @@ void CameraManager::Update()
 		}
 
 		//デバッグカメラが有効の時
-		if (usingCamera_ == debugCamera && MouseInput::GetInstance().GetClick(CLICK_RIGHT))
+		if (usingCamera_ == debugCamera)
 		{
-			Vec2 vel = MouseInput::GetInstance().GetCursorVelocity();
 
-			//回転
-			Vec3 rotMove = {
-				vel.y_ * 0.01f,
-				vel.x_ * 0.01f,
-				0
-			};
+			if (MouseInput::GetInstance().GetClick(CLICK_RIGHT))
+			{
+				Vec2 vel = MouseInput::GetInstance().GetCursorVelocity();
 
-			debugWorldMat_.rot_ += rotMove;
-			debugWorldMat_.rot_.x_ = min(debugWorldMat_.rot_.x_, PI / 2.0f);
-			debugWorldMat_.rot_.x_ = max(debugWorldMat_.rot_.x_, -PI / 2.0f);
+				//回転
+				Vec3 rotMove = {
+					vel.y_ * 0.01f,
+					vel.x_ * 0.01f,
+					0
+				};
+
+				debugWorldMat_.rot_ += rotMove;
+				debugWorldMat_.rot_.x_ = min(debugWorldMat_.rot_.x_, PI / 2.0f);
+				debugWorldMat_.rot_.x_ = max(debugWorldMat_.rot_.x_, -PI / 2.0f);
+			}
+
+			cameraPos_.z_ = min(cameraPos_.z_ + (float)MouseInput::GetInstance().GetWheelAmountOfRot() * 0.02f, -1.0f);
+			cameraPos_.z_ = max(cameraPos_.z_ + (float)MouseInput::GetInstance().GetWheelAmountOfRot() * 0.02f, -1000.0f);
 
 			debugWorldMat_.CulcWorldMat();
-			Vec3 pos = CAMERA_POS_;
+			Vec3 pos = cameraPos_;
 			Vec3xM4(pos, debugWorldMat_.matWorld_, 0);
-			debugCamera->SetEye(pos);
+			debugCamera->SetEye(debugCamera->GetTarget() + pos);
+
 			debugCamera->UpdateViewMatrix();
 		}
 	}

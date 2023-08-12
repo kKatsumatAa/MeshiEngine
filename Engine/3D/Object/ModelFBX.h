@@ -51,7 +51,7 @@ public://サブクラス
 private:
 	//モデル名
 	std::string name_;
-	//ノード行列
+	//ノード配列
 	std::vector<Node> nodes_;
 	//メッシュを持つノード
 	Node* meshNode_ = nullptr;
@@ -80,6 +80,8 @@ public:
 	std::vector<Bone>& GetBones() { return bones_; }
 
 	FbxScene* GetFbxScene() { return fbxScene_; }
+
+	const Node& GetMeshNode() { return *meshNode_; }
 
 #pragma endregion
 };

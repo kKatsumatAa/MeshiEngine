@@ -70,5 +70,8 @@ public://ゲッター
 
 	//カーソルの移動量取得
 	Vec2 GetCursorVelocity();
+
+	//ホイールの回転量
+	long GetWheelAmountOfRot();
 };
 
