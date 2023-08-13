@@ -21,6 +21,15 @@ private://変数
 	//スムージング処理するか
 	bool isSmoothing_ = false;
 
+	//コントロールポイント用配列
+	struct MyControlPoint
+	{
+		DirectX::XMFLOAT3 pos;		
+		uint32_t boneIndex[Mesh::S_MAX_BONE_INDICES_] = { 0 };//影響を受けるボーン　番号
+		float boneWeight[Mesh::S_MAX_BONE_INDICES_] = { 1.0f,0,0,0 };//ボーン　重み
+	};
+	std::vector<MyControlPoint> myControlPoints;
+
 public://定数
 	//モデル格納ルートパス
 	static const string S_BASE_DIRECTORY_;
@@ -84,7 +93,7 @@ private:
 	void ParseMesh(ModelFBX* model, FbxNode* fbxNode);
 
 	//頂点座標読み取り
-	void ParseMeshVertices(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
+	void ParseMeshControlPointsPos(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
 
 	//面情報読み取り
 	void ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
@@ -96,5 +105,5 @@ private:
 	void ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode);
 
 	//スキニング情報の読み取り
-	void PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
+	void PerseSkin(ModelFBX* model, FbxMesh* fbxMesh);
 };

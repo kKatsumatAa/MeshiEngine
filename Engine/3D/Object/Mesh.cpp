@@ -151,34 +151,40 @@ void Mesh::CreateBuffers()
 	vbView_.SizeInBytes = sizeVB;
 	vbView_.StrideInBytes = sizeof(VertexPosNormalUvSkin);
 
-	// リソース設定
-	resourceDesc.Width = sizeIB;
+	if (indices_.size())
+	{
+		// リソース設定
+		resourceDesc.Width = sizeIB;
 
-	// インデックスバッファ生成
-	BuffProperties(heapProps, resourceDesc, &indexBuff_);
+		// インデックスバッファ生成
+		BuffProperties(heapProps, resourceDesc, &indexBuff_);
 
-	// インデックスバッファへのデータ転送
-	uint16_t* indexMap = nullptr;
-	result = indexBuff_->Map(0, nullptr, (void**)&indexMap);
-	if (SUCCEEDED(result)) {
+		// インデックスバッファへのデータ転送
+		uint16_t* indexMap = nullptr;
+		result = indexBuff_->Map(0, nullptr, (void**)&indexMap);
+		if (SUCCEEDED(result)) {
 
-		std::copy(indices_.begin(), indices_.end(), indexMap);
+			std::copy(indices_.begin(), indices_.end(), indexMap);
 
-		indexBuff_->Unmap(0, nullptr);
+			indexBuff_->Unmap(0, nullptr);
+		}
+
+		// インデックスバッファビューの作成
+		ibView_.BufferLocation = indexBuff_->GetGPUVirtualAddress();
+		ibView_.Format = DXGI_FORMAT_R16_UINT;
+		ibView_.SizeInBytes = sizeIB;
 	}
-
-	// インデックスバッファビューの作成
-	ibView_.BufferLocation = indexBuff_->GetGPUVirtualAddress();
-	ibView_.Format = DXGI_FORMAT_R16_UINT;
-	ibView_.SizeInBytes = sizeIB;
 }
 
-void Mesh::Draw(ID3D12GraphicsCommandList* cmdList)
+void Mesh::Draw(ID3D12GraphicsCommandList* cmdList, bool useIndex)
 {
 	// 頂点バッファをセット
 	cmdList->IASetVertexBuffers(0, 1, &vbView_);
-	// インデックスバッファをセット
-	cmdList->IASetIndexBuffer(&ibView_);
+	if (useIndex)
+	{
+		// インデックスバッファをセット
+		cmdList->IASetIndexBuffer(&ibView_);
+	}
 	// シェーダリソースビューをセット
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
@@ -190,5 +196,13 @@ void Mesh::Draw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->SetGraphicsRootConstantBufferView(3, constBuff->GetGPUVirtualAddress());
 
 	// 描画コマンド
-	cmdList->DrawIndexedInstanced((uint32_t)indices_.size(), 1, 0, 0, 0);
+	if (useIndex)
+	{
+		cmdList->DrawIndexedInstanced((uint32_t)indices_.size(), 1, 0, 0, 0);
+	}
+	else
+	{
+		cmdList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+		cmdList->DrawInstanced((uint32_t)vertices_.size(), 1, 0, 0);
+	}
 }

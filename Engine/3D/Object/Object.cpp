@@ -428,7 +428,8 @@ void Object::SendingBoneData(ModelFBX* model)
 
 
 		//初期姿勢の逆行列と今の姿勢行列を合成してスキニング行列に
-		constMapSkin->bones[i] = model->GetMeshNode().globalTransform * bones[i].invInitialPose * matCurrentPose * XMMatrixInverse(nullptr, model->GetMeshNode().globalTransform);
+		XMMATRIX globalInv = XMMatrixInverse(nullptr, bones[i].globalTransform);
+		constMapSkin->bones[i] = bones[i].globalTransform * bones[i].invInitialPose * matCurrentPose * globalInv;
 	}
 	constBuffSkin_->Unmap(0, nullptr);
 }
@@ -690,9 +691,9 @@ void Object::DrawImGui(std::function<void()>imguiF)
 	//トランスなど
 	if (ImGui::TreeNode("TransScaleRot")) {
 
-		ImGui::Text("Trans: %.2f %.2f %.2f", GetTrans().x_, GetTrans().y_, GetTrans().z_);
-		ImGui::Text("Scale: %.2f %.2f %.2f", GetScale().x_, GetScale().y_, GetScale().z_);
-		ImGui::Text("Rot: %.2f %.2f %.2f", GetRot().x_, GetRot().y_, GetRot().z_);
+		ImGui::SliderFloat3("Trans: ", &worldMat_->trans_.x_, -100.0f, 100.0f);
+		ImGui::SliderFloat3("Scale: ", &worldMat_->scale_.x_, 0, 10.0f);
+		ImGui::SliderFloat3("Rot: ", &worldMat_->rot_.x_, 0, PI * 2.0f);
 
 		ImGui::TreePop();
 	}

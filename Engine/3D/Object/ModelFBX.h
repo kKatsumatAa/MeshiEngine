@@ -38,6 +38,8 @@ public://サブクラス
 		std::string name_;
 		//初期姿勢の逆行列
 		DirectX::XMMATRIX invInitialPose;
+		//ノードのグローバルトランスフォーム
+		DirectX::XMMATRIX globalTransform;
 		//クラスター(FBX側のボーン情報)
 		FbxCluster* fbxCluster;
 		//コンストラクタ
@@ -72,11 +74,13 @@ private:
 public:
 	~ModelFBX();
 
-	//モデルの変形行列を取得
-	const XMMATRIX& GetModelFBXTransform() { return meshNode_->globalTransform; }
+	void Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex) override;
 
 public:
 	//getter
+		//モデルの変形行列を取得
+	const XMMATRIX& GetModelFBXTransform() { return meshNode_->globalTransform; }
+
 	std::vector<Bone>& GetBones() { return bones_; }
 
 	FbxScene* GetFbxScene() { return fbxScene_; }

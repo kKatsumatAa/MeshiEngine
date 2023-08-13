@@ -206,6 +206,12 @@ void Player::Update()
 		return;
 	}
 
+	if (!GetIsAlive())
+	{
+		//è‚ğíœ
+		handManager_->DeleteHands();
+	}
+
 	//ƒJƒƒ‰‚ÌŒü‚«•ÏX
 	DirectionUpdate();
 

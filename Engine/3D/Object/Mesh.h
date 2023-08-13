@@ -137,7 +137,7 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	void Draw(ID3D12GraphicsCommandList* cmdList, bool useIndex = true);
 
 public:
 	/// <summary>
