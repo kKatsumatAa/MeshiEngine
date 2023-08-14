@@ -963,10 +963,10 @@
                     1.0
                 ]
             },
-            "file_name": "enemy.fbx",
+            "file_name": "enemy2.fbx",
             "collider": {
                 "type": "SPHERE",
-                "attribute": "LANDSHAPE,",
+                "attribute": "ENEMYS,",
                 "center": [
                     0.0,
                     0.0,

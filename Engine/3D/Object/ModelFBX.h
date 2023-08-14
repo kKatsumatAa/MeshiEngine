@@ -2,24 +2,6 @@
 #include"IModel.h"
 
 
-struct Node
-{
-	//名前
-	std::string name = {};
-	//ローカルスケール
-	DirectX::XMVECTOR scaling = { 1,1,1,0 };
-	//ローカル回転角
-	DirectX::XMVECTOR rotation = { 0,0,0,0 };
-	//ローカル移動
-	DirectX::XMVECTOR translation = { 0,0,0,1 };
-	//ローカル変形行列
-	DirectX::XMMATRIX transform = {};
-	//グローバル変形行列（親の影響も含めた）
-	DirectX::XMMATRIX globalTransform = {};
-	//親ノード
-	Node* parent = nullptr;
-};
-
 class ModelFBX :public IModel
 {
 public:
@@ -55,8 +37,6 @@ private:
 	std::string name_;
 	//ノード配列
 	std::vector<Node> nodes_;
-	//メッシュを持つノード
-	Node* meshNode_ = nullptr;
 	//ボーン配列
 	std::vector<Bone> bones_;
 	//FBXシーン
@@ -74,18 +54,11 @@ private:
 public:
 	~ModelFBX();
 
-	void Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex) override;
 
 public:
-	//getter
-		//モデルの変形行列を取得
-	const XMMATRIX& GetModelFBXTransform() { return meshNode_->globalTransform; }
-
 	std::vector<Bone>& GetBones() { return bones_; }
 
 	FbxScene* GetFbxScene() { return fbxScene_; }
-
-	const Node& GetMeshNode() { return *meshNode_; }
 
 #pragma endregion
 };

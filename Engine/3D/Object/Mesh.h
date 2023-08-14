@@ -7,6 +7,27 @@
 #include "Material.h"
 #include <vector>
 #include <unordered_map>
+#include "Camera.h"
+
+
+struct Node
+{
+	//名前
+	std::string name = {};
+	//ローカルスケール
+	DirectX::XMVECTOR scaling = { 1,1,1,0 };
+	//ローカル回転角
+	DirectX::XMVECTOR rotation = { 0,0,0,0 };
+	//ローカル移動
+	DirectX::XMVECTOR translation = { 0,0,0,1 };
+	//ローカル変形行列
+	DirectX::XMMATRIX transform = {};
+	//グローバル変形行列（親の影響も含めた）
+	DirectX::XMMATRIX globalTransform = {};
+	//親ノード
+	Node* parent = nullptr;
+};
+
 
 /// <summary>
 /// 形状データ
@@ -56,6 +77,8 @@ private: // 静的メンバ変数
 	static ID3D12Device* sDevice_;
 
 public: // メンバ関数
+	Mesh();
+
 
 	/// <summary>
 	/// 名前を取得
@@ -137,7 +160,8 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
-	void Draw(ID3D12GraphicsCommandList* cmdList, bool useIndex = true);
+	void Draw(ID3D12GraphicsCommandList* cmdList,
+		const std::function<void(const XMMATRIX* mat)>& sendingMeshWorldMat);
 
 public:
 	/// <summary>
@@ -172,4 +196,20 @@ private: // メンバ変数
 	std::unordered_map<uint16_t, std::vector<uint16_t>> smoothData_;
 	// マテリアル
 	Material* material_ = nullptr;
+
+	//メッシュを持つノード(fbx)
+	Node* meshNode_ = nullptr;
+
+	//グローバル変形行列（親の影響も含めた）
+	DirectX::XMMATRIX globalTransform_ = {};
+
+public:
+	//getter
+//モデルの変形行列を取得
+	const XMMATRIX& GetMeshFBXTransform() { return meshNode_->globalTransform; }
+
+	const Node& GetMeshNode() { return *meshNode_; }
+
+	//setter
+	void SetMeshNode(Node* node) { meshNode_ = node; }
 };

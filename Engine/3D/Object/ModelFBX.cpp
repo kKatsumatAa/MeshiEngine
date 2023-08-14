@@ -21,19 +21,6 @@ void ModelFBX::Initialize()
 	IModel::Initialize();
 }
 
-void ModelFBX::Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
-{
-	// パイプラインステートとルートシグネチャの設定コマンド
-	setRootParam();
-
-	setMaterialLightTex();
-
-	// 全メッシュを描画
-	for (auto& mesh : meshes_) {
-		mesh->Draw(DirectXWrapper::GetInstance().GetCommandList());
-	}
-}
-
 void ModelFBX::LoadTextures()
 {
 	std::string directoryPathL = IModel::S_BASE_DIRECTORY_ + S_TYPE_DIRECTORY_ + name_ + "/";

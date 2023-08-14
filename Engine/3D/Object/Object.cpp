@@ -291,7 +291,7 @@ Object::Object()
 	}
 }
 
-void Object::SendingMat(int32_t indexNum, Camera* camera)
+void Object::SendingMat(int32_t indexNum, Camera* camera, const XMMATRIX* mat)
 {
 	//変換行列をGPUに送信
 	worldMat_->CulcAllTreeMat();
@@ -308,7 +308,15 @@ void Object::SendingMat(int32_t indexNum, Camera* camera)
 		XMMATRIX matW;
 		worldMat_->matWorld_.MatIntoXMMATRIX(matW);
 
-		cbt_.constMapTransform_->world = matW;
+		//行列がセットされてたらそれとワールドをかける
+		if (mat)
+		{
+			cbt_.constMapTransform_->world = (*mat) * matW;
+		}
+		else
+		{
+			cbt_.constMapTransform_->world = matW;
+		}
 		cbt_.constMapTransform_->viewproj = lCamera->GetViewMat() * lCamera->GetProjMat();
 		XMFLOAT3 cPos = { lCamera->GetEye().x_,lCamera->GetEye().y_,lCamera->GetEye().z_ };
 		cbt_.constMapTransform_->cameraPos = cPos;
@@ -569,12 +577,15 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 		std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(pipelineSetFBX_.pipelineState.Get(), pipelineNum, pipelineSetFBX_.rootSignature.Get()); };
 		std::function<void()>SetMaterialTexM = [=]() {SetMaterialLightMTexSkinModel(dissolveTextureHandleL, specularMapTextureHandleL,
 			normalMapTextureHandleL, constBuffTransform); };
+		//カメラとindexNumは引数のものを使い、行列のみメッシュのを使う
+		std::function<void(const XMMATRIX* mat)> sendingMeshWorldMat =
+			[=](const XMMATRIX* mat) {SendingMat(indexNum, camera, mat); };
 
 		if (indexNum == FBX)
 		{
 			SendingBoneData(dynamic_cast<ModelFBX*>(model));
 		}
-		model->Draw(SetRootPipeRM, SetMaterialTexM);
+		model->Draw(SetRootPipeRM, SetMaterialTexM, sendingMeshWorldMat);
 	}
 
 }

@@ -79,7 +79,7 @@ public:
 
 private:
 	//グローバルトランスフォーム計算
-	void CalcGlobalTransform(const FbxNode& fbxNode, Node& node, const Vec3& addRot = { 0,0,0 });
+	void CalcGlobalTransform(const FbxNode& fbxNode, Node& node, Node* parent, const Vec3& addRot = { 0,0,0 });
 
 	/// <summary>
 	/// 再帰的にノード構成を解析
@@ -93,7 +93,7 @@ private:
 	/// </summary>
 	/// <param name="model">読み込み先モデルオブジェクト</param>
 	/// <param name="fbxNode">解析対象のノード</param>
-	void ParseMesh(ModelFBX* model, FbxNode* fbxNode);
+	void ParseMesh(ModelFBX* model, FbxNode* fbxNode, Mesh* mesh);
 
 	//頂点座標読み取り
 	void ParseMeshControlPointsPos(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
@@ -108,5 +108,5 @@ private:
 	void ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode);
 
 	//スキニング情報の読み取り
-	void PerseSkin(ModelFBX* model, FbxMesh* fbxMesh);
+	void PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
 };

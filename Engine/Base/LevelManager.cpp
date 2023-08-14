@@ -191,7 +191,7 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 		newObj = Player::Create(std::move(objData.worldMat), GetChildWeapon(objData));
 	}
 	//敵の場合
-	else if (objData.fileName == "enemy")
+	else if (objData.fileName.find("enemy") != std::string::npos)
 	{
 		//enemyもObjectクラスを継承してるのでポリモーフィズム
 		newObj = Enemy::Create(std::move(objData.worldMat), GetChildWeapon(objData));

@@ -21,7 +21,7 @@ struct VSOutput
 };
 
 //ボーンの最大数(Object.hと合わせる)
-static const int S_MAX_BONES = 32;
+static const int S_MAX_BONES = 90;
 
 //ボーンのスキニング行列
 cbuffer skinning : register(b5)

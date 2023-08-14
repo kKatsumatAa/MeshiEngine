@@ -103,7 +103,7 @@ private:
 	static LightManager* sLightManager_;
 
 	//ボーンの最大数
-	static const int32_t S_MAX_BONES_ = 32;
+	static const int32_t S_MAX_BONES_ = 90;
 	//定数バッファ（スキン）
 	ComPtr<ID3D12Resource> constBuffSkin_ = nullptr;
 
@@ -172,7 +172,7 @@ private:
 		Camera* camera, IModel* model = nullptr, bool primitiveMode = true);
 
 	//行列送信
-	void SendingMat(int32_t indexNum, Camera* camera);
+	void SendingMat(int32_t indexNum, Camera* camera, const XMMATRIX* mat = nullptr);
 
 	//ボーンのデータ転送
 	void SendingBoneData(ModelFBX* model);

@@ -85,7 +85,7 @@ std::unique_ptr<ModelFBX> FbxLoader::LoadModelFromFile(const string& modelName, 
 	return std::move(model);
 }
 
-void FbxLoader::CalcGlobalTransform(const FbxNode& fbxNode, Node& node, const Vec3& addRot)
+void FbxLoader::CalcGlobalTransform(const FbxNode& fbxNode, Node& node, Node* parent, const Vec3& addRot)
 {
 	//fbxノードのローカル移動情報
 	FbxDouble3 rotation = fbxNode.LclRotation.Get();
@@ -113,6 +113,15 @@ void FbxLoader::CalcGlobalTransform(const FbxNode& fbxNode, Node& node, const Ve
 	node.transform *= matScaling;
 	node.transform *= matRotation;
 	node.transform *= matTranslation;
+
+	//グローバル変換行列の計算
+	node.globalTransform = node.transform;
+	if (parent)
+	{
+		node.parent = parent;
+		//親の変形を乗算
+		node.globalTransform *= parent->globalTransform;
+	}
 }
 
 void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* parent)
@@ -124,16 +133,7 @@ void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* pare
 	node.name = fbxNode->GetName();
 
 	//グローバルトランスフォーム
-	CalcGlobalTransform(*fbxNode, node);
-
-	//グローバル変換行列の計算
-	node.globalTransform = node.transform;
-	if (parent)
-	{
-		node.parent = parent;
-		//親の変形を乗算
-		node.globalTransform *= parent->globalTransform;
-	}
+	CalcGlobalTransform(*fbxNode, node, parent);
 
 	//fbxノードのメッシュ情報を解析
 	FbxNodeAttribute* fbxNodeAttribute = fbxNode->GetNodeAttribute();
@@ -144,11 +144,21 @@ void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* pare
 		if (fbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh)
 		{
 			//なぜか角度が傾くので修正
-			CalcGlobalTransform(*fbxNode, node, { -PI / 2.0f,0,0 });
+			CalcGlobalTransform(*fbxNode, node, parent, { 0,0,0 });
+
+			//メッシュ配列に追加
+			model->meshes_.emplace_back(std::move(std::make_unique <Mesh>()));
+			//所有権をいったん与える
+			std::unique_ptr<Mesh> mesh = std::move(model->meshes_.back());
+			//グローバルトランスフォーム行列
+			mesh->globalTransform_ = node.globalTransform;
 
 			//ノードからメッシュ情報を読み取る
-			model->meshNode_ = &node;
-			ParseMesh(model, fbxNode);
+			mesh->SetMeshNode(&node);
+			ParseMesh(model, fbxNode, mesh.get());
+
+			//所有権戻す
+			model->meshes_[model->meshes_.size() - 1] = std::move(mesh);
 		}
 	}
 
@@ -159,28 +169,23 @@ void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* pare
 	}
 }
 
-void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode)
+void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode, Mesh* mesh)
 {
 	//ノードのメッシュを取得
 	FbxMesh* fbxMesh = fbxNode->GetMesh();
-
-	//メッシュ配列に追加
-	model->meshes_.emplace_back(std::move(std::make_unique <Mesh>()));
-	//所有権をいったん与える
-	std::unique_ptr<Mesh> mesh = std::move(model->meshes_.back());
 
 	//コントロールポイント用配列
 	myControlPoints.clear();
 
 
 	//頂点座標(コントロールポイント)読み取り
-	ParseMeshControlPointsPos(model, fbxMesh, mesh.get());
+	ParseMeshControlPointsPos(model, fbxMesh, mesh);
 	//スキニング情報(コントロールポイントへ)の読み取り
-	PerseSkin(model, fbxMesh);
+	PerseSkin(model, fbxMesh, mesh);
 	//面を構成するデータの読み取り
-	ParseMeshFaces(model, fbxMesh, mesh.get());
+	ParseMeshFaces(model, fbxMesh, mesh);
 	//マテリアルの読み取り
-	ParseMaterial(model, mesh.get(), fbxNode);
+	ParseMaterial(model, mesh, fbxNode);
 
 	// 頂点法線の平均によるエッジの平滑化
 	if (isSmoothing_) {
@@ -189,9 +194,6 @@ void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode)
 
 	//メッシュの接線
 	mesh->CalculateTangent();
-
-	//所有権戻す
-	model->meshes_[model->meshes_.size() - 1] = std::move(mesh);
 }
 
 void FbxLoader::ParseMeshControlPointsPos(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
@@ -219,7 +221,7 @@ void FbxLoader::ParseMeshControlPointsPos(ModelFBX* model, FbxMesh* fbxMesh, Mes
 	}
 }
 
-void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
+void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 {
 	//(今は１スキンのみの前提で実装)
 
@@ -265,7 +267,7 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 		bone.fbxCluster = fbxCluster;
 
 		//グローバルトランスフォーム
-		bone.globalTransform = model->meshNode_->transform;
+		bone.globalTransform = mesh->GetMeshNode().transform;
 
 		//fbxから初期姿勢行列を取得
 		FbxAMatrix fbxMat;

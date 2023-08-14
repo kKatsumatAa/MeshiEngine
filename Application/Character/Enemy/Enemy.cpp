@@ -151,7 +151,7 @@ void Enemy::Update()
 
 void Enemy::Draw()
 {
-	Object::DrawModel(nullptr);
+	Object::DrawModel(nullptr, nullptr, { 3.0f,0,0,1.0f });
 }
 
 

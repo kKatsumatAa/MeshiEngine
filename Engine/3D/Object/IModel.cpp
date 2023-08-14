@@ -78,7 +78,8 @@ void IModel::AddMaterial(std::unique_ptr<Material> material)
 }
 
 
-void IModel::Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
+void IModel::Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
+	, const std::function<void(const XMMATRIX* mat)>& sendingMeshWorldMat)
 {
 	// パイプラインステートとルートシグネチャの設定コマンド
 	setRootParam();
@@ -87,6 +88,6 @@ void IModel::Draw(const std::function<void()>& setRootParam, const std::function
 
 	// 全メッシュを描画
 	for (auto& mesh : meshes_) {
-		mesh->Draw(DirectXWrapper::GetInstance().GetCommandList());
+		mesh->Draw(DirectXWrapper::GetInstance().GetCommandList(), sendingMeshWorldMat);
 	}
 }

@@ -21,6 +21,11 @@ void Mesh::StaticInitialize(ID3D12Device* device)
 	Material::StaticInitialize(device);
 }
 
+Mesh::Mesh()
+{
+	globalTransform_ = XMMatrixIdentity();
+}
+
 void Mesh::SetName(const std::string& name)
 {
 	name_ = name;
@@ -176,15 +181,13 @@ void Mesh::CreateBuffers()
 	}
 }
 
-void Mesh::Draw(ID3D12GraphicsCommandList* cmdList, bool useIndex)
+void Mesh::Draw(ID3D12GraphicsCommandList* cmdList, 
+	const std::function<void(const XMMATRIX* mat)>& sendingMeshWorldMat)
 {
 	// 頂点バッファをセット
 	cmdList->IASetVertexBuffers(0, 1, &vbView_);
-	if (useIndex)
-	{
-		// インデックスバッファをセット
-		cmdList->IASetIndexBuffer(&ibView_);
-	}
+	// インデックスバッファをセット
+	cmdList->IASetIndexBuffer(&ibView_);
 	// シェーダリソースビューをセット
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
@@ -195,14 +198,9 @@ void Mesh::Draw(ID3D12GraphicsCommandList* cmdList, bool useIndex)
 	ID3D12Resource* constBuff = material_->GetConstantBuffer();
 	cmdList->SetGraphicsRootConstantBufferView(3, constBuff->GetGPUVirtualAddress());
 
+	//メッシュの行列を計算
+	sendingMeshWorldMat(&globalTransform_);
+
 	// 描画コマンド
-	if (useIndex)
-	{
-		cmdList->DrawIndexedInstanced((uint32_t)indices_.size(), 1, 0, 0, 0);
-	}
-	else
-	{
-		cmdList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-		cmdList->DrawInstanced((uint32_t)vertices_.size(), 1, 0, 0);
-	}
+	cmdList->DrawIndexedInstanced((uint32_t)indices_.size(), 1, 0, 0, 0);
 }
