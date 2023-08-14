@@ -24,7 +24,7 @@ private://変数
 	//コントロールポイント用配列
 	struct MyControlPoint
 	{
-		DirectX::XMFLOAT3 pos;		
+		DirectX::XMFLOAT3 pos;
 		uint32_t boneIndex[Mesh::S_MAX_BONE_INDICES_] = { 0 };//影響を受けるボーン　番号
 		float boneWeight[Mesh::S_MAX_BONE_INDICES_] = { 1.0f,0,0,0 };//ボーン　重み
 	};
@@ -78,6 +78,9 @@ public:
 	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
 
 private:
+	//グローバルトランスフォーム計算
+	void CalcGlobalTransform(const FbxNode& fbxNode, Node& node, const Vec3& addRot = { 0,0,0 });
+
 	/// <summary>
 	/// 再帰的にノード構成を解析
 	/// </summary>

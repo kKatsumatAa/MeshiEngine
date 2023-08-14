@@ -85,18 +85,12 @@ std::unique_ptr<ModelFBX> FbxLoader::LoadModelFromFile(const string& modelName, 
 	return std::move(model);
 }
 
-void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* parent)
+void FbxLoader::CalcGlobalTransform(const FbxNode& fbxNode, Node& node, const Vec3& addRot)
 {
-	//モデルにノードを追加
-	model->nodes_.emplace_back();
-	Node& node = model->nodes_.back();
-	//ノード名を取得
-	node.name = fbxNode->GetName();
-
 	//fbxノードのローカル移動情報
-	FbxDouble3 rotation = fbxNode->LclRotation.Get();
-	FbxDouble3 scaling = fbxNode->LclScaling.Get();
-	FbxDouble3 translation = fbxNode->LclTranslation.Get();
+	FbxDouble3 rotation = fbxNode.LclRotation.Get();
+	FbxDouble3 scaling = fbxNode.LclScaling.Get();
+	FbxDouble3 translation = fbxNode.LclTranslation.Get();
 
 	//形式変換して代入
 	node.rotation = { (float)rotation[0],(float)rotation[1],(float)rotation[2],0.0f };
@@ -104,9 +98,9 @@ void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* pare
 	node.translation = { (float)translation[0],(float)translation[1],(float)translation[2],1.0f };
 
 	//回転角をDegree（度）からラジアンに変換
-	node.rotation.m128_f32[0] = XMConvertToRadians(node.rotation.m128_f32[0]);
-	node.rotation.m128_f32[1] = XMConvertToRadians(node.rotation.m128_f32[1]);
-	node.rotation.m128_f32[2] = XMConvertToRadians(node.rotation.m128_f32[2]);
+	node.rotation.m128_f32[0] = XMConvertToRadians(node.rotation.m128_f32[0]) - addRot.x_;
+	node.rotation.m128_f32[1] = XMConvertToRadians(node.rotation.m128_f32[1]) - addRot.y_;
+	node.rotation.m128_f32[2] = XMConvertToRadians(node.rotation.m128_f32[2]) - addRot.z_;
 
 	//スケール、回転、平行移動行列の計算
 	XMMATRIX matScaling, matRotation, matTranslation;
@@ -119,6 +113,18 @@ void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* pare
 	node.transform *= matScaling;
 	node.transform *= matRotation;
 	node.transform *= matTranslation;
+}
+
+void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* parent)
+{
+	//モデルにノードを追加
+	model->nodes_.emplace_back();
+	Node& node = model->nodes_.back();
+	//ノード名を取得
+	node.name = fbxNode->GetName();
+
+	//グローバルトランスフォーム
+	CalcGlobalTransform(*fbxNode, node);
 
 	//グローバル変換行列の計算
 	node.globalTransform = node.transform;
@@ -137,6 +143,9 @@ void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* pare
 		//種類がメッシュの場合
 		if (fbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh)
 		{
+			//なぜか角度が傾くので修正
+			CalcGlobalTransform(*fbxNode, node, { -PI / 2.0f,0,0 });
+
 			//ノードからメッシュ情報を読み取る
 			model->meshNode_ = &node;
 			ParseMesh(model, fbxNode);
