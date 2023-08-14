@@ -179,7 +179,7 @@ void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode)
 	}
 
 	//メッシュの接線
-	CalcMeshTangent(model,fbxMesh,mesh.get());
+	mesh->CalculateTangent();
 
 	//所有権戻す
 	model->meshes_[model->meshes_.size() - 1] = std::move(mesh);
