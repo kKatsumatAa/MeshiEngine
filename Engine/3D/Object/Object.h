@@ -66,6 +66,21 @@ protected://エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+public:
+	enum ROOTPARAM_NUM
+	{
+		COLOR,
+		TEX,
+		MATRIX,
+		MATERIAL,
+		LIGHT,
+		EFFECT,
+		SKIN,
+		DISSOLVE,
+		SPECULAR_MAP,
+		NORM_MAP
+	};
+
 private:
 	//リソース設定
 	//D3D12_RESOURCE_DESC resDesc{};
@@ -168,11 +183,13 @@ protected://継承先まで公開
 
 private:
 	//--------------------
-	void Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
+	void Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, ConstBuffTransform* constBuffTransform,
 		Camera* camera, IModel* model = nullptr, bool primitiveMode = true);
 
 	//行列送信
-	void SendingMat(int32_t indexNum, Camera* camera, const XMMATRIX* mat = nullptr);
+	void SendingMat(int32_t indexNum, Camera* camera);
+
+	void SendingMat(int32_t indexNum, Camera* camera, const XMMATRIX* mat);
 
 	//ボーンのデータ転送
 	void SendingBoneData(ModelFBX* model);
@@ -181,9 +198,9 @@ private:
 	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
 	//マテリアル、ライト、テクスチャ系のコマンド
 	void SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
-		uint64_t normalMapTex, ConstBuffTransform cbt, bool setTex = true);
+		uint64_t normalMapTex, ConstBuffTransform* cbt, bool setTex = true);
 	void SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
-		uint64_t normalMapTexHandle, ConstBuffTransform cbt);
+		uint64_t normalMapTexHandle);
 
 	//アニメーション開始
 	void PlayAnimationInternal(FbxTime& sTime, FbxTime& eTime,

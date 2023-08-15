@@ -79,15 +79,15 @@ void IModel::AddMaterial(std::unique_ptr<Material> material)
 
 
 void IModel::Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
-	, const std::function<void(const XMMATRIX* mat)>& sendingMeshWorldMat)
+	, const Camera& camera, const WorldMat& worldMat)
 {
-	// パイプラインステートとルートシグネチャの設定コマンド
+	//パイプラインなどセット
 	setRootParam();
-
+	//ライトなどをセット
 	setMaterialLightTex();
 
 	// 全メッシュを描画
 	for (auto& mesh : meshes_) {
-		mesh->Draw(DirectXWrapper::GetInstance().GetCommandList(), sendingMeshWorldMat);
+		mesh->Draw(camera, worldMat, setRootParam, setMaterialLightTex);
 	}
 }

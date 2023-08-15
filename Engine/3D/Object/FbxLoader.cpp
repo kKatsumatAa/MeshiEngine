@@ -143,9 +143,6 @@ void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* pare
 		//種類がメッシュの場合
 		if (fbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh)
 		{
-			//なぜか角度が傾くので修正
-			CalcGlobalTransform(*fbxNode, node, parent, { 0,0,0 });
-
 			//メッシュ配列に追加
 			model->meshes_.emplace_back(std::move(std::make_unique <Mesh>()));
 			//所有権をいったん与える

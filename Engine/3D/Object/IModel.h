@@ -76,7 +76,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
 	virtual void Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
-		, const std::function<void(const XMMATRIX* mat)>& sendingMeshWorldMat);
+		, const Camera& camera, const WorldMat& worldMat);
 
 public:
 	/// <summary>

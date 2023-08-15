@@ -2,6 +2,7 @@
 #include <d3dcompiler.h>
 #include <cassert>
 #include "Util.h"
+#include "Object.h"
 
 using namespace DirectX;
 
@@ -24,6 +25,8 @@ void Mesh::StaticInitialize(ID3D12Device* device)
 Mesh::Mesh()
 {
 	globalTransform_ = XMMatrixIdentity();
+
+	constBuffTransform_.Initialize();
 }
 
 void Mesh::SetName(const std::string& name)
@@ -181,26 +184,48 @@ void Mesh::CreateBuffers()
 	}
 }
 
-void Mesh::Draw(ID3D12GraphicsCommandList* cmdList, 
-	const std::function<void(const XMMATRIX* mat)>& sendingMeshWorldMat)
+void Mesh::SendingMat(const Camera& camera, const WorldMat& worldMat)
 {
+	//変換行列をGPUに送信
+	WorldMat worldL = worldMat;
+	worldL.CulcAllTreeMat();
+
+	XMMATRIX matW;
+	worldL.matWorld_.MatIntoXMMATRIX(matW);
+
+	//メッシュのグローバルトランスフォームとオブジェクトのワールドをかける
+	/*globalTransform_ = XMMatrixIdentity() * 10.0f;*/
+	constBuffTransform_.constMapTransform_->world = /*globalTransform_ **/ matW;
+
+	constBuffTransform_.constMapTransform_->viewproj = camera.GetViewMat() * camera.GetProjMat();
+	XMFLOAT3 cPos = { camera.GetEye().x_,camera.GetEye().y_,camera.GetEye().z_ };
+	constBuffTransform_.constMapTransform_->cameraPos = cPos;
+}
+
+void Mesh::Draw(const Camera& camera, const WorldMat& worldMat,
+	const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
+{
+	SendingMat(camera, worldMat);
+
 	// 頂点バッファをセット
-	cmdList->IASetVertexBuffers(0, 1, &vbView_);
+	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
 	// インデックスバッファをセット
-	cmdList->IASetIndexBuffer(&ibView_);
+	DirectXWrapper::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView_);
+
 	// シェーダリソースビューをセット
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 	srvGpuHandle.ptr = material_->textureHandle_;
-	cmdList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(Object::ROOTPARAM_NUM::TEX, srvGpuHandle);
 
 	// マテリアルの定数バッファをセット
 	ID3D12Resource* constBuff = material_->GetConstantBuffer();
-	cmdList->SetGraphicsRootConstantBufferView(3, constBuff->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(Object::ROOTPARAM_NUM::MATERIAL, constBuff->GetGPUVirtualAddress());
 
-	//メッシュの行列を計算
-	sendingMeshWorldMat(&globalTransform_);
+	//定数バッファビュー(CBV)の設定コマンド
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(
+		Object::ROOTPARAM_NUM::MATRIX, constBuffTransform_.constBuffTransform_->GetGPUVirtualAddress());
 
 	// 描画コマンド
-	cmdList->DrawIndexedInstanced((uint32_t)indices_.size(), 1, 0, 0, 0);
+	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((uint32_t)indices_.size(), 1, 0, 0, 0);
 }

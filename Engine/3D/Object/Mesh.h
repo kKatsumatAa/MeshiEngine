@@ -8,6 +8,8 @@
 #include <vector>
 #include <unordered_map>
 #include "Camera.h"
+#include "ConstBuffTransform.h"
+#include "WorldMat.h"
 
 
 struct Node
@@ -160,8 +162,8 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
-	void Draw(ID3D12GraphicsCommandList* cmdList,
-		const std::function<void(const XMMATRIX* mat)>& sendingMeshWorldMat);
+	void Draw(const Camera& camera, const WorldMat& worldMat,
+		const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
 
 public:
 	/// <summary>
@@ -178,6 +180,9 @@ public:
 
 
 private: // メンバ変数
+	//トランスフォーム行列
+	ConstBuffTransform constBuffTransform_;
+
 	// 名前
 	std::string name_;
 	// 頂点バッファ
@@ -202,6 +207,10 @@ private: // メンバ変数
 
 	//グローバル変形行列（親の影響も含めた）
 	DirectX::XMMATRIX globalTransform_ = {};
+
+
+public:
+	void SendingMat(const Camera& camera, const WorldMat& worldMat);
 
 public:
 	//getter

@@ -49,61 +49,61 @@ void Object::DrawInitialize()
 
 	//ルートパラメータの設定
 	//定数バッファ0番（色）
-	rootParams_[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rootParams_[0].Descriptor.ShaderRegister = 0;//定数バッファ番号(b0)
-	rootParams_[0].Descriptor.RegisterSpace = 0;//デフォルト値
-	rootParams_[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	rootParams_[COLOR].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[COLOR].Descriptor.ShaderRegister = 0;//定数バッファ番号(b0)
+	rootParams_[COLOR].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[COLOR].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ0番（テクスチャ）
-	rootParams_[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	rootParams_[1].DescriptorTable.pDescriptorRanges = &TextureManager::GetInstance().sDescriptorRange_;//デスクリプタレンジ
-	rootParams_[1].DescriptorTable.NumDescriptorRanges = 1;//〃数
-	rootParams_[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	rootParams_[TEX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	rootParams_[TEX].DescriptorTable.pDescriptorRanges = &TextureManager::GetInstance().sDescriptorRange_;//デスクリプタレンジ
+	rootParams_[TEX].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[TEX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//定数バッファ1番(行列)
-	rootParams_[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rootParams_[2].Descriptor.ShaderRegister = 1;//定数バッファ番号(b1)
-	rootParams_[2].Descriptor.RegisterSpace = 0;//デフォルト値
-	rootParams_[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	rootParams_[MATRIX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[MATRIX].Descriptor.ShaderRegister = 1;//定数バッファ番号(b1)
+	rootParams_[MATRIX].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[MATRIX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//定数バッファ2番（マテリアル）
-	rootParams_[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rootParams_[3].Descriptor.ShaderRegister = 2;//定数バッファ番号(b2)
-	rootParams_[3].Descriptor.RegisterSpace = 0;//デフォルト値
-	rootParams_[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	rootParams_[MATERIAL].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[MATERIAL].Descriptor.ShaderRegister = 2;//定数バッファ番号(b2)
+	rootParams_[MATERIAL].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[MATERIAL].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//定数バッファ3番(ライト用)
-	rootParams_[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rootParams_[4].Descriptor.ShaderRegister = 3;//定数バッファ番号(b3)
-	rootParams_[4].Descriptor.RegisterSpace = 0;//デフォルト値
-	rootParams_[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//定数バッファ4番(画面効果フラグ)
-	rootParams_[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rootParams_[5].Descriptor.ShaderRegister = 4;//定数バッファ番号(b4)
-	rootParams_[5].Descriptor.RegisterSpace = 0;//デフォルト値
-	rootParams_[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	rootParams_[LIGHT].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[LIGHT].Descriptor.ShaderRegister = 3;//定数バッファ番号(b3)
+	rootParams_[LIGHT].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[LIGHT].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//定数バッファ4番(効果フラグ)
+	rootParams_[EFFECT].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[EFFECT].Descriptor.ShaderRegister = 4;//定数バッファ番号(b4)
+	rootParams_[EFFECT].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[EFFECT].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//定数バッファ5番（スキニング用）
-	rootParams_[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rootParams_[6].Descriptor.ShaderRegister = 5;//定数バッファ番号(b5)
-	rootParams_[6].Descriptor.RegisterSpace = 0;//デフォルト値
-	rootParams_[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	rootParams_[SKIN].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[SKIN].Descriptor.ShaderRegister = 5;//定数バッファ番号(b5)
+	rootParams_[SKIN].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[SKIN].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ1番（ディゾルブ用テクスチャ）
-	rootParams_[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	rootParams_[DISSOLVE].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
 	D3D12_DESCRIPTOR_RANGE dissolveDHRange = TextureManager::GetInstance().sDescriptorRange_;
 	dissolveDHRange.BaseShaderRegister++;
-	rootParams_[7].DescriptorTable.pDescriptorRanges = &dissolveDHRange;//デスクリプタレンジ
-	rootParams_[7].DescriptorTable.NumDescriptorRanges = 1;//〃数
-	rootParams_[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	rootParams_[DISSOLVE].DescriptorTable.pDescriptorRanges = &dissolveDHRange;//デスクリプタレンジ
+	rootParams_[DISSOLVE].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[DISSOLVE].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ2番（スペキュラマップ用テクスチャ）
-	rootParams_[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	rootParams_[SPECULAR_MAP].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
 	D3D12_DESCRIPTOR_RANGE dissolveDHRange2 = TextureManager::GetInstance().sDescriptorRange_;
 	dissolveDHRange2.BaseShaderRegister += 2;
-	rootParams_[8].DescriptorTable.pDescriptorRanges = &dissolveDHRange2;//デスクリプタレンジ
-	rootParams_[8].DescriptorTable.NumDescriptorRanges = 1;//〃数
-	rootParams_[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	rootParams_[SPECULAR_MAP].DescriptorTable.pDescriptorRanges = &dissolveDHRange2;//デスクリプタレンジ
+	rootParams_[SPECULAR_MAP].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[SPECULAR_MAP].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ3番（ノーマルマップ用テクスチャ）
-	rootParams_[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	rootParams_[NORM_MAP].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
 	D3D12_DESCRIPTOR_RANGE dissolveDHRange3 = TextureManager::GetInstance().sDescriptorRange_;
 	dissolveDHRange3.BaseShaderRegister += 3;
-	rootParams_[9].DescriptorTable.pDescriptorRanges = &dissolveDHRange3;//デスクリプタレンジ
-	rootParams_[9].DescriptorTable.NumDescriptorRanges = 1;//〃数
-	rootParams_[9].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	rootParams_[NORM_MAP].DescriptorTable.pDescriptorRanges = &dissolveDHRange3;//デスクリプタレンジ
+	rootParams_[NORM_MAP].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[NORM_MAP].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 
 	// パイプランステートの生成
 	PipeLineState(D3D12_FILL_MODE_SOLID, objPipeLineSet_[0]);
@@ -291,6 +291,24 @@ Object::Object()
 	}
 }
 
+void Object::SendingMat(int32_t indexNum, Camera* camera)
+{
+	//変換行列をGPUに送信
+	worldMat_->CulcAllTreeMat();
+	//スプライトじゃない場合
+	if (indexNum != SPRITE)
+	{
+		XMMATRIX matW;
+		worldMat_->matWorld_.MatIntoXMMATRIX(matW);
+
+		cbt_.constMapTransform_->world = matW;
+
+		cbt_.constMapTransform_->viewproj = camera->GetViewMat() * camera->GetProjMat();
+		XMFLOAT3 cPos = { camera->GetEye().x_,camera->GetEye().y_,camera->GetEye().z_ };
+		cbt_.constMapTransform_->cameraPos = cPos;
+	}
+}
+
 void Object::SendingMat(int32_t indexNum, Camera* camera, const XMMATRIX* mat)
 {
 	//変換行列をGPUに送信
@@ -451,64 +469,74 @@ void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum
 }
 
 void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
-	uint64_t normalMapTex, ConstBuffTransform cbt, bool setTex)
+	uint64_t normalMapTex, ConstBuffTransform* cbt, bool setTex)
 {
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
-
-	sLightManager_->Draw(4);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(COLOR, constBuffMaterial_->GetGPUVirtualAddress());
 
 	//テクスチャ
-		//SRVヒープの設定コマンド
+	//SRVヒープの設定コマンド
 	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
 
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 
-	//モデル用に
+	//モデルはメッシュごとに行列等セットするので
 	if (setTex)
 	{
 		srvGpuHandle.ptr = textureHandle;
 		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(TEX, srvGpuHandle);
 	}
+	if (cbt)
+	{
+		//定数バッファビュー(CBV)の設定コマンド
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(MATRIX, cbt->constBuffTransform_->GetGPUVirtualAddress());
+	}
+
+	//ライト
+	sLightManager_->Draw(LIGHT);
 
 	//ディゾルブテクスチャ
 	srvGpuHandle.ptr = dissolveTex;
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(7, srvGpuHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(DISSOLVE, srvGpuHandle);
 
 	//スペキュラマップテクスチャ
 	srvGpuHandle.ptr = specularMapTex;
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(8, srvGpuHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(SPECULAR_MAP, srvGpuHandle);
 
 	//ノーマルマップテクスチャ
 	srvGpuHandle.ptr = normalMapTex;
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(9, srvGpuHandle);
-
-	//定数バッファビュー(CBV)の設定コマンド
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, cbt.constBuffTransform_->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(NORM_MAP, srvGpuHandle);
 
 	//演出フラグ
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(5, effectFlagsBuff_->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(EFFECT, effectFlagsBuff_->GetGPUVirtualAddress());
 }
 
 void Object::SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
-	uint64_t normalMapTexHandle, ConstBuffTransform cbt)
+	uint64_t normalMapTexHandle)
 {
 	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	SetMaterialLightMTexSkin(NULL, dissolveTexHandle, specularMapTexhandle, normalMapTexHandle, cbt
+	SetMaterialLightMTexSkin(NULL, dissolveTexHandle, specularMapTexhandle, normalMapTexHandle, nullptr
 		, false);
 
 	//スキニング用
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(6, constBuffSkin_->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(SKIN, constBuffSkin_->GetGPUVirtualAddress());
 
 }
 
-void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, const ConstBuffTransform& constBuffTransform,
+void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, ConstBuffTransform* constBuffTransform,
 	Camera* camera, IModel* model, bool primitiveMode)
 {
+	Camera* lCamera = camera;
+	//カメラがセットされてなければ使用されてるカメラを使う
+	if (camera == nullptr)
+	{
+		lCamera = CameraManager::GetInstance().usingCamera_;
+	}
+
 	//行列送信
-	SendingMat(indexNum, camera);
+	SendingMat(indexNum, lCamera);
 
 	//テクスチャを設定していなかったら
 	uint64_t textureHandleL = textureHandle;
@@ -554,7 +582,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 	{
 		SpriteCommonBeginDraw(&spritePipelineSet_);
 
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(COLOR, constBuffMaterial_->GetGPUVirtualAddress());
 
 		//テクスチャ
 			//SRVヒープの設定コマンド
@@ -563,10 +591,10 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 		srvGpuHandle.ptr = textureHandleL;
 		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(TEX, srvGpuHandle);
 
 		//定数バッファビュー(CBV)の設定コマンド
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform.constBuffTransform_->GetGPUVirtualAddress());
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(MATRIX, constBuffTransform->constBuffTransform_->GetGPUVirtualAddress());
 
 		sprite_->SpriteDraw();
 	}
@@ -576,16 +604,13 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 		//ラムダ式でコマンド関数
 		std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(pipelineSetFBX_.pipelineState.Get(), pipelineNum, pipelineSetFBX_.rootSignature.Get()); };
 		std::function<void()>SetMaterialTexM = [=]() {SetMaterialLightMTexSkinModel(dissolveTextureHandleL, specularMapTextureHandleL,
-			normalMapTextureHandleL, constBuffTransform); };
-		//カメラとindexNumは引数のものを使い、行列のみメッシュのを使う
-		std::function<void(const XMMATRIX* mat)> sendingMeshWorldMat =
-			[=](const XMMATRIX* mat) {SendingMat(indexNum, camera, mat); };
+			normalMapTextureHandleL); };
 
 		if (indexNum == FBX)
 		{
 			SendingBoneData(dynamic_cast<ModelFBX*>(model));
 		}
-		model->Draw(SetRootPipeRM, SetMaterialTexM, sendingMeshWorldMat);
+		model->Draw(SetRootPipeRM, SetMaterialTexM, *lCamera, *worldMat_.get());
 	}
 
 }
@@ -594,14 +619,14 @@ void Object::DrawTriangle(Camera* camera, const Vec4& color, uint64_t textureHan
 {
 	constMapMaterial_->color = color;
 
-	Update(TRIANGLE, pipelineNum, textureHandle, cbt_, camera);
+	Update(TRIANGLE, pipelineNum, textureHandle, &cbt_, camera);
 }
 
 void Object::DrawBox(Camera* camera, const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	constMapMaterial_->color = color;
 
-	Update(BOX, pipelineNum, textureHandle, cbt_, camera);
+	Update(BOX, pipelineNum, textureHandle, &cbt_, camera);
 }
 
 void Object::DrawBoxSprite(const Vec2& pos, float scale,
@@ -616,7 +641,7 @@ void Object::DrawBoxSprite(const Vec2& pos, float scale,
 	}
 	sprite_->Update(pos, scale, color, textureHandle, ancorUV, isReverseX, isReverseY, rotation, &cbt_, constMapMaterial_);
 
-	Update(SPRITE, pipelineNum, textureHandle, cbt_, nullptr);
+	Update(SPRITE, pipelineNum, textureHandle, &cbt_, nullptr);
 }
 
 void Object::DrawClippingBoxSprite(const Vec2& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
@@ -632,14 +657,14 @@ void Object::DrawClippingBoxSprite(const Vec2& leftTop, float scale, const XMFLO
 	sprite_->UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle,
 		isPosLeftTop, isReverseX, isReverseY, rotation, &cbt_, constMapMaterial_);
 
-	Update(SPRITE, pipelineNum, textureHandle, cbt_, nullptr);
+	Update(SPRITE, pipelineNum, textureHandle, &cbt_, nullptr);
 }
 
 void Object::DrawCube3D(Camera* camera, const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	constMapMaterial_->color = color;
 
-	Update(CUBE, pipelineNum, textureHandle, cbt_, camera);
+	Update(CUBE, pipelineNum, textureHandle, &cbt_, camera);
 }
 
 void Object::DrawLine(Camera* camera, const Vec4& color,
@@ -647,7 +672,7 @@ void Object::DrawLine(Camera* camera, const Vec4& color,
 {
 	constMapMaterial_->color = color;
 
-	Update(LINE, 2, textureHandle, cbt_, camera, nullptr, false);
+	Update(LINE, 2, textureHandle, &cbt_, camera, nullptr, false);
 }
 
 void Object::DrawCircle(Camera* camera,
@@ -655,7 +680,7 @@ void Object::DrawCircle(Camera* camera,
 {
 	constMapMaterial_->color = color;
 
-	Update(CIRCLE, pipelineNum, textureHandle, cbt_, camera);
+	Update(CIRCLE, pipelineNum, textureHandle, &cbt_, camera);
 }
 
 void Object::DrawSphere(Camera* camera,
@@ -663,7 +688,7 @@ void Object::DrawSphere(Camera* camera,
 {
 	constMapMaterial_->color = color;
 
-	Update(SPHERE, pipelineNum, textureHandle, cbt_, camera);
+	Update(SPHERE, pipelineNum, textureHandle, &cbt_, camera);
 }
 
 void Object::DrawModel(IModel* model, Camera* camera,
@@ -689,7 +714,7 @@ void Object::DrawModel(IModel* model, Camera* camera,
 		type = FBX;
 	}
 
-	Update(type, pipelineNum, NULL, cbt_, camera, model);
+	Update(type, pipelineNum, NULL, &cbt_, camera, model);
 }
 
 void Object::DrawImGui(std::function<void()>imguiF)
@@ -947,7 +972,7 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 	pipelineDesc_.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 
 	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_, IID_PPV_ARGS(rootPipe.pipelineState.GetAddressOf()));
-	//assert(SUCCEEDED(result));
+	assert(SUCCEEDED(result));
 }
 
 void Object::Blend(const D3D12_BLEND_OP& blendMode, bool Inversion, bool Translucent)

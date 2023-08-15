@@ -60,7 +60,7 @@ public: // メンバ関数
 	/// 視点座標の取得
 	/// </summary>
 	/// <returns>座標</returns>
-	inline const Vec3& GetEye() {
+	inline const Vec3& GetEye() const{
 		return viewMat_.eye_;
 	}
 
@@ -76,7 +76,7 @@ public: // メンバ関数
 	/// 注視点座標の取得
 	/// </summary>
 	/// <returns>座標</returns>
-	inline const Vec3& GetTarget() {
+	inline const Vec3& GetTarget() const {
 		return viewMat_.target_;
 	}
 
@@ -92,7 +92,7 @@ public: // メンバ関数
 	/// 上方向ベクトルの取得
 	/// </summary>
 	/// <returns>上方向ベクトル</returns>
-	inline const Vec3& GetUp() {
+	inline const Vec3& GetUp() const {
 		return viewMat_.up_;
 	}
 
@@ -140,8 +140,8 @@ private:
 	ProjectionMat projectionMat_;
 
 public:
-	const XMMATRIX& GetViewMat() { return viewMat_.matView_; }
-	const XMMATRIX& GetProjMat() { return projectionMat_.matProjection_; }
+	const XMMATRIX& GetViewMat()const { return viewMat_.matView_; }
+	const XMMATRIX& GetProjMat()const { return projectionMat_.matProjection_; }
 };
 
 
