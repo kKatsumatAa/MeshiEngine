@@ -65,8 +65,7 @@ void SceneManager::Initialize()
 		//‰æ‘œ
 		debugTextHandle_ = TextureManager::LoadGraph("ascii.png");
 
-		//”’‚¢‰æ‘œ
-		TextureManager::GetInstance().sWhiteTexHandle_ = TextureManager::LoadGraph("white.png");
+		TextureManager::Initialize();
 
 		texhandle_[1] = TextureManager::LoadGraph("effect1.png");
 	}

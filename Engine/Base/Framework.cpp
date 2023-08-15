@@ -5,12 +5,22 @@ void Framework::Initialize()
 	//コンソールへの文字入力
 	OutputDebugStringA("Hello,DirectX!!\n");
 
-	//FBX
-	FbxLoader::GetInstance()->Initialize();
-
 	//初期化
 	WindowsApp::GetInstance();
 	DirectXWrapper::GetInstance().Initialize();
+
+	//texture
+	TextureManager::InitializeDescriptorHeap();
+
+	//imgui
+	imguiM_ = std::make_unique<ImGuiManager>();
+	imguiM_->Initialize();
+
+	//行列用
+	ConstBuffTransform::StaticInitialize();
+
+	//FBX
+	FbxLoader::GetInstance()->Initialize();
 
 	Sound::Initialize();
 
@@ -36,9 +46,6 @@ void Framework::Initialize()
 	//シーン
 	sceneM_ = &SceneManager::GetInstance();
 	sceneM_->Initialize();
-
-	imguiM_ = std::make_unique<ImGuiManager>();
-	imguiM_->Initialize();
 
 	//objマネージャ
 	ObjectManager::GetInstance().Initialize();

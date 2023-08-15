@@ -119,7 +119,7 @@ void ParticleManager::Draw(uint64_t texHandle)
 {
 	if (texHandle == NULL)
 	{
-		texHandle = TextureManager::GetInstance().sWhiteTexHandle_;
+		texHandle = TextureManager::GetWhiteTexHandle();
 	}
 
 	uint32_t drawNum = (uint32_t)std::distance(particles_.begin(), particles_.end());
@@ -143,7 +143,7 @@ void ParticleManager::Draw(uint64_t texHandle)
 	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
 
 	// デスクリプタヒープの配列
-	ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetInstance().sSrvHeap_.Get() };
+	ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetDescHeapP() };
 	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
 	// 定数バッファビューをセット

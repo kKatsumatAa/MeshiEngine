@@ -195,11 +195,11 @@ void Mesh::SendingMat(const Camera& camera, const WorldMat& worldMat)
 
 	//メッシュのグローバルトランスフォームとオブジェクトのワールドをかける
 	/*globalTransform_ = XMMatrixIdentity() * 10.0f;*/
-	constBuffTransform_.constMapTransform_->world = /*globalTransform_ **/ matW;
+	constBuffTransform_.SetWorldMat(/*globalTransform_ **/ matW);
 
-	constBuffTransform_.constMapTransform_->viewproj = camera.GetViewMat() * camera.GetProjMat();
+	constBuffTransform_.SetViewProjMat( camera.GetViewMat() * camera.GetProjMat());
 	XMFLOAT3 cPos = { camera.GetEye().x_,camera.GetEye().y_,camera.GetEye().z_ };
-	constBuffTransform_.constMapTransform_->cameraPos = cPos;
+	constBuffTransform_.SetCameraPos(camera.GetEye());
 }
 
 void Mesh::Draw(const Camera& camera, const WorldMat& worldMat,
@@ -207,10 +207,9 @@ void Mesh::Draw(const Camera& camera, const WorldMat& worldMat,
 {
 	SendingMat(camera, worldMat);
 
-	// 頂点バッファをセット
-	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
-	// インデックスバッファをセット
-	DirectXWrapper::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView_);
+	//SRVヒープの設定コマンド
+	ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetDescHeapP() };
+	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
 	// シェーダリソースビューをセット
 	//SRVヒープの先頭ハンドルを取得
@@ -222,9 +221,14 @@ void Mesh::Draw(const Camera& camera, const WorldMat& worldMat,
 	ID3D12Resource* constBuff = material_->GetConstantBuffer();
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(Object::ROOTPARAM_NUM::MATERIAL, constBuff->GetGPUVirtualAddress());
 
-	//定数バッファビュー(CBV)の設定コマンド
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(
-		Object::ROOTPARAM_NUM::MATRIX, constBuffTransform_.constBuffTransform_->GetGPUVirtualAddress());
+		//定数バッファビュー(CBV)の設定コマンド
+	constBuffTransform_.DrawCommand(Object::ROOTPARAM_NUM::MATRIX);
+
+	// 頂点バッファをセット
+	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
+	// インデックスバッファをセット
+	DirectXWrapper::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView_);
+
 
 	// 描画コマンド
 	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((uint32_t)indices_.size(), 1, 0, 0, 0);

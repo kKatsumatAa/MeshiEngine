@@ -23,7 +23,7 @@ private:
 	~TextureManager();
 
 
-public:
+private:
 	//テクスチャがない場合の標準テクスチャファイル名
 	static const std::string S_DEFAULT_TEX_FILE_NAME_;
 
@@ -56,12 +56,24 @@ public:
 
 	//デスクリプタヒープ初期化
 	static void InitializeDescriptorHeap();
+	static void Initialize();
 	static uint64_t LoadGraph(const char* name, ID3D12Resource** texBuff = nullptr,
 		D3D12_SHADER_RESOURCE_VIEW_DESC* srvDesc = nullptr, D3D12_CPU_DESCRIPTOR_HANDLE* srvHandle = nullptr);
 
-	static void AddSrvHandleCount() { sCount_++; }
+	static void AddSRVHandleCount() { sCount_++; }
 
 	//テクスチャハンドルが何も入ってなかったら白い画像のハンドル入れる
 	static void CheckTexHandle(uint64_t& texHandle);
+
+public:
+	static ID3D12DescriptorHeap** GetDescHeapPP() { return sSrvHeap_.GetAddressOf(); }
+	static ID3D12DescriptorHeap* GetDescHeapP() { return sSrvHeap_.Get(); }
+	static const D3D12_DESCRIPTOR_RANGE& GetDescRange() { return sDescriptorRange_; }
+	static uint64_t GetWhiteTexHandle() { return sWhiteTexHandle_; }
+	static int32_t GetSRVCount() { return sCount_; }
+	static ComPtr<ID3D12Resource>* GetTexBuff() { return sTexBuff_; }
+	static const D3D12_RESOURCE_DESC& GetResDesc() { return sResDesc_; }
+	static const D3D12_DESCRIPTOR_HEAP_DESC & GetHeapDesc() { return sSrvHeapDesc_; }
+
 };
 

@@ -20,7 +20,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE TextureManager::sSrvHandle_;
 ComPtr<ID3D12Resource> TextureManager::sTexBuff_[S_SRV_COUNT_];
 
 //SRVの最大個数
-const int32_t TextureManager::S_K_MAX_SRV_COUNT_ = 2056;
+const int32_t TextureManager::S_K_MAX_SRV_COUNT_ = 2056 * 2 * 2 * 2 * 2;
 //デスクリプタヒープの設定
 D3D12_DESCRIPTOR_HEAP_DESC TextureManager::sSrvHeapDesc_;
 
@@ -63,9 +63,15 @@ void TextureManager::InitializeDescriptorHeap()
 	sDescriptorRange_.NumDescriptors = 1;   //一度の描画に使うテクスチャの枚数
 	sDescriptorRange_.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	sDescriptorRange_.BaseShaderRegister = 0;  //テクスチャレジスタ0番(t0)
-	sDescriptorRange_.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	//sDescriptorRange_.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	sSrvHandle_ = sSrvHeap_->GetCPUDescriptorHandleForHeapStart();
+}
+
+void TextureManager::Initialize()
+{
+	//白い画像
+	TextureManager::GetInstance().sWhiteTexHandle_ = TextureManager::LoadGraph("white.png");
 }
 
 
@@ -283,7 +289,9 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 			//04_02(画像貼る用のアドレスを引数に)
 			//SRVヒープのハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = sSrvHeap_->GetGPUDescriptorHandleForHeapStart();
-			textureHandle = srvGpuHandle.ptr + (DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().sSrvHeapDesc_.Type) * sCount_);
+			textureHandle = srvGpuHandle.ptr + 
+				(DirectXWrapper::GetInstance().GetDevice()->
+					GetDescriptorHandleIncrementSize(TextureManager::GetInstance().sSrvHeapDesc_.Type) * sCount_);
 		}
 
 		//ハンドルのさす位置にシェーダーリソースビュー作成

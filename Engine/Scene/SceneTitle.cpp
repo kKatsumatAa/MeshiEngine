@@ -46,12 +46,13 @@ void SceneTitle::Update()
 
 void SceneTitle::Draw()
 {
-	titleObj_.DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },
-		titleScale_, { 1.0f,1.0f,1.0f,1.0f }, titleTex_, { 0.5f,0.5f });
+
 }
 
 void SceneTitle::DrawSprite()
 {
+	titleObj_.DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },
+		titleScale_, { 1.0f,1.0f,1.0f,1.0f }, titleTex_, { 0.5f,0.5f });
 }
 
 void SceneTitle::DrawImgui()

@@ -1,5 +1,7 @@
 #pragma once
 #include"TextureManager.h"
+#include<memory>
+#include"Vec3.h"
 
 //アフィン変換行列用
 class ConstBuffTransform
@@ -20,13 +22,67 @@ private:
 	{
 		XMMATRIX viewproj; //ビュープロジェクション行列
 		XMMATRIX world;    //ワールド行列
-		XMFLOAT3 cameraPos;//カメラ座標（ワールド座標）
+		Vec3 cameraPos;//カメラ座標（ワールド座標）
+		float pad;
 	};
 
+
 public:
-	ComPtr < ID3D12Resource> constBuffTransform_ = nullptr;//定数バッファのGPUリソースのポインタ
+	//保存しておくデータ
+	struct ConstBuffTransformSaveData
+	{
+		bool isUsing = false;//今使用されているか
+		ConstBufferDataTransform* constMapTransform = nullptr;//マッピング
+		ComPtr<ID3D12Resource> constBuffTransform = nullptr;//定数バッファのGPUリソースのポインタ
+	};
+	//描画時に使うデータ
+	struct ConstBuffTransformDrawData
+	{
+		D3D12_GPU_DESCRIPTOR_HANDLE cbvGPUHandle;//gpuのハンドル
+		ConstBufferDataTransform* constMapTransform = nullptr;//マッピング
+	};
+	//データまとめ
+	struct ConstBuffTransformAllData
+	{
+		ConstBuffTransformSaveData saveData;
+		ConstBuffTransformDrawData drawData;
+	};
+
+private://管理用静的変数
+	static D3D12_DESCRIPTOR_RANGE sDescRange_;
+	//メモリ管理用
+	static std::map<uint64_t, ConstBuffTransformSaveData> sCbtDatas_;
+
+private://描画用
+	//描画時にセットするgpuハンドル
+	D3D12_GPU_DESCRIPTOR_HANDLE cbvGPUHandle_;
 	ConstBufferDataTransform* constMapTransform_ = nullptr;//定数バッファのマッピング用ポインタ
 
-	ConstBuffTransform();
+public:
+	ConstBuffTransform() { ; }
+	~ConstBuffTransform();
+
+	static void StaticInitialize();
 	void Initialize();
+	void DrawCommand(int32_t index);
+
+public:
+	void SetViewProjMat(const XMMATRIX& mat) { constMapTransform_->viewproj = mat; }
+	void SetWorldMat(const XMMATRIX& mat) { constMapTransform_->world = mat; }
+	void SetCameraPos(const Vec3& pos) { constMapTransform_->cameraPos = pos; }
+
+public:
+	//バッファを作成して登録
+	static ConstBuffTransformDrawData CreateBuffAndAdd();
+
+private:
+	//保存してあればデータを返す
+	static bool GetSaveData(ConstBuffTransformDrawData& data);
+	//新たにバッファを作成して返す
+	static ConstBuffTransformDrawData CreateBuff();
+	static ConstBuffTransformAllData CreateBuffInternal();
+
+public:
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetCBVGpuHandle() { return cbvGPUHandle_; }
+	static const D3D12_DESCRIPTOR_RANGE& GetDescRange() { return sDescRange_; }
 };

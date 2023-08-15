@@ -59,8 +59,8 @@ void Sprite::SpriteDraw()
 }
 
 void Sprite::Update(const Vec2& pos, float scale,
-	const Vec4& color,  uint64_t textureHandle, const Vec2& ancorUV,
-	bool isReverseX,bool isReverseY, float rotation,
+	const Vec4& color, uint64_t textureHandle, const Vec2& ancorUV,
+	bool isReverseX, bool isReverseY, float rotation,
 	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
 	//テクスチャを設定していなかったら
@@ -68,16 +68,16 @@ void Sprite::Update(const Vec2& pos, float scale,
 
 	if (textureHandle == NULL)
 	{
-		textureHandle_ = TextureManager::GetInstance().sWhiteTexHandle_;
+		textureHandle_ = TextureManager::GetWhiteTexHandle();
 	}
 	else
 	{
 		textureHandle_ = textureHandle;
 	}
 
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetInstance().sSrvHeap_->GetGPUDescriptorHandleForHeapStart();
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetDescHeapP()->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = TextureManager::GetInstance().sTexBuff_[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().sSrvHeapDesc_.Type)]->GetDesc();
+	resDesc = TextureManager::GetTexBuff()[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetHeapDesc().Type)]->GetDesc();
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
@@ -123,31 +123,30 @@ void Sprite::Update(const Vec2& pos, float scale,
 	projection.matProjection_ = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().WINDOW_WIDTH_,
 		WindowsApp::GetInstance().WINDOW_HEIGHT_, 0.0, 0.0f, 1.0f);
 
-	cbt->constMapTransform_->world = matW;
-	cbt->constMapTransform_->viewproj = view.matView_ * projection.matProjection_;
-	XMFLOAT3 cPos = { view.eye_.x_,view.eye_.y_,view.eye_.z_ };
-	cbt->constMapTransform_->cameraPos = cPos;
+	cbt->SetWorldMat(matW);
+	cbt->SetViewProjMat(view.matView_ * projection.matProjection_);
+	cbt->SetCameraPos(view.eye_);
 }
 
-void Sprite::UpdateClipping(const Vec2& leftTop,  float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	const Vec4& color,  uint64_t textureHandle, bool isPosLeftTop,
-	bool isReverseX,bool isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
+void Sprite::UpdateClipping(const Vec2& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+	const Vec4& color, uint64_t textureHandle, bool isPosLeftTop,
+	bool isReverseX, bool isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
 	//テクスチャを設定していなかったら
 	uint64_t textureHandle_;
 
 	if (textureHandle == NULL)
 	{
-		textureHandle_ = TextureManager::GetInstance().sWhiteTexHandle_;
+		textureHandle_ = TextureManager::GetWhiteTexHandle();
 	}
 	else
 	{
 		textureHandle_ = textureHandle;
 	}
 
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetInstance().sSrvHeap_->GetGPUDescriptorHandleForHeapStart();
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetDescHeapP()->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = TextureManager::GetInstance().sTexBuff_[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetInstance().sSrvHeapDesc_.Type)]->GetDesc();
+	resDesc = TextureManager::GetInstance().GetTexBuff()[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetHeapDesc().Type)]->GetDesc();
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
@@ -219,10 +218,9 @@ void Sprite::UpdateClipping(const Vec2& leftTop,  float scale, const XMFLOAT2& U
 	projection.matProjection_ = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().WINDOW_WIDTH_,
 		WindowsApp::GetInstance().WINDOW_HEIGHT_, 0.0, 0.0f, 1.0f);
 
-	cbt->constMapTransform_->world = matW;
-	cbt->constMapTransform_->viewproj = view.matView_ * projection.matProjection_;
-	XMFLOAT3 cPos = { view.eye_.x_,view.eye_.y_,view.eye_.z_ };
-	cbt->constMapTransform_->cameraPos = cPos;
+	cbt->SetWorldMat(matW);
+	cbt->SetViewProjMat(view.matView_ * projection.matProjection_);
+	cbt->SetCameraPos(view.eye_);
 }
 
 

@@ -41,9 +41,6 @@ void Object::DrawInitialize()
 	ComPtr<ID3DBlob> psBlob; // ピクセルシェーダオブジェクト
 	ComPtr<ID3DBlob> errorBlob; // エラーオブジェクト
 
-	//テクスチャ用のデスクリプタヒープ初期化
-	TextureManager::GetInstance().InitializeDescriptorHeap();
-
 	//図形クラスの
 	primitive_.Initialize();
 
@@ -55,13 +52,13 @@ void Object::DrawInitialize()
 	rootParams_[COLOR].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ0番（テクスチャ）
 	rootParams_[TEX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	rootParams_[TEX].DescriptorTable.pDescriptorRanges = &TextureManager::GetInstance().sDescriptorRange_;//デスクリプタレンジ
+	rootParams_[TEX].DescriptorTable.pDescriptorRanges = &TextureManager::GetDescRange();//デスクリプタレンジ
 	rootParams_[TEX].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[TEX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//定数バッファ1番(行列)
-	rootParams_[MATRIX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rootParams_[MATRIX].Descriptor.ShaderRegister = 1;//定数バッファ番号(b1)
-	rootParams_[MATRIX].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[MATRIX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	rootParams_[MATRIX].DescriptorTable.pDescriptorRanges = &ConstBuffTransform::GetDescRange();//デスクリプタレンジ(b1)
+	rootParams_[MATRIX].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[MATRIX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//定数バッファ2番（マテリアル）
 	rootParams_[MATERIAL].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
@@ -85,21 +82,21 @@ void Object::DrawInitialize()
 	rootParams_[SKIN].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ1番（ディゾルブ用テクスチャ）
 	rootParams_[DISSOLVE].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	D3D12_DESCRIPTOR_RANGE dissolveDHRange = TextureManager::GetInstance().sDescriptorRange_;
+	D3D12_DESCRIPTOR_RANGE dissolveDHRange = TextureManager::GetDescRange();//デスクリプタレンジ
 	dissolveDHRange.BaseShaderRegister++;
 	rootParams_[DISSOLVE].DescriptorTable.pDescriptorRanges = &dissolveDHRange;//デスクリプタレンジ
 	rootParams_[DISSOLVE].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[DISSOLVE].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ2番（スペキュラマップ用テクスチャ）
 	rootParams_[SPECULAR_MAP].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	D3D12_DESCRIPTOR_RANGE dissolveDHRange2 = TextureManager::GetInstance().sDescriptorRange_;
+	D3D12_DESCRIPTOR_RANGE dissolveDHRange2 = TextureManager::GetDescRange();//デスクリプタレンジ
 	dissolveDHRange2.BaseShaderRegister += 2;
 	rootParams_[SPECULAR_MAP].DescriptorTable.pDescriptorRanges = &dissolveDHRange2;//デスクリプタレンジ
 	rootParams_[SPECULAR_MAP].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[SPECULAR_MAP].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ3番（ノーマルマップ用テクスチャ）
 	rootParams_[NORM_MAP].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	D3D12_DESCRIPTOR_RANGE dissolveDHRange3 = TextureManager::GetInstance().sDescriptorRange_;
+	D3D12_DESCRIPTOR_RANGE dissolveDHRange3 = TextureManager::GetDescRange();//デスクリプタレンジ;
 	dissolveDHRange3.BaseShaderRegister += 3;
 	rootParams_[NORM_MAP].DescriptorTable.pDescriptorRanges = &dissolveDHRange3;//デスクリプタレンジ
 	rootParams_[NORM_MAP].DescriptorTable.NumDescriptorRanges = 1;//〃数
@@ -301,44 +298,14 @@ void Object::SendingMat(int32_t indexNum, Camera* camera)
 		XMMATRIX matW;
 		worldMat_->matWorld_.MatIntoXMMATRIX(matW);
 
-		cbt_.constMapTransform_->world = matW;
-
-		cbt_.constMapTransform_->viewproj = camera->GetViewMat() * camera->GetProjMat();
-		XMFLOAT3 cPos = { camera->GetEye().x_,camera->GetEye().y_,camera->GetEye().z_ };
-		cbt_.constMapTransform_->cameraPos = cPos;
+		cbt_.SetWorldMat(matW);
+		cbt_.SetViewProjMat(camera->GetViewMat() * camera->GetProjMat());
+		cbt_.SetCameraPos(camera->GetEye());
 	}
 }
 
 void Object::SendingMat(int32_t indexNum, Camera* camera, const XMMATRIX* mat)
 {
-	//変換行列をGPUに送信
-	worldMat_->CulcAllTreeMat();
-	//スプライトじゃない場合
-	if (indexNum != SPRITE)
-	{
-		Camera* lCamera = camera;
-		//カメラがセットされてなければ使用されてるカメラを使う
-		if (camera == nullptr)
-		{
-			lCamera = CameraManager::GetInstance().usingCamera_;
-		}
-
-		XMMATRIX matW;
-		worldMat_->matWorld_.MatIntoXMMATRIX(matW);
-
-		//行列がセットされてたらそれとワールドをかける
-		if (mat)
-		{
-			cbt_.constMapTransform_->world = (*mat) * matW;
-		}
-		else
-		{
-			cbt_.constMapTransform_->world = matW;
-		}
-		cbt_.constMapTransform_->viewproj = lCamera->GetViewMat() * lCamera->GetProjMat();
-		XMFLOAT3 cPos = { lCamera->GetEye().x_,lCamera->GetEye().y_,lCamera->GetEye().z_ };
-		cbt_.constMapTransform_->cameraPos = cPos;
-	}
 }
 
 void Object::PlayAnimationInternal(FbxTime& sTime, FbxTime& eTime,
@@ -471,14 +438,14 @@ void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum
 void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
 	uint64_t normalMapTex, ConstBuffTransform* cbt, bool setTex)
 {
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(COLOR, constBuffMaterial_->GetGPUVirtualAddress());
-
 	//テクスチャ
 	//SRVヒープの設定コマンド
-	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
+	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetDescHeapPP());
 
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(COLOR, constBuffMaterial_->GetGPUVirtualAddress());
 
 	//モデルはメッシュごとに行列等セットするので
 	if (setTex)
@@ -489,8 +456,8 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveT
 	}
 	if (cbt)
 	{
-		//定数バッファビュー(CBV)の設定コマンド
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(MATRIX, cbt->constBuffTransform_->GetGPUVirtualAddress());
+		//行列
+		cbt->DrawCommand(MATRIX);
 	}
 
 	//ライト
@@ -584,17 +551,17 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(COLOR, constBuffMaterial_->GetGPUVirtualAddress());
 
-		//テクスチャ
-			//SRVヒープの設定コマンド
-		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetInstance().sSrvHeap_.GetAddressOf());
 		//SRVヒープの先頭ハンドルを取得
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 		srvGpuHandle.ptr = textureHandleL;
+		//テクスチャ
+	//SRVヒープの設定コマンド
+		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetDescHeapPP());
 		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(TEX, srvGpuHandle);
+		//行列
+		constBuffTransform->DrawCommand(MATRIX);
 
-		//定数バッファビュー(CBV)の設定コマンド
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(MATRIX, constBuffTransform->constBuffTransform_->GetGPUVirtualAddress());
 
 		sprite_->SpriteDraw();
 	}
