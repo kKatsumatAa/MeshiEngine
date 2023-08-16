@@ -19,6 +19,8 @@ void ModelFBX::Initialize()
 	isFbx_ = true;
 
 	IModel::Initialize();
+
+	scaleExtend_ = 0.01f;
 }
 
 void ModelFBX::LoadTextures()

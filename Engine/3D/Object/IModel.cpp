@@ -1,4 +1,5 @@
 #include "IModel.h"
+#include "ImGuiManager.h"
 
 
 /// <summary>
@@ -88,6 +89,17 @@ void IModel::Draw(const std::function<void()>& setRootParam, const std::function
 
 	// ‘SƒƒbƒVƒ…‚ð•`‰æ
 	for (auto& mesh : meshes_) {
-		mesh->Draw(cbt, setRootParam, setMaterialLightTex);
+		mesh->Draw(materialExtend_, cbt, setRootParam, setMaterialLightTex);
+	}
+}
+
+void IModel::DrawImGui()
+{
+	if (ImGui::TreeNode("model"))
+	{
+		ImGui::SliderFloat("scaleExtend", &scaleExtend_, 0, 10.0f);
+		ImGui::SliderFloat3("materialExtend", &materialExtend_.x_, 0, 5.0f);
+
+		ImGui::TreePop();
 	}
 }

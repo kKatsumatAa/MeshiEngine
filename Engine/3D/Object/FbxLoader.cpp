@@ -85,7 +85,7 @@ std::unique_ptr<ModelFBX> FbxLoader::LoadModelFromFile(const string& modelName, 
 	return std::move(model);
 }
 
-void FbxLoader::CalcGlobalTransform(const FbxNode& fbxNode, Node& node, Node* parent, const Vec3& addRot)
+void FbxLoader::CalcGlobalTransform(const FbxNode& fbxNode, Node& node, Node* parent, float scaleExtend)
 {
 	//fbxノードのローカル移動情報
 	FbxDouble3 rotation = fbxNode.LclRotation.Get();
@@ -94,13 +94,13 @@ void FbxLoader::CalcGlobalTransform(const FbxNode& fbxNode, Node& node, Node* pa
 
 	//形式変換して代入
 	node.rotation = { (float)rotation[0],(float)rotation[1],(float)rotation[2],0.0f };
-	node.scaling = { (float)scaling[0],(float)scaling[1],(float)scaling[2],0.0f };
+	node.scaling = { ((float)scaling[0]) * scaleExtend,((float)scaling[1]) * scaleExtend,((float)scaling[2]) * scaleExtend,0.0f };
 	node.translation = { (float)translation[0],(float)translation[1],(float)translation[2],1.0f };
 
 	//回転角をDegree（度）からラジアンに変換
-	node.rotation.m128_f32[0] = XMConvertToRadians(node.rotation.m128_f32[0]) - addRot.x_;
-	node.rotation.m128_f32[1] = XMConvertToRadians(node.rotation.m128_f32[1]) - addRot.y_;
-	node.rotation.m128_f32[2] = XMConvertToRadians(node.rotation.m128_f32[2]) - addRot.z_;
+	node.rotation.m128_f32[0] = XMConvertToRadians(node.rotation.m128_f32[0]);
+	node.rotation.m128_f32[1] = XMConvertToRadians(node.rotation.m128_f32[1]);
+	node.rotation.m128_f32[2] = XMConvertToRadians(node.rotation.m128_f32[2]);
 
 	//スケール、回転、平行移動行列の計算
 	XMMATRIX matScaling, matRotation, matTranslation;

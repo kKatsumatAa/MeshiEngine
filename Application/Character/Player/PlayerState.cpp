@@ -76,7 +76,7 @@ void PlayerStateBareHands::Update()
 			}
 		}
 		//“G‚ªÆ€‚É‚ ‚Á‚½‚ç‰£‚é
-		else if (info_.object->GetObjName() == "enemy")
+		else if (info_.object->GetObjName().find("enemy") != std::string::npos)
 		{
 			//ui•ÏX
 			PlayerUI::GetInstance().ChangeState("PUNCH");

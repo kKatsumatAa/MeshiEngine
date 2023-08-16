@@ -137,6 +137,8 @@ private:
 	bool isLoop_ = false;
 	//逆再生
 	bool isReverse_ = false;
+	//再生のスピード倍率
+	float animationSpeed_ = 1.0f;
 
 	//生きてるフラグ
 	bool isAlive_ = true;
@@ -188,7 +190,7 @@ private:
 		Camera* camera, IModel* model = nullptr, bool primitiveMode = true);
 
 	//行列送信
-	void SendingMat(int32_t indexNum, Camera* camera);
+	void SendingMat(int32_t indexNum, Camera* camera, IModel* model = nullptr);
 
 	void SendingMat(int32_t indexNum, Camera* camera, const XMMATRIX* mat);
 
@@ -335,6 +337,8 @@ public:
 	//アニメーション開始
 	void PlayAnimation(bool isLoop = false);
 	void PlayReverseAnimation(bool isLoop = false);
+	//アニメーションスピード
+	void SetAnimationSpeed(float speed) { animationSpeed_ = speed; }
 
 	//フォグとかのフラグ
 	void SetIsSilhouette(bool is) { effectFlags_.isSilhouette = is; }

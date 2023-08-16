@@ -51,7 +51,7 @@ void GameVelocityManager::Update()
 	if (gameVelocity_ > GAME_VELOCITY_MIN_)
 	{
 		//減らしていく
-		gameVelocity_ *= 0.8f;
+		gameVelocity_ *= 0.83f;
 		//最低スピードは保つ
 		gameVelocity_ = max(GAME_VELOCITY_MIN_, gameVelocity_);
 	}

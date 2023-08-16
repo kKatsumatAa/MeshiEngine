@@ -146,6 +146,9 @@ void Enemy::Update()
 	//ダメージ受けるクールタイムもゲームスピードをかける
 	damageCoolTime -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
+	//アニメーションもゲームスピード
+	SetAnimationSpeed(GameVelocityManager::GetInstance().GetVelocity() * 3.0f);
+
 	Character::Update();
 }
 
@@ -269,7 +272,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		}
 	}
 	//敵同士で当たったらめり込まないようにする
-	else if (info.object_->GetObjName() == "enemy")
+	else if (info.object_->GetObjName().find("enemy") != std::string::npos)
 	{
 		//長さ
 		float length = (info.object_->GetScale().x_ + GetScale().x_);

@@ -34,12 +34,12 @@ private:
 	bool isTarget_ = false;
 
 	//攻撃が届く距離
-	const float ATTACK_LENGTH_ = 20.0f;
+	const float ATTACK_LENGTH_ = 11.0f;
 
 	//マウスのカメラ移動スピード
 	const float MOUSE_VELOCITY_TMP_ = 0.5f;
 	//移動によるゲームスピード加算の倍率
-	const float MOVE_ADD_VEL_EXTEND_ = 0.13f;
+	const float MOVE_ADD_VEL_EXTEND_ = 0.16f;
 
 	//手のマネージャークラス
 	std::unique_ptr<PlayerHandManager> handManager_ = nullptr;

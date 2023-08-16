@@ -291,10 +291,19 @@ Object::Object()
 	cbt_.Initialize();
 }
 
-void Object::SendingMat(int32_t indexNum, Camera* camera)
+void Object::SendingMat(int32_t indexNum, Camera* camera, IModel* model)
 {
+	//大きすぎたりするのを防ぐ用に
+	Vec3 scale = worldMat_->scale_;
+
+	if (model)
+	{
+		worldMat_->scale_ = worldMat_->scale_ * model->GetScaleExtend();
+	}
+
 	//変換行列をGPUに送信
 	worldMat_->CulcAllTreeMat();
+	worldMat_->scale_ = scale;
 	//スプライトじゃない場合
 	if (indexNum != SPRITE)
 	{
@@ -393,6 +402,9 @@ void Object::SendingBoneData(ModelFBX* model)
 				isPlay_ = false;
 			}
 		}
+
+		//アニメーションスピードをかけて
+		frameTime_.SetTime(0, 0, 0, max((int)((1000.0f / 60.0f) * animationSpeed_), 1), 0, FbxTime::EMode::eFrames1000);
 
 		//逆再生
 		if (isReverse_)
@@ -502,7 +514,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 	}
 
 	//行列送信
-	SendingMat(indexNum, lCamera);
+	SendingMat(indexNum, lCamera, model);
 
 	//テクスチャを設定していなかったら
 	uint64_t textureHandleL = textureHandle;
@@ -731,6 +743,10 @@ void Object::DrawImGui(std::function<void()>imguiF)
 			float timerMax = (float)(endTime_ - startTime_).GetSecondDouble();
 
 			ImGui::Text("animationTimeRatio: %.2f", timer / timerMax);
+		}
+		if (model_)
+		{
+			model_->DrawImGui();
 		}
 		ImGui::TreePop();
 	}

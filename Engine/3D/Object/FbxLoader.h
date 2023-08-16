@@ -79,7 +79,7 @@ public:
 
 private:
 	//グローバルトランスフォーム計算
-	void CalcGlobalTransform(const FbxNode& fbxNode, Node& node, Node* parent, const Vec3& addRot = { 0,0,0 });
+	void CalcGlobalTransform(const FbxNode& fbxNode, Node& node, Node* parent, float scaleExtend = 1.0f);
 
 	/// <summary>
 	/// 再帰的にノード構成を解析

@@ -47,6 +47,11 @@ protected:
 	//fbxか
 	bool isFbx_ = false;
 
+	//スケールの倍率(判定などには影響しない)
+	float scaleExtend_ = 1.0f;
+
+	Vec3 materialExtend_ = { 1.0f,1.0f,1.0f };
+
 
 public:
 	IModel() { ; }
@@ -76,7 +81,9 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
 	virtual void Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
-		,const ConstBuffTransform& cbt);
+		, const ConstBuffTransform& cbt);
+
+	virtual void DrawImGui();
 
 public:
 	/// <summary>
@@ -87,5 +94,9 @@ public:
 
 	//fbxか
 	bool GetIsFbx() { return isFbx_; }
+
+	//スケールの倍率
+	float GetScaleExtend() { return scaleExtend_; }
+	Vec3 GetMaterialExtend() { return materialExtend_; }
 
 };

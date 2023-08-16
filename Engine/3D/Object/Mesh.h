@@ -146,7 +146,7 @@ public: // メンバ関数
 	/// </summary>
 	void CreateBuffers();
 
-	void SendingMat(const ConstBuffTransform& cbt);
+	void SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt);
 
 	/// <summary>
 	/// 頂点バッファ取得
@@ -164,7 +164,7 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
-	void Draw(const ConstBuffTransform& cbt,
+	void Draw(Vec3 materialExtend, const ConstBuffTransform& cbt,
 		const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
 
 public:

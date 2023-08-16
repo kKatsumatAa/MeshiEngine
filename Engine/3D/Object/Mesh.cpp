@@ -184,17 +184,32 @@ void Mesh::CreateBuffers()
 	}
 }
 
-void Mesh::SendingMat(const ConstBuffTransform& cbt)
+void Mesh::SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt)
 {
 	cbt_.SetWorldMat(globalTransform_);
 	cbt_.SetViewProjMat(cbt.GetViewProjMat());
 	cbt_.SetCameraPos(cbt.GetCameraPos());
+
+	//マテリアル
+	XMFLOAT3 amb = material_->ambient_;
+	material_->ambient_ = material_->ambient_ * materialExtend.x_;
+	XMFLOAT3 diff = material_->diffuse_;
+	material_->diffuse_ = material_->diffuse_ * materialExtend.y_;
+	XMFLOAT3 spe = material_->specular_;
+	material_->specular_ = material_->specular_ * materialExtend.z_;
+	//更新
+	material_->Update();
+
+	//戻す
+	material_->ambient_ = amb;
+	material_->diffuse_ = diff;
+	material_->specular_ = spe;
 }
 
-void Mesh::Draw(const ConstBuffTransform& cbt,
+void Mesh::Draw(Vec3 materialExtend, const ConstBuffTransform& cbt,
 	const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	SendingMat(cbt);
+	SendingMat(materialExtend, cbt);
 
 	// シェーダリソースビューをセット
 	//SRVヒープの先頭ハンドルを取得
