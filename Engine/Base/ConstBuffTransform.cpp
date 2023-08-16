@@ -2,15 +2,21 @@
 #include "TextureManager.h"
 
 std::map<uint64_t, ConstBuffTransform::ConstBuffTransformSaveData> ConstBuffTransform::sCbtDatas_;
-D3D12_DESCRIPTOR_RANGE ConstBuffTransform::sDescRange_;
+D3D12_DESCRIPTOR_RANGE ConstBuffTransform::sDescRange_[2];
+std::vector<uint64_t> ConstBuffTransform::canUseBuffsHandle_;
 
 
 void ConstBuffTransform::StaticInitialize()
 {
 	//デスクリプタレンジの設定
-	sDescRange_.NumDescriptors = 1;   //一度の描画に使う数
-	sDescRange_.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-	sDescRange_.BaseShaderRegister = 1;  //b1
+	sDescRange_[0].NumDescriptors = 1;   //一度の描画に使う数
+	sDescRange_[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+	sDescRange_[0].BaseShaderRegister = 1;  //b1
+	sDescRange_[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	//メッシュ用
+	sDescRange_[1] = sDescRange_[0];
+	sDescRange_[1].BaseShaderRegister += 1;
 }
 
 
@@ -18,10 +24,10 @@ ConstBuffTransform::~ConstBuffTransform()
 {
 	auto itr = sCbtDatas_.find(cbvGPUHandle_.ptr);
 
-	//使用してるフラグをオフ
+	//使用可能なバッファに登録
 	if (itr != sCbtDatas_.end())
 	{
-		itr->second.isUsing = false;
+		canUseBuffsHandle_.push_back(itr->first);
 	}
 }
 
@@ -59,16 +65,24 @@ ConstBuffTransform::ConstBuffTransformDrawData ConstBuffTransform::CreateBuffAnd
 
 bool ConstBuffTransform::GetSaveData(ConstBuffTransformDrawData& data)
 {
-	for (const auto& itr : sCbtDatas_)
+	for (auto& itr : sCbtDatas_)
 	{
-		//いまはそのバッファが使用されてなければ
-		if (itr.second.isUsing == false)
+		//使用されてないバッファがあれば
+		if (canUseBuffsHandle_.size())
 		{
-			//ハンドルとマッピング用ポインタ
-			data.cbvGPUHandle.ptr = itr.first;
-			data.constMapTransform = itr.second.constMapTransform;
+			uint64_t gpuHandle = canUseBuffsHandle_.back();
 
-			return true;
+			auto itr = sCbtDatas_.find(gpuHandle);
+
+			//実際にあればバッファの情報
+			if (itr != sCbtDatas_.end())
+			{
+				data.cbvGPUHandle.ptr = itr->first;
+				data.constMapTransform = itr->second.constMapTransform;
+			}
+
+			//使用されているので排除
+			canUseBuffsHandle_.pop_back();
 		}
 	}
 
@@ -90,7 +104,7 @@ ConstBuffTransform::ConstBuffTransformAllData ConstBuffTransform::CreateBuffInte
 		D3D12_RESOURCE_DESC cbResourceDesc{};
 
 		cbResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		cbResourceDesc.Width = (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff/*256バイトアライメント*/;						//頂点データ全体のサイズ
+		cbResourceDesc.Width = (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff/*256バイトアライメント*/;
 		cbResourceDesc.Height = 1;
 		cbResourceDesc.DepthOrArraySize = 1;
 		cbResourceDesc.MipLevels = 1;
@@ -132,14 +146,12 @@ ConstBuffTransform::ConstBuffTransformAllData ConstBuffTransform::CreateBuffInte
 	//Gpuのハンドルをゲット
 	{
 		//gpuでのスタート位置+インクリメントサイズ*カウント
-		alldata.drawData.cbvGPUHandle.ptr = TextureManager::GetDescHeapP()->GetGPUDescriptorHandleForHeapStart().ptr
-			+ DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(
-				D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * TextureManager::GetSRVCount();
+		alldata.drawData.cbvGPUHandle = TextureManager::GetDescHeapP()->GetGPUDescriptorHandleForHeapStart();
+		alldata.drawData.cbvGPUHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(
+			D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * TextureManager::GetSRVCount();
 	}
 
-	alldata.saveData.isUsing = true;
-
-	//カウント進める
+	//ヒープのカウント進める
 	TextureManager::AddSRVHandleCount();
 
 	return alldata;

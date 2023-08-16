@@ -79,7 +79,7 @@ void IModel::AddMaterial(std::unique_ptr<Material> material)
 
 
 void IModel::Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
-	, const Camera& camera, const WorldMat& worldMat)
+	, const ConstBuffTransform& cbt)
 {
 	//パイプラインなどセット
 	setRootParam();
@@ -88,6 +88,6 @@ void IModel::Draw(const std::function<void()>& setRootParam, const std::function
 
 	// 全メッシュを描画
 	for (auto& mesh : meshes_) {
-		mesh->Draw(camera, worldMat, setRootParam, setMaterialLightTex);
+		mesh->Draw(cbt, setRootParam, setMaterialLightTex);
 	}
 }

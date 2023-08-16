@@ -64,12 +64,16 @@ VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOOR
 	//スキニング計算
     SkinOutput skinned = ComputeSkin(input);
 
-	//ワールド行列によるスケーリング・回転を適用
-    float4 wpos = mul(world, skinned.pos);
+    //メッシュの行列とワールドをかける
+    float4 wpos = mul(worldMesh, skinned.pos);
+    wpos = mul(world, wpos);
+    
+    float4x4 worldL = mul(world, worldMesh);
+    //ワールド行列によるスケーリング・回転を適用
 
 	//ピクセルシェーダに渡す値(ラスタライザで各ピクセルごとのワールド法線、座標が計算される)
     VSOutput output; //ピクセルシェーダに渡す値
-    output.svpos = mul(mul(viewproj, world), skinned.pos);
+    output.svpos = mul(mul(viewproj, worldL), skinned.pos);
     output.worldpos = wpos;
     //ローカルの法線を送り、ピクセルシェーダでワールド変換
     output.normal = normalize(skinned.normal);

@@ -24,7 +24,7 @@ RootPipe Object::pipelineSetM_;
 RootPipe Object::pipelineSetFBX_;
 
 //ルートパラメータの設定
-D3D12_ROOT_PARAMETER Object::rootParams_[10] = {};
+D3D12_ROOT_PARAMETER Object::rootParams_[11] = {};
 
 // グラフィックスパイプライン設定
 D3D12_GRAPHICS_PIPELINE_STATE_DESC Object::pipelineDesc_{};
@@ -60,24 +60,29 @@ void Object::DrawInitialize()
 	rootParams_[MATRIX].DescriptorTable.pDescriptorRanges = &ConstBuffTransform::GetDescRange();//デスクリプタレンジ(b1)
 	rootParams_[MATRIX].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[MATRIX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//定数バッファ2番（マテリアル）
+	//メッシュごとの行列2番
+	rootParams_[MESH_MAT].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	rootParams_[MESH_MAT].DescriptorTable.pDescriptorRanges = &ConstBuffTransform::GetDescRange2();//デスクリプタレンジ(b2)
+	rootParams_[MESH_MAT].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[MESH_MAT].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//定数バッファ3番（マテリアル）
 	rootParams_[MATERIAL].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rootParams_[MATERIAL].Descriptor.ShaderRegister = 2;//定数バッファ番号(b2)
+	rootParams_[MATERIAL].Descriptor.ShaderRegister = 3;//定数バッファ番号(b3)
 	rootParams_[MATERIAL].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams_[MATERIAL].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//定数バッファ3番(ライト用)
+	//定数バッファ4番(ライト用)
 	rootParams_[LIGHT].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rootParams_[LIGHT].Descriptor.ShaderRegister = 3;//定数バッファ番号(b3)
+	rootParams_[LIGHT].Descriptor.ShaderRegister = 4;//定数バッファ番号(b4)
 	rootParams_[LIGHT].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams_[LIGHT].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//定数バッファ4番(効果フラグ)
+	//定数バッファ5番(効果フラグ)
 	rootParams_[EFFECT].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rootParams_[EFFECT].Descriptor.ShaderRegister = 4;//定数バッファ番号(b4)
+	rootParams_[EFFECT].Descriptor.ShaderRegister = 5;//定数バッファ番号(b5)
 	rootParams_[EFFECT].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams_[EFFECT].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//定数バッファ5番（スキニング用）
+	//定数バッファ6番（スキニング用）
 	rootParams_[SKIN].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rootParams_[SKIN].Descriptor.ShaderRegister = 5;//定数バッファ番号(b5)
+	rootParams_[SKIN].Descriptor.ShaderRegister = 6;//定数バッファ番号(b6)
 	rootParams_[SKIN].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams_[SKIN].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ1番（ディゾルブ用テクスチャ）
@@ -131,19 +136,6 @@ bool Object::Initialize(std::unique_ptr<WorldMat> worldMat)
 	SetWorldMat(std::move(worldMat));
 
 	return true;
-}
-
-Object::~Object()
-{
-	//delete& cbt;
-	constBuffMaterial_.Reset();
-	constBuffSkin_.Reset();
-
-	//object毎に消えるのでいらないかも
-	if (collider_.get())
-	{
-		CollisionManager::GetInstance()->RemoveCollider(collider_.get());
-	}
 }
 
 const Vec3& Object::GetFrontVec()
@@ -221,15 +213,23 @@ void Object::SetIs2D(bool is2D)
 
 
 //-------------------------------------------------------------------
+Object::~Object()
+{
+	constBuffMaterial_.Reset();
+	constBuffSkin_.Reset();
+
+	//object毎に消えるのでいらないかも
+	if (collider_.get())
+	{
+		CollisionManager::GetInstance()->RemoveCollider(collider_.get());
+	}
+}
 
 Object::Object()
 {
 	HRESULT result = {};
 
 	Object::Initialize();
-
-	//トランスフォーム行列
-	cbt_.Initialize();
 
 	//マテリアルバッファ（色）
 	//ヒープ設定
@@ -286,6 +286,9 @@ Object::Object()
 		result = effectFlagsBuff_->Map(0, nullptr, (void**)&mapEffectFlagsBuff_);//マッピング
 		assert(SUCCEEDED(result));
 	}
+
+	//トランスフォーム行列
+	cbt_.Initialize();
 }
 
 void Object::SendingMat(int32_t indexNum, Camera* camera)
@@ -436,7 +439,7 @@ void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum
 }
 
 void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
-	uint64_t normalMapTex, ConstBuffTransform* cbt, bool setTex)
+	uint64_t normalMapTex, bool setTex)
 {
 	//テクスチャ
 	//SRVヒープの設定コマンド
@@ -454,11 +457,8 @@ void Object::SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveT
 		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(TEX, srvGpuHandle);
 	}
-	if (cbt)
-	{
-		//行列
-		cbt->DrawCommand(MATRIX);
-	}
+	//行列
+	cbt_.DrawCommand(MATRIX);
 
 	//ライト
 	sLightManager_->Draw(LIGHT);
@@ -484,8 +484,7 @@ void Object::SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t 
 {
 	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	SetMaterialLightMTexSkin(NULL, dissolveTexHandle, specularMapTexhandle, normalMapTexHandle, nullptr
-		, false);
+	SetMaterialLightMTexSkin(NULL, dissolveTexHandle, specularMapTexhandle, normalMapTexHandle, false);
 
 	//スキニング用
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(SKIN, constBuffSkin_->GetGPUVirtualAddress());
@@ -577,7 +576,7 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 		{
 			SendingBoneData(dynamic_cast<ModelFBX*>(model));
 		}
-		model->Draw(SetRootPipeRM, SetMaterialTexM, *lCamera, *worldMat_.get());
+		model->Draw(SetRootPipeRM, SetMaterialTexM, cbt_);
 	}
 
 }

@@ -63,7 +63,7 @@ void TextureManager::InitializeDescriptorHeap()
 	sDescriptorRange_.NumDescriptors = 1;   //一度の描画に使うテクスチャの枚数
 	sDescriptorRange_.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	sDescriptorRange_.BaseShaderRegister = 0;  //テクスチャレジスタ0番(t0)
-	//sDescriptorRange_.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	sDescriptorRange_.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	sSrvHandle_ = sSrvHeap_->GetCPUDescriptorHandleForHeapStart();
 }
@@ -183,7 +183,6 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	DirectXWrapper::GetInstance().UploatBuffEmplaceBack();
 
 	uploadResDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	//uploadDesc.Width = MyMath::AlignmentSize(img->rowPitch, D3D12_TEXTURE_DATA_PITCH_ALIGNMENT) * img->height;
 	uploadResDesc.Width = total_bytes;
 	uploadResDesc.Height = 1;
 	uploadResDesc.DepthOrArraySize = 1;
@@ -269,14 +268,8 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 		else
 		{
 			//SRVヒープの先頭ハンドルを取得
-			if (sCount_ == 0)
-			{
-				sSrvHandle_ = sSrvHeap_->GetCPUDescriptorHandleForHeapStart();
-			}
-			else
-			{
-				sSrvHandle_.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(sSrvHeapDesc_.Type);
-			}
+			sSrvHandle_ = sSrvHeap_->GetCPUDescriptorHandleForHeapStart();
+			sSrvHandle_.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(sSrvHeapDesc_.Type) * sCount_;
 
 			srvDescL.Format = uploadResDesc.Format;
 			srvDescL.Shader4ComponentMapping =
@@ -289,7 +282,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 			//04_02(画像貼る用のアドレスを引数に)
 			//SRVヒープのハンドルを取得
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = sSrvHeap_->GetGPUDescriptorHandleForHeapStart();
-			textureHandle = srvGpuHandle.ptr + 
+			textureHandle = srvGpuHandle.ptr +
 				(DirectXWrapper::GetInstance().GetDevice()->
 					GetDescriptorHandleIncrementSize(TextureManager::GetInstance().sSrvHeapDesc_.Type) * sCount_);
 		}

@@ -146,6 +146,8 @@ public: // メンバ関数
 	/// </summary>
 	void CreateBuffers();
 
+	void SendingMat(const ConstBuffTransform& cbt);
+
 	/// <summary>
 	/// 頂点バッファ取得
 	/// </summary>
@@ -162,7 +164,7 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
-	void Draw(const Camera& camera, const WorldMat& worldMat,
+	void Draw(const ConstBuffTransform& cbt,
 		const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
 
 public:
@@ -180,9 +182,6 @@ public:
 
 
 private: // メンバ変数
-	//トランスフォーム行列
-	ConstBuffTransform constBuffTransform_;
-
 	// 名前
 	std::string name_;
 	// 頂点バッファ
@@ -208,9 +207,7 @@ private: // メンバ変数
 	//グローバル変形行列（親の影響も含めた）
 	DirectX::XMMATRIX globalTransform_ = {};
 
-
-public:
-	void SendingMat(const Camera& camera, const WorldMat& worldMat);
+	ConstBuffTransform cbt_;
 
 public:
 	//getter

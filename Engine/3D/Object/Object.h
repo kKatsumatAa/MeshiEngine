@@ -72,6 +72,7 @@ public:
 		COLOR,
 		TEX,
 		MATRIX,
+		MESH_MAT,
 		MATERIAL,
 		LIGHT,
 		EFFECT,
@@ -97,7 +98,7 @@ private:
 	//FBX用
 	static RootPipe pipelineSetFBX_;
 	//ルートパラメータの設定
-	static D3D12_ROOT_PARAMETER rootParams_[10];
+	static D3D12_ROOT_PARAMETER rootParams_[11];
 	// グラフィックスパイプライン設定
 	static D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_;
 
@@ -198,7 +199,7 @@ private:
 	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
 	//マテリアル、ライト、テクスチャ系のコマンド
 	void SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
-		uint64_t normalMapTex, ConstBuffTransform* cbt, bool setTex = true);
+		uint64_t normalMapTex, bool setTex = true);
 	void SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
 		uint64_t normalMapTexHandle);
 

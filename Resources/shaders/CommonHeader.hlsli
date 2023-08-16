@@ -106,7 +106,7 @@ cbuffer ConstBufferDataTransform : register(b1)
 }
 
 //LightManager‚ÌConstBuffer‚Æ“¯‚¶Œ^‚ğéŒ¾
-cbuffer ConstBufferDataMaterial3 : register(b3)
+cbuffer ConstBufferDataMaterial3 : register(b4)
 {
     float3 ambientColor;
     float3 diffuseColor;
@@ -117,7 +117,7 @@ cbuffer ConstBufferDataMaterial3 : register(b3)
     CircleShadow circleShadows[S_CIRCLESHADOW_NUM];
 }
 
-cbuffer ConstBufferEffectFlags : register(b4)
+cbuffer ConstBufferEffectFlags : register(b5)
 {
 	//ƒtƒHƒO
     uint isFog;

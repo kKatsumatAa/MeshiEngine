@@ -26,7 +26,7 @@ Mesh::Mesh()
 {
 	globalTransform_ = XMMatrixIdentity();
 
-	constBuffTransform_.Initialize();
+	cbt_.Initialize();
 }
 
 void Mesh::SetName(const std::string& name)
@@ -184,32 +184,17 @@ void Mesh::CreateBuffers()
 	}
 }
 
-void Mesh::SendingMat(const Camera& camera, const WorldMat& worldMat)
+void Mesh::SendingMat(const ConstBuffTransform& cbt)
 {
-	//変換行列をGPUに送信
-	WorldMat worldL = worldMat;
-	worldL.CulcAllTreeMat();
-
-	XMMATRIX matW;
-	worldL.matWorld_.MatIntoXMMATRIX(matW);
-
-	//メッシュのグローバルトランスフォームとオブジェクトのワールドをかける
-	/*globalTransform_ = XMMatrixIdentity() * 10.0f;*/
-	constBuffTransform_.SetWorldMat(/*globalTransform_ **/ matW);
-
-	constBuffTransform_.SetViewProjMat( camera.GetViewMat() * camera.GetProjMat());
-	XMFLOAT3 cPos = { camera.GetEye().x_,camera.GetEye().y_,camera.GetEye().z_ };
-	constBuffTransform_.SetCameraPos(camera.GetEye());
+	cbt_.SetWorldMat(globalTransform_);
+	cbt_.SetViewProjMat(cbt.GetViewProjMat());
+	cbt_.SetCameraPos(cbt.GetCameraPos());
 }
 
-void Mesh::Draw(const Camera& camera, const WorldMat& worldMat,
+void Mesh::Draw(const ConstBuffTransform& cbt,
 	const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	SendingMat(camera, worldMat);
-
-	//SRVヒープの設定コマンド
-	ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetDescHeapP() };
-	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+	SendingMat(cbt);
 
 	// シェーダリソースビューをセット
 	//SRVヒープの先頭ハンドルを取得
@@ -221,8 +206,8 @@ void Mesh::Draw(const Camera& camera, const WorldMat& worldMat,
 	ID3D12Resource* constBuff = material_->GetConstantBuffer();
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(Object::ROOTPARAM_NUM::MATERIAL, constBuff->GetGPUVirtualAddress());
 
-		//定数バッファビュー(CBV)の設定コマンド
-	constBuffTransform_.DrawCommand(Object::ROOTPARAM_NUM::MATRIX);
+	//メッシュごとの行列
+	cbt_.DrawCommand(Object::ROOTPARAM_NUM::MESH_MAT);
 
 	// 頂点バッファをセット
 	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);

@@ -6,7 +6,7 @@
 //アフィン変換行列用
 class ConstBuffTransform
 {
-private://エイリアス
+protected://エイリアス
 	//Microsoft::WRL::を省略
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	//DirectX::を省略
@@ -27,11 +27,10 @@ private:
 	};
 
 
-public:
+private:
 	//保存しておくデータ
 	struct ConstBuffTransformSaveData
 	{
-		bool isUsing = false;//今使用されているか
 		ConstBufferDataTransform* constMapTransform = nullptr;//マッピング
 		ComPtr<ID3D12Resource> constBuffTransform = nullptr;//定数バッファのGPUリソースのポインタ
 	};
@@ -49,9 +48,11 @@ public:
 	};
 
 private://管理用静的変数
-	static D3D12_DESCRIPTOR_RANGE sDescRange_;
+	static D3D12_DESCRIPTOR_RANGE sDescRange_[2];
 	//メモリ管理用
 	static std::map<uint64_t, ConstBuffTransformSaveData> sCbtDatas_;
+	//使用できるバッファのgpuアドレス
+	static std::vector<uint64_t> canUseBuffsHandle_;
 
 private://描画用
 	//描画時にセットするgpuハンドル
@@ -84,5 +85,10 @@ private:
 
 public:
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetCBVGpuHandle() { return cbvGPUHandle_; }
-	static const D3D12_DESCRIPTOR_RANGE& GetDescRange() { return sDescRange_; }
+	static const D3D12_DESCRIPTOR_RANGE& GetDescRange() { return sDescRange_[0]; }
+	static const D3D12_DESCRIPTOR_RANGE& GetDescRange2() { return sDescRange_[1]; }
+
+	const XMMATRIX& GetWorldMat() const{ return constMapTransform_->world; }
+	const XMMATRIX& GetViewProjMat()const { return constMapTransform_->viewproj; }
+	const Vec3& GetCameraPos()const { return constMapTransform_->cameraPos; }
 };

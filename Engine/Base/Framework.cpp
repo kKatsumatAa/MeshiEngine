@@ -12,12 +12,12 @@ void Framework::Initialize()
 	//texture
 	TextureManager::InitializeDescriptorHeap();
 
+	//行列用
+	ConstBuffTransform::StaticInitialize();
+
 	//imgui
 	imguiM_ = std::make_unique<ImGuiManager>();
 	imguiM_->Initialize();
-
-	//行列用
-	ConstBuffTransform::StaticInitialize();
 
 	//FBX
 	FbxLoader::GetInstance()->Initialize();
@@ -43,12 +43,12 @@ void Framework::Initialize()
 	//model
 	IModel::StaticInitialize();
 
+	//objマネージャ
+	ObjectManager::GetInstance().Initialize();
+
 	//シーン
 	sceneM_ = &SceneManager::GetInstance();
 	sceneM_->Initialize();
-
-	//objマネージャ
-	ObjectManager::GetInstance().Initialize();
 }
 
 void Framework::Finalize()
