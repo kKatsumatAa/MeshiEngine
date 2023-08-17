@@ -38,9 +38,6 @@ PSOutput main(VSOutput input)
             input.binormal, input.normal, worldL);
     }
     
-    output.col = float4(lightNormal.rgb, 1.0f);
-    return output;
-    
 	//•½sŒõŒ¹
     for (int i = 0; i < S_DIRLIGHT_NUM; i++)
     {

@@ -51,11 +51,6 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	handle = TextureManager::LoadGraph("dissolveMask.png");
 	SetDissolveTexHandle(handle);
 
-	//ノーマルマップ
-	SetIsNormalMap(true);
-	//tex
-	handle = TextureManager::GetInstance().LoadGraph("EnemyNormalMap.png");
-	SetNormalMapTexHandle(handle);
 
 	return true;
 }

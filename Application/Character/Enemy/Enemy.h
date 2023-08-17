@@ -32,7 +32,7 @@ private:
 
 	const float DISSOLVE_POW_ = 0.93f;
 
-	const float WEAPON_FALL_VEL_EXTEND_ = 2.0f;
+	const float WEAPON_FALL_VEL_EXTEND_ = 1.6f;
 
 public:
 	/// <summary>
