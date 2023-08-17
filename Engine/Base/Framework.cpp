@@ -12,9 +12,6 @@ void Framework::Initialize()
 	//texture
 	TextureManager::InitializeDescriptorHeap();
 
-	//çsóÒóp
-	ConstBuffTransform::StaticInitialize();
-
 	//imgui
 	imguiM_ = std::make_unique<ImGuiManager>();
 	imguiM_->Initialize();
@@ -71,7 +68,7 @@ void Framework::Finalize()
 void Framework::Update()
 {
 	//èIóπ
-	if (WindowsApp::GetInstance().MessegeRoop(msg_) || KeyboardInput::GetInstance().KeyPush(DIK_ESCAPE))
+	if (WindowsApp::GetInstance().MessegeRoop(msg_) || sceneM_->GetIsEscapingGame())
 	{
 		isEndGame_ = true;
 	}

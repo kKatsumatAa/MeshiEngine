@@ -4,63 +4,7 @@
 #include <functional>
 
 
-//画面効果用のフラグ
-struct EffectConstBuffer
-{
-	//課題用マルチテクスチャ組み合わせ
-	uint32_t isMultiTex = false;
-	//ぼかし
-	uint32_t isGaussian = false;
-	//ガウシアンぼかし
-	uint32_t isGaussian2 = false;
-	//ラジアルブラー
-	uint32_t isRadialBlur = false;
-	//ラジアル強さ
-	float radialPow = 1.0f;
-	//エンボス
-	uint32_t isEmboss = false;
-	//シャープネス
-	uint32_t isSharpness = false;
-	//諧調
-	uint32_t isGradation = false;
-	//アウトライン
-	uint32_t isOutLine = false;
-	//ビネット
-	uint32_t isVignette = false;
-	//樽状湾曲
-	uint32_t isBarrelCurve = false;
-	float barrelCurvePow = 1.0f;
-	//走査線
-	uint32_t isScanningLine = false;
-	//グレースケール
-	uint32_t isGrayScale = false;
-	//ガラスフィルター
-	uint32_t isGlassFilter = false;
-	//モザイク
-	uint32_t isMosaic = false;
-	//ネガポジ
-	uint32_t isNega = false;
-	//ネガポジ
-	uint32_t isRGBShift = false;
-	//ブルーム
-	uint32_t isBloom = false;
-	//クロスフィルタ
-	uint32_t isCrossFilter = false;
-	//ブルームの強さ
-	float bloomPow = 9.0f;
-	//ノイズ
-	uint32_t isNoise = false;
-	//被写界深度
-	uint32_t isDepthField = false;
-	//フォーカス合わせる深度値
-	float focusDepth = 0.05f;
-	//フォーカスのスムースステップの幅の下限
-	float nFocusWidth = 0.005f;
-	//フォーカスのスムースステップの幅の上限
-	float focusDiffPow = 0.01f;
-	//時間
-	uint32_t time = 0;
-};
+
 
 struct PeraVertex
 {
@@ -73,6 +17,73 @@ class PostPera
 private:
 	//Microsoft::WRL::を省略
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
+public:
+	static const float S_BLOOM_POW_;
+
+	//ブルームの最大強さ
+	static const float S_BLOOM_MAX_POW_;
+	//ラジアルの最大強さ
+	static const float S_RADIAL_MAX_POW_;
+
+private:
+	//画面効果用のフラグ
+	struct EffectConstBuffer
+	{
+		//課題用マルチテクスチャ組み合わせ
+		uint32_t isMultiTex = false;
+		//ぼかし
+		uint32_t isGaussian = false;
+		//ガウシアンぼかし
+		uint32_t isGaussian2 = false;
+		//ラジアルブラー
+		uint32_t isRadialBlur = false;
+		//ラジアル強さ
+		float radialPow = 1.0f;
+		//エンボス
+		uint32_t isEmboss = false;
+		//シャープネス
+		uint32_t isSharpness = false;
+		//諧調
+		uint32_t isGradation = false;
+		//アウトライン
+		uint32_t isOutLine = false;
+		//ビネット
+		uint32_t isVignette = false;
+		//樽状湾曲
+		uint32_t isBarrelCurve = false;
+		float barrelCurvePow = 1.0f;
+		//走査線
+		uint32_t isScanningLine = false;
+		//グレースケール
+		uint32_t isGrayScale = false;
+		//ガラスフィルター
+		uint32_t isGlassFilter = false;
+		//モザイク
+		uint32_t isMosaic = false;
+		//ネガポジ
+		uint32_t isNega = false;
+		//ネガポジ
+		uint32_t isRGBShift = false;
+		//ブルーム
+		uint32_t isBloom = false;
+		//クロスフィルタ
+		uint32_t isCrossFilter = false;
+		//ブルームの強さ
+		float bloomPow = PostPera::S_BLOOM_POW_;
+		//ノイズ
+		uint32_t isNoise = false;
+		//被写界深度
+		uint32_t isDepthField = false;
+		//フォーカス合わせる深度値
+		float focusDepth = 0.05f;
+		//フォーカスのスムースステップの幅の下限
+		float nFocusWidth = 0.005f;
+		//フォーカスのスムースステップの幅の上限
+		float focusDiffPow = 0.01f;
+		//時間
+		uint32_t time = 0;
+	};
 
 private:
 	//ペラの拡大率
@@ -141,11 +152,6 @@ private:
 	//画面全体ぼかし用パイプライン(ブルーム)
 	ComPtr<ID3D12PipelineState> blurPipeline_;
 
-	//ブルームの最大強さ
-	const float BLOOM_MAX_POW_ = 15.0f;
-	//ラジアルの最大強さ
-	const float RADIAL_MAX_POW_ = 1.0f;
-
 	//被写界深度バッファ
 	ComPtr<ID3D12Resource>dofBuffer_;
 
@@ -155,7 +161,6 @@ private:
 public:
 	//画面効果用
 	EffectConstBuffer effectFlags_;
-
 
 
 private://関数
@@ -218,4 +223,3 @@ public:
 	void SetPeraGExtend(float extend) { peraGExtend_ = extend; }
 	void SetPera2Extend(float extend) { pera2Extend_ = extend; }
 };
-

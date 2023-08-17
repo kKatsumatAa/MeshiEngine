@@ -353,11 +353,11 @@ public:
 		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f },
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawBoxSprite(const Vec2& pos, float scale, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }
+	void DrawBoxSprite(const Vec2& pos, const Vec2& scale, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }
 		, uint64_t textureHandle = NULL, const Vec2& ancorUV = { 0,0 }, bool isReverseX = false, bool isReverseY = false,
 		float rotation = 0.0f, int32_t pipelineNum = 0);
 
-	void DrawClippingBoxSprite(const Vec2& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+	void DrawClippingBoxSprite(const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, bool isPosLeftTop = true,
 		bool isReverseX = false, bool isReverseY = false, float rotation = 0.0f, int32_t pipelineNum = 0);
 

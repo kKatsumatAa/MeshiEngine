@@ -27,7 +27,7 @@ void ClearEffectState::SpriteUpdate(const std::string& soundName, const std::str
 void ClearEffectState::SpriteDraw()
 {
 	texObj_.DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },
-		scale_, { 2.5f,2.5f,2.5f,alpha_ }, texHandle_, { 0.5f,0.5f });
+		{ scale_,scale_ }, { 2.5f,2.5f,2.5f,alpha_ }, texHandle_, { 0.5f,0.5f });
 }
 
 std::unique_ptr<ClearEffectState> ClearEffectState::GetState(const std::string& name)

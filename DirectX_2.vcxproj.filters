@@ -109,9 +109,6 @@
     <Filter Include="ヘッダー ファイル\Engine\3D\Assimp">
       <UniqueIdentifier>{db463434-2f88-4178-82f5-3b1f811d3713}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Engine\3D\Assimp">
-      <UniqueIdentifier>{d1a202a8-3aef-44d7-8270-435847bd333e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Application\Character">
       <UniqueIdentifier>{203ceeb8-626e-4f6e-9671-3b464cdb538c}</UniqueIdentifier>
     </Filter>
@@ -171,6 +168,12 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\Application\System\GameVelocity">
       <UniqueIdentifier>{db69a53e-5fea-4761-aa20-cbf010356c32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\UI">
+      <UniqueIdentifier>{6aa4bc38-c328-412a-b2b7-4288236f23d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\UI">
+      <UniqueIdentifier>{2d793f2e-29d6-4534-8dd2-4804c3d69541}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -443,6 +446,12 @@
     </ClCompile>
     <ClCompile Include="Engine\3D\Object\ObjectManager.cpp">
       <Filter>ソース ファイル\Engine\3D\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\UI\TitleUI.cpp">
+      <Filter>ソース ファイル\Application\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\UI\CursorUI.cpp">
+      <Filter>ソース ファイル\Application\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -733,6 +742,12 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Object\ObjectManager.h">
       <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\UI\TitleUI.h">
+      <Filter>ヘッダー ファイル\Application\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\UI\CursorUI.h">
+      <Filter>ヘッダー ファイル\Application\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

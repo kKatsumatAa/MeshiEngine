@@ -37,8 +37,6 @@ void SceneTransitionManager::ChangeEffectState(std::unique_ptr<SceneTransitionEf
 void SceneTransitionManager::BeginSceneTransition(const std::function<void()>& loadFunc)
 {
 	isDoingEffect_ = true;
-	//ロードはまだしないので
-	//async_.SetIsLoading(false);
 
 	//読み込みの関数コピー
 	loadFunc_ = loadFunc;

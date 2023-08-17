@@ -232,7 +232,7 @@ void DebugText::DrawAll(uint64_t texhandle)
 {
 	for (int32_t i = 0; i < spriteIndex_; i++)
 	{
-		sprites_[i].DrawClippingBoxSprite(leftTop_[i], scale_[i], UVleftTop_[i], UVlength_[i],
+		sprites_[i].DrawClippingBoxSprite(leftTop_[i], { scale_[i],scale_[i] }, UVleftTop_[i], UVlength_[i],
 			{ 1.0f,1.0f,1.0f,1.0f }, texhandle);
 	}
 

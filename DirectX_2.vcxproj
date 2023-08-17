@@ -65,7 +65,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -86,7 +86,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Effect;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -117,6 +117,8 @@
     <ClCompile Include="Application\System\GameVelocity\GameVelocityManager.cpp" />
     <ClCompile Include="Application\System\Tutorial\Tutorial.cpp" />
     <ClCompile Include="Application\System\Tutorial\TutorialState.cpp" />
+    <ClCompile Include="Application\UI\CursorUI.cpp" />
+    <ClCompile Include="Application\UI\TitleUI.cpp" />
     <ClCompile Include="Application\Weapon\Gun\Bullet.cpp" />
     <ClCompile Include="Application\Weapon\Gun\BulletManager.cpp" />
     <ClCompile Include="Application\Weapon\Gun\Gun.cpp" />
@@ -213,6 +215,8 @@
     <ClInclude Include="Application\System\GameVelocity\GameVelocityManager.h" />
     <ClInclude Include="Application\System\Tutorial\Tutorial.h" />
     <ClInclude Include="Application\System\Tutorial\TutorialState.h" />
+    <ClInclude Include="Application\UI\CursorUI.h" />
+    <ClInclude Include="Application\UI\TitleUI.h" />
     <ClInclude Include="Application\Weapon\Gun\Bullet.h" />
     <ClInclude Include="Application\Weapon\Gun\BulletManager.h" />
     <ClInclude Include="Application\Weapon\Gun\Gun.h" />

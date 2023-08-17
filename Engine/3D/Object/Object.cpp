@@ -56,14 +56,14 @@ void Object::DrawInitialize()
 	rootParams_[TEX].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[TEX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//定数バッファ1番(行列)
-	rootParams_[MATRIX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	rootParams_[MATRIX].DescriptorTable.pDescriptorRanges = &ConstBuffTransform::GetDescRange();//デスクリプタレンジ(b1)
-	rootParams_[MATRIX].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[MATRIX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[MATRIX].Descriptor.ShaderRegister = 1;//定数バッファ番号(b1)
+	rootParams_[MATRIX].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams_[MATRIX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//メッシュごとの行列2番
-	rootParams_[MESH_MAT].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	rootParams_[MESH_MAT].DescriptorTable.pDescriptorRanges = &ConstBuffTransform::GetDescRange2();//デスクリプタレンジ(b2)
-	rootParams_[MESH_MAT].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[MESH_MAT].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[MESH_MAT].Descriptor.ShaderRegister = 2;//定数バッファ番号(b2)
+	rootParams_[MESH_MAT].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams_[MESH_MAT].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//定数バッファ3番（マテリアル）
 	rootParams_[MATERIAL].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
@@ -279,7 +279,7 @@ Object::Object()
 		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
 		//リソース設定
 		ResourceProperties(cbResourceDesc,
-			((uint32_t)sizeof(EffectConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
+			((uint32_t)sizeof(EffectOConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &effectFlagsBuff_);
 		//定数バッファのマッピング
@@ -607,7 +607,7 @@ void Object::DrawBox(Camera* camera, const Vec4& color, uint64_t textureHandle, 
 	Update(BOX, pipelineNum, textureHandle, &cbt_, camera);
 }
 
-void Object::DrawBoxSprite(const Vec2& pos, float scale,
+void Object::DrawBoxSprite(const Vec2& pos, const Vec2& scale,
 	const Vec4& color, uint64_t textureHandle, const Vec2& ancorUV, bool isReverseX, bool isReverseY,
 	float rotation, int32_t pipelineNum)
 {
@@ -622,7 +622,7 @@ void Object::DrawBoxSprite(const Vec2& pos, float scale,
 	Update(SPRITE, pipelineNum, textureHandle, &cbt_, nullptr);
 }
 
-void Object::DrawClippingBoxSprite(const Vec2& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+void Object::DrawClippingBoxSprite(const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	const Vec4& color, uint64_t textureHandle, bool isPosLeftTop, bool isReverseX, bool isReverseY,
 	float rotation, int32_t pipelineNum)
 {

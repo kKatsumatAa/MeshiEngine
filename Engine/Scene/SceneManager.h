@@ -27,7 +27,7 @@ private:
 	//シーンファクトリー（ポインタを借りる）
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 
-public:
+private:
 	DebugText debugText_;
 
 	//デバッグテキスト
@@ -57,10 +57,10 @@ public:
 
 	float fighterPos_[3] = { -10.0f,0,0 };
 
-
 	std::unique_ptr<Camera> camera_;
 
-
+	//ゲームが終了したか
+	bool isEscapingGame_ = false;
 
 private:
 	~SceneManager();
@@ -91,4 +91,9 @@ public:
 	void DrawImgui();
 
 	void StopWaveAllScene();
+
+public:
+	void SetIsEscapingGame(bool is) { isEscapingGame_ = is; }
+	bool GetIsEscapingGame() { return isEscapingGame_; }
+
 };

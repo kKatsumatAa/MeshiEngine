@@ -43,9 +43,9 @@ void SceneGame::Update()
 	//ƒV[ƒ“‘JˆÚ
 	if (StageManager::GetInstance().GetIsGameOver())
 	{
-		sceneM_->SetNextScene("TITLE");
+		sceneM_->SetNextScene("GAME");
 	}
-	else if (StageManager::GetInstance().GetIsGameClear())
+	else if (StageManager::GetInstance().GetIsGameClear() || KeyboardInput::GetInstance().KeyTrigger(DIK_ESCAPE))
 	{
 		ParticleManager::GetInstance()->ClearParticles();
 		sceneM_->SetNextScene("TITLE");

@@ -58,7 +58,7 @@ void Sprite::SpriteDraw()
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }
 
-void Sprite::Update(const Vec2& pos, float scale,
+void Sprite::Update(const Vec2& pos, const Vec2& scale,
 	const Vec4& color, uint64_t textureHandle, const Vec2& ancorUV,
 	bool isReverseX, bool isReverseY, float rotation,
 	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
@@ -85,10 +85,10 @@ void Sprite::Update(const Vec2& pos, float scale,
 	if (isReverseX)length.x_ *= -1;
 	if (isReverseY)length.y_ *= -1;
 
-	vertices_[0] = { {-(float)(length.x_ * scale * ancorUV.x_),+(float)(length.y_ * scale * (1.0f - ancorUV.y_)),0.0f},{0.0f,1.0f} };//左下
-	vertices_[1] = { {-(float)(length.x_ * scale * ancorUV.x_),-(float)(length.y_ * scale * (ancorUV.y_)),0.0f},{0.0f,0.0f} };//左上
-	vertices_[2] = { {+(float)(length.x_ * scale * (1.0f - ancorUV.x_)),+(float)(length.y_ * scale * (1.0f - ancorUV.y_)),0.0f},{1.0f,1.0f} };//右下
-	vertices_[3] = { {+(float)(length.x_ * scale * (1.0f - ancorUV.x_)),-(float)(length.y_ * scale * (ancorUV.y_)),0.0f},{1.0f,0.0f} };//右上
+	vertices_[0] = { {-(float)(length.x_ * scale.x_ * ancorUV.x_),+(float)(length.y_ * scale.y_ * (1.0f - ancorUV.y_)),0.0f},{0.0f,1.0f} };//左下
+	vertices_[1] = { {-(float)(length.x_ * scale.x_ * ancorUV.x_),-(float)(length.y_ * scale.y_ * (ancorUV.y_)),0.0f},{0.0f,0.0f} };//左上
+	vertices_[2] = { {+(float)(length.x_ * scale.x_ * (1.0f - ancorUV.x_)),+(float)(length.y_ * scale.y_ * (1.0f - ancorUV.y_)),0.0f},{1.0f,1.0f} };//右下
+	vertices_[3] = { {+(float)(length.x_ * scale.x_ * (1.0f - ancorUV.x_)),-(float)(length.y_ * scale.y_ * (ancorUV.y_)),0.0f},{1.0f,0.0f} };//右上
 
 
 	constMapMaterial->color = color;
@@ -128,7 +128,7 @@ void Sprite::Update(const Vec2& pos, float scale,
 	cbt->SetCameraPos(view.eye_);
 }
 
-void Sprite::UpdateClipping(const Vec2& leftTop, float scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+void Sprite::UpdateClipping(const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	const Vec4& color, uint64_t textureHandle, bool isPosLeftTop,
 	bool isReverseX, bool isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
@@ -154,26 +154,26 @@ void Sprite::UpdateClipping(const Vec2& leftTop, float scale, const XMFLOAT2& UV
 	if (isReverseX)length.x_ *= -1;
 	if (isReverseY)length.y_ *= -1;
 
-	float texLeft = UVleftTop.x * +(float)length.x_ * scale;
-	float texRight = (UVleftTop.x + UVlength.x) * +(float)length.x_ * scale;
-	float texTop = UVleftTop.y * +(float)length.y_ * scale;
-	float texBottom = (UVleftTop.y + UVlength.y) * +(float)length.y_ * scale;
+	float texLeft = UVleftTop.x * +(float)length.x_ * scale.x_;
+	float texRight = (UVleftTop.x + UVlength.x) * +(float)length.x_ * scale.x_;
+	float texTop = UVleftTop.y * +(float)length.y_ * scale.y_;
+	float texBottom = (UVleftTop.y + UVlength.y) * +(float)length.y_ * scale.y_;
 
 	if (isPosLeftTop)
 	{
 		//左上からの座標
-		vertices_[0] = { {0,UVlength.y * length.y_ * scale,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		vertices_[0] = { {0,UVlength.y * length.y_ * scale.y_,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
 		vertices_[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		vertices_[2] = { {UVlength.x * length.x_ * scale,UVlength.y * length.y_ * scale,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices_[3] = { {UVlength.x * length.x_ * scale,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		vertices_[2] = { {UVlength.x * length.x_ * scale.x_,UVlength.y * length.y_ * scale.y_,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		vertices_[3] = { {UVlength.x * length.x_ * scale.x_,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	else
 	{
 		//切り抜いた後の画像の中心からの位置！！！！！！！！
-		vertices_[0] = { {-UVlength.x * length.x_ * scale / 2.0f,UVlength.y * length.y_ * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-		vertices_[1] = { {-UVlength.x * length.x_ * scale / 2.0f,-UVlength.y * length.y_ * scale / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		vertices_[2] = { {UVlength.x * length.x_ * scale / 2.0f,UVlength.y * length.y_ * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices_[3] = { {UVlength.x * length.x_ * scale / 2.0f,-UVlength.y * length.y_ * scale / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		vertices_[0] = { {-UVlength.x * length.x_ * scale.x_ / 2.0f,UVlength.y * length.y_ * scale.y_ / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		vertices_[1] = { {-UVlength.x * length.x_ * scale.x_ / 2.0f,-UVlength.y * length.y_ * scale.y_ / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
+		vertices_[2] = { {UVlength.x * length.x_ * scale.x_ / 2.0f,UVlength.y * length.y_ * scale.y_ / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		vertices_[3] = { {UVlength.x * length.x_ * scale.x_ / 2.0f,-UVlength.y * length.y_ * scale.y_ / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	constMapMaterial->color = color;
 
@@ -190,8 +190,8 @@ void Sprite::UpdateClipping(const Vec2& leftTop, float scale, const XMFLOAT2& UV
 	else
 	{
 		//切り抜いた後の画像の中心を設定
-		worldMat.trans_ = { leftTop.x_ + texLeft + UVlength.x * (float)length.x_ * scale / 2.0f,
-			leftTop.y_ + texTop + UVlength.y * (float)length.y_ * scale / 2.0f,
+		worldMat.trans_ = { leftTop.x_ + texLeft + UVlength.x * (float)length.x_ * scale.x_ / 2.0f,
+			leftTop.y_ + texTop + UVlength.y * (float)length.y_ * scale.y_ / 2.0f,
 			0 };
 	}
 	worldMat.CulcWorldMat();

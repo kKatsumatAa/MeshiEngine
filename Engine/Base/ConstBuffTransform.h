@@ -26,44 +26,15 @@ private:
 		float pad;
 	};
 
-
-private:
-	//保存しておくデータ
-	struct ConstBuffTransformSaveData
-	{
-		ConstBufferDataTransform* constMapTransform = nullptr;//マッピング
-		ComPtr<ID3D12Resource> constBuffTransform = nullptr;//定数バッファのGPUリソースのポインタ
-	};
-	//描画時に使うデータ
-	struct ConstBuffTransformDrawData
-	{
-		D3D12_GPU_DESCRIPTOR_HANDLE cbvGPUHandle;//gpuのハンドル
-		ConstBufferDataTransform* constMapTransform = nullptr;//マッピング
-	};
-	//データまとめ
-	struct ConstBuffTransformAllData
-	{
-		ConstBuffTransformSaveData saveData;
-		ConstBuffTransformDrawData drawData;
-	};
-
-private://管理用静的変数
-	static D3D12_DESCRIPTOR_RANGE sDescRange_[2];
-	//メモリ管理用
-	static std::map<uint64_t, ConstBuffTransformSaveData> sCbtDatas_;
-	//使用できるバッファのgpuアドレス
-	static std::vector<uint64_t> canUseBuffsHandle_;
-
 private://描画用
-	//描画時にセットするgpuハンドル
-	D3D12_GPU_DESCRIPTOR_HANDLE cbvGPUHandle_;
+	//バッファ
+	ComPtr<ID3D12Resource> constBuffTransform_;
 	ConstBufferDataTransform* constMapTransform_ = nullptr;//定数バッファのマッピング用ポインタ
 
 public:
 	ConstBuffTransform() { ; }
-	~ConstBuffTransform();
+	~ConstBuffTransform() { ; }
 
-	static void StaticInitialize();
 	void Initialize();
 	void DrawCommand(int32_t index);
 
@@ -71,22 +42,6 @@ public:
 	void SetViewProjMat(const XMMATRIX& mat) { constMapTransform_->viewproj = mat; }
 	void SetWorldMat(const XMMATRIX& mat) { constMapTransform_->world = mat; }
 	void SetCameraPos(const Vec3& pos) { constMapTransform_->cameraPos = pos; }
-
-public:
-	//バッファを作成して登録
-	static ConstBuffTransformDrawData CreateBuffAndAdd();
-
-private:
-	//保存してあればデータを返す
-	static bool GetSaveData(ConstBuffTransformDrawData& data);
-	//新たにバッファを作成して返す
-	static ConstBuffTransformDrawData CreateBuff();
-	static ConstBuffTransformAllData CreateBuffInternal();
-
-public:
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetCBVGpuHandle() { return cbvGPUHandle_; }
-	static const D3D12_DESCRIPTOR_RANGE& GetDescRange() { return sDescRange_[0]; }
-	static const D3D12_DESCRIPTOR_RANGE& GetDescRange2() { return sDescRange_[1]; }
 
 	const XMMATRIX& GetWorldMat() const{ return constMapTransform_->world; }
 	const XMMATRIX& GetViewProjMat()const { return constMapTransform_->viewproj; }

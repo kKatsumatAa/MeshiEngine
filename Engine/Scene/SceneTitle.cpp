@@ -1,6 +1,8 @@
 #include "SceneTitle.h"
 #include "SceneManager.h"
 #include "GameVelocityManager.h"
+#include "TitleUI.h"
+#include "CursorUI.h"
 
 
 void SceneTitle::Finalize()
@@ -15,25 +17,23 @@ void SceneTitle::Initialize()
 
 	sceneM_->StopWaveAllScene();
 
-	titleTex_ = TextureManager::LoadGraph("title.png");
-
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = true;
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isDepthField = false;
+
+	//カーソルui
+	CursorUI::GetInstance().Initialize();
+	//タイトル
+	TitleUI::GetInstance().Initialize();
 }
 
 void SceneTitle::Update()
 {
-	//タイトル画面
-	if (t_ < 1.0f)
-	{
-		t_ = (float)titleTime_ / (float)TITLE_TIME_MAX_;
-
-		titleScale_ = LerpVec3({ TITLE_SCALE_MAX_,0,0 }, { 1.0f,0,0 }, EaseOut(t_)).x_;
-
-		titleTime_++;
-	}
+	//カーソルui
+	CursorUI::GetInstance().Update();
+	//タイトル
+	TitleUI::GetInstance().Update();
 
 	//シーン遷移
 	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || KeyboardInput::GetInstance().KeyTrigger(DIK_R))
@@ -41,6 +41,11 @@ void SceneTitle::Update()
 		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = false;
 
 		sceneM_->SetNextScene("GAME");
+	}
+	//タイトルでescapeで終了
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_ESCAPE))
+	{
+		sceneM_->SetIsEscapingGame(true);
 	}
 }
 
@@ -51,8 +56,11 @@ void SceneTitle::Draw()
 
 void SceneTitle::DrawSprite()
 {
-	titleObj_.DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },
-		titleScale_, { 1.0f,1.0f,1.0f,1.0f }, titleTex_, { 0.5f,0.5f });
+	//タイトル
+	TitleUI::GetInstance().DrawSprite();
+
+	//カーソルui
+	CursorUI::GetInstance().Draw();
 }
 
 void SceneTitle::DrawImgui()

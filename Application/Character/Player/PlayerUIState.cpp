@@ -44,7 +44,7 @@ void PlayerUIState::Update()
 void PlayerUIState::DrawSprite()
 {
 	reticleObj_.DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },
-		scale_, color_, reticleTexHandle_, { 0.5f,0.5f }, false, false, angle_);
+		{ scale_,scale_ }, color_, reticleTexHandle_, { 0.5f,0.5f }, false, false, angle_);
 }
 
 
