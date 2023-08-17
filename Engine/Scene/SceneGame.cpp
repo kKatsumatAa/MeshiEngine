@@ -31,16 +31,13 @@ void SceneGame::Initialize()
 
 void SceneGame::Update()
 {
-
-	//#ifdef _DEBUG
-		//リセット
+	//リセット
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_R))
 	{
 		sceneM_->SetNextScene("GAME");
 	}
-	//#endif
 
-		//ステージアップデート
+	//ステージアップデート
 	StageManager::GetInstance().Update();
 
 	//シーン遷移

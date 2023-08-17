@@ -180,7 +180,6 @@
     <ClCompile Include="Engine\Math\Vec3.cpp" />
     <ClCompile Include="Engine\Math\Vec4.cpp" />
     <ClCompile Include="Engine\PostEffect\GausianBuffer.cpp" />
-    <ClCompile Include="Engine\PostEffect\GlassFilter.cpp" />
     <ClCompile Include="Engine\PostEffect\PostEffectManager.cpp" />
     <ClCompile Include="Engine\PostEffect\PostPera.cpp" />
     <ClCompile Include="Engine\Scene\SceneClear.cpp" />
@@ -279,7 +278,6 @@
     <ClInclude Include="Engine\Math\Vec3.h" />
     <ClInclude Include="Engine\Math\Vec4.h" />
     <ClInclude Include="Engine\PostEffect\GausianBuffer.h" />
-    <ClInclude Include="Engine\PostEffect\GlassFilter.h" />
     <ClInclude Include="Engine\PostEffect\PostEffectManager.h" />
     <ClInclude Include="Engine\PostEffect\PostPera.h" />
     <ClInclude Include="Engine\Scene\AbstractSceneFactory.h" />

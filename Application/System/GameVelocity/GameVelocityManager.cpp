@@ -41,10 +41,10 @@ float GameVelocityManager::GetVelocity()
 
 void GameVelocityManager::Update()
 {
-	//スピードで湾曲の強さ変える
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.barrelCurvePow = (1.0f - gameVelocity_ / GAME_VELOCITY_MAX_) * 0.6f;
-	//画面の大きさも
-	PostEffectManager::GetInstance().GetPostEffect1()->SetPera2Extend(
+	//（三つ目に描画されたものを）スピードで湾曲の強さ変える
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = (1.0f - gameVelocity_ / GAME_VELOCITY_MAX_) * 0.6f;
+	//（二つ目の）画面の大きさも
+	PostEffectManager::GetInstance().GetPostEffect2()->SetPera2Extend(
 		LerpVec3({ PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ ,0,0 }, { 1.0f,0,0 },
 			(gameVelocity_ / GAME_VELOCITY_MAX_)).x_);
 

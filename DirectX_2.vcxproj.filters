@@ -339,9 +339,6 @@
     <ClCompile Include="Engine\PostEffect\GausianBuffer.cpp">
       <Filter>ソース ファイル\Engine\PostEffect</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\PostEffect\GlassFilter.cpp">
-      <Filter>ソース ファイル\Engine\PostEffect</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\PostEffect\PostPera.cpp">
       <Filter>ソース ファイル\Engine\PostEffect</Filter>
     </ClCompile>
@@ -624,9 +621,6 @@
       <Filter>ヘッダー ファイル\Engine\Math</Filter>
     </ClInclude>
     <ClInclude Include="Engine\PostEffect\GausianBuffer.h">
-      <Filter>ヘッダー ファイル\Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\GlassFilter.h">
       <Filter>ヘッダー ファイル\Engine\PostEffect</Filter>
     </ClInclude>
     <ClInclude Include="Engine\PostEffect\PostPera.h">

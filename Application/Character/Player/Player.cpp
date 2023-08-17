@@ -111,11 +111,6 @@ void Player::DirectionUpdate()
 
 	//カメラの右方向ベクトルを出す
 	rightVec_ = upVec_.Cross(frontVec_);
-	//上方向も正しいものを
-	//upVec = frontVec_.Cross(rightVec);
-
-	//カメラの上方向セット
-	//camera->SetUp(upVec);
 }
 
 void Player::Move()

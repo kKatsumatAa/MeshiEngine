@@ -18,8 +18,8 @@ void SceneTitle::Initialize()
 	titleTex_ = TextureManager::LoadGraph("title.png");
 
 	//ポストエフェクト
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isScanningLine = true;
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = true;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isDepthField = false;
 }
 
@@ -38,7 +38,7 @@ void SceneTitle::Update()
 	//シーン遷移
 	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || KeyboardInput::GetInstance().KeyTrigger(DIK_R))
 	{
-		PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isScanningLine = false;
+		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = false;
 
 		sceneM_->SetNextScene("GAME");
 	}

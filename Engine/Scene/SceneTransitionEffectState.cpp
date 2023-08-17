@@ -22,8 +22,8 @@ void TransitionEffectNothingState::Initialize()
 	//音止める
 	Sound::GetInstance().StopWave(SceneTransitionManager::TRANSITION_SOUND_NAME_);
 
-	//ノイズ
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isNoise = false;
+	//２つ目をノイズ
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isNoise = false;
 
 	//演出フラグオフ
 	sceneTransitionManager_->SetIsDoingEffect(false);
@@ -46,9 +46,19 @@ void TransitionEffectBeginState::Initialize()
 	//音流す
 	Sound::GetInstance().PlayWave(SceneTransitionManager::TRANSITION_SOUND_NAME_, true);
 
-	//ノイズ
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isNoise = true;
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;
+	//二つ目ノイズ
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isNoise = true;
+	//三つ目に描画されたもの（２枚目まで）を湾曲
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
+
+	//ブルーム
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = true;
+
+#ifdef _DEBUG
+
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = false;
+
+#endif // debug
 }
 
 void TransitionEffectBeginState::Update()
@@ -56,9 +66,9 @@ void TransitionEffectBeginState::Update()
 	SceneTransitionEffectState::Update();
 
 	//湾曲を徐々につよく
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.barrelCurvePow = EaseInOutBack(GetTimerT(timer_, TIMER_MAX_));
-	//一枚目の画面の大きさを徐々に小さく
-	PostEffectManager::GetInstance().GetPostEffect1()->SetPera2Extend(LerpVec3(
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = EaseInOutBack(GetTimerT(timer_, TIMER_MAX_));
+	//2枚目の画面の大きさを徐々に小さく
+	PostEffectManager::GetInstance().GetPostEffect2()->SetPera2Extend(LerpVec3(
 		{ 1.0f ,0,0 }, { PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 },
 		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x_);
 
@@ -109,8 +119,8 @@ void TransitionEffectEndState::Update()
 {
 	SceneTransitionEffectState::Update();
 
-	//一枚目の画面の大きさを徐々に大きく
-	PostEffectManager::GetInstance().GetPostEffect1()->SetPera2Extend(LerpVec3(
+	//2つ目の2枚目の画面の大きさを徐々に大きく
+	PostEffectManager::GetInstance().GetPostEffect2()->SetPera2Extend(LerpVec3(
 		{ PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 }, { PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ ,0,0 },
 		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x_);
 

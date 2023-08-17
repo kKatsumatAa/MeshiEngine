@@ -1,7 +1,6 @@
 #pragma once
 #include"TextureManager.h"
 #include "DirectXWrapper.h"
-#include "GlassFilter.h"
 #include <functional>
 
 
@@ -200,7 +199,7 @@ public:
 	void Initialize(const char* normalImageFileName);
 
 	void Update();
-	void ImGuiUpdate();
+	void ImGuiUpdate(int32_t num);
 
 	//二回目のエフェクトかける用の描画
 	void DrawToBlurAll();
