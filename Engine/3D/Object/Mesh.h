@@ -121,6 +121,9 @@ public: // メンバ関数
 	/// <param name="indexVertex">頂点インデックス</param>
 	void AddSmoothData(uint16_t indexPosition, uint16_t indexVertex);
 
+	//メッシュの法線を計算
+	void CalcMeshNormalVec();
+
 	/// <summary>
 	/// 平滑化された頂点法線の計算
 	/// </summary>

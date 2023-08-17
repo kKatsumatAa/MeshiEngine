@@ -268,6 +268,7 @@ public:
 
 	//モデルのポインタ
 	void SetModel(IModel* model) { model_ = model; }
+	IModel* GetModel() { return model_; }
 
 	//生きてるか
 	inline void SetIsAlive(bool isAlive) { isAlive_ = isAlive; }

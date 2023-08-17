@@ -98,5 +98,6 @@ public:
 	//ƒXƒP[ƒ‹‚Ì”{—¦
 	float GetScaleExtend() { return scaleExtend_; }
 	Vec3 GetMaterialExtend() { return materialExtend_; }
+	void SetMaterialExtend(const Vec3& materialExtend) { materialExtend_ = materialExtend; }
 
 };

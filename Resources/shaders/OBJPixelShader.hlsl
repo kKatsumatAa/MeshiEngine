@@ -23,8 +23,10 @@ PSOutput main(VSOutput input)
     //スペキュラマップの色
     float4 specularMapCol = { 0, 0, 0, 0 };
     
+    matrix worldL = mul(world, worldMesh);
+    
     //ワールドの法線
-    float3 wNormal = normalize(mul(world, float4(input.normal, 0)));
+    float3 wNormal = normalize(mul(worldL, float4(input.normal, 0)));
     
     float3 lightNormal = wNormal;
           
@@ -33,8 +35,11 @@ PSOutput main(VSOutput input)
     {
         //ローカルの法線を使わないといけない
         lightNormal = GetNormalMapWorldNormalVec(tex4.Sample(smp, input.uv), input.tangent,
-            input.binormal, input.normal, world);
+            input.binormal, input.normal, worldL);
     }
+    
+    output.col = float4(lightNormal.rgb, 1.0f);
+    return output;
     
 	//平行光源
     for (int i = 0; i < S_DIRLIGHT_NUM; i++)

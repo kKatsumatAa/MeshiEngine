@@ -120,7 +120,6 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 			line_stream >> position.y;
 			line_stream >> position.z;
 			//逆向きに読み込まれちゃうので
-			//position.x *= -1.0f;
 			position.z *= -1.0f;
 			positions.emplace_back(position);
 		}
@@ -144,7 +143,6 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 			line_stream >> normal.y;
 			line_stream >> normal.z;
 			//逆向きに読み込まれちゃうので
-			//normal.x *= -1.0f;
 			normal.z *= -1.0f;
 			// 法線ベクトルデータに追加
 			normals.emplace_back(normal);

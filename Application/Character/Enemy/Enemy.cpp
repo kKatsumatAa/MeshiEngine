@@ -129,6 +129,11 @@ void Enemy::Move()
 
 void Enemy::Update()
 {
+	if (GetModel())
+	{
+		GetModel()->SetMaterialExtend({ 1.0f,8.0f,20.0f });
+	}
+
 	//ˆÚ“®
 	Move();
 

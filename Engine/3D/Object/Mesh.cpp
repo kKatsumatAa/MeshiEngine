@@ -54,6 +54,30 @@ void Mesh::AddSmoothData(uint16_t indexPosition, uint16_t indexVertex)
 	smoothData_[indexPosition].emplace_back(indexVertex);
 }
 
+void Mesh::CalcMeshNormalVec()
+{
+	for (int32_t i = 0; i < indices_.size() / 3; i++)
+	{//三角形一つごとに計算
+		//三角形のインデックスを取り出して、一時的な変数に入れる
+		uint16_t index0 = indices_[i * 3 + 0];
+		uint16_t index1 = indices_[i * 3 + 1];
+		uint16_t index2 = indices_[i * 3 + 2];
+		//三角形を構成する頂点座標をベクトルに代入
+		XMVECTOR p0 = XMLoadFloat3(&vertices_[index0].pos);
+		XMVECTOR p1 = XMLoadFloat3(&vertices_[index1].pos);
+		XMVECTOR p2 = XMLoadFloat3(&vertices_[index2].pos);
+		//p0->p1ベクトル、p0->p2ベクトルを計算
+		XMVECTOR v1 = XMVectorSubtract(p1, p0);
+		XMVECTOR v2 = XMVectorSubtract(p2, p0);
+		//外積（垂直なベクトル）
+		XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
+		//求めた法線を頂点データに代入
+		XMStoreFloat3(&vertices_[index0].normal, normal);
+		XMStoreFloat3(&vertices_[index1].normal, normal);
+		XMStoreFloat3(&vertices_[index2].normal, normal);
+	}
+}
+
 void Mesh::CalculateSmoothedVertexNormals()
 {
 	auto itr = smoothData_.begin();
