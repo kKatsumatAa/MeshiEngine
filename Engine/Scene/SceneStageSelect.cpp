@@ -1,16 +1,16 @@
-#include "SceneTitle.h"
+#include "SceneStageSelect.h"
 #include "SceneManager.h"
 #include "GameVelocityManager.h"
-#include "TitleUI.h"
 #include "CursorUI.h"
+#include "StageSelect.h"
 
 
-void SceneTitle::Finalize()
+void SceneStageSelect::Finalize()
 {
 }
 
 //---------------------------------------------------------------------------------------
-void SceneTitle::Initialize()
+void SceneStageSelect::Initialize()
 {
 	ObjectManager::GetInstance().ClearAllObj();
 	ParticleManager::GetInstance()->ClearParticles();
@@ -24,46 +24,46 @@ void SceneTitle::Initialize()
 
 	//カーソルui
 	CursorUI::GetInstance().Initialize();
-	//タイトル
-	TitleUI::GetInstance().Initialize();
+	//ステージセレクト
+	StageSelect::GetInstance().Initialize();
 }
 
-void SceneTitle::Update()
+void SceneStageSelect::Update()
 {
 	//カーソルui
 	CursorUI::GetInstance().Update();
-	//タイトル
-	TitleUI::GetInstance().Update();
+	//セレクト
+	StageSelect::GetInstance().Update();
 
 	//シーン遷移
-	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || KeyboardInput::GetInstance().KeyTrigger(DIK_R))
+	if (StageSelect::GetInstance().GetIsSelected())
 	{
 		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = false;
 
-		sceneM_->SetNextScene("STAGESELECT");
+		sceneM_->SetNextScene("GAME");
 	}
 	//タイトルでescapeで終了
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_ESCAPE))
 	{
-		sceneM_->SetIsEscapingGame(true);
+		sceneM_->SetNextScene("TITLE");
 	}
 }
 
-void SceneTitle::Draw()
+void SceneStageSelect::Draw()
 {
 
 }
 
-void SceneTitle::DrawSprite()
+void SceneStageSelect::DrawSprite()
 {
-	//タイトル
-	TitleUI::GetInstance().DrawSprite();
+	//セレクト
+	StageSelect::GetInstance().DrawSprite();
 
 	//カーソルui
 	CursorUI::GetInstance().Draw();
 }
 
-void SceneTitle::DrawImgui()
+void SceneStageSelect::DrawImgui()
 {
 }
 

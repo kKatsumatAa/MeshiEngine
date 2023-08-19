@@ -2,7 +2,7 @@
 #include "AbstractSceneFactory.h"
 #include "SceneTitle.h"
 #include "SceneGame.h"
-#include "SceneLoad.h"
+#include "SceneStageSelect.h"
 
 
 //ƒQ[ƒ€•ÊƒV[ƒ“Hê

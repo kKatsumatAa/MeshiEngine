@@ -28,10 +28,6 @@ private:
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 private:
-	DebugText debugText_;
-
-	//デバッグテキスト
-	uint64_t debugTextHandle_;
 	uint64_t texhandle_[10];
 
 	//数字の画像

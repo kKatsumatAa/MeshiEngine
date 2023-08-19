@@ -6,6 +6,11 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
+
+const float WindowsApp::WINDOW_WIDTH_ = 1280.0f;
+const float WindowsApp::WINDOW_HEIGHT_ = 720.0f;
+
+
 // imgui専用のウィンドウプロシージャ
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam,
 	LPARAM lParam);

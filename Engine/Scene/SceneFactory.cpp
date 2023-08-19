@@ -10,6 +10,10 @@ std::unique_ptr<SceneState> SceneFactory::CreateScene(const std::string& sceneNa
     {
         newScene = std::make_unique<SceneTitle>();
     }
+    else if (sceneName == "STAGESELECT")
+    {
+        newScene = std::make_unique<SceneStageSelect>();
+    }
     else if (sceneName == "GAME")
     {
         newScene = std::make_unique<SceneGame>();
@@ -18,10 +22,7 @@ std::unique_ptr<SceneState> SceneFactory::CreateScene(const std::string& sceneNa
     {
         newScene = std::make_unique<SceneGame>();
     }
-    else if (sceneName == "LOAD")
-    {
-        newScene = std::make_unique<SceneLoad>();
-    }
+    
 
     return std::move(newScene);
 }

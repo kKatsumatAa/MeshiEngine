@@ -21,8 +21,8 @@ private:
 
 public:
 	//ウィンドウサイズ
-	const float WINDOW_WIDTH_ = 1280.0f;
-	const float WINDOW_HEIGHT_ = 720.0f;
+	static const float WINDOW_WIDTH_;
+	static const float WINDOW_HEIGHT_;
 
 	// ビューポート設定コマンド
 	D3D12_VIEWPORT viewport_;

@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "StageManager.h"
 #include "StageState.h"
+#include "StageSelect.h"
 
 
 void SceneGame::Finalize()
@@ -13,7 +14,7 @@ void SceneGame::Finalize()
 void SceneGame::Initialize()
 {
 	//ステージ読み込み
-	StageManager::GetInstance().LoadStage(1);
+	StageManager::GetInstance().LoadStage(StageSelect::GetInstance().GetSelectStageIndex());
 
 	//
 	ClearEffect::GetInstance().Initialize();
@@ -48,7 +49,7 @@ void SceneGame::Update()
 	else if (StageManager::GetInstance().GetIsGameClear() || KeyboardInput::GetInstance().KeyTrigger(DIK_ESCAPE))
 	{
 		ParticleManager::GetInstance()->ClearParticles();
-		sceneM_->SetNextScene("TITLE");
+		sceneM_->SetNextScene("STAGESELECT");
 	}
 }
 

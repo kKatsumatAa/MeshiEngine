@@ -7,6 +7,7 @@
 #include "Quaternion.h"
 #include"TextureManager.h"
 
+
 //自作
 void Vec4xM4(Vec4& v, const M4& m4);
 void Vec3xM4(Vec3& v, const M4& m4, bool w);
@@ -41,6 +42,7 @@ bool CollisionCircleCircle(const Vec3& pos1, float r1,
 bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, float r, const Vec3& pos, float r2);
 
 bool CollisionBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t r1, int32_t r2);
+bool CollisionBox(Vec2 leftUp1, Vec2 rightBottom1, Vec2 leftUp2, Vec2 rightBottom2);
 
 //--------------------------------------------------------------------------------------------------
 //便利
@@ -93,7 +95,10 @@ std::string ExtractFileName(const std::string& path);
 
 //-------------------------------------------------------------
 //スムースステップ
-float SmoothStep(float Min, float Max, float V);
+float SmoothStep(float min, float max, float v);
+
+//クランプ
+float Clamp(float v,float min, float max);
 
 //ランダム
 float GetRand(float min, float max);
@@ -107,6 +112,10 @@ bool Approximately(float a, float b);
 
 //ベクトルを角度を使ってクォータニオンで回転
 Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot);
+
+//-----------------------------------------------------------------------
+//フォルダ系
+bool GetFileNames(std::string folderPath, std::vector<std::string>& file_names);
 
 
 //--------------------------------------------------------------------------------------------------

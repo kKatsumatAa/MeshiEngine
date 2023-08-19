@@ -13,6 +13,7 @@
 #include "ClearEffectState.h"
 #include "SceneTransitionManager.h"
 #include "SceneTransitionEffectState.h"
+#include "StageSelect.h"
 
 
 //---------------------------------------------------------------------------------------
@@ -60,15 +61,9 @@ void SceneManager::StopWaveAllScene()
 //---------------------------------------------------------------------------------------------------
 void SceneManager::Initialize()
 {
+	TextureManager::Initialize();
 
-	{
-		//画像
-		debugTextHandle_ = TextureManager::LoadGraph("ascii.png");
-
-		TextureManager::Initialize();
-
-		texhandle_[1] = TextureManager::LoadGraph("effect1.png");
-	}
+	texhandle_[1] = TextureManager::LoadGraph("effect1.png");
 
 	//インスタンス生成
 	lightManager_ = std::move(LightManager::Create());
@@ -121,8 +116,8 @@ void SceneManager::Update()
 	Vec3 dir = { DirlightDir_[0],DirlightDir_[1], DirlightDir_[2] };
 	lightManager_->SetDirLightDir(0, { dir.GetNormalized().x_ ,dir.GetNormalized().y_ ,dir.GetNormalized().z_ });
 
-	lightManager_->SetPointLightAtten(0, { pointAtten_[0],pointAtten_[1],pointAtten_[2]});
-	lightManager_->SetPointLightPos(0, { pointPos_[0],pointPos_[1],pointPos_[2]});
+	lightManager_->SetPointLightAtten(0, { pointAtten_[0],pointAtten_[1],pointAtten_[2] });
+	lightManager_->SetPointLightPos(0, { pointPos_[0],pointPos_[1],pointPos_[2] });
 
 	lightManager_->Update();
 
@@ -153,8 +148,6 @@ void SceneManager::DrawSprite()
 
 	//シーン遷移マネージャ
 	SceneTransitionManager::GetInstance().Draw();
-
-	debugText_.DrawAll(debugTextHandle_);
 }
 
 void SceneManager::DrawImgui()

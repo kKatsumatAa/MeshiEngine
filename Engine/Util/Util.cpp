@@ -219,6 +219,14 @@ bool CollisionBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t r1, in
 	return false;
 }
 
+bool CollisionBox(Vec2 leftUp1, Vec2 rightBottom1, Vec2 leftUp2, Vec2 rightBottom2)
+{
+	return leftUp1.x_ < rightBottom2.x_ && leftUp2.x_ < rightBottom1.x_ &&
+		leftUp1.y_ < rightBottom2.y_ && leftUp2.y_ < rightBottom1.y_;
+
+	return false;
+}
+
 Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 {
 	//view,projection,viewport行列を掛ける
@@ -379,15 +387,29 @@ std::string ExtractFileName(const std::string& path)
 	return path;
 }
 
-float SmoothStep(float Min, float Max, float V)
+float SmoothStep(float min, float max, float v)
 {
-	V = (V - Min) / (Max - Min);
-	float d = V - 1.0f;
-	long  r = (*(long*)&V ^ 0x3F800000) & (*(long*)&d >> 31);
+	v = (v - min) / (max - min);
+	float d = v - 1.0f;
+	long  r = (*(long*)&v ^ 0x3F800000) & (*(long*)&d >> 31);
 	r ^= 0x3F800000;
 	r &= ~(r >> 31);
 	float x = *(float*)&r;
 	return (x * x * (3.0f - (x + x)));
+}
+
+float Clamp(float v, float min, float max)
+{
+	if (v > max)
+	{
+		return max;
+	}
+	if (v < min)
+	{
+		return min;
+	}
+
+	return v;
 }
 
 Vec3 GetRotFromQuaternion(Quaternion q)
@@ -499,6 +521,41 @@ Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot)
 	ansFrontV = qY.GetRotateVector(ansFrontV);
 
 	return ansFrontV;
+}
+
+bool GetFileNames(std::string folderPath, std::vector<std::string>& file_names)
+{
+	HANDLE hFind;
+	WIN32_FIND_DATA win32fd;
+	std::string searchName = folderPath + "\\*";
+	wchar_t serchNameWC[128];
+	ConstCharToWcharT(searchName.c_str(), serchNameWC);
+	LPCWSTR serchNameW = serchNameWC;
+
+	hFind = FindFirstFile(serchNameWC, &win32fd);
+
+	if (hFind == INVALID_HANDLE_VALUE) {
+		throw std::runtime_error("file not found");
+		return false;
+	}
+
+	/* 指定のディレクトリ以下のファイル名をファイルがなくなるまで取得する */
+	do {
+		if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+			/* ディレクトリの場合は何もしない */
+		}
+		else {
+			/* ファイルが見つかったらVector配列に保存する */
+			char fileNameC[128];
+			ConstWCharTToChar(win32fd.cFileName, fileNameC);
+			std::string fileNameStr = fileNameC;
+			file_names.push_back(fileNameStr);
+		}
+	} while (FindNextFile(hFind, &win32fd));
+
+	FindClose(hFind);
+
+	return true;
 }
 
 float GetRand(float min, float max)

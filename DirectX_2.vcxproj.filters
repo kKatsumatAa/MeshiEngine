@@ -453,6 +453,12 @@
     <ClCompile Include="Application\UI\CursorUI.cpp">
       <Filter>ソース ファイル\Application\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Stage\StageSelect.cpp">
+      <Filter>ソース ファイル\Application\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\SceneStageSelect.cpp">
+      <Filter>ソース ファイル\Engine\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -748,6 +754,12 @@
     </ClInclude>
     <ClInclude Include="Application\UI\CursorUI.h">
       <Filter>ヘッダー ファイル\Application\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Stage\StageSelect.h">
+      <Filter>ヘッダー ファイル\Application\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Scene\SceneStageSelect.h">
+      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

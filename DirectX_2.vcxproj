@@ -113,6 +113,7 @@
     <ClCompile Include="Application\Effect\ClearEffectState.cpp" />
     <ClCompile Include="Application\Stage\LandShape.cpp" />
     <ClCompile Include="Application\Stage\StageManager.cpp" />
+    <ClCompile Include="Application\Stage\StageSelect.cpp" />
     <ClCompile Include="Application\Stage\StageState.cpp" />
     <ClCompile Include="Application\System\GameVelocity\GameVelocityManager.cpp" />
     <ClCompile Include="Application\System\Tutorial\Tutorial.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="Engine\Scene\SceneTitle.cpp" />
     <ClCompile Include="Engine\Scene\SceneTransitionManager.cpp" />
     <ClCompile Include="Engine\Scene\SceneTransitionEffectState.cpp" />
+    <ClCompile Include="Engine\Scene\SceneStageSelect.cpp" />
     <ClCompile Include="Engine\Util\Shake.cpp" />
     <ClCompile Include="Engine\Util\Util.cpp" />
     <ClCompile Include="main.cpp" />
@@ -211,6 +213,7 @@
     <ClInclude Include="Application\Effect\ClearEffectState.h" />
     <ClInclude Include="Application\Stage\LandShape.h" />
     <ClInclude Include="Application\Stage\StageManager.h" />
+    <ClInclude Include="Application\Stage\StageSelect.h" />
     <ClInclude Include="Application\Stage\StageState.h" />
     <ClInclude Include="Application\System\GameVelocity\GameVelocityManager.h" />
     <ClInclude Include="Application\System\Tutorial\Tutorial.h" />
@@ -294,6 +297,7 @@
     <ClInclude Include="Engine\Scene\SceneTitle.h" />
     <ClInclude Include="Engine\Scene\SceneTransitionManager.h" />
     <ClInclude Include="Engine\Scene\SceneTransitionEffectState.h" />
+    <ClInclude Include="Engine\Scene\SceneStageSelect.h" />
     <ClInclude Include="Engine\Util\Shake.h" />
     <ClInclude Include="Engine\Util\Util.h" />
   </ItemGroup>
