@@ -39,19 +39,6 @@ private:
 	float ambientColor_[3] = { 1,1,1 };
 	float diffuseColor_[3] = { 1,1,1 };
 	float specularColor_[3] = { 1,1,1 };
-	float DirlightDir_[3] = { 0,-1.0f,1.0f };
-
-	float pointAtten_[3] =  { 0, 1.3f, 0 };
-	float pointPos_[3] = { 0,27.0f,-100.0f };
-
-
-	//ŠÛ‰e
-	float circleShadowDir_[3] = { 0,-1,0 };
-	float circleShadowAtten_[3] = { 0.5f,0.15f,0 };
-	float circleShadowFactorAngle_[2] = { 0,5.0f };
-	float circleShadowDistance_ = 100.0f;
-
-	float fighterPos_[3] = { -10.0f,0,0 };
 
 	std::unique_ptr<Camera> camera_;
 

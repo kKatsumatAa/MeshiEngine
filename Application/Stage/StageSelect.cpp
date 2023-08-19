@@ -52,7 +52,7 @@ void StageSelect::Update()
 				cursorPos + Vec2{0, scrollValue_}))
 			{
 				selectStageName_ = stageName;
-				selectStageIndex_ = count;
+				selectStageIndex_ = count + 1;
 				isSelected_ = true;
 
 				break;

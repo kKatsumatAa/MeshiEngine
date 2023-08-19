@@ -54,6 +54,11 @@ private://メンバ変数
 	//丸影の配列
 	CircleShadow circleShadows_[S_CIRCLE_SHADOW_NUM_];
 
+	//カウント
+	int32_t dirLCount = 0;
+	int32_t pointLCount = 0;
+	int32_t spotLCount = 0;
+
 public://サブクラス
 	//定数バッファ用データ構造体(平行光源、点光源の配列をまとめて送る)
 	struct ConstBufferData
@@ -91,6 +96,8 @@ public://静的メンバ関数
 public:
 	void Initialize();
 
+	void InitializeCount();
+
 	/// <summary>
 	/// 更新
 	/// </summary>
@@ -114,7 +121,7 @@ public:
 	void SetAmbientColor(const XMFLOAT3& color);
 
 	void SetDiffuseColor(const XMFLOAT3& color);
-	
+
 	void SetSpecularColor(const XMFLOAT3& color);
 
 	/// <summary>
@@ -143,13 +150,13 @@ public:
 	/// <param name="lightcolor">ライト色</param>
 	void SetDirLightColor(int32_t index, const XMFLOAT3& lightcolor);
 
-///ポイントライト用
+	///ポイントライト用
 	void SetPointLightActive(int32_t index, bool active);
 	void SetPointLightPos(int32_t index, const XMFLOAT3& pos);
 	void SetPointLightColor(int32_t index, const XMFLOAT3& color);
 	void SetPointLightAtten(int32_t index, const XMFLOAT3& atten);
 
-///スポットライト用
+	///スポットライト用
 	void SetSpotLightActive(int32_t index, bool active);
 	//ライトの方向をセット
 	void SetSpotLightDir(int32_t index, const XMVECTOR& lightdir);
@@ -160,7 +167,7 @@ public:
 	//減衰開始、終了角度
 	void SetSpotLightFactorAngle(int32_t index, const XMFLOAT2& lightFactorAngle);
 
-///丸影用
+	///丸影用
 	void SetCircleShadowActive(int32_t index, bool active);
 	//影の発生元のオブジェクトの座標
 	void SetCircleShadowCasterPos(int32_t index, const XMFLOAT3& casterPos);
@@ -172,5 +179,14 @@ public:
 	void SetCircleShadowAtten(int32_t index, const XMFLOAT3& lightAtten);
 	//減衰開始、終了角度
 	void SetCircleShadowFactorAngle(int32_t index, const XMFLOAT2& lightFactorAngle);
+
+public:
+	void AddDirLCount() { dirLCount = min(dirLCount + 1, S_DIR_LIGHT_NUM_); }
+	void AddPointLCount() { pointLCount = min(pointLCount + 1, S_POINT_LIGHT_NUM_); }
+	void AddSpotLCount() { spotLCount = min(spotLCount + 1, S_SPOT_LIGHT_NUM_); }
+
+	int32_t GetDirLCount() { return dirLCount; }
+	int32_t GetPointLCount() { return pointLCount; }
+	int32_t GetSpotLCount() { return spotLCount; }
 };
 

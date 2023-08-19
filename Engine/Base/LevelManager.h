@@ -15,6 +15,16 @@ private://変数
 
 	const std::string FILE_NAME_ = "level";
 
+private:
+	LightManager* lightManager_ = nullptr;
+	float ambientColor_[3] = { 1,1,1 };
+	float diffuseColor_[3] = { 1,1,1 };
+	float specularColor_[3] = { 1,1,1 };
+	float DirlightDir_[3] = { 0,-1.0f,1.0f };
+
+	float pointPos_[3] = { 0,27.0f,-100.0f };
+
+
 public:
 	//オブジェクトのグループ名
 	static const std::string S_OBJ_GROUP_NAME_;
@@ -41,6 +51,8 @@ public:
 
 	//ファイル名によってクラス生成
 	void LoadObj(LevelData::ObjectData& objData);
+	//ライトを生成設定
+	void LoadLight(LevelData::LightData& lightData);
 
 	//読み込んだものを動かす
 	void Update();
@@ -58,4 +70,7 @@ private://ゲームオリジナル
 	void SetCollider(Object* obj, const LevelData::ObjectData& objData, bool isSettingCollider);
 	//引数によってObjectかTouchObjectを作る
 	void CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model);
+
+public:
+	void SetLightManager(LightManager* lightManager) { lightManager_ = lightManager; }
 };

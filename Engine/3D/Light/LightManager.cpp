@@ -17,8 +17,6 @@ void LightManager::StaticInitialize()
 
 void LightManager::Initialize()
 {
-	DefaultLightSetting();
-
 	//ヒープ設定
 	uint32_t sizeVB;
 	D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
@@ -34,6 +32,13 @@ void LightManager::Initialize()
 
 	//定数バッファへデータ転送
 	TransferConstBuffer();
+}
+
+void LightManager::InitializeCount()
+{
+	dirLCount = 0;
+	pointLCount = 0;
+	spotLCount = 0;
 }
 
 void LightManager::TransferConstBuffer()

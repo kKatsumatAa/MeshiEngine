@@ -71,14 +71,18 @@ void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 		{
 			//再帰的
 			LoadRecursiveChildrenData(object);
-
 		}
 
 		//Camera
 		if (type.compare("CAMERA") == 0)
 		{
 			LoadCameraData(object);
+		}
 
+		//ライト
+		if (type.compare("LIGHT") == 0)
+		{
+			LoadLightData(object);
 		}
 	}
 }
@@ -95,30 +99,22 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 		//ファイル名
 		objectData->fileName = (*object)["file_name"];
 	}
-	//トランスフォームのパラメータ読み込み
-	nlohmann::json transform = (*object)["transform"];
 
 	//コライダーのパラメータ読み込み
 	objectData->worldMat = std::make_unique<WorldMat>();
 	// 親(一番目のオブジェクトはnullptrが入るように)
 	objectData->worldMat->parent_ = parent;
 	//平行移動
-	objectData->worldMat->trans_.x_ = (float)transform["translation"][1];
-	objectData->worldMat->trans_.y_ = (float)transform["translation"][2];
-	objectData->worldMat->trans_.z_ = -(float)transform["translation"][0];
+	objectData->worldMat->trans_ = GetTrans(object);
 	//角度（うまくいってないかも）
-	objectData->worldMat->rot_.x_ = AngletoRadi(-(float)transform["rotation"][1]);
-	objectData->worldMat->rot_.y_ = AngletoRadi(-(float)transform["rotation"][2]);
-	objectData->worldMat->rot_.z_ = AngletoRadi((float)transform["rotation"][0]);
+	objectData->worldMat->rot_ = GetRot(object);
 	//スケール
-	objectData->worldMat->scale_.x_ = (float)transform["scaling"][1];
-	objectData->worldMat->scale_.y_ = (float)transform["scaling"][2];
-	objectData->worldMat->scale_.z_ = (float)transform["scaling"][0];
+	objectData->worldMat->scale_ = GetScale(object);
 
 	//当たり判定データ
 	//トランスフォームのパラメータ読み込み
 	nlohmann::json collider = (*object)["collider"];
-	if(collider.size())
+	if (collider.size())
 	{
 		//コライダー種類
 		std::string typeStr = collider["type"];
@@ -188,6 +184,54 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 	}
 }
 
+
+//-----------------------------------------------------------------------
+Vec3 JsonLevelLoader::GetRot(const nlohmann::json::iterator& object)
+{
+	//トランスフォームのパラメータ読み込み
+	nlohmann::json transform = (*object)["transform"];
+
+	Vec3 rot = {
+			AngletoRadi(-(float)transform["rotation"][1]),
+			AngletoRadi(-(float)transform["rotation"][2]),
+			AngletoRadi((float)transform["rotation"][0])
+	};
+	return rot;
+}
+
+Vec3 JsonLevelLoader::GetRotDir(const nlohmann::json::iterator& object)
+{
+	//角度を得る
+	WorldMat targetWorldMat;
+	targetWorldMat.rot_ = GetRot(object);
+
+	targetWorldMat.CulcWorldMat();
+	//奥に向かうベクトルをターゲットの元とする
+	Vec3 dir = { 0,0,1.0f };
+	//読み込んだ角度でターゲットを回転
+	Vec3xM4(dir, targetWorldMat.matWorld_, 0);
+
+
+	return dir;
+}
+
+Vec3 JsonLevelLoader::GetTrans(const nlohmann::json::iterator& object)
+{
+	//トランスフォームのパラメータ読み込み
+	nlohmann::json transform = (*object)["transform"];
+
+	return { (float)transform["translation"][1], (float)transform["translation"][2], -(float)transform["translation"][0] };
+}
+
+Vec3 JsonLevelLoader::GetScale(const nlohmann::json::iterator& object)
+{
+	//トランスフォームのパラメータ読み込み
+	nlohmann::json transform = (*object)["transform"];
+
+	return{ (float)transform["scaling"][1],	(float)transform["scaling"][2],(float)transform["scaling"][0] };
+}
+
+//-------------------------------------------------------------------------------
 //カメラのデータ読み込み
 void JsonLevelLoader::LoadCameraData(const nlohmann::json::iterator& object)
 {
@@ -202,29 +246,32 @@ void JsonLevelLoader::LoadCameraData(const nlohmann::json::iterator& object)
 		objectData->fileName = (*object)["file_name"];
 	}
 
-	//トランスフォームのパラメータ読み込み
-	nlohmann::json transform = (*object)["transform"];
-
 	//カメラ作成
 	objectData->camera = std::make_unique<Camera>();
 	objectData->camera->Initialize();
 	//平行移動
-	objectData->camera->SetEye({ (float)transform["translation"][1], (float)transform["translation"][2], -(float)transform["translation"][0] });
-	//角度
-	{
-		Vec3 targetRot = {
-			AngletoRadi(-(float)transform["rotation"][1]),
-			AngletoRadi(-(float)transform["rotation"][2]),
-			AngletoRadi((float)transform["rotation"][0])
-		};
-		WorldMat targetWorldMat;
-		targetWorldMat.rot_ = targetRot;
+	objectData->camera->SetEye(GetTrans(object));
+	//ターゲット
+	objectData->camera->SetTarget(GetRotDir(object));
+}
 
-		targetWorldMat.CulcWorldMat();
-		//奥に向かうベクトルをターゲットの元とする
-		Vec3 targetTmpPos = { 0,0,1.0f };
-		//読み込んだ角度でターゲットを回転
-		Vec3xM4(targetTmpPos, targetWorldMat.matWorld_, 0);
-		objectData->camera->SetTarget(targetTmpPos);
+void JsonLevelLoader::LoadLightData(const nlohmann::json::iterator& object)
+{
+	//要素追加
+	levelData_->lights.emplace_back(std::make_unique<LevelData::LightData>());
+	//今追加した要素の参照を得る
+	std::unique_ptr<LevelData::LightData>& objectData = levelData_->lights.back();
+
+	if (object->contains("file_name"))
+	{
+		//ファイル名
+		objectData->fileName = (*object)["file_name"];
 	}
+
+	//平行移動
+	objectData->trans = GetTrans(object);
+	//ターゲット
+	objectData->dir = GetRotDir(object);
+	//スケール(強さなどに使う)
+	objectData->scale = GetScale(object);
 }

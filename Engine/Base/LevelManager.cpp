@@ -35,6 +35,7 @@ void LevelManager::LoadLevelData(int32_t fileIndex)
 	//オブジェクト、カメラをクリア
 	ObjectManager::GetInstance().ClearAllObj();
 	CameraManager::GetInstance().Initialize();
+	lightManager_->InitializeCount();
 
 	//レベルデータからカメラを取得
 	for (auto& cameraData : JsonLevelLoader::Getinstance().levelData_->cameras)
@@ -51,6 +52,13 @@ void LevelManager::LoadLevelData(int32_t fileIndex)
 		CameraManager::GetInstance().SetUsingCamera(cameraData->fileName);
 
 		//cameraManagerに登録されてるのでこっちでは登録しない
+	}
+
+	//レベルデータからライトを取得
+	for (auto& lightData : JsonLevelLoader::Getinstance().levelData_->lights)
+	{
+		//
+		LoadLight(*lightData.get());
 	}
 
 	//レベルデータからオブジェクトを生成、配置
@@ -234,8 +242,52 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	ObjectManager::GetInstance().AddObject(S_OBJ_GROUP_NAME_, std::move(newObj));
 }
 
+void LevelManager::LoadLight(LevelData::LightData& lightData)
+{
+	//方向ライトなら
+	if (lightData.fileName.find("dir") != std::string::npos)
+	{
+		lightManager_->SetDirLightActive(lightManager_->GetDirLCount(), true);
+
+		lightManager_->SetDirLightDir(lightManager_->GetDirLCount(),
+			{ lightData.dir.x_,lightData.dir.y_,lightData.dir.z_ });
+
+		lightManager_->AddDirLCount();
+	}
+	//ポイントライトなら
+	else if (lightData.fileName.find("point") != std::string::npos)
+	{
+		lightManager_->SetPointLightActive(lightManager_->GetPointLCount(), true);
+
+		lightManager_->SetPointLightPos(lightManager_->GetPointLCount(),
+			{ lightData.trans.x_,lightData.trans.y_ ,lightData.trans.z_ });
+
+		lightManager_->SetPointLightAtten(lightManager_->GetPointLCount(),
+			{ lightData.scale.z_,lightData.scale.x_,lightData.scale.y_ });
+
+		lightManager_->AddPointLCount();
+	}
+	//スポットライトなら
+	else if (lightData.fileName.find("spot") != std::string::npos)
+	{
+		lightManager_->SetSpotLightActive(lightManager_->GetSpotLCount(), true);
+
+		lightManager_->SetSpotLightPos(lightManager_->GetSpotLCount(),
+			{ lightData.trans.x_,lightData.trans.y_ ,lightData.trans.z_ });
+
+		lightManager_->SetSpotLightAtten(lightManager_->GetSpotLCount(),
+			{ lightData.scale.z_,lightData.scale.x_,lightData.scale.y_ });
+
+		lightManager_->SetSpotLightDir(lightManager_->GetSpotLCount(),
+			{ lightData.dir.x_,lightData.dir.y_,lightData.dir.z_ });
+
+		lightManager_->AddSpotLCount();
+	}
+}
+
 void LevelManager::Update()
 {
+
 }
 
 void LevelManager::Draw(Camera* camera)
@@ -244,4 +296,5 @@ void LevelManager::Draw(Camera* camera)
 
 void LevelManager::DrawImGui()
 {
+
 }

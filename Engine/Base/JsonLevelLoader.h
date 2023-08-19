@@ -43,8 +43,21 @@ struct LevelData
 	//カメラのデータ
 	struct CameraData
 	{
-		//worldMat
+		//カメラ
 		std::unique_ptr<Camera> camera;
+		//ファイル名
+		std::string fileName;
+	};
+
+	//ライトのデータ
+	struct LightData
+	{
+		//位置
+		Vec3 trans;
+		//方向
+		Vec3 dir;
+		//スケール(強さなどに使う)
+		Vec3 scale;
 		//ファイル名
 		std::string fileName;
 	};
@@ -53,6 +66,8 @@ struct LevelData
 	std::vector<std::unique_ptr<ObjectData>> objects;
 	//カメラ
 	std::vector<std::unique_ptr<CameraData>> cameras;
+	//ライト
+	std::vector<std::unique_ptr<LightData>> lights;
 };
 
 class JsonLevelLoader final
@@ -69,6 +84,17 @@ private:
 	JsonLevelLoader() { ; }
 	~JsonLevelLoader() { ; }
 
+private:
+	//角度を得る
+	Vec3 GetRot(const nlohmann::json::iterator& object);
+	//角度を取得し、それを使いベクトルを得る
+	Vec3 GetRotDir(const nlohmann::json::iterator& object);
+	//位置を得る
+	Vec3 GetTrans(const nlohmann::json::iterator& object);
+	//スケールを得る
+	Vec3 GetScale(const nlohmann::json::iterator& object);
+
+
 public:
 	//コピーコンストラクタ禁止
 	JsonLevelLoader& operator=(const JsonLevelLoader& inst) = delete;
@@ -84,4 +110,6 @@ public:
 	void LoadRecursiveChildrenData(const nlohmann::json::iterator& object, WorldMat* parent = nullptr);
 	//カメラのデータ読み込み
 	void LoadCameraData(const nlohmann::json::iterator& object);
+	//ライトのデータ読み込み
+	void LoadLightData(const nlohmann::json::iterator& object);
 };
