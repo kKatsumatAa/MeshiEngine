@@ -15,6 +15,9 @@ private:
 	const float VELOCITY_TMP_ = 0.8f;
 	bool isCantMove = false;
 
+	//ウェーブ番号
+	int32_t waveNum_ = -1;
+
 	//向きをプレイヤーに向けるためのクォータニオン
 	Quaternion directionQua_;
 	//初期向きのベクトル
@@ -34,13 +37,14 @@ private:
 
 	const float WEAPON_FALL_VEL_EXTEND_ = 1.6f;
 
+
 public:
 	/// <summary>
 	/// オブジェクト生成
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon);
+	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon);
 
 private:
 	//移動
@@ -54,12 +58,15 @@ private:
 
 public:
 
-	bool Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon);
+	bool Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon);
 
 	void Update() override;
 
 	void Draw()override;
 
 	void OnCollision(const CollisionInfo& info) override;
+
+public:
+	int32_t GetWaveNum() { return waveNum_; }
 };
 

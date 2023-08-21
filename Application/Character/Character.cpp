@@ -22,8 +22,13 @@ void Character::Damaged(int32_t damage, std::function<void()> deadFunc)
 
 void Character::Update()
 {
+	//武器の有効フラグも連動
+	if (GetWeapon())
+	{
+		GetWeapon()->SetIsValid(GetIsValid());
+	}
 	//死んだら武器落とす
-	if (!GetIsAlive())
+	else
 	{
 		FallWeapon({ 0,0,0 });
 	}
@@ -240,4 +245,14 @@ void Character::QueryCallBackUpdate()
 		+ Vec3(callback.move.m128_f32[0], callback.move.m128_f32[1], callback.move.m128_f32[2]));
 	// ワールド行列更新
 	Object::WorldMatColliderUpdate();
+}
+
+void Character::SetIsValid(bool isValid)
+{
+	Object::SetIsValid(isValid);
+	//武器の有効フラグも連動
+	if (GetWeapon())
+	{
+		GetWeapon()->SetIsValid(GetIsValid());
+	}
 }

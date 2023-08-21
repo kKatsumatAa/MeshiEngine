@@ -33,7 +33,7 @@ bool PlayerHand::Initialize(Player* player, const Vec3& transTmp, const std::str
 	SetObjName(objName.c_str());
 
 	//“–‚½‚è”»’è‚ÉŽg‚í‚È‚¢
-	SetIsValid(false);
+	SetColliderIsValid(false);
 
 	player_ = player;
 	isAttacking_ = false;

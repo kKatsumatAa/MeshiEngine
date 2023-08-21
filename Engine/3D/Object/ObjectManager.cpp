@@ -25,7 +25,11 @@ void ObjectManager::Update()
 		for (std::vector<std::unique_ptr<Object>>::iterator itG = itM->second.begin();
 			itG != itM->second.end(); itG++)
 		{
-			itG->get()->Update();
+			//—LŒø‚Å‚ ‚ê‚Î
+			if (itG->get()->GetIsValid())
+			{
+				itG->get()->Update();
+			}
 		}
 	}
 
@@ -99,7 +103,11 @@ void ObjectManager::Draw()
 		for (std::vector<std::unique_ptr<Object>>::iterator itG = itM->second.begin();
 			itG != itM->second.end(); itG++)
 		{
-			itG->get()->Draw();
+			//—LŒø‚Å‚ ‚ê‚Î
+			if (itG->get()->GetIsValid())
+			{
+				itG->get()->Draw();
+			}
 		}
 	}
 

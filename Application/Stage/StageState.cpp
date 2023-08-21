@@ -18,6 +18,9 @@ void StageState::Update()
 	//弾
 	BulletManager::GetInstance().Update();
 
+	//敵マネージャー
+	EnemyManager::GetInstance().Update();
+
 	//判定
 	CollisionManager::GetInstance()->CheckAllCollisions();
 
@@ -33,6 +36,9 @@ void StageState::Draw()
 {
 	//弾
 	BulletManager::GetInstance().Draw();
+
+	//敵マネージャー
+	EnemyManager::GetInstance().Draw();
 
 	LevelManager::GetInstance().Draw();
 }

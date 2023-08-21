@@ -61,4 +61,6 @@ public:
 
 	//クエリコールバック
 	virtual void QueryCallBackUpdate();
+
+	void SetIsValid(bool isValid)override;
 };

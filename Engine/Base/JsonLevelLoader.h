@@ -38,6 +38,8 @@ struct LevelData
 		ColliderData colliderData;
 		//子のデータ
 		ObjectData* childData;
+		//ウェーブ番号
+		int32_t waveNum = -1;
 	};
 
 	//カメラのデータ

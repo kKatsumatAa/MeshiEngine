@@ -459,6 +459,9 @@
     <ClCompile Include="Engine\Scene\SceneStageSelect.cpp">
       <Filter>ソース ファイル\Engine\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Character\Enemy\EnemyManager.cpp">
+      <Filter>ソース ファイル\Application\Character\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -760,6 +763,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Scene\SceneStageSelect.h">
       <Filter>ヘッダー ファイル\Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Character\Enemy\EnemyManager.h">
+      <Filter>ヘッダー ファイル\Application\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

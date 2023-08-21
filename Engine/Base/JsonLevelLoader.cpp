@@ -111,6 +111,14 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 	//スケール
 	objectData->worldMat->scale_ = GetScale(object);
 
+
+	//ウェーブ番号
+	if (object->contains("wave_num"))
+	{
+		std::string numStr = (*object)["wave_num"];
+		objectData->waveNum = std::stoi(numStr);
+	}
+
 	//当たり判定データ
 	//トランスフォームのパラメータ読み込み
 	nlohmann::json collider = (*object)["collider"];

@@ -35,6 +35,9 @@ void StageManager::Initialize()
 	//プレイヤーui
 	PlayerUI::GetInstance().Initialize();
 
+	//敵マネージャー
+	EnemyManager::GetInstance().Initialize();
+
 	//フラグ
 	isClear_ = false;
 	isGameOver_ = false;

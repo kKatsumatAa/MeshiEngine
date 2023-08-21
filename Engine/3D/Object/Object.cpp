@@ -138,6 +138,12 @@ bool Object::Initialize(std::unique_ptr<WorldMat> worldMat)
 	return true;
 }
 
+void Object::SetIsValid(bool isValid)
+{
+	isValid_ = isValid; 
+	SetColliderIsValid(isValid);
+}
+
 const Vec3& Object::GetFrontVec()
 {
 	return frontVec_;
@@ -195,7 +201,7 @@ void Object::SetCollider(std::unique_ptr<BaseCollider> collider)
 	Object::WorldMatColliderUpdate();
 }
 
-void Object::SetIsValid(bool isValid)
+void Object::SetColliderIsValid(bool isValid)
 {
 	if (collider_)
 	{

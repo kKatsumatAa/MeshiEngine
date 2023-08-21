@@ -161,6 +161,9 @@ private:
 	//ノーマルマップの画像
 	uint64_t normalMapTextureHandle_ = NULL;
 
+	//描画、更新するかどうか
+	bool isValid_ = true;
+
 	//画面効果用
 	ComPtr <ID3D12Resource> effectFlagsBuff_;
 	EffectOConstBuffer* mapEffectFlagsBuff_;
@@ -271,8 +274,12 @@ public:
 	IModel* GetModel() { return model_; }
 
 	//生きてるか
-	inline void SetIsAlive(bool isAlive) { isAlive_ = isAlive; }
-	inline bool GetIsAlive() { return isAlive_; }
+	void SetIsAlive(bool isAlive) { isAlive_ = isAlive; }
+	bool GetIsAlive() { return isAlive_; }
+
+	//描画、更新するかどうか
+	virtual void SetIsValid(bool isValid);
+	bool GetIsValid() { return isValid_; }
 
 	//正面ベクトル
 	//オブジェクトの角度で回転させた正面ベクトルをゲット
@@ -328,7 +335,7 @@ public:
 	void SetCollider(std::unique_ptr<BaseCollider> collider);
 
 	//判定を有効にするか
-	void SetIsValid(bool isValid);
+	void SetColliderIsValid(bool isValid);
 	//スプライトかどうか
 	void SetIs2D(bool is2D);
 

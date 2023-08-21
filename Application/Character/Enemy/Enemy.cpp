@@ -10,7 +10,7 @@
 using namespace DirectX;
 
 
-std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
+std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon)
 {
 	std::unique_ptr<Enemy> instance = std::make_unique<Enemy>();
 	if (instance.get() == nullptr)
@@ -19,7 +19,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, Weapon*
 	}
 
 	//‰Šú‰»
-	if (!instance->Initialize(std::move(worldMat), weapon))
+	if (!instance->Initialize(std::move(worldMat), waveNum, weapon))
 	{
 		assert(0);
 	}
@@ -27,7 +27,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, Weapon*
 	return std::move(instance);
 }
 
-bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
+bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon)
 {
 	if (!Object::Initialize(std::move(worldMat)))
 	{
@@ -43,6 +43,8 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	}
 
 	hp_ = HP_TMP_;
+
+	waveNum_ = waveNum;
 
 	//ƒfƒBƒ]ƒ‹ƒu
 	SetisDissolve(true);

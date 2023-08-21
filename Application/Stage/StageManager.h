@@ -12,6 +12,7 @@
 #include "ParticleManager.h"
 #include "PlayerUI.h"
 #include "PlayerUIState.h"
+#include "EnemyManager.h"
 
 
 class StageState;
