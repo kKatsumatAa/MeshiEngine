@@ -33,6 +33,9 @@ private:
 	//攻撃可能か
 	bool isTarget_ = false;
 
+	//左クリックしたか
+	bool isClickLeft_ = false;
+
 	//攻撃が届く距離
 	const float ATTACK_LENGTH_ = 11.0f;
 
@@ -97,5 +100,9 @@ public:
 
 public:
 	void ThrowWeapon();
+
+public:
+	void SetIsClickLeft(bool isClickLeft) { isClickLeft_ = isClickLeft; }
+	bool GetIsClickLeft() {return isClickLeft_; }
 };
 

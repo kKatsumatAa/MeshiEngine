@@ -49,6 +49,9 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	//hp
 	hp_ = HP_TMP_;
 
+	//回転用の角度の基
+	cameraRot_ = GetRot();
+
 	if (weapon)
 	{
 		weapon_ = weapon;
@@ -89,7 +92,7 @@ void Player::DirectionUpdate()
 
 	//回転
 	Vec3 rotMove = {
-		vel.y_ * ANGLE_VEL_EXTEND_,
+		-vel.y_ * ANGLE_VEL_EXTEND_,
 		vel.x_ * ANGLE_VEL_EXTEND_,
 		0
 	};
@@ -171,6 +174,9 @@ void Player::Move()
 
 void Player::Update()
 {
+	//クリックか外部で左クリック処理したいときにフラグ立てる
+	isClickLeft_ = (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || isClickLeft_);
+
 	//ゲームオーバーまでの
 	if (isDead_)
 	{
@@ -220,6 +226,9 @@ void Player::Update()
 
 	//手のアップデート
 	handManager_->Update();
+
+	//オフ
+	isClickLeft_ = false;
 }
 
 void Player::Draw()

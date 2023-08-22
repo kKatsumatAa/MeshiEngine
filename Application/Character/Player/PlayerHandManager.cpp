@@ -19,9 +19,9 @@ void PlayerHandManager::Initialize(Player* player)
 	Vec3 distance = { 1.0f,1.0f,1.0f };
 	//生成（仮）
 	ObjectManager::GetInstance().AddObject(OBJ_GROUP_NAME_,
-		std::move(PlayerHand::Create(player, { -distance.x_ * 2.0f,0 - distance.y_,-distance.z_ }, HAND_R_NAME_)));
+		std::move(PlayerHand::Create(player, { -distance.x_ * 2.0f,0 - distance.y_,distance.z_ }, HAND_R_NAME_)));
 	ObjectManager::GetInstance().AddObject(OBJ_GROUP_NAME_,
-		std::move(PlayerHand::Create(player, { +distance.x_ * 2.0f,0 - distance.y_,-distance.z_ }, HAND_L_NAME_)));
+		std::move(PlayerHand::Create(player, { +distance.x_ * 2.0f,0 - distance.y_,distance.z_ }, HAND_L_NAME_)));
 
 	handL_ = dynamic_cast<PlayerHand*>(*ObjectManager::GetInstance().GetObjs(OBJ_GROUP_NAME_, HAND_L_NAME_).begin());
 	handR_ = dynamic_cast<PlayerHand*>(*ObjectManager::GetInstance().GetObjs(OBJ_GROUP_NAME_, HAND_R_NAME_).begin());
@@ -35,8 +35,7 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 	}
 
 	//クリックしたら攻撃
-	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) && 
-		info.collider->GetObject3d()->GetObjName().find("enemy") != std::string::npos && player_)
+	if (info.collider->GetObject3d()->GetObjName().find("enemy") != std::string::npos && player_)
 	{
 		//衝突点までの距離
 		Vec3 lengthV = Vec3(info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2]) - player_->GetTrans();

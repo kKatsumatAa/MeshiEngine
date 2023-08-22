@@ -19,6 +19,9 @@ private:
 
 	CollisionInfo c_;
 
+	Vec3 leftHandLocalPos = { 2.0f,-1.0f,-1.0f };
+	Vec3 rightHandLocalPos = { -2.0f,-1.0f,-1.0f };
+
 public:
 
 

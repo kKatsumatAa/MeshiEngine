@@ -41,7 +41,7 @@ void Vec3xM4(Vec3& v, const M4& m4, bool w)
 	v = { (float)v4[1][0],(float)v4[1][1] ,(float)v4[1][2] };
 }
 
-Vec3 GetVec3xM4(Vec3 v, const M4& m4, bool w)
+Vec3 GetVec3xM4(const Vec3& v, const M4& m4, bool w)
 {
 	float v4[2][4] = {
 	{ v.x_,v.y_,v.z_,(float)w },

@@ -12,14 +12,11 @@ void StageState::Initialize()
 //共通の処理
 void StageState::Update()
 {
-	//レベルデータで読み込んだオブジェクト等
-	LevelManager::GetInstance().Update();
+	//敵マネージャー
+	EnemyManager::GetInstance().Update();
 
 	//弾
 	BulletManager::GetInstance().Update();
-
-	//敵マネージャー
-	EnemyManager::GetInstance().Update();
 
 	//判定
 	CollisionManager::GetInstance()->CheckAllCollisions();

@@ -58,7 +58,7 @@ void PlayerStateBareHands::Update()
 			//ui•ÏX
 			PlayerUI::GetInstance().ChangeState("PICKUP");
 
-			if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
+			if (player_->GetIsClickLeft())
 			{
 				Weapon* weapon = dynamic_cast<Weapon*>(info_.object);
 				//•ŠíE‚¤
@@ -76,7 +76,8 @@ void PlayerStateBareHands::Update()
 			}
 		}
 		//“G‚ªÆ€‚É‚ ‚Á‚½‚ç‰£‚é
-		else if (info_.object->GetObjName().find("enemy") != std::string::npos)
+		else if (player_->GetIsClickLeft() &&
+			info_.object->GetObjName().find("enemy") != std::string::npos)
 		{
 			//ui•ÏX
 			PlayerUI::GetInstance().ChangeState("PUNCH");
@@ -111,7 +112,7 @@ void PlayerStateHaveWeapon::Update()
 		PlayerUI::GetInstance().SetAngle(-360.0f * player_->GetWeapon()->GetAttackCoolTimeRatio());
 
 		//ƒNƒŠƒbƒN‚ÅUŒ‚
-		if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
+		if (player_->GetIsClickLeft())
 		{
 			//’e‚ª‚à‚¤‚È‚¯‚ê‚Î“Š‚°‚é
 			if (player_->GetWeapon()->GetObjName() == "gun")

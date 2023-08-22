@@ -138,10 +138,25 @@ bool Object::Initialize(std::unique_ptr<WorldMat> worldMat)
 	return true;
 }
 
+void Object::SetIsAlive(bool isAlive)
+{
+	isAlive_ = isAlive;
+	//当たり判定の方も無効
+	if (collider_)
+	{
+		collider_->SetIsValid(false);
+	}
+}
+
 void Object::SetIsValid(bool isValid)
 {
 	isValid_ = isValid; 
 	SetColliderIsValid(isValid);
+
+	if (isValid == true)
+	{
+		worldMat_->CulcAllTreeMat();
+	}
 }
 
 const Vec3& Object::GetFrontVec()

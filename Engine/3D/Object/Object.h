@@ -274,7 +274,7 @@ public:
 	IModel* GetModel() { return model_; }
 
 	//¶‚«‚Ä‚é‚©
-	void SetIsAlive(bool isAlive) { isAlive_ = isAlive; }
+	void SetIsAlive(bool isAlive);
 	bool GetIsAlive() { return isAlive_; }
 
 	//•`‰æAXV‚·‚é‚©‚Ç‚¤‚©

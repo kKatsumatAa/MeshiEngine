@@ -226,12 +226,6 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	//判定系
 	SetCollider(newObj.get(), objData, !isLandShape_);
 
-	//仮で正面ベクトル(objの角度によって回転,回転後のベクトルを基礎正面とする)
-	if (objData.fileName == "player")
-	{
-		newObj->CulcFrontVec();
-		newObj->SetFrontVecTmp(newObj->GetFrontVec());
-	}
 
 	//モデルセット
 	newObj->SetModel(model);

@@ -32,7 +32,7 @@ void PlayerAttackStateDoing::Update()
 	float t = (float)timer_ / (float)TIMER_MAX_;
 
 	//Œo‰ßŽžŠÔ‚ÅŽè‚ðˆÚ“®
-	Vec3 addTrans = LerpVec3({ 0,0,0 }, Vec3(0, 0, 1.0f) * (playerHand_->GetInterLength() - playerHand_->GetScale().z_ / 2.0f), EaseOut(t));
+	Vec3 addTrans = LerpVec3({ 0,0,0 }, playerHand_->GetFrontVecTmp() * (playerHand_->GetInterLength() - playerHand_->GetScale().z_ / 2.0f), EaseOut(t));
 
 	playerHand_->SetAddTrans(addTrans);
 
@@ -65,7 +65,7 @@ void PlayerAttackStateDoing2::Update()
 	float t = (float)timer_ / (float)TIMER_MAX_;
 
 	//Œo‰ßŽžŠÔ‚ÅŽè‚ð–ß‚·
-	Vec3 addTrans = LerpVec3(Vec3(0, 0, 1.0f) * (playerHand_->GetInterLength() - playerHand_->GetScale().z_ / 2.0f), { 0,0,0 }, EaseOut(t));
+	Vec3 addTrans = LerpVec3(playerHand_->GetFrontVecTmp() * (playerHand_->GetInterLength() - playerHand_->GetScale().z_ / 2.0f), { 0,0,0 }, EaseOut(t));
 
 	playerHand_->SetAddTrans(addTrans);
 

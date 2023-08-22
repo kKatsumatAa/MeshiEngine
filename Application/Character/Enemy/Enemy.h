@@ -33,7 +33,7 @@ private:
 
 	const float KNOCK_BACK_POW_ = 0.165f;
 
-	const float DISSOLVE_POW_ = 0.93f;
+	const float DISSOLVE_POW_ = 0.6f;
 
 	const float WEAPON_FALL_VEL_EXTEND_ = 1.6f;
 

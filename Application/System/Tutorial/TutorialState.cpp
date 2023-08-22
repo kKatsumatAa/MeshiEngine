@@ -2,6 +2,9 @@
 #include "Tutorial.h"
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
+#include "ObjectManager.h"
+#include "LevelManager.h"
+#include "Player.h"
 
 
 
@@ -117,7 +120,17 @@ void TutorialStateNone::Draw()
 void TutorialStateOperation::Initialize()
 {
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial1.png");
-	rateMax_ = 100;
+	rateMax_ = 50;
+
+	//player‰£‚ç‚¹‚é
+	auto objs = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player");
+	if (objs.size())
+	{
+		for (auto obj : objs)
+		{
+			dynamic_cast<Player*>(obj)->SetIsClickLeft(true);
+		}
+	}
 }
 
 void TutorialStateOperation::Update()
@@ -144,7 +157,7 @@ void TutorialStateOperation::Draw()
 void TutorialStateGameSpeed::Initialize()
 {
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial2.png");
-	rateMax_ = 60;
+	rateMax_ = 40;
 }
 
 void TutorialStateGameSpeed::Update()
