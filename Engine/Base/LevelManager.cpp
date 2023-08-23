@@ -101,7 +101,7 @@ Weapon* LevelManager::GetChildWeapon(LevelData::ObjectData& objData)
 	newObj->SetObjName(objData.childData->fileName);
 
 	//”»’èŒn
-	SetCollider(newObj.get(), objData, true);
+	SetCollider(newObj.get(), *objData.childData, true);
 
 	//³–ÊƒxƒNƒgƒ‹(obj‚ÌŠp“x‚É‚æ‚Á‚Ä‰ñ“],‰ñ“]Œã‚ÌƒxƒNƒgƒ‹‚ðŠî‘b³–Ê‚Æ‚·‚é)
 	newObj->CulcFrontVec();

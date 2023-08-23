@@ -63,4 +63,7 @@ public:
 	virtual void QueryCallBackUpdate();
 
 	void SetIsValid(bool isValid)override;
+
+	//‚Ý‚Ä‚¢‚é•ûŒü‚É‰½‚©‚ ‚Á‚½‚ç
+	bool CheckRayOfEyeHit(const Vec3& dir, float length, uint16_t attr, RaycastHit* info = nullptr);
 };

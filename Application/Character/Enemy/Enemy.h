@@ -7,6 +7,8 @@
 #include "Character.h"
 
 
+class EnemyState;
+
 class Enemy :
 	public Character
 {
@@ -20,14 +22,14 @@ private:
 
 	//向きをプレイヤーに向けるためのクォータニオン
 	Quaternion directionQua_;
-	//初期向きのベクトル
-	Vec3 directionVec = { 0,0,1.0f };
 	//回転の時間
-	float directionRotTime = 0;
+	float directionRotTime_ = 0;
 	const float DIRCTION_ROT_TIME_ = 60;
 
-	float damageCoolTime = 0;
-	float velocityLength = 0;
+	Vec3 directionVec_;
+
+	float damageCoolTime_ = 0;
+	float velocityLength_ = 0;
 
 	const int8_t HP_TMP_ = 3;
 
@@ -36,6 +38,12 @@ private:
 	const float DISSOLVE_POW_ = 0.6f;
 
 	const float WEAPON_FALL_VEL_EXTEND_ = 1.6f;
+
+	//ステート
+	std::unique_ptr<EnemyState> state_ = nullptr;
+
+public:
+	static const float S_LENGTH_MAX_;
 
 
 public:
@@ -47,9 +55,6 @@ public:
 	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon);
 
 private:
-	//移動
-	void Move();
-
 	//銃をノックバックして落とす
 	void KnockBack(const CollisionInfo& info);
 
@@ -65,6 +70,16 @@ public:
 	void Draw()override;
 
 	void OnCollision(const CollisionInfo& info) override;
+
+	void ChangeEnemyState(std::unique_ptr<EnemyState> state);
+
+public:
+	//移動
+	void Move(const Vec3& targetPos);
+	//攻撃
+	void Attack(const Vec3& targetPos);
+	//向きを変更
+	void DirectionUpdate(const Vec3& targetPos);
 
 public:
 	int32_t GetWaveNum() { return waveNum_; }

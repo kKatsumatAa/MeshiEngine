@@ -345,6 +345,11 @@ public:
 	//アニメーション開始
 	void PlayAnimation(bool isLoop = false);
 	void PlayReverseAnimation(bool isLoop = false);
+	//アニメーションフラグ
+	void SetIsPlayAnimation(bool isPlay) { isPlay_ = isPlay; }
+	void SetIsLoopAnimation(bool isLoop) { isLoop_ = isLoop; }
+	void SetIsReverseAnimation(bool isReverse) { isReverse_ = isReverse; }
+
 	//アニメーションスピード
 	void SetAnimationSpeed(float speed) { animationSpeed_ = speed; }
 

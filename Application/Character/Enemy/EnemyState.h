@@ -1,31 +1,34 @@
 #pragma once
 #include"CollisionManager.h"
-
+#include"CharacterState.h"
 
 class Enemy;
 
 
 //素手か、銃を持ってるか等のステート
-class EnemyState
+class EnemyState : public CharacterState
 {
 protected:
 	Enemy* enemy_ = nullptr;
-	int32_t timer_ = 0;
-	RaycastHit info_;
+
+	const uint16_t BARE_HANDS_ATTR_TMP_ = COLLISION_ATTR_ITEMS | COLLISION_ATTR_LANDSHAPE;
+	const uint16_t HAVE_WEAPON_ATTR_TMP_ = COLLISION_ATTR_ALLIES | COLLISION_ATTR_LANDSHAPE;
 
 public:
 	virtual ~EnemyState() { ; }
 
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
 
-	bool CheckEyeRayHit();
+	bool CheckEyeRayHit()override;
 
-	virtual void Initialize() = 0;
-	virtual void Update() = 0;
+	//持ち主のいない銃が見えたらその座標、なければプレイヤーの座標
+	Vec3 GetRayHitGunOrPlayerPos();
 };
 
 //素手状態
-class EnemyStateBareHands :public EnemyState
+class EnemyStateBareHands :
+	public CharacterStateBareHands, 
+	public EnemyState
 {
 
 public:
@@ -34,7 +37,9 @@ public:
 };
 
 //銃持ってる
-class EnemyStateHaveWeapon :public EnemyState
+class EnemyStateHaveWeapon :
+	public CharacterStateHaveWeapon,
+	public EnemyState
 {
 
 public:

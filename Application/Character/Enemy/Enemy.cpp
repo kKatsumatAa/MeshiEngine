@@ -6,8 +6,20 @@
 #include "PadInput.h"
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
+#include "EnemyState.h"
 
 using namespace DirectX;
+
+
+const float Enemy::S_LENGTH_MAX_ = 10000;
+
+void Enemy::ChangeEnemyState(std::unique_ptr<EnemyState> state)
+{
+	state_.reset();
+	state_ = std::move(state);
+	state_->SetEnemy(this);
+	state_->Initialize();
+}
 
 
 std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon)
@@ -53,11 +65,13 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	handle = TextureManager::LoadGraph("dissolveMask.png");
 	SetDissolveTexHandle(handle);
 
+	//ステート変更
+	ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
 
 	return true;
 }
 
-void Enemy::Move()
+void Enemy::Move(const Vec3& targetPos)
 {
 	//動けなかったら飛ばす
 	if (isCantMove)
@@ -66,32 +80,27 @@ void Enemy::Move()
 		return;
 	}
 
-	//プレイヤーに向かわせる(とりあえずカメラから位置もらう)
-	Vec3 playerPos = CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
-	//敵からプレイヤーへのベクトル
-	directionVec = playerPos - GetTrans();
-
 	//正規化
-	//directionVec.y_ = 0;
-	directionVec.Normalized();
+	directionVec_.y_ = 0;
+	directionVec_.Normalized();
 
 	//現在のスピードに方向ベクトル足し、ゲームスピードをかける
-	velocity_ = GetVelocity() + directionVec * VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity();
+	velocity_ = GetVelocity() + directionVec_ * VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity();
 	//スピードの上限は超えないように
 	float length = velocity_.GetLength();
 	//スピードがプラスになってたら
-	if (velocity_.Dot(directionVec) >= 0)
+	if (velocity_.Dot(directionVec_) >= 0)
 	{
-		directionVec = playerPos - GetTrans();
+		directionVec_ = targetPos - GetTrans();
 		//ある程度近づいたら止まる
-		if (directionVec.GetLength() < GetScale().GetLength() * 1.5f)
+		if (directionVec_.GetLength() < GetScale().GetLength() * 1.5f)
 		{
 			velocity_ = { 0,0,0 };
 		}
-		directionVec.Normalized();
+		directionVec_.Normalized();
 
 		//ダメージのクールリセット
-		damageCoolTime = 0;
+		damageCoolTime_ = 0;
 		//スピードの上限超えない
 		velocity_ = velocity_.GetNormalized() * min(length, GameVelocityManager::GetInstance().GetVelocity() * VELOCITY_TMP_ / 1.5f);
 	}
@@ -105,14 +114,29 @@ void Enemy::Move()
 	//地面と壁との判定
 	OnGroundAndWallUpdate(GetScale().y_, GameVelocityManager::GetInstance().GetVelocity());
 
+	//向き変更
+	DirectionUpdate(targetPos);
+}
 
-	//敵からプレイヤーへのベクトル
-	directionVec = playerPos - GetTrans();
-	//初期正面ベクトルとプレイヤーへのベクトル
+void Enemy::Attack(const Vec3& targetPos)
+{
+	//武器で攻撃
+	if (weapon_ != nullptr && weapon_->GetIsAlive())
+	{
+		Vec3 directionV = targetPos - weapon_->GetWorldTrans();
+		weapon_->Attack(directionV.GetNormalized(), 0, this);
+	}
+}
+
+void Enemy::DirectionUpdate(const Vec3& targetPos)
+{
+	//敵からターゲットへのベクトル
+	directionVec_ = targetPos - GetTrans();
+	//初期正面ベクトルとターゲットへのベクトル
 	Vec3 fVTmp = GetFrontVecTmp().GetNormalized();
-	Vec3 pDVTmp = directionVec.GetNormalized();
+	Vec3 pDVTmp = directionVec_.GetNormalized();
 
-	//正面ベクトルからプレイヤーの方向ベクトルへの回転クォータニオン
+	//正面ベクトルからターゲットの方向ベクトルへの回転クォータニオン
 	Quaternion q = Quaternion::DirectionToDirection(fVTmp, pDVTmp);
 	//回転後のベクトル
 	fVTmp = q.GetRotateVector(fVTmp);
@@ -124,6 +148,7 @@ void Enemy::Move()
 	SetMatRot(q.MakeRotateMatrix());
 }
 
+//----------------------------------------------------------------
 void Enemy::Update()
 {
 	if (GetModel())
@@ -131,25 +156,17 @@ void Enemy::Update()
 		GetModel()->SetMaterialExtend({ 1.0f,8.0f,20.0f });
 	}
 
-	//移動
-	Move();
-
-	//武器で攻撃
-	if (weapon_ != nullptr && weapon_->GetIsAlive())
-	{
-		Vec3 playerPos = CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
-		Vec3 directionV = playerPos - weapon_->GetWorldTrans();
-		weapon_->Attack(directionV.GetNormalized(), 0, this);
-	}
-
 	//hpによってディゾルブ
 	SetDissolveT((1.0f - (float)hp_ / (float)HP_TMP_) * DISSOLVE_POW_);
 
 	//ダメージ受けるクールタイムもゲームスピードをかける
-	damageCoolTime -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
+	damageCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
 	//アニメーションもゲームスピード
 	SetAnimationSpeed(GameVelocityManager::GetInstance().GetVelocity() * 3.0f);
+
+	//ステート
+	state_->Update();
 
 	Character::Update();
 }
@@ -175,7 +192,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	velocity_ += distanceVec * length * KNOCK_BACK_POW_;
 	SetVelocity(velocity_);
 	//ダメージを受けるクールタイム
-	damageCoolTime = 20;
+	damageCoolTime_ = 20;
 
 	//武器持っていたら落とす
 	if (weapon_)
@@ -237,7 +254,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	//プレイヤーの攻撃との判定
 	else if (info.object_->GetObjName() == "playerAttack")
 	{
-		if (damageCoolTime <= 0)
+		if (damageCoolTime_ <= 0)
 		{
 			//ノックバック
 			KnockBack(info);
@@ -266,11 +283,21 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	{
 		Gun* gun = dynamic_cast<Gun*>(info.object_);
 
+		if (!(gun != nullptr && gun->GetParent() == nullptr))
+		{
+			return;
+		}
+
 		//投げられているときのみ
-		if (gun != nullptr && gun->GetParent() == nullptr && gun->GetIsThrowing() && gun->GetFallVelocity().GetLength() != 0)
+		if (gun->GetIsThrowing() && gun->GetFallVelocity().GetLength() != 0)
 		{
 			//
 			KnockBack(info);
+		}
+		//おいてあったら拾う
+		else
+		{
+			PickUpWeapon(gun);
 		}
 	}
 	//敵同士で当たったらめり込まないようにする

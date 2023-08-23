@@ -51,8 +51,8 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	lifeTime_ = lifeTime;
 	owner_ = owner;
 	ownerPos_ = owner->GetTrans();
-	//Œ‚‚Á‚½l‚Ì”»’è‘®«‚ðŽ©•ª‚Ì‘®«‚É
-	GetCollider()->SetAttribute(owner->GetCollider()->GetAttribute());
+	//‘®«
+	GetCollider()->SetAttribute(COLLISION_ATTR_ITEMS);
 
 	//’e“¹ƒ‚ƒfƒ‹
 	ballisticsObj_.Initialize();

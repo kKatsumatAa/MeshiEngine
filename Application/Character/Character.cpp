@@ -67,9 +67,9 @@ void Character::DrawImGui(std::function<void()> imguiF)
 		}
 
 		//持ってる武器のimguiも
-		if (weapon_) 
+		if (weapon_)
 		{
-			if (ImGui::TreeNode(weapon_->GetObjName().c_str())) 
+			if (ImGui::TreeNode(weapon_->GetObjName().c_str()))
 			{
 				weapon_->DrawImGui();
 
@@ -94,11 +94,6 @@ void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 	}
 
 	weapon_->ChangeOwner(this);
-	//所有者の判定属性を入れる
-	if (GetCollider())
-	{
-		weapon_->SetAttribute(GetCollider()->GetAttribute());
-	}
 }
 
 void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
@@ -255,4 +250,18 @@ void Character::SetIsValid(bool isValid)
 	{
 		GetWeapon()->SetIsValid(GetIsValid());
 	}
+}
+
+bool Character::CheckRayOfEyeHit(const Vec3& dir, float length, uint16_t attr, RaycastHit* info)
+{
+	//攻撃できるかどうか
+//レイにプレイヤーの正面ベクトル入れる
+	Ray ray;
+	ray.dir = { dir.x_,dir.y_,dir.z_ };
+	ray.start = { GetWorldTrans().x_,GetWorldTrans().y_ ,GetWorldTrans().z_ };
+
+	//正面ベクトルに何かあるか
+	bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, attr, info, length);
+
+	return isRayHit;
 }

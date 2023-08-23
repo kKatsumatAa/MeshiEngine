@@ -1,31 +1,33 @@
 #pragma once
 #include"CollisionManager.h"
+#include"CharacterState.h"
 
 
 class Player;
 
 
 //‘fè‚©Ae‚ğ‚Á‚Ä‚é‚©“™‚ÌƒXƒe[ƒg
-class PlayerState
+class PlayerState : public CharacterState
 {
 protected:
 	Player* player_ = nullptr;
-	int32_t timer_ = 0;
-	RaycastHit info_;
 
 public:
 	virtual ~PlayerState() { ; }
 
 	void SetPlayer(Player* player) { player_ = player; }
 
-	bool CheckEyeRayHit();
+	bool CheckEyeRayHit()override;
 
-	virtual void Initialize() = 0;
-	virtual void Update() = 0;
+	virtual void Initialize()override = 0;
+	virtual void Update()override = 0;
 };
 
 //‘fèó‘Ô
-class PlayerStateBareHands :public PlayerState
+class PlayerStateBareHands :
+	public PlayerState,
+	public CharacterStateBareHands
+
 {
 
 public:
@@ -34,7 +36,9 @@ public:
 };
 
 //e‚Á‚Ä‚é
-class PlayerStateHaveWeapon :public PlayerState
+class PlayerStateHaveWeapon :
+	public PlayerState,
+	public CharacterStateHaveWeapon
 {
 
 public:

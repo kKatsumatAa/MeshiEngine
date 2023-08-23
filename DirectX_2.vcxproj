@@ -101,6 +101,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application\Character\Character.cpp" />
+    <ClCompile Include="Application\Character\CharacterState.cpp" />
     <ClCompile Include="Application\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Application\Character\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Application\Character\Enemy\EnemyState.cpp" />
@@ -203,6 +204,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Character\Character.h" />
+    <ClInclude Include="Application\Character\CharacterState.h" />
     <ClInclude Include="Application\Character\Enemy\Enemy.h" />
     <ClInclude Include="Application\Character\Enemy\EnemyManager.h" />
     <ClInclude Include="Application\Character\Enemy\EnemyState.h" />

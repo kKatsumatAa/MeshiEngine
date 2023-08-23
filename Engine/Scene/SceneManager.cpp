@@ -95,6 +95,9 @@ void SceneManager::Update()
 
 		//オブジェマネージャーのデバッグ用アップデート
 		ObjectManager::GetInstance().DebugUpdate();
+
+		//カメラマネージャー
+		CameraManager::GetInstance().Update();
 	}
 
 	lightManager_->SetAmbientColor({ ambientColor_[0],ambientColor_[1], ambientColor_[2] });
@@ -102,9 +105,6 @@ void SceneManager::Update()
 	lightManager_->SetSpecularColor({ specularColor_[0],specularColor_[1], specularColor_[2] });
 
 	lightManager_->Update();
-
-	//カメラマネージャー
-	CameraManager::GetInstance().Update();
 }
 
 void SceneManager::Draw()

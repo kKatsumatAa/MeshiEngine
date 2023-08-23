@@ -465,6 +465,9 @@
     <ClCompile Include="Application\Character\Enemy\EnemyState.cpp">
       <Filter>ソース ファイル\Application\Character\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Character\CharacterState.cpp">
+      <Filter>ソース ファイル\Application\Character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -772,6 +775,9 @@
     </ClInclude>
     <ClInclude Include="Application\Character\Enemy\EnemyState.h">
       <Filter>ヘッダー ファイル\Application\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Character\CharacterState.h">
+      <Filter>ヘッダー ファイル\Application\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,21 +10,14 @@
 
 bool PlayerState::CheckEyeRayHit()
 {
-	//攻撃できるかどうか
-//レイにプレイヤーの正面ベクトル入れる
-	Ray ray;
-	ray.dir = { player_->GetFrontVec().x_,player_->GetFrontVec().y_,player_->GetFrontVec().z_ };
-	ray.start = { player_->GetTrans().x_,player_->GetTrans().y_,player_->GetTrans().z_ };
-
-	//正面ベクトルに何かあるか
-	uint16_t attribute = COLLISION_ATTR_ENEMYS | COLLISION_ATTR_ITEMS;
-	bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, attribute, &info_, player_->GetAttackLength());
+	bool isRayHit = player_->CheckRayOfEyeHit(player_->GetFrontVec(),
+		player_->GetAttackLength(), COLLISION_ATTR_ENEMYS | COLLISION_ATTR_ITEMS, &info_);
 
 	//シルエットオフ
 	auto objs = ObjectManager::GetInstance().GetObjs();
 	for (auto obj : objs)
 	{
-		obj->effectFlags_.isSilhouette = false;
+		obj->SetIsSilhouette(false);
 	}
 
 	//シルエット
@@ -33,6 +26,7 @@ bool PlayerState::CheckEyeRayHit()
 		info_.object->SetIsSilhouette(true);
 		info_.object->EffectUpdate();
 	}
+
 	return isRayHit;
 }
 
@@ -44,7 +38,7 @@ void PlayerStateBareHands::Initialize()
 
 void PlayerStateBareHands::Update()
 {
-	bool isRayHit = CheckEyeRayHit();
+	bool isRayHit = PlayerState::CheckEyeRayHit();
 
 	//何かしら照準にあったら
 	if (isRayHit)
