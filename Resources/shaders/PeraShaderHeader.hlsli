@@ -54,6 +54,8 @@ cbuffer ConstBufferEffectFlags : register(b0)
     float nFocusWidth;
 	//フォーカスのスムースステップの幅の上限
     float focusDiffPow;
+    //色
+    float4 color;
 	//時間
     uint time;
 }

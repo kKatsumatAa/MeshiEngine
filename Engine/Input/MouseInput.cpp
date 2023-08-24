@@ -1,4 +1,5 @@
 #include "MouseInput.h"
+#include "ImGuiManager.h"
 
 // デバイス発見時に実行される
 BOOL CALLBACK DeviceFindCallBackM(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef)
@@ -33,7 +34,7 @@ void MouseInput::CreateDevice(bool isExclusive)
 
 	//ほかのアプリでもマウス取得させるか
 	int32_t exclusive = DISCL_NONEXCLUSIVE;
-	if (isExclusive) { 
+	if (isExclusive) {
 		exclusive = DISCL_EXCLUSIVE;
 	}
 
@@ -148,7 +149,7 @@ bool MouseInput::GetClick(byte click)
 {
 	if (mouse_ == NULL) { return false; }
 
-	if (mouseData_.rgbButtons[click])
+	if (ImGui::GetIO().WantCaptureMouse == false && mouseData_.rgbButtons[click])
 	{
 		return true;
 	}
@@ -160,7 +161,8 @@ bool MouseInput::GetTriggerClick(byte click)
 {
 	if (mouse_ == NULL) { return false; }
 
-	if (mouseData_.rgbButtons[click] && !oldMouseData_.rgbButtons[click])
+	if (ImGui::GetIO().WantCaptureMouse == false && 
+		mouseData_.rgbButtons[click] && !oldMouseData_.rgbButtons[click])
 	{
 		return true;
 	}
@@ -172,7 +174,8 @@ bool MouseInput::GetTriggerReleaseClick(byte click)
 {
 	if (mouse_ == NULL) { return false; }
 
-	if (!mouseData_.rgbButtons[click] && oldMouseData_.rgbButtons[click])
+	if (ImGui::GetIO().WantCaptureMouse == false && 
+		!mouseData_.rgbButtons[click] && oldMouseData_.rgbButtons[click])
 	{
 		return true;
 	}

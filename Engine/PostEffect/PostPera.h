@@ -2,6 +2,8 @@
 #include"TextureManager.h"
 #include "DirectXWrapper.h"
 #include <functional>
+#include "Vec4.h"
+#include "Vec2.h"
 
 
 
@@ -81,6 +83,10 @@ private:
 		float nFocusWidth = 0.005f;
 		//フォーカスのスムースステップの幅の上限
 		float focusDiffPow = 0.01f;
+		//
+		Vec2 pad;
+		//色
+		Vec4 color = { 1.0f,1.0f,1.0f,1.0f };
 		//時間
 		uint32_t time = 0;
 	};

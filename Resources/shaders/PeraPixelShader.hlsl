@@ -244,11 +244,11 @@ PSOutput PS(Output input) : SV_TARGET
 
     if (isEffect)
     {
-        output.color = ret;
+        output.color = ret * color;
     }
     else
     {
-        output.color = RGBA;
+        output.color = RGBA * color;
     }
 
 //ƒuƒ‹[ƒ€

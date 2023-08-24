@@ -1,5 +1,6 @@
 #pragma once
 #include<string>
+#include"Vec3.h"
 
 class GameVelocityManager final
 {
@@ -7,6 +8,8 @@ private:
 	float gameVelocity_ = 0;
 	//ゲームスピードの加算無効
 	bool isInvalidAddGameVel_ = false;
+	//色
+	const Vec3 VEL_COL_MIN_ = { 0.5f,0.8f,0.8f };
 
 public:
 	const float GAME_VELOCITY_MAX_ = 1.0f;

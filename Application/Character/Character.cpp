@@ -26,11 +26,12 @@ void Character::Update()
 	if (GetWeapon())
 	{
 		GetWeapon()->SetIsValid(GetIsValid());
-	}
-	//€‚ñ‚¾‚ç•Ší—‚Æ‚·
-	else
-	{
-		FallWeapon({ 0,0,0 });
+
+		//€‚ñ‚¾‚ç•Ší—‚Æ‚·
+		if (!GetIsAlive())
+		{
+			FallWeapon({ 0,0,0 });
+		}
 	}
 
 	Object::Update();
