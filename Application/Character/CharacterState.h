@@ -9,7 +9,7 @@ class Character;
 class CharacterState
 {
 protected:
-	int32_t timer_ = 0;
+	float timer_ = 0;
 	RaycastHit info_;
 
 public:

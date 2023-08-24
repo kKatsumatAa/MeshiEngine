@@ -10,7 +10,7 @@ class LightManager
 {
 public:
 	//点光源の数
-	static const int32_t S_POINT_LIGHT_NUM_ = 6;
+	static const int32_t S_POINT_LIGHT_NUM_ = 12;
 
 private://エイリアス
 	//Microsoft::WRL::を省略
@@ -54,11 +54,6 @@ private://メンバ変数
 	//丸影の配列
 	CircleShadow circleShadows_[S_CIRCLE_SHADOW_NUM_];
 
-	//カウント
-	int32_t dirLCount = 0;
-	int32_t pointLCount = 0;
-	int32_t spotLCount = 0;
-
 public://サブクラス
 	//定数バッファ用データ構造体(平行光源、点光源の配列をまとめて送る)
 	struct ConstBufferData
@@ -96,7 +91,7 @@ public://静的メンバ関数
 public:
 	void Initialize();
 
-	void InitializeCount();
+	void InitializeActive();
 
 	/// <summary>
 	/// 更新
@@ -108,6 +103,9 @@ public:
 	/// </summary>
 	/// <param name="rootParamaterIndex"></param>
 	void Draw(uint32_t rootParamaterIndex);
+
+	//
+	void DrawImGui();
 
 	/// <summary>
 	/// 標準のライト設定
@@ -181,12 +179,9 @@ public:
 	void SetCircleShadowFactorAngle(int32_t index, const XMFLOAT2& lightFactorAngle);
 
 public:
-	void AddDirLCount() { dirLCount = min(dirLCount + 1, S_DIR_LIGHT_NUM_); }
-	void AddPointLCount() { pointLCount = min(pointLCount + 1, S_POINT_LIGHT_NUM_); }
-	void AddSpotLCount() { spotLCount = min(spotLCount + 1, S_SPOT_LIGHT_NUM_); }
-
-	int32_t GetDirLCount() { return dirLCount; }
-	int32_t GetPointLCount() { return pointLCount; }
-	int32_t GetSpotLCount() { return spotLCount; }
+	//使用されてないポイントライトのインデックス
+	bool GetDoNotUseDirLightIndex(int32_t& index);
+	bool GetDoNotUsePointLightIndex(int32_t& index);
+	bool GetDoNotUseSpotLightIndex(int32_t& index);
 };
 

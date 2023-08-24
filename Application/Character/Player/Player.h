@@ -17,7 +17,7 @@ class Player :
 private:
 	const int32_t HP_TMP_ = 1;
 
-	const float VELOCITY_TMP_ = 1.15f;
+	const float VELOCITY_TMP_ = 0.75f;
 	const float ANGLE_VEL_EXTEND_ = 0.003f;
 	//マウスでのゲームスピード加算倍率
 	const float MOUSE_GAME_VEL_EXTEND_ = 0.001f;
@@ -42,7 +42,7 @@ private:
 	//マウスのカメラ移動スピード
 	const float MOUSE_VELOCITY_TMP_ = 0.5f;
 	//移動によるゲームスピード加算の倍率
-	const float MOVE_ADD_VEL_EXTEND_ = 0.11f;
+	const float MOVE_ADD_VEL_EXTEND_ = 0.09f;
 
 	//手のマネージャークラス
 	std::unique_ptr<PlayerHandManager> handManager_ = nullptr;

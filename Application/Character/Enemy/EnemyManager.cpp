@@ -71,6 +71,8 @@ void EnemyManager::SetIsValidWaveEnemy()
 		if (enemy->GetWaveNum() == waveNum_)
 		{
 			enemy->SetIsValid(true);
+			//出現演出のイニシャライズ
+			enemy->EmergeInitialize();
 		}
 	}
 }

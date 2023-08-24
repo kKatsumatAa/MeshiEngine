@@ -64,12 +64,14 @@ public://ƒƒ“ƒoŠÖ”
 	inline const XMFLOAT2& GetLightFactorAngleCos() {
 		return lightFactorAngleCos_;
 	};
-	inline void SetLightActive(bool active) {
+	inline void SetActive(bool active) {
 		active_ = active;
 	};
-	inline bool GetLightActive() {
+	inline bool GetActive() {
 		return active_;
 	};
+
+	void DrawImGui(int32_t index);
 
 
 private://ƒƒ“ƒo•Ï”

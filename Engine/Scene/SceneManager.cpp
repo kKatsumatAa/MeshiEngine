@@ -149,6 +149,8 @@ void SceneManager::DrawImgui()
 		LevelManager::GetInstance().DrawImGui();
 		//objマネージャ
 		ObjectManager::GetInstance().DrawImGui();
+		//light
+		lightManager_->DrawImGui();
 	}
 }
 

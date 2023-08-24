@@ -42,13 +42,15 @@ private://ÉÅÉìÉoïœêî
 
 
 public://ÉÅÉìÉoä÷êî
-	inline void SetLightPos(const XMFLOAT3& lightpos) { lightpos_ = lightpos; }
-	inline const XMFLOAT3& GetLightPos() { return lightpos_; }
-	inline void SetLightColor(const XMFLOAT3& lightcolor) { lightcolor_ = lightcolor; }
-	inline const XMFLOAT3& GetLightColor() { return lightcolor_; }
-	inline void SetLightAtten(const XMFLOAT3& lightatten) { lightatten_ = lightatten; }
-	inline const XMFLOAT3& GetLightAtten() { return lightatten_; }
-	inline void SetActive(bool active) { active_ = active; }
-	inline bool GetActive() { return active_; }
+	void SetLightPos(const XMFLOAT3& lightpos) { lightpos_ = lightpos; }
+	const XMFLOAT3& GetLightPos() { return lightpos_; }
+	void SetLightColor(const XMFLOAT3& lightcolor) { lightcolor_ = lightcolor; }
+	const XMFLOAT3& GetLightColor() { return lightcolor_; }
+	void SetLightAtten(const XMFLOAT3& lightatten) { lightatten_ = lightatten; }
+	const XMFLOAT3& GetLightAtten() { return lightatten_; }
+	void SetActive(bool active) { active_ = active; }
+	bool GetActive() { return active_; }
+
+	void DrawImGui(int32_t index);
 };
 

@@ -73,4 +73,5 @@ private://ゲームオリジナル
 
 public:
 	void SetLightManager(LightManager* lightManager) { lightManager_ = lightManager; }
+	LightManager* GetLightManager() { return lightManager_; }
 };

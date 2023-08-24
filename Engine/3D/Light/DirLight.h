@@ -73,6 +73,9 @@ public:
 	/// 有効チェック
 	/// </summary>
 	/// <returns>有効フラグ</returns>
-	inline bool IsActive() { return active_; }
+	inline bool GetActive() { return active_; }
+
+	//
+	void DrawImGui(int32_t index);
 };
 

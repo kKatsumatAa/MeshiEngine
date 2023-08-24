@@ -1,4 +1,5 @@
 #include "LightManager.h"
+#include "ImGuiManager.h"
 
 ID3D12Device* LightManager::sDevice_ = nullptr;
 
@@ -34,11 +35,22 @@ void LightManager::Initialize()
 	TransferConstBuffer();
 }
 
-void LightManager::InitializeCount()
+void LightManager::InitializeActive()
 {
-	dirLCount = 0;
-	pointLCount = 0;
-	spotLCount = 0;
+	for (int i = 0; i < S_DIR_LIGHT_NUM_; i++)
+	{
+		dirLights_[i].SetActive(false);
+	}
+
+	for (int i = 0; i < S_POINT_LIGHT_NUM_; i++)
+	{
+		pointLights_[i].SetActive(false);
+	}
+
+	for (int i = 0; i < S_SPOT_LIGHT_NUM_; i++)
+	{
+		spotLights_[i].SetActive(false);
+	}
 }
 
 void LightManager::TransferConstBuffer()
@@ -58,7 +70,7 @@ void LightManager::TransferConstBuffer()
 
 			//平行光源
 			// ライトが有効なら設定を転送
-			if (dirLights_[i].IsActive()) {
+			if (dirLights_[i].GetActive()) {
 				constMap->dirLights[i].active = 1;
 				constMap->dirLights[i].lightv = -dirLights_[i].GetLightDir();
 				constMap->dirLights[i].lightColor = dirLights_[i].GetLightColor();
@@ -90,7 +102,7 @@ void LightManager::TransferConstBuffer()
 		for (int32_t i = 0; i < S_SPOT_LIGHT_NUM_; i++)
 		{
 			//ライトが有効なら設定を転送
-			if (spotLights_[i].GetLightActive())
+			if (spotLights_[i].GetActive())
 			{
 				constMap->spotLights[i].active = 1;
 				constMap->spotLights[i].lightv = -spotLights_[i].GetLightDir();
@@ -186,6 +198,37 @@ void LightManager::Draw(uint32_t rootParamaterIndex)
 	);
 }
 
+void LightManager::DrawImGui()
+{
+	ImGui::Begin("Light");
+
+	for (int i = 0; i < S_DIR_LIGHT_NUM_; i++)
+	{
+		if (dirLights_->GetActive())
+		{
+			dirLights_[i].DrawImGui(i);
+		}
+	}
+
+	for (int i = 0; i < S_POINT_LIGHT_NUM_; i++)
+	{
+		if (pointLights_->GetActive())
+		{
+			pointLights_[i].DrawImGui(i);
+		}
+	}
+
+	for (int i = 0; i < S_SPOT_LIGHT_NUM_; i++)
+	{
+		if (spotLights_->GetActive())
+		{
+			spotLights_[i].DrawImGui(i);
+		}
+	}
+
+	ImGui::End();
+}
+
 std::unique_ptr<LightManager> LightManager::Create()
 {
 	//3Dオブジェクトのインスタンスを生成
@@ -257,7 +300,7 @@ void LightManager::SetSpotLightActive(int32_t index, bool active)
 {
 	assert(0 <= index && index < S_SPOT_LIGHT_NUM_);
 
-	spotLights_[index].SetLightActive(active);
+	spotLights_[index].SetActive(active);
 }
 
 void LightManager::SetSpotLightDir(int32_t index, const XMVECTOR& lightdir)
@@ -347,4 +390,51 @@ void LightManager::SetCircleShadowFactorAngle(int32_t index, const XMFLOAT2& lig
 
 	circleShadows_[index].SetFactorAngleCos(lightFactorAngle);
 	dirty_ = true;
+}
+
+
+//-------------------------------------------------------------
+bool LightManager::GetDoNotUseDirLightIndex(int32_t& index)
+{
+	for (int i = 0; i < S_DIR_LIGHT_NUM_; i++)
+	{
+		//見つかれば
+		if (!dirLights_[i].GetActive())
+		{
+			index = i;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool LightManager::GetDoNotUsePointLightIndex(int32_t& index)
+{
+	for (int i = 0; i < S_POINT_LIGHT_NUM_; i++)
+	{
+		//見つかれば
+		if (!pointLights_[i].GetActive())
+		{
+			index = i;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool LightManager::GetDoNotUseSpotLightIndex(int32_t& index)
+{
+	for (int i = 0; i < S_SPOT_LIGHT_NUM_; i++)
+	{
+		//見つかれば
+		if (!spotLights_[i].GetActive())
+		{
+			index = i;
+			return true;
+		}
+	}
+
+	return false;
 }

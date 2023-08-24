@@ -35,7 +35,7 @@ void LevelManager::LoadLevelData(int32_t fileIndex)
 	//オブジェクト、カメラをクリア
 	ObjectManager::GetInstance().ClearAllObj();
 	CameraManager::GetInstance().Initialize();
-	lightManager_->InitializeCount();
+	lightManager_->InitializeActive();
 
 	//レベルデータからカメラを取得
 	for (auto& cameraData : JsonLevelLoader::Getinstance().levelData_->cameras)
@@ -238,44 +238,46 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 
 void LevelManager::LoadLight(LevelData::LightData& lightData)
 {
+	int32_t index = -1; 
+
 	//方向ライトなら
 	if (lightData.fileName.find("dir") != std::string::npos)
 	{
-		lightManager_->SetDirLightActive(lightManager_->GetDirLCount(), true);
+		lightManager_->GetDoNotUseDirLightIndex(index);
 
-		lightManager_->SetDirLightDir(lightManager_->GetDirLCount(),
+		lightManager_->SetDirLightActive(index, true);
+
+		lightManager_->SetDirLightDir(index,
 			{ lightData.dir.x_,lightData.dir.y_,lightData.dir.z_ });
-
-		lightManager_->AddDirLCount();
 	}
 	//ポイントライトなら
 	else if (lightData.fileName.find("point") != std::string::npos)
 	{
-		lightManager_->SetPointLightActive(lightManager_->GetPointLCount(), true);
+		lightManager_->GetDoNotUsePointLightIndex(index);
 
-		lightManager_->SetPointLightPos(lightManager_->GetPointLCount(),
+		lightManager_->SetPointLightActive(index, true);
+
+		lightManager_->SetPointLightPos(index,
 			{ lightData.trans.x_,lightData.trans.y_ ,lightData.trans.z_ });
 
-		lightManager_->SetPointLightAtten(lightManager_->GetPointLCount(),
+		lightManager_->SetPointLightAtten(index,
 			{ lightData.scale.z_,lightData.scale.x_,lightData.scale.y_ });
-
-		lightManager_->AddPointLCount();
 	}
 	//スポットライトなら
 	else if (lightData.fileName.find("spot") != std::string::npos)
 	{
-		lightManager_->SetSpotLightActive(lightManager_->GetSpotLCount(), true);
+		lightManager_->GetDoNotUseSpotLightIndex(index);
 
-		lightManager_->SetSpotLightPos(lightManager_->GetSpotLCount(),
+		lightManager_->SetSpotLightActive(index, true);
+
+		lightManager_->SetSpotLightPos(index,
 			{ lightData.trans.x_,lightData.trans.y_ ,lightData.trans.z_ });
 
-		lightManager_->SetSpotLightAtten(lightManager_->GetSpotLCount(),
+		lightManager_->SetSpotLightAtten(index,
 			{ lightData.scale.z_,lightData.scale.x_,lightData.scale.y_ });
 
-		lightManager_->SetSpotLightDir(lightManager_->GetSpotLCount(),
+		lightManager_->SetSpotLightDir(index,
 			{ lightData.dir.x_,lightData.dir.y_,lightData.dir.z_ });
-
-		lightManager_->AddSpotLCount();
 	}
 }
 

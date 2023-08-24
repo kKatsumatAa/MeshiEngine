@@ -7,11 +7,27 @@
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
 #include "EnemyState.h"
+#include "LevelManager.h"
 
 using namespace DirectX;
 
 
 const float Enemy::S_LENGTH_MAX_ = 10000;
+
+void Enemy::EmergeInitialize()
+{
+	LightManager* lightM = LevelManager::GetInstance().GetLightManager();
+
+	//使えるライトがあれば
+	if (lightM->GetDoNotUsePointLightIndex(lightIndexTmp_))
+	{
+		lightM->SetPointLightActive(lightIndexTmp_, true);
+		lightM->SetPointLightAtten(lightIndexTmp_, { 0.977f,0.493f,0.458f });
+		lightM->SetPointLightColor(lightIndexTmp_, { 5.0f,0,0 });
+		lightM->SetPointLightPos(lightIndexTmp_,
+			{ GetTrans().x_, GetTrans().y_, GetTrans().z_ });
+	}
+}
 
 void Enemy::ChangeEnemyState(std::unique_ptr<EnemyState> state)
 {
@@ -66,7 +82,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	SetDissolveTexHandle(handle);
 
 	//ステート変更
-	ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
+	ChangeEnemyState(std::make_unique<EnemyStateEmergeEffect>());
 
 	return true;
 }
@@ -148,6 +164,12 @@ void Enemy::DirectionUpdate(const Vec3& targetPos)
 	SetMatRot(q.MakeRotateMatrix());
 }
 
+void Enemy::HPUpdate()
+{
+	//hpによってディゾルブ
+	SetDissolveT((1.0f - (float)hp_ / (float)HP_TMP_) * DISSOLVE_POW_);
+}
+
 //----------------------------------------------------------------
 void Enemy::Update()
 {
@@ -155,9 +177,6 @@ void Enemy::Update()
 	{
 		GetModel()->SetMaterialExtend({ 1.0f,8.0f,20.0f });
 	}
-
-	//hpによってディゾルブ
-	SetDissolveT((1.0f - (float)hp_ / (float)HP_TMP_) * DISSOLVE_POW_);
 
 	//ダメージ受けるクールタイムもゲームスピードをかける
 	damageCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();

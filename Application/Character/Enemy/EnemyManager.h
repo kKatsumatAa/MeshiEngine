@@ -7,7 +7,6 @@ class EnemyManager final
 private:
 	int32_t waveNum_ = 1;
 
-
 private:
 	EnemyManager() { ; }
 	~EnemyManager() { ; }

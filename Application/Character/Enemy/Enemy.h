@@ -39,6 +39,11 @@ private:
 
 	const float WEAPON_FALL_VEL_EXTEND_ = 1.6f;
 
+	//出現演出
+	const int32_t LIGHT_INDEX_INIT_ = -1;
+	int32_t lightIndexTmp_ = LIGHT_INDEX_INIT_;
+	DirectX::XMFLOAT3 EMERGE_COL_ = { 1.0f,0,0 };
+
 	//ステート
 	std::unique_ptr<EnemyState> state_ = nullptr;
 
@@ -65,6 +70,8 @@ public:
 
 	bool Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon);
 
+	void EmergeInitialize();
+
 	void Update() override;
 
 	void Draw()override;
@@ -80,8 +87,13 @@ public:
 	void Attack(const Vec3& targetPos);
 	//向きを変更
 	void DirectionUpdate(const Vec3& targetPos);
+	//hp処理
+	void HPUpdate();
 
 public:
 	int32_t GetWaveNum() { return waveNum_; }
+	//
+	int32_t GetLightIndexTmp() { return lightIndexTmp_; }
+	int32_t GetLightIndexInit() { return LIGHT_INDEX_INIT_; }
 };
 

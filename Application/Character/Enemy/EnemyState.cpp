@@ -4,6 +4,7 @@
 #include "GameVelocityManager.h"
 #include "ObjectManager.h"
 #include "CameraManager.h"
+#include "LevelManager.h"
 
 
 
@@ -56,6 +57,49 @@ Vec3 EnemyState::GetRayHitGunOrPlayerPos()
 	return CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
 }
 
+void EnemyState::Update()
+{
+	enemy_->HPUpdate();
+}
+
+
+//出現演出-----------------------------------------------------------------------
+void EnemyStateEmergeEffect::Initialize()
+{
+}
+
+void EnemyStateEmergeEffect::Update()
+{
+	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
+
+	//ディゾルブ
+	float t = timer_ / EMERGE_TIMER_MAX_;
+	enemy_->SetDissolveT(LerpVec3({ 1.0f,0,0 }, { 0,0,0 }, EaseIn(t)).x_);
+
+	if (timer_ >= EMERGE_TIMER_MAX_)
+	{
+		//ライトの使用オフ
+		LightManager* lightM = LevelManager::GetInstance().GetLightManager();
+		if (enemy_->GetLightIndexTmp() != enemy_->GetLightIndexInit())
+		{
+			lightM->SetPointLightActive(enemy_->GetLightIndexTmp(), false);
+		}
+
+		//銃があれば
+		if (enemy_->GetWeapon())
+		{
+			enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeapon>());
+		}
+		else
+		{
+			enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
+		}
+	}
+
+	timer_++;
+}
+
+
 
 //素手状態-----------------------------------------------------------------------
 void EnemyStateBareHands::Initialize()
@@ -67,6 +111,8 @@ void EnemyStateBareHands::Initialize()
 void EnemyStateBareHands::Update()
 {
 	enemy_->Move(GetRayHitGunOrPlayerPos());
+
+	EnemyState::Update();
 
 	//武器持ったらステート変更
 	if (enemy_->GetWeapon())
@@ -106,11 +152,11 @@ void EnemyStateHaveWeapon::Update()
 		}
 	}
 
+	EnemyState::Update();
+
 	//武器失ったらステート変更
 	if (enemy_->GetWeapon() == nullptr)
 	{
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
 	}
 }
-
-

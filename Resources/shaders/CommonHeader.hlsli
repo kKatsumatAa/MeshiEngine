@@ -48,7 +48,7 @@ float3 GetNormalMapWorldNormalVec(float4 normalMapCol, float3 tangent,
 //----------------------------------------------------------------------------------------------
 
 // 点光源の数
-static const int S_POINTLIGHT_NUM = 6;
+static const int S_POINTLIGHT_NUM = 12;
 struct PointLight
 {
     float3 lightpos; //ライトの座標

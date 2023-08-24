@@ -23,6 +23,22 @@ public:
 
 	//持ち主のいない銃が見えたらその座標、なければプレイヤーの座標
 	Vec3 GetRayHitGunOrPlayerPos();
+
+public:
+	virtual void Update();
+
+};
+
+//出現演出
+class EnemyStateEmergeEffect : public EnemyState
+{
+private:
+	//敵出現時演出用
+	const float EMERGE_TIMER_MAX_ = 30;
+
+public:
+	void Initialize() override;
+	void Update() override;
 };
 
 //素手状態
