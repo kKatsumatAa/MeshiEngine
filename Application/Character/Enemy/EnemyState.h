@@ -34,7 +34,7 @@ class EnemyStateEmergeEffect : public EnemyState
 {
 private:
 	//“GoŒ»‰‰o—p
-	const float EMERGE_TIMER_MAX_ = 30;
+	const float EMERGE_TIMER_MAX_ = 60;
 
 public:
 	void Initialize() override;

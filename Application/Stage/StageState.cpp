@@ -2,6 +2,7 @@
 #include "StageManager.h"
 #include "MouseInput.h"
 #include "PlayerUI.h"
+#include "PostEffectManager.h"
 
 
 //‹¤’Ê‚Ìˆ—
@@ -94,7 +95,7 @@ void StageStateBegining::Update()
 	auto objs = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
 	for (auto obj : objs)
 	{
-		obj->effectFlags_.dissolveT = 1.0f - t;
+		obj->SetDissolveT(1.0f - t);
 	}
 
 	//ŠÔ’´‚¦‚½‚ç
@@ -204,7 +205,7 @@ void StageStateDead::Update()
 	auto objs = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
 	for (auto obj : objs)
 	{
-		obj->effectFlags_.dissolveT = t;
+		obj->SetDissolveT(t);
 	}
 
 	//ˆê’èŠÔ‚½‚Á‚½‚çƒtƒ‰ƒO—§‚Ä‚é

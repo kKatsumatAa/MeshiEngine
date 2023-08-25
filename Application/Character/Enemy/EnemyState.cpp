@@ -71,6 +71,8 @@ void EnemyStateEmergeEffect::Initialize()
 void EnemyStateEmergeEffect::Update()
 {
 	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
+	//“–‚½‚è”»’è
+	enemy_->SetColliderIsValid(false);
 
 	//ƒfƒBƒ]ƒ‹ƒu
 	float t = timer_ / EMERGE_TIMER_MAX_;
@@ -84,6 +86,8 @@ void EnemyStateEmergeEffect::Update()
 		{
 			lightM->SetPointLightActive(enemy_->GetLightIndexTmp(), false);
 		}
+
+		enemy_->SetColliderIsValid(true);
 
 		//e‚ª‚ ‚ê‚Î
 		if (enemy_->GetWeapon())
