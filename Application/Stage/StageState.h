@@ -28,7 +28,7 @@ public:
 class StageStateBegining : public StageState
 {
 protected:
-	const float EFFECT_TIMER_MAX_ = 75;
+	const float EFFECT_TIMER_MAX_ = 45;
 
 public:
 	void Initialize() override;

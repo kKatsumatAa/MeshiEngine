@@ -30,7 +30,8 @@ void Character::Update()
 		//Ž€‚ñ‚¾‚ç•Ší—Ž‚Æ‚·
 		if (!GetIsAlive())
 		{
-			FallWeapon({ 0,0,0 });
+			GetWeapon()->SetIsAlive(false);
+			FallWeapon({ 0,-1.0f,0 });
 		}
 	}
 

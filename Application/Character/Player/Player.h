@@ -50,9 +50,10 @@ private:
 	//状態のステート
 	std::unique_ptr<PlayerState> state_ = nullptr;
 
-	//
-	int32_t deadTimer_ = 70;
 	bool isDead_ = false;
+
+	//銃を撃った敵の座標
+	Vec3 bulletOwnerEnemyPos_ = { 0,0,0 };
 
 	const float FALL_VEL_POW_ = 8.0f;
 
@@ -68,10 +69,6 @@ public:
 	static std::unique_ptr<Player> Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon);
 
 private:
-	//移動
-	void Move();
-	//向きを変える
-	void DirectionUpdate();
 	//倒されたあとに呼び出す
 	void Dead(const CollisionInfo& info);
 
@@ -100,9 +97,15 @@ public:
 
 public:
 	void ThrowWeapon();
+	//移動
+	void Move();
+	//向きを変える
+	void DirectionUpdate();
 
 public:
 	void SetIsClickLeft(bool isClickLeft) { isClickLeft_ = isClickLeft; }
 	bool GetIsClickLeft() {return isClickLeft_; }
+
+	const Vec3& GetBulletOwnerEnemyPos() { return bulletOwnerEnemyPos_; }
 };
 

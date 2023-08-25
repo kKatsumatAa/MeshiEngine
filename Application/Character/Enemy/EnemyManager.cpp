@@ -15,6 +15,8 @@ void EnemyManager::Initialize()
 
 	//敵のウェーブの番号で判断して無効にする
 	SetIsValidOtherWaveEnemy();
+	//新しいウェーブの敵の有効フラグをオン
+	SetIsValidWaveEnemy();
 }
 
 void EnemyManager::Update()

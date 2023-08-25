@@ -5,6 +5,7 @@
 #include "PlayerUI.h"
 #include "PlayerUIState.h"
 #include "ObjectManager.h"
+#include "CameraManager.h"
 
 
 
@@ -30,6 +31,15 @@ bool PlayerState::CheckEyeRayHit()
 	return isRayHit;
 }
 
+void PlayerState::Update()
+{
+	//カメラの向き変更
+	player_->DirectionUpdate();
+
+	//移動
+	player_->Move();
+}
+
 
 //素手状態-----------------------------------------------------------------------
 void PlayerStateBareHands::Initialize()
@@ -38,6 +48,8 @@ void PlayerStateBareHands::Initialize()
 
 void PlayerStateBareHands::Update()
 {
+	PlayerState::Update();
+
 	bool isRayHit = PlayerState::CheckEyeRayHit();
 
 	//何かしら照準にあったら
@@ -56,7 +68,7 @@ void PlayerStateBareHands::Update()
 			{
 				Weapon* weapon = dynamic_cast<Weapon*>(info_.object);
 				//武器拾う
-				Vec3 localPos = { -player_->GetScale().x_ ,-player_->GetScale().y_ / 2.0f ,-player_->GetScale().z_ * 2.0f};
+				Vec3 localPos = { -player_->GetScale().x_ ,-player_->GetScale().y_ / 2.0f ,-player_->GetScale().z_ * 2.0f };
 				player_->PickUpWeapon(weapon, &localPos);
 
 				//ui変更
@@ -94,6 +106,8 @@ void PlayerStateHaveWeapon::Initialize()
 
 void PlayerStateHaveWeapon::Update()
 {
+	PlayerState::Update();
+
 	//プレイヤーが武器を持っていたら
 	if (player_->GetWeapon() != nullptr)
 	{
@@ -130,3 +144,30 @@ void PlayerStateHaveWeapon::Update()
 }
 
 
+//-----------------------------------------------------------------------------------------
+//死亡演出
+void PlayerStateDeadEffect::Initialize()
+{
+	targetPos_ = player_->GetBulletOwnerEnemyPos();
+	dir_ = (targetPos_ - player_->GetWorldTrans()).GetNormalized();
+
+	Camera* camera = CameraManager::GetInstance().GetCamera("playerCamera");
+	camera->SetTarget(targetPos_);
+}
+
+void PlayerStateDeadEffect::Update()
+{
+	Camera* camera = CameraManager::GetInstance().GetCamera("playerCamera");
+
+	float t = (float)timer_ / (float)TIMER_MAX_;
+
+	camera->SetEye(LerpVec3(player_->GetWorldTrans(), targetPos_ - (dir_ * LENGTH_MIN_), EaseInOut(t)));
+
+	//演出終わったら生存フラグオフ
+	if (timer_ >= TIMER_MAX_)
+	{
+		player_->SetIsAlive(false);
+	}
+
+	timer_++;
+}

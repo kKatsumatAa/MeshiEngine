@@ -20,7 +20,7 @@ public:
 	bool CheckEyeRayHit()override;
 
 	virtual void Initialize()override = 0;
-	virtual void Update()override = 0;
+	virtual void Update()override;
 };
 
 //‘fèó‘Ô
@@ -40,6 +40,20 @@ class PlayerStateHaveWeapon :
 	public PlayerState,
 	public CharacterStateHaveWeapon
 {
+
+public:
+	void Initialize() override;
+	void Update() override;
+};
+
+//€–S‰‰o
+class PlayerStateDeadEffect : public PlayerState
+{
+private:
+	const int32_t TIMER_MAX_ = 70;
+	Vec3 targetPos_;
+	Vec3 dir_;
+	const float LENGTH_MIN_ = 10.0f;
 
 public:
 	void Initialize() override;
