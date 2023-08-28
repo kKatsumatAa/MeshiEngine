@@ -33,7 +33,7 @@ private:
 
 	const int8_t HP_TMP_ = 3;
 
-	const float KNOCK_BACK_POW_ = 0.165f;
+	const float KNOCK_BACK_POW_ = 0.365f;
 
 	const float DISSOLVE_POW_ = 0.6f;
 

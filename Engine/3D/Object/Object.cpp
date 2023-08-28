@@ -155,7 +155,7 @@ void Object::SetIsValid(bool isValid)
 
 	if (isValid == true)
 	{
-		worldMat_->CulcAllTreeMat();
+		worldMat_->CalcAllTreeMat();
 	}
 }
 
@@ -164,7 +164,7 @@ const Vec3& Object::GetFrontVec()
 	return frontVec_;
 }
 
-void Object::CulcFrontVec()
+void Object::CalcFrontVec()
 {
 	frontVec_ = GetTurnVec3UseQuaternionAndRot(frontVecTmp_, GetRot());
 }
@@ -194,7 +194,7 @@ void Object::EffectUpdate()
 void Object::WorldMatColliderUpdate()
 {
 	//行列更新（ワールド座標系にして当たり判定を行う）
-	worldMat_->CulcAllTreeMat();
+	worldMat_->CalcAllTreeMat();
 	//当たり判定更新
 	if (collider_.get())
 	{
@@ -290,7 +290,7 @@ Object::Object()
 	//1フレーム分の時間を60fpsで設定
 	frameTime_.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 
-	//画面効果用
+	//演出用
 	{
 		//ヒープ設定
 		D3D12_HEAP_PROPERTIES cbHeapProp{};
@@ -323,7 +323,7 @@ void Object::SendingMat(int32_t indexNum, Camera* camera, IModel* model)
 	}
 
 	//変換行列をGPUに送信
-	worldMat_->CulcAllTreeMat();
+	worldMat_->CalcAllTreeMat();
 	worldMat_->scale_ = scale;
 	//スプライトじゃない場合
 	if (indexNum != SPRITE)
@@ -604,6 +604,9 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 		std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(pipelineSetFBX_.pipelineState.Get(), pipelineNum, pipelineSetFBX_.rootSignature.Get()); };
 		std::function<void()>SetMaterialTexM = [=]() {SetMaterialLightMTexSkinModel(dissolveTextureHandleL, specularMapTextureHandleL,
 			normalMapTextureHandleL); };
+
+		//メッシュのオフセットデータセット
+		GetModel()->SetPolygonOffsetData(meshOffsetData_);
 
 		if (indexNum == FBX)
 		{

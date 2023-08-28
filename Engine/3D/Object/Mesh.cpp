@@ -3,6 +3,7 @@
 #include <cassert>
 #include "Util.h"
 #include "Object.h"
+#include <set>
 
 using namespace DirectX;
 
@@ -27,6 +28,24 @@ Mesh::Mesh()
 	globalTransform_ = XMMatrixIdentity();
 
 	cbt_.Initialize();
+}
+
+void Mesh::MappingVertices(std::vector<VertexPosNormalUvSkin>* vertices)
+{
+	auto verticesL = vertices_;
+
+	if (vertices)
+	{
+		verticesL = *vertices;
+	}
+
+	// 頂点バッファへのデータ転送
+	VertexPosNormalUvSkin* vertMap = nullptr;
+	HRESULT result = vertBuff_->Map(0, nullptr, (void**)&vertMap);
+	if (SUCCEEDED(result)) {
+		std::copy(verticesL.begin(), verticesL.end(), vertMap);
+		vertBuff_->Unmap(0, nullptr);
+	}
 }
 
 void Mesh::SetName(const std::string& name)
@@ -63,7 +82,7 @@ void Mesh::CalculateSmoothedVertexNormals()
 		// 全頂点の法線を平均する
 		XMVECTOR normal = {};
 		for (uint16_t index : v) {
-			normal += XMVectorSet(vertices_[index].normal.x, vertices_[index].normal.y, vertices_[index].normal.z, 0);
+			normal += XMVectorSet(vertices_[index].normal.x_, vertices_[index].normal.y_, vertices_[index].normal.z_, 0);
 		}
 		normal = XMVector3Normalize(normal / (float)v.size());
 
@@ -83,30 +102,30 @@ void Mesh::CalculateTangent()
 		uint16_t index2 = indices_[i * 3 + 2];
 
 		// Shortcuts for vertices
-		XMFLOAT3& v0 = vertices_[index0].pos;
-		XMFLOAT3& v1 = vertices_[index1].pos;
-		XMFLOAT3& v2 = vertices_[index2].pos;
+		Vec3& v0 = vertices_[index0].pos;
+		Vec3& v1 = vertices_[index1].pos;
+		Vec3& v2 = vertices_[index2].pos;
 
 		// Shortcuts for UVs
-		XMFLOAT2& uv0 = vertices_[index0].uv;
-		XMFLOAT2& uv1 = vertices_[index1].uv;
-		XMFLOAT2& uv2 = vertices_[index2].uv;
+		Vec2& uv0 = vertices_[index0].uv;
+		Vec2& uv1 = vertices_[index1].uv;
+		Vec2& uv2 = vertices_[index2].uv;
 
 		// Edges of the triangle : postion delta
-		XMFLOAT3 deltaPos1 = v1 - v0;
-		XMFLOAT3 deltaPos2 = v2 - v0;
+		Vec3 deltaPos1 = v1 - v0;
+		Vec3 deltaPos2 = v2 - v0;
 
 		// UV delta
-		XMFLOAT2 deltaUV1 = uv1 - uv0;
-		XMFLOAT2 deltaUV2 = uv2 - uv0;
+		Vec2 deltaUV1 = uv1 - uv0;
+		Vec2 deltaUV2 = uv2 - uv0;
 
-		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
-		XMFLOAT3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
-		XMFLOAT3 biTangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+		float r = 1.0f / (deltaUV1.x_ * deltaUV2.y_ - deltaUV1.y_ * deltaUV2.x_);
+		Vec3 tangent = (deltaPos1 * deltaUV2.y_ - deltaPos2 * deltaUV1.y_) * r;
+		Vec3 biTangent = (deltaPos2 * deltaUV1.x_ - deltaPos1 * deltaUV2.x_) * r;
 
-		Vec3 n = { vertices_[index0].normal.x,vertices_[index0].normal.y,vertices_[index0].normal.z };
-		Vec3 t = { tangent.x,tangent.y,tangent.z };
-		Vec3 b = { biTangent.x,biTangent.y,biTangent.z };
+		Vec3 n = { vertices_[index0].normal.x_,vertices_[index0].normal.y_,vertices_[index0].normal.z_ };
+		Vec3 t = { tangent.x_,tangent.y_,tangent.z_ };
+		Vec3 b = { biTangent.x_,biTangent.y_,biTangent.z_ };
 
 		// Gram-Schmidt orthogonalize
 		t = (t - n * n.Dot(t)).GetNormalized();
@@ -146,13 +165,7 @@ void Mesh::CreateBuffers()
 	assert(SUCCEEDED(result));
 
 
-	// 頂点バッファへのデータ転送
-	VertexPosNormalUvSkin* vertMap = nullptr;
-	result = vertBuff_->Map(0, nullptr, (void**)&vertMap);
-	if (SUCCEEDED(result)) {
-		std::copy(vertices_.begin(), vertices_.end(), vertMap);
-		vertBuff_->Unmap(0, nullptr);
-	}
+	MappingVertices();
 
 	// 頂点バッファビューの作成
 	vbView_.BufferLocation = vertBuff_->GetGPUVirtualAddress();
@@ -186,6 +199,8 @@ void Mesh::CreateBuffers()
 
 void Mesh::SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt)
 {
+	timer_++;
+
 	cbt_.SetWorldMat(globalTransform_);
 	cbt_.SetViewProjMat(cbt.GetViewProjMat());
 	cbt_.SetCameraPos(cbt.GetCameraPos());
@@ -204,6 +219,54 @@ void Mesh::SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt)
 	material_->ambient_ = amb;
 	material_->diffuse_ = diff;
 	material_->specular_ = spe;
+
+	//頂点情報
+	SendingVetices();
+}
+
+void Mesh::SendingVetices()
+{
+	bool isVailid = false;
+
+	//間隔が来たら
+	if (timer_ % max((int32_t)polygonOffsetData_.interval, 1) == 0)
+	{
+		if (polygonOffsetData_.length != 0.0f)
+		{
+			//コピー
+			offsetVertices_.clear();
+			offsetVertices_.resize(vertices_.size());
+			offsetVertices_ = vertices_;
+
+			isVailid = true;
+		}
+	}
+
+	if (isVailid)
+	{
+		for (int r = 0; r < (int32_t)((float)GetPolygonCount() * polygonOffsetData_.ratio); r++)
+		{
+			//ランダムにポリゴンのインデックス決める
+			int32_t pIndex = (int32_t)GetRand(0, (float)max((GetPolygonCount() - 1), 0));
+
+			//ポリゴンを法線方向にランダムで動かす
+			float extend = GetRand(0.1f, 1.0f);
+			Vec3 offset = GetPolygonNormal(pIndex) * (polygonOffsetData_.length * extend);
+			offsetVertices_[pIndex * 3 + 0].pos += offset;
+			offsetVertices_[pIndex * 3 + 1].pos += offset;
+			offsetVertices_[pIndex * 3 + 2].pos += offset;
+		}
+	}
+
+	if (polygonOffsetData_.ratio != 0.0f)
+	{
+		MappingVertices(&offsetVertices_);
+	}
+	else
+	{
+		//マッピング
+		MappingVertices();
+	}
 }
 
 void Mesh::Draw(Vec3 materialExtend, const ConstBuffTransform& cbt,
@@ -232,4 +295,25 @@ void Mesh::Draw(Vec3 materialExtend, const ConstBuffTransform& cbt,
 
 	// 描画コマンド
 	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((uint32_t)indices_.size(), 1, 0, 0, 0);
+}
+
+
+//-------------------------------------------------------------------------------------------
+Vec3 Mesh::GetPolygonNormal(int32_t index)
+{
+	uint16_t index0 = indices_[index * 3 + 0];
+	uint16_t index1 = indices_[index * 3 + 1];
+	uint16_t index2 = indices_[index * 3 + 2];
+
+	//座標を元に戻す
+	Vec3 normal0 = vertices_[index0].normal;
+	Vec3 normal1 = vertices_[index1].normal;
+	Vec3 normal2 = vertices_[index2].normal;
+
+	return (normal0 + normal1 + normal2).GetNormalized();
+}
+
+void Mesh::SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData)
+{
+	polygonOffsetData_ = polygonOffsetData;
 }

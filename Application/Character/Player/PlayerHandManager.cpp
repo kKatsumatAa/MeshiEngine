@@ -19,9 +19,9 @@ void PlayerHandManager::Initialize(Player* player)
 	Vec3 distance = { 1.0f,1.0f,1.0f };
 	//ê∂ê¨ÅiâºÅj
 	ObjectManager::GetInstance().AddObject(OBJ_GROUP_NAME_,
-		std::move(PlayerHand::Create(player, { -distance.x_ * 2.0f,0 - distance.y_,distance.z_ }, HAND_R_NAME_)));
+		std::move(PlayerHand::Create(player, { -distance.x_ * 2.0f,0 - distance.y_,distance.z_ }, true, HAND_R_NAME_)));
 	ObjectManager::GetInstance().AddObject(OBJ_GROUP_NAME_,
-		std::move(PlayerHand::Create(player, { +distance.x_ * 2.0f,0 - distance.y_,distance.z_ }, HAND_L_NAME_)));
+		std::move(PlayerHand::Create(player, { +distance.x_ * 2.0f,0 - distance.y_,distance.z_ }, false, HAND_L_NAME_)));
 
 	handL_ = dynamic_cast<PlayerHand*>(*ObjectManager::GetInstance().GetObjs(OBJ_GROUP_NAME_, HAND_L_NAME_).begin());
 	handR_ = dynamic_cast<PlayerHand*>(*ObjectManager::GetInstance().GetObjs(OBJ_GROUP_NAME_, HAND_R_NAME_).begin());

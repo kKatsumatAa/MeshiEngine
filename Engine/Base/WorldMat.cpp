@@ -28,7 +28,7 @@ WorldMat::WorldMat()
 	  0,0,0,1 };
 }
 
-void WorldMat::CulcScaleMat()
+void WorldMat::CalcScaleMat()
 {
 	matScale_ = {
 		scale_.x_, 0, 0, 0,
@@ -40,7 +40,7 @@ void WorldMat::CulcScaleMat()
 	matWorld_ *= matScale_;
 }
 
-void WorldMat::CulcRotMat()
+void WorldMat::CalcRotMat()
 {
 	matRot_ = NORMAL_M;
 	matRot_ *= {
@@ -64,7 +64,7 @@ void WorldMat::CulcRotMat()
 	matWorld_ *= matRot_;
 }
 
-void WorldMat::CulcQuaternionRotMat()
+void WorldMat::CalcQuaternionRotMat()
 {
 	//角度じゃなく、回転行列そのまま使う
 	if (isUseQMat_)
@@ -89,7 +89,7 @@ void WorldMat::CulcQuaternionRotMat()
 	}
 }
 
-void WorldMat::CulcTransMat()
+void WorldMat::CalcTransMat()
 {
 	matWorld_ *= {
 		1, 0, 0, 0,
@@ -99,10 +99,10 @@ void WorldMat::CulcTransMat()
 	};
 }
 
-void WorldMat::CulcAllTreeMat()
+void WorldMat::CalcAllTreeMat()
 {
 	//行列計算
-	CulcWorldMat();
+	CalcWorldMat();
 
 	//親がいたら
 	if (parent_ != nullptr)
@@ -110,14 +110,14 @@ void WorldMat::CulcAllTreeMat()
 		//親の行列も計算(重いかも)
 		SetParentWorld(parent_);
 		//親の行列を自分の行列にかけていく
-		RecursiveCulcParentMat(parent_, matWorld_);
+		RecursiveCalcParentMat(parent_, matWorld_);
 	}
 }
 
 void WorldMat::SetParentWorld(WorldMat* parent)
 {
 	//親の行列計算
-	parent->CulcWorldMat();
+	parent->CalcWorldMat();
 
 	//親に親があったら
 	if (parent->parent_)
@@ -126,7 +126,7 @@ void WorldMat::SetParentWorld(WorldMat* parent)
 	}
 }
 
-void WorldMat::RecursiveCulcParentMat(WorldMat* parent, M4& childMat)
+void WorldMat::RecursiveCalcParentMat(WorldMat* parent, M4& childMat)
 {
 	//子の行列に親の行列をかける
 	childMat *= parent->matWorld_;
@@ -134,18 +134,18 @@ void WorldMat::RecursiveCulcParentMat(WorldMat* parent, M4& childMat)
 	//まだ親がいれば
 	if (parent->parent_)
 	{
-		RecursiveCulcParentMat(parent->parent_, childMat);
+		RecursiveCalcParentMat(parent->parent_, childMat);
 	}
 }
 
-void WorldMat::CulcWorldMat()
+void WorldMat::CalcWorldMat()
 {
 	matWorld_ = NORMAL_M;
 
-	CulcScaleMat();
+	CalcScaleMat();
 	//回転にクォータニオン
-	CulcQuaternionRotMat();
-	CulcTransMat();
+	CalcQuaternionRotMat();
+	CalcTransMat();
 }
 
 Quaternion WorldMat::GetQuaternion()
@@ -165,7 +165,7 @@ Quaternion WorldMat::GetQuaternion()
 
 Vec3 WorldMat::GetWorldTrans()
 {
-	CulcAllTreeMat();
+	CalcAllTreeMat();
 
 	return Vec3((float)matWorld_.m_[3][0], (float)matWorld_.m_[3][1], (float)matWorld_.m_[3][2]);
 }

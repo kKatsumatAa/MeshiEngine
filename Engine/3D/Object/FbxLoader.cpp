@@ -390,9 +390,9 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 			{
 				//座標
 				MyControlPoint contrP = myControlPoints[index];
-				vertex.pos.x = contrP.pos.x;
-				vertex.pos.y = contrP.pos.y;
-				vertex.pos.z = contrP.pos.z;
+				vertex.pos.x_ = contrP.pos.x;
+				vertex.pos.y_ = contrP.pos.y;
+				vertex.pos.z_ = contrP.pos.z;
 
 				//ボーン
 				for (int i = 0; i < Mesh::S_MAX_BONE_INDICES_; i++)
@@ -407,9 +407,9 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 			//取得できれば
 			if (fbxMesh->GetPolygonVertexNormal(i, j, normal))
 			{
-				vertex.normal.x = (float)normal[0];
-				vertex.normal.y = (float)normal[1];
-				vertex.normal.z = (float)normal[2];
+				vertex.normal.x_ = (float)normal[0];
+				vertex.normal.y_ = (float)normal[1];
+				vertex.normal.z_ = (float)normal[2];
 			}
 
 			//テクスチャUV読み込み
@@ -421,8 +421,8 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 				//0番決め打ちで読み込み（現在は1モデルに1テクスチャのみなので）
 				if (fbxMesh->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
 				{
-					vertex.uv.x = (float)uvs[0];
-					vertex.uv.y = (float)uvs[1];
+					vertex.uv.x_ = (float)uvs[0];
+					vertex.uv.y_ = (float)uvs[1];
 				}
 			}
 
@@ -452,61 +452,6 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 
 void FbxLoader::CalcMeshTangent(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 {
-	//面の数
-	const int32_t POLYGON_COUNT = fbxMesh->GetPolygonCount() * 3;
-
-	//面ごとの情報読み取り
-	for (int32_t i = 0; i < POLYGON_COUNT; i++)
-	{
-		//面を構成する頂点の数を取得（3なら三角形ポリゴン,4なら四角形）
-		const int32_t POLYGON_SIZE = fbxMesh->GetPolygonSize(i);
-		assert(POLYGON_SIZE <= 4);
-
-		if (POLYGON_SIZE == 3)
-		{
-			//面のj番目の頂点
-			int32_t index0 = fbxMesh->GetPolygonVertex(i, 0);
-			int32_t index1 = fbxMesh->GetPolygonVertex(i, 1);
-			int32_t index2 = fbxMesh->GetPolygonVertex(i, 2);
-
-
-			// Shortcuts for vertices
-			XMFLOAT3& v0 = mesh->vertices_[index0].pos;
-			XMFLOAT3& v1 = mesh->vertices_[index1].pos;
-			XMFLOAT3& v2 = mesh->vertices_[index2].pos;
-
-			// Shortcuts for UVs
-			XMFLOAT2& uv0 = mesh->vertices_[index0].uv;
-			XMFLOAT2& uv1 = mesh->vertices_[index1].uv;
-			XMFLOAT2& uv2 = mesh->vertices_[index2].uv;
-
-			// Edges of the triangle : postion delta
-			XMFLOAT3 deltaPos1 = v1 - v0;
-			XMFLOAT3 deltaPos2 = v2 - v0;
-
-			// UV delta
-			XMFLOAT2 deltaUV1 = uv1 - uv0;
-			XMFLOAT2 deltaUV2 = uv2 - uv0;
-
-			float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
-			XMFLOAT3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
-
-			Vec3 tanN = { tangent.x,tangent.y,tangent.z };
-			tanN.Normalized();
-
-			Vec3 tan0 = { mesh->vertices_[index0].tangent.x,mesh->vertices_[index0].tangent.y,mesh->vertices_[index0].tangent.z };
-			Vec3 tan1 = { mesh->vertices_[index1].tangent.x,mesh->vertices_[index1].tangent.y,mesh->vertices_[index1].tangent.z };
-			Vec3 tan2 = { mesh->vertices_[index2].tangent.x,mesh->vertices_[index2].tangent.y,mesh->vertices_[index2].tangent.z };
-
-			tan0.Normalized();
-			tan1.Normalized();
-			tan2.Normalized();
-
-			mesh->vertices_[index0].tangent = XMFLOAT4(tan0.x_, tan0.y_, tan0.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
-			mesh->vertices_[index1].tangent = XMFLOAT4(tan1.x_, tan1.y_, tan1.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
-			mesh->vertices_[index2].tangent = XMFLOAT4(tan2.x_, tan2.y_, tan2.z_, 0) + XMFLOAT4(tanN.x_, tanN.y_, tanN.z_, 0);
-		}
-	}
 }
 
 void FbxLoader::ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode)

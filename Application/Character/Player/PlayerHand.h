@@ -15,6 +15,9 @@ private:
 	//敵の衝突点までの距離
 	float interLength_ = 0;
 
+	//右手か
+	bool isRight_ = false;
+
 	//攻撃時に足す用のポジション
 	Vec3 addTrans_ = { 0,0,0 };
 	//元となる座標
@@ -39,8 +42,8 @@ public:
 
 
 public:
-	static std::unique_ptr<PlayerHand> Create(Player* player, const Vec3& transTmp, const std::string& objName);
-	bool Initialize(Player* player, const Vec3& transTmp, const std::string& objName);
+	static std::unique_ptr<PlayerHand> Create(Player* player, const Vec3& transTmp,bool isRight, const std::string& objName);
+	bool Initialize(Player* player, const Vec3& transTmp,bool isRight, const std::string& objName);
 
 	void Update()override;
 

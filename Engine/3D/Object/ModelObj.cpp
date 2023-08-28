@@ -61,9 +61,9 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 	std::unique_ptr<Mesh> mesh = std::move(meshes_.back());
 	int32_t indexCount = 0;
 
-	std::vector<XMFLOAT3> positions;	// 頂点座標
-	std::vector<XMFLOAT3> normals;	// 法線ベクトル
-	std::vector<XMFLOAT2> texcoords;	// テクスチャUV
+	std::vector<Vec3> positions;	// 頂点座標
+	std::vector<Vec3> normals;	// 法線ベクトル
+	std::vector<Vec2> texcoords;	// テクスチャUV
 	// 1行ずつ読み込む
 	std::string line;
 	while (getline(file, line)) {
@@ -115,35 +115,35 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 		// 先頭文字列がvなら頂点座標
 		if (key == "v") {
 			// X,Y,Z座標読み込み
-			XMFLOAT3 position{};
-			line_stream >> position.x;
-			line_stream >> position.y;
-			line_stream >> position.z;
+			Vec3 position{};
+			line_stream >> position.x_;
+			line_stream >> position.y_;
+			line_stream >> position.z_;
 			//逆向きに読み込まれちゃうので
-			position.z *= -1.0f;
+			position.z_ *= -1.0f;
 			positions.emplace_back(position);
 		}
 		// 先頭文字列がvtならテクスチャ
 		if (key == "vt")
 		{
 			// U,V成分読み込み
-			XMFLOAT2 texcoord{};
-			line_stream >> texcoord.x;
-			line_stream >> texcoord.y;
+			Vec2 texcoord{};
+			line_stream >> texcoord.x_;
+			line_stream >> texcoord.y_;
 			// V方向反転
-			texcoord.y = 1.0f - texcoord.y;
+			texcoord.y_ = 1.0f - texcoord.y_;
 			// テクスチャ座標データに追加
 			texcoords.emplace_back(texcoord);
 		}
 		// 先頭文字列がvnなら法線ベクトル
 		if (key == "vn") {
 			// X,Y,Z成分読み込み
-			XMFLOAT3 normal{};
-			line_stream >> normal.x;
-			line_stream >> normal.y;
-			line_stream >> normal.z;
+			Vec3 normal{};
+			line_stream >> normal.x_;
+			line_stream >> normal.y_;
+			line_stream >> normal.z_;
 			//逆向きに読み込まれちゃうので
-			normal.z *= -1.0f;
+			normal.z_ *= -1.0f;
 			// 法線ベクトルデータに追加
 			normals.emplace_back(normal);
 		}

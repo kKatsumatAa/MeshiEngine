@@ -44,9 +44,6 @@ private: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// DirectX::を省略
-	using XMFLOAT2 = DirectX::XMFLOAT2;
-	using XMFLOAT3 = DirectX::XMFLOAT3;
-	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
 
@@ -58,12 +55,20 @@ public://サブクラス
 	//頂点データ構造体
 	struct VertexPosNormalUvSkin
 	{
-		DirectX::XMFLOAT3 pos;//座標
-		DirectX::XMFLOAT3 normal;//法線ベクトル
-		DirectX::XMFLOAT2 uv;//uv座標
+		Vec3 pos;//座標
+		Vec3 normal;//法線ベクトル
+		Vec2 uv;//uv座標
 		uint32_t boneIndex[S_MAX_BONE_INDICES_] = { 0 };//影響を受けるボーン　番号
 		float boneWeight[S_MAX_BONE_INDICES_] = { 1.0f,0,0,0 };//ボーン　重み
-		DirectX::XMFLOAT4 tangent;//法線の接線
+		Vec4 tangent;//法線の接線
+	};
+
+	//ポリゴンの座標のオフセット
+	struct PolygonOffset
+	{
+		float ratio = 0;//メッシュのどのくらいのポリゴンに適用するか
+		float length = 0;//どのくらい加算するのか(長さ)
+		float interval = 0;//実行間隔
 	};
 
 public: // 静的メンバ関数
@@ -81,6 +86,8 @@ private: // 静的メンバ変数
 public: // メンバ関数
 	Mesh();
 
+	//頂点マッピング
+	void MappingVertices(std::vector<VertexPosNormalUvSkin>* vertices = nullptr);
 
 	/// <summary>
 	/// 名前を取得
@@ -147,7 +154,12 @@ public: // メンバ関数
 	/// </summary>
 	void CreateBuffers();
 
+	//行列の情報を転送
 	void SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt);
+
+	//加算座標を頂点座標に足す
+	void SendingVetices();
+
 
 	/// <summary>
 	/// 頂点バッファ取得
@@ -181,7 +193,6 @@ public:
 	/// <returns></returns>
 	inline const std::vector<unsigned short>& GetIndices() { return indices_; }
 
-
 private: // メンバ変数
 	// 名前
 	std::string name_;
@@ -195,6 +206,8 @@ private: // メンバ変数
 	D3D12_INDEX_BUFFER_VIEW ibView_ = {};
 	// 頂点データ配列
 	std::vector<VertexPosNormalUvSkin> vertices_;
+	//オフセット適用後
+	std::vector<VertexPosNormalUvSkin> offsetVertices_;
 	// 頂点インデックス配列
 	std::vector<uint16_t> indices_;
 	// 頂点法線スムージング用データ
@@ -204,11 +217,15 @@ private: // メンバ変数
 
 	//メッシュを持つノード(fbx)
 	Node* meshNode_ = nullptr;
+	//
+	int32_t timer_ = 0;
 
 	//グローバル変形行列（親の影響も含めた）
 	DirectX::XMMATRIX globalTransform_ = {};
 
 	ConstBuffTransform cbt_;
+
+	PolygonOffset polygonOffsetData_;
 
 public:
 	//getter
@@ -219,4 +236,11 @@ public:
 
 	//setter
 	void SetMeshNode(Node* node) { meshNode_ = node; }
+
+	//getter
+	//ポリゴン数を取得
+	int32_t GetPolygonCount() { return (int32_t)indices_.size() / 3; }
+	Vec3 GetPolygonNormal(int32_t index);
+	//メッシュの加算座標をランダムで出す
+	void SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData);
 };

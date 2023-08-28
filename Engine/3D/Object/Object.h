@@ -28,7 +28,7 @@ enum objType
 	FBX
 };
 
-//画面効果用のフラグ
+//演出用のフラグ
 struct EffectOConstBuffer
 {
 	//フォグ
@@ -164,6 +164,9 @@ private:
 	//描画、更新するかどうか
 	bool isValid_ = true;
 
+	//メッシュのオフセット
+	Mesh::PolygonOffset meshOffsetData_;
+
 	//画面効果用
 	ComPtr <ID3D12Resource> effectFlagsBuff_;
 	EffectOConstBuffer* mapEffectFlagsBuff_;
@@ -248,10 +251,10 @@ public:
 	void SetRotZ(float rot) { worldMat_->rot_.z_ = rot; }
 	const Vec3& GetRot() { return worldMat_->rot_; }
 	//行列を更新
-	void CulcWorldMat() { worldMat_->CulcWorldMat(); }
-	void CulcRotMat() { worldMat_->CulcRotMat(); }
-	void CulcTransMat() { worldMat_->CulcTransMat(); }
-	void CulcScaleMat() { worldMat_->CulcScaleMat(); }
+	void CalcWorldMat() { worldMat_->CalcWorldMat(); }
+	void CalcRotMat() { worldMat_->CalcRotMat(); }
+	void CalcTransMat() { worldMat_->CalcTransMat(); }
+	void CalcScaleMat() { worldMat_->CalcScaleMat(); }
 	//ワールド行列の中身コピー
 	void SetWorldMat(std::unique_ptr<WorldMat> worldMat) { worldMat_ = std::move(worldMat); }
 	//親
@@ -281,10 +284,13 @@ public:
 	virtual void SetIsValid(bool isValid);
 	bool GetIsValid() { return isValid_; }
 
+	//メッシュのオフセット用
+	void SetMeshPolygonOffsetData(const Mesh::PolygonOffset& offsetData) { meshOffsetData_ = offsetData; }
+
 	//正面ベクトル
 	//オブジェクトの角度で回転させた正面ベクトルをゲット
 	const Vec3& GetFrontVec();
-	void CulcFrontVec();
+	void CalcFrontVec();
 	const Vec3& GetFrontVecTmp() { return frontVecTmp_; }
 	inline void SetFrontVecTmp(const Vec3& vec) { frontVecTmp_ = vec; }
 	inline void SetFrontVec(const Vec3& vec) { frontVec_ = vec; }

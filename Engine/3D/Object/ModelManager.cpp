@@ -17,9 +17,10 @@ void ModelManager::Finalize()
 {
 	nameAndModels_.clear();
 	nameAndModelFBXs_.clear();
+	sameNameOtherModels_.clear();
 }
 
-IModel* ModelManager::LoadModel(const std::string& fileName, bool smoothing)
+IModel* ModelManager::LoadModel(const std::string& fileName, bool smoothing, bool sameNameOtherModel)
 {
 	// 1行分の文字列をストリームに変換して解析しやすくする
 	std::istringstream line_stream(fileName);
@@ -36,55 +37,67 @@ IModel* ModelManager::LoadModel(const std::string& fileName, bool smoothing)
 	if (modelType == "FBX" || modelType == "fbx")
 	{
 		//モデル名もらって読み込む
-		return LoadModelFBX(modelName);
+		return LoadModelFBX(modelName, smoothing, sameNameOtherModel);
 	}
 
 	//.fbx等がついてない場合はobjと判断
-	return LoadModelObj(modelName);
+	return LoadModelObj(modelName, smoothing, sameNameOtherModel);
 }
 
-ModelObj* ModelManager::LoadModelObj(const std::string& fileName, bool smoothing)
+ModelObj* ModelManager::LoadModelObj(const std::string& fileName, bool smoothing, bool sameNameOtherModel)
 {
 	//ファイル名から探す
 	std::map<std::string, std::unique_ptr<ModelObj>>::iterator it = nameAndModels_.find(fileName);
 	//すでに読み込まれていたらそのモデルのポインタを返す
-	if (it != nameAndModels_.end())
+	if (!sameNameOtherModel && it != nameAndModels_.end())
 	{
 		return it->second.get();
 	}
 
 	//なければ読み込み
-	std::unique_ptr<ModelObj> model_ = ModelObj::LoadFromOBJ(fileName, smoothing);
+	std::unique_ptr<ModelObj> model = ModelObj::LoadFromOBJ(fileName, smoothing);
+
+	ModelObj* ansM = model.get();
 
 	//保存しておく
-	nameAndModels_.insert(std::make_pair(fileName, std::move(model_)));
-
-	//保存したものを取得
-	it = nameAndModels_.find(fileName);
+	if (sameNameOtherModel)
+	{
+		sameNameOtherModels_.push_back(std::move(model));
+	}
+	else
+	{
+		nameAndModels_.insert(std::make_pair(fileName, std::move(model)));
+	}
 
 	//ポインタ返す
-	return it->second.get();
+	return ansM;
 }
 
-ModelFBX* ModelManager::LoadModelFBX(const std::string& fileName, bool smoothing)
+ModelFBX* ModelManager::LoadModelFBX(const std::string& fileName, bool smoothing, bool sameNameOtherModel)
 {
 	//ファイル名から探す
 	std::map<std::string, std::unique_ptr<ModelFBX>>::iterator it = nameAndModelFBXs_.find(fileName);
 	//すでに読み込まれていたらそのモデルのポインタを返す
-	if (it != nameAndModelFBXs_.end())
+	if (!sameNameOtherModel && it != nameAndModelFBXs_.end())
 	{
 		return it->second.get();
 	}
 
 	//なければ読み込み
-	std::unique_ptr<ModelFBX> model_ = FbxLoader::GetInstance()->LoadModelFromFile(fileName, smoothing);
+	std::unique_ptr<ModelFBX> model = FbxLoader::GetInstance()->LoadModelFromFile(fileName, smoothing);
+
+	ModelFBX* ansM = model.get();
 
 	//保存しておく
-	nameAndModelFBXs_.insert(std::make_pair(fileName, std::move(model_)));
-
-	//保存したものを取得
-	it = nameAndModelFBXs_.find(fileName);
+	if (sameNameOtherModel)
+	{
+		sameNameOtherModels_.push_back(std::move(model));
+	}
+	else
+	{
+		nameAndModelFBXs_.insert(std::make_pair(fileName, std::move(model)));
+	}
 
 	//ポインタ返す
-	return it->second.get();
+	return ansM;
 }

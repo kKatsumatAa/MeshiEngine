@@ -17,7 +17,7 @@ public:
 	double m_[4][4];
 
 public:
-	static void CulcInvMat(M4& mat);
+	static void CalcInvMat(M4& mat);
 
 public:
 

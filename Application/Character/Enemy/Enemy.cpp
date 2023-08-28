@@ -27,6 +27,8 @@ void Enemy::EmergeInitialize()
 		lightM->SetPointLightPos(lightIndexTmp_,
 			{ GetTrans().x_, GetTrans().y_, GetTrans().z_ });
 	}
+	//hpŒn
+	HPUpdate();
 }
 
 void Enemy::ChangeEnemyState(std::unique_ptr<EnemyState> state)
@@ -168,6 +170,13 @@ void Enemy::HPUpdate()
 {
 	//hp‚É‚æ‚Á‚ÄƒfƒBƒ]ƒ‹ƒu
 	SetDissolveT((1.0f - (float)hp_ / (float)HP_TMP_) * DISSOLVE_POW_);
+
+	//ƒ|ƒŠƒSƒ“‚²‚Æ‚É“®‚­‚æ‚¤‚É
+	Mesh::PolygonOffset offsetData;
+	offsetData.interval = GetRand(15.0f, 35.0f) * (1.0f - GameVelocityManager::GetInstance().GetVelocity() * 1.5f);
+	offsetData.length = GetRand(-GetScale().x_, GetScale().x_) * 5.5f * max(1.0f - (float)hp_ / (float)HP_TMP_, 0);
+	offsetData.ratio = (1.0f - (float)hp_ / (float)HP_TMP_);
+	Object::SetMeshPolygonOffsetData(offsetData);
 }
 
 //----------------------------------------------------------------

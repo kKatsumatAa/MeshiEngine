@@ -104,7 +104,7 @@ void CameraManager::Update()
 			cameraPos_.z_ = min(cameraPos_.z_ + (float)MouseInput::GetInstance().GetWheelAmountOfRot() * 0.02f, -1.0f);
 			cameraPos_.z_ = max(cameraPos_.z_ + (float)MouseInput::GetInstance().GetWheelAmountOfRot() * 0.02f, -1000.0f);
 
-			debugWorldMat_.CulcWorldMat();
+			debugWorldMat_.CalcWorldMat();
 			Vec3 pos = cameraPos_;
 			Vec3xM4(pos, debugWorldMat_.matWorld_, 0);
 			debugCamera->SetEye(debugCamera->GetTarget() + pos);

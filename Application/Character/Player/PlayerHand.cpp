@@ -3,7 +3,7 @@
 #include "Player.h"
 
 
-std::unique_ptr<PlayerHand> PlayerHand::Create(Player* player, const Vec3& transTmp, const std::string& objName)
+std::unique_ptr<PlayerHand> PlayerHand::Create(Player* player, const Vec3& transTmp, bool isRight, const std::string& objName)
 {
 	std::unique_ptr<PlayerHand> instance = std::make_unique<PlayerHand>();
 	if (instance.get() == nullptr)
@@ -12,7 +12,7 @@ std::unique_ptr<PlayerHand> PlayerHand::Create(Player* player, const Vec3& trans
 	}
 
 	//‰Šú‰»
-	if (!instance->Initialize(player, transTmp, objName))
+	if (!instance->Initialize(player, transTmp, isRight, objName))
 	{
 		assert(0);
 	}
@@ -20,7 +20,7 @@ std::unique_ptr<PlayerHand> PlayerHand::Create(Player* player, const Vec3& trans
 	return std::move(instance);
 }
 
-bool PlayerHand::Initialize(Player* player, const Vec3& transTmp, const std::string& objName)
+bool PlayerHand::Initialize(Player* player, const Vec3& transTmp, bool isRight, const std::string& objName)
 {
 	if (!Object::Initialize())
 	{
@@ -43,6 +43,9 @@ bool PlayerHand::Initialize(Player* player, const Vec3& transTmp, const std::str
 	SetScale({ 0.5f,0.5f,2.5f });
 	//UŒ‚ó‘Ô•ÏX
 	ChangeAttackState(std::make_unique<PlayerAttackStateNone>());
+
+	//‰Eè‚©‚Ç‚¤‚©
+	isRight_ = isRight;
 
 	//Œ³‚Æ‚È‚éÀ•W
 	transTmp_ = transTmp;

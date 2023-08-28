@@ -103,3 +103,12 @@ void IModel::DrawImGui()
 		ImGui::TreePop();
 	}
 }
+
+void IModel::SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData)
+{
+	//仮で全部のメッシュに適用
+	for (auto& mesh : meshes_)
+	{
+		mesh->SetPolygonOffsetData(polygonOffsetData);
+	}
+}

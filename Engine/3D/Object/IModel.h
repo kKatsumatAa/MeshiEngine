@@ -99,5 +99,6 @@ public:
 	float GetScaleExtend() { return scaleExtend_; }
 	Vec3 GetMaterialExtend() { return materialExtend_; }
 	void SetMaterialExtend(const Vec3& materialExtend) { materialExtend_ = materialExtend; }
-
+	//ポリゴンの座標に加算する座標を計算するための情報をセット
+	void SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData);
 };

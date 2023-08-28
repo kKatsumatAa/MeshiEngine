@@ -4,7 +4,7 @@ using namespace DirectX;
 
 
 
-void M4::CulcInvMat(M4& mat)
+void M4::CalcInvMat(M4& mat)
 {
 	double inv[16], det;
 	double m[16];
@@ -264,14 +264,14 @@ void M4::SetTranslationMatrix(const Vec3& v3)
 
 void M4::SetInverseMatrix()
 {
-	CulcInvMat(*this);
+	CalcInvMat(*this);
 }
 
 M4 M4::GetInverseMatrix()const
 {
 	M4 mat = *this;
 
-	CulcInvMat(mat);
+	CalcInvMat(mat);
 
 	return M4(mat);
 }

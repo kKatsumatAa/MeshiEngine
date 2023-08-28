@@ -104,7 +104,7 @@ Weapon* LevelManager::GetChildWeapon(LevelData::ObjectData& objData)
 	SetCollider(newObj.get(), *objData.childData, true);
 
 	//正面ベクトル(objの角度によって回転,回転後のベクトルを基礎正面とする)
-	newObj->CulcFrontVec();
+	newObj->CalcFrontVec();
 	newObj->SetFrontVecTmp(newObj->GetFrontVec());
 
 	//モデルセット
@@ -184,9 +184,19 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 		return;
 	}
 
+	IModel* model = nullptr;
 	//ファイル名から登録済みモデルを検索
-	IModel* model = ModelManager::GetInstance().LoadModel(objData.fileName);
-	//モデルを指定して3Dオブジェクトを生成
+	//(enemyはオブジェ、メッシュごとに演出させたいので別々のインスタンスとして読み込む)
+	if (objData.fileName.find("enemy") != std::string::npos)
+	{
+		model = ModelManager::GetInstance().LoadModel(objData.fileName, false, true);
+	}
+	else
+	{
+		model = ModelManager::GetInstance().LoadModel(objData.fileName);
+	}
+	
+	//3Dオブジェクトを生成
 	std::unique_ptr <Object> newObj = {};
 
 	//地形オブジェクトとして使うか
@@ -238,7 +248,7 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 
 void LevelManager::LoadLight(LevelData::LightData& lightData)
 {
-	int32_t index = -1; 
+	int32_t index = -1;
 
 	//方向ライトなら
 	if (lightData.fileName.find("dir") != std::string::npos)
