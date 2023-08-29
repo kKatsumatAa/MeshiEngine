@@ -107,8 +107,6 @@ private:
 	/// </summary>
 	void CreateModel();
 
-	void UpdateMatrix(Camera* camera);
-
 public: // メンバ関数	
 	/// <summary>
 	/// 初期化
@@ -160,12 +158,6 @@ private: // メンバ変数
 	//
 	ViewMat* view_ = nullptr;
 	ProjectionMat* projection_ = nullptr;
-
-	//ビルボード行列
-	static XMMATRIX sMatBillboard_;
-	static XMMATRIX sMatBillboardY_;
-	// ビュー行列
-	XMMATRIX matView_ = DirectX::XMMatrixIdentity();
 
 public:
 	uint64_t texHandle_ = NULL;

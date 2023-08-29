@@ -142,6 +142,8 @@ private:
 public:
 	const XMMATRIX& GetViewMat()const { return viewMat_.matView_; }
 	const XMMATRIX& GetProjMat()const { return projectionMat_.matProjection_; }
+	const XMMATRIX& GetBillboardMat()const { return matBillboard_; }
+	const XMMATRIX& GetBillboardMatY()const { return matBillboardY_; }
 };
 
 

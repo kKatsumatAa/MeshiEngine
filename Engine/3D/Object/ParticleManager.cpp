@@ -5,8 +5,6 @@
 
 using namespace DirectX;
 
-XMMATRIX ParticleManager::sMatBillboard_ = XMMatrixIdentity();
-XMMATRIX ParticleManager::sMatBillboardY_ = XMMatrixIdentity();
 
 ParticleManager* ParticleManager::GetInstance()
 {
@@ -43,9 +41,10 @@ void ParticleManager::Update(float speed, Camera* camera)
 	}
 
 	//カメラがセットされてなかったら
+	Camera* cameraL = camera;
 	if (camera == nullptr)
 	{
-		camera = CameraManager::GetInstance().usingCamera_;
+		cameraL = CameraManager::GetInstance().usingCamera_;
 	}
 
 	// 全パーティクル更新
@@ -106,12 +105,10 @@ void ParticleManager::Update(float speed, Camera* camera)
 	}
 
 	// 定数バッファへデータ転送
-	UpdateMatrix(camera);
-
 	ConstBufferData* constMap = nullptr;
 	result = constBuff_->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = camera->GetViewMat() * camera->GetProjMat();
-	constMap->matBillboard = sMatBillboard_;
+	constMap->mat = cameraL->GetViewMat() * cameraL->GetProjMat();
+	constMap->matBillboard = cameraL->GetBillboardMat();
 	constBuff_->Unmap(0, nullptr);
 }
 
@@ -361,100 +358,6 @@ void ParticleManager::CreateModel()
 	vbView_.BufferLocation = vertBuff_->GetGPUVirtualAddress();
 	vbView_.SizeInBytes = sizeof(VertexPos) * S_VERTEX_COUNT_;
 	vbView_.StrideInBytes = sizeof(VertexPos);
-}
-
-void ParticleManager::UpdateMatrix(Camera* camera)
-{
-	//視点座標
-	XMVECTOR eyePosition = { camera->GetEye().x_,camera->GetEye().y_,camera->GetEye().z_ };
-	//注視点座標
-	XMVECTOR targetPosition = { camera->GetTarget().x_,camera->GetTarget().y_,camera->GetTarget().z_ };
-	//（仮の）上方向
-	XMVECTOR upVector = { camera->GetUp().x_,camera->GetUp().y_,camera->GetUp().z_ };
-
-
-	//カメラのz軸求める
-		//カメラz軸
-	XMVECTOR cameraAxisZ = XMVectorSubtract(targetPosition, eyePosition);
-
-	//0ベクトルだと向きが定まらないので除外
-	assert(!XMVector3Equal(cameraAxisZ, XMVectorZero()));
-	assert(!XMVector3IsInfinite(cameraAxisZ));
-	assert(!XMVector3Equal(upVector, XMVectorZero()));
-	assert(!XMVector3IsInfinite(upVector));
-
-	//ベクトルを正規化
-	cameraAxisZ = XMVector3Normalize(cameraAxisZ);
-
-
-	//カメラのx軸(右方向)
-	XMVECTOR cameraAxisX;
-	//x軸は上方向とz軸の外積が求まる
-	cameraAxisX = XMVector3Cross(upVector, cameraAxisZ);
-	//正規化
-	cameraAxisX = XMVector3Normalize(cameraAxisX);
-
-
-	//カメラのy軸(上方向)
-	XMVECTOR cameraAxisY;
-	//外積
-	cameraAxisY = XMVector3Cross(cameraAxisZ, cameraAxisX);
-
-
-	//回転行列を求める
-		//カメラ回転行列
-	XMMATRIX matCameraRot;
-	//カメラ座標系→ワールド座標系の変換行列
-	matCameraRot.r[0] = cameraAxisX;
-	matCameraRot.r[1] = cameraAxisY;
-	matCameraRot.r[2] = cameraAxisZ;
-	matCameraRot.r[3] = XMVectorSet(0, 0, 0, 1.0f);
-
-
-	//逆行列を求める
-		//転置
-	matView_ = XMMatrixTranspose(matCameraRot);
-
-
-	//平行移動の逆を求める
-		//視点座標に-1を掛ける
-	XMVECTOR reverseEyePosition = XMVectorNegate(eyePosition);
-	//カメラの位置からワールド原点へのベクトル（カメラ座標系）
-	XMVECTOR tX = XMVector3Dot(cameraAxisX, reverseEyePosition);//x成分
-	XMVECTOR tY = XMVector3Dot(cameraAxisY, reverseEyePosition);//y成分
-	XMVECTOR tZ = XMVector3Dot(cameraAxisZ, reverseEyePosition);//z成分
-	//一つのベクトルにまとめる
-	XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
-
-	//平行移動成分を入れて完成
-	matView_.r[3] = translation;
-
-
-#pragma region 全方向ビルボード行列の計算
-	//ビルボード行列
-	sMatBillboard_.r[0] = cameraAxisX;
-	sMatBillboard_.r[1] = cameraAxisY;
-	sMatBillboard_.r[2] = cameraAxisZ;
-	sMatBillboard_.r[3] = XMVectorSet(0, 0, 0, 1.0f);
-#pragma region
-
-#pragma region Y軸回りビルボード行列の計算
-	// カメラX軸、Y軸、Z軸
-	XMVECTOR ybillCameraAxisX, ybillCameraAxisY, ybillCameraAxisZ;
-
-	// X軸は共通
-	ybillCameraAxisX = cameraAxisX;
-	// Y軸はワールド座標系のY軸
-	ybillCameraAxisY = XMVector3Normalize(upVector);
-	// Z軸はX軸→Y軸の外積で求まる
-	ybillCameraAxisZ = XMVector3Cross(ybillCameraAxisX, ybillCameraAxisY);
-
-	// Y軸回りビルボード行列
-	sMatBillboardY_.r[0] = ybillCameraAxisX;
-	sMatBillboardY_.r[1] = ybillCameraAxisY;
-	sMatBillboardY_.r[2] = ybillCameraAxisZ;
-	sMatBillboardY_.r[3] = XMVectorSet(0, 0, 0, 1);
-#pragma endregion
 }
 
 void ParticleManager::GenerateRandomParticle(int32_t num, int32_t lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale, const XMFLOAT4& start_color, const XMFLOAT4& end_color)

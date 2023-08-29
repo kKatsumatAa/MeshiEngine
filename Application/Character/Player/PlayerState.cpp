@@ -161,7 +161,7 @@ void PlayerStateDeadEffect::Update()
 
 	float t = (float)timer_ / (float)TIMER_MAX_;
 
-	camera->SetEye(LerpVec3(player_->GetWorldTrans(), targetPos_ - (dir_ * LENGTH_MIN_), EaseInOut(t)));
+	camera->SetEye(LerpVec3( targetPos_ - (dir_ * LENGTH_MIN_), player_->GetWorldTrans(), EaseInOut(t)));
 
 	//演出終わったら生存フラグオフ
 	if (timer_ >= TIMER_MAX_)
