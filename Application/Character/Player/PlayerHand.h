@@ -37,6 +37,8 @@ public:
 	void SetAddTrans(const Vec3& addTrans) { addTrans_ = addTrans; }
 	const Vec3& GetAddTrans() { return addTrans_; }
 
+	bool GetIsRight() { return isRight_; }
+
 	//ステート
 	PlayerAttackState* GetAttackState() { return attackState_.get(); }
 

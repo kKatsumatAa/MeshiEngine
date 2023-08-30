@@ -12,6 +12,9 @@ protected:
 	PlayerHand* playerHand_ = nullptr;
 	float timer_ = 0;
 
+	//‰ñ“]‚Ég‚¤Šî€’l
+	static Vec3 rotTmp_;
+
 	//“G‚Ì”í’eˆ—
 	std::function<void()> enemyDamageFunc_ = nullptr;
 

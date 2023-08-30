@@ -69,7 +69,7 @@ void PlayerHand::Draw()
 {
 	attackState_->Draw();
 
-	DrawCube3D();
+	DrawCube3D(nullptr, { 0.2f,0.2f,0.2f,1.0f });
 }
 
 void PlayerHand::ChangeAttackState(std::unique_ptr<PlayerAttackState> state)
