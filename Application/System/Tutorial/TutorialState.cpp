@@ -157,7 +157,7 @@ void TutorialStateOperation::Draw()
 void TutorialStateGameSpeed::Initialize()
 {
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial2.png");
-	rateMax_ = 40;
+	rateMax_ = 30;
 }
 
 void TutorialStateGameSpeed::Update()
