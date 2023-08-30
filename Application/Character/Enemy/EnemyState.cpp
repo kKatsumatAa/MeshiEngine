@@ -73,6 +73,8 @@ void EnemyStateEmergeEffect::Update()
 	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
 	//“–‚½‚è”»’è
 	enemy_->SetColliderIsValid(false);
+	//•Ç‚Æ°‚Æ‚Ì”»’è
+	enemy_->CollisionWallAndFloor();
 
 	//ƒfƒBƒ]ƒ‹ƒu
 	float t = timer_ / EMERGE_TIMER_MAX_;
@@ -114,7 +116,7 @@ void EnemyStateBareHands::Initialize()
 
 void EnemyStateBareHands::Update()
 {
-	enemy_->Move(GetRayHitGunOrPlayerPos());
+	enemy_->AllMove(GetRayHitGunOrPlayerPos());
 
 	EnemyState::Update();
 
@@ -152,7 +154,7 @@ void EnemyStateHaveWeapon::Update()
 		{
 			enemy_->SetIsPlayAnimation(true);
 			enemy_->SetIsLoopAnimation(true);
-			enemy_->Move(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
+			enemy_->AllMove(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
 		}
 	}
 

@@ -53,7 +53,7 @@ private:
 	const int32_t TIMER_MAX_ = 70;
 	Vec3 targetPos_;
 	Vec3 dir_;
-	const float LENGTH_MIN_ = 10.0f;
+	const float LENGTH_MIN_ = 5.0f;
 
 public:
 	void Initialize() override;

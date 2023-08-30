@@ -89,7 +89,24 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	return true;
 }
 
-void Enemy::Move(const Vec3& targetPos)
+void Enemy::AllMove(const Vec3& targetPos)
+{
+	WalkToTarget(targetPos);
+
+	CollisionWallAndFloor();
+}
+
+void Enemy::Attack(const Vec3& targetPos)
+{
+	//武器で攻撃
+	if (weapon_ != nullptr && weapon_->GetIsAlive())
+	{
+		Vec3 directionV = targetPos - weapon_->GetWorldTrans();
+		weapon_->Attack(directionV.GetNormalized(), 0, this);
+	}
+}
+
+void Enemy::WalkToTarget(const Vec3& targetPos)
 {
 	//動けなかったら飛ばす
 	if (isCantMove)
@@ -129,21 +146,14 @@ void Enemy::Move(const Vec3& targetPos)
 	//位置セット
 	SetTrans(GetTrans() + velocity_);
 
-	//地面と壁との判定
-	OnGroundAndWallUpdate(GetScale().y_, GameVelocityManager::GetInstance().GetVelocity());
-
 	//向き変更
 	DirectionUpdate(targetPos);
 }
 
-void Enemy::Attack(const Vec3& targetPos)
+void Enemy::CollisionWallAndFloor()
 {
-	//武器で攻撃
-	if (weapon_ != nullptr && weapon_->GetIsAlive())
-	{
-		Vec3 directionV = targetPos - weapon_->GetWorldTrans();
-		weapon_->Attack(directionV.GetNormalized(), 0, this);
-	}
+	//地面と壁との判定
+	OnGroundAndWallUpdate(GetScale().y_, GameVelocityManager::GetInstance().GetVelocity());
 }
 
 void Enemy::DirectionUpdate(const Vec3& targetPos)

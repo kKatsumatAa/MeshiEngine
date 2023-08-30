@@ -66,6 +66,9 @@ private:
 	//被弾時のパーティクル
 	void DamageParticle(const CollisionInfo& info);
 
+	//ターゲットに向かって動く処理のみ
+	void WalkToTarget(const Vec3& targetPos);
+
 public:
 
 	bool Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon);
@@ -81,8 +84,10 @@ public:
 	void ChangeEnemyState(std::unique_ptr<EnemyState> state);
 
 public:
+	//壁や地面のみと判定
+	void CollisionWallAndFloor();
 	//移動
-	void Move(const Vec3& targetPos);
+	void AllMove(const Vec3& targetPos);
 	//攻撃
 	void Attack(const Vec3& targetPos);
 	//向きを変更
