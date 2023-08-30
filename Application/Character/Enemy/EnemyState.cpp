@@ -18,6 +18,7 @@ bool EnemyState::CheckEyeRayHit()
 
 Vec3 EnemyState::GetRayHitGunOrPlayerPos()
 {
+	//èe
 	auto guns = ObjectManager::GetInstance().GetObjs("gun");
 
 	float minLength = Enemy::S_LENGTH_MAX_;
