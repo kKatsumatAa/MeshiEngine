@@ -823,6 +823,9 @@
     <FxCompile Include="Resources\shaders\ParticleTriangleGS.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\FBXVertexShader.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\OBJShaderHeader.hlsli">

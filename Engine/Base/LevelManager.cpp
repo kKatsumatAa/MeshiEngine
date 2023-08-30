@@ -195,7 +195,7 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	{
 		model = ModelManager::GetInstance().LoadModel(objData.fileName);
 	}
-	
+
 	//3Dオブジェクトを生成
 	std::unique_ptr <Object> newObj = {};
 
@@ -212,7 +212,8 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	else if (objData.fileName.find("enemy") != std::string::npos)
 	{
 		//enemyもObjectクラスを継承してるのでポリモーフィズム
-		newObj = Enemy::Create(std::move(objData.worldMat), objData.waveNum, GetChildWeapon(objData));
+		newObj = Enemy::Create(std::move(objData.worldMat), objData.waveNum, GetChildWeapon(objData)
+			, model);
 	}
 	//銃の場合(親がいる場合は既に登録してあるので通らない)
 	else if (objData.fileName == "gun")
@@ -236,11 +237,8 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	//判定系
 	SetCollider(newObj.get(), objData, !isLandShape_);
 
-
 	//モデルセット
 	newObj->SetModel(model);
-
-	newObj->PlayAnimation(true);
 
 	//obj登録
 	ObjectManager::GetInstance().AddObject(S_OBJ_GROUP_NAME_, std::move(newObj));

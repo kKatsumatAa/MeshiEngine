@@ -93,14 +93,15 @@ void IModel::Draw(const std::function<void()>& setRootParam, const std::function
 	}
 }
 
-void IModel::DrawImGui()
+void IModel::DrawImGui(const std::function<void()>& childImguiF)
 {
-	if (ImGui::TreeNode("model"))
-	{
-		ImGui::SliderFloat("scaleExtend", &scaleExtend_, 0, 10.0f);
-		ImGui::SliderFloat3("materialExtend", &materialExtend_.x_, 0, 5.0f);
+	ImGui::SliderFloat("scaleExtend", &scaleExtend_, 0, 10.0f);
+	ImGui::SliderFloat3("materialExtend", &materialExtend_.x_, 0, 5.0f);
 
-		ImGui::TreePop();
+	//ŽqƒNƒ‰ƒX‚Ìimgui
+	if (childImguiF)
+	{
+		childImguiF();
 	}
 }
 
