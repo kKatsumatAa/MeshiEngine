@@ -237,6 +237,7 @@ void Object::SetIs2D(bool is2D)
 Object::~Object()
 {
 	constBuffMaterial_.Reset();
+	constBuffSkin_.Reset();
 
 	//object毎に消えるのでいらないかも
 	if (collider_.get())
@@ -264,6 +265,30 @@ Object::Object()
 	//定数バッファのマッピング
 	result = constBuffMaterial_->Map(0, nullptr, (void**)&constMapMaterial_);//マッピング
 	assert(SUCCEEDED(result));
+
+	if (constBuffSkin_.Get() == nullptr)
+	{
+		//スキンのバッファ
+		//ヒープ設定
+		D3D12_RESOURCE_DESC cbResourceDesc{}; D3D12_HEAP_PROPERTIES cbHeapProp{};
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+		//リソース設定
+		ResourceProperties(cbResourceDesc,
+			((uint32_t)sizeof(ConstBufferDataSkin) + 0xff) & ~0xff/*256バイトアライメント*/);
+		//定数バッファの生成
+		BuffProperties(cbHeapProp, cbResourceDesc, &constBuffSkin_);
+		//マッピング
+		ConstBufferDataSkin* constMapSkin = nullptr;
+		constBuffSkin_->Map(0, nullptr, (void**)&constMapSkin);
+		for (uint32_t i = 0; i < S_MAX_BONES_; i++)
+		{
+			constMapSkin->bones[i] = XMMatrixIdentity();
+		}
+		constBuffSkin_->Unmap(0, nullptr);
+	}
+
+	//1フレーム分の時間を60fpsで設定
+	frameTime_.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 
 	//演出用
 	{
@@ -310,6 +335,132 @@ void Object::SendingMat(int32_t indexNum, Camera* camera, IModel* model)
 		cbt_.SetViewProjMat(camera->GetViewMat() * camera->GetProjMat());
 		cbt_.SetCameraPos(camera->GetEye());
 	}
+}
+
+void Object::SendingMat(int32_t indexNum, Camera* camera, const XMMATRIX* mat)
+{
+}
+
+void Object::PlayAnimationInternal(FbxTime& sTime, FbxTime& eTime,
+	bool isLoop, bool isReverse)
+{
+	//アニメーションのリセット
+	AnimationReset(sTime, eTime);
+
+	//再生中状態
+	isPlay_ = true;
+	//ループ
+	isLoop_ = isLoop;
+	//逆再生
+	isReverse_ = isReverse;
+}
+
+void Object::AnimationReset(FbxTime& sTime, FbxTime& eTime)
+{
+	if (model_ == nullptr || !model_->GetIsFbx())
+	{
+		return;
+	}
+
+	//子クラスに変換
+	ModelFBX* model = dynamic_cast<ModelFBX*>(model_);
+
+	//アニメーションが1つしかない前提
+	FbxScene* fbxScene = model->GetFbxScene();
+	//0番のアニメーション取得
+	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	//アニメーションなかったら
+	if (animStack == nullptr) { return; }
+
+	//アニメーションの名前取得
+	const char* ANIM_STACK_NAME = animStack->GetName();
+	//アニメーションの時間情報
+	FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(ANIM_STACK_NAME);
+
+	//開始時間取得
+	sTime = takeInfo->mLocalTimeSpan.GetStart();
+	//終了時間取得
+	eTime = takeInfo->mLocalTimeSpan.GetStop();
+	//開始時間取得
+	currentTime_ = startTime_;
+}
+
+void Object::PlayAnimation(bool isLoop)
+{
+	PlayAnimationInternal(startTime_, endTime_, isLoop);
+}
+
+void Object::PlayReverseAnimation(bool isLoop)
+{
+	PlayAnimationInternal(endTime_, startTime_, isLoop, true);
+}
+
+void Object::SendingBoneData(ModelFBX* model)
+{
+	HRESULT result = {};
+
+	//アニメーション
+	if (isPlay_)
+	{
+		//最後まで再生したら
+		if ((!isReverse_ && currentTime_ >= endTime_)
+			|| (isReverse_ && currentTime_ <= startTime_))
+		{
+			if (!isReverse_)
+			{
+				//先頭に戻す
+				currentTime_ = startTime_;
+			}
+			else
+			{
+				//最後に戻す
+				currentTime_ = endTime_;
+			}
+
+			//終了
+			if (!isLoop_)
+			{
+				isPlay_ = false;
+			}
+		}
+
+		//アニメーションスピードをかけて
+		frameTime_.SetTime(0, 0, 0, max((int)((1000.0f / 60.0f) * animationSpeed_), 1), 0, FbxTime::EMode::eFrames1000);
+
+		//逆再生
+		if (isReverse_)
+		{
+			currentTime_ -= frameTime_;
+		}
+		else
+		{
+			//1フレーム進める
+			currentTime_ += frameTime_;
+		}
+	}
+
+	//モデルのボーン配列
+	std::vector<ModelFBX::Bone>& bones = model->GetBones();
+
+	//定数バッファへデータ転送
+	ConstBufferDataSkin* constMapSkin = nullptr;
+	result = constBuffSkin_->Map(0, nullptr, (void**)&constMapSkin);
+	for (int32_t i = 0; i < bones.size(); i++)
+	{
+		//今の姿勢行列
+		XMMATRIX matCurrentPose;
+		//今の姿勢行列を取得
+		FbxAMatrix fbxCurrentPose =
+			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime_);
+		//xmmatrixに変換
+		FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+
+
+		//初期姿勢の逆行列と今の姿勢行列を合成してスキニング行列に
+		XMMATRIX globalInv = XMMatrixInverse(nullptr, bones[i].globalTransform);
+		constMapSkin->bones[i] = bones[i].globalTransform * bones[i].invInitialPose * matCurrentPose * globalInv;
+	}
+	constBuffSkin_->Unmap(0, nullptr);
 }
 
 void Object::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature)
@@ -367,6 +518,10 @@ void Object::SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t 
 	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	SetMaterialLightMTexSkin(NULL, dissolveTexHandle, specularMapTexhandle, normalMapTexHandle, false);
+
+	//スキニング用
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(SKIN, constBuffSkin_->GetGPUVirtualAddress());
+
 }
 
 void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, ConstBuffTransform* constBuffTransform,
@@ -446,20 +601,20 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 	{
 		//モデル用
 		//ラムダ式でコマンド関数
-		RootPipe rootPipe = pipelineSetM_;
-		if (indexNum == FBX)
-		{
-			rootPipe = pipelineSetFBX_;
-		}
-		std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(rootPipe.pipelineState.Get(), pipelineNum, rootPipe.rootSignature.Get()); };
+		std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(pipelineSetFBX_.pipelineState.Get(), pipelineNum, pipelineSetFBX_.rootSignature.Get()); };
 		std::function<void()>SetMaterialTexM = [=]() {SetMaterialLightMTexSkinModel(dissolveTextureHandleL, specularMapTextureHandleL,
 			normalMapTextureHandleL); };
 
 		//メッシュのオフセットデータセット
 		GetModel()->SetPolygonOffsetData(meshOffsetData_);
 
+		if (indexNum == FBX)
+		{
+			SendingBoneData(dynamic_cast<ModelFBX*>(model));
+		}
 		model->Draw(SetRootPipeRM, SetMaterialTexM, cbt_);
 	}
+
 }
 
 void Object::DrawTriangle(Camera* camera, const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
@@ -599,6 +754,20 @@ void Object::DrawImGui(std::function<void()>imguiF)
 			modelPState = "MODEL_SET";
 		}
 		ImGui::Text(modelPState.c_str());
+		if (model_ != nullptr)
+		{
+			ImGui::Text("modelIsFbx: %d", model_->GetIsFbx());
+		}
+		ImGui::Checkbox("isPlay", &isPlay_);
+		ImGui::Checkbox("isLoop", &isLoop_);
+		ImGui::Checkbox("isReverse", &isReverse_);
+		if (currentTime_ - startTime_ > 0 && endTime_ - startTime_ > 0)
+		{
+			float timer = (float)(currentTime_ - startTime_).GetSecondDouble();
+			float timerMax = (float)(endTime_ - startTime_).GetSecondDouble();
+
+			ImGui::Text("animationTimeRatio: %.2f", timer / timerMax);
+		}
 		if (model_)
 		{
 			model_->DrawImGui();
@@ -638,13 +807,9 @@ void Object::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, 
 	{
 		rootPipe.CreateBlob("Resources/shaders/SpriteVS.hlsl", "Resources/shaders/SpritePS.hlsl");
 	}
-	else if (indexNum == OBJ)
+	else if (indexNum == OBJ || indexNum == FBX)
 	{
 		rootPipe.CreateBlob("Resources/shaders/OBJVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl");
-	}
-	else if (indexNum == FBX)
-	{
-		rootPipe.CreateBlob("Resources/shaders/FBXVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl");
 	}
 	else
 	{

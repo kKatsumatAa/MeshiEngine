@@ -83,7 +83,7 @@ public: // メンバ関数
 	virtual void Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
 		, const ConstBuffTransform& cbt);
 
-	virtual void DrawImGui(const std::function<void()>& childImguiF = nullptr);
+	virtual void DrawImGui();
 
 public:
 	/// <summary>
@@ -101,20 +101,4 @@ public:
 	void SetMaterialExtend(const Vec3& materialExtend) { materialExtend_ = materialExtend; }
 	//ポリゴンの座標に加算する座標を計算するための情報をセット
 	void SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData);
-
-public://アニメーション関係継承する（fbxのみなので処理はなし）
-	//アニメーション開始
-	virtual void PlayAnimationInternal(FbxTime& sTime, FbxTime& eTime, bool isLoop = false, bool isReverse = false) { ; }
-	//アニメーションリセット
-	virtual void AnimationReset(FbxTime& sTime, FbxTime& eTime) { ; }
-	//アニメーション開始
-	virtual void PlayAnimation(bool isLoop = false) { ; }
-	virtual void PlayReverseAnimation(bool isLoop = false) { ; }
-	//アニメーションフラグ
-	virtual void SetIsPlayAnimation(bool isPlay) { ; }
-	virtual void SetIsLoopAnimation(bool isLoop) { ; }
-	virtual void SetIsReverseAnimation(bool isReverse) { ; }
-
-	//アニメーションスピード
-	virtual void SetAnimationSpeed(float speed) { ; }
 };

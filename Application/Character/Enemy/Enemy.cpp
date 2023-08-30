@@ -40,7 +40,7 @@ void Enemy::ChangeEnemyState(std::unique_ptr<EnemyState> state)
 }
 
 
-std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon, IModel* model)
+std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon)
 {
 	std::unique_ptr<Enemy> instance = std::make_unique<Enemy>();
 	if (instance.get() == nullptr)
@@ -49,7 +49,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t
 	}
 
 	//初期化
-	if (!instance->Initialize(std::move(worldMat), waveNum, weapon, model))
+	if (!instance->Initialize(std::move(worldMat), waveNum, weapon))
 	{
 		assert(0);
 	}
@@ -57,8 +57,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t
 	return std::move(instance);
 }
 
-bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon
-	, IModel* model)
+bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon)
 {
 	if (!Object::Initialize(std::move(worldMat)))
 	{
@@ -76,13 +75,6 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	hp_ = HP_TMP_;
 
 	waveNum_ = waveNum;
-
-	//アニメーション
-	if (model)
-	{
-		SetModel(model);
-		model->PlayAnimation(true);
-	}
 
 	//ディゾルブ
 	SetisDissolve(true);
@@ -209,7 +201,7 @@ void Enemy::Update()
 	damageCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
 	//アニメーションもゲームスピード
-	GetModel()->SetAnimationSpeed(GameVelocityManager::GetInstance().GetVelocity() * 3.0f);
+	SetAnimationSpeed(GameVelocityManager::GetInstance().GetVelocity() * 3.0f);
 
 	//ステート
 	state_->Update();

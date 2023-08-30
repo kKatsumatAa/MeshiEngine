@@ -57,8 +57,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon
-		, IModel* model = nullptr);
+	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon);
 
 private:
 	//銃をノックバックして落とす
@@ -72,8 +71,7 @@ private:
 
 public:
 
-	bool Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon
-		, IModel* model = nullptr);
+	bool Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon);
 
 	void EmergeInitialize();
 

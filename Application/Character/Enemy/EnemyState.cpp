@@ -18,7 +18,6 @@ bool EnemyState::CheckEyeRayHit()
 
 Vec3 EnemyState::GetRayHitGunOrPlayerPos()
 {
-	//銃
 	auto guns = ObjectManager::GetInstance().GetObjs("gun");
 
 	float minLength = Enemy::S_LENGTH_MAX_;
@@ -111,9 +110,8 @@ void EnemyStateEmergeEffect::Update()
 //素手状態-----------------------------------------------------------------------
 void EnemyStateBareHands::Initialize()
 {
-	IModel* model = enemy_->GetModel();
-	model->SetIsPlayAnimation(true);
-	model->SetIsLoopAnimation(true);
+	enemy_->SetIsPlayAnimation(true);
+	enemy_->SetIsLoopAnimation(true);
 }
 
 void EnemyStateBareHands::Update()
@@ -143,21 +141,19 @@ void EnemyStateHaveWeapon::Update()
 		Enemy::S_LENGTH_MAX_, HAVE_WEAPON_ATTR_TMP_, &info_)
 		)
 	{
-		IModel* model = enemy_->GetModel();
-
 		//プレイヤーが見えたら動かず攻撃
 		if (info_.object->GetObjName() == "player")
 		{
-			model->SetIsPlayAnimation(false);
-			model->SetIsLoopAnimation(false);
+			enemy_->SetIsPlayAnimation(false);
+			enemy_->SetIsLoopAnimation(false);
 			enemy_->Attack(info_.object->GetWorldTrans());
 			enemy_->DirectionUpdate(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
 		}
 		//仮）見えなければプレイヤーの方向に移動
 		else
 		{
-			model->SetIsPlayAnimation(true);
-			model->SetIsLoopAnimation(true);
+			enemy_->SetIsPlayAnimation(true);
+			enemy_->SetIsLoopAnimation(true);
 			enemy_->AllMove(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
 		}
 	}
