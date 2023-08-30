@@ -110,8 +110,9 @@ void EnemyStateEmergeEffect::Update()
 //素手状態-----------------------------------------------------------------------
 void EnemyStateBareHands::Initialize()
 {
-	enemy_->SetIsPlayAnimation(true);
-	enemy_->SetIsLoopAnimation(true);
+	IModel* model = enemy_->GetModel();
+	model->SetIsPlayAnimation(true);
+	model->SetIsLoopAnimation(true);
 }
 
 void EnemyStateBareHands::Update()
@@ -141,19 +142,21 @@ void EnemyStateHaveWeapon::Update()
 		Enemy::S_LENGTH_MAX_, HAVE_WEAPON_ATTR_TMP_, &info_)
 		)
 	{
+		IModel* model = enemy_->GetModel();
+
 		//プレイヤーが見えたら動かず攻撃
 		if (info_.object->GetObjName() == "player")
 		{
-			enemy_->SetIsPlayAnimation(false);
-			enemy_->SetIsLoopAnimation(false);
+			model->SetIsPlayAnimation(false);
+			model->SetIsLoopAnimation(false);
 			enemy_->Attack(info_.object->GetWorldTrans());
 			enemy_->DirectionUpdate(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
 		}
 		//仮）見えなければプレイヤーの方向に移動
 		else
 		{
-			enemy_->SetIsPlayAnimation(true);
-			enemy_->SetIsLoopAnimation(true);
+			model->SetIsPlayAnimation(true);
+			model->SetIsLoopAnimation(true);
 			enemy_->AllMove(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
 		}
 	}

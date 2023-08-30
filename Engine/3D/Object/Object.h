@@ -118,28 +118,6 @@ private:
 	//ライト
 	static LightManager* sLightManager_;
 
-	//ボーンの最大数
-	static const int32_t S_MAX_BONES_ = 90;
-	//定数バッファ（スキン）
-	ComPtr<ID3D12Resource> constBuffSkin_ = nullptr;
-
-	//1フレームの時間
-	FbxTime frameTime_;
-	//アニメーション開始時間
-	FbxTime startTime_;
-	//アニメーション終了時間
-	FbxTime endTime_;
-	//アニメーション現在時間
-	FbxTime currentTime_;
-	//アニメーションフラグ
-	bool isPlay_ = false;
-	//ループ
-	bool isLoop_ = false;
-	//逆再生
-	bool isReverse_ = false;
-	//再生のスピード倍率
-	float animationSpeed_ = 1.0f;
-
 	//生きてるフラグ
 	bool isAlive_ = true;
 	//
@@ -176,12 +154,6 @@ public://変数
 	//画面効果用
 	EffectOConstBuffer effectFlags_;
 
-public:
-	//定数バッファ用データ構造体（スキニング）
-	struct ConstBufferDataSkin
-	{
-		XMMATRIX bones[S_MAX_BONES_];
-	};
 
 protected://継承先まで公開
 	//クラス名(デバッグ用)
@@ -198,11 +170,6 @@ private:
 	//行列送信
 	void SendingMat(int32_t indexNum, Camera* camera, IModel* model = nullptr);
 
-	void SendingMat(int32_t indexNum, Camera* camera, const XMMATRIX* mat);
-
-	//ボーンのデータ転送
-	void SendingBoneData(ModelFBX* model);
-
 	//ルートシグネチャ系のコマンド
 	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
 	//マテリアル、ライト、テクスチャ系のコマンド
@@ -210,12 +177,6 @@ private:
 		uint64_t normalMapTex, bool setTex = true);
 	void SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
 		uint64_t normalMapTexHandle);
-
-	//アニメーション開始
-	void PlayAnimationInternal(FbxTime& sTime, FbxTime& eTime,
-		bool isLoop = false, bool isReverse = false);
-	//アニメーションリセット
-	void AnimationReset(FbxTime& sTime, FbxTime& eTime);
 
 	//
 	static void PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum = NULL);
@@ -347,17 +308,6 @@ public:
 
 	//衝突時コールバック関数
 	virtual void OnCollision(const CollisionInfo& info) {}
-
-	//アニメーション開始
-	void PlayAnimation(bool isLoop = false);
-	void PlayReverseAnimation(bool isLoop = false);
-	//アニメーションフラグ
-	void SetIsPlayAnimation(bool isPlay) { isPlay_ = isPlay; }
-	void SetIsLoopAnimation(bool isLoop) { isLoop_ = isLoop; }
-	void SetIsReverseAnimation(bool isReverse) { isReverse_ = isReverse; }
-
-	//アニメーションスピード
-	void SetAnimationSpeed(float speed) { animationSpeed_ = speed; }
 
 	//フォグとかのフラグ
 	void SetIsSilhouette(bool is) { effectFlags_.isSilhouette = is; }
