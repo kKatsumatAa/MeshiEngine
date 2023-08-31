@@ -16,6 +16,8 @@ public:
 	//çsóÒ
 	double m_[4][4];
 
+	static const float NORMAL_M[4][4];
+
 public:
 	static void CalcInvMat(M4& mat);
 
@@ -55,12 +57,4 @@ public:
 };
 
 const Vec3 operator*(const Vec3& v, const M4& m2);
-
-
-const float NORMAL_M[4][4] = {
-		{1,0,0,0},
-		{0,1,0,0},
-		{0,0,1,0},
-		{0,0,0,1}
-};
 

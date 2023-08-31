@@ -2,7 +2,12 @@
 
 using namespace DirectX;
 
-
+const float M4::NORMAL_M[4][4] = {
+	   {1,0,0,0},
+	   {0,1,0,0},
+	   {0,0,1,0},
+	   {0,0,0,1}
+};
 
 void M4::CalcInvMat(M4& mat)
 {

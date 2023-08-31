@@ -42,7 +42,7 @@ void WorldMat::CalcScaleMat()
 
 void WorldMat::CalcRotMat()
 {
-	matRot_ = NORMAL_M;
+	matRot_ = M4::NORMAL_M;
 	matRot_ *= {
 		cosf(rot_.z_), sinf(rot_.z_), 0, 0,
 			-sinf(rot_.z_), cosf(rot_.z_), 0, 0,
@@ -73,7 +73,7 @@ void WorldMat::CalcQuaternionRotMat()
 	}
 	else
 	{
-		matRot_ = NORMAL_M;
+		matRot_ = M4::NORMAL_M;
 
 		//z
 		Quaternion qZ = Quaternion::MakeAxisAngle({ 0,0,1.0f }, rot_.z_);
@@ -116,10 +116,15 @@ void WorldMat::CalcAllTreeMat()
 
 M4 WorldMat::GetOnlyParentALLTreeMat()
 {
-	//親から上のみの行列計算
-	parent_->CalcAllTreeMat();
+	if (parent_)
+	{
+		//親から上のみの行列計算
+		parent_->CalcAllTreeMat();
 
-	return parent_->matWorld_;
+		return parent_->matWorld_;
+	}
+
+	return M4::NORMAL_M;
 }
 
 void WorldMat::SetParentWorld(WorldMat* parent)
@@ -148,7 +153,7 @@ void WorldMat::RecursiveCalcParentMat(WorldMat* parent, M4& childMat)
 
 void WorldMat::CalcWorldMat()
 {
-	matWorld_ = NORMAL_M;
+	matWorld_ = M4::NORMAL_M;
 
 	CalcScaleMat();
 	//回転にクォータニオン

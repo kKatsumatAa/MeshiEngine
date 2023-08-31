@@ -27,6 +27,21 @@ const Node* ModelFBX::GetNode(const std::string& name)
 	return nullptr;
 }
 
+int32_t ModelFBX::GetBoneIndex(const std::string& name) const
+{
+	int32_t count = 0;
+	for (auto bone : bones_)
+	{
+		if (bone.name_.find(name.c_str()) != std::string::npos)
+		{
+			return count;
+		}
+		count++;
+	}
+
+	return -1;
+}
+
 void ModelFBX::Initialize()
 {
 	isFbx_ = true;

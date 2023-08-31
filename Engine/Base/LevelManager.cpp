@@ -175,12 +175,12 @@ void LevelManager::CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, L
 	}
 }
 
-void LevelManager::SetParentNode(const LevelData::ObjectData& objData, IModel* model
+void LevelManager::SetParentNode(Object* obj, const LevelData::ObjectData& objData, IModel* model
 	, Object* child)
 {
 	if (child && objData.childData->parentNodeData.nodeName.size())
 	{
-		child->ParentFbxNode(model, objData.childData->parentNodeData.nodeName);
+		child->ParentFbxNode(obj, model, objData.childData->parentNodeData.nodeName);
 	}
 }
 
@@ -248,7 +248,7 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	SetCollider(newObj.get(), objData, !isLandShape_);
 
 	//親ノードをセット(今はとりあえず武器のみ)
-	SetParentNode(objData, model, childWeapon);
+	SetParentNode(newObj.get(), objData, model, childWeapon);
 
 	//モデルセット
 	newObj->SetModel(model);

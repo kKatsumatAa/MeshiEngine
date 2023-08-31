@@ -73,7 +73,7 @@ private:
 	//引数によってObjectかTouchObjectを作る
 	void CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model);
 	//親オブジェクトのモデルのノードを親に設定
-	void SetParentNode(const LevelData::ObjectData& objData, IModel* model
+	void SetParentNode(Object* obj, const LevelData::ObjectData& objData, IModel* model
 		, Object* child);
 
 public:

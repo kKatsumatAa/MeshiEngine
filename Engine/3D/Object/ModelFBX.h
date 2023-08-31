@@ -64,6 +64,8 @@ public:
 
 	FbxScene* GetFbxScene() { return fbxScene_; }
 
+	int32_t GetBoneIndex(const std::string& name) const;
+
 #pragma endregion
 };
 

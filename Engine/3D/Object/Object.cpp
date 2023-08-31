@@ -328,12 +328,28 @@ void Object::SendingMat(int32_t indexNum, Camera* camera, IModel* model)
 		XMMATRIX matW;
 
 		//変換行列をGPUに送信
-		if (parentNode_)
+		if (parentNode_ && worldMat_->parent_)
 		{
+			//ノードのローカル行列
 			M4 m;
 			m.PutInXMMATRIX(parentNode_->globalTransform);
+			m.m_[3][0] *= parentNodeModel_->GetScaleExtend();
+			m.m_[3][1] *= parentNodeModel_->GetScaleExtend();
+			m.m_[3][2] *= parentNodeModel_->GetScaleExtend();
+			//オブジェクトのワールド
 			worldMat_->CalcWorldMat();
-			(worldMat_->matWorld_ * (m * worldMat_->GetOnlyParentALLTreeMat())).MatIntoXMMATRIX(matW);
+			//親行列
+			M4 pM = worldMat_->GetOnlyParentALLTreeMat();
+			//ボーン
+			parentObj_->MappingBoneData(parentNodeModel_);
+			XMMATRIX bXM = parentObj_->GetModelBones()[parentNodeModel_->GetBoneIndex(parentNode_->name)];
+			M4 bM;
+			bM.PutInXMMATRIX(bXM);
+			bM.m_[3][0] *= parentNodeModel_->GetScaleExtend();
+			bM.m_[3][1] *= parentNodeModel_->GetScaleExtend();
+			bM.m_[3][2] *= parentNodeModel_->GetScaleExtend();
+			(worldMat_->matWorld_ /** m*/ * bM * pM).MatIntoXMMATRIX(matW);
+			worldMat_->matWorld_.PutInXMMATRIX(matW);
 		}
 		else
 		{
@@ -406,7 +422,7 @@ void Object::PlayReverseAnimation(bool isLoop)
 	PlayAnimationInternal(endTime_, startTime_, isLoop, true);
 }
 
-void Object::SendingBoneData(ModelFBX* model)
+void Object::CalcBoneDataInternal(ModelFBX* model)
 {
 	HRESULT result = {};
 
@@ -450,12 +466,17 @@ void Object::SendingBoneData(ModelFBX* model)
 		}
 	}
 
+	//マッピング
+	MappingBoneData(model);
+}
+
+void Object::MappingBoneData(ModelFBX* model)
+{
 	//モデルのボーン配列
 	std::vector<ModelFBX::Bone>& bones = model->GetBones();
 
 	//定数バッファへデータ転送
-	ConstBufferDataSkin* constMapSkin = nullptr;
-	result = constBuffSkin_->Map(0, nullptr, (void**)&constMapSkin);
+	HRESULT result = constBuffSkin_->Map(0, nullptr, (void**)&constMapSkin);
 	for (int32_t i = 0; i < bones.size(); i++)
 	{
 		//今の姿勢行列
@@ -621,18 +642,22 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 
 		if (indexNum == FBX)
 		{
-			SendingBoneData(dynamic_cast<ModelFBX*>(model));
+			CalcBoneDataInternal(dynamic_cast<ModelFBX*>(model));
 		}
 		model->Draw(SetRootPipeRM, SetMaterialTexM, cbt_);
 	}
 
 }
 
-void Object::ParentFbxNode(IModel* model, const std::string& nodeName)
+void Object::ParentFbxNode(Object* obj, IModel* model, const std::string& nodeName)
 {
-	if (model->GetIsFbx() && dynamic_cast<ModelFBX*>(model)->GetNode(nodeName))
+	ModelFBX* modelL = dynamic_cast<ModelFBX*>(model);
+
+	if (model->GetIsFbx() && modelL->GetNode(nodeName))
 	{
-		parentNode_ = dynamic_cast<ModelFBX*>(model)->GetNode(nodeName);
+		parentNode_ = modelL->GetNode(nodeName);
+		parentNodeModel_ = modelL;
+		parentObj_ = obj;
 		return;
 	}
 
@@ -747,6 +772,10 @@ void Object::DrawImGui(std::function<void()>imguiF)
 
 	//生死フラグ
 	ImGui::Checkbox("isAlive: ", &isAlive_);
+	if (isAlive_ == false && collider_)
+	{
+		collider_->SetIsValid(false);
+	}
 
 	//トランスなど
 	if (ImGui::TreeNode("TransScaleRot")) {

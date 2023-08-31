@@ -91,7 +91,6 @@ bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR*
 
 bool MeshCollider::CheckCollisionRay(const Ray& ray, float* distance, DirectX::XMVECTOR* inter)
 {
-
 	//最短距離を保存する
 	float minDistance = 999999;
 	bool isReturn = false;
