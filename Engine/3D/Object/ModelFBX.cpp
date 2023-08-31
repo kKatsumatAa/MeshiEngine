@@ -14,6 +14,19 @@ ModelFBX::~ModelFBX()
 	fbxScene_->Destroy();
 }
 
+const Node* ModelFBX::GetNode(const std::string& name)
+{
+	for (auto& nodeL : nodes_)
+	{
+		if (nodeL.name.find(name) != std::string::npos)
+		{
+			return &nodeL;
+		}
+	}
+
+	return nullptr;
+}
+
 void ModelFBX::Initialize()
 {
 	isFbx_ = true;

@@ -119,6 +119,14 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 		objectData->waveNum = std::stoi(numStr);
 	}
 
+	//親ノード
+	if (object->contains("parent_node"))
+	{
+		nlohmann::json parent_node = (*object)["parent_node"];
+		objectData->parentNodeData.parentName = parent_node["parent_name"];
+		objectData->parentNodeData.nodeName = parent_node["node_name"];
+	}
+
 	//当たり判定データ
 	//トランスフォームのパラメータ読み込み
 	nlohmann::json collider = (*object)["collider"];

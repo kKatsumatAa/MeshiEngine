@@ -150,7 +150,7 @@ void Object::SetIsAlive(bool isAlive)
 
 void Object::SetIsValid(bool isValid)
 {
-	isValid_ = isValid; 
+	isValid_ = isValid;
 	SetColliderIsValid(isValid);
 
 	if (isValid == true)
@@ -314,22 +314,33 @@ Object::Object()
 
 void Object::SendingMat(int32_t indexNum, Camera* camera, IModel* model)
 {
-	//大きすぎたりするのを防ぐ用に
-	Vec3 scale = worldMat_->scale_;
-
-	if (model)
-	{
-		worldMat_->scale_ = worldMat_->scale_ * model->GetScaleExtend();
-	}
-
-	//変換行列をGPUに送信
-	worldMat_->CalcAllTreeMat();
-	worldMat_->scale_ = scale;
 	//スプライトじゃない場合
 	if (indexNum != SPRITE)
 	{
+		//大きすぎたりするのを防ぐ用に
+		Vec3 scale = worldMat_->scale_;
+
+		if (model)
+		{
+			worldMat_->scale_ = worldMat_->scale_ * model->GetScaleExtend();
+		}
+
 		XMMATRIX matW;
-		worldMat_->matWorld_.MatIntoXMMATRIX(matW);
+
+		//変換行列をGPUに送信
+		if (parentNode_)
+		{
+			M4 m;
+			m.PutInXMMATRIX(parentNode_->globalTransform);
+			worldMat_->CalcWorldMat();
+			(worldMat_->matWorld_ * (m * worldMat_->GetOnlyParentALLTreeMat())).MatIntoXMMATRIX(matW);
+		}
+		else
+		{
+			worldMat_->CalcAllTreeMat();
+			worldMat_->matWorld_.MatIntoXMMATRIX(matW);
+		}
+		worldMat_->scale_ = scale;
 
 		cbt_.SetWorldMat(matW);
 		cbt_.SetViewProjMat(camera->GetViewMat() * camera->GetProjMat());
@@ -615,6 +626,17 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 		model->Draw(SetRootPipeRM, SetMaterialTexM, cbt_);
 	}
 
+}
+
+void Object::ParentFbxNode(IModel* model, const std::string& nodeName)
+{
+	if (model->GetIsFbx() && dynamic_cast<ModelFBX*>(model)->GetNode(nodeName))
+	{
+		parentNode_ = dynamic_cast<ModelFBX*>(model)->GetNode(nodeName);
+		return;
+	}
+
+	assert(false);
 }
 
 void Object::DrawTriangle(Camera* camera, const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)

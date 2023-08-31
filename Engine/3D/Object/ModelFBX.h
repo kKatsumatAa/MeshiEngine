@@ -58,6 +58,10 @@ public:
 public:
 	std::vector<Bone>& GetBones() { return bones_; }
 
+	const std::vector<Node>& GetNodes() { return nodes_; }
+	//ノードを名前で指定して取得
+	const Node* GetNode(const std::string& name);
+
 	FbxScene* GetFbxScene() { return fbxScene_; }
 
 #pragma endregion

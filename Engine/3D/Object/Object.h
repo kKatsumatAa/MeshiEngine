@@ -140,6 +140,9 @@ private:
 	//再生のスピード倍率
 	float animationSpeed_ = 1.0f;
 
+	//親子関係を結ぶモデルのノード
+	const Node* parentNode_ = nullptr;
+
 	//生きてるフラグ
 	bool isAlive_ = true;
 	//
@@ -181,6 +184,7 @@ public:
 	struct ConstBufferDataSkin
 	{
 		XMMATRIX bones[S_MAX_BONES_];
+		XMMATRIX parentBones[S_MAX_BONES_];
 	};
 
 protected://継承先まで公開
@@ -358,6 +362,9 @@ public:
 
 	//アニメーションスピード
 	void SetAnimationSpeed(float speed) { animationSpeed_ = speed; }
+
+	//モデルの部位と親子関係を持たせる
+	void ParentFbxNode(IModel* model, const std::string& nodeName);
 
 	//フォグとかのフラグ
 	void SetIsSilhouette(bool is) { effectFlags_.isSilhouette = is; }

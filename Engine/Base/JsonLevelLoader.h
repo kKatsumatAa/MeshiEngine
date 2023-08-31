@@ -27,6 +27,13 @@ struct LevelData
 		uint16_t attribute = 0;
 	};
 
+	//親ノードデータ
+	struct ParentNodeData
+	{
+		std::string parentName;
+		std::string nodeName;
+	};
+
 	//オブジェクト一個分のデータ
 	struct ObjectData
 	{
@@ -40,6 +47,8 @@ struct LevelData
 		ObjectData* childData;
 		//ウェーブ番号
 		int32_t waveNum = -1;
+		//親ノード名
+		ParentNodeData parentNodeData;
 	};
 
 	//カメラのデータ

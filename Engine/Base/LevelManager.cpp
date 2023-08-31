@@ -175,6 +175,15 @@ void LevelManager::CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, L
 	}
 }
 
+void LevelManager::SetParentNode(const LevelData::ObjectData& objData, IModel* model
+	, Object* child)
+{
+	if (child && objData.childData->parentNodeData.nodeName.size())
+	{
+		child->ParentFbxNode(model, objData.childData->parentNodeData.nodeName);
+	}
+}
+
 //-------------------------------------------------------------------------------------------
 void LevelManager::LoadObj(LevelData::ObjectData& objData)
 {
@@ -195,9 +204,11 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	{
 		model = ModelManager::GetInstance().LoadModel(objData.fileName);
 	}
-	
+
 	//3Dオブジェクトを生成
 	std::unique_ptr <Object> newObj = {};
+	//自分の子（武器）
+	Weapon* childWeapon = GetChildWeapon(objData);
 
 	//地形オブジェクトとして使うか
 	CheckLandShapeObject(objData, isLandShape_);
@@ -206,13 +217,13 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	if (objData.fileName == "player")
 	{
 		//playerはObjectクラスを継承してるのでポリモーフィズム
-		newObj = Player::Create(std::move(objData.worldMat), GetChildWeapon(objData));
+		newObj = Player::Create(std::move(objData.worldMat), childWeapon);
 	}
 	//敵の場合
 	else if (objData.fileName.find("enemy") != std::string::npos)
 	{
 		//enemyもObjectクラスを継承してるのでポリモーフィズム
-		newObj = Enemy::Create(std::move(objData.worldMat), objData.waveNum, GetChildWeapon(objData));
+		newObj = Enemy::Create(std::move(objData.worldMat), objData.waveNum, childWeapon);
 	}
 	//銃の場合(親がいる場合は既に登録してあるので通らない)
 	else if (objData.fileName == "gun")
@@ -236,6 +247,8 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	//判定系
 	SetCollider(newObj.get(), objData, !isLandShape_);
 
+	//親ノードをセット(今はとりあえず武器のみ)
+	SetParentNode(objData, model, childWeapon);
 
 	//モデルセット
 	newObj->SetModel(model);

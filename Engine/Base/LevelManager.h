@@ -42,7 +42,7 @@ public:
 	static LevelManager& GetInstance();
 
 	void StaticInitialize();
-	
+
 	/// <summary>
 	///JsonLevelLoaderで読み込んだ内容を実際にエンジン上で読み込む
 	/// </summary>
@@ -66,10 +66,15 @@ private://ゲームオリジナル
 
 	//地形オブジェクトとして使うかチェック
 	void CheckLandShapeObject(const LevelData::ObjectData& objData, bool& isLandShape);
+
+private:
 	//コライダー系のセット
 	void SetCollider(Object* obj, const LevelData::ObjectData& objData, bool isSettingCollider);
 	//引数によってObjectかTouchObjectを作る
 	void CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model);
+	//親オブジェクトのモデルのノードを親に設定
+	void SetParentNode(const LevelData::ObjectData& objData, IModel* model
+		, Object* child);
 
 public:
 	void SetLightManager(LightManager* lightManager) { lightManager_ = lightManager; }

@@ -309,6 +309,10 @@
                             0.14269880950450897,
                             0.14269880950450897
                         ]
+                    },
+                    "parent_node": {
+                        "parent_name": "enemy2.fbx",
+                        "node_name": "RightHand"
                     }
                 }
             ]
@@ -457,6 +461,10 @@
                             0.14269880950450897,
                             0.14269880950450897
                         ]
+                    },
+                    "parent_node": {
+                        "parent_name": "enemy2.fbx",
+                        "node_name": "RightHand"
                     }
                 }
             ]

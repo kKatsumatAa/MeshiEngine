@@ -114,6 +114,14 @@ void WorldMat::CalcAllTreeMat()
 	}
 }
 
+M4 WorldMat::GetOnlyParentALLTreeMat()
+{
+	//親から上のみの行列計算
+	parent_->CalcAllTreeMat();
+
+	return parent_->matWorld_;
+}
+
 void WorldMat::SetParentWorld(WorldMat* parent)
 {
 	//親の行列計算

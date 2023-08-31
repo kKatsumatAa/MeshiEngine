@@ -36,6 +36,8 @@ public:
 	void CalcWorldMat();
 	//親の行列も考慮した行列計算
 	void CalcAllTreeMat();
+	//親から上のみ（自分は含まない）の行列計算をして取得
+	M4 GetOnlyParentALLTreeMat();
 
 	Quaternion GetQuaternion();
 
