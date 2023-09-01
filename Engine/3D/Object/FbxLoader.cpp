@@ -264,7 +264,7 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 		bone.fbxCluster = fbxCluster;
 
 		//グローバルトランスフォーム
-		bone.globalTransform = mesh->GetMeshNode().transform;
+		bone.globalTransform = mesh->GetMeshNode().globalTransform;
 
 		//fbxから初期姿勢行列を取得
 		FbxAMatrix fbxMat;

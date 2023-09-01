@@ -224,6 +224,8 @@ private:
 
 	//ボーンのアニメーション処理
 	void CalcBoneDataInternal(ModelFBX* model);
+	//ボーンの行列を計算
+	XMMATRIX GetCalcSkinMat(const std::vector<ModelFBX::Bone>& bones, int32_t index);
 
 	//
 	static void PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum = NULL);

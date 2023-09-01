@@ -331,24 +331,30 @@ void Object::SendingMat(int32_t indexNum, Camera* camera, IModel* model)
 		if (parentNode_ && worldMat_->parent_)
 		{
 			//ノードのローカル行列
-			M4 m;
-			m.PutInXMMATRIX(parentNode_->globalTransform);
-			m.m_[3][0] *= parentNodeModel_->GetScaleExtend();
-			m.m_[3][1] *= parentNodeModel_->GetScaleExtend();
-			m.m_[3][2] *= parentNodeModel_->GetScaleExtend();
+			//M4 m;
+			//m.PutInXMMATRIX(parentNode_->globalTransform);
+			//m.m_[3][0] *= parentNodeModel_->GetScaleExtend();
+			//m.m_[3][1] *= parentNodeModel_->GetScaleExtend();
+			//m.m_[3][2] *= parentNodeModel_->GetScaleExtend();
 			//オブジェクトのワールド
 			worldMat_->CalcWorldMat();
 			//親行列
 			M4 pM = worldMat_->GetOnlyParentALLTreeMat();
-			//ボーン
-			parentObj_->MappingBoneData(parentNodeModel_);
-			XMMATRIX bXM = parentObj_->GetModelBones()[parentNodeModel_->GetBoneIndex(parentNode_->name)];
+			//ボーン(ボーンのグローバルトランスフォーム、)
 			M4 bM;
-			bM.PutInXMMATRIX(bXM);
-			bM.m_[3][0] *= parentNodeModel_->GetScaleExtend();
-			bM.m_[3][1] *= parentNodeModel_->GetScaleExtend();
-			bM.m_[3][2] *= parentNodeModel_->GetScaleExtend();
-			(worldMat_->matWorld_ /** m*/ * bM * pM).MatIntoXMMATRIX(matW);
+			{
+				//マッピング
+				parentObj_->MappingBoneData(parentNodeModel_);
+				//親ノードと同じ名前のボーンのインデックスを得る
+				int32_t bIndex = parentNodeModel_->GetBoneIndex(parentNode_->name);
+				//親ノードがあるモデルのボーンをインデックスで指定して行列の計算
+				XMMATRIX bXM = parentObj_->GetCalcSkinMat(parentNodeModel_->GetBones(), bIndex);
+				bM.PutInXMMATRIX(bXM);
+				bM.m_[3][0] *= parentNodeModel_->GetScaleExtend();
+				bM.m_[3][1] *= parentNodeModel_->GetScaleExtend();
+				bM.m_[3][2] *= parentNodeModel_->GetScaleExtend();
+			}
+			(worldMat_->matWorld_ * (bM * pM)).MatIntoXMMATRIX(matW);
 			worldMat_->matWorld_.PutInXMMATRIX(matW);
 		}
 		else
@@ -470,6 +476,23 @@ void Object::CalcBoneDataInternal(ModelFBX* model)
 	MappingBoneData(model);
 }
 
+XMMATRIX Object::GetCalcSkinMat(const std::vector<ModelFBX::Bone>& bones, int32_t index)
+{
+	//今の姿勢行列
+	XMMATRIX matCurrentPose;
+	//今の姿勢行列を取得
+	FbxAMatrix fbxCurrentPose =
+		bones[index].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime_);
+	//xmmatrixに変換
+	FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+
+	//初期姿勢の逆行列と今の姿勢行列を合成してスキニング行列に
+	XMMATRIX globalInv = XMMatrixInverse(nullptr, bones[index].globalTransform);
+	XMMATRIX ansM = bones[index].globalTransform * bones[index].invInitialPose * matCurrentPose * globalInv;
+
+	return ansM;
+}
+
 void Object::MappingBoneData(ModelFBX* model)
 {
 	//モデルのボーン配列
@@ -479,18 +502,8 @@ void Object::MappingBoneData(ModelFBX* model)
 	HRESULT result = constBuffSkin_->Map(0, nullptr, (void**)&constMapSkin);
 	for (int32_t i = 0; i < bones.size(); i++)
 	{
-		//今の姿勢行列
-		XMMATRIX matCurrentPose;
-		//今の姿勢行列を取得
-		FbxAMatrix fbxCurrentPose =
-			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime_);
-		//xmmatrixに変換
-		FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
-
-
-		//初期姿勢の逆行列と今の姿勢行列を合成してスキニング行列に
-		XMMATRIX globalInv = XMMatrixInverse(nullptr, bones[i].globalTransform);
-		constMapSkin->bones[i] = bones[i].globalTransform * bones[i].invInitialPose * matCurrentPose * globalInv;
+		//行列計算
+		constMapSkin->bones[i] = GetCalcSkinMat(bones, i);
 	}
 	constBuffSkin_->Unmap(0, nullptr);
 }

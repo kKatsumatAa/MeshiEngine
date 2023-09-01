@@ -61,6 +61,7 @@ public:
 	const std::vector<Node>& GetNodes() { return nodes_; }
 	//ノードを名前で指定して取得
 	const Node* GetNode(const std::string& name);
+	//ノードの
 
 	FbxScene* GetFbxScene() { return fbxScene_; }
 
