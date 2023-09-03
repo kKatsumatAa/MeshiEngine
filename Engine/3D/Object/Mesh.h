@@ -10,10 +10,15 @@
 #include "Camera.h"
 #include "ConstBuffTransform.h"
 #include "WorldMat.h"
+#include <fbxsdk.h>
 
 
 struct Node
 {
+	//id
+	uint64_t id = 0;
+	//属性
+	FbxNodeAttribute::EType	attribute = FbxNodeAttribute::EType::eUnknown;
 	//名前
 	std::string name = {};
 	//ローカルスケール

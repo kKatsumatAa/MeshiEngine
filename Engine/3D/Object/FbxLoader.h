@@ -28,7 +28,7 @@ private://変数
 		uint32_t boneIndex[Mesh::S_MAX_BONE_INDICES_] = { 0 };//影響を受けるボーン　番号
 		float boneWeight[Mesh::S_MAX_BONE_INDICES_] = { 1.0f,0,0,0 };//ボーン　重み
 	};
-	std::vector<MyControlPoint> myControlPoints;
+	std::vector<MyControlPoint> myControlPoints_;
 
 public://定数
 	//モデル格納ルートパス
@@ -109,4 +109,13 @@ private:
 
 	//スキニング情報の読み取り
 	void PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
+
+	//アニメーション読み込み
+	void LoadAnimation(ModelFBX* model, FbxScene* fbxScene);
+
+	//アニメーションセット後にボーンを調べる
+	void LoadBoneData(FbxScene* fbxScene, ModelFBX* model);
+
+	//アニメーションセット後にボーンを調べる処理関数
+	void LoadBoneDataInternal(FbxMesh* fbxMesh, ModelFBX* model);
 };

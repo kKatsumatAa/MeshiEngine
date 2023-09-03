@@ -75,6 +75,11 @@ std::unique_ptr<ModelFBX> FbxLoader::LoadModelFromFile(const string& modelName, 
 	model->nodes_.reserve(nodeCount);
 	//ルートノートから順に解析してモデルに流し込む
 	ParseNodeRecursive(model.get(), fbxScene->GetRootNode());
+	//アニメーション
+	LoadAnimation(model.get(), fbxScene);
+	//ボーンを改めて調べる
+	LoadBoneData(fbxScene, model.get());
+
 	//fbxシーンをモデルに持たせて、モデルごとに解放
 	model->fbxScene_ = fbxScene;
 
@@ -131,6 +136,11 @@ void FbxLoader::ParseNodeRecursive(ModelFBX* model, FbxNode* fbxNode, Node* pare
 	Node& node = model->nodes_.back();
 	//ノード名を取得
 	node.name = fbxNode->GetName();
+	//idも
+	node.id = fbxNode->GetUniqueID();
+	//属性も
+	node.attribute = fbxNode->GetNodeAttribute() ?
+		fbxNode->GetNodeAttribute()->GetAttributeType() : FbxNodeAttribute::EType::eUnknown;
 
 	//グローバルトランスフォーム
 	CalcGlobalTransform(*fbxNode, node, parent);
@@ -172,7 +182,7 @@ void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode, Mesh* mesh)
 	FbxMesh* fbxMesh = fbxNode->GetMesh();
 
 	//コントロールポイント用配列
-	myControlPoints.clear();
+	myControlPoints_.clear();
 
 
 	//頂点座標(コントロールポイント)読み取り
@@ -202,7 +212,7 @@ void FbxLoader::ParseMeshControlPointsPos(ModelFBX* model, FbxMesh* fbxMesh, Mes
 
 	//コントロールポイント配列も
 	MyControlPoint controlP;
-	myControlPoints.resize(CONTROL_POINTS_COUNT, controlP);
+	myControlPoints_.resize(CONTROL_POINTS_COUNT, controlP);
 
 	//FBXメッシュの頂点座標配列を取得
 	FbxVector4* coord = fbxMesh->GetControlPoints();
@@ -210,7 +220,7 @@ void FbxLoader::ParseMeshControlPointsPos(ModelFBX* model, FbxMesh* fbxMesh, Mes
 	//fbxメッシュの全頂点座標をモデル内の配列にコピーする
 	for (int32_t i = 0; i < CONTROL_POINTS_COUNT; i++)
 	{
-		MyControlPoint& point = myControlPoints[i];
+		MyControlPoint& point = myControlPoints_[i];
 		//座標のコピー
 		point.pos.x = (float)coord[i][0];
 		point.pos.y = (float)coord[i][1];
@@ -231,52 +241,18 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 	if (fbxSkin == nullptr)
 	{
 		//各頂点について処理
-		for (int32_t i = 0; i < myControlPoints.size(); i++)
+		for (int32_t i = 0; i < myControlPoints_.size(); i++)
 		{
 			//最初のボーン(ないが、単位行列が入ってる)のみ影響100%にする
-			myControlPoints[i].boneIndex[0] = 0;
-			myControlPoints[i].boneWeight[0] = 1.0f;
+			myControlPoints_[i].boneIndex[0] = 0;
+			myControlPoints_[i].boneWeight[0] = 1.0f;
 		}
 
 		return;
 	}
 
-	//ボーン配列の参照
-	std::vector<ModelFBX::Bone>& bones = model->bones_;
-
 	//ボーンの数
 	int32_t clusterCount = fbxSkin->GetClusterCount();
-	bones.reserve(clusterCount);
-
-	//全てのボーンについて
-	for (int32_t i = 0; i < clusterCount; i++)
-	{
-		//fbxボーン情報
-		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
-
-		//ボーン自体のノードの名前を取得
-		const char* BONE_NAME = fbxCluster->GetLink()->GetName();
-
-		//新しくボーンを追加し、追加したボーンの参照を得る
-		bones.emplace_back(ModelFBX::Bone(BONE_NAME));
-		ModelFBX::Bone& bone = bones.back();
-		//自作ボーンとfbxのボーンを紐づける
-		bone.fbxCluster = fbxCluster;
-
-		//グローバルトランスフォーム
-		bone.globalTransform = mesh->GetMeshNode().globalTransform;
-
-		//fbxから初期姿勢行列を取得
-		FbxAMatrix fbxMat;
-		fbxCluster->GetTransformLinkMatrix(fbxMat);
-
-		//XMMatrix型に変換
-		XMMATRIX initialPose;
-		ConvertMatrixFromFbx(&initialPose, fbxMat);
-
-		//初期姿勢行列の逆行列を得る(スキニング処理に使うのは逆行列)
-		bone.invInitialPose = XMMatrixInverse(nullptr, initialPose);
-	}
 
 	//ボーン番号とスキンウェイとのペア
 	struct WeightSet
@@ -288,7 +264,7 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 	//二次元配列（ジャグ配列）
 	//list  :頂点が影響を受けるボーンの全リスト
 	//vector:それを全頂点分
-	std::vector<std::list<WeightSet>> weightLists(myControlPoints.size());
+	std::vector<std::list<WeightSet>> weightLists(myControlPoints_.size());
 
 	//全てのボーンについて
 	for (int32_t i = 0; i < clusterCount; i++)
@@ -314,9 +290,9 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 	}
 
 	//頂点配列書き換え用の参照
-	auto& controlPoint = myControlPoints;
+	auto& controlPoint = myControlPoints_;
 	//各頂点について処理
-	for (int32_t i = 0; i < myControlPoints.size(); i++)
+	for (int32_t i = 0; i < myControlPoints_.size(); i++)
 	{
 		//頂点のウェイトから最も大きい4つを選択
 		auto& weightList = weightLists[i];
@@ -350,6 +326,186 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 				break;
 			}
 		}
+	}
+}
+
+void FbxLoader::LoadAnimation(ModelFBX* model, FbxScene* fbxScene)
+{
+	//アニメーション名を保存する配列
+	FbxArray<FbxString*> animationNames;
+
+	//ノード情報
+	size_t node_count = model->GetNodes().size();
+	std::vector<FbxNode*> fbxNodes;
+	fbxNodes.resize(node_count);
+	//ノード一つ一つのポインタを保存
+	for (size_t i = 0; i < node_count; i++)
+	{
+		fbxNodes[i] = fbxScene->FindNodeByName(model->nodes_.at(i).name.c_str());
+	}
+
+	//シーンからアニメーション一覧を取得
+	fbxScene->FillAnimStackNameArray(animationNames);
+	//アニメーションの数
+	const int32_t ANIMATION_COUNT = animationNames.GetCount();
+
+	for (int32_t i = 0; i < ANIMATION_COUNT; i++)
+	{
+		//要素追加
+		model->animationClips_.emplace_back();
+		//参照
+		ModelFBX::Animation& animationData = model->animationClips_.back();
+		//アニメーション名をモデルの変数に保存
+		animationData.name = animationNames[i]->Buffer();
+
+		//名前でアニメーションを取得
+		FbxAnimStack* animationStack = fbxScene->FindMember<FbxAnimStack>(animationData.name.c_str());
+		//シーンのアニメーションをこれに設定
+		fbxScene->SetCurrentAnimationStack(animationStack);
+
+		//1フレームで進む時間の設定
+		FbxTime::EMode timeMode{ fbxScene->GetGlobalSettings().GetTimeMode() };
+		if (timeMode == FbxTime::EMode::eFrames30Drop)
+		{
+			timeMode = FbxTime::EMode::eFrames30;
+		}
+		//一秒で進む
+		FbxTime oneSecond;
+		oneSecond.SetTime(0, 0, 1, 0, 0, timeMode);
+		//fpsをfloatに変換
+		animationData.frameRate = static_cast<float>(oneSecond.GetFrameRate(timeMode));
+
+		//1フレームに変換
+		const FbxTime SAMPLING_INTERVAL =
+			static_cast<FbxLongLong>(oneSecond.Get() / animationData.frameRate);
+		//アニメーション情報を取得
+		const FbxTakeInfo* TAKE_INFO = fbxScene->GetTakeInfo(animationData.name.c_str());
+		//開始時間
+		const FbxTime START_TIME = TAKE_INFO->mLocalTimeSpan.GetStart();
+		//終了時間
+		const FbxTime END_TIME = TAKE_INFO->mLocalTimeSpan.GetStop();
+
+		//fpsで割る（秒単位にする）
+		animationData.endTime = END_TIME.GetFrameCount() / animationData.frameRate;
+		animationData.startTime = START_TIME.GetFrameCount() / animationData.frameRate;
+		//アニメーションの長さ保存
+		animationData.secondsLength = animationData.endTime - animationData.startTime;
+		//一フレームごとに加算する時間
+		animationData.addTime = animationData.endTime / END_TIME.GetFrameCount(FbxTime::EMode::eFrames60);
+
+		//キーフレームごとに情報を保存
+		for (FbxTime time = START_TIME; time < END_TIME; time += SAMPLING_INTERVAL)
+		{
+			//要素追加
+			animationData.keyframes.emplace_back();
+			//参照
+			ModelFBX::Keyframe& keyframe = animationData.keyframes.back();
+			//配列のサイズ変更
+			keyframe.nodeKeys.resize(node_count);
+
+			//キーフレームの時間をfps(フレームレート)で割って秒単位にする
+			float fTime = time.GetFrameCount() / animationData.frameRate;
+			//開始から何秒か
+			keyframe.seconds = fTime - animationData.startTime;
+
+			//キーフレームごとにノード全ての行列取得
+			for (int32_t j = 0; j < node_count; j++)
+			{
+				//ノードがあれば
+				if (fbxNodes[j])
+				{
+					//参照
+					ModelFBX::NodeKeyData& node = keyframe.nodeKeys[j];
+					//キーフレームに対応した行列
+					const FbxAMatrix& local_transform = fbxNodes[j]->EvaluateLocalTransform(time);
+					FbxVector4 scale = local_transform.GetS();
+					FbxQuaternion rot = local_transform.GetQ();
+					FbxVector4 trans = local_transform.GetT();
+					//パラメータ
+					node.scale = { (float)scale[0],(float)scale[1],(float)scale[2] };
+					node.rotate = { (float)rot[0],(float)rot[1],(float)rot[2],(float)rot[3] };
+					node.trans = { (float)trans[0],(float)trans[1],(float)trans[2] };
+				}
+			}
+		}
+	}
+}
+
+void FbxLoader::LoadBoneData(FbxScene* fbxScene, ModelFBX* model)
+{
+	for (const Node& node : model->GetNodes())
+	{
+		//属性が当てはまらなければスルー
+		if (node.attribute != FbxNodeAttribute::EType::eMesh)
+		{
+			continue;
+		}
+
+		FbxNode* fbx_node = fbxScene->FindNodeByName(node.name.c_str());
+		FbxMesh* fbx_mesh = fbx_node->GetMesh();
+		LoadBoneDataInternal(fbx_mesh, model);
+	}
+}
+
+void FbxLoader::LoadBoneDataInternal(FbxMesh* fbxMesh, ModelFBX* model)
+{
+	//スキニング情報
+	FbxSkin* fbxSkin =
+		static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
+	if (fbxSkin == NULL)
+	{
+		return;
+	}
+
+	//ボーンの数
+	int32_t clusterCount = fbxSkin->GetClusterCount();
+	//行列の配列サイズ変更
+	model->offsetTransforms_.resize(clusterCount);
+	//ボーンのノードのインデックス配列のサイズ変更
+	model->boneNodeIndices_.resize(clusterCount);
+
+
+	//全てのボーンについて
+	for (int32_t i = 0; i < clusterCount; i++)
+	{
+		//fbxボーン情報
+		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
+
+		//ボーンのノードのインデックス
+		uint64_t nodeId = static_cast<uint64_t>(fbxCluster->GetLink()->GetUniqueID());
+		int nodeCount = static_cast<int>(model->nodes_.size());
+		//idが同じのものを探してインデックスを保存
+		for (int j = 0; j < nodeCount; j++)
+		{
+			if (model->nodes_[j].id == nodeId)
+			{
+				model->boneNodeIndices_[i] = j;
+				break;
+			}
+		}
+
+		//ボーン自体のノードの名前を取得
+		const char* BONE_NAME = fbxCluster->GetLink()->GetName();
+
+		//fbxから初期姿勢行列を取得
+		FbxAMatrix fbxMat;
+		fbxCluster->GetTransformLinkMatrix(fbxMat);
+
+		////XMMatrix型に変換
+		//XMMATRIX initialPose;
+		//ConvertMatrixFromFbx(&initialPose, fbxMat);
+
+		////初期姿勢行列の逆行列を得る(スキニング処理に使うのは逆行列)
+		//bone.invInitialPose = XMMatrixInverse(nullptr, initialPose);
+
+		//グローバルトランスフォーム
+		FbxAMatrix globalInitPosMat;
+		fbxCluster->GetTransformMatrix(globalInitPosMat);
+
+		//初期姿勢の逆行列とトランスフォーム行列掛ける
+		DirectX::XMMATRIX lMat = DirectX::XMMatrixIdentity();
+		ConvertMatrixFromFbx(&lMat, fbxMat.Inverse() * globalInitPosMat);
+		model->offsetTransforms_[i] = lMat;
 	}
 }
 
@@ -389,7 +545,7 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 			//コントロールポイント
 			{
 				//座標
-				MyControlPoint contrP = myControlPoints[index];
+				MyControlPoint contrP = myControlPoints_[index];
 				vertex.pos.x_ = contrP.pos.x;
 				vertex.pos.y_ = contrP.pos.y;
 				vertex.pos.z_ = contrP.pos.z;

@@ -27,16 +27,14 @@ const Node* ModelFBX::GetNode(const std::string& name)
 	return nullptr;
 }
 
-int32_t ModelFBX::GetBoneIndex(const std::string& name) const
+uint64_t ModelFBX::GetBoneIndex(const std::string& name) const
 {
-	int32_t count = 0;
-	for (auto bone : bones_)
+	for (auto index : boneNodeIndices_)
 	{
-		if (bone.name_.find(name.c_str()) != std::string::npos)
+		if (nodes_[index].name.find(name.c_str()) != std::string::npos)
 		{
-			return count;
+			return index;
 		}
-		count++;
 	}
 
 	return -1;

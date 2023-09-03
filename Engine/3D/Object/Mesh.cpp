@@ -201,7 +201,7 @@ void Mesh::SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt)
 {
 	timer_++;
 
-	cbt_.SetWorldMat(globalTransform_);
+	cbt_.SetWorldMat(XMMatrixIdentity());
 	cbt_.SetViewProjMat(cbt.GetViewProjMat());
 	cbt_.SetCameraPos(cbt.GetCameraPos());
 
