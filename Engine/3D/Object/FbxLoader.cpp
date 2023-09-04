@@ -488,8 +488,8 @@ void FbxLoader::LoadBoneDataInternal(FbxMesh* fbxMesh, ModelFBX* model)
 		const char* BONE_NAME = fbxCluster->GetLink()->GetName();
 
 		//fbxから初期姿勢行列を取得
-		FbxAMatrix fbxMat;
-		fbxCluster->GetTransformLinkMatrix(fbxMat);
+		FbxAMatrix initMat;
+		fbxCluster->GetTransformLinkMatrix(initMat);
 
 		////XMMatrix型に変換
 		//XMMATRIX initialPose;
@@ -504,7 +504,7 @@ void FbxLoader::LoadBoneDataInternal(FbxMesh* fbxMesh, ModelFBX* model)
 
 		//初期姿勢の逆行列とトランスフォーム行列掛ける
 		DirectX::XMMATRIX lMat = DirectX::XMMatrixIdentity();
-		ConvertMatrixFromFbx(&lMat, fbxMat.Inverse() * globalInitPosMat);
+		ConvertMatrixFromFbx(&lMat, initMat.Inverse() * globalInitPosMat);
 		model->offsetTransforms_[i] = lMat;
 	}
 }

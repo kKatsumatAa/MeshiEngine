@@ -689,7 +689,7 @@ XMMATRIX Object::GetCalcSkinMat(IModel* model, int32_t index)
 
 	//アニメーションで更新したワールド
 	DirectX::XMMATRIX worldTransform =
-		nodes_[indexL].globalTransform;
+		nodes_[indexL].transform;
 	//初期姿勢などが入った行列
 	DirectX::XMMATRIX offsetTransform =
 		modelL->GetOffsetTransforms()[index];
