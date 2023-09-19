@@ -10,7 +10,7 @@ using namespace DirectX;
 
 
 //参照先のパス一部（objかfbxか）
-const std::string ModelObj::S_TYPE_DIRECTORY_ = "obj/";
+const std::string ModelObj::S_TYPE_DIRECTORY_ = ".obj/";
 
 
 std::unique_ptr<ModelObj> ModelObj::LoadFromOBJ(const std::string& folderName, bool smoothing)
