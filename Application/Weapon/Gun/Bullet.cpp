@@ -69,11 +69,11 @@ void Bullet::Dead(const Vec3& interPos)
 	for (int32_t i = 0; i < 20; ++i)
 	{
 		Vec3 vel{};
-		vel.x_ = GetRand(-0.2f, 0.2f);
-		vel.y_ = GetRand(-0.2f, 0.2f);
-		vel.z_ = GetRand(-0.2f, 0.2f);
+		vel.x = GetRand(-0.2f, 0.2f);
+		vel.y = GetRand(-0.2f, 0.2f);
+		vel.z = GetRand(-0.2f, 0.2f);
 
-		float scale = GetRand(GetScale().x_ / 2.0f, GetScale().x_ * 4.0f);
+		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 4.0f);
 
 		ParticleManager::GetInstance()->Add(30, interPos, vel, { 0,0,0 }, scale, 0, { 0,0,0,1.5f }, { 0,0,0,0.0f });
 	}
@@ -87,7 +87,7 @@ void Bullet::BallisticsUpdate()
 	ballisticsObj_.SetTrans({ GetWorldTrans() - GetFrontVec() * ballisticsLength });
 
 	//‚š‚Ì‚İ’e“¹‚Ì’·‚³‚ğİ’è
-	ballisticsObj_.SetScale({ GetScale().x_, GetScale().y_,ballisticsLength });
+	ballisticsObj_.SetScale({ GetScale().x, GetScale().y,ballisticsLength });
 
 	//³–Ê‚ÌŠîƒxƒNƒgƒ‹‚Í‚š²‚Ì‰œ
 	ballisticsObj_.SetFrontVecTmp({ 0,0,1.0f });

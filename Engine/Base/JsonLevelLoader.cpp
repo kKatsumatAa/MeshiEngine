@@ -171,13 +171,13 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 		objectData->colliderData.attribute = attribute;
 
 		//中心位置
-		objectData->colliderData.center.x_ = (float)collider["center"][1];
-		objectData->colliderData.center.y_ = (float)collider["center"][2];
-		objectData->colliderData.center.z_ = -(float)collider["center"][0];
+		objectData->colliderData.center.x = (float)collider["center"][1];
+		objectData->colliderData.center.y = (float)collider["center"][2];
+		objectData->colliderData.center.z = -(float)collider["center"][0];
 		//スケール
-		objectData->colliderData.size.x_ = (float)collider["size"][1];
-		objectData->colliderData.size.y_ = (float)collider["size"][2];
-		objectData->colliderData.size.z_ = (float)collider["size"][0];
+		objectData->colliderData.size.x = (float)collider["size"][1];
+		objectData->colliderData.size.y = (float)collider["size"][2];
+		objectData->colliderData.size.z = (float)collider["size"][0];
 	}
 
 	//親がいたら、おやに自分のデータ入れる

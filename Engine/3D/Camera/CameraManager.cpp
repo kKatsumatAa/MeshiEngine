@@ -26,37 +26,40 @@ void CameraManager::ChangeCamera()
 		//カメラポインタをセット
 		usingCamera_ = cameraItr_->second.get();
 	}
-}
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_B))
+	{
+		camera2DItr_++;
 
-void CameraManager::ChangeUsingCameraState(std::unique_ptr<UsingCameraState> state)
-{
-	state_.reset();
-	state_ = std::move(state);
-	state_->SetCameraM(this);
+		//最後まで行ったら
+		if (camera2DItr_ == camera2DAndNames_.end())
+		{
+			camera2DItr_ = camera2DAndNames_.begin();
+		}
+
+		//カメラポインタをセット
+		usingCamera2D_ = camera2DItr_->second.get();
+	}
 }
 
 void CameraManager::Initialize()
 {
-	lerpCount_ = 0;
-	lerpCountMax_ = 0;
-	afterCount_ = 0;
-	afterCamera_ = nullptr;
-	isLerpMoving_ = false;
-	isLerpEnd_ = false;
-
 	cameraAndNames_.clear();
 
 #ifdef _DEBUG
-
+	//3D
 	AddCamera("debugCamera");
 	GetCamera("debugCamera")->Initialize();
+	SetUsingCamera("debugCamera");
+	//2D
+	AddCamera2D("debugCamera");
+	GetCamera2D("debugCamera")->Initialize();
+	SetUsingCamera2D("debugCamera");
 
 #endif
 
 	//カメラを順に切り替えるためのイテレータ
 	cameraItr_ = cameraAndNames_.begin();
-
-	ChangeUsingCameraState(std::make_unique<UsingCameraNormalState>());
+	camera2DItr_ = camera2DAndNames_.begin();
 }
 
 void CameraManager::Update()
@@ -91,18 +94,18 @@ void CameraManager::Update()
 
 				//回転
 				Vec3 rotMove = {
-					vel.y_ * 0.01f,
-					vel.x_ * 0.01f,
+					vel.y * 0.01f,
+					vel.x * 0.01f,
 					0
 				};
 
 				debugWorldMat_.rot_ += rotMove;
-				debugWorldMat_.rot_.x_ = min(debugWorldMat_.rot_.x_, PI / 2.0f);
-				debugWorldMat_.rot_.x_ = max(debugWorldMat_.rot_.x_, -PI / 2.0f);
+				debugWorldMat_.rot_.x = min(debugWorldMat_.rot_.x, PI / 2.0f);
+				debugWorldMat_.rot_.x = max(debugWorldMat_.rot_.x, -PI / 2.0f);
 			}
 
-			cameraPos_.z_ = min(cameraPos_.z_ + (float)MouseInput::GetInstance().GetWheelAmountOfRot() * 0.02f, -1.0f);
-			cameraPos_.z_ = max(cameraPos_.z_ + (float)MouseInput::GetInstance().GetWheelAmountOfRot() * 0.02f, -1000.0f);
+			cameraPos_.z = min(cameraPos_.z + (float)MouseInput::GetInstance().GetWheelAmountOfRot() * 0.02f, -1.0f);
+			cameraPos_.z = max(cameraPos_.z + (float)MouseInput::GetInstance().GetWheelAmountOfRot() * 0.02f, -1000.0f);
 
 			debugWorldMat_.CalcWorldMat();
 			Vec3 pos = cameraPos_;
@@ -116,31 +119,84 @@ void CameraManager::Update()
 	//カメラ切り替え
 	ChangeCamera();
 
-
-	if (state_.get())
+	if (usingCamera_)
 	{
-		state_->Update();
+		usingCamera_->Update();
 	}
-
-	usingCamera_->Update();
+	if (usingCamera2D_)
+	{
+		usingCamera2D_->Update();
+	}
 }
 
 void CameraManager::ImguiUpdate()
 {
-	ImGui::Begin("Camera");
-	//ImGui::char
-	ImGui::Begin("Camera");
+	ImGui::Begin("CameraManager");
+
+	if (ImGui::TreeNode("UsingCamera") && usingCamera_)
+	{
+		Vec3 eye = usingCamera_->GetEye();
+		Vec3 target = usingCamera_->GetTarget();
+		Vec3 up = usingCamera_->GetUp();
+
+		ImGui::DragFloat3("Eye", &eye.x);
+		ImGui::DragFloat3("Target", &target.x);
+		ImGui::DragFloat3("Up", &up.x);
+
+		usingCamera_->SetEye(eye);
+		usingCamera_->SetTarget(target);
+		usingCamera_->SetUp(up);
+
+		ImGui::TreePop();
+	}
+	if (ImGui::TreeNode("UsingCamera2D") && usingCamera2D_)
+	{
+		Vec2 pos = usingCamera2D_->GetPos();
+		float rot = usingCamera2D_->GetRot();
+		Vec2 zoom = usingCamera2D_->GetZoom();
+
+		ImGui::DragFloat2("Pos", &pos.x);
+		ImGui::DragFloat("Rot", &rot);
+		ImGui::DragFloat2("Zoom", &zoom.x);
+
+		usingCamera2D_->SetPos(pos);
+		usingCamera2D_->SetRot(rot);
+		usingCamera2D_->SetZoom(zoom); 
+		
+		ImGui::TreePop();
+	}
+
+	for (auto& cameras : cameraAndNames_)
+	{
+		if (ImGui::TreeNode(cameras.first.c_str()))
+		{
+			Vec3 eye = cameras.second->GetEye();
+			Vec3 target = cameras.second->GetTarget();
+			Vec3 up = cameras.second->GetUp();
+
+			ImGui::DragFloat3("Eye", &eye.x);
+			ImGui::DragFloat3("Target", &target.x);
+			ImGui::DragFloat3("Up", &up.x);
+
+			cameras.second->SetEye(eye);
+			cameras.second->SetTarget(target);
+			cameras.second->SetUp(up);
+
+			ImGui::TreePop();
+		}
+	}
+
+	ImGui::End();
 }
 
-void CameraManager::AddCamera(std::string cameraName)
+void CameraManager::AddCamera(const std::string& cameraName)
 {
 	//ファイル名から探す
 	std::map< std::string, std::unique_ptr<Camera>>::iterator it = cameraAndNames_.find(cameraName);
-	//すでに同じ名前のカメラがあったらエラー
+	//すでに同じ名前のカメラがあったら
 	if (it != cameraAndNames_.end())
 	{
 		return;
-		//assert(false);
 	}
 
 	//なければ読み込み
@@ -151,7 +207,25 @@ void CameraManager::AddCamera(std::string cameraName)
 	cameraAndNames_.insert(std::make_pair(cameraName, std::move(camera)));
 }
 
-Camera* CameraManager::GetCamera(std::string cameraName)
+void CameraManager::AddCamera2D(const std::string& cameraName)
+{
+	//ファイル名から探す
+	std::map< std::string, std::unique_ptr<Camera2D>>::iterator it = camera2DAndNames_.find(cameraName);
+	//すでに同じ名前のカメラがあったらエラー
+	if (it != camera2DAndNames_.end())
+	{
+		return;
+	}
+
+	//なければ読み込み
+	std::unique_ptr<Camera2D> camera = std::make_unique<Camera2D>();
+	camera->Initialize();
+
+	//保存しておく
+	camera2DAndNames_.insert(std::make_pair(cameraName, std::move(camera)));
+}
+
+Camera* CameraManager::GetCamera(const std::string& cameraName)
 {
 	//ファイル名から探す
 	std::map< std::string, std::unique_ptr<Camera>>::iterator it = cameraAndNames_.find(cameraName);
@@ -171,7 +245,27 @@ Camera* CameraManager::GetCamera()
 	return usingCamera_;
 }
 
-void CameraManager::SetUsingCamera(std::string cameraName)
+Camera2D* CameraManager::GetCamera2D(const std::string& cameraName)
+{
+	//ファイル名から探す
+	std::map< std::string, std::unique_ptr<Camera2D>>::iterator it = camera2DAndNames_.find(cameraName);
+	//指定した名前のカメラがあればポインタを返す
+	if (it != camera2DAndNames_.end())
+	{
+		return it->second.get();
+	}
+
+	//なければnullptr
+	assert(false);
+	return nullptr;
+}
+
+Camera2D* CameraManager::GetCamera2D()
+{
+	return usingCamera2D_;
+}
+
+void CameraManager::SetUsingCamera(const std::string& cameraName)
 {
 	//ファイル名から探す
 	std::map< std::string, std::unique_ptr<Camera>>::iterator it = cameraAndNames_.find(cameraName);
@@ -186,78 +280,17 @@ void CameraManager::SetUsingCamera(std::string cameraName)
 	assert(false);
 }
 
-void CameraManager::BegineLerpUsingCamera(const Vec3& startEye, const Vec3& endEye, const Vec3& startTarget, const Vec3& endTarget, const Vec3& startUp, const Vec3& endUp, int32_t time, Camera* afterCamera, int32_t afterCount)
+void CameraManager::SetUsingCamera2D(const std::string& cameraName)
 {
-	startEye_ = startEye;
-	endEye_ = endEye;
-	startTarget_ = startTarget;
-	endTarget_ = endTarget;
-	startUp_ = startUp;
-	endUp_ = endUp;
-	lerpCountMax_ = time;
-	lerpCount_ = 0;
-	afterCamera_ = afterCamera;
-	afterCount_ = afterCount;
-	isLerpMoving_ = true;
-	isLerpEnd_ = false;
-
-	ChangeUsingCameraState(std::make_unique<UsingCameraLerpMoveState>());
-
-	Update();
-}
-
-//----------------------------------------------------------------------------------------------------------------------------------------
-void UsingCameraState::SetCameraM(CameraManager* cameraM)
-{
-	cameraM_ = cameraM;
-}
-
-
-//-------------------------------------------------------------------------------------------------------
-void UsingCameraNormalState::Update()
-{
-	if (cameraM_->isLerpMoving_)
+	//ファイル名から探す
+	std::map< std::string, std::unique_ptr<Camera2D>>::iterator it = camera2DAndNames_.find(cameraName);
+	//指定した名前のカメラがあればポインタusingCamera_にポインタセット
+	if (it != camera2DAndNames_.end())
 	{
-		cameraM_->ChangeUsingCameraState(std::make_unique<UsingCameraLerpMoveState>());
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------
-void UsingCameraLerpMoveState::Update()
-{
-	float t = (float)cameraM_->lerpCount_ / (float)cameraM_->lerpCountMax_;
-
-	if (cameraM_->lerpCount_ < cameraM_->lerpCountMax_)
-	{
-		cameraM_->lerpCount_++;
+		usingCamera2D_ = it->second.get();
+		return;
 	}
 
-	cameraM_->usingCamera_->SetEye(LerpVec3(cameraM_->startEye_, cameraM_->endEye_, EaseOut(t)));
-	cameraM_->usingCamera_->SetUp(LerpVec3(cameraM_->startUp_, cameraM_->endUp_, EaseOut(t)));
-	cameraM_->usingCamera_->SetTarget(LerpVec3(cameraM_->startTarget_, cameraM_->endTarget_, EaseOut(t)));
-
-	//終了する1フレーム前に演出等入れる用
-	if (cameraM_->lerpCount_ >= cameraM_->lerpCountMax_ - 1)
-	{
-		cameraM_->isLerpEnd_ = true;
-	}
-
-	if (cameraM_->lerpCount_ >= cameraM_->lerpCountMax_)
-	{
-		cameraM_->afterCount_--;
-		cameraM_->isLerpMoving_ = false;
-
-		if (cameraM_->afterCount_ <= 0)
-		{
-
-			if (cameraM_->afterCamera_)
-			{
-				cameraM_->usingCamera_ = cameraM_->afterCamera_;
-			}
-
-
-
-			cameraM_->ChangeUsingCameraState(std::make_unique<UsingCameraNormalState>());
-		}
-	}
+	//なければ
+	assert(false);
 }

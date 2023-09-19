@@ -32,17 +32,19 @@ void CursorUI::Update()
 	}
 
 	//カーソルの位置を画面内に収める
-	cursorPos_.x_ = Clamp(MouseInput::GetInstance().GetCurcorPos().x_, 0, WindowsApp::WINDOW_WIDTH_ - cursorSize_.x_);
-	cursorPos_.y_ = Clamp(MouseInput::GetInstance().GetCurcorPos().y_, 0, WindowsApp::WINDOW_HEIGHT_ - cursorSize_.y_);
+	cursorPos_.x = Clamp(MouseInput::GetInstance().GetCurcorPos().x, 0, WindowsApp::WINDOW_WIDTH_ - cursorSize_.x);
+	cursorPos_.y = Clamp(MouseInput::GetInstance().GetCurcorPos().y, 0, WindowsApp::WINDOW_HEIGHT_ - cursorSize_.y);
 
 
 	//描画するときのカーソル位置
-	drawPos_.x_ = (float)((cursorSize_.x_ / 2.0f) + (int32_t)cursorPos_.x_ / (int32_t)cursorSize_.x_ * (int32_t)cursorSize_.x_);
-	drawPos_.y_ = (float)((cursorSize_.y_ / 2.0f) + (int32_t)cursorPos_.y_ / (int32_t)cursorSize_.y_ * (int32_t)cursorSize_.y_);
+	drawPos_.x = (float)((cursorSize_.x / 2.0f) + (int32_t)cursorPos_.x / (int32_t)cursorSize_.x * (int32_t)cursorSize_.x);
+	drawPos_.y = (float)((cursorSize_.y / 2.0f) + (int32_t)cursorPos_.y / (int32_t)cursorSize_.y * (int32_t)cursorSize_.y);
 }
 
 void CursorUI::Draw()
 {
-	texObj_.DrawBoxSprite(drawPos_,
-		cursorSize_, { 1.0f,0.2f,0.2f,alpha_ }, NULL, { 0.5f,0.5f });
+	texObj_.SetTrans({ drawPos_,0 });
+	texObj_.SetScale({ cursorSize_.x,cursorSize_.y,1.0f });
+
+	texObj_.DrawBoxSprite(nullptr, NULL, { 1.0f,0.2f,0.2f,alpha_ }, { 0.5f,0.5f });
 }

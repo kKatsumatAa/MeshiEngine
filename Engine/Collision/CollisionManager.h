@@ -17,8 +17,10 @@ private:
 	~CollisionManager() = default;
 
 private:
-	//コライダーのリスト
-	std::forward_list<BaseCollider*> colliders_;
+	//コライダーのリスト(3D)
+	std::forward_list<BaseCollider*> colliders3D_;
+	//コライダーのリスト(2D)
+	std::forward_list<BaseCollider*> colliders2D_;
 
 
 
@@ -29,17 +31,15 @@ public://静的メンバ関数
 	static CollisionManager* GetInstance();
 
 private:
-	
+	void CheckAllCollision3D();
+	void CheckAllCollision2D();
 
 public://関数
 	/// <summary>
 	/// コライダーの追加
 	/// </summary>
 	/// <param name="collider"></param>
-	inline void AddCollider(BaseCollider* collider)
-	{
-		colliders_.push_front(collider);
-	}
+	void AddCollider(BaseCollider* collider);
 
 	/// <summary>
 	/// コライダーの削除
@@ -47,7 +47,7 @@ public://関数
 	/// <param name="collider"></param>
 	inline void RemoveCollider(BaseCollider* collider)
 	{
-		colliders_.remove(collider);
+		colliders3D_.remove(collider);
 	}
 
 	/// <summary>

@@ -78,7 +78,7 @@ void EnemyStateEmergeEffect::Update()
 
 	//ƒfƒBƒ]ƒ‹ƒu
 	float t = timer_ / EMERGE_TIMER_MAX_;
-	enemy_->SetDissolveT(LerpVec3({ 1.0f,0,0 }, { 0,0,0 }, EaseIn(t)).x_);
+	enemy_->SetDissolveT(LerpVec3({ 1.0f,0,0 }, { 0,0,0 }, EaseIn(t)).x);
 
 	if (timer_ >= EMERGE_TIMER_MAX_)
 	{

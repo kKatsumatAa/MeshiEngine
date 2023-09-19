@@ -1,5 +1,6 @@
 #include "Collision.h"
-#include "Vec3.h"
+#include "Util.h"
+
 using namespace DirectX;
 
 bool Collision::CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2, DirectX::XMVECTOR* inter,
@@ -15,12 +16,12 @@ bool Collision::CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2, 
 		*inter = XMVectorLerp(sphere.center, sphere2.center, t);
 	}
 
-	if (vec.GetLength() <= sphere.radius + sphere2.radius)
+	if (powf(vec.GetLength(), 2.0f) <= powf(sphere.radius + sphere2.radius, 2.0f))
 	{
 		//押し出すベクトルを計算
 		if (reject)
 		{
-			float rejectLen = sphere.radius + sphere2.radius - sqrtf(vec.GetLength());
+			float rejectLen = sphere.radius + sphere2.radius - sqrtf(vec.GetLength());//
 			*reject = XMVector3Normalize(sphere.center - sphere2.center);
 			*reject *= rejectLen;
 		}
@@ -150,7 +151,7 @@ bool Collision::CheckSphere2Triangle(const Sphere& sphere, const Triangle& trian
 	if (reject)
 	{
 		float ds = XMVector3Dot(sphere.center, triangle.normal).m128_f32[0];
-		float dt = XMVector3Dot(triangle.p0,triangle.normal).m128_f32[0];
+		float dt = XMVector3Dot(triangle.p0, triangle.normal).m128_f32[0];
 		//球の半径-球と三角形の距離
 		float recectLen = dt - ds + sphere.radius;
 		*reject = triangle.normal * recectLen;
@@ -251,3 +252,23 @@ bool Collision::CheckRay2Sphere(const Ray& ray, const Sphere& sphere, float* dis
 
 	return true;
 }
+
+
+#pragma region 2D
+
+bool Collision::CheckCircle2Circle(const Circle& circle, const Circle& circle2, DirectX::XMVECTOR* inter, DirectX::XMVECTOR* reject)
+{
+	Sphere sphere;
+	Sphere sphere2;
+
+	sphere.center = { circle.center.x,circle.center.y };
+	sphere2.center = { circle2.center.x,circle2.center.y };
+
+	sphere.radius = circle.radius;
+	sphere2.radius = circle2.radius;
+
+	//球の判定を利用（zは0）
+	return CheckSphere2Sphere(sphere, sphere2, inter, reject);
+}
+
+#pragma endregion

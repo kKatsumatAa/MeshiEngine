@@ -126,8 +126,8 @@ void MouseInput::Update()
 		//スクリーン座標をクライアント座標に変える
 		ScreenToClient(WindowsApp::GetInstance().Gethwnd(), &p);
 
-		cursorPos_.x_ = (float)p.x;
-		cursorPos_.y_ = (float)p.y;
+		cursorPos_.x = (float)p.x;
+		cursorPos_.y = (float)p.y;
 	}
 }
 

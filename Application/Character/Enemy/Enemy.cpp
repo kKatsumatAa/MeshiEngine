@@ -25,7 +25,7 @@ void Enemy::EmergeInitialize()
 		lightM->SetPointLightAtten(lightIndexTmp_, { 0.977f,0.493f,0.458f });
 		lightM->SetPointLightColor(lightIndexTmp_, { 5.0f,0,0 });
 		lightM->SetPointLightPos(lightIndexTmp_,
-			{ GetTrans().x_, GetTrans().y_, GetTrans().z_ });
+			{ GetTrans().x, GetTrans().y, GetTrans().z });
 	}
 	//hp系
 	HPUpdate();
@@ -116,7 +116,7 @@ void Enemy::WalkToTarget(const Vec3& targetPos)
 	}
 
 	//正規化
-	directionVec_.y_ = 0;
+	directionVec_.y = 0;
 	directionVec_.Normalized();
 
 	//現在のスピードに方向ベクトル足し、ゲームスピードをかける
@@ -153,7 +153,7 @@ void Enemy::WalkToTarget(const Vec3& targetPos)
 void Enemy::CollisionWallAndFloor()
 {
 	//地面と壁との判定
-	OnGroundAndWallUpdate(GetScale().y_, GameVelocityManager::GetInstance().GetVelocity());
+	OnGroundAndWallUpdate(GetScale().y, GameVelocityManager::GetInstance().GetVelocity());
 }
 
 void Enemy::DirectionUpdate(const Vec3& targetPos)
@@ -184,7 +184,7 @@ void Enemy::HPUpdate()
 	//ポリゴンごとに動くように
 	Mesh::PolygonOffset offsetData;
 	offsetData.interval = GetRand(15.0f, 35.0f) * (1.0f - GameVelocityManager::GetInstance().GetVelocity() * 1.5f);
-	offsetData.length = GetRand(-GetScale().x_, GetScale().x_) * 5.5f * max(1.0f - (float)hp_ / (float)HP_TMP_, 0);
+	offsetData.length = GetRand(-GetScale().x, GetScale().x) * 5.5f * max(1.0f - (float)hp_ / (float)HP_TMP_, 0);
 	offsetData.ratio = (1.0f - (float)hp_ / (float)HP_TMP_);
 	Object::SetMeshPolygonOffsetData(offsetData);
 }
@@ -219,12 +219,12 @@ void Enemy::Draw()
 void Enemy::KnockBack(const CollisionInfo& info)
 {
 	//長さ
-	float length = (info.object_->GetScale().x_ + GetScale().x_);
+	float length = (info.object_->GetScale().x + GetScale().x);
 	//距離のベクトル
 	Vec3 distanceVec = GetTrans() - info.object_->GetTrans();
 	//仮
-	distanceVec.y_ = 0;
-	velocity_.y_ = 0;
+	distanceVec.y = 0;
+	velocity_.y = 0;
 	distanceVec.Normalized();
 	//ノックバック
 	velocity_ += distanceVec * length * KNOCK_BACK_POW_;
@@ -235,8 +235,8 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	//武器持っていたら落とす
 	if (weapon_)
 	{
-		distanceVec.y_ = 0.2f;
-		FallWeapon({ -distanceVec.x_ * WEAPON_FALL_VEL_EXTEND_,distanceVec.y_,-distanceVec.z_ * WEAPON_FALL_VEL_EXTEND_ });
+		distanceVec.y = 0.2f;
+		FallWeapon({ -distanceVec.x * WEAPON_FALL_VEL_EXTEND_,distanceVec.y,-distanceVec.z * WEAPON_FALL_VEL_EXTEND_ });
 	}
 }
 
@@ -248,7 +248,7 @@ void Enemy::DamageParticle(const CollisionInfo& info)
 
 		float scaleTmp = GetScale().GetLength();
 
-		Vec3 addPos = Vec3(GetRand(-GetScale().x_, GetScale().x_), GetRand(-GetScale().y_, GetScale().y_), GetRand(-GetScale().z_, GetScale().z_)) / 2.0f;
+		Vec3 addPos = Vec3(GetRand(-GetScale().x, GetScale().x), GetRand(-GetScale().y, GetScale().y), GetRand(-GetScale().z, GetScale().z)) / 2.0f;
 
 		pos += addPos;
 
@@ -270,11 +270,11 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	if (info.object_->GetObjName() == "player")
 	{
 		////長さ
-		float length = (info.object_->GetScale().x_ + GetScale().x_);
+		float length = (info.object_->GetScale().x + GetScale().x);
 		//距離のベクトル
 		Vec3 distanceVec = GetTrans() - info.object_->GetTrans();
 		//仮でyは動かさない
-		distanceVec.y_ = 0;
+		distanceVec.y = 0;
 		distanceVec.Normalized();
 
 		//めり込まないように位置セット(半径＋半径の長さをベクトルの方向を使って足す)
@@ -342,11 +342,11 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	else if (info.object_->GetObjName().find("enemy") != std::string::npos)
 	{
 		//長さ
-		float length = (info.object_->GetScale().x_ + GetScale().x_);
+		float length = (info.object_->GetScale().x + GetScale().x);
 		//距離のベクトル
 		Vec3 distanceVec = GetTrans() - info.object_->GetTrans();
 		//仮
-		distanceVec.y_ = 0;
+		distanceVec.y = 0;
 		distanceVec.Normalized();
 		//位置セット(半径＋半径の長さをベクトルの方向を使って足す)
 		SetTrans(info.object_->GetTrans() + distanceVec * length * 1.001f);
@@ -354,8 +354,8 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		//isCantMove = true;
 
 		//ｙは動かないようにする
-		SetVelocity({ GetVelocity().x_,0,GetVelocity().z_ });
-		info.object_->SetVelocity({ info.object_->GetVelocity().x_,0,info.object_->GetVelocity().z_ });
+		SetVelocity({ GetVelocity().x,0,GetVelocity().z });
+		info.object_->SetVelocity({ info.object_->GetVelocity().x,0,info.object_->GetVelocity().z });
 		//二つのベクトルの合計の長さ
 		float addLength = GetVelocity().GetLength() + info.object_->GetVelocity().GetLength();
 		//自分のスピードのベクトルの長さの割合（合計の長さで割る（0～1.0f））

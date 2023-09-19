@@ -92,14 +92,14 @@ void Player::DirectionUpdate()
 
 	//回転
 	Vec3 rotMove = {
-		-vel.y_ * ANGLE_VEL_EXTEND_,
-		vel.x_ * ANGLE_VEL_EXTEND_,
+		-vel.y * ANGLE_VEL_EXTEND_,
+		vel.x * ANGLE_VEL_EXTEND_,
 		0
 	};
 	//角度を足す
 	cameraRot_ = (cameraRot_ + rotMove);
-	cameraRot_.x_ = (min(cameraRot_.x_, PI / 2.0f * 0.9f));
-	cameraRot_.x_ = (max(cameraRot_.x_, -PI / 2.0f * 0.9f));
+	cameraRot_.x = (min(cameraRot_.x, PI / 2.0f * 0.9f));
+	cameraRot_.x = (max(cameraRot_.x, -PI / 2.0f * 0.9f));
 
 	frontVec_ = GetFrontVecTmp();
 	//回転
@@ -126,21 +126,21 @@ void Player::Move()
 
 	Vec3 velocity_ = { 0,0,0 };
 	//向いてる方向に移動
-	if (input->KeyPush(DIK_UPARROW) || input->KeyPush(DIK_W) || PadInput::GetInstance().GetLeftStickTilt().y_ < 0)
+	if (input->KeyPush(DIK_UPARROW) || input->KeyPush(DIK_W) || PadInput::GetInstance().GetLeftStickTilt().y < 0)
 	{
-		velocity_ += { frontVec_.x_, 0, frontVec_.z_ };
+		velocity_ += { frontVec_.x, 0, frontVec_.z };
 	}
-	if (input->KeyPush(DIK_DOWNARROW) || input->KeyPush(DIK_S) || PadInput::GetInstance().GetLeftStickTilt().y_ > 0)
+	if (input->KeyPush(DIK_DOWNARROW) || input->KeyPush(DIK_S) || PadInput::GetInstance().GetLeftStickTilt().y > 0)
 	{
-		velocity_ += { -frontVec_.x_, 0, -frontVec_.z_ };
+		velocity_ += { -frontVec_.x, 0, -frontVec_.z };
 	}
-	if (input->KeyPush(DIK_LEFTARROW) || input->KeyPush(DIK_A) || PadInput::GetInstance().GetLeftStickTilt().y_ < 0)
+	if (input->KeyPush(DIK_LEFTARROW) || input->KeyPush(DIK_A) || PadInput::GetInstance().GetLeftStickTilt().y < 0)
 	{
-		velocity_ += { -rightVec_.x_, 0, -rightVec_.z_ };
+		velocity_ += { -rightVec_.x, 0, -rightVec_.z };
 	}
-	if (input->KeyPush(DIK_RIGHTARROW) || input->KeyPush(DIK_D) || PadInput::GetInstance().GetLeftStickTilt().y_ > 0)
+	if (input->KeyPush(DIK_RIGHTARROW) || input->KeyPush(DIK_D) || PadInput::GetInstance().GetLeftStickTilt().y > 0)
 	{
-		velocity_ += { rightVec_.x_, 0, rightVec_.z_ };
+		velocity_ += { rightVec_.x, 0, rightVec_.z };
 	}
 
 	//ゲームスピードを移動で足す(ジャンプ中でスペース押してなければ)

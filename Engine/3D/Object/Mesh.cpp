@@ -82,7 +82,7 @@ void Mesh::CalculateSmoothedVertexNormals()
 		// 全頂点の法線を平均する
 		XMVECTOR normal = {};
 		for (uint16_t index : v) {
-			normal += XMVectorSet(vertices_[index].normal.x_, vertices_[index].normal.y_, vertices_[index].normal.z_, 0);
+			normal += XMVectorSet(vertices_[index].normal.x, vertices_[index].normal.y, vertices_[index].normal.z, 0);
 		}
 		normal = XMVector3Normalize(normal / (float)v.size());
 
@@ -119,13 +119,13 @@ void Mesh::CalculateTangent()
 		Vec2 deltaUV1 = uv1 - uv0;
 		Vec2 deltaUV2 = uv2 - uv0;
 
-		float r = 1.0f / (deltaUV1.x_ * deltaUV2.y_ - deltaUV1.y_ * deltaUV2.x_);
-		Vec3 tangent = (deltaPos1 * deltaUV2.y_ - deltaPos2 * deltaUV1.y_) * r;
-		Vec3 biTangent = (deltaPos2 * deltaUV1.x_ - deltaPos1 * deltaUV2.x_) * r;
+		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+		Vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+		Vec3 biTangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
 
-		Vec3 n = { vertices_[index0].normal.x_,vertices_[index0].normal.y_,vertices_[index0].normal.z_ };
-		Vec3 t = { tangent.x_,tangent.y_,tangent.z_ };
-		Vec3 b = { biTangent.x_,biTangent.y_,biTangent.z_ };
+		Vec3 n = { vertices_[index0].normal.x,vertices_[index0].normal.y,vertices_[index0].normal.z };
+		Vec3 t = { tangent.x,tangent.y,tangent.z };
+		Vec3 b = { biTangent.x,biTangent.y,biTangent.z };
 
 		// Gram-Schmidt orthogonalize
 		t = (t - n * n.Dot(t)).GetNormalized();
@@ -135,9 +135,9 @@ void Mesh::CalculateTangent()
 			t = t * -1.0f;
 		}
 
-		vertices_[index0].tangent = { t.x_,t.y_,t.z_,0 };
-		vertices_[index1].tangent = { t.x_,t.y_,t.z_,0 };
-		vertices_[index2].tangent = { t.x_,t.y_,t.z_,0 };
+		vertices_[index0].tangent = { t.x,t.y,t.z,0 };
+		vertices_[index1].tangent = { t.x,t.y,t.z,0 };
+		vertices_[index2].tangent = { t.x,t.y,t.z,0 };
 	}
 }
 
@@ -207,11 +207,11 @@ void Mesh::SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt)
 
 	//マテリアル
 	XMFLOAT3 amb = material_->ambient_;
-	material_->ambient_ = material_->ambient_ * materialExtend.x_;
+	material_->ambient_ = material_->ambient_ * materialExtend.x;
 	XMFLOAT3 diff = material_->diffuse_;
-	material_->diffuse_ = material_->diffuse_ * materialExtend.y_;
+	material_->diffuse_ = material_->diffuse_ * materialExtend.y;
 	XMFLOAT3 spe = material_->specular_;
-	material_->specular_ = material_->specular_ * materialExtend.z_;
+	material_->specular_ = material_->specular_ * materialExtend.z;
 	//更新
 	material_->Update();
 

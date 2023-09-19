@@ -390,9 +390,9 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 			{
 				//座標
 				MyControlPoint contrP = myControlPoints[index];
-				vertex.pos.x_ = contrP.pos.x;
-				vertex.pos.y_ = contrP.pos.y;
-				vertex.pos.z_ = contrP.pos.z;
+				vertex.pos.x = contrP.pos.x;
+				vertex.pos.y = contrP.pos.y;
+				vertex.pos.z = contrP.pos.z;
 
 				//ボーン
 				for (int i = 0; i < Mesh::S_MAX_BONE_INDICES_; i++)
@@ -407,9 +407,9 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 			//取得できれば
 			if (fbxMesh->GetPolygonVertexNormal(i, j, normal))
 			{
-				vertex.normal.x_ = (float)normal[0];
-				vertex.normal.y_ = (float)normal[1];
-				vertex.normal.z_ = (float)normal[2];
+				vertex.normal.x = (float)normal[0];
+				vertex.normal.y = (float)normal[1];
+				vertex.normal.z = (float)normal[2];
 			}
 
 			//テクスチャUV読み込み
@@ -421,8 +421,8 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 				//0番決め打ちで読み込み（現在は1モデルに1テクスチャのみなので）
 				if (fbxMesh->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
 				{
-					vertex.uv.x_ = (float)uvs[0];
-					vertex.uv.y_ = (float)uvs[1];
+					vertex.uv.x = (float)uvs[0];
+					vertex.uv.y = (float)uvs[1];
 				}
 			}
 

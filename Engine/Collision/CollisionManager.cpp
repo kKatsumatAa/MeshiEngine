@@ -12,6 +12,20 @@ CollisionManager* CollisionManager::GetInstance()
 	return &sInstance;
 }
 
+void CollisionManager::AddCollider(BaseCollider* collider)
+{
+	//2Dの場合は2D用の配列に追加
+	if (collider->GetIs2D())
+	{
+		colliders2D_.push_front(collider);
+	}
+	else
+	{
+		colliders3D_.push_front(collider);
+	}
+}
+
+//----------------------------------------------------------------------------------------
 bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDistance)
 {
 	//全属性を有効にして
@@ -30,19 +44,19 @@ bool CollisionManager::Raycast(const Ray& ray, uint16_t attribute, RaycastHit* h
 	//今までで最も近いコライダーとの交点を記録する変数
 	XMVECTOR inter;
 
-	// 全てのコライダーと総当りチェック
-	it = colliders_.begin();
-	for (; it != colliders_.end(); ++it) {
+	// 全ての3Dコライダーと総当りチェック(colAが相手)
+	it = colliders3D_.begin();
+	for (; it != colliders3D_.end(); ++it) {
 		BaseCollider* colA = *it;
 
 		//属性が合わなければスキップする
-		if (!(colA->attribute_ & attribute))
+		if (!(colA->attribute_ & attribute) || !colA->isValid_)
 		{
 			continue;
 		}
 
 		//球の場合
-		if (colA->GetShapeType() == COLLISIONSHAPE_SPHERE && colA->GetIsValid() && !colA->GetIs2D()) {
+		if (colA->GetShapeType() == COLLISIONSHAPE_SPHERE) {
 			Sphere* sphere = dynamic_cast<Sphere*>(colA);
 
 			float tempDistance;
@@ -61,7 +75,7 @@ bool CollisionManager::Raycast(const Ray& ray, uint16_t attribute, RaycastHit* h
 		}
 
 		//面の場合
-		if (colA->GetShapeType() == COLLISIONSHAPE_PLANE && colA->GetIsValid() && !colA->GetIs2D()) {
+		if (colA->GetShapeType() == COLLISIONSHAPE_PLANE) {
 			Plane* plane = dynamic_cast<Plane*>(colA);
 
 			float tempDistance;
@@ -80,7 +94,7 @@ bool CollisionManager::Raycast(const Ray& ray, uint16_t attribute, RaycastHit* h
 		}
 
 		//三角の場合
-		if (colA->GetShapeType() == COLLISIONSHAPE_TRIANGLE && colA->GetIsValid() && !colA->GetIs2D()) {
+		if (colA->GetShapeType() == COLLISIONSHAPE_TRIANGLE) {
 			Triangle* triangle = dynamic_cast<Triangle*>(colA);
 
 			float tempDistance;
@@ -99,7 +113,7 @@ bool CollisionManager::Raycast(const Ray& ray, uint16_t attribute, RaycastHit* h
 		}
 
 		//メッシュコライダーの場合
-		if (colA->GetShapeType() == COLLISIONSHAPE_MESH && colA->GetIsValid() && !colA->GetIs2D()) {
+		if (colA->GetShapeType() == COLLISIONSHAPE_MESH) {
 			MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(colA);
 
 			float tempDistance;
@@ -136,12 +150,14 @@ bool CollisionManager::RaycastUtil(const Vec3& endPos, const Vec3& startPos, uin
 	float length = dir.GetLength();
 	dir.Normalized();
 
-	ray.dir = { dir.x_,dir.y_,dir.z_ };
-	ray.start = { startPos.x_,startPos.y_,startPos.z_ };
+	ray.dir = { dir.x,dir.y,dir.z };
+	ray.start = { startPos.x,startPos.y,startPos.z };
 
 	return Raycast(ray, attribute, info, length);
 }
 
+
+//----------------------------------------------------------------------------------------------------------
 void CollisionManager::QuerySphere(const Sphere& sphere, QueryCallback* callBack, uint16_t attribute)
 {
 	assert(callBack);
@@ -149,8 +165,8 @@ void CollisionManager::QuerySphere(const Sphere& sphere, QueryCallback* callBack
 	std::forward_list<BaseCollider*>::iterator it;
 
 	//全てのコライダーと総当たりチェック
-	it = colliders_.begin();
-	for (; it != colliders_.end(); ++it)
+	it = colliders3D_.begin();
+	for (; it != colliders3D_.end(); ++it)
 	{
 		BaseCollider* col = *it;
 
@@ -207,21 +223,29 @@ void CollisionManager::QuerySphere(const Sphere& sphere, QueryCallback* callBack
 	}
 }
 
+//-----------------------------------------------------
 void CollisionManager::CheckAllCollisions()
 {
-	std::forward_list<BaseCollider*>::iterator itA;
-	std::forward_list<BaseCollider*>::iterator itB;
+	//3Dのすべての当たり判定チェック
+	CheckAllCollision3D();
+	//2Dのすべての当たり判定チェック
+	CheckAllCollision2D();
+}
 
-	//全ての組み合わせについて総当たりチェック
-	itA = colliders_.begin();
-	for (; itA != colliders_.end(); ++itA)
+//3Dの判定
+void CollisionManager::CheckAllCollision3D()
+{
+	std::forward_list<BaseCollider*>::iterator itrB;
+	std::forward_list<BaseCollider*>::iterator itrA = colliders3D_.begin();
+
+	for (; itrA != colliders3D_.end(); ++itrA)
 	{
-		itB = itA;
-		++itB;
-		for (; itB != colliders_.end(); ++itB)
+		itrB = itrA;
+		++itrB;
+		for (; itrB != colliders3D_.end(); ++itrB)
 		{
-			BaseCollider* colA = *itA;
-			BaseCollider* colB = *itB;
+			BaseCollider* colA = *itrA;
+			BaseCollider* colB = *itrB;
 
 			CollisionShapeType typeA = colA->GetShapeType();
 			CollisionShapeType typeB = colB->GetShapeType();
@@ -230,9 +254,7 @@ void CollisionManager::CheckAllCollisions()
 			if ((colA->GetShapeType() == COLLISIONSHAPE_SPHERE &&
 				colB->GetShapeType() == COLLISIONSHAPE_SPHERE)
 				&&
-				(colA->GetIsValid() && colB->GetIsValid())
-				&&
-				(!colA->GetIs2D() && !colB->GetIs2D()))
+				(colA->GetIsValid() && colB->GetIsValid()))
 			{
 				Sphere* SphereA = dynamic_cast<Sphere*>(colA);
 				Sphere* SphereB = dynamic_cast<Sphere*>(colB);
@@ -247,9 +269,7 @@ void CollisionManager::CheckAllCollisions()
 			//球と面の場合
 			if ((typeA == COLLISIONSHAPE_PLANE || typeB == COLLISIONSHAPE_PLANE)
 				&&
-				(colA->GetIsValid() && colB->GetIsValid())
-				&&
-				(!colA->GetIs2D() && !colB->GetIs2D()))
+				(colA->GetIsValid() && colB->GetIsValid()))
 			{
 				Sphere* SphereA = nullptr;
 				Plane* PlaneB = nullptr;
@@ -278,9 +298,7 @@ void CollisionManager::CheckAllCollisions()
 			//球と三角形の場合
 			if ((typeA == COLLISIONSHAPE_TRIANGLE || typeB == COLLISIONSHAPE_TRIANGLE)
 				&&
-				(colA->GetIsValid() && colB->GetIsValid())
-				&&
-				(!colA->GetIs2D() && !colB->GetIs2D()))
+				(colA->GetIsValid() && colB->GetIsValid()))
 			{
 				Sphere* SphereA = nullptr;
 				Triangle* TriangleB = nullptr;
@@ -309,9 +327,7 @@ void CollisionManager::CheckAllCollisions()
 			//メッシュと球の判定
 			if ((typeA == COLLISIONSHAPE_MESH || typeB == COLLISIONSHAPE_MESH)
 				&&
-				(colA->GetIsValid() && colB->GetIsValid())
-				&&
-				(!colA->GetIs2D() && !colB->GetIs2D()))
+				(colA->GetIsValid() && colB->GetIsValid()))
 			{
 				Sphere* SphereA = nullptr;
 				MeshCollider* meshCollider = nullptr;
@@ -341,7 +357,45 @@ void CollisionManager::CheckAllCollisions()
 	}
 }
 
+void CollisionManager::CheckAllCollision2D()
+{
+	std::forward_list<BaseCollider*>::iterator itrB;
+	std::forward_list<BaseCollider*>::iterator itrA = colliders2D_.begin();
+
+	//2Dのみ
+	for (; itrA != colliders2D_.end(); ++itrA)
+	{
+		itrB = itrA;
+		++itrB;
+		for (; itrB != colliders2D_.end(); ++itrB)
+		{
+			BaseCollider* colA = *itrA;
+			BaseCollider* colB = *itrB;
+
+			CollisionShapeType typeA = colA->GetShapeType();
+			CollisionShapeType typeB = colB->GetShapeType();
+
+			//ともに円の場合
+			if ((typeA == COLLISIONSHAPE_CIRCLE &&
+				typeB == COLLISIONSHAPE_CIRCLE)
+				&&
+				(colA->GetIsValid() && colB->GetIsValid()))
+			{
+				Circle* CircleA = dynamic_cast<Circle*>(colA);
+				Circle* CircleB = dynamic_cast<Circle*>(colB);
+				DirectX::XMVECTOR inter;
+				if (Collision::CheckCircle2Circle(*CircleA, *CircleB, &inter))
+				{
+					colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
+					colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
+				}
+			}
+		}
+	}
+}
+
+//-----------------------------------------------------------------
 void CollisionManager::Initialize()
 {
-	colliders_.clear();
+	colliders3D_.clear();
 }

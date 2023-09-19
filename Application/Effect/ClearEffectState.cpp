@@ -6,7 +6,7 @@ void ClearEffectState::SpriteUpdate(const std::string& soundName, const std::str
 {
 	t_ = min((float)timer_ / (float)TIMER_MAX_, 1.0f);
 
-	scale_ = LerpVec3({ MAX_SCALE_,0,0 }, { 1.0f,0,0 }, EaseIn(t_)).x_;
+	scale_ = LerpVec3({ MAX_SCALE_,0,0 }, { 1.0f,0,0 }, EaseIn(t_)).x;
 
 	alpha_ = t_;
 
@@ -26,8 +26,10 @@ void ClearEffectState::SpriteUpdate(const std::string& soundName, const std::str
 
 void ClearEffectState::SpriteDraw()
 {
-	texObj_.DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },
-		{ scale_,scale_ }, { 2.5f,2.5f,2.5f,alpha_ }, texHandle_, { 0.5f,0.5f });
+	texObj_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
+	texObj_.SetScale({ scale_,scale_ ,1.0f });
+
+	texObj_.DrawBoxSprite(nullptr, texHandle_, { 2.5f,2.5f,2.5f,alpha_ }, { 0.5f,0.5f });
 }
 
 std::unique_ptr<ClearEffectState> ClearEffectState::GetState(const std::string& name)
@@ -51,7 +53,7 @@ std::unique_ptr<ClearEffectState> ClearEffectState::GetState(const std::string& 
 void ClearEffectStateHyper::Initialize()
 {
 	//ループをオンにしないと止まったかどうかの関数使えない
-	Sound::GetInstance().PlayWave(SOUND_NAME_, VOLUME_TMP_, true);
+	Sound::GetInstance().PlayWave(SOUND_NAME_, VOLUME_TMP_);
 
 	texHandle_ = TextureManager::GetInstance().LoadGraph("hyper.png");
 }
@@ -72,7 +74,7 @@ void ClearEffectStateHyper::Draw()
 void ClearEffectStateHot::Initialize()
 {
 	//ループをオンにしないと止まったかどうかの関数使えない
-	Sound::GetInstance().PlayWave(SOUND_NAME_, VOLUME_TMP, true);
+	Sound::GetInstance().PlayWave(SOUND_NAME_, VOLUME_TMP);
 
 	texHandle_ = TextureManager::LoadGraph("hot.png");
 }

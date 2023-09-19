@@ -52,10 +52,10 @@ void ObjectManager::DebugUpdate()
 		Vec2toNearFarPos(MouseInput::GetInstance().GetCurcorPos(), nearPos, farPos, camera->GetViewMat(), camera->GetProjMat());
 
 		Ray ray;
-		ray.start = { camera->GetEye().x_,camera->GetEye().y_,camera->GetEye().z_ };
+		ray.start = { camera->GetEye().x,camera->GetEye().y,camera->GetEye().z };
 
 		Vec3 dirV = (farPos - camera->GetEye()).GetNormalized();
-		ray.dir = { dirV.x_,dirV.y_,dirV.z_ };
+		ray.dir = { dirV.x,dirV.y,dirV.z };
 
 		RaycastHit info;
 		//‰½‚©‚ ‚Á‚½‚ç
@@ -156,7 +156,14 @@ void ObjectManager::PostUpdate()
 				}
 
 				itM->second.erase(itG);
-				itG = itM->second.begin();
+				if (itM->second.size())
+				{
+					itG = itM->second.begin();
+				}
+				else
+				{
+					break;
+				}
 			}
 		}
 	}

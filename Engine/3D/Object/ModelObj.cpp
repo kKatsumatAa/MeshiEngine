@@ -116,11 +116,11 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 		if (key == "v") {
 			// X,Y,Z座標読み込み
 			Vec3 position{};
-			line_stream >> position.x_;
-			line_stream >> position.y_;
-			line_stream >> position.z_;
+			line_stream >> position.x;
+			line_stream >> position.y;
+			line_stream >> position.z;
 			//逆向きに読み込まれちゃうので
-			position.z_ *= -1.0f;
+			position.z *= -1.0f;
 			positions.emplace_back(position);
 		}
 		// 先頭文字列がvtならテクスチャ
@@ -128,10 +128,10 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 		{
 			// U,V成分読み込み
 			Vec2 texcoord{};
-			line_stream >> texcoord.x_;
-			line_stream >> texcoord.y_;
+			line_stream >> texcoord.x;
+			line_stream >> texcoord.y;
 			// V方向反転
-			texcoord.y_ = 1.0f - texcoord.y_;
+			texcoord.y = 1.0f - texcoord.y;
 			// テクスチャ座標データに追加
 			texcoords.emplace_back(texcoord);
 		}
@@ -139,11 +139,11 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 		if (key == "vn") {
 			// X,Y,Z成分読み込み
 			Vec3 normal{};
-			line_stream >> normal.x_;
-			line_stream >> normal.y_;
-			line_stream >> normal.z_;
+			line_stream >> normal.x;
+			line_stream >> normal.y;
+			line_stream >> normal.z;
 			//逆向きに読み込まれちゃうので
-			normal.z_ *= -1.0f;
+			normal.z *= -1.0f;
 			// 法線ベクトルデータに追加
 			normals.emplace_back(normal);
 		}

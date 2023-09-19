@@ -1,5 +1,6 @@
 #pragma once
 #include<DirectXMath.h>
+#include"Vec2.h"
 
 const float PI = 3.1415f;
 
@@ -9,15 +10,21 @@ private:
 
 
 public:
-	float x_;
-	float y_;
-	float z_;
+	float x;
+	float y;
+	float z;
 
 	Vec3()
-		:x_(0), y_(0), z_(0)
+		:x(0), y(0), z(0)
 	{}
 	Vec3(float x, float y, float z)
-		:x_(x), y_(y), z_(z)
+		:x(x), y(y), z(z)
+	{}
+	Vec3(const Vec2& xy, float z)
+		:x(xy.x), y(xy.y), z(z)
+	{}
+	Vec3(float x, const Vec2& yz)
+		:x(x), y(yz.x), z(yz.y)
 	{}
 
 	//ï÷óòä÷êî

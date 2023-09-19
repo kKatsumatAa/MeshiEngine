@@ -178,7 +178,14 @@ void Object::Update()
 
 void Object::Draw()
 {
-	DrawModel(nullptr);
+	if (model_)
+	{
+		DrawModel(nullptr);
+	}
+	else if (sprite_)
+	{
+		DrawBoxSprite(nullptr, NULL, { 1.0f,1.0f,1.0f,1.0f }, { 0.5f,0.5f });
+	}
 }
 
 void Object::EffectUpdate()
@@ -214,6 +221,12 @@ void Object::SetCollider(std::unique_ptr<BaseCollider> collider)
 	CollisionManager::GetInstance()->AddCollider(collider_.get());
 	//行列,コライダーの更新
 	Object::WorldMatColliderUpdate();
+
+	if (collider_ && collider_->GetIs2D() && sprite_ == nullptr)
+	{
+		sprite_ = std::make_unique<Sprite>();
+		sprite_->Initialize();
+	}
 }
 
 void Object::SetColliderIsValid(bool isValid)
@@ -238,8 +251,8 @@ Object::~Object()
 {
 	constBuffMaterial_.Reset();
 	constBuffSkin_.Reset();
+	effectFlagsBuff_.Reset();
 
-	//object毎に消えるのでいらないかも
 	if (collider_.get())
 	{
 		CollisionManager::GetInstance()->RemoveCollider(collider_.get());
@@ -691,9 +704,9 @@ void Object::DrawBox(Camera* camera, const Vec4& color, uint64_t textureHandle, 
 	Update(BOX, pipelineNum, textureHandle, &cbt_, camera);
 }
 
-void Object::DrawBoxSprite(const Vec2& pos, const Vec2& scale,
-	const Vec4& color, uint64_t textureHandle, const Vec2& ancorUV, bool isReverseX, bool isReverseY,
-	float rotation, int32_t pipelineNum)
+void Object::DrawBoxSprite(Camera2D* camera, uint64_t textureHandle, const Vec4& color,
+	const Vec2& ancorUV, bool isReverseX, bool isReverseY,
+	int32_t pipelineNum)
 {
 	if (sprite_.get() == nullptr)
 	{
@@ -701,14 +714,15 @@ void Object::DrawBoxSprite(const Vec2& pos, const Vec2& scale,
 		//スプライトクラスの初期化
 		sprite_->Initialize();
 	}
-	sprite_->Update(pos, scale, color, textureHandle, ancorUV, isReverseX, isReverseY, rotation, &cbt_, constMapMaterial_);
+	sprite_->Update(camera, { GetTrans().x, GetTrans().y }, { GetScale().x,GetScale().y },
+		color, textureHandle, ancorUV, isReverseX, isReverseY, GetRot(), &cbt_, constMapMaterial_);
 
 	Update(SPRITE, pipelineNum, textureHandle, &cbt_, nullptr);
 }
 
-void Object::DrawClippingBoxSprite(const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	const Vec4& color, uint64_t textureHandle, bool isPosLeftTop, bool isReverseX, bool isReverseY,
-	float rotation, int32_t pipelineNum)
+void Object::DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+	uint64_t textureHandle, const Vec4& color, bool isPosLeftTop, bool isReverseX, bool isReverseY,
+	int32_t pipelineNum)
 {
 	if (sprite_.get() == nullptr)
 	{
@@ -716,8 +730,9 @@ void Object::DrawClippingBoxSprite(const Vec2& leftTop, const Vec2& scale, const
 		//スプライトクラスの初期化
 		sprite_->Initialize();
 	}
-	sprite_->UpdateClipping(leftTop, scale, UVleftTop, UVlength, color, textureHandle,
-		isPosLeftTop, isReverseX, isReverseY, rotation, &cbt_, constMapMaterial_);
+	sprite_->UpdateClipping(camera, { GetTrans().x,GetTrans().y }, { GetScale().x,GetScale().y },
+		UVleftTop, UVlength, color, textureHandle,
+		isPosLeftTop, isReverseX, isReverseY, { GetRot() }, &cbt_, constMapMaterial_);
 
 	Update(SPRITE, pipelineNum, textureHandle, &cbt_, nullptr);
 }
@@ -764,7 +779,7 @@ void Object::DrawModel(IModel* model, Camera* camera,
 		}
 		else
 		{
-			assert(false);
+			return;
 		}
 	}
 
@@ -781,7 +796,13 @@ void Object::DrawModel(IModel* model, Camera* camera,
 
 void Object::DrawImGui(std::function<void()>imguiF)
 {
-	ImGui::Begin(objName_.c_str());
+	std::string str = "NO_NAME";
+	if (objName_.size())
+	{
+		str = objName_;
+	}
+
+	ImGui::Begin(str.c_str());
 
 	//生死フラグ
 	ImGui::Checkbox("isAlive: ", &isAlive_);
@@ -793,9 +814,9 @@ void Object::DrawImGui(std::function<void()>imguiF)
 	//トランスなど
 	if (ImGui::TreeNode("TransScaleRot")) {
 
-		ImGui::SliderFloat3("Trans: ", &worldMat_->trans_.x_, -100.0f, 100.0f);
-		ImGui::SliderFloat3("Scale: ", &worldMat_->scale_.x_, 0, 10.0f);
-		ImGui::SliderFloat3("Rot: ", &worldMat_->rot_.x_, 0, PI * 2.0f);
+		ImGui::DragFloat3("Trans: ", &worldMat_->trans_.x);
+		ImGui::DragFloat3("Scale: ", &worldMat_->scale_.x);
+		ImGui::DragFloat3("Rot: ", &worldMat_->rot_.x);
 
 		ImGui::TreePop();
 	}
@@ -803,8 +824,8 @@ void Object::DrawImGui(std::function<void()>imguiF)
 	//正面ベクトル
 	if (ImGui::TreeNode("FrontVec")) {
 
-		ImGui::Text("FrontVec: %.2f %.2f %.2f", frontVec_.x_, frontVec_.y_, frontVec_.z_);
-		ImGui::Text("FrontVecTmp: %.2f %.2f %.2f", frontVecTmp_.x_, frontVecTmp_.y_, frontVecTmp_.z_);
+		ImGui::Text("FrontVec: %.2f %.2f %.2f", frontVec_.x, frontVec_.y, frontVec_.z);
+		ImGui::Text("FrontVecTmp: %.2f %.2f %.2f", frontVecTmp_.x, frontVecTmp_.y, frontVecTmp_.z);
 
 		ImGui::TreePop();
 	}

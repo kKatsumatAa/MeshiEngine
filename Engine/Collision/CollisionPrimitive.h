@@ -4,6 +4,8 @@
 /// </summary>
 
 #include<DirectXMath.h>
+#include"Vec2.h"
+#include"Vec3.h"
 
 /// <summary>
 /// 球
@@ -69,3 +71,40 @@ public:
 	//方向
 	DirectX::XMVECTOR dir = { 1.0f,0,0,0 };
 };
+
+
+#pragma region 2D
+
+/// <summary>
+/// 円
+/// </summary>
+struct Circle
+{
+public:
+	virtual ~Circle() { ; }
+
+public:
+	//中心座標
+	Vec2 center = { 0,0 };
+	//半径
+	float radius = 1.0f;
+};
+
+/// <summary>
+/// 矩形
+/// </summary>
+struct MyRectangle
+{
+public:
+	virtual ~MyRectangle() { ; }
+
+public:
+	//各頂点
+	Vec2 leftUp = { -1.0f,-1.0f };
+	Vec2 leftDown = { -1.0f,1.0f };
+	Vec2 rightUp = { 1.0f,-1.0f };
+	Vec2 rightDown = { 1.0f,1.0f };
+};
+
+
+#pragma endregion

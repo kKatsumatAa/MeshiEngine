@@ -46,10 +46,10 @@ void GameVelocityManager::Update()
 	//（二つ目の）画面の大きさも
 	PostEffectManager::GetInstance().GetPostEffect2()->SetPera2Extend(
 		LerpVec3({ PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ ,0,0 }, { 1.0f,0,0 },
-			(gameVelocity_ / GAME_VELOCITY_MAX_)).x_);
+			(gameVelocity_ / GAME_VELOCITY_MAX_)).x);
 	//三つ目の色も
 	Vec3 col = LerpVec3(VEL_COL_MIN_, { 1.0f,1.0f,1.0f }, gameVelocity_);
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.color = { col.x_,col.y_,col.z_,1.0f };
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.color = { col.x,col.y,col.z,1.0f };
 
 	if (gameVelocity_ > GAME_VELOCITY_MIN_)
 	{

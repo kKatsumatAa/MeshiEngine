@@ -24,8 +24,8 @@ void ViewMat::Update()
 
 void ViewMat::SetMat()
 {
-	XMFLOAT3 eye2 = { eye_.x_,eye_.y_ ,eye_.z_ };
-	XMFLOAT3 target2 = { target_.x_,target_.y_ ,target_.z_ };
-	XMFLOAT3 up2 = { up_.x_,up_.y_ ,up_.z_ };
+	XMFLOAT3 eye2 = { eye_.x,eye_.y ,eye_.z };
+	XMFLOAT3 target2 = { target_.x,target_.y ,target_.z };
+	XMFLOAT3 up2 = { up_.x,up_.y ,up_.z };
 	matView_ = DirectX::XMMatrixLookAtLH(XMLoadFloat3(&eye2), XMLoadFloat3(&target2), XMLoadFloat3(&up2));
 }

@@ -36,10 +36,16 @@ void DrawIntNumImage::SetNum(int32_t num, const Vec2& pos, const Vec2& sizeUV, c
 		//余りを出して次の桁で使う
 		numRemainder_ = numRemainder_ % (int)std::pow(10, i);
 
-		//その桁があるか、前の桁があったら,0だったら
-		if (numDigit_ > 0 || isStartDigit_ == true || i == 0)
+		//その桁があるか、前の桁があったら,0だったら、0一桁だったら
+		if (numDigit_ > 0 || isStartDigit_ == true ||
+			(numDigit_ == 0 && numRemainder_ == 0 && i == _countof(numImages_) - 1))
 		{
 			isStartDigit_ = true;
+
+			if ((numDigit_ == 0 && numRemainder_ == 0 && i == _countof(numImages_) - 1))
+			{
+				isStartDigit_ = false;
+			}
 
 			numImages_[i].num = numDigit_;
 			numImages_[i].pos = pos;
@@ -49,7 +55,10 @@ void DrawIntNumImage::SetNum(int32_t num, const Vec2& pos, const Vec2& sizeUV, c
 			numImages_[i].numImageSize = numImageSize;
 			numImages_[i].isTrue = true;
 
-			numCount_++;
+			if (numCount_ < i)
+			{
+				numCount_ = i;
+			}
 		}
 		else
 		{
@@ -58,27 +67,25 @@ void DrawIntNumImage::SetNum(int32_t num, const Vec2& pos, const Vec2& sizeUV, c
 	}
 }
 
-void DrawIntNumImage::Draw()
+void DrawIntNumImage::Draw(Camera2D* camera)
 {
-	if (isStartDigit_)
+	//一番大きい桁からスタート
+	for (int32_t i = numCount_; i >= 0; i--)
 	{
-		//一番大きい桁からスタート
-		for (int32_t i = numCount_ - 1; i >= 0; i--)
+		if (numImages_[i].isTrue)
 		{
-			if (numImages_[i].isTrue)
-			{
-				//桁の数も考慮して、中心座標からの距離を出し、真の座標とする　　　　　　　　　　//大きい桁からスタートなので逆順にして、左から並べる（座標）
-				Vec2 pos = { numImages_[i].pos.x_ + numImages_[i].numImageSize.x_ / 2.0f * ((float)(numCount_ - 1) - (float)i - (float)numCount_ / 2.0f) * numImages_[i].scale
-					+ (numImages_[i].numImageSize.x_ / 4.0f * numImages_[i].scale)
-					,numImages_[i].pos.y_ };
+			//桁の数も考慮して、左上座標
+			Vec2 pos = { numImages_[i].pos.x + numImages_[i].numImageSize.x * ((float)(numCount_) - (float)i)
+				* numImages_[i].scale
+				,numImages_[i].pos.y };
 
-				pos.x_ -= numImages_[i].numImageSize.x_ / 2.0f * numImages_[i].scale;
-				pos.y_ -= numImages_[i].numImageSize.y_ / 2.0f * numImages_[i].scale;
 
-				numImages_[i].obj.DrawClippingBoxSprite({ pos.x_,pos.y_ }, { numImages_[i].scale,numImages_[i].scale },
-					{ numImages_[i].num * numImages_[i].sizeUV.x_,0 },
-					{ numImages_[i].sizeUV.x_,numImages_[i].sizeUV.y_ }, numImages_[i].color, texhandle_, true);
-			}
+
+			numImages_[i].obj.SetTrans({ pos.x, pos.y ,0 });
+			numImages_[i].obj.SetScale({ numImages_[i].scale, numImages_[i].scale,1.0f });
+
+			numImages_[i].obj.DrawClippingBoxSprite(camera, { numImages_[i].num * numImages_[i].sizeUV.x,0 },
+				{ numImages_[i].sizeUV.x,numImages_[i].sizeUV.y }, texhandle_, numImages_[i].color, true);
 		}
 	}
 }

@@ -36,15 +36,18 @@ void PlayerUIState::Update()
 {
 	float t = min((float)timer_ / (float)TIMER_MAX_, 1.0f);
 
-	scale_ = LerpVec3({ SCALE_MAX_,0,0 }, { 1.0f,0,0 }, EaseInOutBack(t)).x_;
+	scale_ = LerpVec3({ SCALE_MAX_,0,0 }, { 1.0f,0,0 }, EaseInOutBack(t)).x;
 
 	timer_++;
 }
 
 void PlayerUIState::DrawSprite()
 {
-	reticleObj_.DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },
-		{ scale_,scale_ }, color_, reticleTexHandle_, { 0.5f,0.5f }, false, false, angle_);
+	reticleObj_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
+	reticleObj_.SetScale({ scale_,scale_ ,1.0f });
+	reticleObj_.SetRot({ 0,0 ,angle_ });
+
+	reticleObj_.DrawBoxSprite(nullptr, reticleTexHandle_, color_, { 0.5f,0.5f }, false, false);
 }
 
 

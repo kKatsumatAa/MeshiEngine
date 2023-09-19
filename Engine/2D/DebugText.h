@@ -23,8 +23,8 @@ private:
 	static const int32_t S_FONT_INDEX_MAX_Y_ = 7;
 
 	Object sprites_[S_MAX_CHAR_COUNT_];
-	Vec2 leftTop_[S_MAX_CHAR_COUNT_]; 
-	float scale_[S_MAX_CHAR_COUNT_]; 
+	Vec2 leftTop_[S_MAX_CHAR_COUNT_];
+	float scale_[S_MAX_CHAR_COUNT_];
 	XMFLOAT2 UVleftTop_[S_MAX_CHAR_COUNT_];
 	XMFLOAT2 UVlength_[S_MAX_CHAR_COUNT_];
 
@@ -34,7 +34,7 @@ private:
 public:
 	void Print(const std::string& text, float x, float y, int32_t variable = 114514, float scale = 1.0f);
 	void Printf(const std::string& text, float x, float y, float variable = 114514.0f, float scale = 1.0f);
-	
-	void DrawAll(uint64_t texhandle);
+
+	void DrawAll(uint64_t texhandle, Camera2D* camera);
 };
 

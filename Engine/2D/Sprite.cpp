@@ -1,7 +1,13 @@
 #include "Sprite.h"
+#include "CameraManager.h"
 
 using namespace DirectX;
 
+
+Sprite::~Sprite()
+{
+	vbView_.SizeInBytes = 0;
+}
 
 void Sprite::Initialize()
 {
@@ -58,9 +64,9 @@ void Sprite::SpriteDraw()
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }
 
-void Sprite::Update(const Vec2& pos, const Vec2& scale,
+void Sprite::Update(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 	const Vec4& color, uint64_t textureHandle, const Vec2& ancorUV,
-	bool isReverseX, bool isReverseY, float rotation,
+	bool isReverseX, bool isReverseY, const Vec3& rotation,
 	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
 	//テクスチャを設定していなかったら
@@ -82,13 +88,13 @@ void Sprite::Update(const Vec2& pos, const Vec2& scale,
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
 	//反転
-	if (isReverseX)length.x_ *= -1;
-	if (isReverseY)length.y_ *= -1;
+	if (isReverseX)length.x *= -1;
+	if (isReverseY)length.y *= -1;
 
-	vertices_[0] = { {-(float)(length.x_ * scale.x_ * ancorUV.x_),+(float)(length.y_ * scale.y_ * (1.0f - ancorUV.y_)),0.0f},{0.0f,1.0f} };//左下
-	vertices_[1] = { {-(float)(length.x_ * scale.x_ * ancorUV.x_),-(float)(length.y_ * scale.y_ * (ancorUV.y_)),0.0f},{0.0f,0.0f} };//左上
-	vertices_[2] = { {+(float)(length.x_ * scale.x_ * (1.0f - ancorUV.x_)),+(float)(length.y_ * scale.y_ * (1.0f - ancorUV.y_)),0.0f},{1.0f,1.0f} };//右下
-	vertices_[3] = { {+(float)(length.x_ * scale.x_ * (1.0f - ancorUV.x_)),-(float)(length.y_ * scale.y_ * (ancorUV.y_)),0.0f},{1.0f,0.0f} };//右上
+	vertices_[0] = { {-(float)(length.x * scale.x * ancorUV.x),+(float)(length.y * scale.y * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//左下
+	vertices_[1] = { {-(float)(length.x * scale.x * ancorUV.x),-(float)(length.y * scale.y * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
+	vertices_[2] = { {+(float)(length.x * scale.x * (1.0f - ancorUV.x)),+(float)(length.y * scale.y * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
+	vertices_[3] = { {+(float)(length.x * scale.x * (1.0f - ancorUV.x)),-(float)(length.y * scale.y * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
 
 
 	constMapMaterial->color = color;
@@ -96,41 +102,18 @@ void Sprite::Update(const Vec2& pos, const Vec2& scale,
 	//ワールド行列
 	WorldMat worldMat;
 
-	worldMat.rot_.z_ = AngletoRadi(rotation);
-	worldMat.trans_ = { pos.x_ /*+ length.x * ancorUV.x * scale*/,pos.y_/* + length.y * ancorUV.y * scale*/,0.0f };
-	worldMat.CalcWorldMat();
+	worldMat.rot_.x = rotation.x;
+	worldMat.rot_.y = rotation.y;
+	worldMat.rot_.z = rotation.z;
+	worldMat.trans_ = { pos.x /*+ length.x * ancorUV.x * scale*/,pos.y/* + length.y * ancorUV.y * scale*/,0.0f };
 
-	//親がいたら
-	if (worldMat.parent_ != nullptr)
-	{
-		worldMat.matWorld_ *= worldMat.parent_->matWorld_;
-	}
-
-	XMMATRIX matW;
-	matW = { (float)worldMat.matWorld_.m_[0][0],(float)worldMat.matWorld_.m_[0][1],(float)worldMat.matWorld_.m_[0][2],(float)worldMat.matWorld_.m_[0][3],
-			 (float)worldMat.matWorld_.m_[1][0],(float)worldMat.matWorld_.m_[1][1],(float)worldMat.matWorld_.m_[1][2],(float)worldMat.matWorld_.m_[1][3],
-			 (float)worldMat.matWorld_.m_[2][0],(float)worldMat.matWorld_.m_[2][1],(float)worldMat.matWorld_.m_[2][2],(float)worldMat.matWorld_.m_[2][3],
-			 (float)worldMat.matWorld_.m_[3][0],(float)worldMat.matWorld_.m_[3][1],(float)worldMat.matWorld_.m_[3][2],(float)worldMat.matWorld_.m_[3][3] };
-
-	//view
-	ViewMat view;
-	view.matView_ = XMMatrixIdentity();
-
-
-	//平行投影の射影行列生成
-	ProjectionMat projection;
-
-	projection.matProjection_ = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().WINDOW_WIDTH_,
-		WindowsApp::GetInstance().WINDOW_HEIGHT_, 0.0, 0.0f, 1.0f);
-
-	cbt->SetWorldMat(matW);
-	cbt->SetViewProjMat(view.matView_ * projection.matProjection_);
-	cbt->SetCameraPos(view.eye_);
+	//行列計算、セット
+	CalcAndSetMat(cbt, worldMat, camera);
 }
 
-void Sprite::UpdateClipping(const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	const Vec4& color, uint64_t textureHandle, bool isPosLeftTop,
-	bool isReverseX, bool isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
+	bool isReverseX, bool isReverseY, const Vec3& rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
 	//テクスチャを設定していなかったら
 	uint64_t textureHandle_;
@@ -151,57 +134,75 @@ void Sprite::UpdateClipping(const Vec2& leftTop, const Vec2& scale, const XMFLOA
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
 	//反転
-	if (isReverseX)length.x_ *= -1;
-	if (isReverseY)length.y_ *= -1;
+	if (isReverseX)length.x *= -1;
+	if (isReverseY)length.y *= -1;
 
-	float texLeft = UVleftTop.x * +(float)length.x_ * scale.x_;
-	float texRight = (UVleftTop.x + UVlength.x) * +(float)length.x_ * scale.x_;
-	float texTop = UVleftTop.y * +(float)length.y_ * scale.y_;
-	float texBottom = (UVleftTop.y + UVlength.y) * +(float)length.y_ * scale.y_;
+	float texLeft = UVleftTop.x * +(float)length.x * scale.x;
+	float texRight = (UVleftTop.x + UVlength.x) * +(float)length.x * scale.x;
+	float texTop = UVleftTop.y * +(float)length.y * scale.y;
+	float texBottom = (UVleftTop.y + UVlength.y) * +(float)length.y * scale.y;
 
 	if (isPosLeftTop)
 	{
 		//左上からの座標
-		vertices_[0] = { {0,UVlength.y * length.y_ * scale.y_,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		vertices_[0] = { {0,UVlength.y * length.y * scale.y,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
 		vertices_[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		vertices_[2] = { {UVlength.x * length.x_ * scale.x_,UVlength.y * length.y_ * scale.y_,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices_[3] = { {UVlength.x * length.x_ * scale.x_,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		vertices_[2] = { {UVlength.x * length.x * scale.x,UVlength.y * length.y * scale.y,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		vertices_[3] = { {UVlength.x * length.x * scale.x,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	else
 	{
 		//切り抜いた後の画像の中心からの位置！！！！！！！！
-		vertices_[0] = { {-UVlength.x * length.x_ * scale.x_ / 2.0f,UVlength.y * length.y_ * scale.y_ / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-		vertices_[1] = { {-UVlength.x * length.x_ * scale.x_ / 2.0f,-UVlength.y * length.y_ * scale.y_ / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		vertices_[2] = { {UVlength.x * length.x_ * scale.x_ / 2.0f,UVlength.y * length.y_ * scale.y_ / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices_[3] = { {UVlength.x * length.x_ * scale.x_ / 2.0f,-UVlength.y * length.y_ * scale.y_ / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		vertices_[0] = { {-UVlength.x * length.x * scale.x / 2.0f,UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		vertices_[1] = { {-UVlength.x * length.x * scale.x / 2.0f,-UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
+		vertices_[2] = { {UVlength.x * length.x * scale.x / 2.0f,UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		vertices_[3] = { {UVlength.x * length.x * scale.x / 2.0f,-UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	constMapMaterial->color = color;
 
 	//ワールド行列
 	WorldMat worldMat;
 
-	worldMat.rot_.z_ = AngletoRadi(rotation);
+	worldMat.rot_.x = rotation.x;
+	worldMat.rot_.y = rotation.y;
+	worldMat.rot_.z = rotation.z;
 
 	if (isPosLeftTop)
 	{
 		//引数の左上座標を設定
-		worldMat.trans_ = { leftTop.x_,leftTop.y_,0 };
+		worldMat.trans_ = { leftTop.x,leftTop.y,0 };
 	}
 	else
 	{
 		//切り抜いた後の画像の中心を設定
-		worldMat.trans_ = { leftTop.x_ + texLeft + UVlength.x * (float)length.x_ * scale.x_ / 2.0f,
-			leftTop.y_ + texTop + UVlength.y * (float)length.y_ * scale.y_ / 2.0f,
+		worldMat.trans_ = { leftTop.x + texLeft + UVlength.x * (float)length.x * scale.x / 2.0f,
+			leftTop.y + texTop + UVlength.y * (float)length.y * scale.y / 2.0f,
 			0 };
 	}
-	worldMat.CalcWorldMat();
 
+	//行列計算、セット
+	CalcAndSetMat(cbt, worldMat, camera);
+}
 
-	//親がいたら
-	if (worldMat.parent_ != nullptr)
+//--------------------------------------------------------
+XMMATRIX Sprite::GetCameraMatrix(Camera2D* camera)
+{
+	ViewMat view;
+	if (camera)
 	{
-		worldMat.matWorld_ *= worldMat.parent_->matWorld_;
+		view.matView_ = camera->GetCameraMatrix();
 	}
+	else
+	{
+		view.matView_ = CameraManager::GetInstance().GetCamera2D()->GetCameraMatrix();
+	}
+
+	return view.matView_;
+}
+
+void Sprite::CalcAndSetMat(ConstBuffTransform* cbt, WorldMat& worldMat, Camera2D* camera)
+{
+	worldMat.CalcAllTreeMat();
 
 	XMMATRIX matW;
 	matW = { (float)worldMat.matWorld_.m_[0][0],(float)worldMat.matWorld_.m_[0][1],(float)worldMat.matWorld_.m_[0][2],(float)worldMat.matWorld_.m_[0][3],
@@ -211,11 +212,11 @@ void Sprite::UpdateClipping(const Vec2& leftTop, const Vec2& scale, const XMFLOA
 
 	//view
 	ViewMat view;
-	view.matView_ = XMMatrixIdentity();
+	view.matView_ = GetCameraMatrix(camera);
 
 	//平行投影の射影行列生成
 	ProjectionMat projection;
-	projection.matProjection_ = XMMatrixOrthographicOffCenterLH(0.0, WindowsApp::GetInstance().WINDOW_WIDTH_,
+	projection.matProjection_ = XMMatrixOrthographicOffCenterLH(0.0f, WindowsApp::GetInstance().WINDOW_WIDTH_,
 		WindowsApp::GetInstance().WINDOW_HEIGHT_, 0.0, 0.0f, 1.0f);
 
 	cbt->SetWorldMat(matW);

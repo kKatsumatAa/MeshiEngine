@@ -68,7 +68,7 @@ void PlayerStateBareHands::Update()
 			{
 				Weapon* weapon = dynamic_cast<Weapon*>(info_.object);
 				//ïêäÌèEÇ§
-				Vec3 localPos = { -player_->GetScale().x_ ,-player_->GetScale().y_ / 2.0f ,-player_->GetScale().z_ * 2.0f };
+				Vec3 localPos = { -player_->GetScale().x ,-player_->GetScale().y / 2.0f ,-player_->GetScale().z * 2.0f };
 				player_->PickUpWeapon(weapon, &localPos);
 
 				//uiïœçX

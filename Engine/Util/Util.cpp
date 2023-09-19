@@ -8,7 +8,7 @@ using namespace DirectX;
 void Vec4xM4(Vec4& v, const M4& m4)
 {
 	float v4[2][4] = {
-		{ v.x_,v.y_,v.z_,v.w_ },
+		{ v.x,v.y,v.z,v.w },
 		{0,0,0,0}
 	};
 
@@ -26,7 +26,7 @@ void Vec4xM4(Vec4& v, const M4& m4)
 void Vec3xM4(Vec3& v, const M4& m4, bool w)
 {
 	double v4[2][4] = {
-		{ v.x_,v.y_,v.z_,(double)w },
+		{ v.x,v.y,v.z,(double)w },
 		{0,0,0,0}
 	};
 
@@ -44,7 +44,7 @@ void Vec3xM4(Vec3& v, const M4& m4, bool w)
 Vec3 GetVec3xM4(const Vec3& v, const M4& m4, bool w)
 {
 	float v4[2][4] = {
-	{ v.x_,v.y_,v.z_,(float)w },
+	{ v.x,v.y,v.z,(float)w },
 	{0,0,0,0}
 	};
 
@@ -62,7 +62,7 @@ Vec3 GetVec3xM4(const Vec3& v, const M4& m4, bool w)
 void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w)
 {
 	float v4[2][4] = {
-		{ v.x_,v.y_,v.z_,(float)w },
+		{ v.x,v.y,v.z,(float)w },
 		{0,0,0,0}
 	};
 
@@ -80,9 +80,9 @@ void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w)
 	{
 		v /= v4[1][3];
 	}
-	else if (v.z_ != 0)
+	else if (v.z != 0)
 	{
-		float W = v.z_;
+		float W = v.z;
 
 		v /= W;
 	}
@@ -108,6 +108,11 @@ float GetRadianVec3(const Vec3& v1, const Vec3& v2)
 
 //----------------------------------------------------------------------
 Vec3 LerpVec3(const Vec3& v1, const Vec3& v2, float t)
+{
+	return v1 + t * (v2 - v1);
+}
+
+Vec2 LerpVec2(const Vec2& v1, const Vec2& v2, float t)
 {
 	return v1 + t * (v2 - v1);
 }
@@ -183,7 +188,7 @@ float EaseInOut(float t)
 //-----------------------------------------------------------------------------------
 bool CollisionCircleCircle(const Vec3& pos1, float r1, const Vec3& pos2, float r2)
 {
-	if (pow(pos2.x_ - pos1.x_, 2) + pow(pos2.y_ - pos1.y_, 2) + pow(pos2.z_ - pos1.z_, 2)
+	if (pow(pos2.x - pos1.x, 2) + pow(pos2.y - pos1.y, 2) + pow(pos2.z - pos1.z, 2)
 		<= pow(r1 + r2, 2))
 	{
 		return true;
@@ -221,8 +226,8 @@ bool CollisionBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t r1, in
 
 bool CollisionBox(Vec2 leftUp1, Vec2 rightBottom1, Vec2 leftUp2, Vec2 rightBottom2)
 {
-	return leftUp1.x_ < rightBottom2.x_ && leftUp2.x_ < rightBottom1.x_ &&
-		leftUp1.y_ < rightBottom2.y_ && leftUp2.y_ < rightBottom1.y_;
+	return leftUp1.x < rightBottom2.x && leftUp2.x < rightBottom1.x &&
+		leftUp1.y < rightBottom2.y && leftUp2.y < rightBottom1.y;
 
 	return false;
 }
@@ -249,7 +254,7 @@ Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 
 	Vec3xM4andDivisionW(vec3, m4, 1);
 
-	return Vec2(vec3.x_, vec3.y_);
+	return Vec2(vec3.x, vec3.y);
 }
 
 Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection, float distance)
@@ -273,8 +278,8 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 	m4.PutInXMMATRIX(mInverseVPVp);
 
 	//スクリーン座標
-	Vec3 posNear = { v.x_,v.y_,0 };
-	Vec3 posFar = { v.x_,v.y_,1 };
+	Vec3 posNear = { v.x,v.y,0 };
+	Vec3 posFar = { v.x,v.y,1 };
 
 	//スクリーン座標->ワールド座標
 	Vec3xM4andDivisionW(posNear, m4, 1);
@@ -313,8 +318,8 @@ void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, 
 	m4.PutInXMMATRIX(mInverseVPVp);
 
 	//スクリーン座標
-	Vec3 posNear = { pos.x_,pos.y_,0 };
-	Vec3 posFar = { pos.x_,pos.y_,1 };
+	Vec3 posNear = { pos.x,pos.y,0 };
+	Vec3 posFar = { pos.x,pos.y,1 };
 
 	//スクリーン座標->ワールド座標
 	Vec3xM4andDivisionW(posNear, m4, 1);
@@ -417,10 +422,10 @@ Vec3 GetRotFromQuaternion(Quaternion q)
 	Vec3 retRotVec = {};
 
 	//Quaternion r = transform.rotation;
-	float x = q.x_;
-	float y = q.y_;
-	float z = q.z_;
-	float w = q.w_;
+	float x = q.x;
+	float y = q.y;
+	float z = q.z;
+	float w = q.w;
 
 	float x2 = x * x;
 	float y2 = y * y;
@@ -486,20 +491,20 @@ Vec3 GetRotFromMat(M4 m)
 	Vec3 ansRot = {};
 
 	if (abs(m.m_[2][1] - 1.0) < threshold) { // R(2,1) = sin(x) = 1の時
-		ansRot.x_ = PI / 2;
-		ansRot.y_ = 0;
-		ansRot.z_ = (float)atan2(m.m_[1][0], m.m_[0][0]);
+		ansRot.x = PI / 2;
+		ansRot.y = 0;
+		ansRot.z = (float)atan2(m.m_[1][0], m.m_[0][0]);
 	}
 	else if (abs(m.m_[2][1] + 1.0) < threshold) { // R(2,1) = sin(x) = -1の時
-		ansRot.x_ = -PI / 2;
-		ansRot.y_ = 0;
-		ansRot.z_ = (float)atan2(m.m_[1][0], m.m_[0][0]);
+		ansRot.x = -PI / 2;
+		ansRot.y = 0;
+		ansRot.z = (float)atan2(m.m_[1][0], m.m_[0][0]);
 	}
 	else
 	{
-		ansRot.x_ = (float)asin(m.m_[2][1]);
-		ansRot.y_ = (float)atan2(-m.m_[2][0], m.m_[2][2]);
-		ansRot.z_ = (float)atan2(-m.m_[0][1], m.m_[1][1]);
+		ansRot.x = (float)asin(m.m_[2][1]);
+		ansRot.y = (float)atan2(-m.m_[2][0], m.m_[2][2]);
+		ansRot.z = (float)atan2(-m.m_[0][1], m.m_[1][1]);
 	}
 	return ansRot;
 }
@@ -511,9 +516,9 @@ bool Approximately(float a, float b)
 
 Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot)
 {
-	Quaternion qZ = Quaternion::MakeAxisAngle({ 0,0,1.0f }, rot.z_);
-	Quaternion qX = Quaternion::MakeAxisAngle({ 1.0f,0,0 }, rot.x_);
-	Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot.y_);
+	Quaternion qZ = Quaternion::MakeAxisAngle({ 0,0,1.0f }, rot.z);
+	Quaternion qX = Quaternion::MakeAxisAngle({ 1.0f,0,0 }, rot.x);
+	Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot.y);
 
 	Vec3 ansFrontV = vec;
 	ansFrontV = qZ.GetRotateVector(ansFrontV);

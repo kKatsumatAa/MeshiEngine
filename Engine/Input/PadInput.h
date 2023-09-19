@@ -29,6 +29,7 @@ private:
 	HRESULT result_;
 	DIJOYSTATE padData_;
 	DIJOYSTATE oldPadData_;
+	LPVOID pvRef_;
 
 	//キーボードデバイスの生成
 	ComPtr<IDirectInputDevice8> gamePad_ = nullptr;
@@ -58,7 +59,7 @@ public:
 
 	static PadInput& GetInstance();
 
-	void CreateDevice();
+	void CreateDevice(LPCDIDEVICEINSTANCE ipddi);
 
 	void Update();
 

@@ -25,8 +25,8 @@ void StageSelect::Initialize()
 	isSelected_ = false;
 
 	//ステージ名の枠の大きさ
-	nameWidthHeight_ = { CursorUI::cursorSize_.x_ * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y_ };
-	namesLeftUpPos_ = { CursorUI::cursorSize_.x_ * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y_ * 2.0f };
+	nameWidthHeight_ = { CursorUI::cursorSize_.x * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y };
+	namesLeftUpPos_ = { CursorUI::cursorSize_.x * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y * 2.0f };
 
 	LoadStageNames();
 }
@@ -46,8 +46,8 @@ void StageSelect::Update()
 		for (auto stageName : stageNames_)
 		{
 			//当たっていれば選んだ名前,番号を保存
-			if (CollisionBox(namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y_* (float)count},//左上
-				namesLeftUpPos_ + Vec2{nameWidthHeight_.x_, nameWidthHeight_.y_* (float)(count + 1)},//右下
+			if (CollisionBox(namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y* (float)count},//左上
+				namesLeftUpPos_ + Vec2{nameWidthHeight_.x, nameWidthHeight_.y* (float)(count + 1)},//右下
 				cursorPos + Vec2{0, scrollValue_},
 				cursorPos + Vec2{0, scrollValue_}))
 			{
@@ -74,20 +74,23 @@ void StageSelect::DrawSprite()
 	for (auto stageName : stageNames_)
 	{
 		//ステージ名表示
-		debugText_.Print(stageName.c_str(), namesLeftUpPos_.x_, namesLeftUpPos_.y_ + nameWidthHeight_.y_ * count);
+		debugText_.Print(stageName.c_str(), namesLeftUpPos_.x, namesLeftUpPos_.y + nameWidthHeight_.y * count);
 
 		Vec2 cursorPos = MouseInput::GetInstance().GetCurcorPos();
 		//カーソルがあってたら赤く表示
-		if (CollisionBox(namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y_* (float)count},//左上
-			namesLeftUpPos_ + Vec2{nameWidthHeight_.x_, nameWidthHeight_.y_* (float)(count + 1)},//右下
+		if (CollisionBox(namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y* (float)count},//左上
+			namesLeftUpPos_ + Vec2{nameWidthHeight_.x, nameWidthHeight_.y* (float)(count + 1)},//右下
 			cursorPos + Vec2{0, scrollValue_},
 			cursorPos + Vec2{0, scrollValue_}))
 		{
-			selectBox_.DrawBoxSprite(namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y_} *(float)count, nameWidthHeight_, { 1.0f,0,0,0.5f });
+			selectBox_.SetTrans({ namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y} *(float)count,0 });
+			selectBox_.SetScale({ nameWidthHeight_,1.0f });
+
+			selectBox_.DrawBoxSprite(nullptr, NULL, { 1.0f,0,0,0.5f });
 		}
 
 		count++;
 	}
 
-	debugText_.DrawAll(debugTextHandle_);
+	debugText_.DrawAll(debugTextHandle_, nullptr);
 }

@@ -468,6 +468,9 @@
     <ClCompile Include="Application\Character\CharacterState.cpp">
       <Filter>ソース ファイル\Application\Character</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\2D\Camera2D.cpp">
+      <Filter>ソース ファイル\Engine\2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -778,6 +781,9 @@
     </ClInclude>
     <ClInclude Include="Application\Character\CharacterState.h">
       <Filter>ヘッダー ファイル\Application\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\2D\Camera2D.h">
+      <Filter>ヘッダー ファイル\Engine\2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
