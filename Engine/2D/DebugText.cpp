@@ -232,7 +232,7 @@ void DebugText::DrawAll(uint64_t texhandle, Camera2D* camera)
 {
 	for (int32_t i = 0; i < spriteIndex_; i++)
 	{
-		sprites_[i].SetTrans({ leftTop_[i].x,leftTop_[i].x ,0 });
+		sprites_[i].SetTrans({ leftTop_[i].x,leftTop_[i].y ,0 });
 		sprites_[i].SetScale({ scale_[i],scale_[i],1.0f });
 
 		sprites_[i].DrawClippingBoxSprite(camera, UVleftTop_[i], UVlength_[i],
