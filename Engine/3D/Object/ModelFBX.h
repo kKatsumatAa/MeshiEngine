@@ -43,6 +43,16 @@ public://サブクラス
 		}
 	};
 
+	//スキニング行列に必要な行列セット
+	struct SkinningMatSet
+	{
+		//メッシュノードのグローバルトランスフォーム
+		DirectX::XMMATRIX globalTransform;
+		//初期姿勢の逆行列
+		DirectX::XMMATRIX invInitTransform;
+	};
+
+	//アニメーション情報
 	struct Animation
 	{
 		std::string name;
@@ -68,10 +78,12 @@ public://サブクラス
 
 
 private:
-	std::vector<DirectX::XMMATRIX> offsetTransforms_;
+	//スキニング行列に必要な行列のセットの配列
+	std::vector<SkinningMatSet> skinningMatSets_;
 	//ボーンのノードのインデックス
 	std::vector<uint64_t> boneNodeIndices_;
 	std::vector<Animation>	animationClips_;
+	//ボーンのインデックスなどを決めるために使う
 
 #pragma region 変数
 private:
@@ -105,7 +117,7 @@ public:
 	uint64_t GetBoneIndex(const std::string& name) const;
 
 
-	std::vector<DirectX::XMMATRIX>& GetOffsetTransforms() { return offsetTransforms_; }
+	std::vector<SkinningMatSet>& GetSkinningMatSets() { return skinningMatSets_; }
 	std::vector<uint64_t>& GetBoneNodeIndices() { return boneNodeIndices_; }
 	std::vector<Animation>& GetAnimations() { return animationClips_; }
 

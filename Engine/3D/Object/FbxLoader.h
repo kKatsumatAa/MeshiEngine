@@ -12,6 +12,14 @@ private://エイリアス
 	//std::を省略
 	using string = std::string;
 
+public:
+	//ボーン番号とスキンウェイとのペア
+	struct WeightSet
+	{
+		uint32_t index;
+		float weight;
+	};
+
 private://変数
 	//fbxマネージャー(sdkを使うのに必要)
 	FbxManager* fbxManager_ = nullptr;
@@ -112,6 +120,8 @@ private:
 
 	//アニメーション読み込み
 	void LoadAnimation(ModelFBX* model, FbxScene* fbxScene);
+
+	void FetchBoneInfluences(const FbxMesh* fbxMesh, std::vector< std::vector<WeightSet>>& weightSetsAray);
 
 	//アニメーションセット後にボーンを調べる
 	void LoadBoneData(FbxScene* fbxScene, ModelFBX* model);
