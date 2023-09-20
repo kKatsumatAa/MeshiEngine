@@ -226,15 +226,8 @@ void Object::SetModel(IModel* model)
 		animeDatas_.clear();
 		animeDatas_.resize(modelL->GetAnimations().size());
 
-		//オブジェクトクラスのノードのサイズも変更
-		nodes_.resize(modelL->GetNodes().size());
-		int nodeCount = static_cast<int>(nodes_.size());
-		//とりあえずノードのパラメータコピー
-		for (int i = 0; i < nodeCount; i++)
-		{
-			Node& node = nodes_[i];
-			node = modelL->GetNodes()[i];
-		}
+		//仮でノードのポインタ渡す
+		nodes_ = modelL->GetNodes();
 	}
 }
 
@@ -274,6 +267,11 @@ void Object::Update()
 	EffectUpdate();
 
 	WorldMatColliderUpdate();
+
+	if (model_ && model_->GetIsFbx())
+	{
+		CalcNodeMatBoneMatInternal(dynamic_cast<ModelFBX*>(model_));
+	}
 }
 
 void Object::EffectUpdate()
@@ -303,166 +301,174 @@ void Object::Draw()
 }
 
 //-----------------------------------------------------------------------------------------
-//void Object::BlendAnimationUpdate()
-//{
-//	if (!model_ || !model_->GetIsFbx())
-//	{
-//		return;
-//	}
-//
-//	ModelFBX* model = dynamic_cast<ModelFBX*>(model_);
-//
-//	const int32_t START_INDEX = 0;//とりあえず一番目のアニメーションのみ
-//	const int32_t END_INDEX = 0;//とりあえず一番目のアニメーションのみ
-//
-//	//補間前のアニメーション
-//	const std::vector<ModelFBX::Animation>& ANIMATIONS =
-//		model->GetAnimations();
-//	const ModelFBX::Animation& START_ANIMATION =
-//		ANIMATIONS[START_INDEX];
-//
-//	//補間後のアニメーション
-//	const ModelFBX::Animation& END_ANIMATION =
-//		ANIMATIONS[END_INDEX];
-//
-//	//補間前のキーフレーム
-//	const std::vector<ModelFBX::Keyframe>& START_KEY_FRAMES = START_ANIMATION.keyframes;
-//
-//	//補間後のキーフレーム
-//	const std::vector<ModelFBX::Keyframe>& END_KEY_FRAMES = END_ANIMATION.keyframes;
-//
-//	//ノードのパラメータ
-//	std::vector<XMVECTOR> startScales;
-//	std::vector<XMVECTOR> startRotates;
-//	std::vector<XMVECTOR> startTranslates;
-//	//計算したか
-//	bool isStartCalc = false;
-//
-//	//補間前
-//	int32_t startKeyNum = static_cast<int32_t>(START_KEY_FRAMES.size());
-//	for (int32_t i = 0; i < startKeyNum - 1; i++)
-//	{
-//		//補間前
-//		const ModelFBX::Keyframe& START_KEY_FRAME0 = START_KEY_FRAMES[i];
-//		const ModelFBX::Keyframe& START_KEY_FRAME1 = START_KEY_FRAMES[i + 1];
-//
-//		//補間前計算(インデックスのキーフレームと次のキーフレームの間かどうか)
-//		if (animeDatas_[START_INDEX].currentTime_ >= START_KEY_FRAME0.seconds &&
-//			animeDatas_[START_INDEX].currentTime_ < START_KEY_FRAME1.seconds)
-//		{
-//			//計算済みとする
-//			isStartCalc = true;
-//			//キーフレーム間の割合を計算
-//			float rate = (animeDatas_[START_INDEX].currentTime_ - START_KEY_FRAME0.seconds) /
-//				(START_KEY_FRAME1.seconds - START_KEY_FRAME0.seconds);
-//
-//			//ノード全てに適用
-//			int32_t nodeCount = static_cast<int32_t>(nodes_.size());
-//			for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
-//			{
-//				//キーフレーム0と1の全てのノード
-//				const ModelFBX::NodeKeyData& key0 = START_KEY_FRAME0.nodeKeys[nodeIndex];
-//				const ModelFBX::NodeKeyData& key1 = START_KEY_FRAME1.nodeKeys[nodeIndex];
-//
-//				XMVECTOR scale1 = DirectX::XMLoadFloat3(&key1.scale);
-//				XMVECTOR rotate1 = DirectX::XMLoadFloat4(&key1.rotate);
-//				XMVECTOR translate1 = DirectX::XMLoadFloat3(&key1.trans);
-//
-//				XMVECTOR scale0 = DirectX::XMLoadFloat3(&key0.scale);
-//				XMVECTOR rotate0 = DirectX::XMLoadFloat4(&key0.rotate);
-//				XMVECTOR translate0 = DirectX::XMLoadFloat3(&key0.trans);
-//
-//				//線形補完でパラメータ取得する
-//				startScales.push_back(DirectX::XMVectorLerp(scale0, scale1, rate));
-//				startRotates.push_back(DirectX::XMQuaternionSlerp(rotate0, rotate1, rate));
-//				startTranslates.push_back(DirectX::XMVectorLerp(translate0, translate1, rate));
-//			}
-//			//パラメータ取得したので抜ける
-//			break;
-//		}
-//	}
-//	//なかった場合はパラメータをそのままにする
-//	if (!isStartCalc)
-//	{
-//		return;
-//	}
-//
-//	//変数
-//	std::vector<DirectX::XMVECTOR> endScales;
-//	std::vector<DirectX::XMVECTOR> endRotates;
-//	std::vector<DirectX::XMVECTOR> endTranslates;
-//	bool isEndCalc = false;
-//
-//	//補間後
-//	int32_t endKeyCount = static_cast<int32_t>(END_KEY_FRAMES.size());
-//	for (int32_t keyIndex = 0; keyIndex < endKeyCount; keyIndex++)
-//	{
-//		//補間後
-//		const ModelFBX::Keyframe& endKeyframe0 = END_KEY_FRAMES.at(keyIndex);
-//		const ModelFBX::Keyframe& endKeyframe1 = END_KEY_FRAMES.at(keyIndex + 1);
-//
-//		//補間後計算
-//		if (animeDatas_[END_INDEX].currentTime_ >= endKeyframe0.seconds &&
-//			animeDatas_[END_INDEX].currentTime_ < endKeyframe1.seconds)
-//		{
-//			isEndCalc = true;
-//			//キーフレーム間の割合
-//			float rate = (animeDatas_[END_INDEX].currentTime_ - endKeyframe0.seconds) /
-//				(endKeyframe1.seconds - endKeyframe0.seconds);
-//
-//			int32_t nodeCount = static_cast<int32_t>(nodes_.size());
-//			for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
-//			{
-//				const ModelFBX::NodeKeyData& key0 = endKeyframe0.nodeKeys[nodeIndex];
-//				const ModelFBX::NodeKeyData& key1 = endKeyframe1.nodeKeys[nodeIndex];
-//
-//				DirectX::XMVECTOR Scale1 = DirectX::XMLoadFloat3(&key1.scale);
-//				DirectX::XMVECTOR Rotate1 = DirectX::XMLoadFloat4(&key1.rotate);
-//				DirectX::XMVECTOR Translate1 = DirectX::XMLoadFloat3(&key1.trans);
-//
-//				DirectX::XMVECTOR Scale0 = DirectX::XMLoadFloat3(&key0.scale);
-//				DirectX::XMVECTOR Rotate0 = DirectX::XMLoadFloat4(&key0.rotate);
-//				DirectX::XMVECTOR Translate0 = DirectX::XMLoadFloat3(&key0.trans);
-//
-//				endScales.push_back(DirectX::XMVectorLerp(Scale0, Scale1, rate));
-//				endRotates.push_back(DirectX::XMQuaternionSlerp(Rotate0, Rotate1, rate));
-//				endTranslates.push_back(DirectX::XMVectorLerp(Translate0, Translate1, rate));
-//			}
-//			break;
-//		}
-//	}
-//	//キーフレーム間に当てはまらなければ抜ける
-//	if (!isEndCalc)
-//	{
-//		return;
-//	}
-//
-//	//補間//ここでノードのパラメータ変えてる（rateで）→それをフレームごとに行列にしてる
-//	int32_t nodeCount = static_cast<int32_t>(startScales.size());
-//	//仮で
-//	float rateL = 0.5f;
-//	for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
-//	{
-//		DirectX::XMVECTOR Scale =
-//			DirectX::XMVectorLerp(
-//				startScales[nodeIndex],
-//				endScales[nodeIndex], rateL);
-//		DirectX::XMVECTOR Rotate =
-//			DirectX::XMQuaternionSlerp(
-//				startRotates[nodeIndex],
-//				endRotates[nodeIndex], rateL);
-//		DirectX::XMVECTOR Translate =
-//			DirectX::XMVectorLerp(
-//				startTranslates[nodeIndex],
-//				endTranslates[nodeIndex], rateL);
-//
-//		//線形補完したパラメータを取得
-//		Node& node = nodes_[nodeIndex];
-//		node.scaling = Scale;
-//		node.rotation = Rotate;
-//		node.translation = Translate;
-//	}
-//}
+void Object::BlendAnimationUpdate()
+{
+	if (!model_ || !model_->GetIsFbx())
+	{
+		return;
+	}
+
+	ModelFBX* model = dynamic_cast<ModelFBX*>(model_);
+
+	const int32_t START_INDEX = 0;//とりあえず一番目のアニメーションのみ
+	const int32_t END_INDEX = 0;//とりあえず一番目のアニメーションのみ
+
+	//補間前のアニメーション
+	const std::vector<ModelFBX::Animation>& ANIMATIONS =
+		model->GetAnimations();
+	const ModelFBX::Animation& START_ANIMATION =
+		ANIMATIONS[START_INDEX];
+
+	//補間後のアニメーション
+	const ModelFBX::Animation& END_ANIMATION =
+		ANIMATIONS[END_INDEX];
+
+	//補間前のキーフレーム
+	const std::vector<ModelFBX::Keyframe>& START_KEY_FRAMES = START_ANIMATION.keyframes;
+
+	//補間後のキーフレーム
+	const std::vector<ModelFBX::Keyframe>& END_KEY_FRAMES = END_ANIMATION.keyframes;
+
+	//ノードのパラメータ
+	std::vector<XMVECTOR> startScales;
+	std::vector<XMVECTOR> startRotates;
+	std::vector<XMVECTOR> startTranslates;
+	//計算したか
+	bool isStartCalc = false;
+
+	//補間前
+	int32_t startKeyNum = static_cast<int32_t>(START_KEY_FRAMES.size());
+	for (int32_t i = 0; i < startKeyNum - 1; i++)
+	{
+		//補間前
+		const ModelFBX::Keyframe& START_KEY_FRAME0 = START_KEY_FRAMES[i];
+		const ModelFBX::Keyframe& START_KEY_FRAME1 = START_KEY_FRAMES[i + 1];
+
+		if (i + 1 == startKeyNum - 1)
+		{
+
+		}
+
+		//補間前計算(インデックスのキーフレームと次のキーフレームの間かどうか)
+		if (animeDatas_[START_INDEX].currentTime_ >= START_KEY_FRAME0.seconds &&
+			animeDatas_[START_INDEX].currentTime_ < START_KEY_FRAME1.seconds
+			|| (i + 1 == startKeyNum - 1 && animeDatas_[START_INDEX].currentTime_ <= START_KEY_FRAME1.seconds))
+		{
+			//計算済みとする
+			isStartCalc = true;
+			//キーフレーム間の割合を計算
+			float rate = (float)((animeDatas_[START_INDEX].currentTime_ - START_KEY_FRAME0.seconds) /
+				(START_KEY_FRAME1.seconds - START_KEY_FRAME0.seconds));
+
+			//ノード全てに適用
+			int32_t nodeCount = static_cast<int32_t>(nodes_->size());
+			for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
+			{
+				//キーフレーム0と1の全てのノード
+				const ModelFBX::NodeKeyData& key0 = START_KEY_FRAME0.nodeKeys[nodeIndex];
+				const ModelFBX::NodeKeyData& key1 = START_KEY_FRAME1.nodeKeys[nodeIndex];
+
+				XMVECTOR scale1 = DirectX::XMLoadFloat3(&key1.scale);
+				XMVECTOR rotate1 = DirectX::XMLoadFloat4(&key1.rotate);
+				XMVECTOR translate1 = DirectX::XMLoadFloat3(&key1.trans);
+
+				XMVECTOR scale0 = DirectX::XMLoadFloat3(&key0.scale);
+				XMVECTOR rotate0 = DirectX::XMLoadFloat4(&key0.rotate);
+				XMVECTOR translate0 = DirectX::XMLoadFloat3(&key0.trans);
+
+				//線形補完でパラメータ取得する
+				startScales.push_back(DirectX::XMVectorLerp(scale0, scale1, rate));
+				startRotates.push_back(DirectX::XMQuaternionSlerp(rotate0, rotate1, rate));
+				startTranslates.push_back(DirectX::XMVectorLerp(translate0, translate1, rate));
+				startTranslates[startTranslates.size() - 1] = DirectX::XMVectorLerp(translate0, translate1, rate);
+			}
+			//パラメータ取得したので抜ける
+			break;
+		}
+	}
+	//なかった場合はパラメータをそのままにする
+	if (!isStartCalc)
+	{
+		return;
+	}
+
+	//変数
+	std::vector<DirectX::XMVECTOR> endScales;
+	std::vector<DirectX::XMVECTOR> endRotates;
+	std::vector<DirectX::XMVECTOR> endTranslates;
+	bool isEndCalc = false;
+
+	//補間後
+	int32_t endKeyCount = static_cast<int32_t>(END_KEY_FRAMES.size());
+	for (int32_t keyIndex = 0; keyIndex < endKeyCount; keyIndex++)
+	{
+		//補間後
+		const ModelFBX::Keyframe& endKeyframe0 = END_KEY_FRAMES.at(keyIndex);
+		const ModelFBX::Keyframe& endKeyframe1 = END_KEY_FRAMES.at(keyIndex + 1);
+
+		//補間後計算
+		if (animeDatas_[END_INDEX].currentTime_ >= endKeyframe0.seconds &&
+			animeDatas_[END_INDEX].currentTime_ < endKeyframe1.seconds
+			|| (keyIndex + 1 == endKeyCount - 1 && animeDatas_[END_INDEX].currentTime_ <= endKeyframe1.seconds))
+		{
+			isEndCalc = true;
+			//キーフレーム間の割合
+			float rate = (float)((animeDatas_[END_INDEX].currentTime_ - endKeyframe0.seconds) /
+				(endKeyframe1.seconds - endKeyframe0.seconds));
+
+			int32_t nodeCount = static_cast<int32_t>(nodes_->size());
+			for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
+			{
+				const ModelFBX::NodeKeyData& key0 = endKeyframe0.nodeKeys[nodeIndex];
+				const ModelFBX::NodeKeyData& key1 = endKeyframe1.nodeKeys[nodeIndex];
+
+				DirectX::XMVECTOR Scale1 = DirectX::XMLoadFloat3(&key1.scale);
+				DirectX::XMVECTOR Rotate1 = DirectX::XMLoadFloat4(&key1.rotate);
+				DirectX::XMVECTOR Translate1 = DirectX::XMLoadFloat3(&key1.trans);
+
+				DirectX::XMVECTOR Scale0 = DirectX::XMLoadFloat3(&key0.scale);
+				DirectX::XMVECTOR Rotate0 = DirectX::XMLoadFloat4(&key0.rotate);
+				DirectX::XMVECTOR Translate0 = DirectX::XMLoadFloat3(&key0.trans);
+
+				endScales.push_back(DirectX::XMVectorLerp(Scale0, Scale1, rate));
+				endRotates.push_back(DirectX::XMQuaternionSlerp(Rotate0, Rotate1, rate));
+				endTranslates.push_back(DirectX::XMVectorLerp(Translate0, Translate1, rate));
+			}
+			break;
+		}
+	}
+	//キーフレーム間に当てはまらなければ抜ける
+	if (!isEndCalc)
+	{
+		return;
+	}
+
+	//補間//ここでノードのパラメータ変えてる（rateで）→それをフレームごとに行列にしてる
+	int32_t nodeCount = static_cast<int32_t>(startScales.size());
+	//仮で
+	float rateL = 0.5f;
+	for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
+	{
+		DirectX::XMVECTOR Scale =
+			DirectX::XMVectorLerp(
+				startScales[nodeIndex],
+				endScales[nodeIndex], rateL);
+		DirectX::XMVECTOR Rotate =
+			DirectX::XMQuaternionSlerp(
+				startRotates[nodeIndex],
+				endRotates[nodeIndex], rateL);
+		DirectX::XMVECTOR Translate =
+			DirectX::XMVectorLerp(
+				startTranslates[nodeIndex],
+				endTranslates[nodeIndex], rateL);
+
+		//線形補完したパラメータを取得
+		Node& node = (*nodes_)[nodeIndex];
+		node.scaling = Scale;
+		node.rotation = Rotate;
+		node.translation = Translate;
+	}
+}
 
 void Object::AnimationUpdate()
 {
@@ -485,11 +491,11 @@ void Object::AnimationUpdate()
 			animeDatas_[animeIndex_].currentTime_ < KEY_FRAME1.seconds)
 		{
 			//キーフレーム間の割合を計算
-			float rate = (animeDatas_[animeIndex_].currentTime_ - KEY_FRAME0.seconds) /
-				(KEY_FRAME1.seconds - KEY_FRAME0.seconds);
+			float rate = (float)((animeDatas_[animeIndex_].currentTime_ - KEY_FRAME0.seconds) /
+				(KEY_FRAME1.seconds - KEY_FRAME0.seconds));
 
 			//オブジェクトクラスが持っているノード全てに適用
-			int32_t nodeCount = static_cast<int32_t>(nodes_.size());
+			int32_t nodeCount = static_cast<int32_t>(nodes_->size());
 			for (int32_t j = 0; j < nodeCount; j++)
 			{
 				//キーフレーム0と1のインデックスのノードを取得
@@ -497,7 +503,7 @@ void Object::AnimationUpdate()
 				const ModelFBX::NodeKeyData& KEY_1 = KEY_FRAME1.nodeKeys[j];
 
 				//参照
-				auto& node = nodes_[j];
+				auto& node = (*nodes_)[j];
 
 				XMVECTOR scale1 = DirectX::XMLoadFloat3(&KEY_1.scale);
 				XMVECTOR rotate1 = DirectX::XMLoadFloat4(&KEY_1.rotate);
@@ -524,7 +530,7 @@ void Object::AnimationUpdate()
 void Object::UpdateFBXNodeMat()
 {
 	//オブジェクトクラスが持ってるfbxモデルのノード全て
-	for (Node& node : nodes_)
+	for (Node& node : *nodes_)
 	{
 		//行列の作成(アニメーションなどで変化したパラメータを使用)
 		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(
@@ -635,22 +641,28 @@ void Object::CalcNodeMatBoneMatInternal(ModelFBX* model)
 			}
 		}
 
-		//逆再生
-		if (animeData.isReverse_)
-		{
-			animeData.currentTime_ -= anime.addTime * animeData.animationSpeed_;
-		}
 		else
 		{
-			//1フレーム進める
-			animeData.currentTime_ += anime.addTime * animeData.animationSpeed_;
+			//逆再生
+			if (animeData.isReverse_)
+			{
+				animeData.currentTime_ -= anime.addTime * animeData.animationSpeed_;
+			}
+			else
+			{
+				//1フレーム進める
+				animeData.currentTime_ += anime.addTime * animeData.animationSpeed_;
+			}
+
+			//範囲内に収める
+			animeData.currentTime_ = min(max(animeData.currentTime_, anime.startTime), anime.endTime);
 		}
 	}
 
 	if (animeData.isPlay_)
 	{
 		//アニメーションのアップデート
-		AnimationUpdate();
+		BlendAnimationUpdate();
 	}
 	//ノードの行列更新
 	UpdateFBXNodeMat();
@@ -661,7 +673,7 @@ void Object::CalcNodeMatBoneMatInternal(ModelFBX* model)
 
 const std::vector<Node>& Object::GetNodes()
 {
-	return nodes_;
+	return *nodes_;
 }
 
 void Object::MappingBoneData(ModelFBX* model)
@@ -689,12 +701,14 @@ XMMATRIX Object::GetCalcSkinMat(IModel* model, int32_t index)
 	uint64_t indexL = modelL->GetBoneNodeIndices()[index];
 
 	//アニメーションで更新したワールド
-	DirectX::XMMATRIX nowPoseMat =
-		nodes_[indexL].globalTransform;
-	//ボーン行列
+	DirectX::XMMATRIX worldTransform =
+		(*nodes_)[indexL].globalTransform;
+	//初期姿勢などが入った行列
+	DirectX::XMMATRIX offsetTransform =
+		modelL->GetOffsetTransforms()[index];
+	//ボーン行列(上の二つを掛け合わせる)
 	DirectX::XMMATRIX boneTransform =
-		modelL->GetSkinningMatSets()[index].globalTransform * modelL->GetSkinningMatSets()[index].invInitTransform
-		* nowPoseMat * XMMatrixInverse(nullptr, modelL->GetSkinningMatSets()[index].globalTransform);
+		offsetTransform * worldTransform;
 
 	////スケールを省く処理
 	// 
@@ -779,7 +793,7 @@ void Object::SendingMat(int32_t indexNum, Camera* camera, IModel* model)
 		//変換行列をGPUに送信
 		if (parentNode_ && worldMat_->parent_)
 		{
-			//オブジェクトのワールド
+			//オブジェクトのローカル
 			worldMat_->CalcWorldMat();
 			//親行列
 			M4 pM = worldMat_->GetOnlyParentALLTreeMat();
@@ -793,7 +807,7 @@ void Object::SendingMat(int32_t indexNum, Camera* camera, IModel* model)
 				//親のワールド行列
 				pM.MatIntoXMMATRIX(bXM);
 				//親のノード行列にワールド行列を掛ける
-				bXM = parentObj_->GetNodes()[bIndex].globalTransform * bXM;
+				bXM = parentObj_->GetNodes()[bIndex].globalTransform;
 				bM.PutInXMMATRIX(bXM);
 				bM.m_[3][0] *= parentNodeModel_->GetScaleExtend();
 				bM.m_[3][1] *= parentNodeModel_->GetScaleExtend();
@@ -960,10 +974,6 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 		//メッシュのオフセットデータセット
 		GetModel()->SetPolygonOffsetData(meshOffsetData_);
 
-		if (indexNum == FBX)
-		{
-			CalcNodeMatBoneMatInternal(dynamic_cast<ModelFBX*>(model));
-		}
 		model->Draw(SetRootPipeRM, SetMaterialTexM, cbt_);
 	}
 

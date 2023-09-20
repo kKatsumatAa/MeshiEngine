@@ -85,7 +85,7 @@ public:
 	struct AnimationData
 	{
 		//アニメーション現在時間
-		float currentTime_;
+		double currentTime_;
 		//アニメーションフラグ
 		bool isPlay_ = false;
 		//ループ
@@ -183,7 +183,7 @@ private://fbxモデル系
 	std::vector<AnimationData>animeDatas_;
 	//アニメーションのインデックス
 	int32_t animeIndex_ = 0;
-	std::vector<Node>nodes_;
+	std::vector<Node>*nodes_;
 
 private:
 	//画面効果用
@@ -378,7 +378,9 @@ public:
 	void SetIsLoopAnimation(bool isLoop, int32_t animeIndex = 0) { animeDatas_[animeIndex].isLoop_ = isLoop; }
 	void SetIsReverseAnimation(bool isReverse, int32_t animeIndex = 0) { animeDatas_[animeIndex].isReverse_ = isReverse; }
 	//アニメーションスピード
-	void SetAnimationSpeed(float speed) { animeDatas_[animeIndex_].animationSpeed_ = speed; }
+	void SetAnimationSpeed(float speed) { 
+		animeDatas_[animeIndex_].animationSpeed_ = speed;
+	}
 	//モデルの部位と親子関係を持たせる
 	void ParentFbxNode(Object* obj, IModel* model, const std::string& nodeName);
 	//ボーンを得る

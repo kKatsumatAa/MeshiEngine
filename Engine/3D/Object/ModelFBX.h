@@ -32,7 +32,7 @@ public://サブクラス
 	struct Keyframe
 	{
 		//開始から何秒か
-		float seconds;
+		double seconds;
 		//キーフレームに対応した全てのノードの情報
 		std::vector<NodeKeyData> nodeKeys;
 
@@ -43,29 +43,19 @@ public://サブクラス
 		}
 	};
 
-	//スキニング行列に必要な行列セット
-	struct SkinningMatSet
-	{
-		//メッシュノードのグローバルトランスフォーム
-		DirectX::XMMATRIX globalTransform;
-		//初期姿勢の逆行列
-		DirectX::XMMATRIX invInitTransform;
-	};
-
-	//アニメーション情報
 	struct Animation
 	{
 		std::string name;
 		//アニメーションの長さ
-		float secondsLength;
+		double secondsLength;
 		//fps
-		float frameRate;
+		double frameRate;
 		//開始時間
-		float startTime;
+		double startTime;
 		//終了時間
-		float endTime;
+		double endTime;
 		//1フレームごとに加算する時間
-		float addTime;
+		double addTime;
 		//キーフレームごとのノード全ての情報の配列
 		std::vector<Keyframe> keyframes;
 
@@ -78,12 +68,10 @@ public://サブクラス
 
 
 private:
-	//スキニング行列に必要な行列のセットの配列
-	std::vector<SkinningMatSet> skinningMatSets_;
+	std::vector<DirectX::XMMATRIX> offsetTransforms_;
 	//ボーンのノードのインデックス
 	std::vector<uint64_t> boneNodeIndices_;
 	std::vector<Animation>	animationClips_;
-	//ボーンのインデックスなどを決めるために使う
 
 #pragma region 変数
 private:
@@ -108,7 +96,7 @@ public:
 
 
 public:
-	const std::vector<Node>& GetNodes() { return nodes_; }
+	std::vector<Node>* GetNodes() { return &nodes_; }
 	//ノードを名前で指定して取得
 	const Node* GetNode(const std::string& name);
 
@@ -117,7 +105,7 @@ public:
 	uint64_t GetBoneIndex(const std::string& name) const;
 
 
-	std::vector<SkinningMatSet>& GetSkinningMatSets() { return skinningMatSets_; }
+	std::vector<DirectX::XMMATRIX>& GetOffsetTransforms() { return offsetTransforms_; }
 	std::vector<uint64_t>& GetBoneNodeIndices() { return boneNodeIndices_; }
 	std::vector<Animation>& GetAnimations() { return animationClips_; }
 

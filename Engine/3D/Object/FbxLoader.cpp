@@ -315,7 +315,7 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 
 	//全てのボーンについて行列を追加
 	model->boneNodeIndices_.resize(clusterCount);
-	model->skinningMatSets_.resize(clusterCount);
+	model->offsetTransforms_.resize(clusterCount);
 	for (int32_t i = 0; i < clusterCount; i++)
 	{
 		//fbxボーン情報
@@ -334,17 +334,18 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 			}
 		}
 
-		//fbxから初期姿勢行列を取得
-		FbxAMatrix fbxMat;
-		fbxCluster->GetTransformLinkMatrix(fbxMat);
-		//XMMatrix型に変換
-		XMMATRIX initialPose;
-		ConvertMatrixFromFbx(&initialPose, fbxMat);
-		//初期姿勢行列の逆行列を得る(スキニング処理に使うのは逆行列)
-		model->skinningMatSets_[i].invInitTransform = XMMatrixInverse(nullptr, initialPose);
 
-		//メッシュノードのグローバルトランスフォーム
-		model->skinningMatSets_[i].globalTransform = mesh->meshNode_->globalTransform;
+		//fbxから初期姿勢行列を取得
+		FbxAMatrix initMat;
+		fbxCluster->GetTransformLinkMatrix(initMat);
+		//グローバルトランスフォーム
+		FbxAMatrix globalInitPosMat;
+		fbxCluster->GetTransformMatrix(globalInitPosMat);
+
+		//初期姿勢の逆行列とトランスフォーム行列掛ける
+		DirectX::XMMATRIX lMat = DirectX::XMMatrixIdentity();
+		ConvertMatrixFromFbx(&lMat, initMat.Inverse() * globalInitPosMat);
+		model->offsetTransforms_[i] = lMat;
 	}
 }
 
@@ -356,7 +357,7 @@ void FbxLoader::LoadAnimation(ModelFBX* model, FbxScene* fbxScene)
 	FbxArray<FbxString*> animationNames;
 
 	//ノード情報
-	size_t nodeCount = model->GetNodes().size();
+	size_t nodeCount = model->GetNodes()->size();
 	std::vector<FbxNode*> fbxNodes;
 	fbxNodes.resize(nodeCount);
 	//ノード一つ一つのポインタを保存
@@ -393,8 +394,8 @@ void FbxLoader::LoadAnimation(ModelFBX* model, FbxScene* fbxScene)
 		//一秒で進む
 		FbxTime oneSecond;
 		oneSecond.SetTime(0, 0, 1, 0, 0, timeMode);
-		//fpsをfloatに変換
-		animationData.frameRate = static_cast<float>(oneSecond.GetFrameRate(timeMode));
+		//fpsをdoubleに変換
+		animationData.frameRate = static_cast<double>(oneSecond.GetFrameRate(timeMode));
 
 		//1フレームに変換
 		const FbxTime SAMPLING_INTERVAL =
@@ -407,12 +408,7 @@ void FbxLoader::LoadAnimation(ModelFBX* model, FbxScene* fbxScene)
 		const FbxTime END_TIME = TAKE_INFO->mLocalTimeSpan.GetStop();
 
 		//fpsで割る（秒単位にする）
-		animationData.endTime = END_TIME.GetFrameCount() / animationData.frameRate;
 		animationData.startTime = START_TIME.GetFrameCount() / animationData.frameRate;
-		//アニメーションの長さ保存
-		animationData.secondsLength = animationData.endTime - animationData.startTime;
-		//一フレームごとに加算する時間
-		animationData.addTime = animationData.endTime / END_TIME.GetFrameCount(FbxTime::EMode::eFrames60);
 
 		//キーフレームごとに情報を保存
 		for (FbxTime time = START_TIME; time < END_TIME; time += SAMPLING_INTERVAL)
@@ -425,7 +421,7 @@ void FbxLoader::LoadAnimation(ModelFBX* model, FbxScene* fbxScene)
 			keyframe.nodeKeys.resize(nodeCount);
 
 			//キーフレームの時間をfps(フレームレート)で割って秒単位にする
-			float fTime = time.GetFrameCount() / animationData.frameRate;
+			double fTime = time.GetFrameCount() / animationData.frameRate;
 			//開始から何秒か
 			keyframe.seconds = fTime - animationData.startTime;
 
@@ -449,7 +445,15 @@ void FbxLoader::LoadAnimation(ModelFBX* model, FbxScene* fbxScene)
 				}
 			}
 		}
+
+		animationData.endTime = animationData.keyframes.back().seconds;
+		//アニメーションの長さ保存
+		animationData.secondsLength = animationData.endTime - animationData.startTime;
+		//一フレームごとに加算する時間
+		animationData.addTime = animationData.endTime / END_TIME.GetFrameCount(FbxTime::EMode::eFrames60);
 	}
+
+	animationNames.Clear();
 }
 
 
@@ -570,7 +574,7 @@ void FbxLoader::LoadAnimation(ModelFBX* model, FbxScene* fbxScene)
 
 void FbxLoader::LoadBoneData(FbxScene* fbxScene, ModelFBX* model)
 {
-	for (const Node& node : model->GetNodes())
+	for (const Node& node : model->nodes_)
 	{
 		//属性が当てはまらなければスルー
 		if (node.attribute != FbxNodeAttribute::EType::eMesh)
