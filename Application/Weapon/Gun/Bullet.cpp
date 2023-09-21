@@ -128,7 +128,11 @@ void Bullet::Update()
 
 		if (CollisionManager::GetInstance()->RaycastUtil(GetTrans(), oldPos_, COLLISION_ATTR_LANDSHAPE, &info))
 		{
-			Dead({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
+			//撃った本人には当たらないように
+			if (owner_ != info.object)
+			{
+				Dead({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
+			}
 		}
 	}
 
@@ -156,5 +160,9 @@ void Bullet::Draw()
 
 void Bullet::OnCollision(const CollisionInfo& info)
 {
-	Dead({ info.inter_.m128_f32[0],info.inter_.m128_f32[1], info.inter_.m128_f32[2] });
+	//撃った本人には当たらないように
+	if (owner_ != info.object_)
+	{
+		Dead({ info.inter_.m128_f32[0],info.inter_.m128_f32[1], info.inter_.m128_f32[2] });
+	}
 }

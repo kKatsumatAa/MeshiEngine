@@ -8,6 +8,7 @@
 #include "GameVelocityManager.h"
 #include "EnemyState.h"
 #include "LevelManager.h"
+#include "Bullet.h"
 
 using namespace DirectX;
 
@@ -308,6 +309,12 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	//弾に当たったら
 	else if (info.object_->GetObjName() == "bullet")
 	{
+		//弾を撃った本人だったら
+		if (this == dynamic_cast<Bullet*>(info.object_)->GetOwner())
+		{
+			return;
+		}
+
 		//今のhp分ダメージ受けて倒れる
 		Damaged(hp_, [=]() {SetIsAlive(false); });
 
