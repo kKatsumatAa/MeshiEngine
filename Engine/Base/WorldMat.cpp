@@ -31,9 +31,9 @@ WorldMat::WorldMat()
 void WorldMat::CalcScaleMat()
 {
 	matScale_ = {
-		scale_.x_, 0, 0, 0,
-			0, scale_.y_, 0, 0,
-			0, 0, scale_.z_, 0,
+		scale_.x, 0, 0, 0,
+			0, scale_.y, 0, 0,
+			0, 0, scale_.z, 0,
 			0, 0, 0, 1
 	};
 
@@ -44,21 +44,21 @@ void WorldMat::CalcRotMat()
 {
 	matRot_ = M4::NORMAL_M;
 	matRot_ *= {
-		cosf(rot_.z_), sinf(rot_.z_), 0, 0,
-			-sinf(rot_.z_), cosf(rot_.z_), 0, 0,
+		cosf(rot_.z), sinf(rot_.z), 0, 0,
+			-sinf(rot_.z), cosf(rot_.z), 0, 0,
 			0, 0, 1, 0,
 			0, 0, 0, 1
 	};
 	matRot_ *= {
 		1, 0, 0, 0,
-			0, cosf(rot_.x_), sinf(rot_.x_), 0,
-			0, -sinf(rot_.x_), cosf(rot_.x_), 0,
+			0, cosf(rot_.x), sinf(rot_.x), 0,
+			0, -sinf(rot_.x), cosf(rot_.x), 0,
 			0, 0, 0, 1
 	};
 	matRot_ *= {
-		cosf(rot_.y_), 0, -sinf(rot_.y_), 0,
+		cosf(rot_.y), 0, -sinf(rot_.y), 0,
 			0, 1, 0, 0,
-			sinf(rot_.y_), 0, cosf(rot_.y_), 0,
+			sinf(rot_.y), 0, cosf(rot_.y), 0,
 			0, 0, 0, 1
 	};
 	matWorld_ *= matRot_;
@@ -76,13 +76,13 @@ void WorldMat::CalcQuaternionRotMat()
 		matRot_ = M4::NORMAL_M;
 
 		//z
-		Quaternion qZ = Quaternion::MakeAxisAngle({ 0,0,1.0f }, rot_.z_);
+		Quaternion qZ = Quaternion::MakeAxisAngle({ 0,0,1.0f }, rot_.z);
 		matRot_ *= qZ.MakeRotateMatrix();
 		//x
-		Quaternion qX = Quaternion::MakeAxisAngle({ 1.0f,0,0 }, rot_.x_);
+		Quaternion qX = Quaternion::MakeAxisAngle({ 1.0f,0,0 }, rot_.x);
 		matRot_ *= qX.MakeRotateMatrix();
 		//y
-		Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot_.y_);
+		Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot_.y);
 		matRot_ *= qY.MakeRotateMatrix();
 
 		matWorld_ *= matRot_;
@@ -95,7 +95,7 @@ void WorldMat::CalcTransMat()
 		1, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
-			trans_.x_, trans_.y_, trans_.z_, 1
+			trans_.x, trans_.y, trans_.z, 1
 	};
 }
 
@@ -164,11 +164,11 @@ void WorldMat::CalcWorldMat()
 Quaternion WorldMat::GetQuaternion()
 {
 	//z
-	Quaternion qZ = Quaternion::MakeAxisAngle({ 0,0,1.0f }, rot_.z_);
+	Quaternion qZ = Quaternion::MakeAxisAngle({ 0,0,1.0f }, rot_.z);
 	//x
-	Quaternion qX = Quaternion::MakeAxisAngle({ 1.0f,0,0 }, rot_.x_);
+	Quaternion qX = Quaternion::MakeAxisAngle({ 1.0f,0,0 }, rot_.x);
 	//y
-	Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot_.y_);
+	Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot_.y);
 
 	//çáê¨(Ç†Ç¡ÇƒÇÈÇ©ÇÌÇ©ÇÁÇ»Ç¢)
 	qZ = qZ * qY * qX;

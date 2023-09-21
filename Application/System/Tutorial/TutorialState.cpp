@@ -60,7 +60,7 @@ bool TutorialState::BeginingUpdate(const int32_t TIMER_MAX)
 {
 	t_ = min((float)beginingTimer_ / (float)TIMER_MAX, 1.0f);
 
-	scale_ = LerpVec3({ MAX_SCALE_,0,0 }, { 1.0f,0,0 }, EaseIn(t_)).x_;
+	scale_ = LerpVec3({ MAX_SCALE_,0,0 }, { 1.0f,0,0 }, EaseIn(t_)).x;
 
 	alpha_ = t_;
 
@@ -79,7 +79,7 @@ bool TutorialState::EndingUpdate(const int32_t TIMER_MAX)
 {
 	t_ = min((float)endingTimer_ / (float)TIMER_MAX, 1.0f);
 
-	scale_ = LerpVec3({ 1.0f,0,0 }, { MAX_SCALE_,0,0 }, EaseIn(t_)).x_;
+	scale_ = LerpVec3({ 1.0f,0,0 }, { MAX_SCALE_,0,0 }, EaseIn(t_)).x;
 
 	alpha_ = 1.0f - t_;
 
@@ -96,8 +96,10 @@ bool TutorialState::EndingUpdate(const int32_t TIMER_MAX)
 
 void TutorialState::CommonSpriteDraw()
 {
-	texObj_.DrawBoxSprite({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f },
-		{ scale_,scale_ }, { 2.5f,2.5f,2.5f,alpha_ }, texHandle_, { 0.5f,0.5f });
+	texObj_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
+	texObj_.SetScale({ scale_,scale_ ,1.0f });
+
+	texObj_.DrawBoxSprite(nullptr, texHandle_, { 2.5f,2.5f,2.5f,alpha_ }, { 0.5f,0.5f });
 }
 
 //----------------------------------------------------------------------------

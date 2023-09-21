@@ -55,11 +55,11 @@ void Camera::UpdateViewMatrix()
 	shake_.Update();
 	float shakeNum = shake_.GetShake();
 	// 視点座標
-	XMVECTOR eyePosition = { viewMat_.eye_.x_ + shakeNum,viewMat_.eye_.y_ + shakeNum,viewMat_.eye_.z_ + shakeNum };
+	XMVECTOR eyePosition = { viewMat_.eye_.x + shakeNum,viewMat_.eye_.y + shakeNum,viewMat_.eye_.z + shakeNum };
 	// 注視点座標
-	XMVECTOR targetPosition = { viewMat_.target_.x_ + shakeNum,viewMat_.target_.y_ + shakeNum,viewMat_.target_.z_ + shakeNum };
+	XMVECTOR targetPosition = { viewMat_.target_.x + shakeNum,viewMat_.target_.y + shakeNum,viewMat_.target_.z + shakeNum };
 	// （仮の）上方向
-	XMVECTOR upVector = { viewMat_.up_.x_,viewMat_.up_.y_,viewMat_.up_.z_ };
+	XMVECTOR upVector = { viewMat_.up_.x,viewMat_.up_.y,viewMat_.up_.z };
 
 	// カメラZ軸（視線方向）
 	XMVECTOR cameraAxisZ = XMVectorSubtract(targetPosition, eyePosition);
@@ -145,9 +145,9 @@ void Camera::MoveEyeVector(const Vec3& move)
 	// 視点座標を移動し、反映
 	Vec3 eye_moved = GetEye();
 
-	eye_moved.x_ += move.x_;
-	eye_moved.y_ += move.y_;
-	eye_moved.z_ += move.z_;
+	eye_moved.x += move.x;
+	eye_moved.y += move.y;
+	eye_moved.z += move.z;
 
 	SetEye(eye_moved);
 }
@@ -157,9 +157,9 @@ void Camera::MoveEyeVector(const XMVECTOR& move)
 	// 視点座標を移動し、反映
 	Vec3 eye_moved = GetEye();
 
-	eye_moved.x_ += move.m128_f32[0];
-	eye_moved.y_ += move.m128_f32[1];
-	eye_moved.z_ += move.m128_f32[2];
+	eye_moved.x += move.m128_f32[0];
+	eye_moved.y += move.m128_f32[1];
+	eye_moved.z += move.m128_f32[2];
 
 	SetEye(eye_moved);
 }
@@ -175,13 +175,13 @@ void Camera::MoveVector(const Vec3& move)
 	Vec3 eye_moved = GetEye();
 	Vec3 target_moved = GetTarget();
 
-	eye_moved.x_ += move.x_;
-	eye_moved.y_ += move.y_;
-	eye_moved.z_ += move.z_;
+	eye_moved.x += move.x;
+	eye_moved.y += move.y;
+	eye_moved.z += move.z;
 
-	target_moved.x_ += move.x_;
-	target_moved.y_ += move.y_;
-	target_moved.z_ += move.z_;
+	target_moved.x += move.x;
+	target_moved.y += move.y;
+	target_moved.z += move.z;
 
 	SetEye(eye_moved);
 	SetTarget(target_moved);
@@ -193,13 +193,13 @@ void Camera::MoveVector(const XMVECTOR& move)
 	Vec3 eye_moved = GetEye();
 	Vec3 target_moved = GetTarget();
 
-	eye_moved.x_ += move.m128_f32[0];
-	eye_moved.y_ += move.m128_f32[1];
-	eye_moved.z_ += move.m128_f32[2];
+	eye_moved.x += move.m128_f32[0];
+	eye_moved.y += move.m128_f32[1];
+	eye_moved.z += move.m128_f32[2];
 
-	target_moved.x_ += move.m128_f32[0];
-	target_moved.y_ += move.m128_f32[1];
-	target_moved.z_ += move.m128_f32[2];
+	target_moved.x += move.m128_f32[0];
+	target_moved.y += move.m128_f32[1];
+	target_moved.z += move.m128_f32[2];
 
 	SetEye(eye_moved);
 	SetTarget(target_moved);

@@ -98,7 +98,7 @@ void IModel::DrawImGui()
 	if (ImGui::TreeNode("model"))
 	{
 		ImGui::SliderFloat("scaleExtend", &scaleExtend_, 0, 10.0f);
-		ImGui::SliderFloat3("materialExtend", &materialExtend_.x_, 0, 5.0f);
+		ImGui::SliderFloat3("materialExtend", &materialExtend_.x, 0, 5.0f);
 
 		ImGui::TreePop();
 	}

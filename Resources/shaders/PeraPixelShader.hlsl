@@ -28,22 +28,6 @@ PSOutput PS(Output input) : SV_TARGET
     float4 ret = float4(0, 0, 0, 0);
     bool isEffect = false;
 
-//エンボス
-    if (isEmboss == true)
-    {
-        ret += tex0.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)) * 2; // 左上
-        ret += tex0.Sample(smp, input.uv + float2(0, -2 * dy)); // 上
-        ret += tex0.Sample(smp, input.uv + float2(2 * dx, -2 * dy)) * 0; // 右 上
-        ret += tex0.Sample(smp, input.uv + float2(-2 * dx, 0)); // 左
-        ret += tex0.Sample(smp, input.uv); // 自分
-        ret += tex0.Sample(smp, input.uv + float2(2 * dx, 0)) * -1; // 右
-        ret += tex0.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)) * 0; // 左下
-        ret += tex0.Sample(smp, input.uv + float2(0, 2 * dy)) * -1; // 下 
-        ret += tex0.Sample(smp, input.uv + float2(2 * dx, 2 * dy)) * -2; // 右 下 
-
-        isEffect = true;
-    }
-
 //シャープネス
     if (isSharpness == true)
     {
@@ -123,20 +107,6 @@ PSOutput PS(Output input) : SV_TARGET
         isEffect = true;
     }
 
-//樽状
-    if (isBarrelCurve)
-    {
-        float2 samplePoint = input.uv;
-        samplePoint -= float2(0.5, 0.5);
-        float distPower = pow(length(samplePoint), 0.1 * barrelCurvePow);
-        samplePoint *= float2(distPower, distPower);
-        samplePoint += float2(0.5, 0.5);
-        float4 Tex = tex0.Sample(smp, samplePoint);
-        ret = Tex;
-
-        isEffect = true;
-    }
-
 //走査線
     if (isScanningLine)
     {
@@ -163,16 +133,46 @@ PSOutput PS(Output input) : SV_TARGET
         y = tcolor.x * 0.199 + tcolor.y * 0.487 + tcolor.z * 0.014;
 
 		// グレースケール変換
-        tcolor.x = y;
-        tcolor.y = y;
-        tcolor.z = y;
+        tcolor.x = lerp(tcolor.r, y, grayScalePow);
+        tcolor.y = lerp(tcolor.g, y, grayScalePow);
+        tcolor.z = lerp(tcolor.b, y, grayScalePow);
 
 		// 出力するピクセル色
-        ret = tcolor;
+        ret = float4(tcolor.rgb, 1.0f);
 
         isEffect = true;
     }
 
+    //エンボス
+    if (isEmboss == true)
+    {
+        ret += tex0.Sample(smp, input.uv + float2(-2 * dx, -2 * dy)) * 2; // 左上
+        ret += tex0.Sample(smp, input.uv + float2(0, -2 * dy)); // 上
+        ret += tex0.Sample(smp, input.uv + float2(2 * dx, -2 * dy)) * 0; // 右 上
+        ret += tex0.Sample(smp, input.uv + float2(-2 * dx, 0)); // 左
+        ret += tex0.Sample(smp, input.uv); // 自分
+        ret += tex0.Sample(smp, input.uv + float2(2 * dx, 0)) * -1; // 右
+        ret += tex0.Sample(smp, input.uv + float2(-2 * dx, 2 * dy)) * 0; // 左下
+        ret += tex0.Sample(smp, input.uv + float2(0, 2 * dy)) * -1; // 下 
+        ret += tex0.Sample(smp, input.uv + float2(2 * dx, 2 * dy)) * -2; // 右 下 
+
+        isEffect = true;
+    }
+    
+    //樽状
+    if (isBarrelCurve)
+    {
+        float2 samplePoint = input.uv;
+        samplePoint -= float2(0.5, 0.5);
+        float distPower = pow(length(samplePoint), 0.1 * barrelCurvePow);
+        samplePoint *= float2(distPower, distPower);
+        samplePoint += float2(0.5, 0.5);
+        float4 Tex = tex0.Sample(smp, samplePoint);
+        ret = Tex;
+
+        isEffect = true;
+    }
+    
 //モザイク
     if (isMosaic)
     {
@@ -193,7 +193,7 @@ PSOutput PS(Output input) : SV_TARGET
 //RGBずらし
     if (isRGBShift)
     {
-        float shift = 0.005f;
+        float shift = RGBShiftPow;
         float r = tex0.Sample(smp, input.uv + float2(-shift, 0)).r;
         float g = tex0.Sample(smp, input.uv + float2(0, 0)).g;
         float b = tex0.Sample(smp, input.uv + float2(shift, 0)).b;

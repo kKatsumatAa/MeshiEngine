@@ -27,7 +27,7 @@ private:
 	};
 
 private:
-	NumImage numImages_[5];
+	NumImage numImages_[6];
 	//—]‚è
 	int32_t numRemainder_;
 	//‚»‚ÌŒ…
@@ -45,6 +45,6 @@ public:
 
 	void SetNum(int32_t num,const Vec2& pos, const Vec2& sizeUV, const Vec2& numImageSize, float scale, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f });
 
-	void Draw();
+	void Draw(Camera2D* camera);
 };
 

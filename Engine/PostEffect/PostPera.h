@@ -28,10 +28,13 @@ public:
 	//ラジアルの最大強さ
 	static const float S_RADIAL_MAX_POW_;
 
+
 private:
 	//画面効果用のフラグ
 	struct EffectConstBuffer
 	{
+		//色
+		Vec4 color = { 1.0f,1.0f,1.0f,1.0f };
 		//課題用マルチテクスチャ組み合わせ
 		uint32_t isMultiTex = false;
 		//ぼかし
@@ -59,14 +62,16 @@ private:
 		uint32_t isScanningLine = false;
 		//グレースケール
 		uint32_t isGrayScale = false;
+		float grayScalePow = 1.0f;
 		//ガラスフィルター
 		uint32_t isGlassFilter = false;
 		//モザイク
 		uint32_t isMosaic = false;
 		//ネガポジ
 		uint32_t isNega = false;
-		//ネガポジ
+		//RGBずらし
 		uint32_t isRGBShift = false;
+		float RGBShiftPow = 0.05f;
 		//ブルーム
 		uint32_t isBloom = false;
 		//クロスフィルタ
@@ -83,10 +88,6 @@ private:
 		float nFocusWidth = 0.005f;
 		//フォーカスのスムースステップの幅の上限
 		float focusDiffPow = 0.01f;
-		//
-		Vec2 pad;
-		//色
-		Vec4 color = { 1.0f,1.0f,1.0f,1.0f };
 		//時間
 		uint32_t time = 0;
 	};

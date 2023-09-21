@@ -3,30 +3,30 @@
 class Vec2
 {
 public:
-	float x_;
-	float y_;
+	float x;
+	float y;
 
 public:
 	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	Vec2()
-		:x_(0), y_(0)
+		:x(0), y(0)
 	{}
 
 	Vec2(float x, float y)
-		:x_(x), y_(y)
+		:x(x), y(y)
 	{}
 
 	//ƒƒ“ƒoŠÖ”
 	float GetLength() const;
 	void  Normalized();
-	Vec2  GetNormalize();
+	Vec2  GetNormalize() const;
 	float Dot(const Vec2& v) const;
 	float Cross(const Vec2& v) const;
 
-	Vec2  operator -();//vec“¯m‚Ìˆø‚«Z
+	Vec2  operator -()const;//vec“¯m‚Ìˆø‚«Z
 	Vec2& operator -=(const Vec2& other);//•¡‡‰‰Zq(-)
 
-	Vec2  operator +();
+	Vec2  operator +()const;
 	Vec2& operator +=(const Vec2& other);//•¡‡‰‰Zq(+)
 
 	Vec2  operator *(float other);

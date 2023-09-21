@@ -56,12 +56,12 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, Object* owner)
 	}
 
 	//発射座標(銃本体に当たらないようにする)
-	shotPos_ = { GetWorldTrans().x_ + directionVec.GetNormalized().x_ * GetScale().x_ * 1.1f,
-		GetWorldTrans().y_ + GetScale().y_,
-		GetWorldTrans().z_ + directionVec.GetNormalized().z_ * GetScale().z_ * 1.1f };
+	shotPos_ = { GetWorldTrans().x + directionVec.GetNormalized().x * GetScale().x * 1.1f,
+		GetWorldTrans().y + GetScale().y,
+		GetWorldTrans().z + directionVec.GetNormalized().z * GetScale().z * 1.1f };
 
 	//弾うつ処理
-	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x_ * 0.4f, 300, owner);
+	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x * 0.4f, 300, owner);
 
 	//パーティクル
 	ParticleGenerate({ 4.0f,4.0f,4.0f,1.5f }, { 4.0f,4.0f,4.0f,0 });
@@ -85,7 +85,7 @@ void Gun::Update()
 	//地面より下に行かないように
 	if (GetParent() == nullptr)
 	{
-		SetTransY(max(GetTrans().y_, GetScale().x_));
+		SetTransY(max(GetTrans().y, GetScale().x));
 	}
 
 	//クールタイムもゲームスピードをかける
@@ -108,11 +108,11 @@ void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor)
 	{
 		const float MD_VEL = 0.6f;
 		Vec3 vel{};
-		vel.x_ = GetRand(-0.5f, 0.5f);
-		vel.y_ = GetRand(-0.5f, 0.5f);
-		vel.z_ = GetRand(-0.5f, 0.5f);
+		vel.x = GetRand(-0.5f, 0.5f);
+		vel.y = GetRand(-0.5f, 0.5f);
+		vel.z = GetRand(-0.5f, 0.5f);
 
-		float scale = GetRand(GetScale().x_ / 2.0f, GetScale().x_ * 2.0f);
+		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 2.0f);
 
 		ParticleManager::GetInstance()->Add(40, shotPos_, vel, { 0,0,0 }, scale, 0, sColor, eColor);
 	}
@@ -127,11 +127,11 @@ void Gun::OnLandShape(const Vec3& interPos)
 	for (int32_t i = 0; i < 20; ++i)
 	{
 		Vec3 vel{};
-		vel.x_ = GetRand(-0.2f, 0.2f);
-		vel.y_ = GetRand(-0.2f, 0.2f);
-		vel.z_ = GetRand(-0.2f, 0.2f);
+		vel.x = GetRand(-0.2f, 0.2f);
+		vel.y = GetRand(-0.2f, 0.2f);
+		vel.z = GetRand(-0.2f, 0.2f);
 
-		float scale = GetRand(GetScale().x_ / 2.0f, GetScale().x_ * 4.0f);
+		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 4.0f);
 
 		ParticleManager::GetInstance()->Add(30, interPos, vel, { 0,0,0 }, scale, 0, { 0,0,0,1.5f }, { 0,0,0,0.0f });
 	}

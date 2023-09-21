@@ -76,5 +76,21 @@ public:
 	/// <returns></returns>
 	static bool CheckRay2Sphere(const Ray& ray, const Sphere& sphere,
 		float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
+
+public://2D
+	/// <summary>
+	/// ‰~‚Æ‰~‚Ì”»’è
+	/// </summary>
+	/// <param name="circle"></param>
+	/// <param name="circle2"></param>
+	/// <param name="inter"></param>
+	/// <param name="reject"></param>
+	/// <returns></returns>
+	static bool CheckCircle2Circle(const Circle& circle, const Circle& circle2,
+		DirectX::XMVECTOR* inter = nullptr, DirectX::XMVECTOR* reject = nullptr);
+
+
+	//static bool CheckRectangle2Rectangle(const MyRectangle& rectangle, const MyRectangle& rectangle2,
+	//	DirectX::XMVECTOR* inter = nullptr, DirectX::XMVECTOR* reject = nullptr);
 };
 

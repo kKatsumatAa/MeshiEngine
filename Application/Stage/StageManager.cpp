@@ -10,6 +10,9 @@ StageManager& StageManager::GetInstance()
 
 void StageManager::LoadStage(int32_t stageIndex)
 {
+	//プレイヤーui
+	PlayerUI::GetInstance().Initialize();
+
 	//json
 	JsonLevelLoader::Getinstance().Initialize();
 	//レベルマネージャー
@@ -31,9 +34,6 @@ void StageManager::Initialize()
 	GameVelocityManager::GetInstance().Initialize();
 	//弾
 	BulletManager::GetInstance().Initialize();
-
-	//プレイヤーui
-	PlayerUI::GetInstance().Initialize();
 
 	//敵マネージャー
 	EnemyManager::GetInstance().Initialize();

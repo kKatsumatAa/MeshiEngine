@@ -8,6 +8,7 @@
 #include "MeshCollider.h"
 #include "LandShape.h"
 #include "ObjectManager.h"
+#include "SphereCollider.h"
 
 
 const std::string LevelManager::S_OBJ_GROUP_NAME_ = LevelManager::GetInstance().FILE_NAME_;
@@ -271,7 +272,7 @@ void LevelManager::LoadLight(LevelData::LightData& lightData)
 		lightManager_->SetDirLightActive(index, true);
 
 		lightManager_->SetDirLightDir(index,
-			{ lightData.dir.x_,lightData.dir.y_,lightData.dir.z_ });
+			{ lightData.dir.x,lightData.dir.y,lightData.dir.z });
 	}
 	//ポイントライトなら
 	else if (lightData.fileName.find("point") != std::string::npos)
@@ -281,10 +282,10 @@ void LevelManager::LoadLight(LevelData::LightData& lightData)
 		lightManager_->SetPointLightActive(index, true);
 
 		lightManager_->SetPointLightPos(index,
-			{ lightData.trans.x_,lightData.trans.y_ ,lightData.trans.z_ });
+			{ lightData.trans.x,lightData.trans.y ,lightData.trans.z });
 
 		lightManager_->SetPointLightAtten(index,
-			{ lightData.scale.z_,lightData.scale.x_,lightData.scale.y_ });
+			{ lightData.scale.z,lightData.scale.x,lightData.scale.y });
 	}
 	//スポットライトなら
 	else if (lightData.fileName.find("spot") != std::string::npos)
@@ -294,19 +295,18 @@ void LevelManager::LoadLight(LevelData::LightData& lightData)
 		lightManager_->SetSpotLightActive(index, true);
 
 		lightManager_->SetSpotLightPos(index,
-			{ lightData.trans.x_,lightData.trans.y_ ,lightData.trans.z_ });
+			{ lightData.trans.x,lightData.trans.y ,lightData.trans.z });
 
 		lightManager_->SetSpotLightAtten(index,
-			{ lightData.scale.z_,lightData.scale.x_,lightData.scale.y_ });
+			{ lightData.scale.z,lightData.scale.x,lightData.scale.y });
 
 		lightManager_->SetSpotLightDir(index,
-			{ lightData.dir.x_,lightData.dir.y_,lightData.dir.z_ });
+			{ lightData.dir.x,lightData.dir.y,lightData.dir.z });
 	}
 }
 
 void LevelManager::Update()
 {
-
 }
 
 void LevelManager::Draw(Camera* camera)
@@ -315,5 +315,4 @@ void LevelManager::Draw(Camera* camera)
 
 void LevelManager::DrawImGui()
 {
-
 }

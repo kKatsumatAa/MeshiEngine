@@ -2,7 +2,7 @@
 
 float Vec4::GetLength() const
 {
-	return sqrtf(x_ * x_ + y_ * y_ + z_ * z_);
+	return sqrtf(x * x + y * y + z * z);
 }
 
 void Vec4::Normalized()
@@ -22,16 +22,16 @@ Vec4 Vec4::Cross(const Vec4& other)const
 {
 	Vec4 v;
 
-	v.x_ = y_ * other.z_ - z_ * other.y_;
-	v.y_ = z_ * other.x_ - x_ * other.z_;
-	v.z_ = x_ * other.y_ - y_ * other.x_;
+	v.x = y * other.z - z * other.y;
+	v.y = z * other.x - x * other.z;
+	v.z = x * other.y - y * other.x;
 
 	return v;
 }
 
 float Vec4::Dot(const Vec4& other)const
 {
-	return x_ * other.x_ + y_ * other.y_ + z_ * other.z_;
+	return x * other.x + y * other.y + z * other.z;
 }
 //--------------------------------------------------------------
 
@@ -39,18 +39,18 @@ float Vec4::Dot(const Vec4& other)const
 Vec4 Vec4::operator+(const Vec4& other)
 {
 	Vec4 v = *this;
-	v.x_ += other.x_;
-	v.y_ += other.y_;
-	v.z_ += other.z_;
+	v.x += other.x;
+	v.y += other.y;
+	v.z += other.z;
 
 	return Vec4(v);
 }
 
 Vec4& Vec4::operator+=(const Vec4& other)
 {
-	x_ += other.x_;
-	y_ += other.y_;
-	z_ += other.z_;
+	x += other.x;
+	y += other.y;
+	z += other.z;
 
 	return *this;
 }
@@ -58,18 +58,18 @@ Vec4& Vec4::operator+=(const Vec4& other)
 Vec4 Vec4::operator-(const Vec4& other)
 {
 	Vec4 v = *this;
-	v.x_ -= other.x_;
-	v.y_ -= other.y_;
-	v.z_ -= other.z_;
+	v.x -= other.x;
+	v.y -= other.y;
+	v.z -= other.z;
 
 	return Vec4(v);
 }
 
 Vec4& Vec4::operator-=(const Vec4& other)
 {
-	x_ -= other.x_;
-	y_ -= other.y_;
-	z_ -= other.z_;
+	x -= other.x;
+	y -= other.y;
+	z -= other.z;
 
 	return *this;
 }
@@ -77,18 +77,18 @@ Vec4& Vec4::operator-=(const Vec4& other)
 Vec4 Vec4::operator*(float other)
 {
 	Vec4 v = *this;
-	v.x_ *= other;
-	v.y_ *= other;
-	v.z_ *= other;
+	v.x *= other;
+	v.y *= other;
+	v.z *= other;
 
 	return Vec4(v);
 }
 
 Vec4& Vec4::operator*=(float other)
 {
-	x_ *= other;
-	y_ *= other;
-	z_ *= other;
+	x *= other;
+	y *= other;
+	z *= other;
 
 	return *this;
 }
@@ -96,18 +96,18 @@ Vec4& Vec4::operator*=(float other)
 Vec4 Vec4::operator/(float other)
 {
 	Vec4 v = *this;
-	v.x_ /= other;
-	v.y_ /= other;
-	v.z_ /= other;
+	v.x /= other;
+	v.y /= other;
+	v.z /= other;
 
 	return Vec4(v);
 }
 
 Vec4& Vec4::operator/=(float other)
 {
-	x_ /= other;
-	y_ /= other;
-	z_ /= other;
+	x /= other;
+	y /= other;
+	z /= other;
 
 	return *this;
 }

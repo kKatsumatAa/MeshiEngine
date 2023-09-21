@@ -72,12 +72,12 @@ void TransitionEffectBeginState::Update()
 	//2枚目の画面の大きさを徐々に小さく
 	PostEffectManager::GetInstance().GetPostEffect2()->SetPera2Extend(LerpVec3(
 		{ 1.0f ,0,0 }, { PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 },
-		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x_);
+		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x);
 
 	//ブルーム徐々に
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.bloomPow = LerpVec3(
 		{ 0.0f ,0,0 }, { PostPera::S_BLOOM_POW_,0,0 },
-		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x_;
+		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x;
 
 	//時間が終わったら
 	if (GetIsTimeOver(timer_, TIMER_MAX_))
@@ -129,12 +129,12 @@ void TransitionEffectEndState::Update()
 	//2つ目の2枚目の画面の大きさを徐々に大きく
 	PostEffectManager::GetInstance().GetPostEffect2()->SetPera2Extend(LerpVec3(
 		{ PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 }, { PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ ,0,0 },
-		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x_);
+		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x);
 
 	//ブルーム徐々に
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.bloomPow = LerpVec3(
 		 { PostPera::S_BLOOM_POW_,0,0 }, { 0.0f ,0,0 },
-		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x_;
+		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x;
 
 	//時間が終わったら
 	if (GetIsTimeOver(timer_, TIMER_MAX_))

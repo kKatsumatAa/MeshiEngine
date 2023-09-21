@@ -7,6 +7,7 @@
 #include "PostPera.h"
 #include <FbxLoader.h>
 #include "Camera.h"
+#include "Camera2D.h"
 #include "RootPipe.h"
 
 class BaseCollider;
@@ -131,13 +132,13 @@ private:
 	static D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 	//定数バッファの生成
-	ComPtr < ID3D12Resource> constBuffMaterial_ = nullptr;
+	ComPtr<ID3D12Resource> constBuffMaterial_ = nullptr;
 	//定数バッファ用データ構造体（マテリアル）
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial_ = nullptr;
 
 	//スプライト
-	std::unique_ptr<Sprite> sprite_;
+	std::unique_ptr<Sprite> sprite_ = nullptr;
 
 	//ライト
 	static LightManager* sLightManager_;
@@ -248,23 +249,23 @@ public:
 
 	//位置
 	void SetTrans(const Vec3& pos) { worldMat_->trans_ = pos; }
-	void SetTransX(float pos) { worldMat_->trans_.x_ = pos; }
-	void SetTransY(float pos) { worldMat_->trans_.y_ = pos; }
-	void SetTransZ(float pos) { worldMat_->trans_.z_ = pos; }
+	void SetTransX(float pos) { worldMat_->trans_.x = pos; }
+	void SetTransY(float pos) { worldMat_->trans_.y = pos; }
+	void SetTransZ(float pos) { worldMat_->trans_.z = pos; }
 	Vec3 GetTrans() { return worldMat_->trans_; }
 	//スケール
 	void SetScale(const Vec3& scale) { worldMat_->scale_ = scale; }
-	void SetScaleX(float scale) { worldMat_->scale_.x_ = scale; }
-	void SetScaleY(float scale) { worldMat_->scale_.y_ = scale; }
-	void SetScaleZ(float scale) { worldMat_->scale_.z_ = scale; }
+	void SetScaleX(float scale) { worldMat_->scale_.x = scale; }
+	void SetScaleY(float scale) { worldMat_->scale_.y = scale; }
+	void SetScaleZ(float scale) { worldMat_->scale_.z = scale; }
 	const Vec3& GetScale() { return worldMat_->scale_; }
 	//回転
 	void SetRot(const Vec3& rot) {
 		worldMat_->rot_ = rot;
 	}
-	void SetRotX(float rot) { worldMat_->rot_.x_ = rot; }
-	void SetRotY(float rot) { worldMat_->rot_.y_ = rot; }
-	void SetRotZ(float rot) { worldMat_->rot_.z_ = rot; }
+	void SetRotX(float rot) { worldMat_->rot_.x = rot; }
+	void SetRotY(float rot) { worldMat_->rot_.y = rot; }
+	void SetRotZ(float rot) { worldMat_->rot_.z = rot; }
 	const Vec3& GetRot() { return worldMat_->rot_; }
 	//行列を更新
 	void CalcWorldMat() { worldMat_->CalcWorldMat(); }
@@ -402,13 +403,13 @@ public:
 		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f },
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawBoxSprite(const Vec2& pos, const Vec2& scale, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }
-		, uint64_t textureHandle = NULL, const Vec2& ancorUV = { 0,0 }, bool isReverseX = false, bool isReverseY = false,
-		float rotation = 0.0f, int32_t pipelineNum = 0);
+	void DrawBoxSprite(Camera2D* camera, uint64_t textureHandle = NULL, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }
+		, const Vec2& ancorUV = { 0,0 }, bool isReverseX = false, bool isReverseY = false,
+		int32_t pipelineNum = 0);
 
-	void DrawClippingBoxSprite(const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, bool isPosLeftTop = true,
-		bool isReverseX = false, bool isReverseY = false, float rotation = 0.0f, int32_t pipelineNum = 0);
+	void DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+		uint64_t textureHandle = NULL, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, bool isPosLeftTop = true,
+		bool isReverseX = false, bool isReverseY = false, int32_t pipelineNum = 0);
 
 	void DrawCube3D(Camera* camera = nullptr,
 		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);

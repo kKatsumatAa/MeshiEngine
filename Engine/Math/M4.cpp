@@ -217,9 +217,9 @@ void M4::TransposeM4()
 void M4::SetScaleMatrix(const Vec3& v3)
 {
 	*this = {
-		v3.x_,0,0,0,
-		0,v3.y_,0,0,
-		0,0,v3.z_,0,
+		v3.x,0,0,0,
+		0,v3.y,0,0,
+		0,0,v3.z,0,
 		0,0,0,1
 	};
 }
@@ -263,7 +263,7 @@ void M4::SetTranslationMatrix(const Vec3& v3)
 		1,0,0,0,
 		0,1,0,0,
 		0,0,1,0,
-		v3.x_,v3.y_,v3.z_,1
+		v3.x,v3.y,v3.z,1
 	};
 }
 
@@ -356,13 +356,13 @@ void M4::MatIntoXMMATRIX(XMMATRIX& xM)const
 
 const Vec3 operator*(const Vec3& v, const M4& m2)
 {
-	float w = (float)(v.x_ * m2.m_[0][3] + v.y_ * m2.m_[1][3] + v.z_ * m2.m_[2][3] + m2.m_[3][3]);
+	float w = (float)(v.x * m2.m_[0][3] + v.y * m2.m_[1][3] + v.z * m2.m_[2][3] + m2.m_[3][3]);
 
 	Vec3 result
 	{
-		(float)(v.x_ * m2.m_[0][0] + v.y_ * m2.m_[1][0] + v.z_ * m2.m_[2][0] + m2.m_[3][0]) / w,
-		(float)(v.x_ * m2.m_[0][1] + v.y_ * m2.m_[1][1] + v.z_ * m2.m_[2][1] + m2.m_[3][1]) / w,
-		(float)(v.x_ * m2.m_[0][2] + v.y_ * m2.m_[1][2] + v.z_ * m2.m_[2][2] + m2.m_[3][2]) / w
+		(float)(v.x * m2.m_[0][0] + v.y * m2.m_[1][0] + v.z * m2.m_[2][0] + m2.m_[3][0]) / w,
+		(float)(v.x * m2.m_[0][1] + v.y * m2.m_[1][1] + v.z * m2.m_[2][1] + m2.m_[3][1]) / w,
+		(float)(v.x * m2.m_[0][2] + v.y * m2.m_[1][2] + v.z * m2.m_[2][2] + m2.m_[3][2]) / w
 	};
 
 	return result;

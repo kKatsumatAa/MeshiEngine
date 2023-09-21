@@ -41,6 +41,12 @@ public://サブクラス
 		WAVEFORMATEX fmt;//"波形フォーマット"
 	};
 
+	struct CheckSoundData
+	{
+		IXAudio2SourceVoice* pSourceVoice;
+		XAUDIO2_BUFFER* pBuf;
+	};
+
 	struct SoundData
 	{
 		//波形フォーマット
@@ -50,7 +56,7 @@ public://サブクラス
 		//バッファのサイズ
 		uint32_t bufferSize;
 		//
-		std::vector<IXAudio2SourceVoice*> pSourceVoice = { nullptr };
+		std::vector<CheckSoundData> checkDatas;
 	};
 
 private:

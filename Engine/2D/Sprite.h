@@ -1,6 +1,7 @@
 #pragma once
 #include"SpriteCommon.h"
 #include "Util.h"
+#include "Camera2D.h"
 
 
 class Sprite
@@ -14,7 +15,7 @@ private://エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
-	
+
 
 public:
 	VertexSprite vertices_[4] = {
@@ -29,17 +30,24 @@ public:
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};
 
 public:
+	~Sprite();
+
 	void Initialize();
 	void SpriteDraw();
 
-	void Update(const Vec2& pos, const Vec2& scale,
+	void Update(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 		const Vec4& color, uint64_t textureHandle, const Vec2& ancorUV,
-		 bool isReverseX, bool isReverseY, float rotation,
+		bool isReverseX, bool isReverseY, const Vec3& rotation,
 		ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
 
-	void UpdateClipping(const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+	void UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 		const Vec4& color, uint64_t textureHandle, bool isPosLeftTop,
-		 bool isReverseX, bool isReverseY, float rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
+		bool isReverseX, bool isReverseY, const Vec3& rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
+
+private:
+	DirectX::XMMATRIX GetCameraMatrix(Camera2D* camera);
+
+	void CalcAndSetMat(ConstBuffTransform* cbt, WorldMat& worldMat, Camera2D* camera);
 };
 
 //共通の処理

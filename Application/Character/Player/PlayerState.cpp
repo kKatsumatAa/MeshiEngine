@@ -68,7 +68,7 @@ void PlayerStateBareHands::Update()
 			{
 				Weapon* weapon = dynamic_cast<Weapon*>(info_.object);
 				//武器拾う
-				Vec3 localPos = { -player_->GetScale().x_ ,-player_->GetScale().y_ / 2.0f ,-player_->GetScale().z_ * 2.0f };
+				Vec3 localPos = { -player_->GetScale().x ,-player_->GetScale().y / 2.0f ,-player_->GetScale().z * 2.0f };
 				player_->PickUpWeapon(weapon, &localPos);
 
 				//ui変更
@@ -102,6 +102,8 @@ void PlayerStateBareHands::Update()
 //武器持ってる状態-----------------------------------------------------------------------
 void PlayerStateHaveWeapon::Initialize()
 {
+	//仮でui変更
+	PlayerUI::GetInstance().ChangeState("GUN");
 }
 
 void PlayerStateHaveWeapon::Update()
@@ -114,7 +116,7 @@ void PlayerStateHaveWeapon::Update()
 		player_->SetIsTarget(false);
 
 		//クールタイムでUI回転
-		PlayerUI::GetInstance().SetAngle(-360.0f * player_->GetWeapon()->GetAttackCoolTimeRatio());
+		PlayerUI::GetInstance().SetAngle(-PI * 2.0f * player_->GetWeapon()->GetAttackCoolTimeRatio());
 
 		//クリックで攻撃
 		if (player_->GetIsClickLeft())
@@ -161,7 +163,7 @@ void PlayerStateDeadEffect::Update()
 
 	float t = (float)timer_ / (float)TIMER_MAX_;
 
-	camera->SetEye(LerpVec3( targetPos_ - (dir_ * LENGTH_MIN_), player_->GetWorldTrans(), EaseInOut(t)));
+	camera->SetEye(LerpVec3(targetPos_ - (dir_ * LENGTH_MIN_), player_->GetWorldTrans(), EaseInOut(t)));
 
 	//演出終わったら生存フラグオフ
 	if (timer_ >= TIMER_MAX_)

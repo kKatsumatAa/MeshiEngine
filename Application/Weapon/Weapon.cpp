@@ -18,20 +18,20 @@ void Weapon::NoParentMove()
 		SetRot(GetRot() + fallVec_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
 
 		//だんだん弱く
-		fallVec_.x_ *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
+		fallVec_.x *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
 
 
-		if (fallVec_.y_ < 0.1f && fallVec_.y_ > FALL_VEC_Y_MIN_)
+		if (fallVec_.y < 0.1f && fallVec_.y > FALL_VEC_Y_MIN_)
 		{
-			fallVec_.y_ = -(fabsf(fallVec_.y_) + fabsf(fallVec_.y_) * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
+			fallVec_.y = -(fabsf(fallVec_.y) + fabsf(fallVec_.y) * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
 		}
-		else if (fallVec_.y_ >= 0.1f)
+		else if (fallVec_.y >= 0.1f)
 		{
-			fallVec_.y_ *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
+			fallVec_.y *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
 		}
 
 		//だんだん弱く
-		fallVec_.z_ *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
+		fallVec_.z *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
 
 
 		//前回の位置から今の位置のベクトルをレイとして判定

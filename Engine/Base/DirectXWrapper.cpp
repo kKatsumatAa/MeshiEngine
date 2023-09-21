@@ -457,6 +457,14 @@ void DirectXWrapper::ResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RE
 	commandList_->ResourceBarrier(1, &barrierDesc);
 }
 
+void DirectXWrapper::SetClearColor(float clearColor[4])
+{
+	for (int32_t i = 0; i < 4; i++)
+	{
+		clearColor_[i] = clearColor[i];
+	}
+}
+
 void LoadPictureFromFile(const char* fileName, ComPtr<ID3D12Resource>& texBuff)
 {
 	HRESULT result = {};

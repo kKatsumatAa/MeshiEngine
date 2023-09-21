@@ -63,7 +63,7 @@ void Character::DrawImGui(std::function<void()> imguiF)
 
 			ImGui::Text("isOnGround : %d", isOnGround_);
 
-			ImGui::Text("fallVec : %.2f", fallVec_.y_);
+			ImGui::Text("fallVec : %.2f", fallVec_.y);
 
 			ImGui::TreePop();
 		}
@@ -124,7 +124,7 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 	if (!isOnGround_)
 	{
 		//加速
-		fallVec_.y_ = max((fallVec_.y_ + FALL_ACC_ * velocityYPow), FALL_V_Y_MIN_);
+		fallVec_.y = max((fallVec_.y + FALL_ACC_ * velocityYPow), FALL_V_Y_MIN_);
 		//移動
 		SetTrans(GetTrans() + fallVec_ * velocityYPow);
 		//ジャンプの条件トリガー満たしてなかったら
@@ -152,7 +152,7 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 
 	//上端から下端までのレイキャスト用レイを準備(当たり判定は親子関係も考慮)
 	Ray ray;
-	ray.start = { GetWorldTrans().x_,GetWorldTrans().y_, GetWorldTrans().z_ };
+	ray.start = { GetWorldTrans().x,GetWorldTrans().y, GetWorldTrans().z };
 	//上端
 	ray.start.m128_f32[1] += LengthY;
 	ray.dir = { 0,-1.0f,0 };
@@ -182,7 +182,7 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 		}
 	}
 	//落下状態
-	else if (fallVec_.y_ <= 0.0f)
+	else if (fallVec_.y <= 0.0f)
 	{
 		if (CollisionManager::GetInstance()->Raycast(
 			ray, COLLISION_ATTR_LANDSHAPE, &info, LengthY * 2.0f))
@@ -259,8 +259,8 @@ bool Character::CheckRayOfEyeHit(const Vec3& dir, float length, uint16_t attr, R
 	//攻撃できるかどうか
 //レイにプレイヤーの正面ベクトル入れる
 	Ray ray;
-	ray.dir = { dir.x_,dir.y_,dir.z_ };
-	ray.start = { GetWorldTrans().x_,GetWorldTrans().y_ ,GetWorldTrans().z_ };
+	ray.dir = { dir.x,dir.y,dir.z };
+	ray.start = { GetWorldTrans().x,GetWorldTrans().y ,GetWorldTrans().z };
 
 	//正面ベクトルに何かあるか
 	bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, attr, info, length);

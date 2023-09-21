@@ -22,7 +22,7 @@ private:
 	// デスクリプタヒープの設定
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc_{};
 	ComPtr < ID3D12DescriptorHeap> rtvHeap_ = nullptr;
-		// レンダーターゲットビューのハンドル
+	// レンダーターゲットビューのハンドル
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle_;
 	// バックバッファ
 	std::vector< ComPtr <ID3D12Resource>> backBuffers_;
@@ -105,7 +105,7 @@ public:
 
 	//リソースバリア
 	void ResourceBarrier(D3D12_RESOURCE_STATES beforeState,
-		D3D12_RESOURCE_STATES afterState,ID3D12Resource* buff );
+		D3D12_RESOURCE_STATES afterState, ID3D12Resource* buff);
 
 	//getter
 	ID3D12Device* GetDevice() const { return device_.Get(); }
@@ -127,6 +127,9 @@ public:
 
 	//バックバッファの数を取得
 	size_t GetBackBufferCount() const { return backBuffers_.size(); }
+
+	//クリアカラー
+	void SetClearColor(float clearColor[4]);
 };
 //画像のロード（引数にバッファ設定）
 void LoadPictureFromFile(const char* fileName, Microsoft::WRL::ComPtr<ID3D12Resource>& texBuff);

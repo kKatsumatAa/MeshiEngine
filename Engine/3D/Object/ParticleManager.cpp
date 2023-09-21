@@ -171,12 +171,12 @@ void ParticleManager::Add(int32_t life, const Vec3& position, const Vec3& veloci
 	p.sColor_ = start_color;
 	p.eColor_ = end_color;
 
-	p.sRotation_.x_ = start_rot * GetRand(-2.0f, 2.0f);
-	p.sRotation_.y_ = start_rot * GetRand(-2.0f, 2.0f);
-	p.sRotation_.z_ = start_rot * GetRand(-2.0f, 2.0f);
-	p.eRotation_.x_ = end_rot * GetRand(-2.0f, 2.0f);
-	p.eRotation_.y_ = end_rot * GetRand(-2.0f, 2.0f);
-	p.eRotation_.z_ = end_rot * GetRand(-2.0f, 2.0f);
+	p.sRotation_.x = start_rot * GetRand(-2.0f, 2.0f);
+	p.sRotation_.y = start_rot * GetRand(-2.0f, 2.0f);
+	p.sRotation_.z = start_rot * GetRand(-2.0f, 2.0f);
+	p.eRotation_.x = end_rot * GetRand(-2.0f, 2.0f);
+	p.eRotation_.y = end_rot * GetRand(-2.0f, 2.0f);
+	p.eRotation_.z = end_rot * GetRand(-2.0f, 2.0f);
 }
 
 void ParticleManager::InitializeGraphicsPipeline()
@@ -368,16 +368,16 @@ void ParticleManager::GenerateRandomParticle(int32_t num, int32_t lifeTime, floa
 
 		const float MD_VEL = vecPower;
 		Vec3 vel{};
-		vel.x_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.y_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.z_ = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.x = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.y = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.z = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
 
 		//重力に見立ててYのみ[-0.001f~0]でランダムに
 		Vec3 acc{};
 		const float MD_ACC = vecPower * 0.05f;
-		acc.y_ = -(float)rand() / RAND_MAX * MD_ACC;
+		acc.y = -(float)rand() / RAND_MAX * MD_ACC;
 
-		ParticleManager::GetInstance()->Add(lifeTime, { pos.x_,pos.y_,pos.z_ }, vel, acc, start_scale, end_scale
+		ParticleManager::GetInstance()->Add(lifeTime, { pos.x,pos.y,pos.z }, vel, acc, start_scale, end_scale
 			, start_color, end_color);
 	}
 }

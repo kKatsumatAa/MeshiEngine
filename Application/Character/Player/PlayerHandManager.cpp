@@ -19,9 +19,9 @@ void PlayerHandManager::Initialize(Player* player)
 	Vec3 distance = { 1.0f,1.0f,1.0f };
 	//生成（仮）
 	ObjectManager::GetInstance().AddObject(OBJ_GROUP_NAME_,
-		std::move(PlayerHand::Create(player, { -distance.x_ * 2.0f,0 - distance.y_,distance.z_ }, true, HAND_R_NAME_)));
+		std::move(PlayerHand::Create(player, { -distance.x * 2.0f,0 - distance.y,distance.z }, true, HAND_R_NAME_)));
 	ObjectManager::GetInstance().AddObject(OBJ_GROUP_NAME_,
-		std::move(PlayerHand::Create(player, { +distance.x_ * 2.0f,0 - distance.y_,distance.z_ }, false, HAND_L_NAME_)));
+		std::move(PlayerHand::Create(player, { +distance.x * 2.0f,0 - distance.y,distance.z }, false, HAND_L_NAME_)));
 
 	handL_ = dynamic_cast<PlayerHand*>(*ObjectManager::GetInstance().GetObjs(OBJ_GROUP_NAME_, HAND_L_NAME_).begin());
 	handR_ = dynamic_cast<PlayerHand*>(*ObjectManager::GetInstance().GetObjs(OBJ_GROUP_NAME_, HAND_R_NAME_).begin());
@@ -49,8 +49,8 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 			//敵が銃で倒されてる可能性があるのでもう一回調べる
 			//レイにプレイヤーの正面ベクトル入れる
 			Ray ray;
-			ray.dir = { player_->GetFrontVec().x_,player_->GetFrontVec().y_,player_->GetFrontVec().z_ };
-			ray.start = { player_->GetTrans().x_,player_->GetTrans().y_,player_->GetTrans().z_ };
+			ray.dir = { player_->GetFrontVec().x,player_->GetFrontVec().y,player_->GetFrontVec().z };
+			ray.start = { player_->GetTrans().x,player_->GetTrans().y,player_->GetTrans().z };
 
 			//正面ベクトルに何かあるか
 			RaycastHit info;

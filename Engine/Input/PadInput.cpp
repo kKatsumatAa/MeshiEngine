@@ -1,14 +1,16 @@
 #include "PadInput.h"
 
+using namespace std;
+
 // デバイス発見時に実行される
 BOOL CALLBACK DeviceFindCallBack(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef)
 {
-	PadInput::GetInstance().CreateDevice();
+	PadInput::GetInstance().CreateDevice(ipddi);
 
 	return DIENUM_STOP;
 }
 
-void PadInput::CreateDevice()
+void PadInput::CreateDevice(LPCDIDEVICEINSTANCE ipddi)
 {
 	//つながってたら呼ばれる関数なのでフラグはオンに
 	isActive_ = true;
@@ -20,7 +22,7 @@ void PadInput::CreateDevice()
 	}
 
 	//パッドデバイスの生成
-	result_ = Input::GetInstance().GetDirectInput()->CreateDevice(GUID_Joystick, &gamePad_, NULL);
+	result_ = Input::GetInstance().GetDirectInput()->CreateDevice(ipddi->guidInstance, &gamePad_, NULL);
 	assert(SUCCEEDED(result_));
 
 	//入力データ形式のセット
@@ -78,7 +80,7 @@ void PadInput::PadConnectSearch()
 		result_ = Input::GetInstance().GetDirectInput()->EnumDevices(
 			DI8DEVTYPE_GAMEPAD,
 			DeviceFindCallBack,//接続されていればこの関数が呼ばれる
-			NULL,
+			pvRef_,
 			DIEDFL_ATTACHEDONLY//
 		);
 		assert(SUCCEEDED(result_));

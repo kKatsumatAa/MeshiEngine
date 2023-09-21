@@ -541,23 +541,23 @@ void Primitive::InitializeSphere()
 		Vec3 vec = { 0,-1.0f,0 };
 
 		//í∏ì_ìÒÇ¬
-		verticesSphere_[0] = { {vec.x_,vec.y_,vec.z_},{},{},{1.0f,0.0f} };//â∫
-		verticesSphere_[1] = { {vec.x_,-vec.y_,vec.z_},{},{},{1.0f,0.0f} };//è„
+		verticesSphere_[0] = { {vec.x,vec.y,vec.z},{},{},{1.0f,0.0f} };//â∫
+		verticesSphere_[1] = { {vec.x,-vec.y,vec.z},{},{},{1.0f,0.0f} };//è„
 
 		for (int32_t i = 0; i < 36; i++)//â°
 		{
-			worldMat.rot_.y_ = (float)i * AngletoRadi(360.0f / 35.0f);
+			worldMat.rot_.y = (float)i * AngletoRadi(360.0f / 35.0f);
 
 
 			for (int32_t j = 0; j < 34; j++)//èc
 			{
-				worldMat.rot_.x_ = ((float)(j + 1) * (PI / 35.0f));
+				worldMat.rot_.x = ((float)(j + 1) * (PI / 35.0f));
 				worldMat.CalcWorldMat();
 				vec = { 0,-1.0f,0 };
 				Vec3xM4(vec, worldMat.matWorld_, false);
 
 				int32_t p = i * 34 + j;
-				verticesSphere_[(2) + i * 34 + j] = { {vec.x_,vec.y_,vec.z_},{},{},{1.0f,0.0f} };
+				verticesSphere_[(2) + i * 34 + j] = { {vec.x,vec.y,vec.z},{},{},{1.0f,0.0f} };
 			}
 		}
 
