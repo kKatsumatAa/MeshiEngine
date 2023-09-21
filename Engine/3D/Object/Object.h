@@ -82,6 +82,20 @@ public:
 		NORM_MAP
 	};
 
+	struct AnimationData
+	{
+		//アニメーション現在時間
+		double currentTime_;
+		//アニメーションフラグ
+		bool isPlay_ = false;
+		//ループ
+		bool isLoop_ = false;
+		//逆再生
+		bool isReverse_ = false;
+		//再生のスピード倍率
+		float animationSpeed_ = 1.0f;
+	};
+
 public:
 	//ボーンの最大数
 	static const int32_t S_MAX_BONES_ = 90;
@@ -132,23 +146,7 @@ private:
 	ComPtr<ID3D12Resource> constBuffSkin_ = nullptr;
 	ConstBufferDataSkin* constMapSkin = nullptr;
 
-	//1フレームの時間
-	FbxTime frameTime_;
-	//アニメーション開始時間
-	FbxTime startTime_;
-	//アニメーション終了時間
-	FbxTime endTime_;
-	//アニメーション現在時間
-	FbxTime currentTime_;
-	//アニメーションフラグ
-	bool isPlay_ = false;
-	//ループ
-	bool isLoop_ = false;
-	//逆再生
-	bool isReverse_ = false;
-	//再生のスピード倍率
-	float animationSpeed_ = 1.0f;
-
+private:
 	//親子関係を結ぶモデルのノード
 	const Node* parentNode_ = nullptr;
 	ModelFBX* parentNodeModel_ = nullptr;
@@ -180,6 +178,14 @@ private:
 	//メッシュのオフセット
 	Mesh::PolygonOffset meshOffsetData_;
 
+private://fbxモデル系
+	//アニメーション
+	std::vector<AnimationData>animeDatas_;
+	//アニメーションのインデックス
+	int32_t animeIndex_ = 0;
+	std::vector<Node>*nodes_;
+
+private:
 	//画面効果用
 	ComPtr <ID3D12Resource> effectFlagsBuff_;
 	EffectOConstBuffer* mapEffectFlagsBuff_;
@@ -217,15 +223,15 @@ private:
 		uint64_t normalMapTexHandle);
 
 	//アニメーション開始
-	void PlayAnimationInternal(FbxTime& sTime, FbxTime& eTime,
+	void PlayAnimationInternal(int32_t animeIndex,
 		bool isLoop = false, bool isReverse = false);
 	//アニメーションリセット
-	void AnimationReset(FbxTime& sTime, FbxTime& eTime);
+	void AnimationReset(int32_t animeIndex);
 
-	//ボーンのアニメーション処理
-	void CalcBoneDataInternal(ModelFBX* model);
+	//アニメーションで変化したノードやボーンの処理
+	void CalcNodeMatBoneMatInternal(ModelFBX* model);
 	//ボーンの行列を計算
-	XMMATRIX GetCalcSkinMat(const std::vector<ModelFBX::Bone>& bones, int32_t index);
+	XMMATRIX GetCalcSkinMat(IModel* model, int32_t index);
 
 	//
 	static void PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum = NULL);
@@ -283,7 +289,7 @@ public:
 	BaseCollider* GetCollider() { return collider_.get(); }
 
 	//モデルのポインタ
-	void SetModel(IModel* model) { model_ = model; }
+	void SetModel(IModel* model);
 	IModel* GetModel() { return model_; }
 
 	//生きてるか
@@ -340,6 +346,12 @@ public:
 	void EffectUpdate();
 	//行列を更新、それに伴いコライダーも
 	void WorldMatColliderUpdate();
+	//ノードの行列をアニメーションに合わせて変更
+	void BlendAnimationUpdate();
+	//fbxのノードの行列更新
+	void UpdateFBXNodeMat();
+	//アニメーションのアップデート
+	void AnimationUpdate();
 
 	static void StaticUpdate();
 	//--------------------------------------------------------
@@ -359,18 +371,22 @@ public:
 	virtual void OnCollision(const CollisionInfo& info) {}
 
 	//アニメーション開始
-	void PlayAnimation(bool isLoop = false);
-	void PlayReverseAnimation(bool isLoop = false);
+	void PlayAnimation(bool isLoop, int32_t animeIndex = 0);
+	void PlayReverseAnimation(bool isLoop, int32_t animeIndex = 0);
 	//アニメーションフラグ
-	void SetIsPlayAnimation(bool isPlay) { isPlay_ = isPlay; }
-	void SetIsLoopAnimation(bool isLoop) { isLoop_ = isLoop; }
-	void SetIsReverseAnimation(bool isReverse) { isReverse_ = isReverse; }
+	void SetIsPlayAnimation(bool isPlay, int32_t animeIndex = 0) { animeDatas_[animeIndex].isPlay_ = isPlay; }
+	void SetIsLoopAnimation(bool isLoop, int32_t animeIndex = 0) { animeDatas_[animeIndex].isLoop_ = isLoop; }
+	void SetIsReverseAnimation(bool isReverse, int32_t animeIndex = 0) { animeDatas_[animeIndex].isReverse_ = isReverse; }
 	//アニメーションスピード
-	void SetAnimationSpeed(float speed) { animationSpeed_ = speed; }
+	void SetAnimationSpeed(float speed) { 
+		animeDatas_[animeIndex_].animationSpeed_ = speed;
+	}
 	//モデルの部位と親子関係を持たせる
 	void ParentFbxNode(Object* obj, IModel* model, const std::string& nodeName);
 	//ボーンを得る
 	const XMMATRIX* GetModelBones()const { return constMapSkin->bones; }
+	//オブジェクトクラスが持ってるfbxモデルのノード
+	const std::vector<Node>& GetNodes();
 	//ボーンのデータ転送
 	void MappingBoneData(ModelFBX* model);
 

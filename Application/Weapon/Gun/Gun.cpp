@@ -72,7 +72,6 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, Object* owner)
 
 void Gun::ChangeOwner(Object* parent)
 {
-	SetRot({ 0,0,0 });
 	remainingBullets_ = BULLETS_TMP_;
 	attackCoolTime_ = 0;
 

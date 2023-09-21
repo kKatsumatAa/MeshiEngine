@@ -1,5 +1,7 @@
 #pragma once
 #include"IModel.h"
+#include"Vec3.h"
+#include"Vec4.h"
 
 
 class ModelFBX :public IModel
@@ -13,23 +15,63 @@ private:
 	static const std::string S_TYPE_DIRECTORY_;
 
 public://サブクラス
-	//ボーン構造体
-	struct Bone
+	//キーフレームごとの情報（スケールなど）
+	struct NodeKeyData
 	{
-		//名前
-		std::string name_;
-		//初期姿勢の逆行列
-		DirectX::XMMATRIX invInitialPose;
-		//ノードのグローバルトランスフォーム
-		DirectX::XMMATRIX globalTransform;
-		//クラスター(FBX側のボーン情報)
-		FbxCluster* fbxCluster;
-		//コンストラクタ
-		Bone(const std::string& name)
+		XMFLOAT3 scale;
+		XMFLOAT4 rotate;
+		XMFLOAT3 trans;
+		template<class T>
+		void serialize(T& archive)
 		{
-			name_ = name;
+			archive(scale, rotate, trans);
 		}
 	};
+
+	//キーフレームごとのノード全ての情報
+	struct Keyframe
+	{
+		//開始から何秒か
+		double seconds;
+		//キーフレームに対応した全てのノードの情報
+		std::vector<NodeKeyData> nodeKeys;
+
+		template<class T>
+		void serialize(T& archive)
+		{
+			archive(seconds, nodeKeys);
+		}
+	};
+
+	struct Animation
+	{
+		std::string name;
+		//アニメーションの長さ
+		double secondsLength;
+		//fps
+		double frameRate;
+		//開始時間
+		double startTime;
+		//終了時間
+		double endTime;
+		//1フレームごとに加算する時間
+		double addTime;
+		//キーフレームごとのノード全ての情報の配列
+		std::vector<Keyframe> keyframes;
+
+		template<class T>
+		void serialize(T& archive)
+		{
+			archive(name, secondsLength, frameRate, keyframes);
+		}
+	};
+
+
+private:
+	std::vector<DirectX::XMMATRIX> offsetTransforms_;
+	//ボーンのノードのインデックス
+	std::vector<uint64_t> boneNodeIndices_;
+	std::vector<Animation>	animationClips_;
 
 #pragma region 変数
 private:
@@ -37,8 +79,6 @@ private:
 	std::string name_;
 	//ノード配列
 	std::vector<Node> nodes_;
-	//ボーン配列
-	std::vector<Bone> bones_;
 	//FBXシーン
 	FbxScene* fbxScene_ = nullptr;
 
@@ -56,16 +96,18 @@ public:
 
 
 public:
-	std::vector<Bone>& GetBones() { return bones_; }
-
-	const std::vector<Node>& GetNodes() { return nodes_; }
+	std::vector<Node>* GetNodes() { return &nodes_; }
 	//ノードを名前で指定して取得
 	const Node* GetNode(const std::string& name);
-	//ノードの
 
 	FbxScene* GetFbxScene() { return fbxScene_; }
 
-	int32_t GetBoneIndex(const std::string& name) const;
+	uint64_t GetBoneIndex(const std::string& name) const;
+
+
+	std::vector<DirectX::XMMATRIX>& GetOffsetTransforms() { return offsetTransforms_; }
+	std::vector<uint64_t>& GetBoneNodeIndices() { return boneNodeIndices_; }
+	std::vector<Animation>& GetAnimations() { return animationClips_; }
 
 #pragma endregion
 };

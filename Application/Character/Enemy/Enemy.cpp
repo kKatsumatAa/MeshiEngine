@@ -201,7 +201,8 @@ void Enemy::Update()
 	damageCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
 	//アニメーションもゲームスピード
-	SetAnimationSpeed(GameVelocityManager::GetInstance().GetVelocity() * 3.0f);
+	SetAnimationSpeed(min(GameVelocityManager::GetInstance().GetVelocity() * 3.0f, 
+		GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_));
 
 	//ステート
 	state_->Update();
