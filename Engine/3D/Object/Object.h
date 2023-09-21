@@ -384,6 +384,8 @@ public:
 	}
 	//モデルの部位と親子関係を持たせる
 	void ParentFbxNode(Object* obj, IModel* model, const std::string& nodeName);
+	//親ノードを解除
+	void ResetParentFbxNode();
 	//ボーンを得る
 	const XMMATRIX* GetModelBones()const { return constMapSkin->bones; }
 	//オブジェクトクラスが持ってるfbxモデルのノード

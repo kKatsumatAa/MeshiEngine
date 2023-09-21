@@ -112,6 +112,8 @@ void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 		GetWeapon()->SetFallVec(directionVec);
 		GetWeapon()->SetTrans(GetWeapon()->GetTrans() + directionVec);
 		weapon_->Update();
+		//親ノードをなくす
+		weapon_->ResetParentFbxNode();
 		//親などをnull
 		GetWeapon()->ChangeOwner(nullptr);
 		//仮で手から離れたらアイテムの属性にする

@@ -1021,6 +1021,12 @@ void Object::ParentFbxNode(Object* obj, IModel* model, const std::string& nodeNa
 	assert(false);
 }
 
+void Object::ResetParentFbxNode()
+{
+	parentNode_ = nullptr;
+	parentNodeModel_ = nullptr;
+}
+
 void Object::DrawTriangle(Camera* camera, const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)
 {
 	constMapMaterial_->color = color;
