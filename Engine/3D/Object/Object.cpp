@@ -130,6 +130,7 @@ Object::~Object()
 {
 	constBuffMaterial_.Reset();
 	constBuffSkin_.Reset();
+	effectFlagsBuff_.Reset();
 
 	//object毎に消えるのでいらないかも
 	if (collider_.get())
@@ -268,6 +269,12 @@ void Object::Update()
 
 	WorldMatColliderUpdate();
 
+	if (model_ && model_->GetIsFbx())
+	{
+		CalcNodeMatBoneMatInternal(dynamic_cast<ModelFBX*>(model_));
+	}
+}
+
 void Object::Draw()
 {
 	if (model_)
@@ -279,11 +286,7 @@ void Object::Draw()
 		DrawBoxSprite(nullptr, NULL, { 1.0f,1.0f,1.0f,1.0f }, { 0.5f,0.5f });
 	}
 }
-	if (model_ && model_->GetIsFbx())
-	{
-		CalcNodeMatBoneMatInternal(dynamic_cast<ModelFBX*>(model_));
-	}
-}
+
 
 void Object::EffectUpdate()
 {
@@ -313,19 +316,6 @@ void Object::StaticUpdate()
 //-----------------------------------------------------------------------------------------
 void Object::BlendAnimationUpdate()
 {
-	collider->SetObject(this);
-	collider_ = std::move(collider);
-	//コリジョンマネージャーに登録
-	CollisionManager::GetInstance()->AddCollider(collider_.get());
-	//行列,コライダーの更新
-	Object::WorldMatColliderUpdate();
-
-	if (collider_ && collider_->GetIs2D() && sprite_ == nullptr)
-	{
-		sprite_ = std::make_unique<Sprite>();
-		sprite_->Initialize();
-	}
-}
 	if (!model_ || !model_->GetIsFbx())
 	{
 		return;
@@ -367,11 +357,6 @@ void Object::BlendAnimationUpdate()
 		const ModelFBX::Keyframe& START_KEY_FRAME0 = START_KEY_FRAMES[i];
 		const ModelFBX::Keyframe& START_KEY_FRAME1 = START_KEY_FRAMES[i + 1];
 
-		if (i + 1 == startKeyNum - 1)
-		{
-
-		}
-
 		//補間前計算(インデックスのキーフレームと次のキーフレームの間かどうか)
 		if (animeDatas_[START_INDEX].currentTime_ >= START_KEY_FRAME0.seconds &&
 			animeDatas_[START_INDEX].currentTime_ < START_KEY_FRAME1.seconds
@@ -403,7 +388,6 @@ void Object::BlendAnimationUpdate()
 				startScales.push_back(DirectX::XMVectorLerp(scale0, scale1, rate));
 				startRotates.push_back(DirectX::XMQuaternionSlerp(rotate0, rotate1, rate));
 				startTranslates.push_back(DirectX::XMVectorLerp(translate0, translate1, rate));
-				startTranslates[startTranslates.size() - 1] = DirectX::XMVectorLerp(translate0, translate1, rate);
 			}
 			//パラメータ取得したので抜ける
 			break;
@@ -428,12 +412,6 @@ void Object::BlendAnimationUpdate()
 		//補間後
 		const ModelFBX::Keyframe& endKeyframe0 = END_KEY_FRAMES.at(keyIndex);
 		const ModelFBX::Keyframe& endKeyframe1 = END_KEY_FRAMES.at(keyIndex + 1);
-//-------------------------------------------------------------------
-Object::~Object()
-{
-	constBuffMaterial_.Reset();
-	constBuffSkin_.Reset();
-	effectFlagsBuff_.Reset();
 
 		//補間後計算
 		if (animeDatas_[END_INDEX].currentTime_ >= endKeyframe0.seconds &&
@@ -444,11 +422,6 @@ Object::~Object()
 			//キーフレーム間の割合
 			float rate = (float)((animeDatas_[END_INDEX].currentTime_ - endKeyframe0.seconds) /
 				(endKeyframe1.seconds - endKeyframe0.seconds));
-	if (collider_.get())
-	{
-		CollisionManager::GetInstance()->RemoveCollider(collider_.get());
-	}
-}
 
 			int32_t nodeCount = static_cast<int32_t>(nodes_->size());
 			for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
@@ -470,37 +443,37 @@ Object::~Object()
 			}
 			break;
 		}
-	}
-	//キーフレーム間に当てはまらなければ抜ける
-	if (!isEndCalc)
-	{
-		return;
-	}
+		//キーフレーム間に当てはまらなければ抜ける
+		if (!isEndCalc)
+		{
+			return;
+		}
 
-	//補間//ここでノードのパラメータ変えてる（rateで）→それをフレームごとに行列にしてる
-	int32_t nodeCount = static_cast<int32_t>(startScales.size());
-	//仮で
-	float rateL = 0.5f;
-	for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
-	{
-		DirectX::XMVECTOR Scale =
-			DirectX::XMVectorLerp(
-				startScales[nodeIndex],
-				endScales[nodeIndex], rateL);
-		DirectX::XMVECTOR Rotate =
-			DirectX::XMQuaternionSlerp(
-				startRotates[nodeIndex],
-				endRotates[nodeIndex], rateL);
-		DirectX::XMVECTOR Translate =
-			DirectX::XMVectorLerp(
-				startTranslates[nodeIndex],
-				endTranslates[nodeIndex], rateL);
+		//補間//ここでノードのパラメータ変えてる（rateで）→それをフレームごとに行列にしてる
+		int32_t nodeCount = static_cast<int32_t>(startScales.size());
+		//仮で
+		float rateL = 0.5f;
+		for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
+		{
+			DirectX::XMVECTOR Scale =
+				DirectX::XMVectorLerp(
+					startScales[nodeIndex],
+					endScales[nodeIndex], rateL);
+			DirectX::XMVECTOR Rotate =
+				DirectX::XMQuaternionSlerp(
+					startRotates[nodeIndex],
+					endRotates[nodeIndex], rateL);
+			DirectX::XMVECTOR Translate =
+				DirectX::XMVectorLerp(
+					startTranslates[nodeIndex],
+					endTranslates[nodeIndex], rateL);
 
-		//線形補完したパラメータを取得
-		Node& node = (*nodes_)[nodeIndex];
-		node.scaling = Scale;
-		node.rotation = Rotate;
-		node.translation = Translate;
+			//線形補完したパラメータを取得
+			Node& node = (*nodes_)[nodeIndex];
+			node.scaling = Scale;
+			node.rotation = Rotate;
+			node.translation = Translate;
+		}
 	}
 }
 
@@ -554,7 +527,6 @@ void Object::AnimationUpdate()
 				//代入
 				node.scaling = scale;
 				node.rotation = rotate;
-				node.translation = trans;
 				node.translation = trans;
 			}
 		}
@@ -632,8 +604,8 @@ void Object::AnimationReset(int32_t animeIndex)
 
 	//アニメーションが1つしかない前提
 	FbxScene* fbxScene = model->GetFbxScene();
-	//0番のアニメーション取得
-	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	//アニメーション取得
+	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(animeIndex);
 	//アニメーションなかったら
 	if (animStack == nullptr) { return; }
 
@@ -805,6 +777,12 @@ void Object::SetCollider(std::unique_ptr<BaseCollider> collider)
 	CollisionManager::GetInstance()->AddCollider(collider_.get());
 	//行列,コライダーの更新
 	Object::WorldMatColliderUpdate();
+
+	if (collider_ && collider_->GetIs2D() && sprite_ == nullptr)
+	{
+		sprite_ = std::make_unique<Sprite>();
+		sprite_->Initialize();
+	}
 }
 
 void Object::SetColliderIsValid(bool isValid)
@@ -1023,10 +1001,6 @@ void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandl
 		//メッシュのオフセットデータセット
 		GetModel()->SetPolygonOffsetData(meshOffsetData_);
 
-		if (indexNum == FBX)
-		{
-			CalcBoneDataInternal(dynamic_cast<ModelFBX*>(model));
-		}
 		model->Draw(SetRootPipeRM, SetMaterialTexM, cbt_);
 	}
 

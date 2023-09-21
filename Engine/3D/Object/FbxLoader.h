@@ -121,8 +121,6 @@ private:
 	//アニメーション読み込み
 	void LoadAnimation(ModelFBX* model, FbxScene* fbxScene);
 
-	void FetchBoneInfluences(const FbxMesh* fbxMesh, std::vector< std::vector<WeightSet>>& weightSetsAray);
-
 	//アニメーションセット後にボーンを調べる
 	void LoadBoneData(FbxScene* fbxScene, ModelFBX* model);
 
