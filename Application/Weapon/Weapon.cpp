@@ -74,7 +74,7 @@ void Weapon::Update()
 	if (!GetIsAlive() && owner_)
 	{
 		Character* chara = dynamic_cast<Character*>(owner_);
-
+		owner_ = nullptr;
 		chara->FallWeapon({ 0,0,0 });
 	}
 

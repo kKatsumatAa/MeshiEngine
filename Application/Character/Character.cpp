@@ -108,10 +108,6 @@ void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 			GetWeapon()->SetLocalPos(*localPos);
 		}
 
-		//移動
-		GetWeapon()->SetFallVec(directionVec);
-		GetWeapon()->SetTrans(GetWeapon()->GetTrans() + directionVec);
-		weapon_->Update();
 		//親ノードをなくす
 		weapon_->ResetParentFbxNode();
 		//親などをnull
@@ -119,6 +115,12 @@ void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 		//仮で手から離れたらアイテムの属性にする
 		weapon_->SetAttribute(COLLISION_ATTR_ITEMS);
 		weapon_->SetIsThrowing(true);
+
+		//移動
+		GetWeapon()->SetFallVec(directionVec);
+		GetWeapon()->SetTrans(GetWeapon()->GetTrans() + directionVec);
+		weapon_->Update();
+
 		SetWeapon(nullptr);
 	}
 }
