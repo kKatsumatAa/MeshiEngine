@@ -443,37 +443,37 @@ void Object::BlendAnimationUpdate()
 			}
 			break;
 		}
-		//キーフレーム間に当てはまらなければ抜ける
-		if (!isEndCalc)
-		{
-			return;
-		}
+	}
+	//キーフレーム間に当てはまらなければ抜ける
+	if (!isEndCalc)
+	{
+		return;
+	}
 
-		//補間//ここでノードのパラメータ変えてる（rateで）→それをフレームごとに行列にしてる
-		int32_t nodeCount = static_cast<int32_t>(startScales.size());
-		//仮で
-		float rateL = 0.5f;
-		for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
-		{
-			DirectX::XMVECTOR Scale =
-				DirectX::XMVectorLerp(
-					startScales[nodeIndex],
-					endScales[nodeIndex], rateL);
-			DirectX::XMVECTOR Rotate =
-				DirectX::XMQuaternionSlerp(
-					startRotates[nodeIndex],
-					endRotates[nodeIndex], rateL);
-			DirectX::XMVECTOR Translate =
-				DirectX::XMVectorLerp(
-					startTranslates[nodeIndex],
-					endTranslates[nodeIndex], rateL);
+	//補間//ここでノードのパラメータ変えてる（rateで）→それをフレームごとに行列にしてる
+	int32_t nodeCount = static_cast<int32_t>(startScales.size());
+	//仮で
+	float rateL = 0.5f;
+	for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
+	{
+		DirectX::XMVECTOR Scale =
+			DirectX::XMVectorLerp(
+				startScales[nodeIndex],
+				endScales[nodeIndex], rateL);
+		DirectX::XMVECTOR Rotate =
+			DirectX::XMQuaternionSlerp(
+				startRotates[nodeIndex],
+				endRotates[nodeIndex], rateL);
+		DirectX::XMVECTOR Translate =
+			DirectX::XMVectorLerp(
+				startTranslates[nodeIndex],
+				endTranslates[nodeIndex], rateL);
 
-			//線形補完したパラメータを取得
-			Node& node = (*nodes_)[nodeIndex];
-			node.scaling = Scale;
-			node.rotation = Rotate;
-			node.translation = Translate;
-		}
+		//線形補完したパラメータを取得
+		Node& node = (*nodes_)[nodeIndex];
+		node.scaling = Scale;
+		node.rotation = Rotate;
+		node.translation = Translate;
 	}
 }
 
