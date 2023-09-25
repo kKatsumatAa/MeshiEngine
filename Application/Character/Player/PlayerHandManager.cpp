@@ -34,7 +34,7 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 		return;
 	}
 
-	//クリックしたら攻撃
+	//当たった相手が敵
 	if (info.collider->GetObject3d()->GetObjName().find("enemy") != std::string::npos && player_)
 	{
 		//衝突点までの距離

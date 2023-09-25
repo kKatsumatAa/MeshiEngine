@@ -74,7 +74,8 @@ void StageSelect::DrawSprite()
 	for (auto stageName : stageNames_)
 	{
 		//ステージ名表示
-		debugText_.Print(stageName.c_str(), namesLeftUpPos_.x, namesLeftUpPos_.y + nameWidthHeight_.y * count);
+		debugText_.Print(stageName.c_str(), namesLeftUpPos_.x, namesLeftUpPos_.y + nameWidthHeight_.y * count, 114514,
+			TEXT_EXTEND_);
 
 		Vec2 cursorPos = MouseInput::GetInstance().GetCurcorPos();
 		//カーソルがあってたら赤く表示

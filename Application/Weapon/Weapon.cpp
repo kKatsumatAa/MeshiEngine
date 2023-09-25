@@ -12,26 +12,22 @@ void Weapon::NoParentMove()
 		//前回の位置
 		oldPos_ = GetTrans();
 
+		const float FRAME_VEL_EXTEND_REM = 1.0f - FRAME_VEL_EXTEND_;
+
 		//クールタイムもゲームスピードをかける
 		SetTrans(GetTrans() + fallVec_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
 
 		SetRot(GetRot() + fallVec_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
 
 		//だんだん弱く
-		fallVec_.x *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
+		fallVec_.x *= (FRAME_VEL_EXTEND_ + FRAME_VEL_EXTEND_REM * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
 
-
-		if (fallVec_.y < 0.1f && fallVec_.y > FALL_VEC_Y_MIN_)
-		{
-			fallVec_.y = -(fabsf(fallVec_.y) + fabsf(fallVec_.y) * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
-		}
-		else if (fallVec_.y >= 0.1f)
-		{
-			fallVec_.y *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
-		}
+		//重力
+		float gravity = GRAVITY_TMP_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2);
+		fallVec_.y = max(fallVec_.y - gravity, -GRAVITY_MAX_);
 
 		//だんだん弱く
-		fallVec_.z *= (0.9f + 0.1f * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
+		fallVec_.z *= (FRAME_VEL_EXTEND_ + FRAME_VEL_EXTEND_REM * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
 
 
 		//前回の位置から今の位置のベクトルをレイとして判定
@@ -66,6 +62,7 @@ void Weapon::ChangeOwner(Object* parent)
 	}
 	//所有者も設定
 	owner_ = parent;
+	fallVec_.y = 0;
 }
 
 void Weapon::Update()

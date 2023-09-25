@@ -9,6 +9,10 @@ class Weapon :
 	public Object
 {
 protected:
+	//フレームごとの倍率
+	const float FRAME_VEL_EXTEND_ = 0.9f;
+
+protected:
 	//手を離れたときのベクトル
 	Vec3 fallVec_ = { 0,0,0 };
 	const float FALL_VEC_Y_MIN_ = -4.0f;
@@ -25,6 +29,10 @@ protected:
 
 	//クールタイム
 	float attackCoolTime_ = 0;
+
+	//重力
+	const float GRAVITY_TMP_ = 0.15f;
+	const float GRAVITY_MAX_ = 3.0f;
 
 public:
 	Weapon() { ; }
@@ -75,5 +83,9 @@ public:
 	virtual void Update();
 
 	virtual void OnCollision(const CollisionInfo& info) override = 0;
+
+public:
+	//古い座標の更新
+	void OldPosUpdate() { oldPos_ = GetWorldTrans(); }
 };
 

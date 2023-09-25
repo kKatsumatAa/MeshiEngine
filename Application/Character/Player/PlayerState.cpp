@@ -80,13 +80,16 @@ void PlayerStateBareHands::Update()
 			}
 		}
 		//“G‚ªÆ€‚É‚ ‚Á‚½‚ç‰£‚é
-		else if (player_->GetIsClickLeft() &&
-			info_.object->GetObjName().find("enemy") != std::string::npos)
+		else if (info_.object->GetObjName().find("enemy") != std::string::npos)
 		{
 			//ui•ÏX
 			PlayerUI::GetInstance().ChangeState("PUNCH");
 
-			player_->GetHandManager()->Attack(info_);
+			//UŒ‚‚·‚é
+			if (player_->GetIsClickLeft())
+			{
+				player_->GetHandManager()->Attack(info_);
+			}
 		}
 	}
 	//‚È‚¯‚ê‚Î

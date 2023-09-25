@@ -137,9 +137,9 @@ void Enemy::WalkToTarget(const Vec3& targetPos)
 
 		//ダメージのクールリセット
 		damageCoolTime_ = 0;
-		//スピードの上限超えない
-		velocity_ = velocity_.GetNormalized() * min(length, GameVelocityManager::GetInstance().GetVelocity() * VELOCITY_TMP_ / 1.5f);
 	}
+	//スピードの上限超えない
+	velocity_ = velocity_.GetNormalized() * min(fabsf(length), GameVelocityManager::GetInstance().GetVelocity() * VELOCITY_TMP_ / 1.5f);
 
 	//当たり判定用にセット
 	SetVelocity(velocity_);
@@ -202,7 +202,7 @@ void Enemy::Update()
 	damageCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
 	//アニメーションもゲームスピード
-	SetAnimationSpeed(min(GameVelocityManager::GetInstance().GetVelocity() * 3.0f, 
+	SetAnimationSpeed(min(GameVelocityManager::GetInstance().GetVelocity() * 3.0f,
 		GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_));
 
 	//ステート
@@ -221,7 +221,7 @@ void Enemy::Draw()
 void Enemy::KnockBack(const CollisionInfo& info)
 {
 	//長さ
-	float length = (info.object_->GetScale().x + GetScale().x);
+	float length = (info.object_->GetScale().x + GetScale().z);
 	//距離のベクトル
 	Vec3 distanceVec = GetTrans() - info.object_->GetTrans();
 	//仮
@@ -238,7 +238,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	if (weapon_)
 	{
 		distanceVec.y = 0.2f;
-		FallWeapon({ -distanceVec.x * WEAPON_FALL_VEL_EXTEND_,distanceVec.y,-distanceVec.z * WEAPON_FALL_VEL_EXTEND_ });
+		FallWeapon(Vec3(-distanceVec.x, distanceVec.y, -distanceVec.z) * length);
 	}
 }
 
@@ -358,8 +358,6 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		distanceVec.Normalized();
 		//位置セット(半径＋半径の長さをベクトルの方向を使って足す)
 		SetTrans(info.object_->GetTrans() + distanceVec * length * 1.001f);
-		////動けないようにする
-		//isCantMove = true;
 
 		//ｙは動かないようにする
 		SetVelocity({ GetVelocity().x,0,GetVelocity().z });

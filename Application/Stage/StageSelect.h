@@ -7,6 +7,8 @@ class StageSelect final
 {
 private:
 	const std::string BASE_DIRECTORY_ = "Resources/Level/levelData/";
+	//ステージ名の拡大率
+	const float TEXT_EXTEND_ = 1.5f;
 
 private:
 	const float nameFrameWidthExtend_ = 20.0f;

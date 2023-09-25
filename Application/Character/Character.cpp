@@ -119,7 +119,8 @@ void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 		//ˆÚ“®
 		GetWeapon()->SetFallVec(directionVec);
 		GetWeapon()->SetTrans(GetWeapon()->GetTrans() + directionVec);
-		weapon_->Update();
+		weapon_->OldPosUpdate();
+		weapon_->Object::Update();
 
 		SetWeapon(nullptr);
 	}

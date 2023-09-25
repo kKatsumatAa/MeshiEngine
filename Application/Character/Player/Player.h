@@ -55,7 +55,7 @@ private:
 	//e‚ğŒ‚‚Á‚½“G‚ÌÀ•W
 	Vec3 bulletOwnerEnemyPos_ = { 0,0,0 };
 
-	const float FALL_VEL_POW_ = 8.0f;
+	const float FALL_VEL_POW_ = 4.0f;
 
 public:
 

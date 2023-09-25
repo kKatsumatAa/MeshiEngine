@@ -219,7 +219,7 @@ void Player::Dead(const CollisionInfo& info)
 
 void Player::ThrowWeapon()
 {
-	FallWeapon(GetFrontVec() * FALL_VEL_POW_);
+	FallWeapon(GetFrontVec() * FALL_VEL_POW_ + Vec3(0, 0.2f, 0));
 
 	//ゲームスピード加算
 	GameVelocityManager::GetInstance().AddGameVelocity(0.9f);
