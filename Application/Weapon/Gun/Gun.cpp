@@ -12,7 +12,7 @@
 using namespace DirectX;
 
 
-std::unique_ptr<Gun> Gun::Create(std::unique_ptr<WorldMat> worldMat)
+std::unique_ptr<Gun> Gun::Create(std::unique_ptr<WorldMat> worldMat, IModel* model)
 {
 	std::unique_ptr<Gun> instance = std::make_unique<Gun>();
 	if (instance.get() == nullptr)
@@ -21,7 +21,7 @@ std::unique_ptr<Gun> Gun::Create(std::unique_ptr<WorldMat> worldMat)
 	}
 
 	//初期化
-	if (!instance->Initialize(std::move(worldMat)))
+	if (!instance->Initialize(std::move(worldMat), model))
 	{
 		assert(0);
 	}
@@ -34,12 +34,15 @@ float Gun::GetAttackCoolTimeRatio()
 	return 1.0f - min((float)max(attackCoolTime_, 0.0f) / (float)SHOT_COOL_TIME_MAX_, 1.0f);
 }
 
-bool Gun::Initialize(std::unique_ptr<WorldMat> worldMat)
+bool Gun::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 {
 	if (!Object::Initialize(std::move(worldMat)))
 	{
 		return false;
 	}
+
+	//アンビエントなどの倍率
+	model->SetMaterialExtend({ 1.0f,100.0f,5000.0f });
 
 	//ローカル座標
 	localPos_ = GetTrans();

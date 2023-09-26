@@ -184,7 +184,7 @@ private://fbxモデル系
 	std::vector<AnimationData>animeDatas_;
 	//アニメーションのインデックス
 	int32_t animeIndex_ = 0;
-	std::vector<Node>*nodes_;
+	std::vector<Node>* nodes_;
 
 private:
 	//画面効果用
@@ -337,7 +337,7 @@ public:
 
 	//--------------------------------------------------------
 	//初期化
-	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr);
+	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr, IModel* model = nullptr);
 
 	virtual void Update();
 
@@ -379,7 +379,7 @@ public:
 	void SetIsLoopAnimation(bool isLoop, int32_t animeIndex = 0) { animeDatas_[animeIndex].isLoop_ = isLoop; }
 	void SetIsReverseAnimation(bool isReverse, int32_t animeIndex = 0) { animeDatas_[animeIndex].isReverse_ = isReverse; }
 	//アニメーションスピード
-	void SetAnimationSpeed(float speed) { 
+	void SetAnimationSpeed(float speed) {
 		animeDatas_[animeIndex_].animationSpeed_ = speed;
 	}
 	//モデルの部位と親子関係を持たせる

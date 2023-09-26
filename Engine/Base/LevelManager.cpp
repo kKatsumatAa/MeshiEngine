@@ -88,7 +88,7 @@ Weapon* LevelManager::GetChildWeapon(LevelData::ObjectData& objData)
 	if (objData.childData && objData.childData->fileName == "gun")
 	{
 		//インスタンス
-		newObj = Gun::Create(std::move(objData.childData->worldMat));
+		newObj = Gun::Create(std::move(objData.childData->worldMat), model);
 	}
 	//違う武器
 	else
@@ -224,12 +224,12 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	else if (objData.fileName.find("enemy") != std::string::npos)
 	{
 		//enemyもObjectクラスを継承してるのでポリモーフィズム
-		newObj = Enemy::Create(std::move(objData.worldMat), objData.waveNum, childWeapon);
+		newObj = Enemy::Create(std::move(objData.worldMat), objData.waveNum, childWeapon, model);
 	}
 	//銃の場合(親がいる場合は既に登録してあるので通らない)
 	else if (objData.fileName == "gun")
 	{
-		newObj = Gun::Create(std::move(objData.worldMat));
+		newObj = Gun::Create(std::move(objData.worldMat), model);
 	}
 	//地形オブジェクトなら
 	else if (isLandShape_)

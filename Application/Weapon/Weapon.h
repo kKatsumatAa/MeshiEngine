@@ -78,7 +78,7 @@ public:
 
 public:
 
-	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat) override = 0;
+	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model) override = 0;
 
 	virtual void Update();
 

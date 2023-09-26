@@ -203,7 +203,7 @@ Object::Object()
 }
 
 //----------------------------------------------------------------
-bool Object::Initialize(std::unique_ptr<WorldMat> worldMat)
+bool Object::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 {
 	if (worldMat == nullptr)
 	{
@@ -211,6 +211,8 @@ bool Object::Initialize(std::unique_ptr<WorldMat> worldMat)
 	}
 
 	SetWorldMat(std::move(worldMat));
+
+	SetModel(model);
 
 	return true;
 }

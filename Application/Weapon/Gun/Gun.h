@@ -28,7 +28,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Gun> Create(std::unique_ptr<WorldMat> worldMat);
+	static std::unique_ptr<Gun> Create(std::unique_ptr<WorldMat> worldMat, IModel* model);
 
 private:
 	////Š—LÒ‚ª‚¢‚È‚¢‚Æ‚«‚É”ò‚ñ‚Å‚¢‚­
@@ -55,7 +55,7 @@ public:
 
 public:
 
-	bool Initialize(std::unique_ptr<WorldMat> worldMat) override;
+	bool Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model) override;
 
 	void Update() override;
 
