@@ -33,6 +33,7 @@ bool PlayerHand::Initialize(Player* player, const Vec3& transTmp, bool isRight, 
 	SetCollider(std::make_unique<SphereCollider>());
 	//“–‚½‚è”»’è‚Í‚¢‚Á‚½‚ñØ‚é
 	GetCollider()->SetIsValid(false);
+	GetCollider()->SetAttribute(COLLISION_ATTR_ALLIES);
 
 	player_ = player;
 	isAttacking_ = false;

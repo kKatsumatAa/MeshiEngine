@@ -258,13 +258,13 @@ void Enemy::DamageParticle(const CollisionInfo& info)
 		Vec3 infoVec = info.object_->GetVelocity().GetNormalized();
 
 		Vec3 vel = Vec3(infoVec.x * GetRand(-0.1f, 1.0f),
-			infoVec.y * GetRand(-0.1f, 1.0f),
+			infoVec.y * GetRand(-0.1f, 1.0f) + GetRand(0, GetScale().y / 8.0f),
 			infoVec.z * GetRand(-0.1f, 1.0f));
 
 		float scale = GetRand(scaleTmp / 50.0f, scaleTmp / 15.0f);
 		float scale2 = GetRand(0, scaleTmp / 80.0f);
 
-		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.002f,0 }, scale, scale2, { 3.0f,0.0f,0.0f,0.95f }, { 0,0,0,0.0f },
+		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.002f,0 }, scale, scale2, { 3.0f,0.02f,0.02f,0.95f }, { 3.0f,0.02f,0.02f,0.95f },
 			PI * 10.0f, -PI * 10.0f);
 	}
 }
