@@ -11,6 +11,11 @@ Vec3 PlayerAttackState::rotTmp_ = { 0,0,0 };
 //何もしない---------------------------------------------------------------
 void PlayerAttackStateNone::Initialize()
 {
+	//動いてない場合は判定とらない
+	if (playerHand_->GetCollider())
+	{
+		playerHand_->GetCollider()->SetIsValid(false);
+	}
 }
 
 void PlayerAttackStateNone::Update()
@@ -28,6 +33,12 @@ void PlayerAttackStateDoing::Initialize()
 {
 	playerHand_->SetIsAttacking(true);
 
+	//判定有効に
+	if (playerHand_->GetCollider())
+	{
+		playerHand_->GetCollider()->SetIsValid(true);
+	}
+
 	//手によって回転角度逆に
 	if (playerHand_->GetIsRight())
 	{
@@ -43,15 +54,20 @@ void PlayerAttackStateDoing::Initialize()
 
 void PlayerAttackStateDoing::Update()
 {
-	float t = (float)timer_ / (float)TIMER_MAX_;
+	float t = min((float)timer_ / (float)TIMER_MAX_, 1.0f);
 
 	//経過時間で手を移動
 	Vec3 addTrans = LerpVec3({ 0,0,0 }, playerHand_->GetFrontVecTmp() * (playerHand_->GetInterLength() - playerHand_->GetScale().z / 2.0f), EaseOut(t));
-	playerHand_->SetAddTrans(addTrans);
 
 	//回転も
 	Vec3 rot = LerpVec3({ 0,0,0 }, rotTmp_, EaseOut(t));
 	playerHand_->SetRot(rot);
+
+
+	//スピードをセット(ベクトルをプレイヤー本体角度で回転させて)
+	Vec3 rotatedVec = addTrans;
+	playerHand_->GetPlayer()->GetWorldMat()->CalcRotMat();
+	playerHand_->SetVelocity(GetVec3xM4(addTrans, playerHand_->GetPlayer()->GetWorldMat()->GetRotMat(),0));
 
 	//時間経過もゲームスピードをかける
 	timer_ += 1.0f * GameVelocityManager::GetInstance().GetVelocity();
@@ -60,7 +76,10 @@ void PlayerAttackStateDoing::Update()
 	if (t >= 1.0f)
 	{
 		//敵の被弾処理
-		enemyDamageFunc_();
+		enemyDamageFunc_(playerHand_);
+
+		//スピードをなくす
+		playerHand_->SetVelocity({ 0,0,0 });
 
 		playerHand_->ChangeAttackState(std::make_unique<PlayerAttackStateDoing2>());
 	}

@@ -75,6 +75,9 @@ public:
 
 	void StopWaveAllScene();
 
+private:
+	void UpdateInternal();
+
 public:
 	void SetIsEscapingGame(bool is) { isEscapingGame_ = is; }
 	bool GetIsEscapingGame() { return isEscapingGame_; }

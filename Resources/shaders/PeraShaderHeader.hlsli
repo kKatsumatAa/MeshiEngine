@@ -50,6 +50,8 @@ cbuffer ConstBufferEffectFlags : register(b0)
     float bloomPow;
     //ノイズ
     uint isNoise;
+    //ノイズ強さ
+    float noisePow;
     //被写界深度
     uint isDepthField;
     //フォーカス合わせる深度値

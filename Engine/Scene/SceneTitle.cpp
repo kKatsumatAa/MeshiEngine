@@ -21,12 +21,19 @@ void SceneTitle::Initialize()
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = true;
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isDepthField = false;
+	//ブルーム
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = true;
+#ifdef _DEBUG
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = false;
+#endif // _DEBUG
+
 
 	//カーソルui
 	CursorUI::GetInstance().Initialize();
 	//タイトル
 	TitleUI::GetInstance().Initialize();
+	//ゲームスピード
+	GameVelocityManager::GetInstance().Initialize();
 }
 
 void SceneTitle::Update()

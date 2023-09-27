@@ -27,13 +27,13 @@ bool PlayerHand::Initialize(Player* player, const Vec3& transTmp, bool isRight, 
 		return false;
 	}
 
-	//当たり判定はないので属性もなし
-
-
 	SetObjName(objName.c_str());
 
-	//当たり判定に使わない
-	SetColliderIsValid(false);
+	//コライダー
+	SetCollider(std::make_unique<SphereCollider>());
+	//当たり判定はいったん切る
+	GetCollider()->SetIsValid(false);
+	GetCollider()->SetAttribute(COLLISION_ATTR_ALLIES);
 
 	player_ = player;
 	isAttacking_ = false;

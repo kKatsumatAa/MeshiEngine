@@ -20,6 +20,7 @@ void SceneGame::Initialize()
 	ClearEffect::GetInstance().Initialize();
 
 	ParticleManager::GetInstance()->SetBlendNum(ParticleManager::TRIANGLE);
+	ParticleManager::GetInstance()->ClearParticles();
 
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isVignette = true;

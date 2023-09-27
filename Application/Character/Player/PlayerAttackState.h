@@ -16,12 +16,12 @@ protected:
 	static Vec3 rotTmp_;
 
 	//“G‚Ì”í’eˆ—
-	std::function<void()> enemyDamageFunc_ = nullptr;
+	std::function<void(PlayerHand*)> enemyDamageFunc_ = nullptr;
 
 public:
 	virtual ~PlayerAttackState() { ; }
 
-	void SetEnemyDamageFunc(std::function<void()> f) { enemyDamageFunc_ = f; }
+	void SetEnemyDamageFunc(std::function<void(PlayerHand*)> f) { enemyDamageFunc_ = f; }
 
 	void SetPlayerHand(PlayerHand* playerHand) { playerHand_ = playerHand; }
 

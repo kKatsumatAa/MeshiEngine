@@ -45,7 +45,7 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 		hand->ChangeAttackState(std::make_unique<PlayerAttackStateDoing>());
 
 		//ステート内で呼び出す
-		std::function<void()>f = [=]() {
+		std::function<void(PlayerHand*)>f = [=](PlayerHand* playerHand) {
 			//敵が銃で倒されてる可能性があるのでもう一回調べる
 			//レイにプレイヤーの正面ベクトル入れる
 			Ray ray;
@@ -60,10 +60,10 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 			if (isRayHit)
 			{
 				//当たり判定呼び出し処理で、プレイヤーの位置等を使い、敵に攻撃被弾時の処理をさせるため
-				c_ = CollisionInfo(player_, player_->GetCollider(), info.inter);
-				c_.object_->SetObjName("playerAttack");
+				c_ = CollisionInfo(playerHand, playerHand->GetCollider(), info.inter);
+				/*c_.object_->SetObjName("playerAttack");*/
 				info.collider->OnCollision(c_);
-				c_.object_->SetObjName("player");
+				/*c_.object_->SetObjName("player");*/
 
 				//カメラシェイク
 				CameraManager::GetInstance().GetCamera("playerCamera")->CameraShake(5, 1.05f);

@@ -65,7 +65,8 @@ private:
 	void KnockBack(const CollisionInfo& info);
 
 	//被弾時のパーティクル
-	void DamageParticle(const CollisionInfo& info);
+	void DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExtend = { 1.0f / 8.0f,1.0f / 8.0f,1.0f / 8.0f }, 
+		int32_t particleNum = 200);
 
 	//ターゲットに向かって動く処理のみ
 	void WalkToTarget(const Vec3& targetPos);

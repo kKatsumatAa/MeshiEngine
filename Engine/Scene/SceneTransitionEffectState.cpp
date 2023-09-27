@@ -49,6 +49,7 @@ void TransitionEffectBeginState::Initialize()
 
 	//二つ目ノイズ
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isNoise = true;
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.noisePow = 1.0f;
 	//三つ目に描画されたもの（２枚目まで）を湾曲
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
 
@@ -126,15 +127,20 @@ void TransitionEffectEndState::Update()
 {
 	SceneTransitionEffectState::Update();
 
+	//湾曲を徐々に弱く
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = 1.0f - EaseInOutBack(GetTimerT(timer_, TIMER_MAX_));
 	//2つ目の2枚目の画面の大きさを徐々に大きく
 	PostEffectManager::GetInstance().GetPostEffect2()->SetPera2Extend(LerpVec3(
-		{ PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 }, { PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ ,0,0 },
+		{ PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 }, { 1.0f ,0,0 },
 		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x);
 
 	//ブルーム徐々に
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.bloomPow = LerpVec3(
-		 { PostPera::S_BLOOM_POW_,0,0 }, { 0.0f ,0,0 },
+		{ PostPera::S_BLOOM_POW_,0,0 }, { 0.0f ,0,0 },
 		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x;
+
+	//ノイズを徐々に
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.noisePow = 1.0f - EaseOut(GetTimerT(timer_, TIMER_MAX_));
 
 	//時間が終わったら
 	if (GetIsTimeOver(timer_, TIMER_MAX_))

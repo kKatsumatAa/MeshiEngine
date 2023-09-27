@@ -80,6 +80,8 @@ private:
 		float bloomPow = PostPera::S_BLOOM_POW_;
 		//ノイズ
 		uint32_t isNoise = false;
+		//ノイズ強さ
+		float noisePow = 1.0f;
 		//被写界深度
 		uint32_t isDepthField = false;
 		//フォーカス合わせる深度値

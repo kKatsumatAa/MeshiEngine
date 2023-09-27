@@ -49,12 +49,26 @@ void SceneManager::ChangeScene()
 				state_->Initialize();
 				//画像アップロード
 				DirectXWrapper::GetInstance().UpLoadTexture();
+				//更新処理
+				UpdateInternal();
 			});
 	}
 }
 
 void SceneManager::StopWaveAllScene()
 {
+}
+
+void SceneManager::UpdateInternal()
+{
+	//objマネージャ
+	ObjectManager::GetInstance().Update();
+
+	//オブジェマネージャーのデバッグ用アップデート
+	ObjectManager::GetInstance().DebugUpdate();
+
+	//カメラマネージャー
+	CameraManager::GetInstance().Update();
 }
 
 
@@ -89,15 +103,9 @@ void SceneManager::Update()
 	//シーン遷移演出終わったら
 	if (!SceneTransitionManager::GetInstance().GetIsDoingEffect() && state_)
 	{
-		//objマネージャ
-		ObjectManager::GetInstance().Update();
+		UpdateInternal();
+		GameVelocityManager::GetInstance().Update();
 		state_->Update();
-
-		//オブジェマネージャーのデバッグ用アップデート
-		ObjectManager::GetInstance().DebugUpdate();
-
-		//カメラマネージャー
-		CameraManager::GetInstance().Update();
 	}
 
 	lightManager_->SetAmbientColor({ ambientColor_[0],ambientColor_[1], ambientColor_[2] });
