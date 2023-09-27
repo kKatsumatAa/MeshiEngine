@@ -26,6 +26,8 @@ void SceneStageSelect::Initialize()
 	CursorUI::GetInstance().Initialize();
 	//ステージセレクト
 	StageSelect::GetInstance().Initialize();
+	//ゲームスピード
+	GameVelocityManager::GetInstance().Initialize();
 }
 
 void SceneStageSelect::Update()

@@ -12,7 +12,7 @@ GameVelocityManager& GameVelocityManager::GetInstance()
 
 void GameVelocityManager::Initialize()
 {
-	gameVelocity_ = 0;
+	gameVelocity_ = 1.0f;
 }
 
 void GameVelocityManager::AddGameVelocity(float velocity, std::string velName)

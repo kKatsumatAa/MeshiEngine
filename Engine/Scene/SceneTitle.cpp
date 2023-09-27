@@ -32,6 +32,8 @@ void SceneTitle::Initialize()
 	CursorUI::GetInstance().Initialize();
 	//タイトル
 	TitleUI::GetInstance().Initialize();
+	//ゲームスピード
+	GameVelocityManager::GetInstance().Initialize();
 }
 
 void SceneTitle::Update()

@@ -58,7 +58,14 @@ float4 PS2(Output input) : SV_TARGET
     if (isNoise)
     {
         float c = noise(input.uv * 256.0f, time);
-        return float4(c, c, c, 1.0f);
+        
+        float ratio = 1.0f - step(noisePow, c);
+        float3 col = RGBA;
+        col.x = ratio * c + (1.0f - ratio) * col.x;
+        col.y = ratio * c + (1.0f - ratio) * col.y;
+        col.z = ratio * c + (1.0f - ratio) * col.z;
+        
+        return float4(col.rgb, 1.0f);
     }
    
         

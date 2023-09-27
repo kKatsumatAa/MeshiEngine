@@ -22,9 +22,6 @@ void StageState::Update()
 	//判定
 	CollisionManager::GetInstance()->CheckAllCollisions();
 
-	//ゲームスピード
-	GameVelocityManager::GetInstance().Update();
-
 	//プレイヤーui
 	PlayerUI::GetInstance().Update();
 }

@@ -11,6 +11,7 @@ void TitleUI::Initialize()
 	titleTex_ =  TextureManager::LoadGraph("title.png");
 	timer_ = 0;
 	t_ = 0;
+	titleScale_ = TITLE_SCALE_MAX_;
 }
 
 void TitleUI::Update()
