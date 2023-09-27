@@ -119,8 +119,14 @@ void PlayerStateHaveWeapon::Update()
 	{
 		player_->SetIsTarget(false);
 
-		//クールタイムでUI回転
-		PlayerUI::GetInstance().SetAngle(-PI * 2.0f * player_->GetWeapon()->GetAttackCoolTimeRatio());
+		//銃のクールタイム
+		if (player_->GetWeapon()->GetObjName() == "gun")
+		{
+			//クールタイムでUI回転
+			PlayerUI::GetInstance().SetAngle(-PI * 2.0f * player_->GetWeapon()->GetAttackCoolTimeRatio());
+			//銃角度
+			player_->GetWeapon()->SetRotX(LerpVec3({ PI / 2.0f,0,0 }, { 0,0,0 }, player_->GetWeapon()->GetAttackCoolTimeRatio()).x);
+		}
 
 		//クリックで攻撃
 		if (player_->GetIsClickLeft())
