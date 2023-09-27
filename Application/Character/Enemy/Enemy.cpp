@@ -240,15 +240,17 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	}
 }
 
-void Enemy::DamageParticle(const CollisionInfo& info)
+void Enemy::DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExtend, int32_t particleNum)
 {
-	for (int32_t i = 0; i < 80; ++i)
+	for (int32_t i = 0; i < particleNum; ++i)
 	{
 		Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
 
 		float scaleTmp = GetScale().GetLength();
 
-		Vec3 addPos = Vec3(GetRand(-GetScale().x, GetScale().x), GetRand(-GetScale().y, GetScale().y), GetRand(-GetScale().z, GetScale().z)) / 2.0f;
+		Vec3 addPos = Vec3(GetRand(-GetScale().x, GetScale().x) * offsetPosExtend.x, 
+			GetRand(-GetScale().y, GetScale().y) * offsetPosExtend.y,
+			GetRand(-GetScale().z, GetScale().z) * offsetPosExtend.z);
 
 		pos += addPos;
 
@@ -261,11 +263,11 @@ void Enemy::DamageParticle(const CollisionInfo& info)
 			infoVec.y * GetRand(-0.1f, 1.0f) + GetRand(0, GetScale().y / 8.0f),
 			infoVec.z * GetRand(-0.1f, 1.0f));
 
-		float scale = GetRand(scaleTmp / 50.0f, scaleTmp / 15.0f);
-		float scale2 = GetRand(0, scaleTmp / 80.0f);
+		float scale = scaleTmp / 30.0f;
+		float scale2 = 0;
 
 		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.002f,0 }, scale, scale2, { 3.0f,0.02f,0.02f,0.95f }, { 3.0f,0.02f,0.02f,0.95f },
-			PI * 10.0f, -PI * 10.0f);
+			PI * 2.0f, -PI * 2.0f);
 	}
 }
 
@@ -325,7 +327,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		KnockBack(info);
 
 		//パーティクル
-		DamageParticle(info);
+		DamageParticle(info, {0.5f,1.0f,0.5f }, 400);
 	}
 	//銃に当たったら
 	else if (info.object_->GetObjName() == "gun")
