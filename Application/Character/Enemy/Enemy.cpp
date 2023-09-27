@@ -219,9 +219,9 @@ void Enemy::Draw()
 void Enemy::KnockBack(const CollisionInfo& info)
 {
 	//長さ
-	float length = (info.object_->GetScale().x + GetScale().z);
+	float length = (info.object_->GetScale().z + GetScale().z);
 	//距離のベクトル
-	Vec3 distanceVec = GetTrans() - info.object_->GetTrans();
+	Vec3 distanceVec = GetTrans() - info.object_->GetWorldTrans();
 	//仮
 	distanceVec.y = 0;
 	velocity_.y = 0;
@@ -254,7 +254,12 @@ void Enemy::DamageParticle(const CollisionInfo& info)
 
 		const int32_t LIFE_TIME = 40;
 
-		Vec3 vel = /*(GetTrans() - pos) * */Vec3(GetRand(-0.5f, 0.5f), GetRand(-0.5f, 0.5f), GetRand(-0.5f, 0.5f)) / 2.0f;
+		//相手の速度も使う
+		Vec3 infoVec = info.object_->GetVelocity().GetNormalized();
+
+		Vec3 vel = Vec3(infoVec.x * GetRand(-0.1f, 1.0f),
+			infoVec.y * GetRand(-0.1f, 1.0f),
+			infoVec.z * GetRand(-0.1f, 1.0f));
 
 		float scale = GetRand(scaleTmp / 50.0f, scaleTmp / 15.0f);
 		float scale2 = GetRand(0, scaleTmp / 80.0f);
@@ -290,7 +295,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		isCantMove = true;
 	}
 	//プレイヤーの攻撃との判定
-	else if (info.object_->GetObjName() == "playerAttack")
+	else if (info.object_->GetObjName().find("hand") != std::string::npos)
 	{
 		if (damageCoolTime_ <= 0)
 		{
