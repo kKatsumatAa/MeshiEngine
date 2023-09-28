@@ -44,6 +44,9 @@ void StageManager::Initialize()
 
 	//
 	ChangeState("BEGINING");
+
+	//XV
+	Update();
 }
 
 
