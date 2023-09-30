@@ -106,7 +106,7 @@ void Enemy::Attack(const Vec3& targetPos)
 	if (weapon_ != nullptr && weapon_->GetIsAlive())
 	{
 		Vec3 directionV = targetPos - weapon_->GetWorldTrans();
-		weapon_->Attack(directionV.GetNormalized(), 0, this);
+		weapon_->Attack(directionV.GetNormalized(), 0, this, PARTICLE_SIZE_EXTEND_);
 	}
 }
 
@@ -248,7 +248,7 @@ void Enemy::DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExten
 
 		float scaleTmp = GetScale().GetLength();
 
-		Vec3 addPos = Vec3(GetRand(-GetScale().x, GetScale().x) * offsetPosExtend.x, 
+		Vec3 addPos = Vec3(GetRand(-GetScale().x, GetScale().x) * offsetPosExtend.x,
 			GetRand(-GetScale().y, GetScale().y) * offsetPosExtend.y,
 			GetRand(-GetScale().z, GetScale().z) * offsetPosExtend.z);
 
@@ -327,7 +327,7 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		KnockBack(info);
 
 		//パーティクル
-		DamageParticle(info, {0.5f,1.0f,0.5f }, 400);
+		DamageParticle(info, { 0.5f,1.0f,0.5f }, 400);
 	}
 	//銃に当たったら
 	else if (info.object_->GetObjName() == "gun")

@@ -34,7 +34,7 @@ private:
 	////所有者がいないときに飛んでいく
 	//void NoParentMove() override;
 
-	void ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor);
+	void ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float particleSize = 1.0f);
 	void ParticleGenerate()override { ; }
 
 	//地形と当たった時の処理
@@ -43,7 +43,7 @@ private:
 
 public:
 	//射撃
-	void Attack(const Vec3& directionVec, int32_t decreBullet = 1, Object* owner = nullptr) override;
+	void Attack(const Vec3& directionVec, int32_t decreBullet = 1, Object* owner = nullptr, float particleSize = 1.0f) override;
 
 	//持ち主変更
 	void ChangeOwner(Object* parent) override;

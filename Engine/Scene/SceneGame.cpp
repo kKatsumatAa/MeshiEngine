@@ -24,6 +24,7 @@ void SceneGame::Initialize()
 
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isVignette = true;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = true;
 }
 
 void SceneGame::Update()
@@ -44,6 +45,7 @@ void SceneGame::Update()
 	}
 	else if (StageManager::GetInstance().GetIsGameClear() || KeyboardInput::GetInstance().KeyTrigger(DIK_ESCAPE))
 	{
+		PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = false;
 		ParticleManager::GetInstance()->ClearParticles();
 		sceneM_->SetNextScene("STAGESELECT");
 	}

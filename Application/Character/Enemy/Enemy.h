@@ -13,6 +13,9 @@ class Enemy :
 	public Character
 {
 private:
+	const float PARTICLE_SIZE_EXTEND_ = 2.0f;
+
+private:
 	Vec3 velocity_ = { 0,0,0 };
 	const float VELOCITY_TMP_ = 0.6f;
 	bool isCantMove = false;

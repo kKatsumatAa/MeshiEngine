@@ -22,9 +22,9 @@ void SceneTitle::Initialize()
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isDepthField = false;
 	//ƒuƒ‹[ƒ€
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = true;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = true;
 #ifdef _DEBUG
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = false;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = false;
 #endif // _DEBUG
 
 

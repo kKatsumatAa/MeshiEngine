@@ -69,7 +69,7 @@ void PlayerStateBareHands::Update()
 				Weapon* weapon = dynamic_cast<Weapon*>(info_.object);
 				//武器拾う
 				Vec3 localPos = { -player_->GetScale().x ,-player_->GetScale().y / 2.0f ,-player_->GetScale().z * 2.0f };
-				weapon->SetRot({0,0,0});
+				weapon->SetRot({ 0,0,0 });
 				player_->PickUpWeapon(weapon, &localPos);
 
 				//ui変更
@@ -144,7 +144,7 @@ void PlayerStateHaveWeapon::Update()
 			}
 
 			//攻撃
-			player_->GetWeapon()->Attack(player_->GetFrontVec(), 1, player_);
+			player_->GetWeapon()->Attack(player_->GetFrontVec(), 1, player_, PARTICLE_SIZE_EXTEND_);
 			//ゲームスピード加算
 			GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
 		}
