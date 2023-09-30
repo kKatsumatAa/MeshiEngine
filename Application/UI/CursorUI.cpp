@@ -32,8 +32,8 @@ void CursorUI::Update()
 	}
 
 	//カーソルの位置を画面内に収める
-	cursorPos_.x = Clamp(MouseInput::GetInstance().GetCurcorPos().x, 0, WindowsApp::WINDOW_WIDTH_ - cursorSize_.x);
-	cursorPos_.y = Clamp(MouseInput::GetInstance().GetCurcorPos().y, 0, WindowsApp::WINDOW_HEIGHT_ - cursorSize_.y);
+	cursorPos_.x = Clamp(MouseInput::GetInstance().GetCurcorPos().x, cursorSize_.x * 2.0f, WindowsApp::WINDOW_WIDTH_ - cursorSize_.x * 2.0f);
+	cursorPos_.y = Clamp(MouseInput::GetInstance().GetCurcorPos().y, 0, WindowsApp::WINDOW_HEIGHT_ - cursorSize_.y );
 
 
 	//描画するときのカーソル位置

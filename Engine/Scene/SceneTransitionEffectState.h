@@ -15,7 +15,7 @@ protected:
 	std::function<void()>loadFunc_;
 
 	//演出の画面サイズ倍率
-	const float WINDOW_SIZE_EXTEND_ = 0.9f;
+	const float WINDOW_SIZE_EXTEND_ = 0.8f;
 
 
 public:
@@ -26,7 +26,7 @@ public:
 	virtual void Draw() = 0;
 
 	//時間の経過割合
-	float GetTimerT(int32_t timer, const int32_t TIMER_MAX) { return (float)timer / (float)TIMER_MAX; }
+	float GetTimerT(int32_t timer, const int32_t TIMER_MAX) { return min((float)timer / (float)TIMER_MAX, 1.0f); }
 	//時間がオーバーしたか
 	bool GetIsTimeOver(int32_t timer, const int32_t TIMER_MAX) { return GetTimerT(timer, TIMER_MAX) >= 1.0f; }
 
@@ -52,7 +52,7 @@ public:
 class TransitionEffectBeginState : public SceneTransitionEffectState
 {
 private:
-	const int32_t TIMER_MAX_ = 20;
+	const int32_t TIMER_MAX_ = 25;
 
 public:
 	void Initialize()override;
@@ -76,7 +76,7 @@ public:
 class TransitionEffectEndState : public SceneTransitionEffectState
 {
 private:
-	const int32_t TIMER_MAX_ = 20;
+	const int32_t TIMER_MAX_ = 25;
 
 public:
 	void Initialize()override;

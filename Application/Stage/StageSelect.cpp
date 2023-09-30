@@ -26,7 +26,7 @@ void StageSelect::Initialize()
 
 	//ステージ名の枠の大きさ
 	nameWidthHeight_ = { CursorUI::cursorSize_.x * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y };
-	namesLeftUpPos_ = { CursorUI::cursorSize_.x * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y * 2.0f };
+	namesLeftUpPos_ = { CursorUI::cursorSize_.x * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y * 4.0f };
 
 	LoadStageNames();
 }
