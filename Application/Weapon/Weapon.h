@@ -49,7 +49,7 @@ protected:
 
 public:
 	//UŒ‚
-	virtual void Attack(const Vec3& directionVec, int32_t decreBullet = 1, Object* owner = nullptr) = 0;
+	virtual void Attack(const Vec3& directionVec, int32_t decreBullet = 1, Object* owner = nullptr, float particleSize = 1.0f) = 0;
 
 	//‚¿å•ÏX
 	virtual void ChangeOwner(Object* parent);

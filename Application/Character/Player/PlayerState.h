@@ -10,6 +10,9 @@ class Player;
 class PlayerState : public CharacterState
 {
 protected:
+	const float PARTICLE_SIZE_EXTEND_ = 0.2f;
+
+protected:
 	Player* player_ = nullptr;
 
 public:

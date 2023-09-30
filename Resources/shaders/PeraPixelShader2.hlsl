@@ -59,11 +59,11 @@ float4 PS2(Output input) : SV_TARGET
     {
         float c = noise(input.uv * 256.0f, time);
         
-        float ratio = 1.0f - step(noisePow, c);
+        float ratio = step(noisePow, c);
         float3 col = RGBA;
-        col.x = ratio * c + (1.0f - ratio) * col.x;
-        col.y = ratio * c + (1.0f - ratio) * col.y;
-        col.z = ratio * c + (1.0f - ratio) * col.z;
+        col.x = (1.0f - ratio) * c + (ratio) * col.x;
+        col.y = (1.0f - ratio) * c + (ratio) * col.y;
+        col.z = (1.0f - ratio) * c + (ratio) * col.z;
         
         return float4(col.rgb, 1.0f);
     }

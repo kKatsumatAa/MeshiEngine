@@ -124,15 +124,6 @@ void TutorialStateOperation::Initialize()
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial1.png");
 	rateMax_ = 50;
 
-	//player‰£‚ç‚¹‚é
-	auto objs = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player");
-	if (objs.size())
-	{
-		for (auto obj : objs)
-		{
-			dynamic_cast<Player*>(obj)->SetIsClickLeft(true);
-		}
-	}
 }
 
 void TutorialStateOperation::Update()

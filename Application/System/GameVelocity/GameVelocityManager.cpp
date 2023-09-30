@@ -49,7 +49,7 @@ void GameVelocityManager::Update()
 			(gameVelocity_ / GAME_VELOCITY_MAX_)).x);
 	//ŽO‚Â–Ú‚ÌF‚à
 	Vec3 col = LerpVec3(VEL_COL_MIN_, { 1.0f,1.0f,1.0f }, gameVelocity_);
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.color = { col.x,col.y,col.z,1.0f };
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.color = { col.x,col.y,col.z,1.0f };
 
 	if (gameVelocity_ > GAME_VELOCITY_MIN_)
 	{

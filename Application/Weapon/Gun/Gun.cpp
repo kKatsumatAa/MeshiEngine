@@ -50,7 +50,7 @@ bool Gun::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 	return true;
 }
 
-void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, Object* owner)
+void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, Object* owner, float particleSize)
 {
 	//クールタイムがまだあったり、残弾なかったら抜ける
 	if (attackCoolTime_ > 0 || remainingBullets_ <= 0)
@@ -67,7 +67,7 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, Object* owner)
 	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x * 0.4f, 300, owner);
 
 	//パーティクル
-	ParticleGenerate({ 4.0f,4.0f,4.0f,1.5f }, { 4.0f,4.0f,4.0f,0 });
+	ParticleGenerate({ 4.0f,4.0f,4.0f,1.5f }, { 4.0f,4.0f,4.0f,0 }, particleSize);
 
 	attackCoolTime_ = SHOT_COOL_TIME_MAX_;
 	remainingBullets_ -= decreBullet;
@@ -104,10 +104,10 @@ void Gun::Draw()
 
 
 //----------------------------------------------------------------------------------------------------------------
-void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor)
+void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float particleSize)
 {
 	//パーティクル
-	for (int32_t i = 0; i < 30; ++i)
+	for (int32_t i = 0; i < 50; ++i)
 	{
 		const float MD_VEL = 0.6f;
 		Vec3 vel{};
@@ -117,7 +117,7 @@ void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor)
 
 		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 2.0f);
 
-		ParticleManager::GetInstance()->Add(40, shotPos_, vel, { 0,0,0 }, scale, 0, sColor, eColor);
+		ParticleManager::GetInstance()->Add(20, shotPos_, vel * 0.5f, { 0,0,0 }, scale * particleSize, 0, sColor, eColor);
 	}
 
 }
