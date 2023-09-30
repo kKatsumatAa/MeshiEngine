@@ -154,6 +154,12 @@ void PlayerStateHaveWeapon::Update()
 			player_->ThrowWeapon();
 		}
 	}
+	//壊されたりしてなくなったら
+	else
+	{
+		//ステート変更(素手)
+		player_->ChangePlayerState(std::make_unique<PlayerStateBareHands>());
+	}
 }
 
 

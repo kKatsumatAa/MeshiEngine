@@ -25,6 +25,10 @@ void SceneGame::Initialize()
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isVignette = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = true;
+#ifdef _DEBUG
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = false;
+#endif // _DEBUG
+
 }
 
 void SceneGame::Update()
