@@ -104,7 +104,6 @@ void SceneManager::Update()
 	if (!SceneTransitionManager::GetInstance().GetIsDoingEffect() && state_)
 	{
 		UpdateInternal();
-		GameVelocityManager::GetInstance().Update();
 		state_->Update();
 	}
 

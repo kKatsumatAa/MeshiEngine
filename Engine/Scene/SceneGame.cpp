@@ -24,7 +24,12 @@ void SceneGame::Initialize()
 
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isVignette = true;
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = false;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = true;
+#ifdef _DEBUG
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = false;
+#endif // _DEBUG
+
 }
 
 void SceneGame::Update()
@@ -37,6 +42,9 @@ void SceneGame::Update()
 
 	//ステージアップデート
 	StageManager::GetInstance().Update();
+
+	//ゲームスピード
+	GameVelocityManager::GetInstance().Update(true);
 
 	//シーン遷移
 	if (StageManager::GetInstance().GetIsGameOver())

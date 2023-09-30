@@ -107,22 +107,6 @@ PSOutput PS(Output input) : SV_TARGET
         isEffect = true;
     }
 
-//ëñç∏ê¸
-    if (isScanningLine)
-    {
-        float extend = 0.1f;
-        float2 samplePoint = input.uv;
-        float4 Tex = tex0.Sample(smp, samplePoint);
-        float sinv = sin(input.uv.y * 2 + time * extend * -0.1);
-        float steped = step(0.99, sinv * sinv);
-        Tex.rgb -= (1 - steped) * abs(sin(input.uv.y * 50.0 + time * extend * 1.0)) * 0.05;
-        Tex.rgb -= (1 - steped) * abs(sin(input.uv.y * 100.0 - time * extend * 2.0)) * 0.08;
-        Tex.rgb += steped * 0.1;
-        ret = Tex;
-
-        isEffect = true;
-    }
-
 //ÉOÉåÅ[
     if (isGrayScale)
     {
@@ -199,6 +183,22 @@ PSOutput PS(Output input) : SV_TARGET
         float b = tex0.Sample(smp, input.uv + float2(shift, 0)).b;
 
         ret = float4(r, g, b, 1.0f);
+
+        isEffect = true;
+    }
+    
+    //ëñç∏ê¸
+    if (isScanningLine)
+    {
+        float extend = 0.1f;
+        float2 samplePoint = input.uv;
+        float4 Tex = ret;
+        float sinv = sin(input.uv.y * 2 + time * extend * -0.1);
+        float steped = step(0.99, sinv * sinv);
+        Tex.rgb -= (1 - steped) * abs(sin(input.uv.y * 50.0 + time * extend * 1.0)) * 0.05;
+        Tex.rgb -= (1 - steped) * abs(sin(input.uv.y * 100.0 - time * extend * 2.0)) * 0.08;
+        Tex.rgb += steped * 0.1;
+        ret = Tex;
 
         isEffect = true;
     }

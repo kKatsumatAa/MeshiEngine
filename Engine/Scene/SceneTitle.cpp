@@ -19,7 +19,8 @@ void SceneTitle::Initialize()
 
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = true;
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.barrelCurvePow = 0.7f;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isDepthField = false;
 	//ブルーム
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = true;

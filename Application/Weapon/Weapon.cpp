@@ -7,7 +7,7 @@
 
 void Weapon::NoParentMove()
 {
-	if (GetParent() == nullptr)
+	if (GetParent() == nullptr && isThrowing_)
 	{
 		//前回の位置
 		oldPos_ = GetTrans();
@@ -52,6 +52,7 @@ void Weapon::ChangeOwner(Object* parent)
 		SetTrans(GetWorldTrans());
 		//親をnull
 		SetParent((WorldMat*)nullptr);
+		isThrowing_ = true;
 	}
 	else
 	{
@@ -59,6 +60,7 @@ void Weapon::ChangeOwner(Object* parent)
 		SetTrans(localPos_);
 		//親設定
 		SetParent(parent->GetWorldMat());
+		isThrowing_ = false;
 	}
 	//所有者も設定
 	owner_ = parent;
