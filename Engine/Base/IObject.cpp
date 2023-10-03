@@ -1,5 +1,20 @@
 #include"IObject.h"
 
+
+void IObject::SetColliderIsValid(bool isValid)
+{
+	if (collider_)
+	{
+		collider_->SetIsValid(isValid);
+	}
+}
+
+void IObject::InitializeCommon(std::unique_ptr<WorldMat> worldMat)
+{
+	worldMat_ = std::move(worldMat);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void IObject::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe)
 {
 	HRESULT result = {};

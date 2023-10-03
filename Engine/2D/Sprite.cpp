@@ -9,30 +9,31 @@ Sprite::~Sprite()
 	vbView_.SizeInBytes = 0;
 }
 
-void Sprite::Initialize()
+void Sprite::Initialize(std::unique_ptr<WorldMat> worldMat)
 {
-	//sprite用
-	{
-		uint32_t sizeVB;
-		D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
-		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-		sizeVB = static_cast<uint32_t>(sizeof(vertices_[0]) * 4.0);
-		//頂点バッファの設定		//ヒープ設定
-		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
+	//ワールド行列用クラスのインスタンスセット
+	InitializeCommon(std::move(worldMat));
 
-		ResourceProperties(resDesc, sizeVB);
-		resDesc.Format = DXGI_FORMAT_UNKNOWN;
-		//頂点バッファの生成
-		BuffProperties(heapProp, resDesc, vertBuff_.GetAddressOf());
+	//バッファ設定
+	uint32_t sizeVB;
+	D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
+	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
+	sizeVB = static_cast<uint32_t>(sizeof(vertices_[0]) * 4.0);
+	//頂点バッファの設定		//ヒープ設定
+	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-		// 頂点バッファビューの作成
-		// GPU仮想アドレス
-		vbView_.BufferLocation = vertBuff_.Get()->GetGPUVirtualAddress();
-		// 頂点バッファのサイズ
-		vbView_.SizeInBytes = sizeVB;
-		// 頂点1つ分のデータサイズ
-		vbView_.StrideInBytes = sizeof(vertices_[0]);
-	}
+	ResourceProperties(resDesc, sizeVB);
+	resDesc.Format = DXGI_FORMAT_UNKNOWN;
+	//頂点バッファの生成
+	BuffProperties(heapProp, resDesc, vertBuff_.GetAddressOf());
+
+	// 頂点バッファビューの作成
+	// GPU仮想アドレス
+	vbView_.BufferLocation = vertBuff_.Get()->GetGPUVirtualAddress();
+	// 頂点バッファのサイズ
+	vbView_.SizeInBytes = sizeVB;
+	// 頂点1つ分のデータサイズ
+	vbView_.StrideInBytes = sizeof(vertices_[0]);
 }
 
 void SpriteCommonBeginDraw(RootPipe* pipelineSet)
@@ -64,6 +65,28 @@ void Sprite::SpriteDraw()
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }
 
+void Sprite::DrawBoxSprite(Camera2D* camera, uint64_t textureHandle, const Vec4& color,
+	const Vec2& ancorUV, bool isReverseX, bool isReverseY,
+	int32_t pipelineNum)
+{
+	Update(camera, { GetTrans().x, GetTrans().y }, { GetScale().x,GetScale().y },
+		color, textureHandle, ancorUV, isReverseX, isReverseY, GetRot(), &cbt_, constMapMaterial_);
+
+	::Update(SPRITE, pipelineNum, textureHandle, &cbt_, nullptr);
+}
+
+void Sprite::DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+	uint64_t textureHandle, const Vec4& color, bool isPosLeftTop, bool isReverseX, bool isReverseY,
+	int32_t pipelineNum)
+{
+	UpdateClipping(camera, { GetTrans().x,GetTrans().y }, { GetScale().x,GetScale().y },
+		UVleftTop, UVlength, color, textureHandle,
+		isPosLeftTop, isReverseX, isReverseY, { GetRot() }, &cbt_, constMapMaterial_);
+
+	Update(SPRITE, pipelineNum, textureHandle, &cbt_, nullptr);
+}
+
+//-------------------------------------------------------------------------------------
 void Sprite::Update(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 	const Vec4& color, uint64_t textureHandle, const Vec2& ancorUV,
 	bool isReverseX, bool isReverseY, const Vec3& rotation,

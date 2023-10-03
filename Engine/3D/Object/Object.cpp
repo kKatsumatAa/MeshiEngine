@@ -20,8 +20,7 @@ RootPipe Object::spritePipelineSet_;
 //al4_02_02
 RootPipe Object::pipelineSetM_;
 
-//FBX用
-RootPipe Object::pipelineSetFBX_;
+
 
 //ルートパラメータの設定
 D3D12_ROOT_PARAMETER Object::rootParams_[11] = {};
@@ -787,22 +786,6 @@ void Object::SetCollider(std::unique_ptr<BaseCollider> collider)
 	}
 }
 
-void Object::SetColliderIsValid(bool isValid)
-{
-	if (collider_)
-	{
-		collider_->SetIsValid(isValid);
-	}
-}
-
-void Object::SetIs2D(bool is2D)
-{
-	if (collider_)
-	{
-		collider_->SetIs2D(is2D);
-	}
-}
-
 //-----------------------------------------------------------------------------
 void Object::SendingMat(int32_t indexNum, Camera* camera, IModel* model)
 {
@@ -919,7 +902,7 @@ void Object::SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t 
 
 }
 
-void Object::Update(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, ConstBuffTransform* constBuffTransform,
+void Object::DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, ConstBuffTransform* constBuffTransform,
 	Camera* camera, IModel* model, bool primitiveMode)
 {
 	Camera* lCamera = camera;
@@ -1041,39 +1024,6 @@ void Object::DrawBox(Camera* camera, const Vec4& color, uint64_t textureHandle, 
 	constMapMaterial_->color = color;
 
 	Update(BOX, pipelineNum, textureHandle, &cbt_, camera);
-}
-
-void Object::DrawBoxSprite(Camera2D* camera, uint64_t textureHandle, const Vec4& color,
-	const Vec2& ancorUV, bool isReverseX, bool isReverseY,
-	int32_t pipelineNum)
-{
-	if (sprite_.get() == nullptr)
-	{
-		sprite_ = std::make_unique<Sprite>();
-		//スプライトクラスの初期化
-		sprite_->Initialize();
-	}
-	sprite_->Update(camera, { GetTrans().x, GetTrans().y }, { GetScale().x,GetScale().y },
-		color, textureHandle, ancorUV, isReverseX, isReverseY, GetRot(), &cbt_, constMapMaterial_);
-
-	Update(SPRITE, pipelineNum, textureHandle, &cbt_, nullptr);
-}
-
-void Object::DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	uint64_t textureHandle, const Vec4& color, bool isPosLeftTop, bool isReverseX, bool isReverseY,
-	int32_t pipelineNum)
-{
-	if (sprite_.get() == nullptr)
-	{
-		sprite_ = std::make_unique <Sprite>();
-		//スプライトクラスの初期化
-		sprite_->Initialize();
-	}
-	sprite_->UpdateClipping(camera, { GetTrans().x,GetTrans().y }, { GetScale().x,GetScale().y },
-		UVleftTop, UVlength, color, textureHandle,
-		isPosLeftTop, isReverseX, isReverseY, { GetRot() }, &cbt_, constMapMaterial_);
-
-	Update(SPRITE, pipelineNum, textureHandle, &cbt_, nullptr);
 }
 
 void Object::DrawCube3D(Camera* camera, const Vec4& color, uint64_t textureHandle, int32_t pipelineNum)

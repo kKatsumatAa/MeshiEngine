@@ -1,10 +1,10 @@
 #pragma once
-#include"IObject.h"
+#include"IObject3D.h"
 #include <FbxLoader.h>
 #include "LightManager.h"
 
 
-class ObjectFbx : public IObject
+class ObjectFbx : public IObject3D
 {
 public:
 	//ボーンの最大数
@@ -46,6 +46,11 @@ private://fbxモデル系
 	int32_t animeIndex_ = 0;
 	std::vector<Node>* nodes_;
 
+private:
+	//親子関係を結ぶモデルのノード
+	const Node* parentNode_ = nullptr;
+	ModelFBX* parentNodeModel_ = nullptr;
+
 public://関数
 	//アニメーション開始
 	void PlayAnimation(bool isLoop, int32_t animeIndex = 0);
@@ -68,5 +73,25 @@ public://関数
 	const std::vector<Node>& GetNodes();
 	//ボーンのデータ転送
 	void MappingBoneData(ModelFBX* model);
+
+public:
+	//ノードの行列をアニメーションに合わせて変更
+	void BlendAnimationUpdate();
+	//fbxのノードの行列更新
+	void UpdateFBXNodeMat();
+	//アニメーションのアップデート
+	void AnimationUpdate();
+
+private:
+	//アニメーション開始
+	void PlayAnimationInternal(int32_t animeIndex,
+		bool isLoop = false, bool isReverse = false);
+	//アニメーションリセット
+	void AnimationReset(int32_t animeIndex);
+
+	//アニメーションで変化したノードやボーンの処理
+	void CalcNodeMatBoneMatInternal(ModelFBX* model);
+	//ボーンの行列を計算
+	XMMATRIX GetCalcSkinMat(IModel* model, int32_t index);
 
 };

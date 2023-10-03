@@ -17,6 +17,23 @@ private://エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+public:
+	//要修正
+	enum ROOTPARAM_NUM
+	{
+		COLOR,
+		TEX,
+		MATRIX,
+		MESH_MAT,
+		MATERIAL,
+		LIGHT,
+		EFFECT,
+		SKIN,
+		DISSOLVE,
+		SPECULAR_MAP,
+		NORM_MAP
+	};
+
 private:
 	//
 	static RootPipe spritePipelineSet_;
@@ -36,7 +53,7 @@ private:
 public:
 	~Sprite();
 
-	void Initialize();
+	void Initialize(std::unique_ptr<WorldMat> worldMat = nullptr);
 	void SpriteDraw();
 
 private:
@@ -50,7 +67,13 @@ private:
 		bool isReverseX, bool isReverseY, const Vec3& rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
 
 public:
+	void DrawBoxSprite(Camera2D* camera, uint64_t textureHandle = NULL, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }
+		, const Vec2& ancorUV = { 0,0 }, bool isReverseX = false, bool isReverseY = false,
+		int32_t pipelineNum = 0);
 
+	void DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+		uint64_t textureHandle = NULL, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, bool isPosLeftTop = true,
+		bool isReverseX = false, bool isReverseY = false, int32_t pipelineNum = 0);
 
 private:
 	DirectX::XMMATRIX GetCameraMatrix(Camera2D* camera);
