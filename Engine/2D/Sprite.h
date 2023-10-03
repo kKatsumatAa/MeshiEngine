@@ -1,10 +1,11 @@
 #pragma once
+#include"IObject.h"
 #include"SpriteCommon.h"
 #include "Util.h"
 #include "Camera2D.h"
 
 
-class Sprite
+class Sprite : public IObject
 {
 private://エイリアス
 	//Microsoft::WRL::を省略
@@ -16,8 +17,11 @@ private://エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+private:
+	//
+	static RootPipe spritePipelineSet_;
 
-public:
+private:
 	VertexSprite vertices_[4] = {
 		{{0.0f,100.0f,0.0f},{0.0f,1.0f}},
 		{{0.0f,0.0f,0.0f},{0.0f,0.0f}},
@@ -35,6 +39,7 @@ public:
 	void Initialize();
 	void SpriteDraw();
 
+private:
 	void Update(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 		const Vec4& color, uint64_t textureHandle, const Vec2& ancorUV,
 		bool isReverseX, bool isReverseY, const Vec3& rotation,
@@ -43,6 +48,9 @@ public:
 	void UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 		const Vec4& color, uint64_t textureHandle, bool isPosLeftTop,
 		bool isReverseX, bool isReverseY, const Vec3& rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
+
+public:
+
 
 private:
 	DirectX::XMMATRIX GetCameraMatrix(Camera2D* camera);

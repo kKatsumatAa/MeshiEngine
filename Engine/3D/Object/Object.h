@@ -1,20 +1,10 @@
 #pragma once
-
-#include "Util.h"
+#include "IObject3D.h"
 #include "Primitive.h"
-#include "LightManager.h"
-#include"CollisionInfo.h"
-#include "PostPera.h"
-#include <FbxLoader.h>
-#include "Camera.h"
-#include "Camera2D.h"
-#include "RootPipe.h"
-
-class BaseCollider;
 
 
 /// <summary>
-/// 頂点インデックス用
+/// オブジェクトのタイプ
 /// </summary>
 enum objType
 {
@@ -29,43 +19,10 @@ enum objType
 	FBX
 };
 
-//演出用のフラグ
-struct EffectOConstBuffer
+//オブジェクトクラス
+class Object : public IObject3D
 {
-	//フォグ
-	uint32_t isFog = false;
-	//トゥーン
-	uint32_t isToon = false;
-	//リムライト
-	uint32_t isRimLight = false;
-	float pad1;
-	//リムの色
-	DirectX::XMFLOAT4 rimColor = { 1.0f,1.0f,1.0f,0 };
-	//疑似シルエット
-	uint32_t isSilhouette = false;
-	//ディゾルブ
-	uint32_t isDissolve = false;
-	//ディゾルブ割合
-	float dissolveT = 0;
-	//スペキュラマップ
-	uint32_t isSpecularMap = false;
-	//ノーマルマップ
-	uint32_t isNormalMap = false;
-	//時間
-	uint32_t time = 0;
-};
 
-class Object
-{
-protected://エイリアス
-	//Microsoft::WRL::を省略
-	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	//DirectX::を省略
-	using XMFLOAT2 = DirectX::XMFLOAT2;
-	using XMFLOAT3 = DirectX::XMFLOAT3;
-	using XMFLOAT4 = DirectX::XMFLOAT4;
-	using XMVECTOR = DirectX::XMVECTOR;
-	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
 	enum ROOTPARAM_NUM
@@ -83,53 +40,18 @@ public:
 		NORM_MAP
 	};
 
-	struct AnimationData
-	{
-		//アニメーション現在時間
-		double currentTime_;
-		//アニメーションフラグ
-		bool isPlay_ = false;
-		//ループ
-		bool isLoop_ = false;
-		//逆再生
-		bool isReverse_ = false;
-		//再生のスピード倍率
-		float animationSpeed_ = 1.0f;
-	};
 
-public:
-	//ボーンの最大数
-	static const int32_t S_MAX_BONES_ = 90;
-
-	//定数バッファ用データ構造体（スキニング）
-	struct ConstBufferDataSkin
-	{
-		XMMATRIX bones[S_MAX_BONES_];
-	};
 
 private:
-	//リソース設定
-	//D3D12_RESOURCE_DESC resDesc{};
-	ConstBuffTransform cbt_;//ここをどうにかすれば、インスタンス一つでも色々描画
-
 	//図形のクラス
 	static Primitive primitive_;
 	//
 	static RootPipe objPipeLineSet_[3];
-	//
-	static RootPipe spritePipelineSet_;
 	//al4_02_02
 	static RootPipe pipelineSetM_;
-	//FBX用
-	static RootPipe pipelineSetFBX_;
+
 	//ルートパラメータの設定
 	static D3D12_ROOT_PARAMETER rootParams_[11];
-	// グラフィックスパイプライン設定
-	static D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_;
-
-	// 2.描画先の変更
-		// レンダーターゲットビューのハンドルを取得
-	static D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 	//定数バッファの生成
 	ComPtr<ID3D12Resource> constBuffMaterial_ = nullptr;
@@ -142,10 +64,6 @@ private:
 
 	//ライト
 	static LightManager* sLightManager_;
-
-	//定数バッファ（スキン）
-	ComPtr<ID3D12Resource> constBuffSkin_ = nullptr;
-	ConstBufferDataSkin* constMapSkin = nullptr;
 
 private:
 	//親子関係を結ぶモデルのノード
@@ -179,31 +97,6 @@ private:
 	//メッシュのオフセット
 	Mesh::PolygonOffset meshOffsetData_;
 
-private://fbxモデル系
-	//アニメーション
-	std::vector<AnimationData>animeDatas_;
-	//アニメーションのインデックス
-	int32_t animeIndex_ = 0;
-	std::vector<Node>* nodes_;
-
-private:
-	//画面効果用
-	ComPtr <ID3D12Resource> effectFlagsBuff_;
-	EffectOConstBuffer* mapEffectFlagsBuff_;
-
-	Object* parentObj_ = nullptr;
-
-public://変数
-	bool isWireFrame_ = 0;
-	//画面効果用
-	EffectOConstBuffer effectFlags_;
-
-protected://継承先まで公開
-	//クラス名(デバッグ用)
-	std::string objName_;
-	//コライダー
-	std::unique_ptr<BaseCollider> collider_ = nullptr;
-
 
 private:
 	//--------------------
@@ -234,9 +127,6 @@ private:
 	//ボーンの行列を計算
 	XMMATRIX GetCalcSkinMat(IModel* model, int32_t index);
 
-	//
-	static void PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe, int32_t indexNum = NULL);
-
 	static void Blend(const D3D12_BLEND_OP& blendMode,
 		bool Inversion = 0, bool Translucent = 0);
 
@@ -246,48 +136,6 @@ public:
 
 	//デストラクタ
 	virtual ~Object();
-
-	//位置
-	void SetTrans(const Vec3& pos) { worldMat_->trans_ = pos; }
-	void SetTransX(float pos) { worldMat_->trans_.x = pos; }
-	void SetTransY(float pos) { worldMat_->trans_.y = pos; }
-	void SetTransZ(float pos) { worldMat_->trans_.z = pos; }
-	Vec3 GetTrans() { return worldMat_->trans_; }
-	//スケール
-	void SetScale(const Vec3& scale) { worldMat_->scale_ = scale; }
-	void SetScaleX(float scale) { worldMat_->scale_.x = scale; }
-	void SetScaleY(float scale) { worldMat_->scale_.y = scale; }
-	void SetScaleZ(float scale) { worldMat_->scale_.z = scale; }
-	const Vec3& GetScale() { return worldMat_->scale_; }
-	//回転
-	void SetRot(const Vec3& rot) {
-		worldMat_->rot_ = rot;
-	}
-	void SetRotX(float rot) { worldMat_->rot_.x = rot; }
-	void SetRotY(float rot) { worldMat_->rot_.y = rot; }
-	void SetRotZ(float rot) { worldMat_->rot_.z = rot; }
-	const Vec3& GetRot() { return worldMat_->rot_; }
-	//行列を更新
-	void CalcWorldMat() { worldMat_->CalcWorldMat(); }
-	void CalcRotMat() { worldMat_->CalcRotMat(); }
-	void CalcTransMat() { worldMat_->CalcTransMat(); }
-	void CalcScaleMat() { worldMat_->CalcScaleMat(); }
-	//ワールド行列の中身コピー
-	void SetWorldMat(std::unique_ptr<WorldMat> worldMat) { worldMat_ = std::move(worldMat); }
-	//親
-	void SetParent(Object* obj) { worldMat_->parent_ = obj->GetWorldMat(); }
-	void SetParent(WorldMat* worldMat) { worldMat_->parent_ = worldMat; }
-	WorldMat* GetParent() { return worldMat_->parent_; }
-	//
-	WorldMat* GetWorldMat() { return worldMat_.get(); }
-	//親子関係を考慮した位置をゲット
-	Vec3 GetWorldTrans() { return worldMat_->GetWorldTrans(); }
-
-	//オブジェクト名前
-	void SetObjName(std::string objName) { objName_ = objName; }
-	const std::string& GetObjName() { return objName_; }
-	//コライダー
-	BaseCollider* GetCollider() { return collider_.get(); }
 
 	//モデルのポインタ
 	void SetModel(IModel* model);
@@ -371,27 +219,7 @@ public:
 	//衝突時コールバック関数
 	virtual void OnCollision(const CollisionInfo& info) {}
 
-	//アニメーション開始
-	void PlayAnimation(bool isLoop, int32_t animeIndex = 0);
-	void PlayReverseAnimation(bool isLoop, int32_t animeIndex = 0);
-	//アニメーションフラグ
-	void SetIsPlayAnimation(bool isPlay, int32_t animeIndex = 0) { animeDatas_[animeIndex].isPlay_ = isPlay; }
-	void SetIsLoopAnimation(bool isLoop, int32_t animeIndex = 0) { animeDatas_[animeIndex].isLoop_ = isLoop; }
-	void SetIsReverseAnimation(bool isReverse, int32_t animeIndex = 0) { animeDatas_[animeIndex].isReverse_ = isReverse; }
-	//アニメーションスピード
-	void SetAnimationSpeed(float speed) {
-		animeDatas_[animeIndex_].animationSpeed_ = speed;
-	}
-	//モデルの部位と親子関係を持たせる
-	void ParentFbxNode(Object* obj, IModel* model, const std::string& nodeName);
-	//親ノードを解除
-	void ResetParentFbxNode();
-	//ボーンを得る
-	const XMMATRIX* GetModelBones()const { return constMapSkin->bones; }
-	//オブジェクトクラスが持ってるfbxモデルのノード
-	const std::vector<Node>& GetNodes();
-	//ボーンのデータ転送
-	void MappingBoneData(ModelFBX* model);
+
 
 	//フォグとかのフラグ
 	void SetIsSilhouette(bool is) { effectFlags_.isSilhouette = is; }

@@ -471,6 +471,12 @@
     <ClCompile Include="Engine\2D\Camera2D.cpp">
       <Filter>ソース ファイル\Engine\2D</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Base\IObject.cpp">
+      <Filter>ソース ファイル\Engine\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Object\IObject3D.cpp">
+      <Filter>ソース ファイル\Engine\3D\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -784,6 +790,15 @@
     </ClInclude>
     <ClInclude Include="Engine\2D\Camera2D.h">
       <Filter>ヘッダー ファイル\Engine\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\IObject.h">
+      <Filter>ヘッダー ファイル\Engine\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Object\ObjectFbx.h">
+      <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Object\IObject3D.h">
+      <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
