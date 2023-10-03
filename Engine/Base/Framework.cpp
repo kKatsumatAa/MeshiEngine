@@ -28,8 +28,15 @@ void Framework::Initialize()
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();
+
+	//マウスを表示するか
+	bool isDebug = true;
+#ifdef _DEBUG
+	isDebug = false;
+#endif // _DEBUG
+
 	//trueにすることでマウスがほかのアプリで使用されない
-	MouseInput::GetInstance().CreateDevice(true);
+	MouseInput::GetInstance().CreateDevice(isDebug);
 
 	//
 	ParticleManager::GetInstance()->Initialize();

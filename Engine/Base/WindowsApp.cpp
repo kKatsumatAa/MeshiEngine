@@ -59,7 +59,7 @@ WindowsApp::WindowsApp()
 	//ウィンドウオブジェクトの生成
 	hwnd_ = CreateWindow(
 		wndclassEX_.lpszClassName,		//クラス名
-		L"LE3A_03_イイダ_ユウキ",			//タイトルバーの文字
+		L"HYPERHOT",			//タイトルバーの文字
 		WS_OVERLAPPEDWINDOW,	//標準的なウィンドウスタイル
 		CW_USEDEFAULT,			//表示X座標(OSに任せる)
 		CW_USEDEFAULT,			//表示Y座標(OSに任せる)
