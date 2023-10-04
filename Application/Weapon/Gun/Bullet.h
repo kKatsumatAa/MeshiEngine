@@ -16,7 +16,7 @@ private:
 	Vec3 directionVec_ = { 0,0,0 };
 
 	//èäóLé“
-	Object* owner_ = nullptr;
+	IObject* owner_ = nullptr;
 
 	Vec3 ownerPos_ = { 0,0,0 };
 
@@ -35,7 +35,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Bullet> Create(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, Object* owner);
+	static std::unique_ptr<Bullet> Create(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, IObject* owner);
 
 private:
 	void Dead(const Vec3& interPos);
@@ -44,13 +44,13 @@ private:
 	void BallisticsUpdate();
 
 public:
-	Object* GetOwner() { return owner_; }
+	IObject* GetOwner() { return owner_; }
 
 	const Vec3& GetOwnerPos() { return ownerPos_; }
 
 public:
 
-	bool Initialize(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, Object* owner);
+	bool Initialize(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, IObject* owner);
 
 	void Update() override;
 

@@ -278,14 +278,14 @@ void Mesh::Draw(Vec3 materialExtend, const ConstBuffTransform& cbt,
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 	srvGpuHandle.ptr = material_->textureHandle_;
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(Object::ROOTPARAM_NUM::TEX, srvGpuHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(Object::RootParamNum::TEX, srvGpuHandle);
 
 	// マテリアルの定数バッファをセット
 	ID3D12Resource* constBuff = material_->GetConstantBuffer();
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(Object::ROOTPARAM_NUM::MATERIAL, constBuff->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(Object::RootParamNum::MATERIAL, constBuff->GetGPUVirtualAddress());
 
 	//メッシュごとの行列
-	cbt_.DrawCommand(Object::ROOTPARAM_NUM::MESH_MAT);
+	cbt_.DrawCommand(Object::RootParamNum::MESH_MAT);
 
 	// 頂点バッファをセット
 	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);

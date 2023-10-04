@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 #include "CollisionAttribute.h"
 
-class Object;
+class IObject;
 class BaseCollider;
 
 /// <summary>
@@ -17,14 +17,14 @@ public:
 
 
 public:
-	CollisionInfo(Object* object, BaseCollider* collider, const DirectX::XMVECTOR& inter) {
+	CollisionInfo(IObject* object, BaseCollider* collider, const DirectX::XMVECTOR& inter) {
 		object_ = object;
 		collider_ = collider;
 		inter_ = inter;
 	}
 
 	// 衝突相手のオブジェクト
-	Object* object_ = nullptr;
+	IObject* object_ = nullptr;
 	// 衝突相手のコライダー
 	BaseCollider* collider_ = nullptr;
 	// 衝突点

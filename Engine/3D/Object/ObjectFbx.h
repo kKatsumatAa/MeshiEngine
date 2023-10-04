@@ -2,20 +2,21 @@
 #include"IObject3D.h"
 #include <FbxLoader.h>
 #include "LightManager.h"
+#include "Mesh.h"
 
 
-class ObjectFbx : public IObject3D
+class ObjectFBX : public IObject3D
 {
 public:
 	//ボーンの最大数
 	static const int32_t S_MAX_BONES_ = 90;
-
 	//定数バッファ用データ構造体（スキニング）
 	struct ConstBufferDataSkin
 	{
 		XMMATRIX bones[S_MAX_BONES_];
 	};
 
+public:
 	//アニメーションデータ
 	struct AnimationData
 	{
@@ -32,12 +33,14 @@ public:
 	};
 
 private:
+	// 頂点レイアウトの設定
+// 頂点レイアウト
+	static D3D12_INPUT_ELEMENT_DESC sInputLayout_[7];
+
+protected:
 	//定数バッファ（スキン）
 	ComPtr<ID3D12Resource> constBuffSkin_ = nullptr;
 	ConstBufferDataSkin* constMapSkin = nullptr;
-
-	//FBX用
-	static RootPipe pipelineSetFBX_;
 
 private://fbxモデル系
 	//アニメーション
@@ -46,12 +49,34 @@ private://fbxモデル系
 	int32_t animeIndex_ = 0;
 	std::vector<Node>* nodes_;
 
-private:
-	//親子関係を結ぶモデルのノード
-	const Node* parentNode_ = nullptr;
-	ModelFBX* parentNodeModel_ = nullptr;
-
 public://関数
+	ObjectFBX();
+	virtual ~ObjectFBX();
+
+public:
+	//共通の初期化
+	static void CommonInitialize();
+
+private:
+	//継承コンストラクタ
+	void Construct()override;
+
+private:
+	//マテリアル、ボーン行列などをセット
+	void SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
+		uint64_t normalMapTexHandle);
+	//内部描画処理
+	void DrawModelInternal(const RootPipe& pipelineSet, int32_t pipelineNum)override;
+
+public:
+	virtual void Update()override;
+	//imgui
+	void DrawImGui(std::function<void()>imguiF = NULL)override;
+
+public:
+	void SetModel(IModel* model)override;
+
+public:
 	//アニメーション開始
 	void PlayAnimation(bool isLoop, int32_t animeIndex = 0);
 	void PlayReverseAnimation(bool isLoop, int32_t animeIndex = 0);
@@ -63,10 +88,6 @@ public://関数
 	void SetAnimationSpeed(float speed) {
 		animeDatas_[animeIndex_].animationSpeed_ = speed;
 	}
-	//モデルの部位と親子関係を持たせる
-	void ParentFbxNode(Object* obj, IModel* model, const std::string& nodeName);
-	//親ノードを解除
-	void ResetParentFbxNode();
 	//ボーンを得る
 	const XMMATRIX* GetModelBones()const { return constMapSkin->bones; }
 	//オブジェクトクラスが持ってるfbxモデルのノード

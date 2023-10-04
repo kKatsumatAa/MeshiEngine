@@ -23,8 +23,8 @@ public:
 	void Draw();
 
 private:
-	std::vector<Object*>GetEnemys();
-	Enemy* TransToEnemy(Object* obj);
+	std::vector<IObject3D*>GetEnemys();
+	Enemy* TransToEnemy(IObject3D* obj);
 
 	//現在のウェーブ以外の敵の有効フラグをfalse
 	void SetIsValidOtherWaveEnemy();

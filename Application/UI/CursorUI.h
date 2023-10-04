@@ -1,5 +1,5 @@
 #pragma once
-#include"Object.h"
+#include"Sprite.h"
 
 
 class CursorUI final
@@ -7,7 +7,7 @@ class CursorUI final
 private:
 	int32_t timer_ = 0;
 	float alpha_ = 1.0f;
-	Object texObj_;
+	Sprite texSprite_;
 	Vec2 cursorPos_;
 	Vec2 drawPos_;
 

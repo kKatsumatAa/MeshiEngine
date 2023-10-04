@@ -4,11 +4,18 @@
 #include "Camera.h"
 #include "RootPipe.h"
 #include "IModel.h"
-#include "LightManager.h"
+#include <string>
+#include <vector>
+#include "ImguiManager.h"
 
 
 //コライダーの親クラス前方宣言
 class BaseCollider;
+
+struct ConstBufferDataMaterial
+{
+	Vec4 color = { 1.0f,1.0f,1.0f,1.0f };//色(RGBA)
+};
 
 //オブジェクト親クラス
 class IObject
@@ -24,8 +31,8 @@ protected://エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
-	//要修正
-	enum ROOTPARAM_NUM
+	//ルートパラメータの引数
+	enum RootParamNum
 	{
 		COLOR,
 		TEX,
@@ -37,21 +44,38 @@ public:
 		SKIN,
 		DISSOLVE,
 		SPECULAR_MAP,
-		NORM_MAP
+		NORM_MAP,
+		//要素数
+		count = 11
 	};
 
-protected://継承先まで公開
+	//インスタンスのタイプ
+	enum ObjectInstanceType
+	{
+		UNKNOWN = -1,
+		SPRITE,
+		OBJ,
+		FBX
+	};
+
+private:
 	// グラフィックスパイプライン設定
 	static D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_;
+
+protected://継承先まで公開
 	//定数バッファの生成
 	ComPtr<ID3D12Resource> constBuffMaterial_ = nullptr;
 	//定数バッファ用データ構造体（マテリアル）
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial_ = nullptr;
-	//ライト
-	static LightManager* sLightManager_;
+
+private:
+	//ルートパラメータの設定
+	static D3D12_ROOT_PARAMETER rootParams_[RootParamNum::count];
 
 protected:
+	//ワールド行列用のバッファなど
+	ConstBuffTransform cbt_;//ここをどうにかすれば、インスタンス一つでも色々描画
 	//ワールド行列用クラス
 	std::unique_ptr<WorldMat> worldMat_ = std::make_unique<WorldMat>();
 	//親インスタンス
@@ -68,17 +92,31 @@ protected:
 	Vec3 velocity_ = { 0,0,0 };
 	//コライダー
 	std::unique_ptr<BaseCollider> collider_ = nullptr;
+	//インスタンスの種類（子クラスが何か）
+	ObjectInstanceType objInsType_ = ObjectInstanceType::UNKNOWN;
 
 
-//関数------------------------------------------------------------------------------
+	//関数------------------------------------------------------------------------------
+public:
+	virtual ~IObject();
+	IObject();
+
+protected:
+	//継承できるコンストラクタ
+	virtual void Construct();
+
 protected:
 	//共通の初期化処理
-	void InitializeCommon(std::unique_ptr<WorldMat> worldMat = nullptr);
+	void Initialize(std::unique_ptr<WorldMat> worldMat = nullptr);
+
+public:
+	//静的初期化
+	static void CommonInitialize();
 
 public:
 	virtual void Update();
 
-	virtual void Draw();
+	virtual void Draw() = 0;
 
 public:
 	//行列を更新、それに伴いコライダーも
@@ -87,12 +125,27 @@ public:
 	//デバッグ用の表示
 	virtual void DrawImGui(std::function<void()>imguiF = NULL);
 
+public:
+	//ルートシグネチャ系のコマンド
+	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
+
 	//パイプラインの設定
-	static void PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe);
+	static void PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe,
+		const std::string& vSName, const std::string& pSName,
+		D3D12_INPUT_ELEMENT_DESC* inputLayout, uint32_t inputLCount,
+		D3D12_PRIMITIVE_TOPOLOGY_TYPE priTopoType, bool isSprite);
+
+	static void Blend(const D3D12_BLEND_OP& blendMode,
+		bool Inversion = 0, bool Translucent = 0);
 
 public:
 	//衝突時コールバック関数
 	virtual void OnCollision(const CollisionInfo& info) {}
+
+public:
+	//インスタンスの種類を得る
+	ObjectInstanceType GetObjInsType() { return objInsType_; }
+	//2Dか3Dか
 
 public:
 	//生きてるか
@@ -104,8 +157,8 @@ public:
 	bool GetIsValid() { return isValid_; }
 
 	//スピード（当たり判定に使う）
-	inline void SetVelocity(const Vec3& vec) { velocity_ = vec; }
-	inline const Vec3& GetVelocity() { return velocity_; }
+	void SetVelocity(const Vec3& vec) { velocity_ = vec; }
+	const Vec3& GetVelocity() { return velocity_; }
 
 
 public:
@@ -134,10 +187,8 @@ public:
 	void CalcRotMat() { worldMat_->CalcRotMat(); }
 	void CalcTransMat() { worldMat_->CalcTransMat(); }
 	void CalcScaleMat() { worldMat_->CalcScaleMat(); }
-	//ワールド行列の中身コピー
-	void SetWorldMat(std::unique_ptr<WorldMat> worldMat) { worldMat_ = std::move(worldMat); }
 	//親
-	void SetParent(Object* obj) { worldMat_->parent_ = obj->GetWorldMat(); }
+	void SetParent(IObject* obj) { worldMat_->parent_ = obj->GetWorldMat(); }
 	void SetParent(WorldMat* worldMat) { worldMat_->parent_ = worldMat; }
 	WorldMat* GetParent() { return worldMat_->parent_; }
 	//ワールド行列用クラスのインスタンスを取得
@@ -165,11 +216,11 @@ public:
 	void SetColliderIsValid(bool isValid);
 
 public:
+	//色をセット
+	void SetColor(const Vec4& color) { constMapMaterial_->color = color; }
 	//色を返す
 	const Vec4& GetColor() { return constMapMaterial_->color; }
 
 };
-
-void SetNormDigitalMat(DirectX::XMMATRIX& mat);
 
 void Error(bool filed, ID3DBlob* errorBlob);

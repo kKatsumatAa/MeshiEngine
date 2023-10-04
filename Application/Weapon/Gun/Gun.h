@@ -43,10 +43,10 @@ private:
 
 public:
 	//ËŒ‚
-	void Attack(const Vec3& directionVec, int32_t decreBullet = 1, Object* owner = nullptr, float particleSize = 1.0f) override;
+	void Attack(const Vec3& directionVec, int32_t decreBullet = 1, IObject3D* owner = nullptr, float particleSize = 1.0f) override;
 
 	//‚¿å•ÏX
-	void ChangeOwner(Object* parent) override;
+	void ChangeOwner(IObject3D* parent) override;
 
 	//
 	int32_t GetBulletNum() { return remainingBullets_; }

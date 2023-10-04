@@ -19,7 +19,7 @@ protected:
 	//ローカル座標
 	Vec3 localPos_ = { 0,0,0 };
 	//持ち主
-	Object* owner_ = nullptr;
+	IObject3D* owner_ = nullptr;
 
 	//前回の位置
 	Vec3 oldPos_ = { 0,0,0 };
@@ -49,10 +49,10 @@ protected:
 
 public:
 	//攻撃
-	virtual void Attack(const Vec3& directionVec, int32_t decreBullet = 1, Object* owner = nullptr, float particleSize = 1.0f) = 0;
+	virtual void Attack(const Vec3& directionVec, int32_t decreBullet = 1, IObject3D* owner = nullptr, float particleSize = 1.0f) = 0;
 
 	//持ち主変更
-	virtual void ChangeOwner(Object* parent);
+	virtual void ChangeOwner(IObject3D* parent);
 
 	//判定属性
 	void SetAttribute(uint16_t attribute) { GetCollider()->SetAttribute(attribute); }

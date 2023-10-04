@@ -256,7 +256,7 @@
     <ClInclude Include="Engine\3D\Object\ModelManager.h" />
     <ClInclude Include="Engine\3D\Object\Object.h" />
     <ClInclude Include="Engine\3D\Object\IObject3D.h" />
-    <ClInclude Include="Engine\3D\Object\ObjectFbx.h" />
+    <ClInclude Include="Engine\3D\Object\ObjectFBX.h" />
     <ClInclude Include="Engine\3D\Object\ObjectManager.h" />
     <ClInclude Include="Engine\3D\Object\ParticleManager.h" />
     <ClInclude Include="Engine\3D\Object\Primitive.h" />
@@ -334,6 +334,12 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BlurPS</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">BlurPS</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\FBXVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl">

@@ -58,7 +58,7 @@ private:
 	const float FALL_VEL_POW_ = 4.0f;
 
 public:
-
+	~Player();
 
 public:
 	/// <summary>
@@ -104,7 +104,7 @@ public:
 
 public:
 	void SetIsClickLeft(bool isClickLeft) { isClickLeft_ = isClickLeft; }
-	bool GetIsClickLeft() {return isClickLeft_; }
+	bool GetIsClickLeft() { return isClickLeft_; }
 
 	const Vec3& GetBulletOwnerEnemyPos() { return bulletOwnerEnemyPos_; }
 };

@@ -9,7 +9,6 @@
 #include <d3dx12.h>
 #include <fbxsdk.h>
 #include "Material.h"
-#include "Sprite.h"
 #include "Mesh.h"
 #include <unordered_map>
 

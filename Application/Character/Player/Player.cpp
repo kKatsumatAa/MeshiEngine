@@ -14,6 +14,11 @@
 using namespace DirectX;
 
 
+Player::~Player()
+{
+	Character::~Character();
+}
+
 std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 {
 	std::unique_ptr<Player> instance = std::make_unique<Player>();
@@ -33,7 +38,7 @@ std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Weapo
 
 bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 {
-	if (!Object::Initialize(std::move(worldMat)))
+	if (!ObjectFBX::Initialize(std::move(worldMat)))
 	{
 		return false;
 	}
@@ -163,7 +168,7 @@ void Player::Move()
 	OnGroundAndWallUpdate(4.0f, GameVelocityManager::GetInstance().GetVelocity(), KeyboardInput::GetInstance().KeyPush(DIK_SPACE), gameSpeedAddFunc);
 
 	//コライダー更新
-	Object::WorldMatColliderUpdate();
+	ObjectFBX::WorldMatColliderUpdate();
 
 	//カメラをプレイヤーと同じ位置に
 	camera->SetEye(GetTrans());

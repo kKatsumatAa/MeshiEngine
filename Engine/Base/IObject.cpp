@@ -1,6 +1,128 @@
 #include"IObject.h"
+#include"CollisionManager.h"
+#include "CameraManager.h"
+#include "ObjectManager.h"
+
+using namespace DirectX;
+
+//ルートパラメータの設定
+D3D12_ROOT_PARAMETER IObject::rootParams_[RootParamNum::count] = {};
+D3D12_GRAPHICS_PIPELINE_STATE_DESC IObject::pipelineDesc_ = {};
+
+//--------------------------------------------------------------------
+IObject::~IObject()
+{
+	constBuffMaterial_.Reset();
+
+	//object毎に消えるのでいらないかも
+	if (collider_.get())
+	{
+		CollisionManager::GetInstance()->RemoveCollider(collider_.get());
+	}
+}
 
 
+IObject::IObject()
+{
+	Construct();
+}
+
+void IObject::Construct()
+{
+	HRESULT result = S_OK;
+
+	//マテリアルバッファ（色）
+	//ヒープ設定
+	D3D12_HEAP_PROPERTIES cbHeapProp{};
+	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+	//リソース設定
+	D3D12_RESOURCE_DESC cbResourceDesc{};
+	ResourceProperties(cbResourceDesc,
+		((uint32_t)sizeof(ConstBufferDataMaterial) + 0xff) & ~0xff/*256バイトアライメント*/);
+	//定数バッファの生成
+	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffMaterial_);
+	//定数バッファのマッピング
+	result = constBuffMaterial_->Map(0, nullptr, (void**)&constMapMaterial_);//マッピング
+	assert(SUCCEEDED(result));
+}
+
+//------------------------------------------------------------------------
+void IObject::CommonInitialize()
+{
+	//ルートパラメータの設定
+	//定数バッファ0番（色）
+	rootParams_[COLOR].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[COLOR].Descriptor.ShaderRegister = 0;//定数バッファ番号(b0)
+	rootParams_[COLOR].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[COLOR].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//テクスチャレジスタ0番（テクスチャ）
+	rootParams_[TEX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	rootParams_[TEX].DescriptorTable.pDescriptorRanges = &TextureManager::GetDescRange();//デスクリプタレンジ
+	rootParams_[TEX].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[TEX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//定数バッファ1番(行列)
+	rootParams_[MATRIX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[MATRIX].Descriptor.ShaderRegister = 1;//定数バッファ番号(b1)
+	rootParams_[MATRIX].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[MATRIX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//メッシュごとの行列2番
+	rootParams_[MESH_MAT].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[MESH_MAT].Descriptor.ShaderRegister = 2;//定数バッファ番号(b2)
+	rootParams_[MESH_MAT].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[MESH_MAT].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//定数バッファ3番（マテリアル）
+	rootParams_[MATERIAL].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[MATERIAL].Descriptor.ShaderRegister = 3;//定数バッファ番号(b3)
+	rootParams_[MATERIAL].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[MATERIAL].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//定数バッファ4番(ライト用)
+	rootParams_[LIGHT].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[LIGHT].Descriptor.ShaderRegister = 4;//定数バッファ番号(b4)
+	rootParams_[LIGHT].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[LIGHT].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//定数バッファ5番(効果フラグ)
+	rootParams_[EFFECT].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[EFFECT].Descriptor.ShaderRegister = 5;//定数バッファ番号(b5)
+	rootParams_[EFFECT].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[EFFECT].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//定数バッファ6番（スキニング用）
+	rootParams_[SKIN].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[SKIN].Descriptor.ShaderRegister = 6;//定数バッファ番号(b6)
+	rootParams_[SKIN].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[SKIN].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//テクスチャレジスタ1番（ディゾルブ用テクスチャ）
+	rootParams_[DISSOLVE].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	D3D12_DESCRIPTOR_RANGE dissolveDHRange = TextureManager::GetDescRange();//デスクリプタレンジ
+	dissolveDHRange.BaseShaderRegister++;
+	rootParams_[DISSOLVE].DescriptorTable.pDescriptorRanges = &dissolveDHRange;//デスクリプタレンジ
+	rootParams_[DISSOLVE].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[DISSOLVE].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//テクスチャレジスタ2番（スペキュラマップ用テクスチャ）
+	rootParams_[SPECULAR_MAP].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	D3D12_DESCRIPTOR_RANGE dissolveDHRange2 = TextureManager::GetDescRange();//デスクリプタレンジ
+	dissolveDHRange2.BaseShaderRegister += 2;
+	rootParams_[SPECULAR_MAP].DescriptorTable.pDescriptorRanges = &dissolveDHRange2;//デスクリプタレンジ
+	rootParams_[SPECULAR_MAP].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[SPECULAR_MAP].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//テクスチャレジスタ3番（ノーマルマップ用テクスチャ）
+	rootParams_[NORM_MAP].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	D3D12_DESCRIPTOR_RANGE dissolveDHRange3 = TextureManager::GetDescRange();//デスクリプタレンジ;
+	dissolveDHRange3.BaseShaderRegister += 3;
+	rootParams_[NORM_MAP].DescriptorTable.pDescriptorRanges = &dissolveDHRange3;//デスクリプタレンジ
+	rootParams_[NORM_MAP].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[NORM_MAP].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+}
+
+//-------------------------------------------------------------------------
+void IObject::Initialize(std::unique_ptr<WorldMat> worldMat)
+{
+	if (worldMat == nullptr)
+	{
+		worldMat = std::move(worldMat_);
+	}
+}
+
+//---------------------------------------------------------------------
 void IObject::SetColliderIsValid(bool isValid)
 {
 	if (collider_)
@@ -9,28 +131,110 @@ void IObject::SetColliderIsValid(bool isValid)
 	}
 }
 
-void IObject::InitializeCommon(std::unique_ptr<WorldMat> worldMat)
+void IObject::SetCollider(std::unique_ptr<BaseCollider> collider)
 {
-	worldMat_ = std::move(worldMat);
+	collider->SetObject(this);
+	collider_ = std::move(collider);
+	//コリジョンマネージャーに登録
+	CollisionManager::GetInstance()->AddCollider(collider_.get());
+	//行列,コライダーの更新
+	WorldMatColliderUpdate();
+}
+
+void IObject::SetIsAlive(bool isAlive)
+{
+	isAlive_ = isAlive;
+	//当たり判定の方も無効
+	if (collider_)
+	{
+		collider_->SetIsValid(false);
+	}
+}
+
+void IObject::SetIsValid(bool isValid)
+{
+	isValid_ = isValid;
+	SetColliderIsValid(isValid);
+
+	if (isValid == true)
+	{
+		worldMat_->CalcAllTreeMat();
+	}
+}
+
+//----------------------------------------------------------------------
+void IObject::WorldMatColliderUpdate()
+{
+	//行列更新（ワールド座標系にして当たり判定を行う）
+	worldMat_->CalcAllTreeMat();
+	//当たり判定更新
+	if (collider_.get())
+	{
+		collider_->Update();
+	}
+}
+
+void IObject::Update()
+{
+	WorldMatColliderUpdate();
+}
+
+//----------------------------------------------------------------------
+void IObject::DrawImGui(std::function<void()>imguiF)
+{
+	std::string str = "NO_NAME";
+	if (objName_.size())
+	{
+		str = objName_;
+	}
+
+	ImGui::Begin(str.c_str());
+
+	//生死フラグ
+	ImGui::Checkbox("isAlive: ", &isAlive_);
+	if (isAlive_ == false && collider_)
+	{
+		collider_->SetIsValid(false);
+	}
+
+	//トランスなど
+	if (ImGui::TreeNode("TransScaleRot")) {
+
+		ImGui::DragFloat3("Trans: ", &worldMat_->trans_.x);
+		ImGui::DragFloat3("Scale: ", &worldMat_->scale_.x);
+		ImGui::DragFloat3("Rot: ", &worldMat_->rot_.x);
+
+		ImGui::TreePop();
+	}
+
+	//派生クラスごとの
+	if (imguiF)
+	{
+		imguiF();
+	}
+
+	ImGui::End();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void IObject::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe)
+void IObject::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature)
+{
+	// パイプラインステートとルートシグネチャの設定コマンド
+	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(&pipelineState[pipelineNum]);
+
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature);
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe,
+	const std::string& vSName, const std::string& pSName,
+	D3D12_INPUT_ELEMENT_DESC* inputLayout, uint32_t inputLCount,
+	D3D12_PRIMITIVE_TOPOLOGY_TYPE priTopoType, bool isSprite)
 {
 	HRESULT result = {};
 
-	if (indexNum == SPRITE)
-	{
-		rootPipe.CreateBlob("Resources/shaders/SpriteVS.hlsl", "Resources/shaders/SpritePS.hlsl");
-	}
-	else if (indexNum == OBJ || indexNum == FBX)
-	{
-		rootPipe.CreateBlob("Resources/shaders/OBJVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl");
-	}
-	else
-	{
-		rootPipe.CreateBlob("Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl");
-	}
+	rootPipe.CreateBlob(vSName.c_str(), pSName.c_str());
 
 	// シェーダーの設定
 	pipelineDesc_.VS.pShaderBytecode = rootPipe.vsBlob->GetBufferPointer();
@@ -42,100 +246,26 @@ void IObject::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe)
 	pipelineDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 
 	// ラスタライザの設定
-	if (indexNum == SPRITE)
+	if (isSprite)
 	{
 		pipelineDesc_.RasterizerState = D3D12_RASTERIZER_DESC();
 		pipelineDesc_.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	}
 	else
+	{
 		pipelineDesc_.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // 背面カリング
+	}
 
 	pipelineDesc_.RasterizerState.FillMode = fillMode; // ポリゴン内塗りつぶし
 	pipelineDesc_.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
 	Blend(D3D12_BLEND_OP_ADD, false, true);
 
-	// 頂点レイアウトの設定
-	// 頂点レイアウト
-	D3D12_INPUT_ELEMENT_DESC inputLayout[7] = {
-	{//xyz座標
-	 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	}, // (1行で書いたほうが見やすい)
-
-		{//法線ベクトル
-	 "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	}, // (1行で書いたほうが見やすい)
-
-	{//uv座標
-	 "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	}, // (1行で書いたほうが見やすい)
-
-	{//影響を受けるボーン番号
-	 "BONEINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	},
-
-	{//ボーンのスキンウェイト（4つ）
-	 "BONEWEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	},
-
-	{//接線
-	 "TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	}, // (1行で書いたほうが見やすい)
-
-	{//従法線
-	 "BINORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	}, // (1行で書いたほうが見やすい)
-
-	};
-
-	//sprite
-	D3D12_INPUT_ELEMENT_DESC inputLayoutSprite[2] = {
-		{//xyz座標
-		 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-		 D3D12_APPEND_ALIGNED_ELEMENT,
-		 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-		}, // (1行で書いたほうが見やすい)
-
-		{//uv座標
-		 "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
-		 D3D12_APPEND_ALIGNED_ELEMENT,
-		 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-		} // (1行で書いたほうが見やすい)
-	};
-	if (indexNum == SPRITE)
-	{
-		pipelineDesc_.InputLayout.pInputElementDescs = inputLayoutSprite;
-		pipelineDesc_.InputLayout.NumElements = _countof(inputLayoutSprite);
-	}
-	else
-	{
-		pipelineDesc_.InputLayout.pInputElementDescs = inputLayout;
-		pipelineDesc_.InputLayout.NumElements = _countof(inputLayout);
-	}
+	pipelineDesc_.InputLayout.pInputElementDescs = inputLayout;
+	pipelineDesc_.InputLayout.NumElements = inputLCount;
 
 	// 図形の形状設定
-	if (indexNum == LINE)
-	{
-		pipelineDesc_.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
-	}
-	else
-	{
-		pipelineDesc_.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	}
+	pipelineDesc_.PrimitiveTopologyType = priTopoType;
 
 	// その他の設定
 	pipelineDesc_.NumRenderTargets = 3; // 描画対象は3つ（ポストエフェクトの一枚目の3つ）
@@ -181,7 +311,7 @@ void IObject::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe)
 	pipelineDesc_.DepthStencilState = D3D12_DEPTH_STENCIL_DESC();
 
 	pipelineDesc_.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-	if (indexNum == SPRITE)
+	if (isSprite)
 	{
 		pipelineDesc_.DepthStencilState.DepthEnable = false;
 		pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
@@ -197,7 +327,7 @@ void IObject::PipeLineState(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe)
 	assert(SUCCEEDED(result));
 }
 
-void Object::Blend(const D3D12_BLEND_OP& blendMode, bool Inversion, bool Translucent)
+void IObject::Blend(const D3D12_BLEND_OP& blendMode, bool Inversion, bool Translucent)
 {
 	//共通設定
 	D3D12_RENDER_TARGET_BLEND_DESC& blendDesc = pipelineDesc_.BlendState.RenderTarget[0];
@@ -226,15 +356,6 @@ void Object::Blend(const D3D12_BLEND_OP& blendMode, bool Inversion, bool Translu
 
 	//ポストエフェクトの一枚目の二つ目用に
 	pipelineDesc_.BlendState.RenderTarget[1] = blendDesc;
-}
-
-
-void SetNormDigitalMat(XMMATRIX& mat)
-{
-	mat.r[0].m128_f32[0] = 2.0f / WindowsApp::GetInstance().WINDOW_WIDTH_;
-	mat.r[1].m128_f32[1] = -2.0f / WindowsApp::GetInstance().WINDOW_HEIGHT_;
-	mat.r[3].m128_f32[0] = -1.0f;
-	mat.r[3].m128_f32[1] = 1.0f;
 }
 
 void Error(bool filed, ID3DBlob* errorBlob)

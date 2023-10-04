@@ -1,18 +1,46 @@
 #include "Sprite.h"
 #include "CameraManager.h"
+#include"BaseCollider.h"
 
 using namespace DirectX;
 
+RootPipe Sprite::spritePipelineSet_;
 
+D3D12_INPUT_ELEMENT_DESC Sprite::sInputLayoutSprite_[2] = {
+		{//xyz座標
+		 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
+		 D3D12_APPEND_ALIGNED_ELEMENT,
+		 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+		},
+
+		{//uv座標
+		 "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
+		 D3D12_APPEND_ALIGNED_ELEMENT,
+		 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+		}
+};
+
+//--------------------------------------------------------------------------
 Sprite::~Sprite()
 {
 	vbView_.SizeInBytes = 0;
+
+	IObject::~IObject();
 }
 
-void Sprite::Initialize(std::unique_ptr<WorldMat> worldMat)
+Sprite::Sprite()
 {
-	//ワールド行列用クラスのインスタンスセット
-	InitializeCommon(std::move(worldMat));
+	//継承コンストラクタ
+	Construct();
+}
+
+void Sprite::Construct()
+{
+	//親クラスのコンストラクタ
+	IObject::Construct();
+
+	//インスタンスの種類
+	objInsType_ = ObjectInstanceType::SPRITE;
 
 	//バッファ設定
 	uint32_t sizeVB;
@@ -36,6 +64,28 @@ void Sprite::Initialize(std::unique_ptr<WorldMat> worldMat)
 	vbView_.StrideInBytes = sizeof(vertices_[0]);
 }
 
+//--------------------------------------------------------------------------
+void Sprite::CommonInitialize()
+{
+	//パイプラインなどを設定
+	PipeLineSetting(D3D12_FILL_MODE_SOLID, spritePipelineSet_,
+		"Resources/shaders/SpriteVS.hlsl", "Resources/shaders/SpritePS.hlsl",
+		sInputLayoutSprite_, _countof(sInputLayoutSprite_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, true);
+}
+
+void Sprite::Initialize(std::unique_ptr<WorldMat> worldMat)
+{
+	//ワールド行列用クラスのインスタンスセット
+	IObject::Initialize(std::move(worldMat));
+}
+
+//-------------------------------------------------------------------------------------
+void Sprite::Update()
+{
+	IObject::Update();
+}
+
+//-------------------------------------------------------------------------------------------------------------------
 void SpriteCommonBeginDraw(RootPipe* pipelineSet)
 {
 	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(pipelineSet->pipelineState.Get());
@@ -43,6 +93,33 @@ void SpriteCommonBeginDraw(RootPipe* pipelineSet)
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSet->rootSignature.Get());
 
 	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+}
+
+void Sprite::Draw()
+{
+	//ポリモーフィズムで呼び出されるとき用に
+	DrawBoxSprite(nullptr, { 0.5f,0.5f });
+
+	//バッファいろいろセット
+	SpriteCommonBeginDraw(&spritePipelineSet_);
+
+	//色用のバッファをセット
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(COLOR, constBuffMaterial_->GetGPUVirtualAddress());
+
+	//SRVヒープの先頭ハンドルを取得
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+	srvGpuHandle.ptr = texHandle_;
+	//テクスチャ
+	//SRVヒープの設定コマンド
+	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetDescHeapPP());
+	//srv指定
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(TEX, srvGpuHandle);
+
+	//行列セット
+	cbt_.DrawCommand(MATRIX);
+
+	//描画コマンド
+	SpriteDraw();
 }
 
 void Sprite::SpriteDraw()
@@ -65,30 +142,24 @@ void Sprite::SpriteDraw()
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }
 
-void Sprite::DrawBoxSprite(Camera2D* camera, uint64_t textureHandle, const Vec4& color,
-	const Vec2& ancorUV, bool isReverseX, bool isReverseY,
-	int32_t pipelineNum)
+void Sprite::DrawBoxSprite(Camera2D* camera,
+	const Vec2& ancorUV, bool isReverseX, bool isReverseY)
 {
-	Update(camera, { GetTrans().x, GetTrans().y }, { GetScale().x,GetScale().y },
-		color, textureHandle, ancorUV, isReverseX, isReverseY, GetRot(), &cbt_, constMapMaterial_);
-
-	::Update(SPRITE, pipelineNum, textureHandle, &cbt_, nullptr);
+	DrawUpdate(camera, { GetTrans().x, GetTrans().y }, { GetScale().x,GetScale().y },
+		texHandle_, ancorUV, isReverseX, isReverseY, GetRot(), &cbt_, constMapMaterial_);
 }
 
 void Sprite::DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	uint64_t textureHandle, const Vec4& color, bool isPosLeftTop, bool isReverseX, bool isReverseY,
-	int32_t pipelineNum)
+	 bool isPosLeftTop, bool isReverseX, bool isReverseY)
 {
 	UpdateClipping(camera, { GetTrans().x,GetTrans().y }, { GetScale().x,GetScale().y },
-		UVleftTop, UVlength, color, textureHandle,
+		UVleftTop, UVlength, texHandle_,
 		isPosLeftTop, isReverseX, isReverseY, { GetRot() }, &cbt_, constMapMaterial_);
-
-	Update(SPRITE, pipelineNum, textureHandle, &cbt_, nullptr);
 }
 
 //-------------------------------------------------------------------------------------
-void Sprite::Update(Camera2D* camera, const Vec2& pos, const Vec2& scale,
-	const Vec4& color, uint64_t textureHandle, const Vec2& ancorUV,
+void Sprite::DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
+	uint64_t textureHandle, const Vec2& ancorUV,
 	bool isReverseX, bool isReverseY, const Vec3& rotation,
 	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
@@ -119,9 +190,6 @@ void Sprite::Update(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 	vertices_[2] = { {+(float)(length.x * scale.x * (1.0f - ancorUV.x)),+(float)(length.y * scale.y * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
 	vertices_[3] = { {+(float)(length.x * scale.x * (1.0f - ancorUV.x)),-(float)(length.y * scale.y * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
 
-
-	constMapMaterial->color = color;
-
 	//ワールド行列
 	WorldMat worldMat;
 
@@ -135,7 +203,7 @@ void Sprite::Update(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 }
 
 void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	const Vec4& color, uint64_t textureHandle, bool isPosLeftTop,
+	uint64_t textureHandle, bool isPosLeftTop,
 	bool isReverseX, bool isReverseY, const Vec3& rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
 	//テクスチャを設定していなかったら
@@ -181,7 +249,6 @@ void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& s
 		vertices_[2] = { {UVlength.x * length.x * scale.x / 2.0f,UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
 		vertices_[3] = { {UVlength.x * length.x * scale.x / 2.0f,-UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
-	constMapMaterial->color = color;
 
 	//ワールド行列
 	WorldMat worldMat;

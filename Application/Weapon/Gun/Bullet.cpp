@@ -12,7 +12,7 @@
 using namespace DirectX;
 
 
-std::unique_ptr<Bullet> Bullet::Create(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, Object* owner)
+std::unique_ptr<Bullet> Bullet::Create(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, IObject* owner)
 {
 	std::unique_ptr<Bullet> instance = std::make_unique<Bullet>();
 	if (instance.get() == nullptr)
@@ -29,7 +29,7 @@ std::unique_ptr<Bullet> Bullet::Create(const Vec3& pos, const Vec3& directionVec
 	return std::move(instance);
 }
 
-bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, Object* owner)
+bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, IObject* owner)
 {
 	if (!Object::Initialize())
 	{
@@ -57,6 +57,9 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	//弾道モデル
 	ballisticsObj_.Initialize();
 	ballisticsObj_.SetModel(ModelManager::GetInstance().LoadModel("ballistics"));
+
+	//色セット
+	SetColor({ 0.1f,0.1f,0.1f,1.0f });
 
 	return true;
 }
@@ -149,9 +152,9 @@ void Bullet::Update()
 void Bullet::Draw()
 {
 	//弾道
-	ballisticsObj_.DrawModel(nullptr, nullptr, { 3.0f,0,0,0.9f });
+	ballisticsObj_.DrawModel(nullptr, nullptr);
 
-	DrawSphere(nullptr, { 0.1f,0.1f,0.1f,1.0f });
+	DrawSphere();
 
 	//疑似シルエット解除
 	SetIsSilhouette(false);

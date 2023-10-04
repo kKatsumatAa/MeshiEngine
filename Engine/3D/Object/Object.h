@@ -3,54 +3,39 @@
 #include "Primitive.h"
 
 
-/// <summary>
-/// オブジェクトのタイプ
-/// </summary>
-enum objType
-{
-	TRIANGLE,
-	BOX,
-	CUBE,
-	LINE,
-	CIRCLE,
-	SPHERE,
-	SPRITE,
-	OBJ,
-	FBX
-};
-
 //オブジェクトクラス
 class Object : public IObject3D
 {
+private:
+	// オブジェクトのタイプ
+	enum ObjType
+	{
+		TRIANGLE,
+		BOX,
+		CUBE,
+		LINE,
+		CIRCLE,
+		SPHERE,
+		SPRITE,
+		OBJ,
+		FBX
+	};
+
+private:
+	// 頂点レイアウトの設定
+// 頂点レイアウト
+	static D3D12_INPUT_ELEMENT_DESC sInputLayout_[7];
+
 private:
 	//図形のクラス
 	static Primitive primitive_;
 	//
 	static RootPipe objPipeLineSet_[3];
-	//al4_02_02
-	static RootPipe pipelineSetM_;
-
-	//ルートパラメータの設定
-	static D3D12_ROOT_PARAMETER rootParams_[11];
 
 private:
-	//--------------------
+	//描画する形状を指定されたら呼ぶ描画用関数
 	void DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, ConstBuffTransform* constBuffTransform,
-		Camera* camera, IModel* model = nullptr, bool primitiveMode = true);
-
-	//行列送信
-	void SendingMat(int32_t indexNum, Camera* camera, IModel* model = nullptr);
-
-	//ルートシグネチャ系のコマンド
-	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
-	//マテリアル、ライト、テクスチャ系のコマンド
-	void SetMaterialLightMTexSkin(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
-		uint64_t normalMapTex, bool setTex = true);
-	void SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
-		uint64_t normalMapTexHandle);
-
-	static void Blend(const D3D12_BLEND_OP& blendMode,
-		bool Inversion = 0, bool Translucent = 0);
+		Camera* camera, IModel* model = nullptr, bool isWireFrame = false);
 
 public:
 	//コンストラクタ
@@ -59,37 +44,40 @@ public:
 	//デストラクタ
 	virtual ~Object();
 
+protected:
+	//継承コンストラクタ
+	virtual void Construct()override;
+
 public:
 	//優先して最初の方に初期化
-	static void DrawInitialize();
+	static void CommonInitialize();
 
-	//初期化
-	bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr, IModel* model = nullptr);
+	virtual void Update()override;
 
-	void Update();
+	void DrawModelInternal(const RootPipe& pipelineSet, int32_t pipelineNum)override;
 
-	void Draw();
+	virtual void Draw()override;
 
 public:
-	void DrawTriangle(Camera* camera = nullptr, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f },
+	void DrawTriangle(Camera* camera = nullptr,
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawBox(Camera* camera = nullptr,
-		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f },
+
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawCube3D(Camera* camera = nullptr,
-		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawLine(Camera* camera = nullptr, const Vec4& color
-		= { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL);
+	void DrawLine(Camera* camera = nullptr,
+		uint64_t textureHandle = NULL);
 
 	void DrawCircle(Camera* camera = nullptr,
-		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawSphere(Camera* camera = nullptr,
-		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
+		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
 	void DrawModel(IModel* model, Camera* camera = nullptr,
-		const Vec4& color = { 1.0f,1.0f,1.0f,1.0f }, int32_t pipelineNum = 0);
+		int32_t pipelineNum = 0);
 };

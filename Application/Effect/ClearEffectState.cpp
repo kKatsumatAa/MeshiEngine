@@ -26,10 +26,10 @@ void ClearEffectState::SpriteUpdate(const std::string& soundName, const std::str
 
 void ClearEffectState::SpriteDraw()
 {
-	texObj_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
-	texObj_.SetScale({ scale_,scale_ ,1.0f });
+	texSprite_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
+	texSprite_.SetScale({ scale_,scale_ ,1.0f });
 
-	texObj_.DrawBoxSprite(nullptr, texHandle_, { 2.5f,2.5f,2.5f,alpha_ }, { 0.5f,0.5f });
+	texSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
 }
 
 std::unique_ptr<ClearEffectState> ClearEffectState::GetState(const std::string& name)
@@ -56,6 +56,10 @@ void ClearEffectStateHyper::Initialize()
 	Sound::GetInstance().PlayWave(SOUND_NAME_, VOLUME_TMP_);
 
 	texHandle_ = TextureManager::GetInstance().LoadGraph("hyper.png");
+
+	//ƒZƒbƒg
+	texSprite_.SetTexHandle(texHandle_);
+	texSprite_.SetColor({ 1.0f,1.0f,1.0f,1.0f });
 }
 
 void ClearEffectStateHyper::Update()

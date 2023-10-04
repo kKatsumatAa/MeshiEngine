@@ -87,7 +87,7 @@ void StageSelect::DrawSprite()
 			selectBox_.SetTrans({ namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y} *(float)count,0 });
 			selectBox_.SetScale({ nameWidthHeight_,1.0f });
 
-			selectBox_.DrawBoxSprite(nullptr, NULL, { 1.0f,0,0,0.5f });
+			selectBox_.DrawBoxSprite(nullptr);
 		}
 
 		count++;

@@ -1,5 +1,5 @@
 #pragma once
-#include"Object.h"
+#include"Sprite.h"
 
 
 class ClearEffectState;
@@ -7,8 +7,6 @@ class ClearEffectState;
 class ClearEffect final
 {
 private:
-	Object obj_;
-
 	//ステート
 	std::unique_ptr<ClearEffectState> state_ = nullptr;
 

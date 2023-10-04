@@ -1,5 +1,5 @@
 #pragma once
-#include"Object.h"
+#include"Sprite.h"
 
 
 class PlayerState;
@@ -8,7 +8,7 @@ class PlayerUIState
 {
 protected:
 	//スプライト用
-	Object reticleObj_;
+	Sprite reticleSprite_;
 	uint64_t reticleTexHandle_;
 
 	//演出用

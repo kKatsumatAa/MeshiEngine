@@ -1,7 +1,8 @@
 #pragma once
 #include"IObject.h"
 #include "LightManager.h"
-#include "Camera.h"
+#include "CameraManager.h"
+#include "ModelManager.h"
 
 
 //演出用のフラグ
@@ -33,28 +34,41 @@ struct EffectOConstBuffer
 //3Dオブジェクトの親クラス--------------------------------------------
 class IObject3D : public IObject
 {
-private:
-	ConstBuffTransform cbt_;//ここをどうにかすれば、インスタンス一つでも色々描画
+protected:
+	//パイプラインなどの設定
+	static RootPipe pipelineSetM_[2];
 
 private:
 	//演出用バッファ
 	ComPtr <ID3D12Resource> effectFlagsBuff_;
 	EffectOConstBuffer* mapEffectFlagsBuff_;
 
-private:
+protected:
 	//モデルのポインタ
 	IModel* model_ = nullptr;
 
+private:
+	//親子関係を結ぶモデルのノード
+	const Node* parentNode_ = nullptr;
+	ModelFBX* parentNodeModel_ = nullptr;
+
+protected:
 	//ディゾルブの画像ハンドル
 	uint64_t dissolveTextureHandle_ = NULL;
 	//スペキュラマップの画像
 	uint64_t specularMapTextureHandle_ = NULL;
 	//ノーマルマップの画像
 	uint64_t normalMapTextureHandle_ = NULL;
+	//演出フラグ
+	EffectOConstBuffer effectFlags_;
 
-private:
+protected:
 	//メッシュのオフセット
 	Mesh::PolygonOffset meshOffsetData_;
+
+private:
+	//ライト
+	static LightManager* sLightManager_;
 
 private:
 	//初期の正面ベクトル
@@ -64,11 +78,48 @@ private:
 
 
 public://関数---------------------------------------------------------
+	virtual ~IObject3D() override;
+	IObject3D();
+
+protected:
+	//継承コンストラクタ
+	virtual void Construct()override;
+
+public:
+	static void CommonInitialize();
+
 	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr, IModel* model = nullptr);
 
 public:
+	//更新
+	virtual void Update() override;
+	//描画
+	virtual void Draw()override;
+	//
+	void DrawModel(Camera* camera = nullptr, bool isWireFrame = false);
+
 	//演出系のアップデート
 	void EffectUpdate();
+	//imgui
+	virtual void DrawImGui(std::function<void()>imguiF = NULL)override;
+
+protected:
+	//モデル描画の内部処理
+	virtual void DrawModelInternal(const RootPipe& pipelineSet, int32_t pipelineNum) { ; }
+
+protected:
+	//行列マッピング
+	void MatMap(Camera* camera, IModel* model = nullptr);
+
+	//マテリアル、ライト、テクスチャ系のコマンド
+	void SetMaterialLightMTex(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
+		uint64_t normalMapTex, bool setTex = true);
+
+public:
+	//モデルの部位と親子関係を持たせる
+	void ParentFbxNode(IObject* obj, IModel* model, const std::string& nodeName);
+	//親ノードを解除
+	void ResetParentFbxNode();
 
 public:
 	//ディゾルブ画像ハンドル
@@ -85,9 +136,12 @@ public:
 	void SetIsNormalMap(bool isNormalMap) { effectFlags_.isNormalMap = isNormalMap; }
 	void SetNormalMapTexHandle(uint64_t normalMapTextureHandle) { normalMapTextureHandle_ = normalMapTextureHandle; }
 
+	//シルエット
+	void SetIsSilhouette(bool is) { effectFlags_.isSilhouette = is; }
+
 public:
 	//モデルのポインタ
-	void SetModel(IModel* model);
+	virtual void SetModel(IModel* model);
 	IModel* GetModel() { return model_; }
 
 	//正面ベクトル
@@ -107,6 +161,6 @@ public:
 /// ライトのセット
 /// </summary>
 /// <param name="light"></param>
-	static void SetLight(LightManager* lightManager) { Object::sLightManager_ = lightManager; }
+	static void SetLight(LightManager* lightManager) { sLightManager_ = lightManager; }
 
 };

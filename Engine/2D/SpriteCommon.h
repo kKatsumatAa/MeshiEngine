@@ -1,16 +1,9 @@
 #pragma once
 #include"ConstBuffTransform.h"
-#include"TextureManager.h"
-#include "WorldMat.h"
 #include "ViewMat.h"
 #include "ProjectionMat.h"
 #include "RootPipe.h"
 
-
-struct ConstBufferDataMaterial
-{
-	Vec4 color;//色(RGBA)
-};
 struct SpriteBuff
 {
 private://エイリアス

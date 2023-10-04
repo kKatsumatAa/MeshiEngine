@@ -37,14 +37,14 @@ void EnemyManager::Draw()
 
 
 //--------------------------------------------------------------------------------------------
-std::vector<Object*> EnemyManager::GetEnemys()
+std::vector<IObject3D*> EnemyManager::GetEnemys()
 {
 	auto enemys = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "enemy2.fbx");
 
 	return enemys;
 }
 
-Enemy* EnemyManager::TransToEnemy(Object* obj)
+Enemy* EnemyManager::TransToEnemy(IObject3D* obj)
 {
 	return dynamic_cast<Enemy*>(obj);
 }

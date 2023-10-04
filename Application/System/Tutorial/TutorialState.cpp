@@ -96,10 +96,11 @@ bool TutorialState::EndingUpdate(const int32_t TIMER_MAX)
 
 void TutorialState::CommonSpriteDraw()
 {
-	texObj_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
-	texObj_.SetScale({ scale_,scale_ ,1.0f });
+	texSprite_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
+	texSprite_.SetScale({ scale_,scale_ ,1.0f });
+	texSprite_.SetColor({ 1.0f,1.0f,1.0f,alpha_ });
 
-	texObj_.DrawBoxSprite(nullptr, texHandle_, { 2.5f,2.5f,2.5f,alpha_ }, { 0.5f,0.5f });
+	texSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
 }
 
 //----------------------------------------------------------------------------
@@ -121,9 +122,12 @@ void TutorialStateNone::Draw()
 //基本操作説明
 void TutorialStateOperation::Initialize()
 {
+	//テクスチャハンドルセット
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial1.png");
+	texSprite_.SetTexHandle(texHandle_);
+	
+	//ステートごとに最大値を変えている
 	rateMax_ = 50;
-
 }
 
 void TutorialStateOperation::Update()
@@ -150,6 +154,8 @@ void TutorialStateOperation::Draw()
 void TutorialStateGameSpeed::Initialize()
 {
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial2.png");
+	texSprite_.SetTexHandle(texHandle_);
+
 	rateMax_ = 30;
 }
 
@@ -172,6 +178,8 @@ void TutorialStateGameSpeed::Draw()
 void TutorialStateMouse::Initialize()
 {
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial3.png");
+	texSprite_.SetTexHandle(texHandle_);
+
 	rateMax_ = 100;
 }
 

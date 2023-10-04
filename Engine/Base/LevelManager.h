@@ -1,6 +1,6 @@
 #pragma once
 #include"JsonLevelLoader.h"
-#include"Object.h"
+#include"IObject3D.h"
 #include"Camera.h"
 #include"Gun.h"
 #include"ObjectManager.h"
@@ -69,12 +69,12 @@ private://ゲームオリジナル
 
 private:
 	//コライダー系のセット
-	void SetCollider(Object* obj, const LevelData::ObjectData& objData, bool isSettingCollider);
+	void SetCollider(IObject3D* obj, const LevelData::ObjectData& objData, bool isSettingCollider);
 	//引数によってObjectかTouchObjectを作る
-	void CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model);
+	void CreateObjectOrTouchableObject(std::unique_ptr<IObject3D>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model);
 	//親オブジェクトのモデルのノードを親に設定
-	void SetParentNode(Object* obj, const LevelData::ObjectData& objData, IModel* model
-		, Object* child);
+	void SetParentNode(IObject3D* obj, const LevelData::ObjectData& objData, IModel* model
+		, IObject3D* child);
 
 public:
 	void SetLightManager(LightManager* lightManager) { lightManager_ = lightManager; }

@@ -35,7 +35,7 @@ void Character::Update()
 		}
 	}
 
-	Object::Update();
+	IObject3D::Update();
 }
 
 void Character::DrawImGui(std::function<void()> imguiF)
@@ -80,7 +80,8 @@ void Character::DrawImGui(std::function<void()> imguiF)
 		}
 	};
 
-	Object::DrawImGui(f);
+	//親クラスのを呼び出す
+	ObjectFBX::DrawImGui(f);
 }
 
 void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
@@ -153,7 +154,7 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 		}
 	}
 	//行列更新
-	Object::WorldMatColliderUpdate();
+	IObject3D::WorldMatColliderUpdate();
 
 	//壁との当たり判定
 	QueryCallBackUpdate();
@@ -179,7 +180,7 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 			//めり込み分上に
 			SetTrans(GetTrans() - Vec3(0, info.distance - LengthY * 2.0f, 0));
 			//行列更新
-			Object::WorldMatColliderUpdate();
+			IObject3D::WorldMatColliderUpdate();
 		}
 		//地面がないので落下
 		else
@@ -198,7 +199,7 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 			//着地
 			isOnGround_ = true;
 			SetTrans(GetTrans() - Vec3(0, info.distance - LengthY * 2.0f, 0));
-			Object::WorldMatColliderUpdate();
+			IObject3D::WorldMatColliderUpdate();
 		}
 	}
 
@@ -249,12 +250,12 @@ void Character::QueryCallBackUpdate()
 	SetTrans(GetTrans()
 		+ Vec3(callback.move.m128_f32[0], callback.move.m128_f32[1], callback.move.m128_f32[2]));
 	// ワールド行列更新
-	Object::WorldMatColliderUpdate();
+	IObject3D::WorldMatColliderUpdate();
 }
 
 void Character::SetIsValid(bool isValid)
 {
-	Object::SetIsValid(isValid);
+	IObject3D::SetIsValid(isValid);
 	//武器の有効フラグも連動
 	if (GetWeapon())
 	{

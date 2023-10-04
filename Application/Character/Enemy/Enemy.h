@@ -1,5 +1,5 @@
 #pragma once
-#include "Object.h"
+#include "ObjectFBX.h"
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
@@ -68,14 +68,16 @@ private:
 	void KnockBack(const CollisionInfo& info);
 
 	//被弾時のパーティクル
-	void DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExtend = { 1.0f / 8.0f,1.0f / 8.0f,1.0f / 8.0f }, 
+	void DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExtend = { 1.0f / 8.0f,1.0f / 8.0f,1.0f / 8.0f },
 		int32_t particleNum = 200);
 
 	//ターゲットに向かって動く処理のみ
 	void WalkToTarget(const Vec3& targetPos);
 
 public:
+	~Enemy();
 
+public:
 	bool Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon, IModel* model);
 
 	void EmergeInitialize();

@@ -135,7 +135,7 @@ void LevelManager::CheckLandShapeObject(const LevelData::ObjectData& objData, bo
 	}
 }
 
-void LevelManager::SetCollider(Object* obj, const LevelData::ObjectData& objData, bool isSettingCollider)
+void LevelManager::SetCollider(IObject3D* obj, const LevelData::ObjectData& objData, bool isSettingCollider)
 {
 	//タイプがなければコライダー無しなので
 	if (objData.colliderData.colliderType != CollisionShapeType::SHAPE_UNKNOWN)
@@ -161,7 +161,7 @@ void LevelManager::SetCollider(Object* obj, const LevelData::ObjectData& objData
 	}
 }
 
-void LevelManager::CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model)
+void LevelManager::CreateObjectOrTouchableObject(std::unique_ptr<IObject3D>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model)
 {
 	//地形オブジェクトとして使うのなら
 	if (isLandShape_)
@@ -171,13 +171,13 @@ void LevelManager::CreateObjectOrTouchableObject(std::unique_ptr<Object>& obj, L
 	//それ以外は普通のObject
 	else
 	{
-		obj = std::make_unique<Object>();
-		obj->SetWorldMat(std::move(objData.worldMat));
+		obj = std::make_unique<IObject3D>();
+		obj->Initialize(std::move(objData.worldMat));
 	}
 }
 
-void LevelManager::SetParentNode(Object* obj, const LevelData::ObjectData& objData, IModel* model
-	, Object* child)
+void LevelManager::SetParentNode(IObject3D* obj, const LevelData::ObjectData& objData, IModel* model
+	, IObject3D* child)
 {
 	if (child && objData.childData->parentNodeData.nodeName.size())
 	{
@@ -207,7 +207,7 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	}
 
 	//3Dオブジェクトを生成
-	std::unique_ptr <Object> newObj = {};
+	std::unique_ptr <IObject3D> newObj = {};
 	//自分の子（武器）
 	Weapon* childWeapon = GetChildWeapon(objData);
 
@@ -239,7 +239,7 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	//ただのオブジェクト(仮)
 	else
 	{
-		newObj = std::make_unique<Object>();
+		newObj = std::make_unique<IObject3D>();
 	}
 
 	//名前
@@ -253,8 +253,6 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 
 	//モデルセット
 	newObj->SetModel(model);
-
-	newObj->PlayAnimation(true);
 
 	//obj登録
 	ObjectManager::GetInstance().AddObject(S_OBJ_GROUP_NAME_, std::move(newObj));

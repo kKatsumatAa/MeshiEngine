@@ -30,6 +30,9 @@ std::unique_ptr<PlayerUIState> PlayerUIState::GetState(const std::string& name)
 void PlayerUIState::Initialize()
 {
 	scale_ = SCALE_MAX_;
+
+	reticleSprite_.SetColor(color_);
+	reticleSprite_.SetTexHandle(reticleTexHandle_);
 }
 
 void PlayerUIState::Update()
@@ -43,11 +46,11 @@ void PlayerUIState::Update()
 
 void PlayerUIState::DrawSprite()
 {
-	reticleObj_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
-	reticleObj_.SetScale({ scale_,scale_ ,1.0f });
-	reticleObj_.SetRot({ 0,0 ,angle_ });
+	reticleSprite_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
+	reticleSprite_.SetScale({ scale_,scale_ ,1.0f });
+	reticleSprite_.SetRot({ 0,0 ,angle_ });
 
-	reticleObj_.DrawBoxSprite(nullptr, reticleTexHandle_, color_, { 0.5f,0.5f }, false, false);
+	reticleSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
 }
 
 
