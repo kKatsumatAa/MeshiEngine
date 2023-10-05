@@ -49,7 +49,7 @@ IObject::IObject()
 	worldMat_ = std::make_unique<WorldMat>();
 
 	//コライダー
-	collider_ = nullptr;//emptyが入るのでうまくいかない
+	collider_ = nullptr;
 }
 
 //------------------------------------------------------------------------
