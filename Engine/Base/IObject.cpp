@@ -256,7 +256,7 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 		pipelineDesc_.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // 背面カリング
 	}
 
-	pipelineDesc_.RasterizerState.FillMode = fillMode; // ポリゴン内塗りつぶし
+	pipelineDesc_.RasterizerState.FillMode = fillMode; // ポリゴン内塗りつぶしかどうか
 	pipelineDesc_.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
 	Blend(D3D12_BLEND_OP_ADD, false, true);
