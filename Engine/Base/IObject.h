@@ -127,7 +127,7 @@ public:
 
 public:
 	//ルートシグネチャ系のコマンド
-	void SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
+	void SetRootPipe(RootPipe* pipelineSet, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
 
 	//パイプラインの設定
 	static void PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe,

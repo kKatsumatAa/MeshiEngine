@@ -217,10 +217,10 @@ void IObject::DrawImGui(std::function<void()>imguiF)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void IObject::SetRootPipe(ID3D12PipelineState* pipelineState, int32_t pipelineNum, ID3D12RootSignature* rootSignature)
+void IObject::SetRootPipe(RootPipe* pipelineSet, int32_t pipelineNum, ID3D12RootSignature* rootSignature)
 {
 	// パイプラインステートとルートシグネチャの設定コマンド
-	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(&pipelineState[pipelineNum]);
+	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(pipelineSet[pipelineNum].pipelineState.Get());
 
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature);
 }
@@ -295,10 +295,9 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 	rootSignatureDesc.pStaticSamplers = &samplerDesc;
 	rootSignatureDesc.NumStaticSamplers = 1;
 	// ルートシグネチャのシリアライズ
-	ComPtr<ID3DBlob> rootSigBlob;
-	rootSigBlob = nullptr;
+	ComPtr<ID3DBlob> rootSigBlob = nullptr;
 	result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
-		rootSigBlob.ReleaseAndGetAddressOf(), rootPipe.errorBlob.ReleaseAndGetAddressOf());
+		rootSigBlob.GetAddressOf(), rootPipe.errorBlob.GetAddressOf());
 	assert(SUCCEEDED(result));
 	result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootPipe.rootSignature));

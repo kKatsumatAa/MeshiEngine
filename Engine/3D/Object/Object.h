@@ -24,13 +24,15 @@ private:
 private:
 	// 頂点レイアウトの設定
 // 頂点レイアウト
-	static D3D12_INPUT_ELEMENT_DESC sInputLayout_[7];
+	static D3D12_INPUT_ELEMENT_DESC sInputLayout_[5];
 
 private:
 	//図形のクラス
 	static Primitive primitive_;
-	//
-	static RootPipe objPipeLineSet_[3];
+	//パイプラインなどの設定
+	static RootPipe primitivePipeLineSet_[3];
+	//.objの
+	static RootPipe pipelineSetM_[2];
 
 private:
 	//描画する形状を指定されたら呼ぶ描画用関数
@@ -54,7 +56,7 @@ public:
 
 	virtual void Update()override;
 
-	void DrawModelInternal(const RootPipe& pipelineSet, int32_t pipelineNum)override;
+	void DrawModelInternal(int32_t pipelineNum)override;
 
 	virtual void Draw()override;
 

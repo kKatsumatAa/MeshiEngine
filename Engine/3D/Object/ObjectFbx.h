@@ -36,6 +36,8 @@ private:
 	// 頂点レイアウトの設定
 // 頂点レイアウト
 	static D3D12_INPUT_ELEMENT_DESC sInputLayout_[7];
+	//パイプラインなどの設定
+	static RootPipe pipelineSetM_[2];
 
 protected:
 	//定数バッファ（スキン）
@@ -66,7 +68,7 @@ private:
 	void SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
 		uint64_t normalMapTexHandle);
 	//内部描画処理
-	void DrawModelInternal(const RootPipe& pipelineSet, int32_t pipelineNum)override;
+	void DrawModelInternal(int32_t pipelineNum)override;
 
 public:
 	virtual void Update()override;

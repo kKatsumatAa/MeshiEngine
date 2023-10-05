@@ -4,8 +4,7 @@
 
 using namespace DirectX;
 
-//パイプラインなどの設定
-RootPipe IObject3D::pipelineSetM_[2];
+
 //ライト
 LightManager* IObject3D::sLightManager_ = nullptr;
 
@@ -116,7 +115,7 @@ void IObject3D::DrawModel(Camera* camera, bool isWireFrame)
 	MatMap(lCamera, model_);
 
 	//描画コマンドなど(falseだったら[0]で通常描画)
-	DrawModelInternal(*pipelineSetM_, (int32_t)isWireFrame);
+	DrawModelInternal((int32_t)isWireFrame);
 }
 
 void IObject3D::Draw()

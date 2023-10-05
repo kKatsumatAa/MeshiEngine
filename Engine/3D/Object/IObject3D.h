@@ -34,10 +34,6 @@ struct EffectOConstBuffer
 //3Dオブジェクトの親クラス--------------------------------------------
 class IObject3D : public IObject
 {
-protected:
-	//パイプラインなどの設定
-	static RootPipe pipelineSetM_[2];
-
 private:
 	//演出用バッファ
 	ComPtr <ID3D12Resource> effectFlagsBuff_;
@@ -105,7 +101,7 @@ public:
 
 protected:
 	//モデル描画の内部処理
-	virtual void DrawModelInternal(const RootPipe& pipelineSet, int32_t pipelineNum) { ; }
+	virtual void DrawModelInternal(int32_t pipelineNum) { ; }
 
 protected:
 	//行列マッピング

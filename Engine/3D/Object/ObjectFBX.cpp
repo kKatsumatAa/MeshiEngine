@@ -3,6 +3,10 @@
 
 using namespace DirectX;
 
+//------------------------------------------
+//パイプラインなどの設定
+RootPipe ObjectFBX::pipelineSetM_[2];
+
 //インプットレイアウト
 D3D12_INPUT_ELEMENT_DESC ObjectFBX::sInputLayout_[7] = {
 	{//xyz座標
@@ -112,7 +116,7 @@ void ObjectFBX::SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(SKIN, constBuffSkin_->GetGPUVirtualAddress());
 }
 
-void ObjectFBX::DrawModelInternal(const RootPipe& pipelineSet, int32_t pipelineNum)
+void ObjectFBX::DrawModelInternal(int32_t pipelineNum)
 {
 	//テクスチャを設定していなかったら
 	uint64_t dissolveTextureHandleL = dissolveTextureHandle_;
@@ -124,7 +128,7 @@ void ObjectFBX::DrawModelInternal(const RootPipe& pipelineSet, int32_t pipelineN
 
 	//モデル用
 	//ラムダ式でコマンド関数(ボーン行列もセット)
-	std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(pipelineSet.pipelineState.Get(), pipelineNum, pipelineSet.rootSignature.Get()); };
+	std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(pipelineSetM_, pipelineNum, pipelineSetM_[0].rootSignature.Get()); };
 	std::function<void()>SetMaterialTexM = [=]() {SetMaterialLightMTexSkinModel(
 		dissolveTextureHandleL, specularMapTextureHandleL, normalMapTextureHandleL); };
 

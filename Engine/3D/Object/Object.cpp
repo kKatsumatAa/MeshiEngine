@@ -3,13 +3,15 @@
 
 using namespace DirectX;
 
-//--------------------------------------
+//------------------------------------------
+//パイプラインなどの設定
+RootPipe Object::pipelineSetM_[2];
 //図形用
 Primitive Object::primitive_;
-RootPipe Object::objPipeLineSet_[3];
+RootPipe Object::primitivePipeLineSet_[3];
 
 //インプットレイアウト
-D3D12_INPUT_ELEMENT_DESC Object::sInputLayout_[7] = {
+D3D12_INPUT_ELEMENT_DESC Object::sInputLayout_[5] = {
 	{//xyz座標
 	 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
@@ -65,15 +67,15 @@ void Object::CommonInitialize()
 	}
 	//primitive用
 	{
-		PipeLineSetting(D3D12_FILL_MODE_SOLID, objPipeLineSet_[0],
+		PipeLineSetting(D3D12_FILL_MODE_SOLID, primitivePipeLineSet_[0],
 			"Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl",
 			sInputLayout_, _countof(sInputLayout_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
 		//ワイヤーフレーム用
-		PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, objPipeLineSet_[1],
+		PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, primitivePipeLineSet_[1],
 			"Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl",
 			sInputLayout_, _countof(sInputLayout_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
 		//線
-		PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, objPipeLineSet_[2],
+		PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, primitivePipeLineSet_[2],
 			"Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl",
 			sInputLayout_, _countof(sInputLayout_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE, false);
 	}
@@ -113,7 +115,7 @@ void Object::Draw()
 	DrawSphere();
 }
 
-void Object::DrawModelInternal(const RootPipe& pipelineSet, int32_t pipelineNum)
+void Object::DrawModelInternal(int32_t pipelineNum)
 {
 	//テクスチャを設定していなかったら
 	uint64_t dissolveTextureHandleL = dissolveTextureHandle_;
@@ -125,7 +127,7 @@ void Object::DrawModelInternal(const RootPipe& pipelineSet, int32_t pipelineNum)
 
 	//モデル用
 	//ラムダ式でコマンド関数(ボーン行列もセット)
-	std::function<void()>SetRootPipeRM = [=]() {IObject::SetRootPipe(pipelineSet.pipelineState.Get(), pipelineNum, pipelineSet.rootSignature.Get()); };
+	std::function<void()>SetRootPipeRM = [=]() {IObject::SetRootPipe(pipelineSetM_, pipelineNum, pipelineSetM_[0].rootSignature.Get()); };
 	std::function<void()>SetMaterialTexM = [=]() {IObject3D::SetMaterialLightMTex(
 		NULL, dissolveTextureHandleL, specularMapTextureHandleL, normalMapTextureHandleL); };
 
@@ -145,7 +147,7 @@ void Object::DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureH
 		lCamera = CameraManager::GetInstance().usingCamera_;
 	}
 
-	//行列送信
+	//行列マッピング
 	IObject3D::MatMap(lCamera, model);
 
 	//テクスチャを設定していなかったら
@@ -159,7 +161,7 @@ void Object::DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureH
 	TextureManager::CheckTexHandle(normalMapTextureHandleL);
 
 	//ラムダ式でプリミティブのコマンド関数
-	std::function<void()>SetRootPipeR = [=]() {SetRootPipe(objPipeLineSet_->pipelineState.Get(), pipelineNum, objPipeLineSet_->rootSignature.Get()); };
+	std::function<void()>SetRootPipeR = [=]() {SetRootPipe(primitivePipeLineSet_, pipelineNum, primitivePipeLineSet_->rootSignature.Get()); };
 	std::function<void()>SetMaterialTex = [=]() {SetMaterialLightMTex(textureHandleL, dissolveTextureHandleL, specularMapTextureHandleL,
 		normalMapTextureHandleL, constBuffTransform); };
 
@@ -190,7 +192,7 @@ void Object::DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureH
 	else if (indexNum == OBJ)
 	{
 		//モデル用
-		DrawModelInternal(*pipelineSetM_, (int32_t)isWireFrame);
+		DrawModelInternal((int32_t)isWireFrame);
 	}
 }
 
