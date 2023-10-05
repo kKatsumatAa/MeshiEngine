@@ -60,10 +60,6 @@ public:
 	static void CommonInitialize();
 
 private:
-	//継承コンストラクタ
-	void Construct()override;
-
-private:
 	//マテリアル、ボーン行列などをセット
 	void SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
 		uint64_t normalMapTexHandle);

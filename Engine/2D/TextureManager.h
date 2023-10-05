@@ -68,7 +68,7 @@ public:
 public:
 	static ID3D12DescriptorHeap** GetDescHeapPP() { return sSrvHeap_.GetAddressOf(); }
 	static ID3D12DescriptorHeap* GetDescHeapP() { return sSrvHeap_.Get(); }
-	static const D3D12_DESCRIPTOR_RANGE& GetDescRange() { return sDescriptorRange_; }
+	static D3D12_DESCRIPTOR_RANGE* GetDescRange() { return &sDescriptorRange_; }
 	static uint64_t GetWhiteTexHandle() { return sWhiteTexHandle_; }
 	static int32_t GetSRVCount() { return sCount_; }
 	static ComPtr<ID3D12Resource>* GetTexBuff() { return sTexBuff_; }

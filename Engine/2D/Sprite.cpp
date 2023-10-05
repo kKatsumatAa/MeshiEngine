@@ -23,22 +23,10 @@ D3D12_INPUT_ELEMENT_DESC Sprite::sInputLayoutSprite_[2] = {
 //--------------------------------------------------------------------------
 Sprite::~Sprite()
 {
-	vbView_.SizeInBytes = 0;
-
-	IObject::~IObject();
 }
 
 Sprite::Sprite()
 {
-	//継承コンストラクタ
-	Construct();
-}
-
-void Sprite::Construct()
-{
-	//親クラスのコンストラクタ
-	IObject::Construct();
-
 	//インスタンスの種類
 	objInsType_ = ObjectInstanceType::SPRITE;
 
@@ -99,6 +87,11 @@ void Sprite::Draw()
 {
 	//ポリモーフィズムで呼び出されるとき用に
 	DrawBoxSprite(nullptr, { 0.5f,0.5f });
+}
+
+void Sprite::SpriteDraw()
+{
+	HRESULT result = {};
 
 	//バッファいろいろセット
 	SpriteCommonBeginDraw(&spritePipelineSet_);
@@ -108,7 +101,10 @@ void Sprite::Draw()
 
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-	srvGpuHandle.ptr = texHandle_;
+	//テクスチャを設定していなかったら
+	uint64_t texHL = texHandle_;
+	TextureManager::CheckTexHandle(texHL);
+	srvGpuHandle.ptr = texHL;
 	//テクスチャ
 	//SRVヒープの設定コマンド
 	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetDescHeapPP());
@@ -117,14 +113,6 @@ void Sprite::Draw()
 
 	//行列セット
 	cbt_.DrawCommand(MATRIX);
-
-	//描画コマンド
-	SpriteDraw();
-}
-
-void Sprite::SpriteDraw()
-{
-	HRESULT result = {};
 
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 	VertexSprite* vertMap = nullptr;
@@ -145,6 +133,9 @@ void Sprite::SpriteDraw()
 void Sprite::DrawBoxSprite(Camera2D* camera,
 	const Vec2& ancorUV, bool isReverseX, bool isReverseY)
 {
+	//更新
+	Update();
+
 	DrawUpdate(camera, { GetTrans().x, GetTrans().y }, { GetScale().x,GetScale().y },
 		texHandle_, ancorUV, isReverseX, isReverseY, GetRot(), &cbt_, constMapMaterial_);
 }
@@ -152,6 +143,9 @@ void Sprite::DrawBoxSprite(Camera2D* camera,
 void Sprite::DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	 bool isPosLeftTop, bool isReverseX, bool isReverseY)
 {
+	//更新
+	Update();
+
 	UpdateClipping(camera, { GetTrans().x,GetTrans().y }, { GetScale().x,GetScale().y },
 		UVleftTop, UVlength, texHandle_,
 		isPosLeftTop, isReverseX, isReverseY, { GetRot() }, &cbt_, constMapMaterial_);
@@ -200,6 +194,9 @@ void Sprite::DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 
 	//行列計算、セット
 	CalcAndSetMat(cbt, worldMat, camera);
+
+	//描画
+	SpriteDraw();
 }
 
 void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
@@ -272,6 +269,9 @@ void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& s
 
 	//行列計算、セット
 	CalcAndSetMat(cbt, worldMat, camera);
+
+	//描画
+	SpriteDraw();
 }
 
 //--------------------------------------------------------

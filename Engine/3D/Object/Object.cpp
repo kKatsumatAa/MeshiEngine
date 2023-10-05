@@ -84,20 +84,10 @@ void Object::CommonInitialize()
 //-------------------------------------------------------------------
 Object::~Object()
 {
-	IObject3D::~IObject3D();
 }
 
 Object::Object()
 {
-	//継承コンストラクタ
-	Construct();
-}
-
-void Object::Construct()
-{
-	//親クラスの
-	IObject3D::Construct();
-
 	//インスタンスの種類
 	objInsType_ = ObjectInstanceType::OBJ;
 }

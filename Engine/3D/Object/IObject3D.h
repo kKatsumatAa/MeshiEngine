@@ -77,10 +77,6 @@ public://関数---------------------------------------------------------
 	virtual ~IObject3D() override;
 	IObject3D();
 
-protected:
-	//継承コンストラクタ
-	virtual void Construct()override;
-
 public:
 	static void CommonInitialize();
 

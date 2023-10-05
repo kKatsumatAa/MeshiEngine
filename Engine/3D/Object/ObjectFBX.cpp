@@ -57,20 +57,10 @@ D3D12_INPUT_ELEMENT_DESC ObjectFBX::sInputLayout_[7] = {
 //--------------------------------------------------------------------------------------
 ObjectFBX::~ObjectFBX()
 {
-	IObject3D::~IObject3D();
 }
 
 ObjectFBX::ObjectFBX()
 {
-	//継承コンストラクタ
-	Construct();
-}
-
-void ObjectFBX::Construct()
-{
-	//親クラスの
-	IObject3D::Construct();
-
 	//インスタンスの種類
 	objInsType_ = ObjectInstanceType::FBX;
 

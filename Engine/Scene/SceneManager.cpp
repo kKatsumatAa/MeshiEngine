@@ -84,7 +84,7 @@ void SceneManager::Initialize()
 	//ライト色を設定
 	lightManager_->SetDirLightColor(0, { 0.6f,0.6f,0.6f });
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
-	Object::SetLight(lightManager_.get());
+	IObject3D::SetLight(lightManager_.get());
 	//レベルマネージャーにも
 	LevelManager::GetInstance().SetLightManager(lightManager_.get());
 

@@ -46,10 +46,6 @@ public:
 	//デストラクタ
 	virtual ~Object();
 
-protected:
-	//継承コンストラクタ
-	virtual void Construct()override;
-
 public:
 	//優先して最初の方に初期化
 	static void CommonInitialize();

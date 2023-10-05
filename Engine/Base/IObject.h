@@ -55,12 +55,17 @@ public:
 		UNKNOWN = -1,
 		SPRITE,
 		OBJ,
-		FBX
+		FBX,
+		THREE_D
 	};
 
 private:
 	// グラフィックスパイプライン設定
 	static D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_;
+
+private:
+	//演出用デスクリプタレンジ
+	static D3D12_DESCRIPTOR_RANGE effectDescRange_[3];
 
 protected://継承先まで公開
 	//定数バッファの生成
@@ -77,7 +82,7 @@ protected:
 	//ワールド行列用のバッファなど
 	ConstBuffTransform cbt_;//ここをどうにかすれば、インスタンス一つでも色々描画
 	//ワールド行列用クラス
-	std::unique_ptr<WorldMat> worldMat_ = std::make_unique<WorldMat>();
+	std::unique_ptr<WorldMat> worldMat_;
 	//親インスタンス
 	IObject* parentObj_ = nullptr;
 
@@ -100,10 +105,6 @@ protected:
 public:
 	virtual ~IObject();
 	IObject();
-
-protected:
-	//継承できるコンストラクタ
-	virtual void Construct();
 
 protected:
 	//共通の初期化処理
@@ -140,7 +141,7 @@ public:
 
 public:
 	//衝突時コールバック関数
-	virtual void OnCollision(const CollisionInfo& info) {}
+	virtual void OnCollision(const CollisionInfo& info) { ; }
 
 public:
 	//インスタンスの種類を得る

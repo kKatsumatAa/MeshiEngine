@@ -18,7 +18,6 @@ const float Enemy::S_LENGTH_MAX_ = 10000;
 
 Enemy::~Enemy()
 {
-	Character::~Character();
 }
 
 void Enemy::EmergeInitialize()

@@ -8,14 +8,13 @@ using namespace DirectX;
 //ルートパラメータの設定
 D3D12_ROOT_PARAMETER IObject::rootParams_[RootParamNum::count] = {};
 D3D12_GRAPHICS_PIPELINE_STATE_DESC IObject::pipelineDesc_ = {};
+D3D12_DESCRIPTOR_RANGE IObject::effectDescRange_[3] = {};
 
 //--------------------------------------------------------------------
 IObject::~IObject()
 {
-	constBuffMaterial_.Reset();
-
 	//object毎に消えるのでいらないかも
-	if (collider_.get())
+	if (collider_)
 	{
 		CollisionManager::GetInstance()->RemoveCollider(collider_.get());
 	}
@@ -24,12 +23,10 @@ IObject::~IObject()
 
 IObject::IObject()
 {
-	Construct();
-}
-
-void IObject::Construct()
-{
 	HRESULT result = S_OK;
+
+	//行列用インスタンス初期化
+	cbt_.Initialize();
 
 	//マテリアルバッファ（色）
 	//ヒープ設定
@@ -44,6 +41,15 @@ void IObject::Construct()
 	//定数バッファのマッピング
 	result = constBuffMaterial_->Map(0, nullptr, (void**)&constMapMaterial_);//マッピング
 	assert(SUCCEEDED(result));
+
+	//色初期化
+	constMapMaterial_->color = { 1.0f,1.0f,1.0f,1.0f };
+
+	//アフィン
+	worldMat_ = std::make_unique<WorldMat>();
+
+	//コライダー
+	collider_ = nullptr;//emptyが入るのでうまくいかない
 }
 
 //------------------------------------------------------------------------
@@ -57,7 +63,7 @@ void IObject::CommonInitialize()
 	rootParams_[COLOR].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ0番（テクスチャ）
 	rootParams_[TEX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	rootParams_[TEX].DescriptorTable.pDescriptorRanges = &TextureManager::GetDescRange();//デスクリプタレンジ
+	rootParams_[TEX].DescriptorTable.pDescriptorRanges = TextureManager::GetDescRange();//デスクリプタレンジ
 	rootParams_[TEX].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[TEX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//定数バッファ1番(行列)
@@ -92,23 +98,23 @@ void IObject::CommonInitialize()
 	rootParams_[SKIN].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ1番（ディゾルブ用テクスチャ）
 	rootParams_[DISSOLVE].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	D3D12_DESCRIPTOR_RANGE dissolveDHRange = TextureManager::GetDescRange();//デスクリプタレンジ
-	dissolveDHRange.BaseShaderRegister++;
-	rootParams_[DISSOLVE].DescriptorTable.pDescriptorRanges = &dissolveDHRange;//デスクリプタレンジ
+	effectDescRange_[0] = *TextureManager::GetDescRange();//デスクリプタレンジ
+	effectDescRange_[0].BaseShaderRegister++;
+	rootParams_[DISSOLVE].DescriptorTable.pDescriptorRanges = &effectDescRange_[0];//デスクリプタレンジ
 	rootParams_[DISSOLVE].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[DISSOLVE].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ2番（スペキュラマップ用テクスチャ）
 	rootParams_[SPECULAR_MAP].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	D3D12_DESCRIPTOR_RANGE dissolveDHRange2 = TextureManager::GetDescRange();//デスクリプタレンジ
-	dissolveDHRange2.BaseShaderRegister += 2;
-	rootParams_[SPECULAR_MAP].DescriptorTable.pDescriptorRanges = &dissolveDHRange2;//デスクリプタレンジ
+	effectDescRange_[1] = *TextureManager::GetDescRange();//デスクリプタレンジ
+	effectDescRange_[1].BaseShaderRegister += 2;
+	rootParams_[SPECULAR_MAP].DescriptorTable.pDescriptorRanges = &effectDescRange_[1];//デスクリプタレンジ
 	rootParams_[SPECULAR_MAP].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[SPECULAR_MAP].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//テクスチャレジスタ3番（ノーマルマップ用テクスチャ）
 	rootParams_[NORM_MAP].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	D3D12_DESCRIPTOR_RANGE dissolveDHRange3 = TextureManager::GetDescRange();//デスクリプタレンジ;
-	dissolveDHRange3.BaseShaderRegister += 3;
-	rootParams_[NORM_MAP].DescriptorTable.pDescriptorRanges = &dissolveDHRange3;//デスクリプタレンジ
+	effectDescRange_[2] = *TextureManager::GetDescRange();//デスクリプタレンジ
+	effectDescRange_[2].BaseShaderRegister += 3;
+	rootParams_[NORM_MAP].DescriptorTable.pDescriptorRanges = &effectDescRange_[2];//デスクリプタレンジ
 	rootParams_[NORM_MAP].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[NORM_MAP].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 }
@@ -116,9 +122,12 @@ void IObject::CommonInitialize()
 //-------------------------------------------------------------------------
 void IObject::Initialize(std::unique_ptr<WorldMat> worldMat)
 {
-	if (worldMat == nullptr)
+	if (worldMat)
 	{
-		worldMat = std::move(worldMat_);
+		worldMat_.reset();
+	
+		//引数のインスタンスの所有権移動
+		worldMat_ = std::move(worldMat);
 	}
 }
 
@@ -176,6 +185,7 @@ void IObject::WorldMatColliderUpdate()
 
 void IObject::Update()
 {
+	//行列、コライダー情報更新
 	WorldMatColliderUpdate();
 }
 

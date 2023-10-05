@@ -16,7 +16,6 @@ using namespace DirectX;
 
 Player::~Player()
 {
-	Character::~Character();
 }
 
 std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)

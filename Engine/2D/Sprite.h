@@ -57,12 +57,8 @@ private:
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};
 
 public:
-	~Sprite();
+	virtual ~Sprite();
 	Sprite();
-
-protected:
-	//継承コンストラクタ
-	virtual void Construct()override;
 
 public:
 	//スプライト全体共通の初期化

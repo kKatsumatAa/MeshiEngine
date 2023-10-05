@@ -13,22 +13,14 @@ LightManager* IObject3D::sLightManager_ = nullptr;
 IObject3D::~IObject3D()
 {
 	effectFlagsBuff_.Reset();
-
-	IObject::~IObject();
 }
 
 IObject3D::IObject3D()
 {
-	//親クラス含めたバッファなどの生成処理
-	Construct();
-}
-
-void IObject3D::Construct()
-{
-	//親クラスの
-	IObject::Construct();
-
 	HRESULT result = S_OK;
+
+	//インスタンスタイプ
+	objInsType_ = ObjectInstanceType::THREE_D;
 
 	//演出用
 	{
@@ -55,6 +47,7 @@ void IObject3D::Construct()
 //--------------------------------------------------------
 void IObject3D::CommonInitialize()
 {
+
 }
 
 bool IObject3D::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
@@ -136,6 +129,10 @@ void IObject3D::SetMaterialLightMTex(uint64_t textureHandle, uint64_t dissolveTe
 
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+	//テクスチャを設定していなかったら
+	uint64_t texHL = textureHandle;
+	TextureManager::CheckTexHandle(texHL);
+	srvGpuHandle.ptr = texHL;
 
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(COLOR, constBuffMaterial_->GetGPUVirtualAddress());
 
@@ -143,7 +140,6 @@ void IObject3D::SetMaterialLightMTex(uint64_t textureHandle, uint64_t dissolveTe
 	//テクスチャ
 	if (setTex)
 	{
-		srvGpuHandle.ptr = textureHandle;
 		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(TEX, srvGpuHandle);
 	}
