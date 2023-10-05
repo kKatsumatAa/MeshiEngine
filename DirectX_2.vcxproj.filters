@@ -811,9 +811,6 @@
     <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Resources\shaders\PeraPixelShader.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
@@ -848,6 +845,9 @@
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\FBXVertexShader.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
   </ItemGroup>

@@ -17,16 +17,7 @@ cbuffer ConstBufferDataMaterial2 : register(b3)
     float m_alpha : packoffset(c2.w); //アルファ
 }
 
-//頂点シェーダからピクセルシェーダーへのやり取りに使用する構造体
-struct VSOutput
-{
-    float4 svpos : SV_POSITION; //システム用頂点座標
-    float4 worldpos : POSITION; //ワールド座標
-    float3 normal : NORMAL; //法線
-    float2 uv : TEXCOORD1; //uv座標
-    float3 tangent : TANGENT; //法線の接線
-    float3 binormal : BINORMAL; //従法線
-};
+
 
 //ボーンの最大数(Object.hと合わせる)
 static const int S_MAX_BONES = 90;

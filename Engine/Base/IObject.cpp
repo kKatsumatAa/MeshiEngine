@@ -259,6 +259,7 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 	pipelineDesc_.RasterizerState.FillMode = fillMode; // ポリゴン内塗りつぶしかどうか
 	pipelineDesc_.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
+	//ブレンド
 	Blend(D3D12_BLEND_OP_ADD, false, true);
 
 	pipelineDesc_.InputLayout.pInputElementDescs = inputLayout;
