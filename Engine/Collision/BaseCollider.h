@@ -1,8 +1,7 @@
 #pragma once
-
 #include "CollisionTypes.h"
 #include "CollisionInfo.h"
-#include "Object.h"
+#include "IObject3D.h"
 
 /// <summary>
 /// コライダー基底クラス（オブジェクトが持つコライダー）
@@ -16,12 +15,12 @@ public:
 	BaseCollider() = default;
 	virtual ~BaseCollider() = default;
 
-	inline void SetObject(Object* object) {
+	inline void SetObject(IObject* object) {
 		object_ = object;
 	}
 
-	inline Object* GetObject3d() {
-		return object_;
+	inline IObject3D* GetObject3d() {
+		return dynamic_cast<IObject3D*>(object_);
 	}
 
 	/// <summary>
@@ -59,7 +58,7 @@ public:
 
 protected:
 	//持ち主のObjectのポインタを入れる
-	Object* object_ = nullptr;
+	IObject* object_ = nullptr;
 	// 形状タイプ
 	CollisionShapeType shapeType_ = SHAPE_UNKNOWN;
 	//判定取るか取らないか

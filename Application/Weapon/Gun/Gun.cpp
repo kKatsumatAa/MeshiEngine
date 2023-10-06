@@ -50,7 +50,7 @@ bool Gun::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 	return true;
 }
 
-void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, Object* owner, float particleSize)
+void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, IObject3D* owner, float particleSize)
 {
 	//クールタイムがまだあったり、残弾なかったら抜ける
 	if (attackCoolTime_ > 0 || remainingBullets_ <= 0)
@@ -73,7 +73,7 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, Object* owner, f
 	remainingBullets_ -= decreBullet;
 }
 
-void Gun::ChangeOwner(Object* parent)
+void Gun::ChangeOwner(IObject3D* parent)
 {
 	remainingBullets_ = BULLETS_TMP_;
 	attackCoolTime_ = 0;

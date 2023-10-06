@@ -1,12 +1,11 @@
 #pragma once
-#include"Object.h"
+#include"ObjectFBX.h"
 #include"Weapon.h"
 #include"CollisionManager.h"
 #include<functional>
-#include"ImGuiManager.h"
 
 
-class Character : public Object
+class Character : public ObjectFBX
 {
 protected:
 	//•Ší

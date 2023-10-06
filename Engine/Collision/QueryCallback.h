@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include<DirectXMath.h>
 
-class Object;
+class IObject3D;
 class BaseCollider;
 
 
@@ -11,7 +11,7 @@ class BaseCollider;
 struct QueryHit
 {
 	// 衝突相手のオブジェクト
-	Object* object = nullptr;
+	IObject3D* object = nullptr;
 	// 衝突相手のコライダー
 	BaseCollider* collider = nullptr;
 	// 衝突点

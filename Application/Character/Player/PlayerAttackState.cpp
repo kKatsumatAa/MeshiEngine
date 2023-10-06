@@ -8,6 +8,10 @@
 Vec3 PlayerAttackState::rotTmp_ = { 0,0,0 };
 
 
+PlayerAttackState::~PlayerAttackState()
+{
+}
+
 //‰½‚à‚µ‚È‚¢---------------------------------------------------------------
 void PlayerAttackStateNone::Initialize()
 {

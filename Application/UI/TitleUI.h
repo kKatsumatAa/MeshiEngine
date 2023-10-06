@@ -1,5 +1,5 @@
 #pragma once
-#include"Object.h"
+#include"Sprite.h"
 
 
 class TitleUI final
@@ -11,7 +11,7 @@ private:
 	uint64_t titleTex_ = NULL;
 	float titleScale_ = 0;
 	const float TITLE_SCALE_MAX_ = 2.5f;
-	Object titleObj_;
+	Sprite titleSprite_;
 
 
 private:

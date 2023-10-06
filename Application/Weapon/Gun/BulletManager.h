@@ -21,7 +21,7 @@ public:
 public:
 	void Initialize();
 
-	void CreateBullet(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, Object* owner);
+	void CreateBullet(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, IObject* owner);
 
 	void Update();
 

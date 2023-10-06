@@ -11,7 +11,7 @@ void BulletManager::Initialize()
 	bullets_.clear();
 }
 
-void BulletManager::CreateBullet(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, Object* owner)
+void BulletManager::CreateBullet(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, IObject* owner)
 {
 	std::unique_ptr<Bullet>bullet = Bullet::Create(pos, directionVec, scale, lifeTime, owner);
 	bullets_.push_back(std::move(bullet));

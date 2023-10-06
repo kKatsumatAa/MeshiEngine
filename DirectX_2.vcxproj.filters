@@ -471,6 +471,15 @@
     <ClCompile Include="Engine\2D\Camera2D.cpp">
       <Filter>ソース ファイル\Engine\2D</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\3D\Object\IObject3D.cpp">
+      <Filter>ソース ファイル\Engine\3D\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Object\ObjectFBX.cpp">
+      <Filter>ソース ファイル\Engine\3D\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Base\IObject.cpp">
+      <Filter>ソース ファイル\Engine\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -785,15 +794,21 @@
     <ClInclude Include="Engine\2D\Camera2D.h">
       <Filter>ヘッダー ファイル\Engine\2D</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\3D\Object\ObjectFBX.h">
+      <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Object\IObject3D.h">
+      <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\IObject.h">
+      <Filter>ヘッダー ファイル\Engine\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\PeraVertexShader.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl">
-      <Filter>リソース ファイル\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\PeraPixelShader.hlsl">
@@ -827,6 +842,12 @@
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\ParticleTriangleGS.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\FBXVertexShader.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
   </ItemGroup>

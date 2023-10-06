@@ -1,5 +1,5 @@
 #pragma once
-#include"Object.h"
+#include"Sprite.h"
 
 class DrawIntNumImage
 {
@@ -16,7 +16,7 @@ private://エイリアス
 private:
 	struct NumImage
 	{
-		Object obj;
+		Sprite sprite;
 		Vec4 color;
 		Vec2 sizeUV;
 		Vec2 pos;

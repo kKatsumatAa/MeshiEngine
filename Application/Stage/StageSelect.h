@@ -25,8 +25,8 @@ private:
 	std::vector<std::string> stageNames_;
 	//どれだけスクロールされたか
 	float scrollValue_ = 0;
-	//
-	Object selectBox_;
+	//カーソルがあっているときの範囲スプライト
+	Sprite selectBox_;
 
 	//デバッグテキスト
 	DebugText debugText_;

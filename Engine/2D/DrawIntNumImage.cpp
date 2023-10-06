@@ -51,7 +51,8 @@ void DrawIntNumImage::SetNum(int32_t num, const Vec2& pos, const Vec2& sizeUV, c
 			numImages_[i].pos = pos;
 			numImages_[i].sizeUV = sizeUV;
 			numImages_[i].scale = scale;
-			numImages_[i].color = color;
+			numImages_[i].sprite.SetColor(color);
+			numImages_[i].sprite.SetTexHandle(texhandle_);
 			numImages_[i].numImageSize = numImageSize;
 			numImages_[i].isTrue = true;
 
@@ -81,11 +82,11 @@ void DrawIntNumImage::Draw(Camera2D* camera)
 
 
 
-			numImages_[i].obj.SetTrans({ pos.x, pos.y ,0 });
-			numImages_[i].obj.SetScale({ numImages_[i].scale, numImages_[i].scale,1.0f });
+			numImages_[i].sprite.SetTrans({ pos.x, pos.y ,0 });
+			numImages_[i].sprite.SetScale({ numImages_[i].scale, numImages_[i].scale,1.0f });
 
-			numImages_[i].obj.DrawClippingBoxSprite(camera, { numImages_[i].num * numImages_[i].sizeUV.x,0 },
-				{ numImages_[i].sizeUV.x,numImages_[i].sizeUV.y }, texhandle_, numImages_[i].color, true);
+			numImages_[i].sprite.DrawClippingBoxSprite(camera, { numImages_[i].num * numImages_[i].sizeUV.x,0 },
+				{ numImages_[i].sizeUV.x,numImages_[i].sizeUV.y }, true);
 		}
 	}
 }

@@ -148,6 +148,8 @@
     <ClCompile Include="Engine\3D\Object\ModelFBX.cpp" />
     <ClCompile Include="Engine\3D\Object\ModelManager.cpp" />
     <ClCompile Include="Engine\3D\Object\Object.cpp" />
+    <ClCompile Include="Engine\3D\Object\IObject3D.cpp" />
+    <ClCompile Include="Engine\3D\Object\ObjectFBX.cpp" />
     <ClCompile Include="Engine\3D\Object\ObjectManager.cpp" />
     <ClCompile Include="Engine\3D\Object\ParticleManager.cpp" />
     <ClCompile Include="Engine\3D\Object\Primitive.cpp" />
@@ -158,6 +160,7 @@
     <ClCompile Include="Engine\Base\DirectXWrapper.cpp" />
     <ClCompile Include="Engine\Base\Framework.cpp" />
     <ClCompile Include="Engine\Base\ImGuiManager.cpp" />
+    <ClCompile Include="Engine\Base\IObject.cpp" />
     <ClCompile Include="Engine\Base\JsonLevelLoader.cpp" />
     <ClCompile Include="Engine\Base\LevelManager.cpp" />
     <ClCompile Include="Engine\Base\MyGame.cpp" />
@@ -252,6 +255,8 @@
     <ClInclude Include="Engine\3D\Object\ModelFBX.h" />
     <ClInclude Include="Engine\3D\Object\ModelManager.h" />
     <ClInclude Include="Engine\3D\Object\Object.h" />
+    <ClInclude Include="Engine\3D\Object\IObject3D.h" />
+    <ClInclude Include="Engine\3D\Object\ObjectFBX.h" />
     <ClInclude Include="Engine\3D\Object\ObjectManager.h" />
     <ClInclude Include="Engine\3D\Object\ParticleManager.h" />
     <ClInclude Include="Engine\3D\Object\Primitive.h" />
@@ -262,6 +267,7 @@
     <ClInclude Include="Engine\Base\DirectXWrapper.h" />
     <ClInclude Include="Engine\Base\Framework.h" />
     <ClInclude Include="Engine\Base\ImGuiManager.h" />
+    <ClInclude Include="Engine\Base\IObject.h" />
     <ClInclude Include="Engine\Base\LevelManager.h" />
     <ClInclude Include="Engine\Base\MyGame.h" />
     <ClInclude Include="Engine\Base\ProjectionMat.h" />
@@ -330,6 +336,12 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">BlurPS</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\FBXVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -337,10 +349,10 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="Resources\shaders\ParticleGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>

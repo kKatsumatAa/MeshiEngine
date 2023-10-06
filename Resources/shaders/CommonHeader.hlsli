@@ -13,6 +13,17 @@ struct PSOutput
     float4 highLumi : SV_TARGET2; //高輝度
 };
 
+//頂点シェーダからピクセルシェーダーへのやり取りに使用する構造体
+struct VSOutput
+{
+    float4 svpos : SV_POSITION; //システム用頂点座標
+    float4 worldpos : POSITION; //ワールド座標
+    float3 normal : NORMAL; //法線
+    float2 uv : TEXCOORD; //uv座標
+    float3 tangent : TANGENT; //法線の接線
+    float3 binormal : BINORMAL; //従法線
+};
+
 //----------------------------------------------------------------------------------------------
 //スペキュラマップ
 float4 GetSpecularMapColor(float3 specular, float3 diffuse, float4 maskCol)
@@ -91,7 +102,7 @@ struct CircleShadow
 };
 
 //--------------------
-//マテリアル
+//色
 cbuffer ConstBufferDataMaterial : register(b0)
 {
     float4 color; //色(RGBA)
@@ -117,18 +128,13 @@ cbuffer ConstBufferDataMaterial3 : register(b4)
     CircleShadow circleShadows[S_CIRCLESHADOW_NUM];
 }
 
+//演出
 cbuffer ConstBufferEffectFlags : register(b5)
 {
 	//フォグ
     uint isFog;
 	//トゥーン
     uint isToon;
-	//リムライト
-    uint isRimLight;
-	//リムカラー
-    float4 rimColor;
-	//疑似シルエット
-    uint isSilhouette;
 	//ディゾルブ
     uint isDissolve = false;
 	//ディゾルブ割合
@@ -137,6 +143,14 @@ cbuffer ConstBufferEffectFlags : register(b5)
     uint isSpecularMap = false;
     //ノーマルマップ
     uint isNormalMap = false;
+    //リムライト
+    uint isRimLight;
+	//リムカラー
+    float3 rimColor;
+	//疑似シルエット
+    uint isSilhouette;
+    //シルエット色
+    float3 silhouetteColor;
 	//時間
     uint time;
 }

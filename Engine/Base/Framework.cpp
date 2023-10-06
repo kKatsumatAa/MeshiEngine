@@ -19,9 +19,15 @@ void Framework::Initialize()
 	//FBX
 	FbxLoader::GetInstance()->Initialize();
 
+	//音
 	Sound::Initialize();
 
-	Object::DrawInitialize();
+	//object系
+	IObject::CommonInitialize();
+	IObject3D::CommonInitialize();
+	Object::CommonInitialize();
+	ObjectFBX::CommonInitialize();
+	Sprite::CommonInitialize();
 
 	//ポストエフェクト
 	PostEffectManager::GetInstance().Initialize("Resources/image/normalImage.jpg");

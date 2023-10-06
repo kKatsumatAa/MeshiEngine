@@ -6,6 +6,7 @@
 #include"CameraManager.h"
 #include"MouseInput.h"
 #include"PostEffectManager.h"
+#include"ObjectFBX.h"
 
 
 //ゲーム全体（共通処理）

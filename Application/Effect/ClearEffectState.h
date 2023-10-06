@@ -1,6 +1,6 @@
 #pragma once
 #include"Util.h"
-#include"Object.h"
+#include"Sprite.h"
 #include<functional>
 
 
@@ -22,7 +22,7 @@ protected:
 	float alpha_ = 0.0f;
 
 	uint64_t texHandle_ = NULL;
-	Object texObj_;
+	Sprite texSprite_;
 
 protected:
 	virtual void SpriteUpdate(const std::string& soundName, const std::string& name);

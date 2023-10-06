@@ -44,7 +44,7 @@ void Weapon::NoParentMove()
 	}
 }
 
-void Weapon::ChangeOwner(Object* parent)
+void Weapon::ChangeOwner(IObject3D* parent)
 {
 	if (parent == nullptr)
 	{

@@ -187,7 +187,7 @@ void StageStateDead::Initialize()
 
 	for (auto obj : objs)
 	{
-		obj->effectFlags_.isDissolve = true;
+		obj->SetisDissolve(true);
 	}
 }
 

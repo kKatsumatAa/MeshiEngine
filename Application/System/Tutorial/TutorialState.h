@@ -1,5 +1,5 @@
 #pragma once
-#include"Object.h"
+#include"Sprite.h"
 
 class Tutorial;
 
@@ -25,7 +25,7 @@ protected:
 
 	//‰æ‘œ
 	uint64_t texHandle_ = NULL;
-	Object texObj_;
+	Sprite texSprite_;
 
 	//‰‰o‚ÌŠÔ§ŒÀ
 	const int32_t BEGINING_TIMER_MAX_ = 10;

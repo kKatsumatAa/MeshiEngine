@@ -30,6 +30,8 @@ std::unique_ptr<PlayerUIState> PlayerUIState::GetState(const std::string& name)
 void PlayerUIState::Initialize()
 {
 	scale_ = SCALE_MAX_;
+
+	reticleSprite_.SetColor(color_);
 }
 
 void PlayerUIState::Update()
@@ -43,11 +45,11 @@ void PlayerUIState::Update()
 
 void PlayerUIState::DrawSprite()
 {
-	reticleObj_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
-	reticleObj_.SetScale({ scale_,scale_ ,1.0f });
-	reticleObj_.SetRot({ 0,0 ,angle_ });
+	reticleSprite_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
+	reticleSprite_.SetScale({ scale_,scale_ ,1.0f });
+	reticleSprite_.SetRot({ 0,0 ,angle_ });
 
-	reticleObj_.DrawBoxSprite(nullptr, reticleTexHandle_, color_, { 0.5f,0.5f }, false, false);
+	reticleSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
 }
 
 
@@ -56,6 +58,7 @@ void PlayerUIState::DrawSprite()
 void PlayerUIStateNomal::Initialize()
 {
 	reticleTexHandle_ = TextureManager::LoadGraph("normalReticle.png");
+	reticleSprite_.SetTexHandle(reticleTexHandle_);
 }
 
 void PlayerUIStateNomal::Update()
@@ -74,6 +77,7 @@ void PlayerUIStateNomal::DrawSprite()
 void PlayerUIStatePunch::Initialize()
 {
 	reticleTexHandle_ = TextureManager::LoadGraph("punchReticle.png");
+	reticleSprite_.SetTexHandle(reticleTexHandle_);
 }
 
 void PlayerUIStatePunch::Update()
@@ -92,6 +96,7 @@ void PlayerUIStatePunch::DrawSprite()
 void PlayerUIStateGun::Initialize()
 {
 	reticleTexHandle_ = TextureManager::LoadGraph("gunReticle.png");
+	reticleSprite_.SetTexHandle(reticleTexHandle_);
 }
 
 void PlayerUIStateGun::Update()
@@ -109,6 +114,7 @@ void PlayerUIStateGun::DrawSprite()
 void PlayerUIStatePickUp::Initialize()
 {
 	reticleTexHandle_ = TextureManager::LoadGraph("pickUpReticle.png");
+	reticleSprite_.SetTexHandle(reticleTexHandle_);
 }
 
 void PlayerUIStatePickUp::Update()

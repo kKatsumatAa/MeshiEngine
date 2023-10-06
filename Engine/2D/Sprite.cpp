@@ -1,40 +1,79 @@
 #include "Sprite.h"
 #include "CameraManager.h"
+#include"BaseCollider.h"
 
 using namespace DirectX;
 
+RootPipe Sprite::spritePipelineSet_;
 
+D3D12_INPUT_ELEMENT_DESC Sprite::sInputLayoutSprite_[2] = {
+		{//xyz座標
+		 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
+		 D3D12_APPEND_ALIGNED_ELEMENT,
+		 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+		},
+
+		{//uv座標
+		 "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
+		 D3D12_APPEND_ALIGNED_ELEMENT,
+		 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+		}
+};
+
+//--------------------------------------------------------------------------
 Sprite::~Sprite()
 {
-	vbView_.SizeInBytes = 0;
 }
 
-void Sprite::Initialize()
+Sprite::Sprite()
 {
-	//sprite用
-	{
-		uint32_t sizeVB;
-		D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
-		// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-		sizeVB = static_cast<uint32_t>(sizeof(vertices_[0]) * 4.0);
-		//頂点バッファの設定		//ヒープ設定
-		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
+	//インスタンスの種類
+	objInsType_ = ObjectInstanceType::SPRITE;
 
-		ResourceProperties(resDesc, sizeVB);
-		resDesc.Format = DXGI_FORMAT_UNKNOWN;
-		//頂点バッファの生成
-		BuffProperties(heapProp, resDesc, vertBuff_.GetAddressOf());
+	//バッファ設定
+	uint32_t sizeVB;
+	D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
+	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
+	sizeVB = static_cast<uint32_t>(sizeof(vertices_[0]) * 4.0);
+	//頂点バッファの設定		//ヒープ設定
+	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
-		// 頂点バッファビューの作成
-		// GPU仮想アドレス
-		vbView_.BufferLocation = vertBuff_.Get()->GetGPUVirtualAddress();
-		// 頂点バッファのサイズ
-		vbView_.SizeInBytes = sizeVB;
-		// 頂点1つ分のデータサイズ
-		vbView_.StrideInBytes = sizeof(vertices_[0]);
-	}
+	ResourceProperties(resDesc, sizeVB);
+	resDesc.Format = DXGI_FORMAT_UNKNOWN;
+	//頂点バッファの生成
+	BuffProperties(heapProp, resDesc, vertBuff_.GetAddressOf());
+
+	// 頂点バッファビューの作成
+	// GPU仮想アドレス
+	vbView_.BufferLocation = vertBuff_.Get()->GetGPUVirtualAddress();
+	// 頂点バッファのサイズ
+	vbView_.SizeInBytes = sizeVB;
+	// 頂点1つ分のデータサイズ
+	vbView_.StrideInBytes = sizeof(vertices_[0]);
 }
 
+//--------------------------------------------------------------------------
+void Sprite::CommonInitialize()
+{
+	//パイプラインなどを設定
+	PipeLineSetting(D3D12_FILL_MODE_SOLID, spritePipelineSet_,
+		"Resources/shaders/SpriteVS.hlsl", "Resources/shaders/SpritePS.hlsl",
+		sInputLayoutSprite_, _countof(sInputLayoutSprite_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, true);
+}
+
+void Sprite::Initialize(std::unique_ptr<WorldMat> worldMat)
+{
+	//ワールド行列用クラスのインスタンスセット
+	IObject::Initialize(std::move(worldMat));
+}
+
+//-------------------------------------------------------------------------------------
+void Sprite::Update()
+{
+	IObject::Update();
+}
+
+//-------------------------------------------------------------------------------------------------------------------
 void SpriteCommonBeginDraw(RootPipe* pipelineSet)
 {
 	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(pipelineSet->pipelineState.Get());
@@ -44,9 +83,36 @@ void SpriteCommonBeginDraw(RootPipe* pipelineSet)
 	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 }
 
+void Sprite::Draw()
+{
+	//ポリモーフィズムで呼び出されるとき用に
+	DrawBoxSprite(nullptr, { 0.5f,0.5f });
+}
+
 void Sprite::SpriteDraw()
 {
 	HRESULT result = {};
+
+	//バッファいろいろセット
+	SpriteCommonBeginDraw(&spritePipelineSet_);
+
+	//色用のバッファをセット
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(COLOR, constBuffMaterial_->GetGPUVirtualAddress());
+
+	//SRVヒープの先頭ハンドルを取得
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+	//テクスチャを設定していなかったら
+	uint64_t texHL = texHandle_;
+	TextureManager::CheckTexHandle(texHL);
+	srvGpuHandle.ptr = texHL;
+	//テクスチャ
+	//SRVヒープの設定コマンド
+	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetDescHeapPP());
+	//srv指定
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(TEX, srvGpuHandle);
+
+	//行列セット
+	cbt_.DrawCommand(MATRIX);
 
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
 	VertexSprite* vertMap = nullptr;
@@ -64,8 +130,30 @@ void Sprite::SpriteDraw()
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
 }
 
-void Sprite::Update(Camera2D* camera, const Vec2& pos, const Vec2& scale,
-	const Vec4& color, uint64_t textureHandle, const Vec2& ancorUV,
+void Sprite::DrawBoxSprite(Camera2D* camera,
+	const Vec2& ancorUV, bool isReverseX, bool isReverseY)
+{
+	//更新
+	Update();
+
+	DrawUpdate(camera, { GetTrans().x, GetTrans().y }, { GetScale().x,GetScale().y },
+		texHandle_, ancorUV, isReverseX, isReverseY, GetRot(), &cbt_, constMapMaterial_);
+}
+
+void Sprite::DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
+	 bool isPosLeftTop, bool isReverseX, bool isReverseY)
+{
+	//更新
+	Update();
+
+	UpdateClipping(camera, { GetTrans().x,GetTrans().y }, { GetScale().x,GetScale().y },
+		UVleftTop, UVlength, texHandle_,
+		isPosLeftTop, isReverseX, isReverseY, { GetRot() }, &cbt_, constMapMaterial_);
+}
+
+//-------------------------------------------------------------------------------------
+void Sprite::DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
+	uint64_t textureHandle, const Vec2& ancorUV,
 	bool isReverseX, bool isReverseY, const Vec3& rotation,
 	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
@@ -96,9 +184,6 @@ void Sprite::Update(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 	vertices_[2] = { {+(float)(length.x * scale.x * (1.0f - ancorUV.x)),+(float)(length.y * scale.y * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
 	vertices_[3] = { {+(float)(length.x * scale.x * (1.0f - ancorUV.x)),-(float)(length.y * scale.y * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
 
-
-	constMapMaterial->color = color;
-
 	//ワールド行列
 	WorldMat worldMat;
 
@@ -109,10 +194,13 @@ void Sprite::Update(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 
 	//行列計算、セット
 	CalcAndSetMat(cbt, worldMat, camera);
+
+	//描画
+	SpriteDraw();
 }
 
 void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	const Vec4& color, uint64_t textureHandle, bool isPosLeftTop,
+	uint64_t textureHandle, bool isPosLeftTop,
 	bool isReverseX, bool isReverseY, const Vec3& rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
 {
 	//テクスチャを設定していなかったら
@@ -158,7 +246,6 @@ void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& s
 		vertices_[2] = { {UVlength.x * length.x * scale.x / 2.0f,UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
 		vertices_[3] = { {UVlength.x * length.x * scale.x / 2.0f,-UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
-	constMapMaterial->color = color;
 
 	//ワールド行列
 	WorldMat worldMat;
@@ -182,6 +269,9 @@ void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& s
 
 	//行列計算、セット
 	CalcAndSetMat(cbt, worldMat, camera);
+
+	//描画
+	SpriteDraw();
 }
 
 //--------------------------------------------------------

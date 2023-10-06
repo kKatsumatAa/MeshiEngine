@@ -19,10 +19,10 @@ void ObjectManager::Initialize()
 void ObjectManager::Update()
 {
 	//アップデート
-	for (std::map<std::string, std::vector<std::unique_ptr<Object>>>::iterator itM = objsGroups_.begin();
+	for (std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator itM = objsGroups_.begin();
 		itM != objsGroups_.end(); itM++)
 	{
-		for (std::vector<std::unique_ptr<Object>>::iterator itG = itM->second.begin();
+		for (std::vector<std::unique_ptr<IObject3D>>::iterator itG = itM->second.begin();
 			itG != itM->second.end(); itG++)
 		{
 			//有効であれば
@@ -61,9 +61,10 @@ void ObjectManager::DebugUpdate()
 		//何かあったら
 		if (CollisionManager::GetInstance()->Raycast(ray, &info, 1000))
 		{
+			//シルエット解除で選択してないように見せる
 			if (selectObj_)
 			{
-				selectObj_->effectFlags_.isSilhouette = false;
+				selectObj_->SetIsSilhouette(false);
 			}
 
 			//前回と同じだったら解除
@@ -86,7 +87,7 @@ void ObjectManager::DebugUpdate()
 
 	if (selectObj_)
 	{
-		selectObj_->effectFlags_.isSilhouette = true;
+		selectObj_->SetIsSilhouette(true);
 
 		selectObj_->EffectUpdate();
 	}
@@ -97,10 +98,10 @@ void ObjectManager::DebugUpdate()
 
 void ObjectManager::Draw()
 {
-	for (std::map<std::string, std::vector<std::unique_ptr<Object>>>::iterator itM = objsGroups_.begin();
+	for (std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator itM = objsGroups_.begin();
 		itM != objsGroups_.end(); itM++)
 	{
-		for (std::vector<std::unique_ptr<Object>>::iterator itG = itM->second.begin();
+		for (std::vector<std::unique_ptr<IObject3D>>::iterator itG = itM->second.begin();
 			itG != itM->second.end(); itG++)
 		{
 			//有効であれば
@@ -122,13 +123,13 @@ void ObjectManager::DrawImGui()
 	}
 
 
-	for (std::map<std::string, std::vector<std::unique_ptr<Object>>>::iterator itM = objsGroups_.begin();
+	for (std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator itM = objsGroups_.begin();
 		itM != objsGroups_.end(); itM++)
 	{
 		//グループごとに
 		if (ImGui::TreeNode(itM->first.c_str()))
 		{
-			for (std::vector<std::unique_ptr<Object>>::iterator itG = itM->second.begin();
+			for (std::vector<std::unique_ptr<IObject3D>>::iterator itG = itM->second.begin();
 				itG != itM->second.end(); itG++)
 			{
 				itG->get()->DrawImGui();
@@ -142,10 +143,10 @@ void ObjectManager::DrawImGui()
 void ObjectManager::PostUpdate()
 {
 	//コライダーで生きてるフラグオフになったら消す
-	for (std::map<std::string, std::vector<std::unique_ptr<Object>>>::iterator itM = objsGroups_.begin();
+	for (std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator itM = objsGroups_.begin();
 		itM != objsGroups_.end(); itM++)
 	{
-		for (std::vector<std::unique_ptr<Object>>::iterator itG = itM->second.begin();
+		for (std::vector<std::unique_ptr<IObject3D>>::iterator itG = itM->second.begin();
 			itG != itM->second.end(); itG++)
 		{
 			if (!itG->get()->GetIsAlive())
@@ -184,7 +185,7 @@ bool ObjectManager::FindObjGroup(const std::string& name)
 	return true;
 }
 
-std::map<std::string, std::vector<std::unique_ptr<Object>>>::iterator ObjectManager::GetObjGroup(const std::string& name)
+std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator ObjectManager::GetObjGroup(const std::string& name)
 {
 	//グループ探す
 	auto itr = objsGroups_.find(name);
@@ -198,7 +199,7 @@ std::map<std::string, std::vector<std::unique_ptr<Object>>>::iterator ObjectMana
 //---------------------------------------------------------------------------------------------
 void ObjectManager::AddObject(const std::string& groupName, const std::string& name)
 {
-	std::unique_ptr<Object>obj = std::make_unique<Object>();
+	std::unique_ptr<IObject3D>obj = std::make_unique<IObject3D>();
 
 	obj->Initialize();
 	obj->SetObjName(name);
@@ -207,21 +208,21 @@ void ObjectManager::AddObject(const std::string& groupName, const std::string& n
 	AddObjAndGroup(std::move(obj), groupName);
 }
 
-void ObjectManager::AddObject(const std::string& groupName, std::unique_ptr<Object> inst)
+void ObjectManager::AddObject(const std::string& groupName, std::unique_ptr<IObject3D> inst)
 {
 	//グループに追加、グループがまだなければグループの配列にも追加
 	AddObjAndGroup(std::move(inst), groupName);
 }
 
-void ObjectManager::AddGroup(const std::string& groupName, std::unique_ptr<Object> inst)
+void ObjectManager::AddGroup(const std::string& groupName, std::unique_ptr<IObject3D> inst)
 {
-	std::vector<std::unique_ptr<Object>> group;
+	std::vector<std::unique_ptr<IObject3D>> group;
 	group.push_back(std::move(inst));
 
 	objsGroups_.insert(std::make_pair(groupName, std::move(group)));
 }
 
-void ObjectManager::AddObjAndGroup(std::unique_ptr<Object> obj, const std::string& groupName)
+void ObjectManager::AddObjAndGroup(std::unique_ptr<IObject3D> obj, const std::string& groupName)
 {
 	//グループがすでにあれば
 	if (FindObjGroup(groupName))
@@ -238,7 +239,7 @@ void ObjectManager::AddObjAndGroup(std::unique_ptr<Object> obj, const std::strin
 }
 
 //---------------------------------------------------------------------------------------
-bool ObjectManager::GetSameAttribute(Object* obj, uint16_t attribute)
+bool ObjectManager::GetSameAttribute(IObject3D* obj, uint16_t attribute)
 {
 	if (obj->GetCollider()->GetAttribute() & attribute)
 	{
@@ -248,7 +249,7 @@ bool ObjectManager::GetSameAttribute(Object* obj, uint16_t attribute)
 	return false;
 }
 
-bool ObjectManager::GetSameObjName(Object* obj, const std::string& name)
+bool ObjectManager::GetSameObjName(IObject3D* obj, const std::string& name)
 {
 	if (obj->GetObjName() == name)
 	{
@@ -259,32 +260,32 @@ bool ObjectManager::GetSameObjName(Object* obj, const std::string& name)
 }
 
 //----------------------------------------------------------------------------------------
-std::vector<Object*> ObjectManager::GetObjs(const std::string& groupName, const std::string& name)
+std::vector<IObject3D*> ObjectManager::GetObjs(const std::string& groupName, const std::string& name)
 {
 	//配列で返す(オブジェクトの名前で探して)
-	return GetObjectInternal(groupName, [=](Object* obj) {return GetSameObjName(obj, name); });
+	return GetObjectInternal(groupName, [=](IObject3D* obj) {return GetSameObjName(obj, name); });
 }
 
-std::vector<Object*> ObjectManager::GetObjs(const std::string& groupName, uint16_t attribute)
+std::vector<IObject3D*> ObjectManager::GetObjs(const std::string& groupName, uint16_t attribute)
 {
 	//配列で返す(判定属性で探して)
-	return GetObjectInternal(groupName, [=](Object* obj) {return GetSameAttribute(obj, attribute); });
+	return GetObjectInternal(groupName, [=](IObject3D* obj) {return GetSameAttribute(obj, attribute); });
 }
 
-std::vector<Object*> ObjectManager::GetObjs(const std::string& groupName)
+std::vector<IObject3D*> ObjectManager::GetObjs(const std::string& groupName)
 {
 	//グループ全て返す
-	return GetObjectInternal(groupName, [=](Object* obj) {return true; });
+	return GetObjectInternal(groupName, [=](IObject3D* obj) {return true; });
 }
 
-std::vector<Object*> ObjectManager::GetObjs()
+std::vector<IObject3D*> ObjectManager::GetObjs()
 {
-	std::vector<Object*>rObjs = {};
+	std::vector<IObject3D*>rObjs = {};
 
-	for (std::map<std::string, std::vector<std::unique_ptr<Object>>>::iterator itM = objsGroups_.begin();
+	for (std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator itM = objsGroups_.begin();
 		itM != objsGroups_.end(); itM++)
 	{
-		for (std::vector<std::unique_ptr<Object>>::iterator itG = itM->second.begin();
+		for (std::vector<std::unique_ptr<IObject3D>>::iterator itG = itM->second.begin();
 			itG != itM->second.end(); itG++)
 		{
 			rObjs.push_back(itG->get());
@@ -294,9 +295,9 @@ std::vector<Object*> ObjectManager::GetObjs()
 	return rObjs;
 }
 
-std::vector<Object*> ObjectManager::GetObjectInternal(const std::string& groupName, const std::function<bool(Object* obj)>& isF)
+std::vector<IObject3D*> ObjectManager::GetObjectInternal(const std::string& groupName, const std::function<bool(IObject3D* obj)>& isF)
 {
-	std::vector<Object*>rObjs = {};
+	std::vector<IObject3D*>rObjs = {};
 
 	//グループが見つからなければ何も入ってない配列返す
 	if (FindObjGroup(groupName))
@@ -304,7 +305,7 @@ std::vector<Object*> ObjectManager::GetObjectInternal(const std::string& groupNa
 		//グループ探す
 		auto& objects = GetObjGroup(groupName)->second;
 
-		for (std::vector<std::unique_ptr<Object>>::iterator itr = objects.begin();
+		for (std::vector<std::unique_ptr<IObject3D>>::iterator itr = objects.begin();
 			itr != objects.end(); itr++)
 		{
 			//条件クリアすれば

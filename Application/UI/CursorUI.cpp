@@ -43,8 +43,10 @@ void CursorUI::Update()
 
 void CursorUI::Draw()
 {
-	texObj_.SetTrans({ drawPos_,0 });
-	texObj_.SetScale({ cursorSize_.x,cursorSize_.y,1.0f });
-
-	texObj_.DrawBoxSprite(nullptr, NULL, { 1.0f,0.2f,0.2f,alpha_ }, { 0.5f,0.5f });
+	//位置などをセット
+	texSprite_.SetTrans({ drawPos_,0 });
+	texSprite_.SetScale({ cursorSize_.x,cursorSize_.y,1.0f });
+	texSprite_.SetColor({ 8.0f,0.2f,0.2f,alpha_ });
+	//描画
+	texSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
 }

@@ -233,7 +233,7 @@ PSOutput main(VSOutput input)
 		//疑似シルエット
     if (isSilhouette)
     {
-        RGBA = float4(1, 0, 0, 1);
+        RGBA = float4(silhouetteColor.rgb, 1.0f);
     }
 	
     if (isFog == true)

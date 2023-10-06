@@ -28,6 +28,9 @@ void StageSelect::Initialize()
 	nameWidthHeight_ = { CursorUI::cursorSize_.x * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y };
 	namesLeftUpPos_ = { CursorUI::cursorSize_.x * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y * 4.0f };
 
+	//êF
+	selectBox_.SetColor({ 8.0f,0,0,1.0f });
+
 	LoadStageNames();
 }
 
@@ -87,7 +90,7 @@ void StageSelect::DrawSprite()
 			selectBox_.SetTrans({ namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y} *(float)count,0 });
 			selectBox_.SetScale({ nameWidthHeight_,1.0f });
 
-			selectBox_.DrawBoxSprite(nullptr, NULL, { 1.0f,0,0,0.5f });
+			selectBox_.DrawBoxSprite(nullptr);
 		}
 
 		count++;
