@@ -6,41 +6,41 @@
 
 class DirectXWrapper final
 {
-private://ƒGƒCƒŠƒAƒX
-	//Microsoft::WRL::‚ğÈ—ª
+private://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 private:
-	//¬‰Ê•¨Œn
+	//æˆæœç‰©ç³»
 	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
 	ComPtr < ID3D12CommandQueue> commandQueue_ = nullptr;
 	ComPtr < ID3D12CommandQueue> texCommandQueue_ = nullptr;
 	ComPtr<ID3D12Resource> depthBuff_;
-	// ƒXƒƒbƒvƒ`ƒF[ƒ“‚Ìİ’è
+	// ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ãƒ¼ãƒ³ã®è¨­å®š
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc_{};
 	ComPtr<IDXGISwapChain4> swapChain_;
-	// ƒfƒXƒNƒŠƒvƒ^ƒq[ƒv‚Ìİ’è
+	// ãƒ‡ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ’ãƒ¼ãƒ—ã®è¨­å®š
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc_{};
 	ComPtr < ID3D12DescriptorHeap> rtvHeap_ = nullptr;
-	// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgƒrƒ…[‚Ìƒnƒ“ƒhƒ‹
+	// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ“ãƒ¥ãƒ¼ã®ãƒãƒ³ãƒ‰ãƒ«
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle_;
-	// ƒoƒbƒNƒoƒbƒtƒ@
+	// ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡
 	std::vector< ComPtr <ID3D12Resource>> backBuffers_;
-	//[“xƒoƒbƒtƒ@ƒrƒ…[—p
+	//æ·±åº¦ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ç”¨
 	ComPtr < ID3D12DescriptorHeap> dsvHeap_ = nullptr;
-	//[“x’lƒeƒNƒXƒ`ƒƒ—p
+	//æ·±åº¦å€¤ãƒ†ã‚¯ã‚¹ãƒãƒ£ç”¨
 	ComPtr < ID3D12DescriptorHeap> depthSRVHeap_ = nullptr;
 
-	// ƒtƒFƒ“ƒX‚Ì¶¬
+	// ãƒ•ã‚§ãƒ³ã‚¹ã®ç”Ÿæˆ
 	ComPtr < ID3D12Fence> fence_ = nullptr;
 	uint64_t fenceVal_ = 0;
 	ComPtr < ID3D12Fence> texFence_ = nullptr;
 	uint64_t texFenceVal_ = 0;
 
-	// 1.ƒŠƒ\[ƒXƒoƒŠƒA‚Ìİ’è
+	// 1.ãƒªã‚½ãƒ¼ã‚¹ãƒãƒªã‚¢ã®è¨­å®š
 	D3D12_RESOURCE_BARRIER barrierDesc_{};
 
-	//ƒfƒoƒCƒX
+	//ãƒ‡ãƒã‚¤ã‚¹
 	ComPtr<ID3D12Device> device_ = nullptr;
 
 	ComPtr < ID3D12CommandAllocator> commandAllocator_ = nullptr;
@@ -48,7 +48,7 @@ private:
 	ComPtr < ID3D12CommandAllocator> texCommandAllocator_ = nullptr;
 	ComPtr < ID3D12GraphicsCommandList> texCommandList_ = nullptr;
 
-	//‹L˜^ŠÔiFPSŒÅ’è
+	//è¨˜éŒ²æ™‚é–“ï¼ˆFPSå›ºå®š
 	std::chrono::steady_clock::time_point reference_;
 
 	float clearColor_[4] = { 0,0,0,0 };
@@ -56,14 +56,14 @@ private:
 	//
 	HRESULT result_;
 
-	//ƒeƒNƒXƒ`ƒƒƒAƒbƒvƒ[ƒh—p‚Ìƒoƒbƒtƒ@
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰ç”¨ã®ãƒãƒƒãƒ•ã‚¡
 	std::list<ComPtr<ID3D12Resource>> texUploadBuff_;
 
 private:
 	DirectXWrapper();
 	~DirectXWrapper();
 
-	//‰Šú‰»Œn
+	//åˆæœŸåŒ–ç³»
 	void InitializeDevice();
 	void InitializeCommand();
 	void InitializeSwapchain();
@@ -71,12 +71,12 @@ private:
 	void InitializeDepthBuffer();
 	void InitializeFence();
 
-	//FPSŒÅ’è‰Šú‰»
+	//FPSå›ºå®šåˆæœŸåŒ–
 	void InitializeFixFPS();
-	//FPSŒÅ’èXV
+	//FPSå›ºå®šæ›´æ–°
 	void UpdateFixFPS();
 
-	//ƒRƒ}ƒ“ƒhŒn‚Ìì¬
+	//ã‚³ãƒãƒ³ãƒ‰ç³»ã®ä½œæˆ
 	void CreateCommandLA(ID3D12CommandAllocator** texCommandAllocator,
 		ID3D12GraphicsCommandList** texCommandList);
 
@@ -84,26 +84,26 @@ public:
 	void Initialize();
 
 
-	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ–³Œø
+	//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’ç„¡åŠ¹
 	DirectXWrapper(const DirectXWrapper& obj) = delete;
-	//‘ã“ü‰‰Zq‚à
+	//ä»£å…¥æ¼”ç®—å­ã‚‚
 	DirectXWrapper& operator=(const DirectXWrapper& obj) = delete;
 
-	//ŠÖ”
+	//é–¢æ•°
 	static DirectXWrapper& GetInstance();
 
 	void CommandReset();
 
 	void DrawInitialize();
 
-	//ƒeƒNƒXƒ`ƒƒ‚ğ•`‰æ‚Æ‚Í•Ê‚ÌƒRƒ}ƒ“ƒhƒŠƒXƒg‚ÅƒAƒbƒv‚·‚éƒRƒ}ƒ“ƒh
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æç”»ã¨ã¯åˆ¥ã®ã‚³ãƒãƒ³ãƒ‰ãƒªã‚¹ãƒˆã§ã‚¢ãƒƒãƒ—ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰
 	void UpLoadTexture();
 
-	//1–‡–Ú‚ÌƒeƒNƒXƒ`ƒƒ‚É•`‰æ
+	//1æšç›®ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã«æç”»
 	void PreDraw();
 	void PostDraw();
 
-	//ƒŠƒ\[ƒXƒoƒŠƒA
+	//ãƒªã‚½ãƒ¼ã‚¹ãƒãƒªã‚¢
 	void ResourceBarrier(D3D12_RESOURCE_STATES beforeState,
 		D3D12_RESOURCE_STATES afterState, ID3D12Resource* buff);
 
@@ -123,15 +123,15 @@ public:
 	ID3D12DescriptorHeap** GetDepthSRVHeapPP() { return depthSRVHeap_.GetAddressOf(); }
 	ID3D12Resource** GetTexUploadBuffPP() { return texUploadBuff_.back().GetAddressOf(); }
 	ID3D12Resource* GetTexUploadBuffP() { return texUploadBuff_.back().Get(); }
-	void UploatBuffEmplaceBack() { return texUploadBuff_.emplace_back(); }
+	void EmplaceBackUploadBuff() { texUploadBuff_.emplace_back(); }
 
-	//ƒoƒbƒNƒoƒbƒtƒ@‚Ì”‚ğæ“¾
+	//ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã®æ•°ã‚’å–å¾—
 	size_t GetBackBufferCount() const { return backBuffers_.size(); }
 
-	//ƒNƒŠƒAƒJƒ‰[
+	//ã‚¯ãƒªã‚¢ã‚«ãƒ©ãƒ¼
 	void SetClearColor(float clearColor[4]);
 };
-//‰æ‘œ‚Ìƒ[ƒhiˆø”‚Éƒoƒbƒtƒ@İ’èj
+//ç”»åƒã®ãƒ­ãƒ¼ãƒ‰ï¼ˆå¼•æ•°ã«ãƒãƒƒãƒ•ã‚¡è¨­å®šï¼‰
 void LoadPictureFromFile(const char* fileName, Microsoft::WRL::ComPtr<ID3D12Resource>& texBuff);
 
 void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, uint32_t size);

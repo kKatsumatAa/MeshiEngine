@@ -2,7 +2,7 @@
 
 using namespace std;
 
-// ƒfƒoƒCƒX”­Œ©‚ÉÀs‚³‚ê‚é
+// ãƒ‡ãƒã‚¤ã‚¹ç™ºè¦‹æ™‚ã«å®Ÿè¡Œã•ã‚Œã‚‹
 BOOL CALLBACK DeviceFindCallBack(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef)
 {
 	PadInput::GetInstance().CreateDevice(ipddi);
@@ -12,43 +12,43 @@ BOOL CALLBACK DeviceFindCallBack(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef)
 
 void PadInput::CreateDevice(LPCDIDEVICEINSTANCE ipddi)
 {
-	//‚Â‚È‚ª‚Á‚Ä‚½‚çŒÄ‚Î‚ê‚éŠÖ”‚È‚Ì‚Åƒtƒ‰ƒO‚ÍƒIƒ“‚É
+	//ã¤ãªãŒã£ã¦ãŸã‚‰å‘¼ã°ã‚Œã‚‹é–¢æ•°ãªã®ã§ãƒ•ãƒ©ã‚°ã¯ã‚ªãƒ³ã«
 	isActive_ = true;
 
-	//‚·‚Å‚É’†g‚ª‚ ‚ê‚ÎV‚½‚É¶¬‚µ‚È‚¢
+	//ã™ã§ã«ä¸­èº«ãŒã‚ã‚Œã°æ–°ãŸã«ç”Ÿæˆã—ãªã„
 	if (gamePad_)
 	{
 		return;
 	}
 
-	//ƒpƒbƒhƒfƒoƒCƒX‚Ì¶¬
+	//ãƒ‘ãƒƒãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã®ç”Ÿæˆ
 	result_ = Input::GetInstance().GetDirectInput()->CreateDevice(ipddi->guidInstance, &gamePad_, NULL);
 	assert(SUCCEEDED(result_));
 
-	//“ü—Íƒf[ƒ^Œ`®‚ÌƒZƒbƒg
+	//å…¥åŠ›ãƒ‡ãƒ¼ã‚¿å½¢å¼ã®ã‚»ãƒƒãƒˆ
 	result_ = gamePad_->SetDataFormat(&c_dfDIJoystick);
 	assert(SUCCEEDED(result_));
 
-	//”r‘¼§ŒäƒŒƒxƒ‹‚ÌƒŠƒZƒbƒg
+	//æ’ä»–åˆ¶å¾¡ãƒ¬ãƒ™ãƒ«ã®ãƒªã‚»ãƒƒãƒˆ
 	result_ = gamePad_->SetCooperativeLevel(
 		WindowsApp::GetInstance().Gethwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-	//‰æ–Ê‚ªè‘O‚É‚ ‚é‚Æ‚«“ü—Íó•tbƒfƒoƒCƒX‚ğ‚±‚ÌƒAƒvƒŠ‚¾‚¯‚Åê—L‚µ‚È‚¢bWindowsƒL[‚ğ–³Œø
+	//ç”»é¢ãŒæ‰‹å‰ã«ã‚ã‚‹ã¨ãå…¥åŠ›å—ä»˜ï½œãƒ‡ãƒã‚¤ã‚¹ã‚’ã“ã®ã‚¢ãƒ—ãƒªã ã‘ã§å°‚æœ‰ã—ãªã„ï½œWindowsã‚­ãƒ¼ã‚’ç„¡åŠ¹
 	assert(SUCCEEDED(result_));
 
-	// ²ƒ‚[ƒh‚ğâ‘Î’lƒ‚[ƒh‚Æ‚µ‚Äİ’è
+	// è»¸ãƒ¢ãƒ¼ãƒ‰ã‚’çµ¶å¯¾å€¤ãƒ¢ãƒ¼ãƒ‰ã¨ã—ã¦è¨­å®š
 	DIPROPDWORD diprop;
 	ZeroMemory(&diprop, sizeof(diprop));
 	diprop.diph.dwSize = sizeof(diprop);
 	diprop.diph.dwHeaderSize = sizeof(diprop.diph);
 	diprop.diph.dwHow = DIPH_DEVICE;
 	diprop.diph.dwObj = 0;
-	diprop.dwData = DIPROPAXISMODE_ABS;	// â‘Î’lƒ‚[ƒh‚Ìw’è(DIPROPAXISMODE_REL‚É‚µ‚½‚ç‘Š‘Î’l)
+	diprop.dwData = DIPROPAXISMODE_ABS;	// çµ¶å¯¾å€¤ãƒ¢ãƒ¼ãƒ‰ã®æŒ‡å®š(DIPROPAXISMODE_RELã«ã—ãŸã‚‰ç›¸å¯¾å€¤)
 
-	// ²ƒ‚[ƒh‚ğ•ÏX
+	// è»¸ãƒ¢ãƒ¼ãƒ‰ã‚’å¤‰æ›´
 	result_ = gamePad_->SetProperty(DIPROP_AXISMODE, &diprop.diph);
 	assert(SUCCEEDED(result_));
 
-	// X²‚Ì’l‚Ì”ÍˆÍİ’è
+	// Xè»¸ã®å€¤ã®ç¯„å›²è¨­å®š
 	DIPROPRANGE diprg;
 	ZeroMemory(&diprg, sizeof(diprg));
 	diprg.diph.dwSize = sizeof(diprg);
@@ -60,7 +60,7 @@ void PadInput::CreateDevice(LPCDIDEVICEINSTANCE ipddi)
 	result_ = gamePad_->SetProperty(DIPROP_RANGE, &diprg.diph);
 	assert(SUCCEEDED(result_));
 
-	// Y²‚Ì’l‚Ì”ÍˆÍİ’è
+	// Yè»¸ã®å€¤ã®ç¯„å›²è¨­å®š
 	diprg.diph.dwObj = DIJOFS_Y;
 	result_ = gamePad_->SetProperty(DIPROP_RANGE, &diprg.diph);
 	assert(SUCCEEDED(result_));
@@ -69,23 +69,23 @@ void PadInput::CreateDevice(LPCDIDEVICEINSTANCE ipddi)
 
 void PadInput::PadConnectSearch()
 {
-	//–ˆƒtƒŒ[ƒ€Ú‘±Šm”F‚·‚é‚Æd‚¢‚Ì‚Å
+	//æ¯ãƒ•ãƒ¬ãƒ¼ãƒ æ¥ç¶šç¢ºèªã™ã‚‹ã¨é‡ã„ã®ã§
 	if (searchCount_ % SEARCH_COUNT_MAX_ == 0)
 	{
 		searchCount_ = 0;
-		//‚¢‚Á‚½‚ñ‚±‚±‚Åfalse‚É‚·‚é‚±‚Æ‚ÅÚ‘±‚³‚ê‚Ä‚È‚¢‚Æ‚«‚Í‚»‚Ì‚Ü‚ÜA‚³‚ê‚Ä‚¢‚½‚çtrue
+		//ã„ã£ãŸã‚“ã“ã“ã§falseã«ã™ã‚‹ã“ã¨ã§æ¥ç¶šã•ã‚Œã¦ãªã„ã¨ãã¯ãã®ã¾ã¾ã€ã•ã‚Œã¦ã„ãŸã‚‰true
 		isActive_ = false;
 
-		// ƒfƒoƒCƒX‚Ì—ñ‹“iÚ‘±‚³‚ê‚Ä‚é‚©‚ğŠm”Fj
+		// ãƒ‡ãƒã‚¤ã‚¹ã®åˆ—æŒ™ï¼ˆæ¥ç¶šã•ã‚Œã¦ã‚‹ã‹ã‚’ç¢ºèªï¼‰
 		result_ = Input::GetInstance().GetDirectInput()->EnumDevices(
 			DI8DEVTYPE_GAMEPAD,
-			DeviceFindCallBack,//Ú‘±‚³‚ê‚Ä‚¢‚ê‚Î‚±‚ÌŠÖ”‚ªŒÄ‚Î‚ê‚é
+			DeviceFindCallBack,//æ¥ç¶šã•ã‚Œã¦ã„ã‚Œã°ã“ã®é–¢æ•°ãŒå‘¼ã°ã‚Œã‚‹
 			pvRef_,
 			DIEDFL_ATTACHEDONLY//
 		);
 		assert(SUCCEEDED(result_));
 
-		//ƒpƒbƒh‚ªÚ‘±‚³‚ê‚Ä‚È‚¢‚©‚ÂA‘O‚Ü‚Å‚³‚ê‚Ä‚¢‚½‚çíœ
+		//ãƒ‘ãƒƒãƒ‰ãŒæ¥ç¶šã•ã‚Œã¦ãªã„ã‹ã¤ã€å‰ã¾ã§ã•ã‚Œã¦ã„ãŸã‚‰å‰Šé™¤
 		if (gamePad_ && !isActive_)
 		{
 			gamePad_->Unacquire();
@@ -122,19 +122,19 @@ PadInput& PadInput::GetInstance()
 
 void PadInput::Update()
 {
-	//Ú‘±‚ğŠm”F
+	//æ¥ç¶šã‚’ç¢ºèª
 	PadConnectSearch();
 
 	if (gamePad_ != NULL)
 	{
-		//‘O‰ñ‚ÌƒL[î•ñ
+		//å‰å›ã®ã‚­ãƒ¼æƒ…å ±
 		oldPadData_ = padData_;
 
-		//ƒL[ƒ{[ƒhî•ñ‚Ìæ“¾ŠJn
+		//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æƒ…å ±ã®å–å¾—é–‹å§‹
 		gamePad_->Acquire();
-		//ƒ|[ƒŠƒ“ƒO(ˆê’èŠÔŠu‚ÅƒfƒoƒCƒX‚Ìî•ñ‚ğ“¯Šú)
+		//ãƒãƒ¼ãƒªãƒ³ã‚°(ä¸€å®šé–“éš”ã§ãƒ‡ãƒã‚¤ã‚¹ã®æƒ…å ±ã‚’åŒæœŸ)
 		gamePad_->Poll();
-		//‘SƒL[‚Ì“ü—Íî•ñ‚ğæ“¾
+		//å…¨ã‚­ãƒ¼ã®å…¥åŠ›æƒ…å ±ã‚’å–å¾—
 		result_ = gamePad_->GetDeviceState(sizeof(padData_), &padData_);
 		//assert(SUCCEEDED(result));
 	}
@@ -145,7 +145,7 @@ bool PadInput::GetJoyStickActive()
 	if (gamePad_ != NULL)
 	{
 
-		//ƒWƒ‡ƒCƒXƒeƒBƒbƒN
+		//ã‚¸ãƒ§ã‚¤ã‚¹ãƒ†ã‚£ãƒƒã‚¯
 		if (padData_.lX < 0 || padData_.lX > 0 || padData_.lY < 0 || padData_.lY > 0)
 		{
 			return true;
@@ -159,8 +159,8 @@ Vec2 PadInput::GetLeftStickTilt()
 
 	if (gamePad_ != NULL)
 	{
-		// ƒXƒeƒBƒbƒN‚Ì•ûŒü”»’è
-	// –³”½‰”ÍˆÍ
+		// ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æ–¹å‘åˆ¤å®š
+	// ç„¡åå¿œç¯„å›²
 		long unresponsive_range = (long)(STICK_RANGE_ / 5.0f);
 
 		if (padData_.lX< -unresponsive_range || padData_.lX > unresponsive_range
@@ -184,7 +184,7 @@ Vec2 PadInput::GetRightStickTilt()
 {
 	if (gamePad_ != NULL)
 	{
-		// –³”½‰”ÍˆÍ
+		// ç„¡åå¿œç¯„å›²
 		long unresponsive_range = (long)(STICK_R_RANGE_ / 5.0f);
 
 		if (padData_.lRx - STICK_R_RANGE_<-unresponsive_range || padData_.lRx - STICK_R_RANGE_ > unresponsive_range
@@ -204,7 +204,7 @@ Vec2 PadInput::GetRightStickTilt()
 	return Vec2(0, 0);
 }
 
-bool PadInput::GetPushButton(byte button)
+bool PadInput::GetPushButton(BYTE button)
 {
 	if (gamePad_ != NULL)
 	{
@@ -217,7 +217,7 @@ bool PadInput::GetPushButton(byte button)
 	return false;
 }
 
-bool PadInput::GetTriggerButton(byte button)
+bool PadInput::GetTriggerButton(BYTE button)
 {
 	if (gamePad_ != NULL)
 	{
@@ -230,7 +230,7 @@ bool PadInput::GetTriggerButton(byte button)
 	return false;
 }
 
-bool PadInput::GetReleaseTrigger(byte button)
+bool PadInput::GetReleaseTrigger(BYTE button)
 {
 	if (gamePad_ != NULL)
 	{

@@ -175,6 +175,24 @@
     <Filter Include="ヘッダー ファイル\Application\UI">
       <UniqueIdentifier>{2d793f2e-29d6-4534-8dd2-4804c3d69541}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Engine\Base\Matrix">
+      <UniqueIdentifier>{2d8d669f-a368-462a-abbe-ae82aebbe1c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\Base\Matrix">
+      <UniqueIdentifier>{27f3404d-eac3-4326-9d43-0a071ccb09e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\Base\LevelLoader">
+      <UniqueIdentifier>{ffa058c8-4ae9-4036-a04c-b8d3654ade24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\Base\LevelLoader">
+      <UniqueIdentifier>{34d2eb6d-b794-4d5f-9786-1dac6cd9c4ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\Base\Frame">
+      <UniqueIdentifier>{ea0c3698-0b20-42aa-bc65-61762ccc9af8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\Base\Frame">
+      <UniqueIdentifier>{8a7fb44f-83cd-48fa-b31e-540fe9277248}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -270,31 +288,13 @@
     <ClCompile Include="Engine\Base\Async.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Base\ConstBuffTransform.cpp">
-      <Filter>ソース ファイル\Engine\Base</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Base\DirectXWrapper.cpp">
-      <Filter>ソース ファイル\Engine\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Base\Framework.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Base\ImGuiManager.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Base\MyGame.cpp">
-      <Filter>ソース ファイル\Engine\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Base\ProjectionMat.cpp">
-      <Filter>ソース ファイル\Engine\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Base\ViewMat.cpp">
-      <Filter>ソース ファイル\Engine\Base</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Base\WindowsApp.cpp">
-      <Filter>ソース ファイル\Engine\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Base\WorldMat.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Collision\Collision.cpp">
@@ -345,14 +345,8 @@
     <ClCompile Include="Engine\PostEffect\PostPera.cpp">
       <Filter>ソース ファイル\Engine\PostEffect</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Base\JsonLevelLoader.cpp">
-      <Filter>ソース ファイル\Engine\Base</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3D\Object\ModelManager.cpp">
       <Filter>ソース ファイル\Engine\3D\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Base\LevelManager.cpp">
-      <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Input\MouseInput.cpp">
       <Filter>ソース ファイル\Engine\Input</Filter>
@@ -480,6 +474,30 @@
     <ClCompile Include="Engine\Base\IObject.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Base\Matrix\ProjectionMat.cpp">
+      <Filter>ソース ファイル\Engine\Base\Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Base\Matrix\ViewMat.cpp">
+      <Filter>ソース ファイル\Engine\Base\Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Base\Matrix\WorldMat.cpp">
+      <Filter>ソース ファイル\Engine\Base\Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Base\LevelLoader\JsonLevelLoader.cpp">
+      <Filter>ソース ファイル\Engine\Base\LevelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Base\LevelLoader\LevelManager.cpp">
+      <Filter>ソース ファイル\Engine\Base\LevelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Base\Matrix\ConstBuffTransform.cpp">
+      <Filter>ソース ファイル\Engine\Base\Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Base\Frame\Framework.cpp">
+      <Filter>ソース ファイル\Engine\Base\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Base\Frame\MyGame.cpp">
+      <Filter>ソース ファイル\Engine\Base\Frame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -575,31 +593,13 @@
     <ClInclude Include="Engine\Base\Async.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Base\ConstBuffTransform.h">
-      <Filter>ヘッダー ファイル\Engine\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Base\DirectXWrapper.h">
-      <Filter>ヘッダー ファイル\Engine\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Base\Framework.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Base\ImGuiManager.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Base\MyGame.h">
-      <Filter>ヘッダー ファイル\Engine\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Base\ProjectionMat.h">
-      <Filter>ヘッダー ファイル\Engine\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Base\ViewMat.h">
-      <Filter>ヘッダー ファイル\Engine\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Base\WindowsApp.h">
-      <Filter>ヘッダー ファイル\Engine\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Base\WorldMat.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Collision\BaseCollider.h">
@@ -662,14 +662,8 @@
     <ClInclude Include="Engine\PostEffect\PostPera.h">
       <Filter>ヘッダー ファイル\Engine\PostEffect</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Base\JsonLevelLoader.h">
-      <Filter>ヘッダー ファイル\Engine\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\3D\Object\ModelManager.h">
       <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Base\LevelManager.h">
-      <Filter>ヘッダー ファイル\Engine\Base</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Input\MouseInput.h">
       <Filter>ヘッダー ファイル\Engine\Input</Filter>
@@ -802,6 +796,30 @@
     </ClInclude>
     <ClInclude Include="Engine\Base\IObject.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\Matrix\ProjectionMat.h">
+      <Filter>ヘッダー ファイル\Engine\Base\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\Matrix\ViewMat.h">
+      <Filter>ヘッダー ファイル\Engine\Base\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\Matrix\WorldMat.h">
+      <Filter>ヘッダー ファイル\Engine\Base\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\LevelLoader\JsonLevelLoader.h">
+      <Filter>ヘッダー ファイル\Engine\Base\LevelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\LevelLoader\LevelManager.h">
+      <Filter>ヘッダー ファイル\Engine\Base\LevelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\Matrix\ConstBuffTransform.h">
+      <Filter>ヘッダー ファイル\Engine\Base\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\Frame\Framework.h">
+      <Filter>ヘッダー ファイル\Engine\Base\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\Frame\MyGame.h">
+      <Filter>ヘッダー ファイル\Engine\Base\Frame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -23,7 +23,7 @@
 class PadInput final
 {
 private:
-	//namespaceÈ—ª
+	//namespaceçœç•¥
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	HRESULT result_;
@@ -31,7 +31,7 @@ private:
 	DIJOYSTATE oldPadData_;
 	LPVOID pvRef_;
 
-	//ƒL[ƒ{[ƒhƒfƒoƒCƒX‚Ì¶¬
+	//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã®ç”Ÿæˆ
 	ComPtr<IDirectInputDevice8> gamePad_ = nullptr;
 
 	const float STICK_RANGE_ = 1000;
@@ -43,7 +43,7 @@ private:
 	bool isActive_ = false;
 
 private:
-	//Ú‘±‚³‚ê‚Ä‚¢‚é‚©’²‚×‚é(ƒfƒoƒCƒX¶¬‚µ‚½‚è‚·‚é)
+	//æ¥ç¶šã•ã‚Œã¦ã„ã‚‹ã‹èª¿ã¹ã‚‹(ãƒ‡ãƒã‚¤ã‚¹ç”Ÿæˆã—ãŸã‚Šã™ã‚‹)
 	void PadConnectSearch();
 
 	PadInput();
@@ -51,9 +51,9 @@ private:
 	~PadInput() { ; }
 
 public:
-	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ–³Œø
+	//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’ç„¡åŠ¹
 	PadInput(const PadInput& obj) = delete;
-	//‘ã“ü‰‰Zq‚à
+	//ä»£å…¥æ¼”ç®—å­ã‚‚
 	PadInput& operator=(const PadInput& obj) = delete;
 
 
@@ -65,17 +65,17 @@ public:
 
 	void Finalize();
 
-public://ƒQƒbƒ^[
+public://ã‚²ãƒƒã‚¿ãƒ¼
 
-	//ƒWƒ‡ƒCƒXƒeƒBƒbƒN‚ªŒX‚¯‚ç‚ê‚Ä‚¢‚é‚©
+	//ã‚¸ãƒ§ã‚¤ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒå‚¾ã‘ã‚‰ã‚Œã¦ã„ã‚‹ã‹
 	bool GetJoyStickActive();
-	//ƒWƒ‡ƒCƒXƒeƒBƒbƒN‚ª‚Ç‚Ì‚­‚ç‚¢“|‚³‚ê‚Ä‚¢‚é‚©(0.0~1.0f)
+	//ã‚¸ãƒ§ã‚¤ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒã©ã®ãã‚‰ã„å€’ã•ã‚Œã¦ã„ã‚‹ã‹(0.0~1.0f)
 	Vec2 GetLeftStickTilt();
 	Vec2 GetRightStickTilt();
 
-	//ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é‚©
-	bool GetPushButton(byte button);
-	bool GetTriggerButton(byte button);
-	bool GetReleaseTrigger(byte button);
+	//ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹ã‹
+	bool GetPushButton(BYTE button);
+	bool GetTriggerButton(BYTE button);
+	bool GetReleaseTrigger(BYTE button);
 };
 

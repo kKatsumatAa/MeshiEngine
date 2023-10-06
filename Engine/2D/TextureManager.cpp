@@ -180,7 +180,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	D3D12_RESOURCE_DESC uploadResDesc{};
 
 	//テクスチャをアップロードするバッファのリストに先に積んでおく
-	DirectXWrapper::GetInstance().UploatBuffEmplaceBack();
+	DirectXWrapper::GetInstance().EmplaceBackUploadBuff();
 
 	uploadResDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 	uploadResDesc.Width = total_bytes;
