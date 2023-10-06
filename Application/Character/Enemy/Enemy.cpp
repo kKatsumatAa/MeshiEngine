@@ -24,7 +24,7 @@ void Enemy::EmergeInitialize()
 {
 	LightManager* lightM = LevelManager::GetInstance().GetLightManager();
 
-	//g‚¦‚éƒ‰ƒCƒg‚ª‚ ‚ê‚Î
+	//ï¿½gï¿½ï¿½ï¿½éƒ‰ï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (lightM->GetDoNotUsePointLightIndex(lightIndexTmp_))
 	{
 		lightM->SetPointLightActive(lightIndexTmp_, true);
@@ -33,7 +33,7 @@ void Enemy::EmergeInitialize()
 		lightM->SetPointLightPos(lightIndexTmp_,
 			{ IObject::GetTrans().x, IObject::GetTrans().y, IObject::GetTrans().z });
 	}
-	//hpŒn
+	//hpï¿½n
 	HPUpdate();
 }
 
@@ -54,7 +54,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t
 		return nullptr;
 	}
 
-	//‰Šú‰»
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (!instance->Initialize(std::move(worldMat), waveNum, weapon, model))
 	{
 		assert(0);
@@ -74,7 +74,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	if (weapon)
 	{
 		weapon_ = weapon;
-		//•Ší‚ğ”Xİ’è
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½İ’ï¿½
 		PickUpWeapon(weapon_);
 	}
 
@@ -85,20 +85,20 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	//model
 	model->SetMaterialExtend({ 1.0f,3.0f,140.0f });
 
-	//ƒfƒBƒ]ƒ‹ƒu
+	//ï¿½fï¿½Bï¿½]ï¿½ï¿½ï¿½u
 	ObjectFBX::SetisDissolve(true);
-	//ƒfƒBƒ]ƒ‹ƒu‰æ‘œ
+	//ï¿½fï¿½Bï¿½]ï¿½ï¿½ï¿½uï¿½æ‘œ
 	uint64_t handle;
 	handle = TextureManager::LoadGraph("dissolveMask.png");
 	ObjectFBX::SetDissolveTexHandle(handle);
 
-	//ƒXƒe[ƒg•ÏX
+	//ï¿½Xï¿½eï¿½[ï¿½gï¿½ÏX
 	ChangeEnemyState(std::make_unique<EnemyStateEmergeEffect>());
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ŠJn
+	//ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½n
 	PlayAnimation(true);
 
-	//F
+	//ï¿½F
 	SetColor({ 3.0f,0,0,1.0f });
 
 	return true;
@@ -113,7 +113,7 @@ void Enemy::AllMove(const Vec3& targetPos)
 
 void Enemy::Attack(const Vec3& targetPos)
 {
-	//•Ší‚ÅUŒ‚
+	//ï¿½ï¿½ï¿½ï¿½ÅUï¿½ï¿½
 	if (weapon_ != nullptr && weapon_->GetIsAlive())
 	{
 		Vec3 directionV = targetPos - weapon_->GetWorldTrans();
@@ -123,80 +123,80 @@ void Enemy::Attack(const Vec3& targetPos)
 
 void Enemy::WalkToTarget(const Vec3& targetPos)
 {
-	//“®‚¯‚È‚©‚Á‚½‚ç”ò‚Î‚·
+	//ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î‚ï¿½
 	if (isCantMove)
 	{
 		isCantMove = false;
 		return;
 	}
 
-	//³‹K‰»
+	//ï¿½ï¿½ï¿½Kï¿½ï¿½
 	directionVec_.y = 0;
 	directionVec_.Normalized();
 
-	//Œ»İ‚ÌƒXƒs[ƒh‚É•ûŒüƒxƒNƒgƒ‹‘«‚µAƒQ[ƒ€ƒXƒs[ƒh‚ğ‚©‚¯‚é
+	//ï¿½ï¿½ï¿½İ‚ÌƒXï¿½sï¿½[ï¿½hï¿½É•ï¿½ï¿½ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½sï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	velocity_ = GetVelocity() + directionVec_ * VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity();
-	//ƒXƒs[ƒh‚ÌãŒÀ‚Í’´‚¦‚È‚¢‚æ‚¤‚É
+	//ï¿½Xï¿½sï¿½[ï¿½hï¿½Ìï¿½ï¿½ï¿½Í’ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½æ‚¤ï¿½ï¿½
 	float length = velocity_.GetLength();
-	//ƒXƒs[ƒh‚ªƒvƒ‰ƒX‚É‚È‚Á‚Ä‚½‚ç
+	//ï¿½Xï¿½sï¿½[ï¿½hï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Xï¿½É‚È‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 	if (velocity_.Dot(directionVec_) >= 0)
 	{
 		directionVec_ = targetPos - IObject::GetTrans();
-		//‚ ‚é’ö“x‹ß‚Ã‚¢‚½‚ç~‚Ü‚é
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½ß‚Ã‚ï¿½ï¿½ï¿½ï¿½ï¿½~ï¿½Ü‚ï¿½
 		if (directionVec_.GetLength() < IObject::GetScale().GetLength() * 1.5f)
 		{
 			velocity_ = { 0,0,0 };
 		}
 		directionVec_.Normalized();
 
-		//ƒ_ƒ[ƒW‚ÌƒN[ƒ‹ƒŠƒZƒbƒg
+		//ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½ÌƒNï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½g
 		damageCoolTime_ = 0;
 	}
-	//ƒXƒs[ƒh‚ÌãŒÀ’´‚¦‚È‚¢
+	//ï¿½Xï¿½sï¿½[ï¿½hï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
 	velocity_ = velocity_.GetNormalized() * min(fabsf(length), GameVelocityManager::GetInstance().GetVelocity() * VELOCITY_TMP_ / 1.5f);
 
-	//“–‚½‚è”»’è—p‚ÉƒZƒbƒg
+	//ï¿½ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½pï¿½ÉƒZï¿½bï¿½g
 	IObject::SetVelocity(velocity_);
 
-	//ˆÊ’uƒZƒbƒg
+	//ï¿½Ê’uï¿½Zï¿½bï¿½g
 	IObject::SetTrans(IObject::GetTrans() + velocity_);
 
-	//Œü‚«•ÏX
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ÏX
 	DirectionUpdate(targetPos);
 }
 
 void Enemy::CollisionWallAndFloor()
 {
-	//’n–Ê‚Æ•Ç‚Æ‚Ì”»’è
+	//ï¿½nï¿½Ê‚Æ•Ç‚Æ‚Ì”ï¿½ï¿½ï¿½
 	OnGroundAndWallUpdate(IObject::GetScale().y, GameVelocityManager::GetInstance().GetVelocity());
 }
 
 void Enemy::DirectionUpdate(const Vec3& targetPos)
 {
-	//“G‚©‚çƒ^[ƒQƒbƒg‚Ö‚ÌƒxƒNƒgƒ‹
+	//ï¿½Gï¿½ï¿½ï¿½ï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½Ö‚Ìƒxï¿½Nï¿½gï¿½ï¿½
 	directionVec_ = targetPos - GetTrans();
-	//‰Šú³–ÊƒxƒNƒgƒ‹‚Æƒ^[ƒQƒbƒg‚Ö‚ÌƒxƒNƒgƒ‹
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êƒxï¿½Nï¿½gï¿½ï¿½ï¿½Æƒ^ï¿½[ï¿½Qï¿½bï¿½gï¿½Ö‚Ìƒxï¿½Nï¿½gï¿½ï¿½
 	Vec3 fVTmp = GetFrontVecTmp().GetNormalized();
 	Vec3 pDVTmp = directionVec_.GetNormalized();
 
-	//³–ÊƒxƒNƒgƒ‹‚©‚çƒ^[ƒQƒbƒg‚Ì•ûŒüƒxƒNƒgƒ‹‚Ö‚Ì‰ñ“]ƒNƒH[ƒ^ƒjƒIƒ“
+	//ï¿½ï¿½ï¿½Êƒxï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½Ì•ï¿½ï¿½ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½Ö‚Ì‰ï¿½]ï¿½Nï¿½Hï¿½[ï¿½^ï¿½jï¿½Iï¿½ï¿½
 	Quaternion q = Quaternion::DirectionToDirection(fVTmp, pDVTmp, 0.0f);
-	//‰ñ“]Œã‚ÌƒxƒNƒgƒ‹
+	//ï¿½ï¿½]ï¿½ï¿½Ìƒxï¿½Nï¿½gï¿½ï¿½
 	fVTmp = q.GetRotateVector(fVTmp);
-	//³–ÊƒxƒNƒgƒ‹ƒZƒbƒg
+	//ï¿½ï¿½ï¿½Êƒxï¿½Nï¿½gï¿½ï¿½ï¿½Zï¿½bï¿½g
 	IObject3D::SetFrontVec(fVTmp);
 
-	//Šp“x‚¶‚á‚È‚­‚Äs—ñ‚ğ‚»‚Ì‚Ü‚Üg‚¤
+	//ï¿½pï¿½xï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½Äsï¿½ï¿½ï¿½ï¿½ï¿½Ì‚Ü‚Ügï¿½ï¿½
 	IObject::SetIsUseQuaternionMatRot(true);
 	IObject::SetMatRot(q.MakeRotateMatrix());
 }
 
 void Enemy::HPUpdate()
 {
-	//hp‚É‚æ‚Á‚ÄƒfƒBƒ]ƒ‹ƒu
+	//hpï¿½É‚ï¿½ï¿½ï¿½Äƒfï¿½Bï¿½]ï¿½ï¿½ï¿½u
 	IObject3D::SetDissolveT((1.0f - (float)hp_ / (float)HP_TMP_) * DISSOLVE_POW_);
 
-	//ƒ|ƒŠƒSƒ“‚²‚Æ‚É“®‚­‚æ‚¤‚É
+	//ï¿½|ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½ï¿½Æ‚É“ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½ï¿½
 	Mesh::PolygonOffset offsetData;
 	offsetData.interval = GetRand(15.0f, 35.0f) * (1.0f - GameVelocityManager::GetInstance().GetVelocity() * 1.5f);
 	offsetData.length = GetRand(-IObject::GetScale().x, IObject::GetScale().x) * 5.5f * max(1.0f - (float)hp_ / (float)HP_TMP_, 0);
@@ -207,14 +207,14 @@ void Enemy::HPUpdate()
 //----------------------------------------------------------------
 void Enemy::Update()
 {
-	//ƒ_ƒ[ƒWó‚¯‚éƒN[ƒ‹ƒ^ƒCƒ€‚àƒQ[ƒ€ƒXƒs[ƒh‚ğ‚©‚¯‚é
+	//ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½ó‚¯‚ï¿½Nï¿½[ï¿½ï¿½ï¿½^ï¿½Cï¿½ï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½sï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	damageCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚àƒQ[ƒ€ƒXƒs[ƒh
+	//ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½sï¿½[ï¿½h
 	SetAnimationSpeed(min(GameVelocityManager::GetInstance().GetVelocity() * 3.0f,
 		GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_));
 
-	//ƒXƒe[ƒg
+	//ï¿½Xï¿½eï¿½[ï¿½g
 	state_->Update();
 
 	Character::Update();
@@ -229,21 +229,21 @@ void Enemy::Draw()
 //----------------------------------------------------------------------------------
 void Enemy::KnockBack(const CollisionInfo& info)
 {
-	//’·‚³
+	//ï¿½ï¿½ï¿½ï¿½
 	float length = (info.object_->GetScale().z + IObject::GetScale().z);
-	//‹——£‚ÌƒxƒNƒgƒ‹
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ìƒxï¿½Nï¿½gï¿½ï¿½
 	Vec3 distanceVec = IObject::GetTrans() - info.object_->GetWorldTrans();
-	//‰¼
+	//ï¿½ï¿½
 	distanceVec.y = 0;
 	velocity_.y = 0;
 	distanceVec.Normalized();
-	//ƒmƒbƒNƒoƒbƒN
+	//ï¿½mï¿½bï¿½Nï¿½oï¿½bï¿½N
 	velocity_ += distanceVec * length * KNOCK_BACK_POW_;
 	IObject::SetVelocity(velocity_);
-	//ƒ_ƒ[ƒW‚ğó‚¯‚éƒN[ƒ‹ƒ^ƒCƒ€
+	//ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½ï¿½ó‚¯‚ï¿½Nï¿½[ï¿½ï¿½ï¿½^ï¿½Cï¿½ï¿½
 	damageCoolTime_ = 20;
 
-	//•Ší‚Á‚Ä‚¢‚½‚ç—‚Æ‚·
+	//ï¿½ï¿½ï¿½íï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ç—ï¿½Æ‚ï¿½
 	if (weapon_)
 	{
 		distanceVec.y = 0.2f;
@@ -267,7 +267,7 @@ void Enemy::DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExten
 
 		const int32_t LIFE_TIME = 40;
 
-		//‘Šè‚Ì‘¬“x‚àg‚¤
+		//ï¿½ï¿½ï¿½ï¿½Ì‘ï¿½ï¿½xï¿½ï¿½gï¿½ï¿½
 		Vec3 infoVec = info.object_->GetVelocity().GetNormalized();
 
 		Vec3 vel = Vec3(infoVec.x * GetRand(-0.1f, 1.0f),
@@ -284,18 +284,18 @@ void Enemy::DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExten
 
 void Enemy::OnCollision(const CollisionInfo& info)
 {
-	//ƒvƒŒƒCƒ„[‚É“–‚½‚Á‚½‚ç
+	//ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (info.object_->GetObjName() == "player")
 	{
-		////’·‚³
+		////ï¿½ï¿½ï¿½ï¿½
 		float length = (info.object_->GetScale().x + IObject::GetScale().x);
-		//‹——£‚ÌƒxƒNƒgƒ‹
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Ìƒxï¿½Nï¿½gï¿½ï¿½
 		Vec3 distanceVec = IObject::GetTrans() - info.object_->GetTrans();
-		//‰¼‚Åy‚Í“®‚©‚³‚È‚¢
+		//ï¿½ï¿½ï¿½ï¿½yï¿½Í“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
 		distanceVec.y = 0;
 		distanceVec.Normalized();
 
-		//‚ß‚è‚Ü‚È‚¢‚æ‚¤‚ÉˆÊ’uƒZƒbƒg(”¼Œa{”¼Œa‚Ì’·‚³‚ğƒxƒNƒgƒ‹‚Ì•ûŒü‚ğg‚Á‚Ä‘«‚·)
+		//ï¿½ß‚èï¿½Ü‚È‚ï¿½ï¿½æ‚¤ï¿½ÉˆÊ’uï¿½Zï¿½bï¿½g(ï¿½ï¿½ï¿½aï¿½{ï¿½ï¿½ï¿½aï¿½Ì’ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Ä‘ï¿½ï¿½ï¿½)
 		//Vec3 ansPosP = info.object_->GetTrans() + distanceVec * length * 0.5f;
 		Vec3 ansPosE = info.object_->GetTrans() + distanceVec * length * 1.001f;
 		//SetTrans(ansPosP);
@@ -304,43 +304,43 @@ void Enemy::OnCollision(const CollisionInfo& info)
 		//info.object_->SetTrans(ansPos);
 		IObject::SetVelocity({ 0,0,0 });
 
-		//“®‚¯‚È‚¢‚æ‚¤‚É‚·‚é
+		//ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
 		isCantMove = true;
 	}
-	//ƒvƒŒƒCƒ„[‚ÌUŒ‚‚Æ‚Ì”»’è
+	//ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ÌUï¿½ï¿½ï¿½Æ‚Ì”ï¿½ï¿½ï¿½
 	else if (info.object_->GetObjName().find("hand") != std::string::npos)
 	{
 		if (damageCoolTime_ <= 0)
 		{
-			//ƒmƒbƒNƒoƒbƒN
+			//ï¿½mï¿½bï¿½Nï¿½oï¿½bï¿½N
 			KnockBack(info);
 
-			//hpŒ¸‚ç‚·
+			//hpï¿½ï¿½ï¿½ç‚·
 			Damaged(1, [=]() {IObject::SetIsAlive(false); });
 
-			//ƒp[ƒeƒBƒNƒ‹
+			//ï¿½pï¿½[ï¿½eï¿½Bï¿½Nï¿½ï¿½
 			DamageParticle(info);
 		}
 	}
-	//’e‚É“–‚½‚Á‚½‚ç
+	//ï¿½eï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	else if (info.object_->GetObjName() == "bullet")
 	{
-		//’e‚ğŒ‚‚Á‚½–{l‚¾‚Á‚½‚ç
+		//ï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (this == dynamic_cast<Bullet*>(info.object_)->GetOwner())
 		{
 			return;
 		}
 
-		//¡‚Ìhp•ªƒ_ƒ[ƒWó‚¯‚Ä“|‚ê‚é
+		//ï¿½ï¿½ï¿½ï¿½hpï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½ó‚¯‚Ä“|ï¿½ï¿½ï¿½
 		Damaged(hp_, [=]() {IObject::SetIsAlive(false); });
 
-		//ƒmƒbƒNƒoƒbƒN
+		//ï¿½mï¿½bï¿½Nï¿½oï¿½bï¿½N
 		KnockBack(info);
 
-		//ƒp[ƒeƒBƒNƒ‹
+		//ï¿½pï¿½[ï¿½eï¿½Bï¿½Nï¿½ï¿½
 		DamageParticle(info, { 0.5f,1.0f,0.5f }, 400);
 	}
-	//e‚É“–‚½‚Á‚½‚ç
+	//ï¿½eï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	else if (info.object_->GetObjName() == "gun")
 	{
 		Gun* gun = dynamic_cast<Gun*>(info.object_);
@@ -350,42 +350,42 @@ void Enemy::OnCollision(const CollisionInfo& info)
 			return;
 		}
 
-		//“Š‚°‚ç‚ê‚Ä‚¢‚é‚Æ‚«‚Ì‚İ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½Ì‚ï¿½
 		if (gun->GetIsThrowing() && gun->GetFallVelocity().GetLength() != 0)
 		{
 			//
 			KnockBack(info);
 		}
-		//‚¨‚¢‚Ä‚ ‚Á‚½‚çE‚¤
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Eï¿½ï¿½
 		else
 		{
 			PickUpWeapon(gun);
 		}
 	}
-	//“G“¯m‚Å“–‚½‚Á‚½‚ç‚ß‚è‚Ü‚È‚¢‚æ‚¤‚É‚·‚é
+	//ï¿½Gï¿½ï¿½ï¿½mï¿½Å“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß‚èï¿½Ü‚È‚ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
 	else if (info.object_->GetObjName().find("enemy") != std::string::npos)
 	{
-		//’·‚³
+		//ï¿½ï¿½ï¿½ï¿½
 		float length = (info.object_->GetScale().x + IObject::GetScale().x);
-		//‹——£‚ÌƒxƒNƒgƒ‹
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Ìƒxï¿½Nï¿½gï¿½ï¿½
 		Vec3 distanceVec = IObject::GetTrans() - info.object_->GetTrans();
-		//‰¼
+		//ï¿½ï¿½
 		distanceVec.y = 0;
 		distanceVec.Normalized();
-		//ˆÊ’uƒZƒbƒg(”¼Œa{”¼Œa‚Ì’·‚³‚ğƒxƒNƒgƒ‹‚Ì•ûŒü‚ğg‚Á‚Ä‘«‚·)
+		//ï¿½Ê’uï¿½Zï¿½bï¿½g(ï¿½ï¿½ï¿½aï¿½{ï¿½ï¿½ï¿½aï¿½Ì’ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Ä‘ï¿½ï¿½ï¿½)
 		IObject::SetTrans(info.object_->GetTrans() + distanceVec * length * 1.001f);
 
-		//‚™‚Í“®‚©‚È‚¢‚æ‚¤‚É‚·‚é
+		//ï¿½ï¿½ï¿½Í“ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
 		IObject::SetVelocity({ IObject::GetVelocity().x,0,GetVelocity().z });
 		info.object_->SetVelocity({ info.object_->GetVelocity().x,0,info.object_->GetVelocity().z });
-		//“ñ‚Â‚ÌƒxƒNƒgƒ‹‚Ì‡Œv‚Ì’·‚³
+		//ï¿½ï¿½Â‚Ìƒxï¿½Nï¿½gï¿½ï¿½ï¿½Ìï¿½ï¿½vï¿½Ì’ï¿½ï¿½ï¿½
 		float addLength = GetVelocity().GetLength() + info.object_->GetVelocity().GetLength();
-		//©•ª‚ÌƒXƒs[ƒh‚ÌƒxƒNƒgƒ‹‚Ì’·‚³‚ÌŠ„‡i‡Œv‚Ì’·‚³‚ÅŠ„‚éi0`1.0fjj
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ÌƒXï¿½sï¿½[ï¿½hï¿½Ìƒxï¿½Nï¿½gï¿½ï¿½ï¿½Ì’ï¿½ï¿½ï¿½ï¿½ÌŠï¿½ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½vï¿½Ì’ï¿½ï¿½ï¿½ï¿½ÅŠï¿½ï¿½ï¿½i0ï¿½`1.0fï¿½jï¿½j
 		float myLengthRatio = GetVelocity().GetLength() / addLength;
 
-		//Õ“ËŒã‚Ì©•ª‚ÌƒXƒs[ƒhƒxƒNƒgƒ‹‚Í[Œ»İ‚ÌƒXƒs[ƒhƒxƒNƒgƒ‹]+[‘Šè‚©‚ç©•ª‚Ö‚ÌƒxƒNƒgƒ‹]*[‘Šè‚Ì’·‚³‚ÌŠ„‡]
+		//ï¿½Õ“ËŒï¿½Ìï¿½ï¿½ï¿½ï¿½ÌƒXï¿½sï¿½[ï¿½hï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½İ‚ÌƒXï¿½sï¿½[ï¿½hï¿½xï¿½Nï¿½gï¿½ï¿½]+[ï¿½ï¿½ï¿½è‚©ï¿½ç©ï¿½ï¿½ï¿½Ö‚Ìƒxï¿½Nï¿½gï¿½ï¿½]*[ï¿½ï¿½ï¿½ï¿½Ì’ï¿½ï¿½ï¿½ï¿½ÌŠï¿½ï¿½ï¿½]
 		SetVelocity((GetVelocity() + distanceVec.GetNormalized() * addLength * (1.0f - myLengthRatio)) * 0.63f);
-		//Õ“ËŒã‚Ì‘Šè‚ÌƒXƒs[ƒhƒxƒNƒgƒ‹‚Í[Œ»İ‚ÌƒXƒs[ƒhƒxƒNƒgƒ‹]+[‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚©‚ç‘Šè‚Ö‚ÌƒxƒNƒgƒ‹]*[‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚Ì’·‚³‚ÌŠ„‡]
+		//ï¿½Õ“ËŒï¿½Ì‘ï¿½ï¿½ï¿½ÌƒXï¿½sï¿½[ï¿½hï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½İ‚ÌƒXï¿½sï¿½[ï¿½hï¿½xï¿½Nï¿½gï¿½ï¿½]+[ï¿½ï¿½ï¿½ÌƒCï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ç‘Šï¿½ï¿½Ö‚Ìƒxï¿½Nï¿½gï¿½ï¿½]*[ï¿½ï¿½ï¿½ÌƒCï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½Ì’ï¿½ï¿½ï¿½ï¿½ÌŠï¿½ï¿½ï¿½]
 		info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * 0.63f);
 	}
 }
