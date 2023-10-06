@@ -12,21 +12,26 @@ struct EffectOConstBuffer
 	uint32_t isFog = false;
 	//トゥーン
 	uint32_t isToon = false;
-	//リムライト
-	uint32_t isRimLight = false;
-	float pad1;
-	//リムの色
-	DirectX::XMFLOAT4 rimColor = { 1.0f,1.0f,1.0f,0 };
-	//疑似シルエット
-	uint32_t isSilhouette = false;
 	//ディゾルブ
 	uint32_t isDissolve = false;
 	//ディゾルブ割合
 	float dissolveT = 0;
+	//---
 	//スペキュラマップ
 	uint32_t isSpecularMap = false;
 	//ノーマルマップ
 	uint32_t isNormalMap = false;
+	//リムライト
+	uint32_t isRimLight = false;
+	float pad1;
+	//---
+	//リムの色
+	Vec3 rimColor = { 1.0f,1.0f,1.0f };
+	//疑似シルエット
+	uint32_t isSilhouette = false;
+	//---
+	//シルエットの色
+	Vec3 silhouetteColor = { 1.0f,0,0 };
 	//時間
 	uint32_t time = 0;
 };
@@ -134,6 +139,7 @@ public:
 
 	//シルエット
 	void SetIsSilhouette(bool is) { effectFlags_.isSilhouette = is; }
+	void SetSilhouetteColor(const Vec3& color) { effectFlags_.silhouetteColor = color; }
 
 public:
 	//モデルのポインタ

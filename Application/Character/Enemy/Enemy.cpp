@@ -98,6 +98,9 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	//アニメーション開始
 	PlayAnimation(true);
 
+	//色
+	SetColor({ 3.0f,0,0,1.0f });
+
 	return true;
 }
 

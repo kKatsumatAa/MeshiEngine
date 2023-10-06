@@ -15,7 +15,7 @@ void TitleUI::Initialize()
 
 	//ƒZƒbƒg
 	titleSprite_.SetTexHandle(titleTex_);
-	titleSprite_.SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	titleSprite_.SetColor({ 3.0f,3.0f,3.0f,1.0f });
 }
 
 void TitleUI::Update()

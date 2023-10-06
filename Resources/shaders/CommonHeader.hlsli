@@ -135,12 +135,6 @@ cbuffer ConstBufferEffectFlags : register(b5)
     uint isFog;
 	//トゥーン
     uint isToon;
-	//リムライト
-    uint isRimLight;
-	//リムカラー
-    float4 rimColor;
-	//疑似シルエット
-    uint isSilhouette;
 	//ディゾルブ
     uint isDissolve = false;
 	//ディゾルブ割合
@@ -149,6 +143,14 @@ cbuffer ConstBufferEffectFlags : register(b5)
     uint isSpecularMap = false;
     //ノーマルマップ
     uint isNormalMap = false;
+    //リムライト
+    uint isRimLight;
+	//リムカラー
+    float3 rimColor;
+	//疑似シルエット
+    uint isSilhouette;
+    //シルエット色
+    float3 silhouetteColor;
 	//時間
     uint time;
 }

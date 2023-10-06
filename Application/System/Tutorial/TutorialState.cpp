@@ -98,7 +98,7 @@ void TutorialState::CommonSpriteDraw()
 {
 	texSprite_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
 	texSprite_.SetScale({ scale_,scale_ ,1.0f });
-	texSprite_.SetColor({ 1.0f,1.0f,1.0f,alpha_ });
+	texSprite_.SetColor({ 2.0f,2.0f,2.0f,alpha_ });
 
 	texSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
 }

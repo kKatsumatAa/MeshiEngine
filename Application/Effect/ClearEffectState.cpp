@@ -59,7 +59,7 @@ void ClearEffectStateHyper::Initialize()
 
 	//セット
 	texSprite_.SetTexHandle(texHandle_);
-	texSprite_.SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	texSprite_.SetColor({ 2.0f,2.0f ,2.0f ,1.0f });
 }
 
 void ClearEffectStateHyper::Update()
@@ -81,6 +81,10 @@ void ClearEffectStateHot::Initialize()
 	Sound::GetInstance().PlayWave(SOUND_NAME_, VOLUME_TMP);
 
 	texHandle_ = TextureManager::LoadGraph("hot.png");
+
+	//セット
+	texSprite_.SetTexHandle(texHandle_);
+	texSprite_.SetColor({ 2.0f,2.0f ,2.0f ,1.0f });
 }
 
 void ClearEffectStateHot::Update()

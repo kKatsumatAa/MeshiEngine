@@ -332,8 +332,9 @@ void IObject3D::DrawImGui(std::function<void()> imguiF)
 			ImGui::Checkbox("isFog", (bool*)&effectFlags_.isFog);
 			ImGui::Checkbox("isNormalMap", (bool*)&effectFlags_.isNormalMap);
 			ImGui::Checkbox("isRimLight", (bool*)&effectFlags_.isRimLight);
-			ImGui::SliderFloat4("rimLightColor", &effectFlags_.rimColor.x, 0, 1.0f);
+			ImGui::ColorEdit3("rimLightColor", &effectFlags_.rimColor.x);
 			ImGui::Checkbox("isSilhouette", (bool*)&effectFlags_.isSilhouette);
+			ImGui::ColorEdit3("silhouetteColor", &effectFlags_.silhouetteColor.x);
 			ImGui::Checkbox("isSpecularMap", (bool*)&effectFlags_.isSpecularMap);
 
 			ImGui::TreePop();

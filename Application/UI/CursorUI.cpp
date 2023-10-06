@@ -46,7 +46,7 @@ void CursorUI::Draw()
 	//位置などをセット
 	texSprite_.SetTrans({ drawPos_,0 });
 	texSprite_.SetScale({ cursorSize_.x,cursorSize_.y,1.0f });
-	texSprite_.SetColor({ 1.0f,0.2f,0.2f,alpha_ });
+	texSprite_.SetColor({ 8.0f,0.2f,0.2f,alpha_ });
 	//描画
 	texSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
 }
