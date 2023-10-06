@@ -24,7 +24,7 @@ private:
 private:
 	// 頂点レイアウトの設定
 // 頂点レイアウト
-	static D3D12_INPUT_ELEMENT_DESC sInputLayout_[5];
+	static D3D12_INPUT_ELEMENT_DESC sInputLayoutPrimitive_[5];
 
 private:
 	//図形のクラス

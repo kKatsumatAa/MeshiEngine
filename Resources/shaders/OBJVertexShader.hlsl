@@ -1,8 +1,8 @@
 
 #include "OBJShaderHeader.hlsli"
 
-VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD, 
-float4 tangent : TANGENT, float4 binormal : BINORMAL)
+VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD, uint4 boneIndices : BONEINDICES,
+	float4 boneWeights : BONEWEIGHTS, float4 tangent : TANGENT, float4 binormal : BINORMAL)
 {
     //メッシュの行列とワールドをかける
     float4 wpos = mul(worldMesh, pos);

@@ -7,53 +7,6 @@ using namespace DirectX;
 //パイプラインなどの設定
 RootPipe ObjectFBX::pipelineSetM_[2];
 
-//インプットレイアウト
-D3D12_INPUT_ELEMENT_DESC ObjectFBX::sInputLayout_[7] = {
-	{//xyz座標
-	 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	},
-
-	{//法線ベクトル
-	 "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	},
-
-	{//uv座標
-	 "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	},
-
-	{//影響を受けるボーン番号
-	 "BONEINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	},
-
-	{//ボーンのスキンウェイト（4つ）
-	 "BONEWEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	},
-
-	{//接線
-	 "TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	},
-
-	{//従法線
-	 "BINORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
-	 D3D12_APPEND_ALIGNED_ELEMENT,
-	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	},
-
-};
-
-
 //--------------------------------------------------------------------------------------
 ObjectFBX::~ObjectFBX()
 {
@@ -89,11 +42,11 @@ void ObjectFBX::CommonInitialize()
 	//パイプラインなどの設定
 	PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[0],
 		"Resources/shaders/FBXVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
-		sInputLayout_, _countof(sInputLayout_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
+		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
 	//ワイヤーフレーム
 	PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, pipelineSetM_[1],
 		"Resources/shaders/FBXVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
-		sInputLayout_, _countof(sInputLayout_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
+		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -454,8 +407,6 @@ void ObjectFBX::CalcNodeMatBoneMatInternal(ModelFBX* model)
 	//アニメーション
 	if (animeData.isPlay_)
 	{
-		ModelFBX* model = dynamic_cast<ModelFBX*>(model_);
-
 		//最後まで再生したら
 		if ((!animeData.isReverse_ && animeData.currentTime_ >= anime.endTime)
 			|| (animeData.isReverse_ && animeData.currentTime_ <= anime.startTime))
@@ -635,5 +586,8 @@ void ObjectFBX::SetModel(IModel* model)
 
 		//仮でノードのポインタ渡す
 		nodes_ = modelL->GetNodes();
+
+		//
+		AnimationUpdate();
 	}
 }

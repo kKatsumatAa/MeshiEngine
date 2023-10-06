@@ -91,9 +91,9 @@ void Primitive::InitializeTriangle()
 	float angle2 = PI * 2.0f;
 	float angle3 = PI * 2.0f + PI * 2.0f / 3.0f;
 
-	verticesTriangle_[0] = { {sinf(angle),cosf(angle),0},{verticesTriangle_[0].normal},{},{0.0f,1.0f} };//左下
-	verticesTriangle_[1] = { {0,cosf(angle2),0},{verticesTriangle_[1].normal},{},{0.5f,0.0f} };//上
-	verticesTriangle_[2] = { {sinf(angle3),cosf(angle3),0},{verticesTriangle_[2].normal},{},{1.0f,1.0f} };//右下
+	verticesTriangle_[0] = { {sinf(angle),cosf(angle),0},{verticesTriangle_[0].normal},{0.0f,1.0f} ,{}};//左下
+	verticesTriangle_[1] = { {0,cosf(angle2),0},{verticesTriangle_[1].normal},{0.5f,0.0f} ,{}};//上
+	verticesTriangle_[2] = { {sinf(angle3),cosf(angle3),0},{verticesTriangle_[2].normal},{1.0f,1.0f} ,{}};//右下
 
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
@@ -344,35 +344,35 @@ void Primitive::InitializeCube()
 
 	{
 		//手前
-		verticesCube_[0] = { {-1.0f,-1.0f,-1.0f},{verticesCube_[0].normal},{},{0.0f,1.0f} };//左下
-		verticesCube_[1] = { {-1.0f,1.0f, -1.0f},{verticesCube_[1].normal},{},{0.0f,0.0f} };//左上
-		verticesCube_[2] = { {1.0f,-1.0f, -1.0f},{verticesCube_[2].normal},{},{1.0f,1.0f} };//右下
-		verticesCube_[3] = { {1.0f,1.0f,  -1.0f},{verticesCube_[3].normal},{},{1.0f,0.0f} };//右上
+		verticesCube_[0] = { {-1.0f,-1.0f,-1.0f},{verticesCube_[0].normal},{0.0f,1.0f} ,{}};//左下
+		verticesCube_[1] = { {-1.0f,1.0f, -1.0f},{verticesCube_[1].normal},{0.0f,0.0f} ,{}};//左上
+		verticesCube_[2] = { {1.0f,-1.0f, -1.0f},{verticesCube_[2].normal},{1.0f,1.0f} ,{}};//右下
+		verticesCube_[3] = { {1.0f,1.0f,  -1.0f},{verticesCube_[3].normal},{1.0f,0.0f} ,{}};//右上
 
-		verticesCube_[4] = { {-1.0f,-1.0f,1.0f},{verticesCube_[4].normal},{},{0.0f,1.0f} };//左下
-		verticesCube_[5] = { {-1.0f,1.0f, 1.0f},{verticesCube_[5].normal},{},{0.0f,0.0f} };//左上
-		verticesCube_[6] = { {1.0f,-1.0f, 1.0f},{verticesCube_[6].normal},{},{1.0f,1.0f} };//右下
-		verticesCube_[7] = { {1.0f,1.0f,  1.0f},{verticesCube_[7].normal},{},{1.0f,0.0f} };//右上
+		verticesCube_[4] = { {-1.0f,-1.0f,1.0f},{verticesCube_[4].normal},{0.0f,1.0f} ,{}};//左下
+		verticesCube_[5] = { {-1.0f,1.0f, 1.0f},{verticesCube_[5].normal},{0.0f,0.0f} ,{}};//左上
+		verticesCube_[6] = { {1.0f,-1.0f, 1.0f},{verticesCube_[6].normal},{1.0f,1.0f} ,{}};//右下
+		verticesCube_[7] = { {1.0f,1.0f,  1.0f},{verticesCube_[7].normal},{1.0f,0.0f} ,{}};//右上
 		//上
-		verticesCube_[8] = { {1.0f,1.0f,-1.0f},{verticesCube_[8].normal},{},{0.0f,1.0f} };//左下
-		verticesCube_[9] = { {1.0f,1.0f, 1.0f},{verticesCube_[9].normal},{},{0.0f,0.0f} };//左上
-		verticesCube_[10] = { {-1.0f,1.0f, -1.0f},{verticesCube_[10].normal},{},{1.0f,1.0f} };//右下
-		verticesCube_[11] = { {-1.0f,1.0f, 1.0f},{verticesCube_[11].normal},{},{1.0f,0.0f} };//右上
+		verticesCube_[8] = { {1.0f,1.0f,-1.0f},{verticesCube_[8].normal},{0.0f,1.0f} ,{}};//左下
+		verticesCube_[9] = { {1.0f,1.0f, 1.0f},{verticesCube_[9].normal},{0.0f,0.0f} ,{}};//左上
+		verticesCube_[10] = { {-1.0f,1.0f, -1.0f},{verticesCube_[10].normal},{1.0f,1.0f} ,{}};//右下
+		verticesCube_[11] = { {-1.0f,1.0f, 1.0f},{verticesCube_[11].normal},{1.0f,0.0f} ,{}};//右上
 
-		verticesCube_[12] = { {1.0f,-1.0f,-1.0f},{verticesCube_[12].normal},{},{0.0f,1.0f} };//左下
-		verticesCube_[13] = { {1.0f,-1.0f, 1.0f},{verticesCube_[13].normal},{},{0.0f,0.0f} };//左上
-		verticesCube_[14] = { {-1.0f,-1.0f, -1.0f},{verticesCube_[14].normal},{},{1.0f,1.0f} };//右下
-		verticesCube_[15] = { {-1.0f,-1.0f, 1.0f},{verticesCube_[15].normal},{},{1.0f,0.0f} };//右上
+		verticesCube_[12] = { {1.0f,-1.0f,-1.0f},{verticesCube_[12].normal},{0.0f,1.0f} ,{}};//左下
+		verticesCube_[13] = { {1.0f,-1.0f, 1.0f},{verticesCube_[13].normal},{0.0f,0.0f} ,{}};//左上
+		verticesCube_[14] = { {-1.0f,-1.0f, -1.0f},{verticesCube_[14].normal},{1.0f,1.0f} ,{}};//右下
+		verticesCube_[15] = { {-1.0f,-1.0f, 1.0f},{verticesCube_[15].normal},{1.0f,0.0f} ,{}};//右上
 
-		verticesCube_[16] = { {-1.0f,-1.0f,-1.0f},{verticesCube_[16].normal},{},{0.0f,1.0f} };//左下
-		verticesCube_[17] = { {-1.0f,-1.0f, 1.0f},{verticesCube_[17].normal},{},{0.0f,0.0f} };//左上
-		verticesCube_[18] = { {-1.0f,1.0f, -1.0f},{verticesCube_[18].normal},{},{1.0f,1.0f} };//右下
-		verticesCube_[19] = { {-1.0f,1.0f,  1.0f},{verticesCube_[19].normal},{},{1.0f,0.0f} };//右上
+		verticesCube_[16] = { {-1.0f,-1.0f,-1.0f},{verticesCube_[16].normal},{0.0f,1.0f} ,{}};//左下
+		verticesCube_[17] = { {-1.0f,-1.0f, 1.0f},{verticesCube_[17].normal},{0.0f,0.0f} ,{}};//左上
+		verticesCube_[18] = { {-1.0f,1.0f, -1.0f},{verticesCube_[18].normal},{1.0f,1.0f} ,{}};//右下
+		verticesCube_[19] = { {-1.0f,1.0f,  1.0f},{verticesCube_[19].normal},{1.0f,0.0f} ,{}};//右上
 
-		verticesCube_[20] = { {1.0f,-1.0f,-1.0f},{verticesCube_[20].normal},{},{0.0f,1.0f} };//左下
-		verticesCube_[21] = { {1.0f,-1.0f, 1.0f},{verticesCube_[21].normal},{},{0.0f,0.0f} };//左上
-		verticesCube_[22] = { {1.0f,1.0f, -1.0f},{verticesCube_[22].normal},{},{1.0f,1.0f} };//右下
-		verticesCube_[23] = { {1.0f,1.0f,  1.0f},{verticesCube_[23].normal},{},{1.0f,0.0f} };//右上;//左下
+		verticesCube_[20] = { {1.0f,-1.0f,-1.0f},{verticesCube_[20].normal},{0.0f,1.0f} ,{}};//左下
+		verticesCube_[21] = { {1.0f,-1.0f, 1.0f},{verticesCube_[21].normal},{0.0f,0.0f} ,{}};//左上
+		verticesCube_[22] = { {1.0f,1.0f, -1.0f},{verticesCube_[22].normal},{1.0f,1.0f} ,{}};//右下
+		verticesCube_[23] = { {1.0f,1.0f,  1.0f},{verticesCube_[23].normal},{1.0f,0.0f} ,{}};//右上;//左下
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
@@ -456,8 +456,8 @@ void Primitive::InitializeLine()
 {
 	HRESULT result = {};
 
-	verticesLine_[0] = { {-1.0,0,0},{verticesLine_[0].normal},{},{0.0f,1.0f} };//左下
-	verticesLine_[1] = { {1.0,0,0},  {verticesLine_[1].normal},{},{0.5f,0.0f} };//上
+	verticesLine_[0] = { {-1.0,0,0},{verticesLine_[0].normal},{0.0f,1.0f} ,{}};//左下
+	verticesLine_[1] = { {1.0,0,0},  {verticesLine_[1].normal},{0.5f,0.0f} ,{}};//上
 
 	{
 		//03_04
@@ -541,8 +541,8 @@ void Primitive::InitializeSphere()
 		Vec3 vec = { 0,-1.0f,0 };
 
 		//頂点二つ
-		verticesSphere_[0] = { {vec.x,vec.y,vec.z},{},{},{1.0f,0.0f} };//下
-		verticesSphere_[1] = { {vec.x,-vec.y,vec.z},{},{},{1.0f,0.0f} };//上
+		verticesSphere_[0] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} ,{}};//下
+		verticesSphere_[1] = { {vec.x,-vec.y,vec.z},{},{1.0f,0.0f} ,{}};//上
 
 		for (int32_t i = 0; i < 36; i++)//横
 		{
@@ -557,7 +557,7 @@ void Primitive::InitializeSphere()
 				Vec3xM4(vec, worldMat.matWorld_, false);
 
 				int32_t p = i * 34 + j;
-				verticesSphere_[(2) + i * 34 + j] = { {vec.x,vec.y,vec.z},{},{},{1.0f,0.0f} };
+				verticesSphere_[(2) + i * 34 + j] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} ,{}};
 			}
 		}
 

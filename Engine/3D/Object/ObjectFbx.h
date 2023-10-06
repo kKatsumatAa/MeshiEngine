@@ -33,9 +33,6 @@ public:
 	};
 
 private:
-	// 頂点レイアウトの設定
-// 頂点レイアウト
-	static D3D12_INPUT_ELEMENT_DESC sInputLayout_[7];
 	//パイプラインなどの設定
 	static RootPipe pipelineSetM_[2];
 
@@ -49,7 +46,7 @@ private://fbxモデル系
 	std::vector<AnimationData>animeDatas_;
 	//アニメーションのインデックス
 	int32_t animeIndex_ = 0;
-	std::vector<Node>* nodes_;
+	std::vector<Node>* nodes_ = nullptr;
 
 public://関数
 	ObjectFBX();

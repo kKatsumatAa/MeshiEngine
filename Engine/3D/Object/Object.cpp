@@ -11,7 +11,7 @@ Primitive Object::primitive_;
 RootPipe Object::primitivePipeLineSet_[3];
 
 //インプットレイアウト
-D3D12_INPUT_ELEMENT_DESC Object::sInputLayout_[5] = {
+D3D12_INPUT_ELEMENT_DESC Object::sInputLayoutPrimitive_[5] = {
 	{//xyz座標
 	 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
@@ -54,30 +54,30 @@ void Object::CommonInitialize()
 	primitive_.Initialize();
 
 	// パイプランステートの生成
-	//.obj
+	//.obj(objはfbxと違い頂点シェーダーでボーンの処理をしないので)
 	{
 		//パイプラインなどの設定
 		PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[0],
 			"Resources/shaders/OBJVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
-			sInputLayout_, _countof(sInputLayout_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
+			sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
 		//ワイヤーフレーム
 		PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, pipelineSetM_[1],
 			"Resources/shaders/OBJVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
-			sInputLayout_, _countof(sInputLayout_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
+			sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
 	}
 	//primitive用
 	{
 		PipeLineSetting(D3D12_FILL_MODE_SOLID, primitivePipeLineSet_[0],
 			"Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl",
-			sInputLayout_, _countof(sInputLayout_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
+			sInputLayoutPrimitive_, _countof(sInputLayoutPrimitive_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
 		//ワイヤーフレーム用
 		PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, primitivePipeLineSet_[1],
 			"Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl",
-			sInputLayout_, _countof(sInputLayout_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
+			sInputLayoutPrimitive_, _countof(sInputLayoutPrimitive_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
 		//線
 		PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, primitivePipeLineSet_[2],
 			"Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl",
-			sInputLayout_, _countof(sInputLayout_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE, false);
+			sInputLayoutPrimitive_, _countof(sInputLayoutPrimitive_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE, false);
 	}
 }
 
@@ -116,10 +116,10 @@ void Object::DrawModelInternal(int32_t pipelineNum)
 	TextureManager::CheckTexHandle(normalMapTextureHandleL);
 
 	//モデル用
-	//ラムダ式でコマンド関数(ボーン行列もセット)
+	//ラムダ式でコマンド関数
 	std::function<void()>SetRootPipeRM = [=]() {IObject::SetRootPipe(pipelineSetM_, pipelineNum, pipelineSetM_[0].rootSignature.Get()); };
 	std::function<void()>SetMaterialTexM = [=]() {IObject3D::SetMaterialLightMTex(
-		NULL, dissolveTextureHandleL, specularMapTextureHandleL, normalMapTextureHandleL); };
+		NULL, dissolveTextureHandleL, specularMapTextureHandleL, normalMapTextureHandleL, false); };
 
 	//メッシュのオフセットデータセット
 	IObject3D::GetModel()->SetPolygonOffsetData(meshOffsetData_);
@@ -186,22 +186,22 @@ void Object::DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureH
 	}
 }
 
-void Object::DrawTriangle(Camera* camera,  uint64_t textureHandle, int32_t pipelineNum)
+void Object::DrawTriangle(Camera* camera, uint64_t textureHandle, int32_t pipelineNum)
 {
 	DrawUpdate(TRIANGLE, pipelineNum, textureHandle, &cbt_, camera);
 }
 
-void Object::DrawBox(Camera* camera,  uint64_t textureHandle, int32_t pipelineNum)
+void Object::DrawBox(Camera* camera, uint64_t textureHandle, int32_t pipelineNum)
 {
 	DrawUpdate(BOX, pipelineNum, textureHandle, &cbt_, camera);
 }
 
-void Object::DrawCube3D(Camera* camera,  uint64_t textureHandle, int32_t pipelineNum)
+void Object::DrawCube3D(Camera* camera, uint64_t textureHandle, int32_t pipelineNum)
 {
 	DrawUpdate(CUBE, pipelineNum, textureHandle, &cbt_, camera);
 }
 
-void Object::DrawLine(Camera* camera, 
+void Object::DrawLine(Camera* camera,
 	uint64_t textureHandle)
 {
 	//線用のパイプラインを使うので2
@@ -209,19 +209,19 @@ void Object::DrawLine(Camera* camera,
 }
 
 void Object::DrawCircle(Camera* camera,
-	 uint64_t textureHandle, int32_t pipelineNum)
+	uint64_t textureHandle, int32_t pipelineNum)
 {
 	DrawUpdate(CIRCLE, pipelineNum, textureHandle, &cbt_, camera);
 }
 
 void Object::DrawSphere(Camera* camera,
-	 uint64_t textureHandle, int32_t pipelineNum)
+	uint64_t textureHandle, int32_t pipelineNum)
 {
 	DrawUpdate(SPHERE, pipelineNum, textureHandle, &cbt_, camera);
 }
 
 void Object::DrawModel(IModel* model, Camera* camera,
-	 int32_t pipelineNum)
+	int32_t pipelineNum)
 {
 	//モデルがヌルだったらエラー起きるので
 	if (model == nullptr)

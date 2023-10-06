@@ -17,8 +17,6 @@ cbuffer ConstBufferDataMaterial2 : register(b3)
     float m_alpha : packoffset(c2.w); //アルファ
 }
 
-
-
 //ボーンの最大数(Object.hと合わせる)
 static const int S_MAX_BONES = 90;
 

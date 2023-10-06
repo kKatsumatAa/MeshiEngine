@@ -102,7 +102,7 @@ struct CircleShadow
 };
 
 //--------------------
-//マテリアル
+//色
 cbuffer ConstBufferDataMaterial : register(b0)
 {
     float4 color; //色(RGBA)
@@ -128,6 +128,7 @@ cbuffer ConstBufferDataMaterial3 : register(b4)
     CircleShadow circleShadows[S_CIRCLESHADOW_NUM];
 }
 
+//演出
 cbuffer ConstBufferEffectFlags : register(b5)
 {
 	//フォグ

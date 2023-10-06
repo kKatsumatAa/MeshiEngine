@@ -40,6 +40,10 @@ private:
 	EffectOConstBuffer* mapEffectFlagsBuff_;
 
 protected:
+// 頂点レイアウト
+	static D3D12_INPUT_ELEMENT_DESC sInputLayoutM_[7];
+
+protected:
 	//モデルのポインタ
 	IModel* model_ = nullptr;
 
