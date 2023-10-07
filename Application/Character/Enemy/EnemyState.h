@@ -5,7 +5,7 @@
 class Enemy;
 
 
-//‘fè‚©Ae‚ğ‚Á‚Ä‚é‚©“™‚ÌƒXƒe[ƒg
+//ç´ æ‰‹ã‹ã€éŠƒã‚’æŒã£ã¦ã‚‹ã‹ç­‰ã®ã‚¹ãƒ†ãƒ¼ãƒˆ
 class EnemyState : public CharacterState
 {
 protected:
@@ -21,7 +21,7 @@ public:
 
 	bool CheckEyeRayHit()override;
 
-	//‚¿å‚Ì‚¢‚È‚¢e‚ªŒ©‚¦‚½‚ç‚»‚ÌÀ•WA‚È‚¯‚ê‚ÎƒvƒŒƒCƒ„[‚ÌÀ•W
+	//æŒã¡ä¸»ã®ã„ãªã„éŠƒãŒè¦‹ãˆãŸã‚‰ãã®åº§æ¨™ã€ãªã‘ã‚Œã°ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åº§æ¨™
 	Vec3 GetRayHitGunOrPlayerPos();
 
 public:
@@ -29,11 +29,11 @@ public:
 
 };
 
-//oŒ»‰‰o
+//å‡ºç¾æ¼”å‡º
 class EnemyStateEmergeEffect : public EnemyState
 {
 private:
-	//“GoŒ»‰‰o—p
+	//æ•µå‡ºç¾æ™‚æ¼”å‡ºç”¨
 	const float EMERGE_TIMER_MAX_ = 60;
 
 public:
@@ -41,9 +41,9 @@ public:
 	void Update() override;
 };
 
-//‘fèó‘Ô
+//ç´ æ‰‹çŠ¶æ…‹
 class EnemyStateBareHands :
-	public CharacterStateBareHands, 
+	public CharacterStateBareHands,
 	public EnemyState
 {
 
@@ -52,7 +52,7 @@ public:
 	void Update() override;
 };
 
-//e‚Á‚Ä‚é
+//éŠƒæŒã£ã¦ã‚‹
 class EnemyStateHaveWeapon :
 	public CharacterStateHaveWeapon,
 	public EnemyState

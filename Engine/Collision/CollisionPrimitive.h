@@ -1,6 +1,6 @@
 #pragma once
 ///<summary>
-/// “–‚½‚è”»’èƒvƒŠƒ~ƒeƒBƒu
+/// å½“ãŸã‚Šåˆ¤å®šãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–
 /// </summary>
 
 #include<DirectXMath.h>
@@ -8,21 +8,21 @@
 #include"Vec3.h"
 
 /// <summary>
-/// ‹…
+/// çƒ
 /// </summary>
 struct Sphere
 {
 public:
 	virtual ~Sphere() { ; }
 
-	//’†SÀ•W
+	//ä¸­å¿ƒåº§æ¨™
 	DirectX::XMVECTOR center = { 0,0,0,1 };
-	//”¼Œa
+	//åŠå¾„
 	float radius = 1.0f;
 };
 
 /// <summary>
-/// •½–Ê
+/// å¹³é¢
 /// </summary>
 struct Plane
 {
@@ -30,35 +30,35 @@ public:
 	virtual ~Plane() { ; }
 
 public:
-	//–@üƒxƒNƒgƒ‹
+	//æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«
 	DirectX::XMVECTOR normal = { 0,1,0,0 };
-	//Œ´“_(0,0,0)‚©‚ç‚Ì‹——£
+	//åŸç‚¹(0,0,0)ã‹ã‚‰ã®è·é›¢
 	float distance = 0.0f;
 };
 
 /// <summary>
-/// –@ü•t‚«OŠpŒ`iŒv‰ñ‚è‚ª•\–Êj
+/// æ³•ç·šä»˜ãä¸‰è§’å½¢ï¼ˆæ™‚è¨ˆå›ã‚ŠãŒè¡¨é¢ï¼‰
 /// </summary>
 struct Triangle
 {
-	//’¸“_À•W3‚Â
+	//é ‚ç‚¹åº§æ¨™3ã¤
 	DirectX::XMVECTOR p0;
 	DirectX::XMVECTOR p1;
 	DirectX::XMVECTOR p2;
-	//–@üƒxƒNƒgƒ‹
+	//æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«
 	DirectX::XMVECTOR normal;
 
 public:
 	virtual ~Triangle() { ; }
 
 	/// <summary>
-	/// –@ü‚ÌŒvZ
+	/// æ³•ç·šã®è¨ˆç®—
 	/// </summary>
 	void ComputeNormal();
 };
 
 /// <summary>
-/// ƒŒƒC
+/// ãƒ¬ã‚¤
 /// </summary>
 struct Ray
 {
@@ -66,17 +66,17 @@ public:
 	virtual ~Ray() { ; }
 
 public:
-	//‹“_À•W
+	//è¦–ç‚¹åº§æ¨™
 	DirectX::XMVECTOR start = { 0,0,0,1.0f };
-	//•ûŒü
+	//æ–¹å‘
 	DirectX::XMVECTOR dir = { 1.0f,0,0,0 };
 };
 
 
-#pragma region 2D
+// 2D
 
 /// <summary>
-/// ‰~
+/// å††
 /// </summary>
 struct Circle
 {
@@ -84,14 +84,14 @@ public:
 	virtual ~Circle() { ; }
 
 public:
-	//’†SÀ•W
+	//ä¸­å¿ƒåº§æ¨™
 	Vec2 center = { 0,0 };
-	//”¼Œa
+	//åŠå¾„
 	float radius = 1.0f;
 };
 
 /// <summary>
-/// ‹éŒ`
+/// çŸ©å½¢
 /// </summary>
 struct MyRectangle
 {
@@ -99,7 +99,7 @@ public:
 	virtual ~MyRectangle() { ; }
 
 public:
-	//Še’¸“_
+	//å„é ‚ç‚¹
 	Vec2 leftUp = { -1.0f,-1.0f };
 	Vec2 leftDown = { -1.0f,1.0f };
 	Vec2 rightUp = { 1.0f,-1.0f };
@@ -107,4 +107,3 @@ public:
 };
 
 
-#pragma endregion

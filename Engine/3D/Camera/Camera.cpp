@@ -4,25 +4,25 @@ using namespace DirectX;
 
 Camera::Camera()
 {
-	//ƒrƒ…[s—ñ‚ÌŒvZ
+	//ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—ã®è¨ˆç®—
 	UpdateViewMatrix();
 
-	// Ë‰es—ñ‚ÌŒvZ
+	// å°„å½±è¡Œåˆ—ã®è¨ˆç®—
 	UpdateProjectionMatrix();
 
-	// ƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“‚Ì‡¬
+	// ãƒ“ãƒ¥ãƒ¼ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ã®åˆæˆ
 	matViewProjection_ = viewMat_.matView_ * projectionMat_.matProjection_;
 }
 
 void Camera::Initialize()
 {
-	//ƒrƒ…[s—ñ‚ÌŒvZ
+	//ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—ã®è¨ˆç®—
 	UpdateViewMatrix();
 
-	// Ë‰es—ñ‚ÌŒvZ
+	// å°„å½±è¡Œåˆ—ã®è¨ˆç®—
 	UpdateProjectionMatrix();
 
-	// ƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“‚Ì‡¬
+	// ãƒ“ãƒ¥ãƒ¼ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ã®åˆæˆ
 	matViewProjection_ = viewMat_.matView_ * projectionMat_.matProjection_;
 
 	shake_.Initialize();
@@ -31,20 +31,20 @@ void Camera::Initialize()
 void Camera::Update()
 {
 	if (viewDirty_ || projectionDirty_ || shake_.GetIsShaking()) {
-		// ÄŒvZ•K—v‚È‚ç
+		// å†è¨ˆç®—å¿…è¦ãªã‚‰
 		if (viewDirty_ || shake_.GetIsShaking()) {
-			// ƒrƒ…[s—ñXV
+			// ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—æ›´æ–°
 			UpdateViewMatrix();
 			viewDirty_ = false;
 		}
 
-		// ÄŒvZ•K—v‚È‚ç
+		// å†è¨ˆç®—å¿…è¦ãªã‚‰
 		if (projectionDirty_) {
-			// ƒrƒ…[s—ñXV
+			// ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—æ›´æ–°
 			UpdateProjectionMatrix();
 			projectionDirty_ = false;
 		}
-		// ƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“‚Ì‡¬
+		// ãƒ“ãƒ¥ãƒ¼ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ã®åˆæˆ
 		matViewProjection_ = viewMat_.matView_ * projectionMat_.matProjection_;
 	}
 }
@@ -54,95 +54,94 @@ void Camera::UpdateViewMatrix()
 	//shake_
 	shake_.Update();
 	float shakeNum = shake_.GetShake();
-	// ‹“_À•W
+	// è¦–ç‚¹åº§æ¨™
 	XMVECTOR eyePosition = { viewMat_.eye_.x + shakeNum,viewMat_.eye_.y + shakeNum,viewMat_.eye_.z + shakeNum };
-	// ’‹“_À•W
+	// æ³¨è¦–ç‚¹åº§æ¨™
 	XMVECTOR targetPosition = { viewMat_.target_.x + shakeNum,viewMat_.target_.y + shakeNum,viewMat_.target_.z + shakeNum };
-	// i‰¼‚Ìjã•ûŒü
+	// ï¼ˆä»®ã®ï¼‰ä¸Šæ–¹å‘
 	XMVECTOR upVector = { viewMat_.up_.x,viewMat_.up_.y,viewMat_.up_.z };
 
-	// ƒJƒƒ‰Z²i‹ü•ûŒüj
+	// ã‚«ãƒ¡ãƒ©Zè»¸ï¼ˆè¦–ç·šæ–¹å‘ï¼‰
 	XMVECTOR cameraAxisZ = XMVectorSubtract(targetPosition, eyePosition);
-	// 0ƒxƒNƒgƒ‹‚¾‚ÆŒü‚«‚ª’è‚Ü‚ç‚È‚¢‚Ì‚ÅœŠO
+	// 0ãƒ™ã‚¯ãƒˆãƒ«ã ã¨å‘ããŒå®šã¾ã‚‰ãªã„ã®ã§é™¤å¤–
 	assert(!XMVector3Equal(cameraAxisZ, XMVectorZero()));
 	assert(!XMVector3IsInfinite(cameraAxisZ));
 	assert(!XMVector3Equal(upVector, XMVectorZero()));
 	assert(!XMVector3IsInfinite(upVector));
-	// ƒxƒNƒgƒ‹‚ğ³‹K‰»
+	// ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–
 	cameraAxisZ = XMVector3Normalize(cameraAxisZ);
 
-	// ƒJƒƒ‰‚ÌX²i‰E•ûŒüj
+	// ã‚«ãƒ¡ãƒ©ã®Xè»¸ï¼ˆå³æ–¹å‘ï¼‰
 	XMVECTOR cameraAxisX;
-	// X²‚Íã•ûŒü¨Z²‚ÌŠOÏ‚Å‹‚Ü‚é
+	// Xè»¸ã¯ä¸Šæ–¹å‘â†’Zè»¸ã®å¤–ç©ã§æ±‚ã¾ã‚‹
 	cameraAxisX = XMVector3Cross(upVector, cameraAxisZ);
-	// ƒxƒNƒgƒ‹‚ğ³‹K‰»
+	// ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–
 	cameraAxisX = XMVector3Normalize(cameraAxisX);
 
-	// ƒJƒƒ‰‚ÌY²iã•ûŒüj
+	// ã‚«ãƒ¡ãƒ©ã®Yè»¸ï¼ˆä¸Šæ–¹å‘ï¼‰
 	XMVECTOR cameraAxisY;
-	// Y²‚ÍZ²¨X²‚ÌŠOÏ‚Å‹‚Ü‚é
+	// Yè»¸ã¯Zè»¸â†’Xè»¸ã®å¤–ç©ã§æ±‚ã¾ã‚‹
 	cameraAxisY = XMVector3Cross(cameraAxisZ, cameraAxisX);
 
-	// ‚±‚±‚Ü‚Å‚Å’¼Œğ‚µ‚½3•ûŒü‚ÌƒxƒNƒgƒ‹‚ª‘µ‚¤
-	//iƒ[ƒ‹ƒhÀ•WŒn‚Å‚ÌƒJƒƒ‰‚Ì‰E•ûŒüAã•ûŒüA‘O•ûŒüj	
+	// ã“ã“ã¾ã§ã§ç›´äº¤ã—ãŸ3æ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ãŒæƒã†
+	//ï¼ˆãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ã§ã®ã‚«ãƒ¡ãƒ©ã®å³æ–¹å‘ã€ä¸Šæ–¹å‘ã€å‰æ–¹å‘ï¼‰	
 
-	// ƒJƒƒ‰‰ñ“]s—ñ
+	// ã‚«ãƒ¡ãƒ©å›è»¢è¡Œåˆ—
 	XMMATRIX matCameraRot;
-	// ƒJƒƒ‰À•WŒn¨ƒ[ƒ‹ƒhÀ•WŒn‚Ì•ÏŠ·s—ñ
+	// ã‚«ãƒ¡ãƒ©åº§æ¨™ç³»â†’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ã®å¤‰æ›è¡Œåˆ—
 	matCameraRot.r[0] = cameraAxisX;
 	matCameraRot.r[1] = cameraAxisY;
 	matCameraRot.r[2] = cameraAxisZ;
 	matCameraRot.r[3] = XMVectorSet(0, 0, 0, 1);
-	// “]’u‚É‚æ‚è‹ts—ñi‹t‰ñ“]j‚ğŒvZ
+	// è»¢ç½®ã«ã‚ˆã‚Šé€†è¡Œåˆ—ï¼ˆé€†å›è»¢ï¼‰ã‚’è¨ˆç®—
 	viewMat_.matView_ = XMMatrixTranspose(matCameraRot);
 
-	// ‹“_À•W‚É-1‚ğŠ|‚¯‚½À•W
+	// è¦–ç‚¹åº§æ¨™ã«-1ã‚’æ›ã‘ãŸåº§æ¨™
 	XMVECTOR reverseEyePosition = XMVectorNegate(eyePosition);
-	// ƒJƒƒ‰‚ÌˆÊ’u‚©‚çƒ[ƒ‹ƒhŒ´“_‚Ö‚ÌƒxƒNƒgƒ‹iƒJƒƒ‰À•WŒnj
-	XMVECTOR tX = XMVector3Dot(cameraAxisX, reverseEyePosition);	// X¬•ª
-	XMVECTOR tY = XMVector3Dot(cameraAxisY, reverseEyePosition);	// Y¬•ª
-	XMVECTOR tZ = XMVector3Dot(cameraAxisZ, reverseEyePosition);	// Z¬•ª
-	// ˆê‚Â‚ÌƒxƒNƒgƒ‹‚É‚Ü‚Æ‚ß‚é
+	// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã‹ã‚‰ãƒ¯ãƒ¼ãƒ«ãƒ‰åŸç‚¹ã¸ã®ãƒ™ã‚¯ãƒˆãƒ«ï¼ˆã‚«ãƒ¡ãƒ©åº§æ¨™ç³»ï¼‰
+	XMVECTOR tX = XMVector3Dot(cameraAxisX, reverseEyePosition);	// Xæˆåˆ†
+	XMVECTOR tY = XMVector3Dot(cameraAxisY, reverseEyePosition);	// Yæˆåˆ†
+	XMVECTOR tZ = XMVector3Dot(cameraAxisZ, reverseEyePosition);	// Zæˆåˆ†
+	// ä¸€ã¤ã®ãƒ™ã‚¯ãƒˆãƒ«ã«ã¾ã¨ã‚ã‚‹
 	XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
-	// ƒrƒ…[s—ñ‚É•½sˆÚ“®¬•ª‚ğİ’è
+	// ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—ã«å¹³è¡Œç§»å‹•æˆåˆ†ã‚’è¨­å®š
 	viewMat_.matView_.r[3] = translation;
 
-#pragma region ‘S•ûŒüƒrƒ‹ƒ{[ƒhs—ñ‚ÌŒvZ
-	// ƒrƒ‹ƒ{[ƒhs—ñ
+// å…¨æ–¹å‘ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰è¡Œåˆ—ã®è¨ˆç®—
+	// ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰è¡Œåˆ—
 	matBillboard_.r[0] = cameraAxisX;
 	matBillboard_.r[1] = cameraAxisY;
 	matBillboard_.r[2] = cameraAxisZ;
 	matBillboard_.r[3] = XMVectorSet(0, 0, 0, 1);
-#pragma region
 
-#pragma region Y²‰ñ‚èƒrƒ‹ƒ{[ƒhs—ñ‚ÌŒvZ
-	// ƒJƒƒ‰X²AY²AZ²
+// Yè»¸å›ã‚Šãƒ“ãƒ«ãƒœãƒ¼ãƒ‰è¡Œåˆ—ã®è¨ˆç®—
+	// ã‚«ãƒ¡ãƒ©Xè»¸ã€Yè»¸ã€Zè»¸
 	XMVECTOR ybillCameraAxisX, ybillCameraAxisY, ybillCameraAxisZ;
 
-	// X²‚Í‹¤’Ê
+	// Xè»¸ã¯å…±é€š
 	ybillCameraAxisX = cameraAxisX;
-	// Y²‚Íƒ[ƒ‹ƒhÀ•WŒn‚ÌY²
+	// Yè»¸ã¯ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ã®Yè»¸
 	ybillCameraAxisY = XMVector3Normalize(upVector);
-	// Z²‚ÍX²¨Y²‚ÌŠOÏ‚Å‹‚Ü‚é
+	// Zè»¸ã¯Xè»¸â†’Yè»¸ã®å¤–ç©ã§æ±‚ã¾ã‚‹
 	ybillCameraAxisZ = XMVector3Cross(ybillCameraAxisX, ybillCameraAxisY);
 
-	// Y²‰ñ‚èƒrƒ‹ƒ{[ƒhs—ñ
+	// Yè»¸å›ã‚Šãƒ“ãƒ«ãƒœãƒ¼ãƒ‰è¡Œåˆ—
 	matBillboardY_.r[0] = ybillCameraAxisX;
 	matBillboardY_.r[1] = ybillCameraAxisY;
 	matBillboardY_.r[2] = ybillCameraAxisZ;
 	matBillboardY_.r[3] = XMVectorSet(0, 0, 0, 1);
-#pragma endregion
+
 }
 
 void Camera::UpdateProjectionMatrix()
 {
-	// “§‹“Š‰e‚É‚æ‚éË‰es—ñ‚Ì¶¬
+	// é€è¦–æŠ•å½±ã«ã‚ˆã‚‹å°„å½±è¡Œåˆ—ã®ç”Ÿæˆ
 	projectionMat_.SetMat();
 }
 
 void Camera::MoveEyeVector(const Vec3& move)
 {
-	// ‹“_À•W‚ğˆÚ“®‚µA”½‰f
+	// è¦–ç‚¹åº§æ¨™ã‚’ç§»å‹•ã—ã€åæ˜ 
 	Vec3 eye_moved = GetEye();
 
 	eye_moved.x += move.x;
@@ -154,7 +153,7 @@ void Camera::MoveEyeVector(const Vec3& move)
 
 void Camera::MoveEyeVector(const XMVECTOR& move)
 {
-	// ‹“_À•W‚ğˆÚ“®‚µA”½‰f
+	// è¦–ç‚¹åº§æ¨™ã‚’ç§»å‹•ã—ã€åæ˜ 
 	Vec3 eye_moved = GetEye();
 
 	eye_moved.x += move.m128_f32[0];
@@ -171,7 +170,7 @@ void Camera::CameraShake(int32_t time, float length)
 
 void Camera::MoveVector(const Vec3& move)
 {
-	// ‹“_‚Æ’‹“_À•W‚ğˆÚ“®‚µA”½‰f
+	// è¦–ç‚¹ã¨æ³¨è¦–ç‚¹åº§æ¨™ã‚’ç§»å‹•ã—ã€åæ˜ 
 	Vec3 eye_moved = GetEye();
 	Vec3 target_moved = GetTarget();
 
@@ -189,7 +188,7 @@ void Camera::MoveVector(const Vec3& move)
 
 void Camera::MoveVector(const XMVECTOR& move)
 {
-	// ‹“_‚Æ’‹“_À•W‚ğˆÚ“®‚µA”½‰f
+	// è¦–ç‚¹ã¨æ³¨è¦–ç‚¹åº§æ¨™ã‚’ç§»å‹•ã—ã€åæ˜ 
 	Vec3 eye_moved = GetEye();
 	Vec3 target_moved = GetTarget();
 

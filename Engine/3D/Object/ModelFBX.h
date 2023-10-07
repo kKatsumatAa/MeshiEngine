@@ -7,15 +7,15 @@
 class ModelFBX :public IModel
 {
 public:
-	//ƒtƒŒƒ“ƒhƒNƒ‰ƒX
+	//ãƒ•ãƒ¬ãƒ³ãƒ‰ã‚¯ãƒ©ã‚¹
 	friend class FbxLoader;
 
 private:
-	//QÆæ‚ÌƒpƒX(fbx‚©obj‚©)
+	//å‚ç…§å…ˆã®ãƒ‘ã‚¹(fbxã‹objã‹)
 	static const std::string S_TYPE_DIRECTORY_;
 
-public://ƒTƒuƒNƒ‰ƒX
-	//ƒL[ƒtƒŒ[ƒ€‚²‚Æ‚Ìî•ñiƒXƒP[ƒ‹‚È‚Çj
+public://ã‚µãƒ–ã‚¯ãƒ©ã‚¹
+	//ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ ã”ã¨ã®æƒ…å ±ï¼ˆã‚¹ã‚±ãƒ¼ãƒ«ãªã©ï¼‰
 	struct NodeKeyData
 	{
 		XMFLOAT3 scale;
@@ -28,12 +28,12 @@ public://ƒTƒuƒNƒ‰ƒX
 		}
 	};
 
-	//ƒL[ƒtƒŒ[ƒ€‚²‚Æ‚Ìƒm[ƒh‘S‚Ä‚Ìî•ñ
+	//ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ ã”ã¨ã®ãƒãƒ¼ãƒ‰å…¨ã¦ã®æƒ…å ±
 	struct Keyframe
 	{
-		//ŠJn‚©‚ç‰½•b‚©
+		//é–‹å§‹ã‹ã‚‰ä½•ç§’ã‹
 		double seconds;
-		//ƒL[ƒtƒŒ[ƒ€‚É‘Î‰‚µ‚½‘S‚Ä‚Ìƒm[ƒh‚Ìî•ñ
+		//ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ ã«å¯¾å¿œã—ãŸå…¨ã¦ã®ãƒãƒ¼ãƒ‰ã®æƒ…å ±
 		std::vector<NodeKeyData> nodeKeys;
 
 		template<class T>
@@ -46,17 +46,17 @@ public://ƒTƒuƒNƒ‰ƒX
 	struct Animation
 	{
 		std::string name;
-		//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì’·‚³
+		//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®é•·ã•
 		double secondsLength;
 		//fps
 		double frameRate;
-		//ŠJnŠÔ
+		//é–‹å§‹æ™‚é–“
 		double startTime;
-		//I—¹ŠÔ
+		//çµ‚äº†æ™‚é–“
 		double endTime;
-		//1ƒtƒŒ[ƒ€‚²‚Æ‚É‰ÁZ‚·‚éŠÔ
+		//1ãƒ•ãƒ¬ãƒ¼ãƒ ã”ã¨ã«åŠ ç®—ã™ã‚‹æ™‚é–“
 		double addTime;
-		//ƒL[ƒtƒŒ[ƒ€‚²‚Æ‚Ìƒm[ƒh‘S‚Ä‚Ìî•ñ‚Ì”z—ñ
+		//ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ ã”ã¨ã®ãƒãƒ¼ãƒ‰å…¨ã¦ã®æƒ…å ±ã®é…åˆ—
 		std::vector<Keyframe> keyframes;
 
 		template<class T>
@@ -67,25 +67,23 @@ public://ƒTƒuƒNƒ‰ƒX
 	};
 
 
+	//å¤‰æ•°---------------------------------
 private:
 	std::vector<DirectX::XMMATRIX> offsetTransforms_;
-	//ƒ{[ƒ“‚Ìƒm[ƒh‚ÌƒCƒ“ƒfƒbƒNƒX
+	//ãƒœãƒ¼ãƒ³ã®ãƒãƒ¼ãƒ‰ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 	std::vector<uint64_t> boneNodeIndices_;
 	std::vector<Animation>	animationClips_;
 
-#pragma region •Ï”
 private:
-	//ƒ‚ƒfƒ‹–¼
+	//ãƒ¢ãƒ‡ãƒ«å
 	std::string name_;
-	//ƒm[ƒh”z—ñ
+	//ãƒãƒ¼ãƒ‰é…åˆ—
 	std::vector<Node> nodes_;
-	//FBXƒV[ƒ“
+	//FBXã‚·ãƒ¼ãƒ³
 	FbxScene* fbxScene_ = nullptr;
 
 
-#pragma endregion
-
-#pragma region ŠÖ”
+	//é–¢æ•°---------------------------------
 private:
 	void LoadTextures()override;
 
@@ -97,7 +95,7 @@ public:
 
 public:
 	std::vector<Node>* GetNodes() { return &nodes_; }
-	//ƒm[ƒh‚ğ–¼‘O‚Åw’è‚µ‚Äæ“¾
+	//ãƒãƒ¼ãƒ‰ã‚’åå‰ã§æŒ‡å®šã—ã¦å–å¾—
 	const Node* GetNode(const std::string& name);
 
 	FbxScene* GetFbxScene() { return fbxScene_; }
@@ -108,7 +106,5 @@ public:
 	std::vector<DirectX::XMMATRIX>& GetOffsetTransforms() { return offsetTransforms_; }
 	std::vector<uint64_t>& GetBoneNodeIndices() { return boneNodeIndices_; }
 	std::vector<Animation>& GetAnimations() { return animationClips_; }
-
-#pragma endregion
 };
 
