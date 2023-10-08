@@ -24,19 +24,19 @@ Vec3 EnemyState::GetRayHitGunOrPlayerPos()
 	bool gunSee = false;
 	Vec3 gunPos;
 
-	//‘S‚Ä‚Ìe‚ÉŒü‚©‚Á‚ÄƒŒƒC‚ð”ò‚Î‚µAáŠQ•¨‚ª‚È‚¯‚ê‚Î
+	//å…¨ã¦ã®éŠƒã«å‘ã‹ã£ã¦ãƒ¬ã‚¤ã‚’é£›ã°ã—ã€éšœå®³ç‰©ãŒãªã‘ã‚Œã°
 	for (auto gun : guns)
 	{
 		if (enemy_->CheckRayOfEyeHit((gun->GetWorldTrans() - enemy_->GetWorldTrans()).GetNormalized(),
 			Enemy::S_LENGTH_MAX_, BARE_HANDS_ATTR_TMP_, &info_))
 		{
-			//e‚ÅŠ—LŽÒ‚ª‚¢‚È‚¯‚ê‚Î
+			//éŠƒã§æ‰€æœ‰è€…ãŒã„ãªã‘ã‚Œã°
 			if (info_.object->GetObjName() == "gun" && info_.object->GetParent() == nullptr)
 			{
-				//‹——£
+				//è·é›¢
 				float distance = (info_.object->GetTrans() - enemy_->GetWorldTrans()).GetLength();
 
-				//ˆê”Ô‹ß‚¯‚ê‚Î•Û‘¶
+				//ä¸€ç•ªè¿‘ã‘ã‚Œã°ä¿å­˜
 				if (minLength > distance)
 				{
 					minLength = distance;
@@ -47,13 +47,13 @@ Vec3 EnemyState::GetRayHitGunOrPlayerPos()
 		}
 	}
 
-	//e‚ªŽ‹ŠE‚É‚ ‚ê‚Î
+	//éŠƒãŒè¦–ç•Œã«ã‚ã‚Œã°
 	if (gunSee)
 	{
 		return gunPos;
 	}
 
-	//‚È‚¯‚ê‚ÎƒvƒŒƒCƒ„[‚Ì
+	//ãªã‘ã‚Œã°ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®
 	return CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
 }
 
@@ -64,7 +64,7 @@ void EnemyState::Update()
 }
 
 
-//oŒ»‰‰o-----------------------------------------------------------------------
+//å‡ºç¾æ¼”å‡º-----------------------------------------------------------------------
 void EnemyStateEmergeEffect::Initialize()
 {
 }
@@ -72,18 +72,18 @@ void EnemyStateEmergeEffect::Initialize()
 void EnemyStateEmergeEffect::Update()
 {
 	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	enemy_->SetColliderIsValid(false);
-	//•Ç‚Æ°‚Æ‚Ì”»’è
+	//å£ã¨åºŠã¨ã®åˆ¤å®š
 	enemy_->CollisionWallAndFloor();
 
-	//ƒfƒBƒ]ƒ‹ƒu
+	//ãƒ‡ã‚£ã‚¾ãƒ«ãƒ–
 	float t = timer_ / EMERGE_TIMER_MAX_;
 	enemy_->SetDissolveT(LerpVec3({ 1.0f,0,0 }, { 0,0,0 }, EaseIn(t)).x);
 
 	if (timer_ >= EMERGE_TIMER_MAX_)
 	{
-		//ƒ‰ƒCƒg‚ÌŽg—pƒIƒt
+		//ãƒ©ã‚¤ãƒˆã®ä½¿ç”¨ã‚ªãƒ•
 		LightManager* lightM = LevelManager::GetInstance().GetLightManager();
 		if (enemy_->GetLightIndexTmp() != enemy_->GetLightIndexInit())
 		{
@@ -92,7 +92,7 @@ void EnemyStateEmergeEffect::Update()
 
 		enemy_->SetColliderIsValid(true);
 
-		//e‚ª‚ ‚ê‚Î
+		//éŠƒãŒã‚ã‚Œã°
 		if (enemy_->GetWeapon())
 		{
 			enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeapon>());
@@ -108,7 +108,7 @@ void EnemyStateEmergeEffect::Update()
 
 
 
-//‘fŽèó‘Ô-----------------------------------------------------------------------
+//ç´ æ‰‹çŠ¶æ…‹-----------------------------------------------------------------------
 void EnemyStateBareHands::Initialize()
 {
 	enemy_->SetIsPlayAnimation(true);
@@ -121,7 +121,7 @@ void EnemyStateBareHands::Update()
 
 	EnemyState::Update();
 
-	//•ŠíŽ‚Á‚½‚çƒXƒe[ƒg•ÏX
+	//æ­¦å™¨æŒã£ãŸã‚‰ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´
 	if (enemy_->GetWeapon())
 	{
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeapon>());
@@ -129,20 +129,20 @@ void EnemyStateBareHands::Update()
 }
 
 
-//•ŠíŽ‚Á‚Ä‚éó‘Ô-----------------------------------------------------------------------
+//æ­¦å™¨æŒã£ã¦ã‚‹çŠ¶æ…‹-----------------------------------------------------------------------
 void EnemyStateHaveWeapon::Initialize()
 {
 }
 
 void EnemyStateHaveWeapon::Update()
 {
-	//ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ÉƒŒƒC‚ð”ò‚Î‚µ‚Ä
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ–¹å‘ã«ãƒ¬ã‚¤ã‚’é£›ã°ã—ã¦
 	if (enemy_->CheckRayOfEyeHit(
 		(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye() - enemy_->GetWorldTrans()).GetNormalized(),
 		Enemy::S_LENGTH_MAX_, HAVE_WEAPON_ATTR_TMP_, &info_)
 		)
 	{
-		//ƒvƒŒƒCƒ„[‚ªŒ©‚¦‚½‚ç“®‚©‚¸UŒ‚
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè¦‹ãˆãŸã‚‰å‹•ã‹ãšæ”»æ’ƒ
 		if (info_.object->GetObjName() == "player")
 		{
 			enemy_->SetIsPlayAnimation(false);
@@ -150,7 +150,7 @@ void EnemyStateHaveWeapon::Update()
 			enemy_->Attack(info_.object->GetWorldTrans());
 			enemy_->DirectionUpdate(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
 		}
-		//‰¼jŒ©‚¦‚È‚¯‚ê‚ÎƒvƒŒƒCƒ„[‚Ì•ûŒü‚ÉˆÚ“®
+		//ä»®ï¼‰è¦‹ãˆãªã‘ã‚Œã°ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ–¹å‘ã«ç§»å‹•
 		else
 		{
 			enemy_->SetIsPlayAnimation(true);
@@ -161,7 +161,7 @@ void EnemyStateHaveWeapon::Update()
 
 	EnemyState::Update();
 
-	//•ŠíŽ¸‚Á‚½‚çƒXƒe[ƒg•ÏX
+	//æ­¦å™¨å¤±ã£ãŸã‚‰ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´
 	if (enemy_->GetWeapon() == nullptr)
 	{
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
