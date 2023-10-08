@@ -3,26 +3,25 @@
 #include "BaseCollider.h"
 #include "CollisionPrimitive.h"
 
-#include <DirectXMath.h>
 
 /// <summary>
-/// –ÊÕ“Ë”»’èƒIƒuƒWƒFƒNƒg
+/// é¢è¡çªåˆ¤å®šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 /// </summary>
 class PlaneCollider : public BaseCollider, public Plane
 {
-private: // ƒGƒCƒŠƒAƒX
-	// DirectX::‚ğÈ—ª
+private: // ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	// DirectX::ã‚’çœç•¥
 	using XMVECTOR = DirectX::XMVECTOR;
 public:
 	PlaneCollider(const XMVECTOR& normal = { 0,0,0,0 }, float distance = 1.0f) :
 		normal_(normal), distance_(distance)
 	{
-		// Œ`ó‚ğƒZƒbƒg
+		// å½¢çŠ¶ã‚’ã‚»ãƒƒãƒˆ
 		shapeType_ = COLLISIONSHAPE_PLANE;
 	}
 
 	/// <summary>
-	/// XV
+	/// æ›´æ–°
 	/// </summary>
 	void Update() override;
 
@@ -30,9 +29,9 @@ public:
 	inline void SetDistance(float distance) { distance_ = distance; }
 
 private:
-	//–@üƒxƒNƒgƒ‹
+	//æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«
 	DirectX::XMVECTOR normal_ = { 0,1,0,0 };
-	//Œ´“_(0,0,0)‚©‚ç‚Ì‹——£
+	//åŸç‚¹(0,0,0)ã‹ã‚‰ã®è·é›¢
 	float distance_ = 0.0f;
 };
 

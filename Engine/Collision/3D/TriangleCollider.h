@@ -3,26 +3,25 @@
 #include "BaseCollider.h"
 #include "CollisionPrimitive.h"
 
-#include <DirectXMath.h>
 
 /// <summary>
-/// –ÊÕ“Ë”»’èƒIƒuƒWƒFƒNƒg
+/// é¢è¡çªåˆ¤å®šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 /// </summary>
 class TriangleCollider : public BaseCollider, public Triangle
 {
-private: // ƒGƒCƒŠƒAƒX
-	// DirectX::‚ğÈ—ª
+private: // ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	// DirectX::ã‚’çœç•¥
 	using XMVECTOR = DirectX::XMVECTOR;
 public:
 	TriangleCollider(const DirectX::XMVECTOR& p0 = { 0,0,0,0 }, const DirectX::XMVECTOR& p1 = { 0,0,0,0 }, const DirectX::XMVECTOR& p2 = { 0,0,0,0 }, const XMVECTOR& normal = { 0, 0, 0, 0 }) :
 		p0_(p0), p1_(p1), p2_(p2), normal_(normal)
 	{
-		// Œ`ó‚ğƒZƒbƒg
+		// å½¢çŠ¶ã‚’ã‚»ãƒƒãƒˆ
 		shapeType_ = COLLISIONSHAPE_TRIANGLE;
 	}
 
 	/// <summary>
-	/// XV
+	/// æ›´æ–°
 	/// </summary>
 	void Update() override;
 
@@ -30,11 +29,11 @@ public:
 	inline void SetPos(const DirectX::XMVECTOR& p0, const DirectX::XMVECTOR& p1, const DirectX::XMVECTOR& p2) { p0_ = p0; p1_ = p1; p2_ = p2; }
 
 private:
-	//’¸“_À•W3‚Â
+	//é ‚ç‚¹åº§æ¨™3ã¤
 	DirectX::XMVECTOR p0_;
 	DirectX::XMVECTOR p1_;
 	DirectX::XMVECTOR p2_;
-	//–@üƒxƒNƒgƒ‹
+	//æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«
 	DirectX::XMVECTOR normal_;
 };
 

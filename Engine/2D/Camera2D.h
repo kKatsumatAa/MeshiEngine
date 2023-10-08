@@ -3,37 +3,35 @@
 #include"ProjectionMat.h"
 #include"Shake.h"
 
-#include <DirectXMath.h>
-
-//2D—p‚ÌƒJƒƒ‰
+//2Dç”¨ã®ã‚«ãƒ¡ãƒ©
 class Camera2D
 {
 private:
-	//ˆÊ’u
+	//ä½ç½®
 	Vec2 pos_ = { WindowsApp::WINDOW_WIDTH_ / 2.0f,WindowsApp::WINDOW_HEIGHT_ / 2.0f };
-	//Šg‘å—¦
+	//æ‹¡å¤§ç‡
 	Vec2 zoom_ = { 1.0f,1.0f };
-	//Œ©‚¦‚é”ÍˆÍ
+	//è¦‹ãˆã‚‹ç¯„å›²
 	Vec4 visiableArea_ = { 0,0,WindowsApp::WINDOW_WIDTH_,WindowsApp::WINDOW_HEIGHT_ };
-	//Šp“x
+	//è§’åº¦
 	float rot_ = 0.0f;
-	//ƒXƒNƒŠ[ƒ“’†S
+	//ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¿ƒ
 	Vec2 screenCenterPos_ = { WindowsApp::WINDOW_WIDTH_ / 2.0f,WindowsApp::WINDOW_HEIGHT_ / 2.0f };
-	//ƒJƒƒ‰s—ñ
+	//ã‚«ãƒ¡ãƒ©è¡Œåˆ—
 	DirectX::XMMATRIX cameraMatrix_;
-	//ƒVƒFƒCƒN
+	//ã‚·ã‚§ã‚¤ã‚¯
 	Shake shake_;
 	
-	//’Ç]
+	//è¿½å¾“
 	bool isFollow_ = false;
-	//’Ç]—p
+	//è¿½å¾“ç”¨
 	float followLengthMax_ = 0;
-	//Š„‡
+	//å‰²åˆ
 	float followT_ = 0;
-	//‘O‚ÌÀ•W
+	//å‰ã®åº§æ¨™
 	Vec2 oldPos_;
 
-	//ƒY[ƒ€
+	//ã‚ºãƒ¼ãƒ 
 	bool isZoom_ = false;
 	float startZoomP_ = 0;
 	float endZoomP_ = 0;

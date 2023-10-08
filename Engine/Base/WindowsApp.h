@@ -3,6 +3,12 @@
 #include <d3d12.h>
 #include<stdint.h>
 
+#pragma warning(push)
+//c5267è­¦å‘Šã‚’ç„¡è¦–
+#pragma warning(disable:5267)
+#include <DirectXMath.h>
+#include <DirectXTex.h>
+#pragma warning(pop)
 
 class WindowsApp final
 {
@@ -11,7 +17,7 @@ private:
 	HWND hwnd_;
 
 
-	//ƒEƒCƒ“ƒhƒEƒvƒƒV[ƒWƒƒ(const &‚É‚·‚é‚ÆƒGƒ‰[o‚é)
+	//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£(const &ã«ã™ã‚‹ã¨ã‚¨ãƒ©ãƒ¼å‡ºã‚‹)
 	static LRESULT WindowProc(HWND hwnd, uint32_t msg, WPARAM wparam, LPARAM lparam);
 
 	WindowsApp();
@@ -20,22 +26,22 @@ private:
 
 
 public:
-	//ƒEƒBƒ“ƒhƒEƒTƒCƒY
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚º
 	static const float WINDOW_WIDTH_;
 	static const float WINDOW_HEIGHT_;
 
-	// ƒrƒ…[ƒ|[ƒgİ’èƒRƒ}ƒ“ƒh
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆè¨­å®šã‚³ãƒãƒ³ãƒ‰
 	D3D12_VIEWPORT viewport_;
 
 
-	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ–³Œø
+	//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’ç„¡åŠ¹
 	WindowsApp(const WindowsApp& obj) = delete;
-	//‘ã“ü‰‰Zq‚à
+	//ä»£å…¥æ¼”ç®—å­ã‚‚
 	WindowsApp& operator=(const WindowsApp& obj) = delete;
 
 	static WindowsApp& GetInstance();
 
-	//(const &‚É‚·‚é‚ÆƒGƒ‰[o‚é)
+	//(const &ã«ã™ã‚‹ã¨ã‚¨ãƒ©ãƒ¼å‡ºã‚‹)
 	bool MessegeRoop(MSG msg);
 
 	void UnregisterClassA()

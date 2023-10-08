@@ -5,6 +5,8 @@ using namespace std;
 // デバイス発見時に実行される
 BOOL CALLBACK DeviceFindCallBack(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef)
 {
+	//引数に必要だが、使用しないので
+	pvRef;
 	PadInput::GetInstance().CreateDevice(ipddi);
 
 	return DIENUM_STOP;

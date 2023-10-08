@@ -9,21 +9,21 @@ void SpotLight::DrawImGui(int32_t index)
 
 	if (ImGui::TreeNode(("SpotLight" + indexStr).c_str()))
 	{
-		//ƒ‰ƒCƒg•ûŒü
-		XMVECTOR lightdir_ = { 1.0f,0,0 };
-		//ƒ‰ƒCƒgÀ•Wiƒ[ƒ‹ƒhÀ•WŒnj
-		XMFLOAT3 lightpos_ = { 0,0,0 };
-		//ƒ‰ƒCƒgF
-		XMFLOAT3 lightcolor_ = { 1,1,1 };
-		//ƒ‰ƒCƒg‹——£Œ¸ŠŒW”
-		XMFLOAT3 lightAtten_ = { 1.0f,1.0f,1.0f };
-		//ƒ‰ƒCƒgŒ¸ŠŠp“xiŠJnŠp“xAI—¹Šp“xj
-		XMFLOAT2 lightFactorAngleCos_ = { 0.5f,0.2f };
+		//ãƒ©ã‚¤ãƒˆæ–¹å‘
+		XMFLOAT3 lightdir = { 1.0f,0,0 };
+		//ãƒ©ã‚¤ãƒˆåº§æ¨™ï¼ˆãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ï¼‰
+		XMFLOAT3 lightpos = { 0,0,0 };
+		//ãƒ©ã‚¤ãƒˆè‰²
+		XMFLOAT3 lightcolor = { 1,1,1 };
+		//ãƒ©ã‚¤ãƒˆè·é›¢æ¸›è¡°ä¿‚æ•°
+		XMFLOAT3 lightAtten = { 1.0f,1.0f,1.0f };
+		//ãƒ©ã‚¤ãƒˆæ¸›è¡°è§’åº¦ï¼ˆé–‹å§‹è§’åº¦ã€çµ‚äº†è§’åº¦ï¼‰
+		XMFLOAT2 lightFactorAngleCos = { 0.5f,0.2f };
 
-		ImGui::SliderFloat3("pos", &lightdir_.m128_f32[0], -1.0f, 1.0f);
-		ImGui::InputFloat3("pos", &lightpos_.x);
-		ImGui::ColorEdit3("color", &lightcolor_.x);
-		ImGui::SliderFloat3("atten", &lightAtten_.x, 0, 3.0f);
+		ImGui::SliderFloat3("pos", &lightdir.x, -1.0f, 1.0f);
+		ImGui::InputFloat3("pos", &lightpos.x);
+		ImGui::ColorEdit3("color", &lightcolor.x);
+		ImGui::SliderFloat3("atten", &lightAtten.x, 0, 3.0f);
 		ImGui::Checkbox("active", &active_);
 
 		ImGui::TreePop();

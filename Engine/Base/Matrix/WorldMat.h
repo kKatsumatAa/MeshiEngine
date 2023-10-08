@@ -1,5 +1,4 @@
 #pragma once
-#include <DirectXMath.h>
 #include "Util.h"
 
 class WorldMat
@@ -12,9 +11,9 @@ private:
 	M4 matRot_;
 
 private:
-	//e‚Ìs—ñ‚àŒvZ
+	//è¦ªã®è¡Œåˆ—ã‚‚è¨ˆç®—
 	void SetParentWorld(WorldMat* parent);
-	//Ä‹A,e‚ª‚ ‚ê‚Îs—ñ‚ğŠ|‚¯‚é
+	//å†å¸°,è¦ªãŒã‚ã‚Œã°è¡Œåˆ—ã‚’æ›ã‘ã‚‹
 	void RecursiveCalcParentMat(WorldMat* parent, M4& childMat);
 
 public:
@@ -28,15 +27,15 @@ public:
 
 	WorldMat();
 	~WorldMat() { ; }
-	//s—ñŒvZ
+	//è¡Œåˆ—è¨ˆç®—
 	void CalcScaleMat();
 	void CalcRotMat();
 	void CalcQuaternionRotMat();
 	void CalcTransMat();
 	void CalcWorldMat();
-	//e‚Ìs—ñ‚àl—¶‚µ‚½s—ñŒvZ
+	//è¦ªã®è¡Œåˆ—ã‚‚è€ƒæ…®ã—ãŸè¡Œåˆ—è¨ˆç®—
 	void CalcAllTreeMat();
-	//e‚©‚çã‚Ì‚İi©•ª‚ÍŠÜ‚Ü‚È‚¢j‚Ìs—ñŒvZ‚ğ‚µ‚Äæ“¾
+	//è¦ªã‹ã‚‰ä¸Šã®ã¿ï¼ˆè‡ªåˆ†ã¯å«ã¾ãªã„ï¼‰ã®è¡Œåˆ—è¨ˆç®—ã‚’ã—ã¦å–å¾—
 	M4 GetOnlyParentALLTreeMat();
 
 	Quaternion GetQuaternion();
@@ -47,6 +46,6 @@ public:
 	void SetRotMat(const M4& m) { matRot_ = m; }
 	const M4& GetRotMat() { return matRot_; }
 
-	//eqŠÖŒW‚ğl—¶‚µ‚½ˆÊ’u‚ğ“¾‚é
+	//è¦ªå­é–¢ä¿‚ã‚’è€ƒæ…®ã—ãŸä½ç½®ã‚’å¾—ã‚‹
 	 Vec3 GetWorldTrans();
 };

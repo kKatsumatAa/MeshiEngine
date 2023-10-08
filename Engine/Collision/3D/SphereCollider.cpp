@@ -5,17 +5,17 @@ using namespace DirectX;
 
 void SphereCollider::Update()
 {
-	// ƒ[ƒ‹ƒhs—ñ‚©‚çÀ•W‚ð’Šo
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã‹ã‚‰åº§æ¨™ã‚’æŠ½å‡º
 	const M4& matWorld = object_->GetMatWorld();
 
-	// ‹…‚Ìƒƒ“ƒo•Ï”‚ðXV
+	// çƒã®ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’æ›´æ–°
 	Sphere::center = {
 		(float)matWorld.m_[3][0] + offset_.m128_f32[0],
 	(float)matWorld.m_[3][1] + offset_.m128_f32[1],
 	(float)matWorld.m_[3][2] + offset_.m128_f32[2],
 	(float)matWorld.m_[3][3] + offset_.m128_f32[3],
 	};
-	//ƒ[ƒ‹ƒhs—ñ‚ÌƒXƒP[ƒ‹‚©‚ç”¼Œa
-	Sphere::radius =
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®ã‚¹ã‚±ãƒ¼ãƒ«ã‹ã‚‰åŠå¾„
+	Sphere::iRadius =
 		(object_->GetScale().x + object_->GetScale().y + object_->GetScale().z) / 3.0f;
 }

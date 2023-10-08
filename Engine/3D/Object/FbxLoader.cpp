@@ -1,9 +1,8 @@
-﻿#include "FbxLoader.h"
+#include "FbxLoader.h"
 #include"TextureManager.h"
 #include"Util.h"
 
 using namespace DirectX;
-
 
 
 /// <summary>
@@ -77,8 +76,6 @@ std::unique_ptr<ModelFBX> FbxLoader::LoadModelFromFile(const string& modelName, 
 	ParseNodeRecursive(model.get(), fbxScene->GetRootNode());
 	//アニメーション
 	LoadAnimation(model.get(), fbxScene);
-	//ボーンを改めて調べる
-	LoadBoneData(fbxScene, model.get());
 
 	//fbxシーンをモデルに持たせて、モデルごとに解放
 	model->fbxScene_ = fbxScene;
@@ -103,15 +100,15 @@ void FbxLoader::CalcGlobalTransform(const FbxNode& fbxNode, Node& node, Node* pa
 	node.translation = { (float)translation[0],(float)translation[1],(float)translation[2],1.0f };
 
 	//回転角をDegree（度）からラジアンに変換
-	node.rotation.m128_f32[0] = XMConvertToRadians(node.rotation.m128_f32[0]);
-	node.rotation.m128_f32[1] = XMConvertToRadians(node.rotation.m128_f32[1]);
-	node.rotation.m128_f32[2] = XMConvertToRadians(node.rotation.m128_f32[2]);
+	node.rotation.x = XMConvertToRadians(node.rotation.x);
+	node.rotation.y = XMConvertToRadians(node.rotation.y);
+	node.rotation.z = XMConvertToRadians(node.rotation.z);
 
 	//スケール、回転、平行移動行列の計算
 	XMMATRIX matScaling, matRotation, matTranslation;
-	matScaling = XMMatrixScalingFromVector(node.scaling);
-	matRotation = XMMatrixRotationRollPitchYawFromVector(node.rotation);
-	matTranslation = XMMatrixTranslationFromVector(node.translation);
+	matScaling = XMMatrixScaling(node.scaling.x, node.scaling.y, node.scaling.z);
+	matRotation = XMMatrixRotationRollPitchYaw(node.rotation.x, node.rotation.y, node.rotation.z);
+	matTranslation = XMMatrixTranslation(node.translation.x, node.translation.y, node.translation.z);
 
 	//ローカル変形行列の計算
 	node.transform = XMMatrixIdentity();
@@ -186,11 +183,11 @@ void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode, Mesh* mesh)
 
 
 	//頂点座標(コントロールポイント)読み取り
-	ParseMeshControlPointsPos(model, fbxMesh, mesh);
+	ParseMeshControlPointsPos(fbxMesh);
 	//スキニング情報(コントロールポイントへ)の読み取り
-	PerseSkin(model, fbxMesh, mesh);
+	PerseSkin(model, fbxMesh);
 	//面を構成するデータの読み取り
-	ParseMeshFaces(model, fbxMesh, mesh);
+	ParseMeshFaces(fbxMesh, mesh);
 	//マテリアルの読み取り
 	ParseMaterial(model, mesh, fbxNode);
 
@@ -203,10 +200,8 @@ void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode, Mesh* mesh)
 	mesh->CalculateTangent();
 }
 
-void FbxLoader::ParseMeshControlPointsPos(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
+void FbxLoader::ParseMeshControlPointsPos(FbxMesh* fbxMesh)
 {
-	std::vector<Mesh::VertexPosNormalUvSkin>& vertices = mesh->vertices_;
-
 	//頂点座標データの数(コントロールポイントとは、1つ分の頂点データのこと)
 	const int32_t CONTROL_POINTS_COUNT = fbxMesh->GetControlPointsCount();
 
@@ -228,7 +223,7 @@ void FbxLoader::ParseMeshControlPointsPos(ModelFBX* model, FbxMesh* fbxMesh, Mes
 	}
 }
 
-void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
+void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 {
 	//(今は１スキンのみの前提で実装)
 
@@ -456,41 +451,8 @@ void FbxLoader::LoadAnimation(ModelFBX* model, FbxScene* fbxScene)
 	animationNames.Clear();
 }
 
-
-//------------------------------------------------------------------------------
-void FbxLoader::LoadBoneData(FbxScene* fbxScene, ModelFBX* model)
-{
-	for (const Node& node : model->nodes_)
-	{
-		//属性が当てはまらなければスルー
-		if (node.attribute != FbxNodeAttribute::EType::eMesh)
-		{
-			continue;
-		}
-
-		FbxNode* fbx_node = fbxScene->FindNodeByName(node.name.c_str());
-		FbxMesh* fbx_mesh = fbx_node->GetMesh();
-		LoadBoneDataInternal(fbx_mesh, model);
-	}
-}
-
-//fetchSkeltonと同じ
-void FbxLoader::LoadBoneDataInternal(FbxMesh* fbxMesh, ModelFBX* model)
-{
-	//スキニング情報
-	FbxSkin* fbxSkin =
-		static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
-	if (fbxSkin == NULL)
-	{
-		return;
-	}
-
-	
-}
-
-
 //----------------------------------------------------------------------------------------
-void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
+void FbxLoader::ParseMeshFaces(FbxMesh* fbxMesh, Mesh* mesh)
 {
 	//参照渡し
 	std::vector<Mesh::VertexPosNormalUvSkin>& vertices = mesh->vertices_;
@@ -504,7 +466,7 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 	FbxStringList uvNames;
 	fbxMesh->GetUVSetNames(uvNames);
 
-	int32_t vertexCount = 0;
+	int16_t vertexCount = 0;
 
 	//面ごとの情報読み取り
 	for (int32_t i = 0; i < POLYGON_COUNT; i++)
@@ -574,9 +536,9 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 			else
 			{
 				//3点追加し、四角形の 0,1,2,3 のうち 2,3,0 で三角形を構築する
-				int32_t index2 = indices[indices.size() - 1];
-				int32_t index3 = vertexCount;
-				int32_t index0 = indices[indices.size() - 3];
+				int16_t index2 = indices[indices.size() - 1];
+				int16_t index3 = vertexCount;
+				int16_t index0 = indices[indices.size() - 3];
 				indices.push_back(index2);
 				indices.push_back(index3);
 				indices.push_back(index0);
@@ -585,10 +547,6 @@ void FbxLoader::ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
 			vertexCount++;
 		}
 	}
-}
-
-void FbxLoader::CalcMeshTangent(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh)
-{
 }
 
 void FbxLoader::ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode)

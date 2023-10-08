@@ -1,83 +1,94 @@
 #include "MouseInput.h"
 #include "ImGuiManager.h"
 
-// ƒfƒoƒCƒX”­Œ©‚ÉÀs‚³‚ê‚é
+// ãƒ‡ãƒã‚¤ã‚¹ç™ºè¦‹æ™‚ã«å®Ÿè¡Œã•ã‚Œã‚‹
 BOOL CALLBACK DeviceFindCallBackM(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef)
 {
-	MouseInput::GetInstance().CreateDevice();
+	//å¼•æ•°ã¯å¿…è¦ã ãŒä½¿ç”¨ã—ãªã„ã®ã§
+	pvRef;
+	MouseInput::GetInstance().CreateDevice(ipddi);
 
 	return DIENUM_STOP;
 }
 
-void MouseInput::CreateDevice(bool isExclusive)
+void MouseInput::CreateDevice(LPCDIDEVICEINSTANCE ipddi)
 {
-	//‚Â‚È‚ª‚Á‚Ä‚½‚çŒÄ‚Î‚ê‚éŠÖ”‚È‚Ì‚Åƒtƒ‰ƒO‚ÍƒIƒ“‚É
+	//ã¤ãªãŒã£ã¦ãŸã‚‰å‘¼ã°ã‚Œã‚‹é–¢æ•°ãªã®ã§ãƒ•ãƒ©ã‚°ã¯ã‚ªãƒ³ã«
 	isActive_ = true;
 
-	//‚·‚Å‚É’†g‚ª‚ ‚ê‚ÎV‚½‚É¶¬‚µ‚È‚¢
+	//ã™ã§ã«ä¸­èº«ãŒã‚ã‚Œã°æ–°ãŸã«ç”Ÿæˆã—ãªã„
 	if (mouse_)
 	{
 		return;
 	}
 
-	//ƒfƒoƒCƒXì¬
-	HRESULT result = Input::GetInstance().GetDirectInput()->CreateDevice(
-		GUID_SysMouse,
+	//ãƒ‡ãƒã‚¤ã‚¹ä½œæˆ
+	HRESULT result = S_OK;
+	result = Input::GetInstance().GetDirectInput()->CreateDevice(
+		ipddi->guidInstance,
 		&mouse_,
 		NULL
 	);
 	assert(SUCCEEDED(result));
 
-	//ƒfƒoƒCƒXƒtƒH[ƒ}ƒbƒg‚Ìİ’è
-	mouse_->SetDataFormat(&c_dfDIMouse);
+	//ãƒ‡ãƒã‚¤ã‚¹ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã®è¨­å®š
+	result = mouse_->SetDataFormat(&c_dfDIMouse);
 	assert(SUCCEEDED(result));
 
-	//‚Ù‚©‚ÌƒAƒvƒŠ‚Å‚àƒ}ƒEƒXæ“¾‚³‚¹‚é‚©
+	//ã»ã‹ã®ã‚¢ãƒ—ãƒªã§ã‚‚ãƒã‚¦ã‚¹å–å¾—ã•ã›ã‚‹ã‹
 	int32_t exclusive = DISCL_NONEXCLUSIVE;
-	if (isExclusive) {
+	if (isExclusive_) {
 		exclusive = DISCL_EXCLUSIVE;
 	}
 
-	//‹¦’²ƒ‚[ƒh‚Ìİ’è(ƒEƒBƒ“ƒhƒE‚ªƒAƒNƒeƒBƒu’†‚Ì‚İæ“¾A•ÊƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Å‚àæ“¾‚Å‚«‚é)
+	//å”èª¿ãƒ¢ãƒ¼ãƒ‰ã®è¨­å®š(ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒã‚¢ã‚¯ãƒ†ã‚£ãƒ–ä¸­ã®ã¿å–å¾—ã€åˆ¥ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã§ã‚‚å–å¾—ã§ãã‚‹)
 	if (FAILED(mouse_->SetCooperativeLevel(WindowsApp::GetInstance().Gethwnd(),
 		DISCL_FOREGROUND | exclusive | DISCL_NOWINKEY)
 	))
 	{
 		assert(false);
 	}
-
-	//
-
 }
 
 void MouseInput::MouseConnectSearch()
 {
-	//–ˆƒtƒŒ[ƒ€Ú‘±Šm”F‚·‚é‚Æd‚¢‚Ì‚Å
+	//æ¯ãƒ•ãƒ¬ãƒ¼ãƒ æ¥ç¶šç¢ºèªã™ã‚‹ã¨é‡ã„ã®ã§
 	if (searchCount_ % SEARCH_COUNT_MAX_ == 0)
 	{
 		searchCount_ = 0;
-		//‚¢‚Á‚½‚ñ‚±‚±‚Åfalse‚É‚·‚é‚±‚Æ‚ÅÚ‘±‚³‚ê‚Ä‚È‚¢‚Æ‚«‚Í‚»‚Ì‚Ü‚ÜA‚³‚ê‚Ä‚¢‚½‚çtrue
+		//ã„ã£ãŸã‚“ã“ã“ã§falseã«ã™ã‚‹ã“ã¨ã§æ¥ç¶šã•ã‚Œã¦ãªã„ã¨ãã¯ãã®ã¾ã¾ã€ã•ã‚Œã¦ã„ãŸã‚‰true
 		isActive_ = false;
 
-		// ƒfƒoƒCƒX‚Ì—ñ‹“iÚ‘±‚³‚ê‚Ä‚é‚©‚ğŠm”Fj
-		result_ = Input::GetInstance().GetDirectInput()->EnumDevices(
-			DI8DEVTYPE_MOUSE,
-			DeviceFindCallBackM,//Ú‘±‚³‚ê‚Ä‚¢‚ê‚Î‚±‚ÌŠÖ”‚ªŒÄ‚Î‚ê‚é
-			NULL,
-			DIEDFL_ATTACHEDONLY//
-		);
-		assert(SUCCEEDED(result_));
+		// ãƒ‡ãƒã‚¤ã‚¹ã®åˆ—æŒ™ï¼ˆæ¥ç¶šã•ã‚Œã¦ã‚‹ã‹ã‚’ç¢ºèªï¼‰
+		DeviceEnumerationAndCreate();
 
-		//ƒpƒbƒh‚ªÚ‘±‚³‚ê‚Ä‚È‚¢‚©‚ÂA‘O‚Ü‚Å‚³‚ê‚Ä‚¢‚½‚çíœ
+		//ãƒ‘ãƒƒãƒ‰ãŒæ¥ç¶šã•ã‚Œã¦ãªã„ã‹ã¤ã€å‰ã¾ã§ã•ã‚Œã¦ã„ãŸã‚‰å‰Šé™¤
 		if (mouse_ && !isActive_)
 		{
-			mouse_->Unacquire();
-			mouse_->Release();
-			mouse_.Reset();
+			DeleteDevice();
 		}
 	}
 
 	searchCount_++;
+}
+
+void MouseInput::DeviceEnumerationAndCreate()
+{
+	// ãƒ‡ãƒã‚¤ã‚¹ã®åˆ—æŒ™ï¼ˆæ¥ç¶šã•ã‚Œã¦ã‚‹ã‹ã‚’ç¢ºèªï¼‰
+	result_ = Input::GetInstance().GetDirectInput()->EnumDevices(
+		DI8DEVTYPE_MOUSE,
+		DeviceFindCallBackM,//æ¥ç¶šã•ã‚Œã¦ã„ã‚Œã°ã“ã®é–¢æ•°ãŒå‘¼ã°ã‚Œã‚‹
+		NULL,
+		DIEDFL_ATTACHEDONLY//
+	);
+	assert(SUCCEEDED(result_));
+}
+
+void MouseInput::DeleteDevice()
+{
+	mouse_->Unacquire();
+	mouse_->Release();
+	mouse_.Reset();
 }
 
 MouseInput::MouseInput()
@@ -105,25 +116,25 @@ MouseInput& MouseInput::GetInstance()
 
 void MouseInput::Update()
 {
-	//Ú‘±‚ğŠm”F
+	//æ¥ç¶šã‚’ç¢ºèª
 	MouseConnectSearch();
 
 	if (mouse_ != NULL)
 	{
-		//‘O‰ñ‚Ìî•ñ
+		//å‰å›ã®æƒ…å ±
 		oldMouseData_ = mouseData_;
 
-		//î•ñ‚Ìæ“¾ŠJn
+		//æƒ…å ±ã®å–å¾—é–‹å§‹
 		mouse_->Acquire();
-		//ƒ|[ƒŠƒ“ƒO(ˆê’èŠÔŠu‚ÅƒfƒoƒCƒX‚Ìî•ñ‚ğ“¯Šú)
+		//ãƒãƒ¼ãƒªãƒ³ã‚°(ä¸€å®šé–“éš”ã§ãƒ‡ãƒã‚¤ã‚¹ã®æƒ…å ±ã‚’åŒæœŸ)
 		mouse_->Poll();
-		//“ü—Íî•ñ‚ğæ“¾
+		//å…¥åŠ›æƒ…å ±ã‚’å–å¾—
 		mouse_->GetDeviceState(sizeof(mouseData_), &mouseData_);
 
-		//ƒJ[ƒ\ƒ‹‚ÌˆÊ’uæ“¾
+		//ã‚«ãƒ¼ã‚½ãƒ«ã®ä½ç½®å–å¾—
 		POINT p;
 		GetCursorPos(&p);
-		//ƒXƒNƒŠ[ƒ“À•W‚ğƒNƒ‰ƒCƒAƒ“ƒgÀ•W‚É•Ï‚¦‚é
+		//ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‚’ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆåº§æ¨™ã«å¤‰ãˆã‚‹
 		ScreenToClient(WindowsApp::GetInstance().Gethwnd(), &p);
 
 		cursorPos_.x = (float)p.x;
@@ -136,7 +147,7 @@ bool MouseInput::GetMouseActive()
 	if (mouse_ != NULL)
 	{
 
-		//ƒWƒ‡ƒCƒXƒeƒBƒbƒN
+		//ã‚¸ãƒ§ã‚¤ã‚¹ãƒ†ã‚£ãƒƒã‚¯
 		if (mouseData_.lX < 0 || mouseData_.lX > 0 || mouseData_.lY < 0 || mouseData_.lY > 0)
 		{
 			return true;
@@ -161,7 +172,7 @@ bool MouseInput::GetTriggerClick(byte click)
 {
 	if (mouse_ == NULL) { return false; }
 
-	if (ImGui::GetIO().WantCaptureMouse == false && 
+	if (ImGui::GetIO().WantCaptureMouse == false &&
 		mouseData_.rgbButtons[click] && !oldMouseData_.rgbButtons[click])
 	{
 		return true;
@@ -174,7 +185,7 @@ bool MouseInput::GetTriggerReleaseClick(byte click)
 {
 	if (mouse_ == NULL) { return false; }
 
-	if (ImGui::GetIO().WantCaptureMouse == false && 
+	if (ImGui::GetIO().WantCaptureMouse == false &&
 		!mouseData_.rgbButtons[click] && oldMouseData_.rgbButtons[click])
 	{
 		return true;
@@ -196,4 +207,22 @@ Vec2 MouseInput::GetCursorVelocity()
 long MouseInput::GetWheelAmountOfRot()
 {
 	return mouseData_.lZ;
+}
+
+void MouseInput::SetIsExclusive(bool is)
+{
+	//è¨­å®šã‚’å¤‰ãˆã¦æ–°ãŸã«ãƒ‡ãƒã‚¤ã‚¹ä½œã‚Šç›´ã•ãªãã‚ƒã„ã‘ãªã„ã®ã§
+	if (is != isExclusive_)
+	{
+		isExclusive_ = is;
+
+		//å…ƒã®ãƒ‡ãƒã‚¤ã‚¹å‰Šé™¤
+		if (mouse_)
+		{
+			DeleteDevice();
+		}
+
+		// ãƒ‡ãƒã‚¤ã‚¹ã®åˆ—æŒ™ï¼ˆæ¥ç¶šã•ã‚Œã¦ã‚‹ã‹ã‚’ç¢ºèªï¼‰
+		DeviceEnumerationAndCreate();
+	}
 }

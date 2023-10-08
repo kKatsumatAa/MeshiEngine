@@ -17,7 +17,7 @@
 
 
 //---------------------------------------------------------------------------------------
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 SceneManager::~SceneManager()
 {
 	state_->Finalize();
@@ -27,7 +27,7 @@ void SceneManager::SetNextScene(std::string sceneName)
 {
 	nextScene_ = sceneFactory_->CreateScene(sceneName);
 
-	//‘JˆÚ‰‰oŠJŽn
+	//é·ç§»æ¼”å‡ºé–‹å§‹
 	ChangeScene();
 }
 
@@ -36,20 +36,20 @@ void SceneManager::ChangeScene()
 {
 	if (nextScene_)
 	{
-		//ƒV[ƒ“‘JˆÚ‰‰oŽž‚É”ñ“¯Šú‚Åƒ[ƒh
+		//ã‚·ãƒ¼ãƒ³é·ç§»æ¼”å‡ºæ™‚ã«éžåŒæœŸã§ãƒ­ãƒ¼ãƒ‰
 		SceneTransitionManager::GetInstance().BeginSceneTransition([=]()
 			{
 				if (state_) {
 					state_->Finalize();
 					state_.reset();
 				}
-				//ƒV[ƒ“ƒtƒ@ƒNƒgƒŠ[‚ÅƒV[ƒ“¶¬
+				//ã‚·ãƒ¼ãƒ³ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ã§ã‚·ãƒ¼ãƒ³ç”Ÿæˆ
 				state_ = std::move(nextScene_);
 				state_->SetSceneManager(this);
 				state_->Initialize();
-				//‰æ‘œƒAƒbƒvƒ[ƒh
+				//ç”»åƒã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰
 				DirectXWrapper::GetInstance().UpLoadTexture();
-				//XVˆ—
+				//æ›´æ–°å‡¦ç†
 				UpdateInternal();
 			});
 	}
@@ -61,13 +61,13 @@ void SceneManager::StopWaveAllScene()
 
 void SceneManager::UpdateInternal()
 {
-	//objƒ}ƒl[ƒWƒƒ
+	//objãƒžãƒãƒ¼ã‚¸ãƒ£
 	ObjectManager::GetInstance().Update();
 
-	//ƒIƒuƒWƒFƒ}ƒl[ƒWƒƒ[‚ÌƒfƒoƒbƒO—pƒAƒbƒvƒf[ƒg
+	//ã‚ªãƒ–ã‚¸ã‚§ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®ãƒ‡ãƒãƒƒã‚°ç”¨ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ
 	ObjectManager::GetInstance().DebugUpdate();
 
-	//ƒJƒƒ‰ƒ}ƒl[ƒWƒƒ[
+	//ã‚«ãƒ¡ãƒ©ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 	CameraManager::GetInstance().Update();
 }
 
@@ -79,28 +79,28 @@ void SceneManager::Initialize()
 
 	texhandle_[1] = TextureManager::LoadGraph("effect1.png");
 
-	//ƒCƒ“ƒXƒ^ƒ“ƒX¶¬
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç”Ÿæˆ
 	lightManager_ = std::move(LightManager::Create());
-	//ƒ‰ƒCƒgF‚ðÝ’è
+	//ãƒ©ã‚¤ãƒˆè‰²ã‚’è¨­å®š
 	lightManager_->SetDirLightColor(0, { 0.6f,0.6f,0.6f });
-	//3DƒIƒuƒWƒFƒNƒg‚Éƒ‰ƒCƒg‚ðƒZƒbƒg(‘S‘Ì‚Åˆê‚Â‚ð‹¤—L)
+	//3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ãƒ©ã‚¤ãƒˆã‚’ã‚»ãƒƒãƒˆ(å…¨ä½“ã§ä¸€ã¤ã‚’å…±æœ‰)
 	IObject3D::SetLight(lightManager_.get());
-	//ƒŒƒxƒ‹ƒ}ƒl[ƒWƒƒ[‚É‚à
+	//ãƒ¬ãƒ™ãƒ«ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã«ã‚‚
 	LevelManager::GetInstance().SetLightManager(lightManager_.get());
 
-	//ƒV[ƒ“‘JˆÚƒ}ƒl[ƒWƒƒ
+	//ã‚·ãƒ¼ãƒ³é·ç§»ãƒžãƒãƒ¼ã‚¸ãƒ£
 	SceneTransitionManager::GetInstance().Initialize();
 
-	//‰æ‘œƒAƒbƒvƒ[ƒh
+	//ç”»åƒã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰
 	DirectXWrapper::GetInstance().UpLoadTexture();
 }
 
 void SceneManager::Update()
 {
-	//ƒV[ƒ“‘JˆÚƒ}ƒl[ƒWƒƒ
+	//ã‚·ãƒ¼ãƒ³é·ç§»ãƒžãƒãƒ¼ã‚¸ãƒ£
 	SceneTransitionManager::GetInstance().Update();
 
-	//ƒV[ƒ“‘JˆÚ‰‰oI‚í‚Á‚½‚ç
+	//ã‚·ãƒ¼ãƒ³é·ç§»æ¼”å‡ºçµ‚ã‚ã£ãŸã‚‰
 	if (!SceneTransitionManager::GetInstance().GetIsDoingEffect() && state_)
 	{
 		UpdateInternal();
@@ -116,26 +116,26 @@ void SceneManager::Update()
 
 void SceneManager::Draw()
 {
-	//ƒ[ƒh‚µ‚Ä‚È‚¯‚ê‚Î•`‰æ‚¾‚¯
+	//ãƒ­ãƒ¼ãƒ‰ã—ã¦ãªã‘ã‚Œã°æç”»ã ã‘
 	if (!SceneTransitionManager::GetInstance().GetIsLoadingOnly() && state_)
 	{
 		state_->Draw();
-		//objƒ}ƒl[ƒWƒƒ
+		//objãƒžãƒãƒ¼ã‚¸ãƒ£
 		ObjectManager::GetInstance().Draw();
-		//ƒp[ƒeƒBƒNƒ‹
+		//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
 		ParticleManager::GetInstance()->Draw();
 	}
 }
 
 void SceneManager::DrawSprite()
 {
-	//ƒ[ƒh‚µ‚Ä‚È‚¯‚ê‚Î•`‰æ‚¾‚¯
+	//ãƒ­ãƒ¼ãƒ‰ã—ã¦ãªã‘ã‚Œã°æç”»ã ã‘
 	if (!SceneTransitionManager::GetInstance().GetIsLoadingOnly() && state_)
 	{
 		state_->DrawSprite();
 	}
 
-	//ƒV[ƒ“‘JˆÚƒ}ƒl[ƒWƒƒ
+	//ã‚·ãƒ¼ãƒ³é·ç§»ãƒžãƒãƒ¼ã‚¸ãƒ£
 	SceneTransitionManager::GetInstance().Draw();
 }
 
@@ -149,12 +149,11 @@ void SceneManager::DrawImgui()
 
 	ImGui::End();
 
-	//ƒ[ƒh‚µ‚Ä‚È‚¯‚ê‚Î
+	//ãƒ­ãƒ¼ãƒ‰ã—ã¦ãªã‘ã‚Œã°
 	if (!SceneTransitionManager::GetInstance().GetIsLoadingOnly() && state_)
 	{
 		state_->DrawImgui();
-		LevelManager::GetInstance().DrawImGui();
-		//objƒ}ƒl[ƒWƒƒ
+		//objãƒžãƒãƒ¼ã‚¸ãƒ£
 		ObjectManager::GetInstance().DrawImGui();
 		//light
 		lightManager_->DrawImGui();

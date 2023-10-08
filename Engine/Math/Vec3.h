@@ -1,5 +1,4 @@
 #pragma once
-#include<DirectXMath.h>
 #include"Vec2.h"
 
 const float PI = 3.1415f;
@@ -27,14 +26,14 @@ public:
 		:x(x), y(yz.x), z(yz.y)
 	{}
 
-	//•Ö—˜ŠÖ”
+	//ä¾¿åˆ©é–¢æ•°
 	float GetLength() const;
 	void Normalized();
 	Vec3 GetNormalized() const;
 	Vec3 Cross(const Vec3& other) const;
 	float Dot(const Vec3& other) const;
 
-	//ƒIƒoƒ‰‰Zq
+	//ã‚ªãƒãƒ­æ¼”ç®—å­
 	Vec3 operator+()const;
 	Vec3& operator+=(const Vec3& other);
 	Vec3 operator-()const;
@@ -45,7 +44,7 @@ public:
 	Vec3& operator/=(float other);
 };
 
-//“ñ€‰‰ZqƒI[ƒo[ƒ[ƒh
+//äºŒé …æ¼”ç®—å­ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
 const Vec3 operator +(const Vec3& v1, const Vec3& v2);
 const Vec3 operator -(const Vec3& v1, const Vec3& v2);
 const Vec3 operator *(const Vec3& v, float s);

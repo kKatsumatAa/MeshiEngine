@@ -9,7 +9,7 @@
 
 class BaseCollider;
 
-//Object‚ª‚Á‚Ä‚¢‚éƒRƒ‰ƒCƒ_[‚ğ‚±‚ÌƒNƒ‰ƒX‚Ì•Ï”‚É“o˜^‚µ‚Äg‚¤
+//ObjectãŒæŒã£ã¦ã„ã‚‹ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ã“ã®ã‚¯ãƒ©ã‚¹ã®å¤‰æ•°ã«ç™»éŒ²ã—ã¦ä½¿ã†
 class CollisionManager
 {
 private:
@@ -17,14 +17,14 @@ private:
 	~CollisionManager() = default;
 
 private:
-	//ƒRƒ‰ƒCƒ_[‚ÌƒŠƒXƒg(3D)
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ãƒªã‚¹ãƒˆ(3D)
 	std::forward_list<BaseCollider*> colliders3D_;
-	//ƒRƒ‰ƒCƒ_[‚ÌƒŠƒXƒg(2D)
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ãƒªã‚¹ãƒˆ(2D)
 	std::forward_list<BaseCollider*> colliders2D_;
 
 
 
-public://Ã“Iƒƒ“ƒoŠÖ”
+public://é™çš„ãƒ¡ãƒ³ãƒé–¢æ•°
 	CollisionManager(const CollisionManager&) = delete;
 	CollisionManager& operator=(const CollisionManager&) = delete;
 
@@ -34,15 +34,15 @@ private:
 	void CheckAllCollision3D();
 	void CheckAllCollision2D();
 
-public://ŠÖ”
+public://é–¢æ•°
 	/// <summary>
-	/// ƒRƒ‰ƒCƒ_[‚Ì’Ç‰Á
+	/// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®è¿½åŠ 
 	/// </summary>
 	/// <param name="collider"></param>
 	void AddCollider(BaseCollider* collider);
 
 	/// <summary>
-	/// ƒRƒ‰ƒCƒ_[‚Ìíœ
+	/// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®å‰Šé™¤
 	/// </summary>
 	/// <param name="collider"></param>
 	inline void RemoveCollider(BaseCollider* collider)
@@ -51,41 +51,41 @@ public://ŠÖ”
 	}
 
 	/// <summary>
-	/// ƒŒƒCƒLƒƒƒXƒg
+	/// ãƒ¬ã‚¤ã‚­ãƒ£ã‚¹ãƒˆ
 	/// </summary>
-	/// <param name="ray">ƒŒƒC</param>
-	/// <param name="hitInfo">Õ“Ëî•ñ</param>
-	/// <param name="maxDistance">Å‘å‹——£</param>
-	/// <returns>ƒŒƒC‚ª”CˆÓ‚ÌƒRƒ‰ƒCƒ_[‚ÆŒğ‚í‚éê‡‚Ítrue</returns>
+	/// <param name="ray">ãƒ¬ã‚¤</param>
+	/// <param name="hitInfo">è¡çªæƒ…å ±</param>
+	/// <param name="maxDistance">æœ€å¤§è·é›¢</param>
+	/// <returns>ãƒ¬ã‚¤ãŒä»»æ„ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨äº¤ã‚ã‚‹å ´åˆã¯true</returns>
 	bool Raycast(const Ray& ray, RaycastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
 
 	/// <summary>
-	/// ƒŒƒCƒLƒƒƒXƒg”»’è‘®«w’è”Å
+	/// ãƒ¬ã‚¤ã‚­ãƒ£ã‚¹ãƒˆåˆ¤å®šå±æ€§æŒ‡å®šç‰ˆ
 	/// </summary>
-	/// <param name="ray">ƒŒƒC</param>
-	/// <param name="attribute">”»’è‘®«</param>
-	/// <param name="hitInfo">Õ“Ëî•ñ</param>
-	/// <param name="maxDistance">Å‘å‹——£</param>
+	/// <param name="ray">ãƒ¬ã‚¤</param>
+	/// <param name="attribute">åˆ¤å®šå±æ€§</param>
+	/// <param name="hitInfo">è¡çªæƒ…å ±</param>
+	/// <param name="maxDistance">æœ€å¤§è·é›¢</param>
 	/// <returns></returns>
 	bool Raycast(const Ray& ray, uint16_t attribute, RaycastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
 
 	/// <summary>
-	///@ƒŒƒCƒLƒƒƒXƒg‚Ì•Ö—˜”Å
+	///ã€€ãƒ¬ã‚¤ã‚­ãƒ£ã‚¹ãƒˆã®ä¾¿åˆ©ç‰ˆ
 	/// </summary>
-	/// <param name="pos">I“_</param>
-	/// <param name="oldPos">n“_</param>
-	/// <param name="attribute">”»’è‘®«</param>
+	/// <param name="pos">çµ‚ç‚¹</param>
+	/// <param name="oldPos">å§‹ç‚¹</param>
+	/// <param name="attribute">åˆ¤å®šå±æ€§</param>
 	/// <param name="info"></param>
 	/// <returns></returns>
 	bool RaycastUtil(const Vec3& endPos, const Vec3& startPos, uint16_t attribute, RaycastHit* info);
 
 	/// <summary>
-	/// ‹…‚É‚æ‚éÕ“Ë‘SŒŸõ
+	/// çƒã«ã‚ˆã‚‹è¡çªå…¨æ¤œç´¢
 	/// </summary>
 	/// <param name="sphere"></param>
 	/// <param name="callBack"></param>
 	/// <param name="attribute"></param>
-	void QuerySphere(const Sphere& sphere, QueryCallback* callBack, uint16_t attribute = (uint16_t)0xffffffff);
+	void QuerySphere(const Sphere& sphere, QueryCallback* callBack, uint16_t attribute = (uint16_t)0xffff);
 
 	void CheckAllCollisions();
 

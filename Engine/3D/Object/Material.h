@@ -2,70 +2,69 @@
 
 #include <d3d12.h>
 #include <d3dx12.h>
-#include <DirectXMath.h>
 #include <wrl.h>
 #include <string>
 #include "DirectXWrapper.h"
 
 /// <summary>
-/// ƒ}ƒeƒŠƒAƒ‹
+/// ãƒãƒ†ãƒªã‚¢ãƒ«
 /// </summary>
 class Material
 {
 public:
-	//ƒtƒŒƒ“ƒhƒNƒ‰ƒX
+	//ãƒ•ãƒ¬ãƒ³ãƒ‰ã‚¯ãƒ©ã‚¹
 	friend class FbxLoader;
 
-private: // ƒGƒCƒŠƒAƒX
-	// Microsoft::WRL::‚ğÈ—ª
+private: // ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	// Microsoft::WRL::ã‚’çœç•¥
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	// DirectX::‚ğÈ—ª
+	// DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-public: // ƒTƒuƒNƒ‰ƒX
+public: // ã‚µãƒ–ã‚¯ãƒ©ã‚¹
 	struct ConstBufferDataMaterial2
 	{
 		XMFLOAT3 ambient;
-		float pad1;       //ƒpƒfƒBƒ“ƒO
+		float pad1;       //ãƒ‘ãƒ‡ã‚£ãƒ³ã‚°
 		XMFLOAT3 diffuse;
-		float pad2;       //ƒpƒfƒBƒ“ƒO
+		float pad2;       //ãƒ‘ãƒ‡ã‚£ãƒ³ã‚°
 		XMFLOAT3 specular;
 		float alpha;
 	};
 
-public: // Ã“Iƒƒ“ƒoŠÖ”
+public: // é™çš„ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/// <summary>
-	/// Ã“I‰Šú‰»
+	/// é™çš„åˆæœŸåŒ–
 	/// </summary>
-	/// <param name="device">ƒfƒoƒCƒX</param>
+	/// <param name="device">ãƒ‡ãƒã‚¤ã‚¹</param>
 	static void StaticInitialize(ID3D12Device* device);
 
 	/// <summary>
-	/// ƒ}ƒeƒŠƒAƒ‹¶¬
+	/// ãƒãƒ†ãƒªã‚¢ãƒ«ç”Ÿæˆ
 	/// </summary>
-	/// <returns>¶¬‚³‚ê‚½ƒ}ƒeƒŠƒAƒ‹</returns>
+	/// <returns>ç”Ÿæˆã•ã‚ŒãŸãƒãƒ†ãƒªã‚¢ãƒ«</returns>
 	static std::unique_ptr<Material> Create();
 
-private: // Ã“Iƒƒ“ƒo•Ï”
-	// ƒfƒoƒCƒX
+private: // é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°
+	// ãƒ‡ãƒã‚¤ã‚¹
 	static ID3D12Device* sDevice_;
 
 public:
-	std::string name_;	// ƒ}ƒeƒŠƒAƒ‹–¼
-	XMFLOAT3 ambient_;	// ƒAƒ“ƒrƒGƒ“ƒg‰e‹¿“x
-	XMFLOAT3 diffuse_;	// ƒfƒBƒtƒ…[ƒY‰e‹¿“x
-	XMFLOAT3 specular_;	// ƒXƒyƒLƒ…ƒ‰[‰e‹¿“x
-	float alpha_;		// ƒAƒ‹ƒtƒ@
-	std::string textureFilename_;	// ƒeƒNƒXƒ`ƒƒƒtƒ@ƒCƒ‹–¼
-	uint64_t textureHandle_;//‰æ‘œƒnƒ“ƒhƒ‹
+	std::string name_;	// ãƒãƒ†ãƒªã‚¢ãƒ«å
+	XMFLOAT3 ambient_;	// ã‚¢ãƒ³ãƒ“ã‚¨ãƒ³ãƒˆå½±éŸ¿åº¦
+	XMFLOAT3 diffuse_;	// ãƒ‡ã‚£ãƒ•ãƒ¥ãƒ¼ã‚ºå½±éŸ¿åº¦
+	XMFLOAT3 specular_;	// ã‚¹ãƒšã‚­ãƒ¥ãƒ©ãƒ¼å½±éŸ¿åº¦
+	float alpha_;		// ã‚¢ãƒ«ãƒ•ã‚¡
+	std::string textureFilename_;	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ•ã‚¡ã‚¤ãƒ«å
+	uint64_t textureHandle_;//ç”»åƒãƒãƒ³ãƒ‰ãƒ«
 
 public:
 	~Material();
-	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	Material() {
 		ambient_ = { 0.3f, 0.3f, 0.3f };
 		diffuse_ = { 0.0f, 0.0f, 0.0f };
@@ -75,36 +74,36 @@ public:
 	}
 
 	/// <summary>
-	/// ’è”ƒoƒbƒtƒ@‚Ìæ“¾
+	/// å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®å–å¾—
 	/// </summary>
 	/// <returns></returns>
 	ID3D12Resource* GetConstantBuffer() { return constBuff_.Get(); }
 
-	/// ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
+	/// ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
 	/// </summary>
-	/// <param name="directoryPath">“Ç‚İ‚İƒfƒBƒŒƒNƒgƒŠƒpƒX</param>
-	/// <param name="cpuHandle">CPUƒfƒXƒNƒŠƒvƒ^ƒnƒ“ƒhƒ‹</param>
-	/// <param name="gpuHandle">GPUƒfƒXƒNƒŠƒvƒ^ƒnƒ“ƒhƒ‹</param>
+	/// <param name="directoryPath">èª­ã¿è¾¼ã¿ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒ‘ã‚¹</param>
+	/// <param name="cpuHandle">CPUãƒ‡ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒãƒ³ãƒ‰ãƒ«</param>
+	/// <param name="gpuHandle">GPUãƒ‡ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒãƒ³ãƒ‰ãƒ«</param>
 	void LoadTexture(const std::string& directoryPath);
 
 
 	/// <summary>
-	/// XV
+	/// æ›´æ–°
 	/// </summary>
 	void Update();
 
 private:
-	// ’è”ƒoƒbƒtƒ@
+	// å®šæ•°ãƒãƒƒãƒ•ã‚¡
 	ComPtr<ID3D12Resource> constBuff_;
 
 private:
 	/// <summary>
-	/// ‰Šú‰»
+	/// åˆæœŸåŒ–
 	/// </summary>
 	void Initialize();
 
 	/// <summary>
-	/// ’è”ƒoƒbƒtƒ@‚Ì¶¬
+	/// å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	/// </summary>
 	void CreateConstantBuffer();
 };

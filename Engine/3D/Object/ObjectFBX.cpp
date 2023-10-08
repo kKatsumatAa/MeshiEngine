@@ -4,7 +4,7 @@
 using namespace DirectX;
 
 //------------------------------------------
-//ƒpƒCƒvƒ‰ƒCƒ“‚È‚Ç‚Ìİ’è
+//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ãªã©ã®è¨­å®š
 RootPipe ObjectFBX::pipelineSetM_[2];
 
 //--------------------------------------------------------------------------------------
@@ -14,19 +14,19 @@ ObjectFBX::~ObjectFBX()
 
 ObjectFBX::ObjectFBX()
 {
-	//ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìí—Ş
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç¨®é¡
 	objInsType_ = ObjectInstanceType::FBX;
 
-	//ƒXƒLƒ“‚Ìƒoƒbƒtƒ@
-		//ƒq[ƒvİ’è
+	//ã‚¹ã‚­ãƒ³ã®ãƒãƒƒãƒ•ã‚¡
+		//ãƒ’ãƒ¼ãƒ—è¨­å®š
 	D3D12_RESOURCE_DESC cbResourceDesc{}; D3D12_HEAP_PROPERTIES cbHeapProp{};
-	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPU‚Ö‚Ì“]‘——p
-	//ƒŠƒ\[ƒXİ’è
+	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUã¸ã®è»¢é€ç”¨
+	//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 	ResourceProperties(cbResourceDesc,
-		((uint32_t)sizeof(ConstBufferDataSkin) + 0xff) & ~0xff/*256ƒoƒCƒgƒAƒ‰ƒCƒƒ“ƒg*/);
-	//’è”ƒoƒbƒtƒ@‚Ì¶¬
+		((uint32_t)sizeof(ConstBufferDataSkin) + 0xff) & ~0xff/*256ãƒã‚¤ãƒˆã‚¢ãƒ©ã‚¤ãƒ¡ãƒ³ãƒˆ*/);
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	BuffProperties(cbHeapProp, cbResourceDesc, &constBuffSkin_);
-	//ƒ}ƒbƒsƒ“ƒO
+	//ãƒãƒƒãƒ”ãƒ³ã‚°
 	ConstBufferDataSkin* constMapSkin = nullptr;
 	constBuffSkin_->Map(0, nullptr, (void**)&constMapSkin);
 	for (uint32_t i = 0; i < S_MAX_BONES_; i++)
@@ -39,11 +39,11 @@ ObjectFBX::ObjectFBX()
 //------------------------------------------------------------------------------------------
 void ObjectFBX::CommonInitialize()
 {
-	//ƒpƒCƒvƒ‰ƒCƒ“‚È‚Ç‚Ìİ’è
+	//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ãªã©ã®è¨­å®š
 	PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[0],
 		"Resources/shaders/FBXVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
 		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
-	//ƒƒCƒ„[ƒtƒŒ[ƒ€
+	//ãƒ¯ã‚¤ãƒ¤ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ 
 	PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, pipelineSetM_[1],
 		"Resources/shaders/FBXVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
 		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
@@ -55,13 +55,13 @@ void ObjectFBX::SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64
 {
 	SetMaterialLightMTex(NULL, dissolveTexHandle, specularMapTexhandle, normalMapTexHandle, false);
 
-	//ƒXƒLƒjƒ“ƒO—p
+	//ã‚¹ã‚­ãƒ‹ãƒ³ã‚°ç”¨
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(SKIN, constBuffSkin_->GetGPUVirtualAddress());
 }
 
 void ObjectFBX::DrawModelInternal(int32_t pipelineNum)
 {
-	//ƒeƒNƒXƒ`ƒƒ‚ğİ’è‚µ‚Ä‚¢‚È‚©‚Á‚½‚ç
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®šã—ã¦ã„ãªã‹ã£ãŸã‚‰
 	uint64_t dissolveTextureHandleL = dissolveTextureHandle_;
 	TextureManager::CheckTexHandle(dissolveTextureHandleL);
 	uint64_t specularMapTextureHandleL = specularMapTextureHandle_;
@@ -69,13 +69,13 @@ void ObjectFBX::DrawModelInternal(int32_t pipelineNum)
 	uint64_t normalMapTextureHandleL = normalMapTextureHandle_;
 	TextureManager::CheckTexHandle(normalMapTextureHandleL);
 
-	//ƒ‚ƒfƒ‹—p
-	//ƒ‰ƒ€ƒ_®‚ÅƒRƒ}ƒ“ƒhŠÖ”(ƒ{[ƒ“s—ñ‚àƒZƒbƒg)
+	//ãƒ¢ãƒ‡ãƒ«ç”¨
+	//ãƒ©ãƒ ãƒ€å¼ã§ã‚³ãƒãƒ³ãƒ‰é–¢æ•°(ãƒœãƒ¼ãƒ³è¡Œåˆ—ã‚‚ã‚»ãƒƒãƒˆ)
 	std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(pipelineSetM_, pipelineNum, pipelineSetM_[0].rootSignature.Get()); };
 	std::function<void()>SetMaterialTexM = [=]() {SetMaterialLightMTexSkinModel(
 		dissolveTextureHandleL, specularMapTextureHandleL, normalMapTextureHandleL); };
 
-	//ƒƒbƒVƒ…‚ÌƒIƒtƒZƒbƒgƒf[ƒ^ƒZƒbƒg
+	//ãƒ¡ãƒƒã‚·ãƒ¥ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆ
 	GetModel()->SetPolygonOffsetData(meshOffsetData_);
 
 	model_->Draw(SetRootPipeRM, SetMaterialTexM, cbt_);
@@ -91,56 +91,56 @@ void ObjectFBX::BlendAnimationUpdate()
 
 	ModelFBX* model = dynamic_cast<ModelFBX*>(model_);
 
-	const int32_t START_INDEX = 0;//‚Æ‚è‚ ‚¦‚¸ˆê”Ô–Ú‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚Ì‚İ
-	const int32_t END_INDEX = 0;//‚Æ‚è‚ ‚¦‚¸ˆê”Ô–Ú‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚Ì‚İ
+	const int32_t START_INDEX = 0;//ã¨ã‚Šã‚ãˆãšä¸€ç•ªç›®ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã¿
+	const int32_t END_INDEX = 0;//ã¨ã‚Šã‚ãˆãšä¸€ç•ªç›®ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã¿
 
-	//•âŠÔ‘O‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
+	//è£œé–“å‰ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 	const std::vector<ModelFBX::Animation>& ANIMATIONS =
 		model->GetAnimations();
 	const ModelFBX::Animation& START_ANIMATION =
 		ANIMATIONS[START_INDEX];
 
-	//•âŠÔŒã‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
+	//è£œé–“å¾Œã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 	const ModelFBX::Animation& END_ANIMATION =
 		ANIMATIONS[END_INDEX];
 
-	//•âŠÔ‘O‚ÌƒL[ƒtƒŒ[ƒ€
+	//è£œé–“å‰ã®ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ 
 	const std::vector<ModelFBX::Keyframe>& START_KEY_FRAMES = START_ANIMATION.keyframes;
 
-	//•âŠÔŒã‚ÌƒL[ƒtƒŒ[ƒ€
+	//è£œé–“å¾Œã®ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ 
 	const std::vector<ModelFBX::Keyframe>& END_KEY_FRAMES = END_ANIMATION.keyframes;
 
-	//ƒm[ƒh‚Ìƒpƒ‰ƒ[ƒ^
+	//ãƒãƒ¼ãƒ‰ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 	std::vector<XMVECTOR> startScales;
 	std::vector<XMVECTOR> startRotates;
 	std::vector<XMVECTOR> startTranslates;
-	//ŒvZ‚µ‚½‚©
+	//è¨ˆç®—ã—ãŸã‹
 	bool isStartCalc = false;
 
-	//•âŠÔ‘O
+	//è£œé–“å‰
 	int32_t startKeyNum = static_cast<int32_t>(START_KEY_FRAMES.size());
 	for (int32_t i = 0; i < startKeyNum - 1; i++)
 	{
-		//•âŠÔ‘O
+		//è£œé–“å‰
 		const ModelFBX::Keyframe& START_KEY_FRAME0 = START_KEY_FRAMES[i];
 		const ModelFBX::Keyframe& START_KEY_FRAME1 = START_KEY_FRAMES[i + 1];
 
-		//•âŠÔ‘OŒvZ(ƒCƒ“ƒfƒbƒNƒX‚ÌƒL[ƒtƒŒ[ƒ€‚ÆŸ‚ÌƒL[ƒtƒŒ[ƒ€‚ÌŠÔ‚©‚Ç‚¤‚©)
+		//è£œé–“å‰è¨ˆç®—(ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ ã¨æ¬¡ã®ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ ã®é–“ã‹ã©ã†ã‹)
 		if (animeDatas_[START_INDEX].currentTime_ >= START_KEY_FRAME0.seconds &&
 			animeDatas_[START_INDEX].currentTime_ < START_KEY_FRAME1.seconds
 			|| (i + 1 == startKeyNum - 1 && animeDatas_[START_INDEX].currentTime_ <= START_KEY_FRAME1.seconds))
 		{
-			//ŒvZÏ‚İ‚Æ‚·‚é
+			//è¨ˆç®—æ¸ˆã¿ã¨ã™ã‚‹
 			isStartCalc = true;
-			//ƒL[ƒtƒŒ[ƒ€ŠÔ‚ÌŠ„‡‚ğŒvZ
+			//ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ é–“ã®å‰²åˆã‚’è¨ˆç®—
 			float rate = (float)((animeDatas_[START_INDEX].currentTime_ - START_KEY_FRAME0.seconds) /
 				(START_KEY_FRAME1.seconds - START_KEY_FRAME0.seconds));
 
-			//ƒm[ƒh‘S‚Ä‚É“K—p
+			//ãƒãƒ¼ãƒ‰å…¨ã¦ã«é©ç”¨
 			int32_t nodeCount = static_cast<int32_t>(nodes_->size());
 			for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
 			{
-				//ƒL[ƒtƒŒ[ƒ€0‚Æ1‚Ì‘S‚Ä‚Ìƒm[ƒh
+				//ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ 0ã¨1ã®å…¨ã¦ã®ãƒãƒ¼ãƒ‰
 				const ModelFBX::NodeKeyData& key0 = START_KEY_FRAME0.nodeKeys[nodeIndex];
 				const ModelFBX::NodeKeyData& key1 = START_KEY_FRAME1.nodeKeys[nodeIndex];
 
@@ -152,42 +152,42 @@ void ObjectFBX::BlendAnimationUpdate()
 				XMVECTOR rotate0 = DirectX::XMLoadFloat4(&key0.rotate);
 				XMVECTOR translate0 = DirectX::XMLoadFloat3(&key0.trans);
 
-				//üŒ`•âŠ®‚Åƒpƒ‰ƒ[ƒ^æ“¾‚·‚é
+				//ç·šå½¢è£œå®Œã§ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿å–å¾—ã™ã‚‹
 				startScales.push_back(DirectX::XMVectorLerp(scale0, scale1, rate));
 				startRotates.push_back(DirectX::XMQuaternionSlerp(rotate0, rotate1, rate));
 				startTranslates.push_back(DirectX::XMVectorLerp(translate0, translate1, rate));
 			}
-			//ƒpƒ‰ƒ[ƒ^æ“¾‚µ‚½‚Ì‚Å”²‚¯‚é
+			//ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿å–å¾—ã—ãŸã®ã§æŠœã‘ã‚‹
 			break;
 		}
 	}
-	//‚È‚©‚Á‚½ê‡‚Íƒpƒ‰ƒ[ƒ^‚ğ‚»‚Ì‚Ü‚Ü‚É‚·‚é
+	//ãªã‹ã£ãŸå ´åˆã¯ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ãã®ã¾ã¾ã«ã™ã‚‹
 	if (!isStartCalc)
 	{
 		return;
 	}
 
-	//•Ï”
+	//å¤‰æ•°
 	std::vector<DirectX::XMVECTOR> endScales;
 	std::vector<DirectX::XMVECTOR> endRotates;
 	std::vector<DirectX::XMVECTOR> endTranslates;
 	bool isEndCalc = false;
 
-	//•âŠÔŒã
+	//è£œé–“å¾Œ
 	int32_t endKeyCount = static_cast<int32_t>(END_KEY_FRAMES.size());
 	for (int32_t keyIndex = 0; keyIndex < endKeyCount; keyIndex++)
 	{
-		//•âŠÔŒã
+		//è£œé–“å¾Œ
 		const ModelFBX::Keyframe& endKeyframe0 = END_KEY_FRAMES.at(keyIndex);
 		const ModelFBX::Keyframe& endKeyframe1 = END_KEY_FRAMES.at(keyIndex + 1);
 
-		//•âŠÔŒãŒvZ
+		//è£œé–“å¾Œè¨ˆç®—
 		if (animeDatas_[END_INDEX].currentTime_ >= endKeyframe0.seconds &&
 			animeDatas_[END_INDEX].currentTime_ < endKeyframe1.seconds
 			|| (keyIndex + 1 == endKeyCount - 1 && animeDatas_[END_INDEX].currentTime_ <= endKeyframe1.seconds))
 		{
 			isEndCalc = true;
-			//ƒL[ƒtƒŒ[ƒ€ŠÔ‚ÌŠ„‡
+			//ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ é–“ã®å‰²åˆ
 			float rate = (float)((animeDatas_[END_INDEX].currentTime_ - endKeyframe0.seconds) /
 				(endKeyframe1.seconds - endKeyframe0.seconds));
 
@@ -198,29 +198,29 @@ void ObjectFBX::BlendAnimationUpdate()
 				const ModelFBX::NodeKeyData& key1 = endKeyframe1.nodeKeys[nodeIndex];
 
 				DirectX::XMVECTOR Scale1 = DirectX::XMLoadFloat3(&key1.scale);
-				DirectX::XMVECTOR Rotate1 = DirectX::XMLoadFloat4(&key1.rotate);
+				DirectX::XMVECTOR rotate1 = DirectX::XMLoadFloat4(&key1.rotate);
 				DirectX::XMVECTOR Translate1 = DirectX::XMLoadFloat3(&key1.trans);
 
 				DirectX::XMVECTOR Scale0 = DirectX::XMLoadFloat3(&key0.scale);
-				DirectX::XMVECTOR Rotate0 = DirectX::XMLoadFloat4(&key0.rotate);
+				DirectX::XMVECTOR rotate0 = DirectX::XMLoadFloat4(&key0.rotate);
 				DirectX::XMVECTOR Translate0 = DirectX::XMLoadFloat3(&key0.trans);
 
 				endScales.push_back(DirectX::XMVectorLerp(Scale0, Scale1, rate));
-				endRotates.push_back(DirectX::XMQuaternionSlerp(Rotate0, Rotate1, rate));
+				endRotates.push_back(DirectX::XMQuaternionSlerp(rotate0, rotate1, rate));
 				endTranslates.push_back(DirectX::XMVectorLerp(Translate0, Translate1, rate));
 			}
 			break;
 		}
 	}
-	//ƒL[ƒtƒŒ[ƒ€ŠÔ‚É“–‚Ä‚Í‚Ü‚ç‚È‚¯‚ê‚Î”²‚¯‚é
+	//ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ é–“ã«å½“ã¦ã¯ã¾ã‚‰ãªã‘ã‚Œã°æŠœã‘ã‚‹
 	if (!isEndCalc)
 	{
 		return;
 	}
 
-	//•âŠÔ//‚±‚±‚Åƒm[ƒh‚Ìƒpƒ‰ƒ[ƒ^•Ï‚¦‚Ä‚éirate‚Åj¨‚»‚ê‚ğƒtƒŒ[ƒ€‚²‚Æ‚És—ñ‚É‚µ‚Ä‚é
+	//è£œé–“//ã“ã“ã§ãƒãƒ¼ãƒ‰ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿å¤‰ãˆã¦ã‚‹ï¼ˆrateã§ï¼‰â†’ãã‚Œã‚’ãƒ•ãƒ¬ãƒ¼ãƒ ã”ã¨ã«è¡Œåˆ—ã«ã—ã¦ã‚‹
 	int32_t nodeCount = static_cast<int32_t>(startScales.size());
-	//‰¼‚Å
+	//ä»®ã§
 	float rateL = 0.5f;
 	for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
 	{
@@ -228,7 +228,7 @@ void ObjectFBX::BlendAnimationUpdate()
 			DirectX::XMVectorLerp(
 				startScales[nodeIndex],
 				endScales[nodeIndex], rateL);
-		DirectX::XMVECTOR Rotate =
+		DirectX::XMVECTOR rotate =
 			DirectX::XMQuaternionSlerp(
 				startRotates[nodeIndex],
 				endRotates[nodeIndex], rateL);
@@ -237,11 +237,11 @@ void ObjectFBX::BlendAnimationUpdate()
 				startTranslates[nodeIndex],
 				endTranslates[nodeIndex], rateL);
 
-		//üŒ`•âŠ®‚µ‚½ƒpƒ‰ƒ[ƒ^‚ğæ“¾
+		//ç·šå½¢è£œå®Œã—ãŸãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’å–å¾—
 		Node& node = (*nodes_)[nodeIndex];
-		node.scaling = Scale;
-		node.rotation = Rotate;
-		node.translation = Translate;
+		node.scaling = { Scale.m128_f32[0],Scale.m128_f32[1],Scale.m128_f32[2],Scale.m128_f32[3] };
+		node.rotation = { rotate.m128_f32[0],rotate.m128_f32[1],rotate.m128_f32[2],rotate.m128_f32[3] };
+		node.translation = { Translate.m128_f32[0],Translate.m128_f32[1],Translate.m128_f32[2],Translate.m128_f32[3] };
 	}
 }
 
@@ -252,32 +252,32 @@ void ObjectFBX::AnimationUpdate()
 		return;
 	}
 
-	//ƒL[ƒtƒŒ[ƒ€i‘Î‰‚µ‚½‘Sƒm[ƒh‚ğŠj‚Ì”z—ñ‚ğæ“¾
+	//ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ ï¼ˆå¯¾å¿œã—ãŸå…¨ãƒãƒ¼ãƒ‰ã‚’æ‰€æŒï¼‰ã®é…åˆ—ã‚’å–å¾—
 	const std::vector<ModelFBX::Keyframe>& KEY_FRAMES = dynamic_cast<ModelFBX*>(model_)->GetAnimations()[animeIndex_].keyframes;
 	int32_t keyCount = static_cast<int32_t>(KEY_FRAMES.size());
 	for (int32_t i = 0; i < keyCount - 1; i++)
 	{
-		//•âŠÔ‘O
+		//è£œé–“å‰
 		const ModelFBX::Keyframe& KEY_FRAME0 = KEY_FRAMES[i];
 		const ModelFBX::Keyframe& KEY_FRAME1 = KEY_FRAMES[i + 1];
 
-		//•âŠÔ‘OŒvZ(ƒCƒ“ƒfƒbƒNƒX‚ÌƒL[ƒtƒŒ[ƒ€‚Æ,‚»‚ÌŸ‚ÌƒL[ƒtƒŒ[ƒ€‚ÌŠÔ‚©‚Ç‚¤‚©)
+		//è£œé–“å‰è¨ˆç®—(ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ ã¨,ãã®æ¬¡ã®ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ ã®é–“ã‹ã©ã†ã‹)
 		if (animeDatas_[animeIndex_].currentTime_ >= KEY_FRAME0.seconds &&
 			animeDatas_[animeIndex_].currentTime_ < KEY_FRAME1.seconds)
 		{
-			//ƒL[ƒtƒŒ[ƒ€ŠÔ‚ÌŠ„‡‚ğŒvZ
+			//ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ é–“ã®å‰²åˆã‚’è¨ˆç®—
 			float rate = (float)((animeDatas_[animeIndex_].currentTime_ - KEY_FRAME0.seconds) /
 				(KEY_FRAME1.seconds - KEY_FRAME0.seconds));
 
-			//ƒIƒuƒWƒFƒNƒgƒNƒ‰ƒX‚ª‚Á‚Ä‚¢‚éƒm[ƒh‘S‚Ä‚É“K—p
+			//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¯ãƒ©ã‚¹ãŒæŒã£ã¦ã„ã‚‹ãƒãƒ¼ãƒ‰å…¨ã¦ã«é©ç”¨
 			int32_t nodeCount = static_cast<int32_t>(nodes_->size());
 			for (int32_t j = 0; j < nodeCount; j++)
 			{
-				//ƒL[ƒtƒŒ[ƒ€0‚Æ1‚ÌƒCƒ“ƒfƒbƒNƒX‚Ìƒm[ƒh‚ğæ“¾
+				//ã‚­ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ 0ã¨1ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ãƒãƒ¼ãƒ‰ã‚’å–å¾—
 				const ModelFBX::NodeKeyData& KEY_0 = KEY_FRAME0.nodeKeys[j];
 				const ModelFBX::NodeKeyData& KEY_1 = KEY_FRAME1.nodeKeys[j];
 
-				//QÆ
+				//å‚ç…§
 				auto& node = (*nodes_)[j];
 
 				XMVECTOR scale1 = DirectX::XMLoadFloat3(&KEY_1.scale);
@@ -288,14 +288,14 @@ void ObjectFBX::AnimationUpdate()
 				XMVECTOR rotate0 = DirectX::XMLoadFloat4(&KEY_0.rotate);
 				XMVECTOR translate0 = DirectX::XMLoadFloat3(&KEY_0.trans);
 
-				//üŒ`•âŠ®‚Åƒpƒ‰ƒ[ƒ^æ“¾‚·‚é
+				//ç·šå½¢è£œå®Œã§ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿å–å¾—ã™ã‚‹
 				XMVECTOR scale = (DirectX::XMVectorLerp(scale0, scale1, rate));
 				XMVECTOR rotate = (DirectX::XMQuaternionSlerp(rotate0, rotate1, rate));
 				XMVECTOR trans = (DirectX::XMVectorLerp(translate0, translate1, rate));
-				//‘ã“ü
-				node.scaling = scale;
-				node.rotation = rotate;
-				node.translation = trans;
+				//ä»£å…¥
+				node.scaling = { scale.m128_f32[0],scale.m128_f32[1],scale.m128_f32[2],scale.m128_f32[3] };
+				node.rotation = { rotate.m128_f32[0],rotate.m128_f32[1],rotate.m128_f32[2],rotate.m128_f32[3] };
+				node.translation = { trans.m128_f32[0],trans.m128_f32[1],trans.m128_f32[2],trans.m128_f32[3] };
 			}
 		}
 	}
@@ -303,22 +303,26 @@ void ObjectFBX::AnimationUpdate()
 
 void ObjectFBX::UpdateFBXNodeMat()
 {
-	//ƒIƒuƒWƒFƒNƒgƒNƒ‰ƒX‚ª‚Á‚Ä‚éfbxƒ‚ƒfƒ‹‚Ìƒm[ƒh‘S‚Ä
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¯ãƒ©ã‚¹ãŒæŒã£ã¦ã‚‹fbxãƒ¢ãƒ‡ãƒ«ã®ãƒãƒ¼ãƒ‰å…¨ã¦
 	for (Node& node : *nodes_)
 	{
-		//s—ñ‚Ìì¬(ƒAƒjƒ[ƒVƒ‡ƒ“‚È‚Ç‚Å•Ï‰»‚µ‚½ƒpƒ‰ƒ[ƒ^‚ğg—p)
+		//è¡Œåˆ—ã®ä½œæˆ(ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãªã©ã§å¤‰åŒ–ã—ãŸãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ä½¿ç”¨)
+		//å¤§ãã•
 		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(
-			node.scaling.m128_f32[0],
-			node.scaling.m128_f32[1],
-			node.scaling.m128_f32[2]);
-		DirectX::XMMATRIX R = DirectX::XMMatrixRotationQuaternion(node.rotation);
+			node.scaling.x,
+			node.scaling.y,
+			node.scaling.z);
+		//å›è»¢
+		XMVECTOR rotVec = { node.rotation.x,node.rotation.y, node.rotation.z, node.rotation.w };
+		DirectX::XMMATRIX R = DirectX::XMMatrixRotationQuaternion(rotVec);
+		//ä½ç½®
 		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(
-			node.translation.m128_f32[0],
-			node.translation.m128_f32[1],
-			node.translation.m128_f32[2]);
+			node.translation.x,
+			node.translation.y,
+			node.translation.z);
 		DirectX::XMMATRIX local_transform = S * R * T;
 
-		//e‚ª‚¢‚é‚©(‹°‚ç‚­ƒm[ƒh‚Ìã‚Ì•û‚©‚ç‡‚É“o˜^‚³‚êAˆ—‚µ‚Ä‚¢‚é‚Ì‚Å‚±‚ê‚Å‚à‚Å‚«‚é)
+		//è¦ªãŒã„ã‚‹ã‹(æã‚‰ããƒãƒ¼ãƒ‰ã®ä¸Šã®æ–¹ã‹ã‚‰é †ã«ç™»éŒ²ã•ã‚Œã€å‡¦ç†ã—ã¦ã„ã‚‹ã®ã§ã“ã‚Œã§ã‚‚ã§ãã‚‹)
 		DirectX::XMMATRIX parent_transform;
 		if (node.parent != nullptr)
 		{
@@ -329,10 +333,10 @@ void ObjectFBX::UpdateFBXNodeMat()
 			parent_transform = DirectX::XMMatrixIdentity();
 		}
 
-		//ƒ‚ƒfƒ‹‚Ìƒm[ƒh‚Ìƒ[ƒ‹ƒh
+		//ãƒ¢ãƒ‡ãƒ«ã®ãƒãƒ¼ãƒ‰ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰
 		DirectX::XMMATRIX world_transform = local_transform * parent_transform;
 
-		//s—ñ•Û‘¶
+		//è¡Œåˆ—ä¿å­˜
 		node.transform = local_transform;
 		node.globalTransform = world_transform;
 	}
@@ -349,14 +353,14 @@ void ObjectFBX::PlayAnimationInternal(int32_t animeIndex,
 
 	animeIndex_ = animeIndex;
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒŠƒZƒbƒg
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒªã‚»ãƒƒãƒˆ
 	AnimationReset(animeIndex);
 
-	//Ä¶’†ó‘Ô
+	//å†ç”Ÿä¸­çŠ¶æ…‹
 	animeDatas_[animeIndex].isPlay_ = true;
-	//ƒ‹[ƒv
+	//ãƒ«ãƒ¼ãƒ—
 	animeDatas_[animeIndex].isLoop_ = isLoop;
-	//‹tÄ¶
+	//é€†å†ç”Ÿ
 	animeDatas_[animeIndex].isReverse_ = isReverse;
 }
 
@@ -367,22 +371,17 @@ void ObjectFBX::AnimationReset(int32_t animeIndex)
 		return;
 	}
 
-	//qƒNƒ‰ƒX‚É•ÏŠ·
+	//å­ã‚¯ãƒ©ã‚¹ã«å¤‰æ›
 	ModelFBX* model = dynamic_cast<ModelFBX*>(model_);
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ª1‚Â‚µ‚©‚È‚¢‘O’ñ
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒ1ã¤ã—ã‹ãªã„å‰æ
 	FbxScene* fbxScene = model->GetFbxScene();
-	//ƒAƒjƒ[ƒVƒ‡ƒ“æ“¾
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å–å¾—
 	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(animeIndex);
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚È‚©‚Á‚½‚ç
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãªã‹ã£ãŸã‚‰
 	if (animStack == nullptr) { return; }
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì–¼‘Oæ“¾
-	const char* ANIM_STACK_NAME = animStack->GetName();
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌŠÔî•ñ
-	FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(ANIM_STACK_NAME);
-
-	//ŠJnŠÔæ“¾
+	//é–‹å§‹æ™‚é–“å–å¾—
 	animeDatas_[animeIndex].currentTime_ = dynamic_cast<ModelFBX*>(model_)->GetAnimations()[animeIndex].startTime;
 }
 
@@ -393,36 +392,36 @@ void ObjectFBX::PlayAnimation(bool isLoop, int32_t animeIndex)
 
 void ObjectFBX::PlayReverseAnimation(bool isLoop, int32_t animeIndex)
 {
-	PlayAnimationInternal(isLoop, true);
+	PlayAnimationInternal(animeIndex, isLoop, true);
 }
 
 //---------------------------------------------------------------------------
 void ObjectFBX::CalcNodeMatBoneMatInternal(ModelFBX* model)
 {
-	//‚Æ‚è‚ ‚¦‚¸ˆê”Ô‚ÌƒAƒjƒ@‰¼
+	//ã¨ã‚Šã‚ãˆãšä¸€ç•ªã®ã‚¢ãƒ‹ãƒ¡ã€€ä»®
 	auto anime = model->GetAnimations()[animeIndex_];
 
 	AnimationData& animeData = animeDatas_[animeIndex_];
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 	if (animeData.isPlay_)
 	{
-		//ÅŒã‚Ü‚ÅÄ¶‚µ‚½‚ç
+		//æœ€å¾Œã¾ã§å†ç”Ÿã—ãŸã‚‰
 		if ((!animeData.isReverse_ && animeData.currentTime_ >= anime.endTime)
 			|| (animeData.isReverse_ && animeData.currentTime_ <= anime.startTime))
 		{
 			if (!animeData.isReverse_)
 			{
-				//æ“ª‚É–ß‚·
+				//å…ˆé ­ã«æˆ»ã™
 				animeData.currentTime_ = anime.startTime;
 			}
 			else
 			{
-				//ÅŒã‚É–ß‚·
+				//æœ€å¾Œã«æˆ»ã™
 				animeData.currentTime_ = anime.endTime;
 			}
 
-			//I—¹
+			//çµ‚äº†
 			if (!animeData.isLoop_)
 			{
 				animeData.isPlay_ = false;
@@ -431,42 +430,44 @@ void ObjectFBX::CalcNodeMatBoneMatInternal(ModelFBX* model)
 
 		else
 		{
-			//‹tÄ¶
+			//é€†å†ç”Ÿ
 			if (animeData.isReverse_)
 			{
 				animeData.currentTime_ -= anime.addTime * animeData.animationSpeed_;
 			}
 			else
 			{
-				//1ƒtƒŒ[ƒ€i‚ß‚é
+				//1ãƒ•ãƒ¬ãƒ¼ãƒ é€²ã‚ã‚‹
 				animeData.currentTime_ += anime.addTime * animeData.animationSpeed_;
 			}
 
-			//”ÍˆÍ“à‚Éû‚ß‚é
+			//ç¯„å›²å†…ã«åã‚ã‚‹
 			animeData.currentTime_ = min(max(animeData.currentTime_, anime.startTime), anime.endTime);
 		}
 	}
 
 	if (animeData.isPlay_)
 	{
-		//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒAƒbƒvƒf[ƒg
+		//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ
 		BlendAnimationUpdate();
 	}
-	//ƒm[ƒh‚Ìs—ñXV
+	//ãƒãƒ¼ãƒ‰ã®è¡Œåˆ—æ›´æ–°
 	UpdateFBXNodeMat();
 
-	//ƒ}ƒbƒsƒ“ƒO
+	//ãƒãƒƒãƒ”ãƒ³ã‚°
 	MappingBoneData(model);
 }
 
 void ObjectFBX::MappingBoneData(ModelFBX* model)
 {
-	//’è”ƒoƒbƒtƒ@‚Öƒf[ƒ^“]‘—
-	HRESULT result = constBuffSkin_->Map(0, nullptr, (void**)&constMapSkin);
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã¸ãƒ‡ãƒ¼ã‚¿è»¢é€
+	HRESULT result = S_OK;
+	result = constBuffSkin_->Map(0, nullptr, (void**)&constMapSkin_);
+	assert(SUCCEEDED(result));
 	for (int32_t i = 0; i < model->GetBoneNodeIndices().size(); i++)
 	{
-		//s—ñŒvZ
-		constMapSkin->bones[i] = GetCalcSkinMat(model_, i);
+		//è¡Œåˆ—è¨ˆç®—
+		constMapSkin_->bones[i] = GetCalcSkinMat(model_, i);
 	}
 	constBuffSkin_->Unmap(0, nullptr);
 }
@@ -479,7 +480,7 @@ const std::vector<Node>& ObjectFBX::GetNodes()
 
 XMMATRIX ObjectFBX::GetCalcSkinMat(IModel* model, int32_t index)
 {
-	//ƒ{[ƒ“s—ñ‚ª‚¨‚©‚µ‚¢I
+	//ãƒœãƒ¼ãƒ³è¡Œåˆ—ãŒãŠã‹ã—ã„ï¼
 	if (!(model && model->GetIsFbx()))
 	{
 		return XMMatrixIdentity();
@@ -489,17 +490,17 @@ XMMATRIX ObjectFBX::GetCalcSkinMat(IModel* model, int32_t index)
 
 	uint64_t indexL = modelL->GetBoneNodeIndices()[index];
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÅXV‚µ‚½ƒ[ƒ‹ƒh
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã§æ›´æ–°ã—ãŸãƒ¯ãƒ¼ãƒ«ãƒ‰
 	DirectX::XMMATRIX worldTransform =
 		(*nodes_)[indexL].globalTransform;
-	//‰Šúp¨‚È‚Ç‚ª“ü‚Á‚½s—ñ
+	//åˆæœŸå§¿å‹¢ãªã©ãŒå…¥ã£ãŸè¡Œåˆ—
 	DirectX::XMMATRIX offsetTransform =
 		modelL->GetOffsetTransforms()[index];
-	//ƒ{[ƒ“s—ñ(ã‚Ì“ñ‚Â‚ğŠ|‚¯‡‚í‚¹‚é)
+	//ãƒœãƒ¼ãƒ³è¡Œåˆ—(ä¸Šã®äºŒã¤ã‚’æ›ã‘åˆã‚ã›ã‚‹)
 	DirectX::XMMATRIX boneTransform =
 		offsetTransform * worldTransform;
 
-	////ƒXƒP[ƒ‹‚ğÈ‚­ˆ—
+	////ã‚¹ã‚±ãƒ¼ãƒ«ã‚’çœãå‡¦ç†
 	// 
 	//DirectX::XMFLOAT3 l_scale = {};
 	//l_scale.x = 1 / scale.x;
@@ -564,19 +565,19 @@ void ObjectFBX::DrawImGui(std::function<void()> imguiF)
 				ImGui::Text("animationTimeRatio: %.2f", (animeData.currentTime_ - anime.startTime) / (anime.endTime - anime.startTime));
 			}
 		}
-	};
-	
-	//eƒNƒ‰ƒX‚Ì
+		};
+
+	//è¦ªã‚¯ãƒ©ã‚¹ã®
 	IObject3D::DrawImGui(f);
 }
 
 //------------------------------------------------------------------------------------------
 void ObjectFBX::SetModel(IModel* model)
 {
-	//‹¤’Ê‚Ì‰Šú‰»
+	//å…±é€šã®åˆæœŸåŒ–
 	IObject3D::SetModel(model);
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ìƒf[ƒ^æ“¾
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒ‡ãƒ¼ã‚¿å–å¾—
 	if (model && model->GetIsFbx())
 	{
 		ModelFBX* modelL = dynamic_cast<ModelFBX*>(model);
@@ -584,7 +585,7 @@ void ObjectFBX::SetModel(IModel* model)
 		animeDatas_.clear();
 		animeDatas_.resize(modelL->GetAnimations().size());
 
-		//‰¼‚Åƒm[ƒh‚Ìƒ|ƒCƒ“ƒ^“n‚·
+		//ä»®ã§ãƒãƒ¼ãƒ‰ã®ãƒã‚¤ãƒ³ã‚¿æ¸¡ã™
 		nodes_ = modelL->GetNodes();
 
 		//

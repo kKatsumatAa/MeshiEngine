@@ -3,7 +3,7 @@
 
 
 /// <summary>
-/// Ã“Iƒƒ“ƒo•Ï”‚ÌÀ‘Ì
+/// é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°ã®å®Ÿä½“
 /// </summary>
 const std::string IModel::S_BASE_DIRECTORY_ = "Resources/model/";
 
@@ -23,41 +23,41 @@ void IModel::StaticInitialize()
 
 void IModel::Initialize()
 {
-	// ƒƒbƒVƒ…‚Ìƒ}ƒeƒŠƒAƒ‹ƒ`ƒFƒbƒN
+	// ãƒ¡ãƒƒã‚·ãƒ¥ã®ãƒãƒ†ãƒªã‚¢ãƒ«ãƒã‚§ãƒƒã‚¯
 	for (auto& m : meshes_) {
-		// ƒ}ƒeƒŠƒAƒ‹‚ÌŠ„‚è“–‚Ä‚ª‚È‚¢
+		// ãƒãƒ†ãƒªã‚¢ãƒ«ã®å‰²ã‚Šå½“ã¦ãŒãªã„
 		if (m && m->GetMaterial() == nullptr) {
 			if (defaultMaterial_ == nullptr) {
-				// ƒfƒtƒHƒ‹ƒgƒ}ƒeƒŠƒAƒ‹‚ğ¶¬
+				// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒãƒ†ãƒªã‚¢ãƒ«ã‚’ç”Ÿæˆ
 				defaultMaterial_ = Material::Create();
 				defaultMaterial_->name_ = "no material";
 
-				// ƒfƒtƒHƒ‹ƒgƒ}ƒeƒŠƒAƒ‹‚ğƒZƒbƒg(ƒƒbƒVƒ…‚É“n‚·‚Ì‚Íƒ|ƒCƒ“ƒ^‚Ì‚İiŠ—LŒ ‚Í“n‚³‚È‚¢j)
+				// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒãƒ†ãƒªã‚¢ãƒ«ã‚’ã‚»ãƒƒãƒˆ(ãƒ¡ãƒƒã‚·ãƒ¥ã«æ¸¡ã™ã®ã¯ãƒã‚¤ãƒ³ã‚¿ã®ã¿ï¼ˆæ‰€æœ‰æ¨©ã¯æ¸¡ã•ãªã„ï¼‰)
 				m->SetMaterial(defaultMaterial_.get());
 
-				//”z—ñ‚É’Ç‰ÁiŠ—LŒ “n‚·j
+				//é…åˆ—ã«è¿½åŠ ï¼ˆæ‰€æœ‰æ¨©æ¸¡ã™ï¼‰
 				materials_.insert(std::make_pair(defaultMaterial_->name_, std::move(defaultMaterial_)));
 			}
 			else
 			{
-				// ƒfƒtƒHƒ‹ƒgƒ}ƒeƒŠƒAƒ‹‚ğƒZƒbƒg(ƒƒbƒVƒ…‚É“n‚·‚Ì‚Íƒ|ƒCƒ“ƒ^‚Ì‚İiŠ—LŒ ‚Í“n‚³‚È‚¢j)
+				// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒãƒ†ãƒªã‚¢ãƒ«ã‚’ã‚»ãƒƒãƒˆ(ãƒ¡ãƒƒã‚·ãƒ¥ã«æ¸¡ã™ã®ã¯ãƒã‚¤ãƒ³ã‚¿ã®ã¿ï¼ˆæ‰€æœ‰æ¨©ã¯æ¸¡ã•ãªã„ï¼‰)
 				m->SetMaterial(defaultMaterial_.get());
 			}
 		}
 	}
 
-	// ƒƒbƒVƒ…‚Ìƒoƒbƒtƒ@¶¬
+	// ãƒ¡ãƒƒã‚·ãƒ¥ã®ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 	for (auto& m : meshes_) {
 		if (m) {
 			m->CreateBuffers();
 		}
 	}
-	// ƒ}ƒeƒŠƒAƒ‹‚Ì”’l‚ğ’è”ƒoƒbƒtƒ@‚É”½‰f
+	// ãƒãƒ†ãƒªã‚¢ãƒ«ã®æ•°å€¤ã‚’å®šæ•°ãƒãƒƒãƒ•ã‚¡ã«åæ˜ 
 	for (auto& m : materials_) {
 		m.second->Update();
 	}
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
 	LoadTextures();
 }
 
@@ -67,14 +67,14 @@ void IModel::LoadTexturesInternal(const std::string& directoryPath)
 	for (auto& m : materials_) {
 		Material* material = m.second.get();
 
-		// ƒ}ƒeƒŠƒAƒ‹‚ÉƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
+		// ãƒãƒ†ãƒªã‚¢ãƒ«ã«ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
 		material->LoadTexture(directoryPath);
 	}
 }
 
 void IModel::AddMaterial(std::unique_ptr<Material> material)
 {
-	// ƒRƒ“ƒeƒi‚É“o˜^
+	// ã‚³ãƒ³ãƒ†ãƒŠã«ç™»éŒ²
 	materials_.insert(std::make_pair(material->name_, std::move(material)));
 }
 
@@ -82,14 +82,14 @@ void IModel::AddMaterial(std::unique_ptr<Material> material)
 void IModel::Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
 	, const ConstBuffTransform& cbt)
 {
-	//ƒpƒCƒvƒ‰ƒCƒ“‚È‚ÇƒZƒbƒg
+	//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ãªã©ã‚»ãƒƒãƒˆ
 	setRootParam();
-	//ƒ‰ƒCƒg‚È‚Ç‚ğƒZƒbƒg
+	//ãƒ©ã‚¤ãƒˆãªã©ã‚’ã‚»ãƒƒãƒˆ
 	setMaterialLightTex();
 
-	// ‘SƒƒbƒVƒ…‚ğ•`‰æ
+	// å…¨ãƒ¡ãƒƒã‚·ãƒ¥ã‚’æç”»
 	for (auto& mesh : meshes_) {
-		mesh->Draw(materialExtend_, cbt, setRootParam, setMaterialLightTex);
+		mesh->Draw(materialExtend_, cbt);
 	}
 }
 
@@ -106,7 +106,7 @@ void IModel::DrawImGui()
 
 void IModel::SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData)
 {
-	//‰¼‚Å‘S•”‚ÌƒƒbƒVƒ…‚É“K—p
+	//ä»®ã§å…¨éƒ¨ã®ãƒ¡ãƒƒã‚·ãƒ¥ã«é©ç”¨
 	for (auto& mesh : meshes_)
 	{
 		mesh->SetPolygonOffsetData(polygonOffsetData);

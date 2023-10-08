@@ -6,31 +6,31 @@
 #include <DirectXMath.h>
 
 /// <summary>
-/// ‰~Õ“Ë”»’èƒIƒuƒWƒFƒNƒg
+/// å††è¡çªåˆ¤å®šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 /// </summary>
 class CircleCollider : public BaseCollider, public Circle
 {
-private: // ƒGƒCƒŠƒAƒX
-	// DirectX::‚ğÈ—ª
+private: // ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	// DirectX::ã‚’çœç•¥
 	using XMVECTOR = DirectX::XMVECTOR;
 public:
 	CircleCollider(const Vec2 center = { 0,0 }, float radius = 1.0f)
 	{
 		Circle::center = center;
-		Circle::radius = radius;
+		Circle::iRadius = radius;
 
-		// ‹…Œ`ó‚ğƒZƒbƒg
+		// çƒå½¢çŠ¶ã‚’ã‚»ãƒƒãƒˆ
 		shapeType_ = COLLISIONSHAPE_CIRCLE;
 
 		is2D_ = true;
 	}
 
 	/// <summary>
-	/// XV
+	/// æ›´æ–°
 	/// </summary>
 	void Update() override;
 
-	inline void SetRadius(float radius) { Circle::radius = radius; }
-	inline float GetRadius() { return Circle::radius; }
+	inline void SetRadius(float radius) { Circle::iRadius = radius; }
+	inline float GetRadius() { return Circle::iRadius; }
 };
 

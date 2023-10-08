@@ -11,67 +11,77 @@
 class MouseInput final
 {
 private:
-	//namespaceÈ—ª
+	//namespaceçœç•¥
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	HRESULT result_;
 	DIMOUSESTATE mouseData_;
 	DIMOUSESTATE oldMouseData_;
 
-	//ƒL[ƒ{[ƒhƒfƒoƒCƒX‚Ì¶¬
+	//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã®ç”Ÿæˆ
 	ComPtr<IDirectInputDevice8> mouse_ = nullptr;
 
 	const int32_t SEARCH_COUNT_MAX_ = 120;
 	int32_t searchCount_ = 0;
 
 	bool isActive_ = false;
+	//ã»ã‹ã‚¢ãƒ—ãƒªã§ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ä½¿ã‚ãªã„ã‚ˆã†ã«ã™ã‚‹ã‹
+	bool isExclusive_ = false;
 
-	//ƒJ[ƒ\ƒ‹ˆÊ’u
+	//ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®
 	Vec2 cursorPos_ = {};
 
 private:
-	//Ú‘±‚³‚ê‚Ä‚¢‚é‚©’²‚×‚é(ƒfƒoƒCƒX¶¬‚µ‚½‚è‚·‚é)
+	//æ¥ç¶šã•ã‚Œã¦ã„ã‚‹ã‹èª¿ã¹ã‚‹(ãƒ‡ãƒã‚¤ã‚¹ç”Ÿæˆã—ãŸã‚Šã™ã‚‹)
 	void MouseConnectSearch();
+	//ãƒ‡ãƒã‚¤ã‚¹ã®åˆ—æŒ™â†’ä½œæˆ
+	void DeviceEnumerationAndCreate();
+	//ãƒ‡ãƒã‚¤ã‚¹å‰Šé™¤
+	void DeleteDevice();
 
 	MouseInput();
 
 	~MouseInput() { ; }
 
 public:
-	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ–³Œø
+	//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’ç„¡åŠ¹
 	MouseInput(const MouseInput& obj) = delete;
-	//‘ã“ü‰‰Zq‚à
+	//ä»£å…¥æ¼”ç®—å­ã‚‚
 	MouseInput& operator=(const MouseInput& obj) = delete;
 
 
 	static MouseInput& GetInstance();
 
-	void CreateDevice(bool isExclusive = false);
+	void CreateDevice(LPCDIDEVICEINSTANCE ipddi);
 
 	void Update();
 
 	void Finalize();
 
-public://ƒQƒbƒ^[
+public://ã‚²ãƒƒã‚¿ãƒ¼
 
-	//ƒWƒ‡ƒCƒXƒeƒBƒbƒN‚ªŒX‚¯‚ç‚ê‚Ä‚¢‚é‚©
+	//ã‚¸ãƒ§ã‚¤ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒå‚¾ã‘ã‚‰ã‚Œã¦ã„ã‚‹ã‹
 	bool GetMouseActive();
 
 
-	//ƒNƒŠƒbƒN‚³‚ê‚Ä‚¢‚é‚©
+	//ã‚¯ãƒªãƒƒã‚¯ã•ã‚Œã¦ã„ã‚‹ã‹
 	bool GetClick(byte click);
-	//ƒNƒŠƒbƒN‚³‚ê‚½uŠÔ
+	//ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸç¬é–“
 	bool GetTriggerClick(byte click);
-	//ƒNƒŠƒbƒN—£‚³‚ê‚½uŠÔ
+	//ã‚¯ãƒªãƒƒã‚¯é›¢ã•ã‚ŒãŸç¬é–“
 	bool GetTriggerReleaseClick(byte click);
 
-	//ƒJ[ƒ\ƒ‹‚ÌˆÊ’u‚ğæ“¾
+	//ã‚«ãƒ¼ã‚½ãƒ«ã®ä½ç½®ã‚’å–å¾—
 	const Vec2& GetCurcorPos();
 
-	//ƒJ[ƒ\ƒ‹‚ÌˆÚ“®—Êæ“¾
+	//ã‚«ãƒ¼ã‚½ãƒ«ã®ç§»å‹•é‡å–å¾—
 	Vec2 GetCursorVelocity();
 
-	//ƒzƒC[ƒ‹‚Ì‰ñ“]—Ê
+	//ãƒ›ã‚¤ãƒ¼ãƒ«ã®å›è»¢é‡
 	long GetWheelAmountOfRot();
+
+public:
+	//ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã‚’ã»ã‹ã‚¢ãƒ—ãƒªã§ä½¿ã‚ãªã„ã‚ˆã†ã«ã™ã‚‹ã‹
+	void SetIsExclusive(bool is);
 };
 

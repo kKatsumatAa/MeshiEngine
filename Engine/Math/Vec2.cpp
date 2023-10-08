@@ -1,6 +1,4 @@
 #include "Vec2.h"
-#include <DirectXMath.h>
-
 
 float Vec2::GetLength() const
 {
@@ -37,7 +35,7 @@ float Vec2::Dot(const Vec2& other)const
 
 
 //-----------------------------------------------------------------
-//‰‰ZqƒI[ƒo[ƒ[ƒh
+//æ¼”ç®—å­ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
 Vec2 Vec2::operator-()const
 {
 	return { -x,-y };
@@ -78,7 +76,7 @@ Vec2 Vec2::operator*(float other)
 
 Vec2& Vec2::operator*=(float other)
 {
-	*this = *this * other;//this‚ÍƒAƒhƒŒƒX‚È‚Ì‚Å*‚Â‚¯‚é
+	*this = *this * other;//thisã¯ã‚¢ãƒ‰ãƒ¬ã‚¹ãªã®ã§*ã¤ã‘ã‚‹
 
 	return *this;
 }
@@ -96,7 +94,7 @@ Vec2 Vec2::operator/(float other)
 
 Vec2& Vec2::operator/=(float other)
 {
-	*this = *this / other;//this‚ÍƒAƒhƒŒƒX‚È‚Ì‚Å*‚Â‚¯‚é
+	*this = *this / other;//thisã¯ã‚¢ãƒ‰ãƒ¬ã‚¹ãªã®ã§*ã¤ã‘ã‚‹
 
 	return *this;
 }

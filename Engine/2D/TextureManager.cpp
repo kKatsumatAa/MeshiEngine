@@ -1,6 +1,7 @@
 #include "TextureManager.h"
 #include <d3dx12.h>
 #include "Util.h"
+
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
@@ -248,9 +249,9 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	copyBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
 
 	DirectXWrapper::GetInstance().GetTexCommandList()->ResourceBarrier(1, &copyBarrier);
-
+	
+	//ローカル
 	uint64_t textureHandle;
-
 	//SRV
 	{
 		//04_03
@@ -263,7 +264,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 		{
 			srvDescL = *srvDesc;
 			srvHandleL = *srvHandle;
-			textureHandle = -114514;
+			textureHandle = 0;
 		}
 		else
 		{

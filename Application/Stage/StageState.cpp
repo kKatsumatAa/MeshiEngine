@@ -5,44 +5,42 @@
 #include "PostEffectManager.h"
 
 
-//‹¤’Ê‚Ìˆ—
+//å…±é€šã®å‡¦ç†
 void StageState::Initialize()
 {
 }
 
-//‹¤’Ê‚Ìˆ—
+//å…±é€šã®å‡¦ç†
 void StageState::Update()
 {
-	//“Gƒ}ƒl[ƒWƒƒ[
+	//æ•µãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 	EnemyManager::GetInstance().Update();
 
-	//’e
+	//å¼¾
 	BulletManager::GetInstance().Update();
 
-	//”»’è
+	//åˆ¤å®š
 	CollisionManager::GetInstance()->CheckAllCollisions();
 
-	//ƒvƒŒƒCƒ„[ui
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ui
 	PlayerUI::GetInstance().Update();
 }
 
-//‹¤’Ê‚Ìˆ—
+//å…±é€šã®å‡¦ç†
 void StageState::Draw()
 {
-	//’e
+	//å¼¾
 	BulletManager::GetInstance().Draw();
 
-	//“Gƒ}ƒl[ƒWƒƒ[
+	//æ•µãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 	EnemyManager::GetInstance().Draw();
-
-	LevelManager::GetInstance().Draw();
 }
 
 void StageState::DrawSprite()
 {
 }
 
-//‹¤’Ê‚Ìˆ—
+//å…±é€šã®å‡¦ç†
 void StageState::DrawImgui()
 {
 	GameVelocityManager::GetInstance().UpdateImGui();
@@ -75,7 +73,7 @@ std::unique_ptr<StageState> StageState::GetState(const std::string& name)
 
 
 //--------------------------------------------------------------------------
-//ŠJn
+//é–‹å§‹æ™‚
 void StageStateBegining::Initialize()
 {
 	StageState::Initialize();
@@ -83,10 +81,10 @@ void StageStateBegining::Initialize()
 
 void StageStateBegining::Update()
 {
-	//‹¤’Ê
+	//å…±é€š
 	StageState::Update();
 
-	//ƒXƒe[ƒW‚ğ™X‚ÉƒfƒBƒ]ƒ‹ƒu(‚»‚ÌƒIƒuƒWƒFƒNƒg‚ªƒfƒBƒ]ƒ‹ƒu‰æ‘œ“Ç‚İ‚ñ‚Å‚¢‚é‘O’ñ)
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’å¾ã€…ã«ãƒ‡ã‚£ã‚¾ãƒ«ãƒ–(ãã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒãƒ‡ã‚£ã‚¾ãƒ«ãƒ–ç”»åƒèª­ã¿è¾¼ã‚“ã§ã„ã‚‹å‰æ)
 	float t = (float)timer_ / (float)EFFECT_TIMER_MAX_;
 
 	auto objs = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
@@ -95,7 +93,7 @@ void StageStateBegining::Update()
 		obj->SetDissolveT(1.0f - t);
 	}
 
-	//ŠÔ’´‚¦‚½‚ç
+	//æ™‚é–“è¶…ãˆãŸã‚‰
 	if (timer_ >= EFFECT_TIMER_MAX_)
 	{
 		StageManager::GetInstance().ChangeState("BATTLE");
@@ -118,7 +116,7 @@ void StageStateBegining::DrawSprite()
 
 
 //--------------------------------------------------------------------------
-//í“¬
+//æˆ¦é—˜æ™‚
 void StageStateBattle::Initialize()
 {
 	StageState::Initialize();
@@ -126,30 +124,30 @@ void StageStateBattle::Initialize()
 
 void StageStateBattle::Update()
 {
-	//‹¤’Ê
+	//å…±é€š
 	StageState::Update();
 
-	//ƒ`ƒ…[ƒgƒŠƒAƒ‹
+	//ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«
 	Tutorial::GetInstance().Update();
 
-	//ƒQ[ƒ€ƒI[ƒo[
+	//ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼
 	if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_ALLIES).size() <= 0)
 	{
 		StageManager::GetInstance().ChangeState("GAMEOVER");
 	}
-	//ƒQ[ƒ€ƒNƒŠƒA
+	//ã‚²ãƒ¼ãƒ ã‚¯ãƒªã‚¢
 	else if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_ENEMYS).size() <= 0)
 	{
-		//ƒQ[ƒ€ƒXƒs[ƒh‚Ì‰ÁZ–³Œø
+		//ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰ã®åŠ ç®—ç„¡åŠ¹
 		GameVelocityManager::GetInstance().SetIsInvalidAddGameVel(true);
 
-		//­‚µ‚¸‚Â‚ä‚Á‚­‚è‚É‚µ‚Ä‚¢‚­
+		//å°‘ã—ãšã¤ã‚†ã£ãã‚Šã«ã—ã¦ã„ã
 		GameVelocityManager::GetInstance().AddGameVelocity(CLEAR_ADD_GAME_VEL_);
 
-		//ŠÔ’´‚¦‚½‚ç
+		//æ™‚é–“è¶…ãˆãŸã‚‰
 		if (timer_ >= CLEAR_COOL_TIMER_)
 		{
-			//ƒQ[ƒ€ƒXƒs[ƒh‚Ì‰ÁZ–³Œø‰ğœ
+			//ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰ã®åŠ ç®—ç„¡åŠ¹è§£é™¤
 			GameVelocityManager::GetInstance().SetIsInvalidAddGameVel(false);
 
 			StageManager::GetInstance().ChangeState("CLEAR");
@@ -161,7 +159,7 @@ void StageStateBattle::Update()
 
 void StageStateBattle::Draw()
 {
-	//‹¤’Ê
+	//å…±é€š
 	StageState::Draw();
 }
 
@@ -171,18 +169,18 @@ void StageStateBattle::DrawSprite()
 
 	PlayerUI::GetInstance().DrawSprite();
 
-	//ƒ`ƒ…[ƒgƒŠƒAƒ‹
+	//ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«
 	Tutorial::GetInstance().Draw();
 }
 
 
 //--------------------------------------------------------------------------
-//€–SŒã
+//æ­»äº¡å¾Œ
 void StageStateDead::Initialize()
 {
 	StageState::Initialize();
 
-	//ƒXƒe[ƒW‚ğ™X‚ÉƒfƒBƒ]ƒ‹ƒu(‚»‚ÌƒIƒuƒWƒFƒNƒg‚ªƒfƒBƒ]ƒ‹ƒu‰æ‘œ“Ç‚İ‚ñ‚Å‚¢‚é‘O’ñ)
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’å¾ã€…ã«ãƒ‡ã‚£ã‚¾ãƒ«ãƒ–(ãã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒãƒ‡ã‚£ã‚¾ãƒ«ãƒ–ç”»åƒèª­ã¿è¾¼ã‚“ã§ã„ã‚‹å‰æ)
 	auto objs = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
 
 	for (auto obj : objs)
@@ -193,10 +191,10 @@ void StageStateDead::Initialize()
 
 void StageStateDead::Update()
 {
-	//‹¤’Ê
+	//å…±é€š
 	StageState::Update();
 
-	//ƒXƒe[ƒW‚ğ™X‚ÉƒfƒBƒ]ƒ‹ƒu(‚»‚ÌƒIƒuƒWƒFƒNƒg‚ªƒfƒBƒ]ƒ‹ƒu‰æ‘œ“Ç‚İ‚ñ‚Å‚¢‚é‘O’ñ)
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’å¾ã€…ã«ãƒ‡ã‚£ã‚¾ãƒ«ãƒ–(ãã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒãƒ‡ã‚£ã‚¾ãƒ«ãƒ–ç”»åƒèª­ã¿è¾¼ã‚“ã§ã„ã‚‹å‰æ)
 	float t = (float)timer_ / (float)EFFECT_TIMER_MAX_;
 
 	auto objs = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
@@ -205,7 +203,7 @@ void StageStateDead::Update()
 		obj->SetDissolveT(t);
 	}
 
-	//ˆê’èŠÔ‚½‚Á‚½‚çƒtƒ‰ƒO—§‚Ä‚é
+	//ä¸€å®šæ™‚é–“ãŸã£ãŸã‚‰ãƒ•ãƒ©ã‚°ç«‹ã¦ã‚‹
 	if (timer_ >= EFFECT_TIMER_MAX_)
 	{
 		StageManager::GetInstance().SetIsGameOver(true);
@@ -216,7 +214,7 @@ void StageStateDead::Update()
 
 void StageStateDead::Draw()
 {
-	//‹¤’Ê
+	//å…±é€š
 	StageState::Draw();
 }
 
@@ -227,24 +225,24 @@ void StageStateDead::DrawSprite()
 
 
 //--------------------------------------------------------------------------
-//ƒNƒŠƒAŒã
+//ã‚¯ãƒªã‚¢å¾Œ
 void StageStateClear::Initialize()
 {
 	StageState::Initialize();
 
-	//ƒNƒŠƒA‰‰o
+	//ã‚¯ãƒªã‚¢æ¼”å‡º
 	ClearEffect::GetInstance().BeginClearEffect();
 }
 
 void StageStateClear::Update()
 {
-	//‹¤’Ê
+	//å…±é€š
 	StageState::Update();
 
-	//ƒNƒŠƒA‰‰o—p
+	//ã‚¯ãƒªã‚¢æ¼”å‡ºç”¨
 	ClearEffect::GetInstance().Update();
 
-	//˜A‘Å‚µ‚Ä‚àƒNƒŠƒA‰‰o”ò‚Î‚¹‚È‚¢‚æ‚¤‚É
+	//é€£æ‰“ã—ã¦ã‚‚ã‚¯ãƒªã‚¢æ¼”å‡ºé£›ã°ã›ãªã„ã‚ˆã†ã«
 	if (MouseInput::GetInstance().GetClick(CLICK_LEFT) && timer_ >= CLEAR_COOL_TIME_MAX_)
 	{
 		StageManager::GetInstance().SetIsClear(true);
@@ -255,7 +253,7 @@ void StageStateClear::Update()
 
 void StageStateClear::Draw()
 {
-	//‹¤’Ê
+	//å…±é€š
 	StageState::Draw();
 }
 
@@ -263,6 +261,6 @@ void StageStateClear::DrawSprite()
 {
 	StageState::DrawSprite();
 
-	//ƒNƒŠƒA‰‰o
+	//ã‚¯ãƒªã‚¢æ¼”å‡º
 	ClearEffect::GetInstance().Draw();
 }

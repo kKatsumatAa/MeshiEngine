@@ -1,30 +1,28 @@
 #pragma once
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
-#include <DirectXMath.h>
 #include "WindowsApp.h"
-
 #include <wrl.h>
 
 
 class Input final
 {
 private:
-	//namespaceÈ—ª
+	//namespaceçœç•¥
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	HRESULT result_;
 
-	//DirectInput‚Ì‰Šú‰»
+	//DirectInputã®åˆæœŸåŒ–
 	ComPtr<IDirectInput8> directInput_ = nullptr;
 
 private:
 	Input();
 
 public:
-	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ–³Œø
+	//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’ç„¡åŠ¹
 	Input(const Input& obj) = delete;
-	//‘ã“ü‰‰Zq‚à
+	//ä»£å…¥æ¼”ç®—å­ã‚‚
 	Input& operator=(const Input& obj) = delete;
 
 	void Finalize();

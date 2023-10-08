@@ -193,6 +193,18 @@
     <Filter Include="ソース ファイル\Engine\Base\Frame">
       <UniqueIdentifier>{8a7fb44f-83cd-48fa-b31e-540fe9277248}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Engine\Collision\2D">
+      <UniqueIdentifier>{23acacb3-34d3-4bbf-85f0-5e3af75a9ab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\Collision\3D">
+      <UniqueIdentifier>{47379e1d-84e4-45e2-b311-aeee3314f444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\Collision\2D">
+      <UniqueIdentifier>{78e6f245-8a6a-4450-93ec-a9402cbd7159}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\Collision\3D">
+      <UniqueIdentifier>{b23b46db-3fe8-4559-9c13-88ed3daa9f0f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -306,15 +318,6 @@
     <ClCompile Include="Engine\Collision\CollisionPrimitive.cpp">
       <Filter>ソース ファイル\Engine\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Collision\PlaneCollider.cpp">
-      <Filter>ソース ファイル\Engine\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Collision\SphereCollider.cpp">
-      <Filter>ソース ファイル\Engine\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Collision\TriangleCollider.cpp">
-      <Filter>ソース ファイル\Engine\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Input\Input.cpp">
       <Filter>ソース ファイル\Engine\Input</Filter>
     </ClCompile>
@@ -356,9 +359,6 @@
     </ClCompile>
     <ClCompile Include="Engine\Base\RootPipe.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Collision\MeshCollider.cpp">
-      <Filter>ソース ファイル\Engine\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Object\TouchableObject.cpp">
       <Filter>ソース ファイル\Engine\3D\Object</Filter>
@@ -498,6 +498,24 @@
     <ClCompile Include="Engine\Base\Frame\MyGame.cpp">
       <Filter>ソース ファイル\Engine\Base\Frame</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Collision\2D\CircleCollider.cpp">
+      <Filter>ソース ファイル\Engine\Collision\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Collision\2D\RectangleCollider.cpp">
+      <Filter>ソース ファイル\Engine\Collision\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Collision\3D\MeshCollider.cpp">
+      <Filter>ソース ファイル\Engine\Collision\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Collision\3D\PlaneCollider.cpp">
+      <Filter>ソース ファイル\Engine\Collision\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Collision\3D\SphereCollider.cpp">
+      <Filter>ソース ファイル\Engine\Collision\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Collision\3D\TriangleCollider.cpp">
+      <Filter>ソース ファイル\Engine\Collision\3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -620,18 +638,6 @@
     <ClInclude Include="Engine\Collision\CollisionTypes.h">
       <Filter>ヘッダー ファイル\Engine\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Collision\PlaneCollider.h">
-      <Filter>ヘッダー ファイル\Engine\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Collision\RaycastHit.h">
-      <Filter>ヘッダー ファイル\Engine\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Collision\SphereCollider.h">
-      <Filter>ヘッダー ファイル\Engine\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Collision\TriangleCollider.h">
-      <Filter>ヘッダー ファイル\Engine\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Input\Input.h">
       <Filter>ヘッダー ファイル\Engine\Input</Filter>
     </ClInclude>
@@ -673,9 +679,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Base\RootPipe.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Collision\MeshCollider.h">
-      <Filter>ヘッダー ファイル\Engine\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Object\TouchableObject.h">
       <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
@@ -820,6 +823,27 @@
     </ClInclude>
     <ClInclude Include="Engine\Base\Frame\MyGame.h">
       <Filter>ヘッダー ファイル\Engine\Base\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\2D\CircleCollider.h">
+      <Filter>ヘッダー ファイル\Engine\Collision\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\2D\RectangleCollider.h">
+      <Filter>ヘッダー ファイル\Engine\Collision\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\3D\MeshCollider.h">
+      <Filter>ヘッダー ファイル\Engine\Collision\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\3D\PlaneCollider.h">
+      <Filter>ヘッダー ファイル\Engine\Collision\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\3D\RaycastHit.h">
+      <Filter>ヘッダー ファイル\Engine\Collision\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\3D\SphereCollider.h">
+      <Filter>ヘッダー ファイル\Engine\Collision\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\3D\TriangleCollider.h">
+      <Filter>ヘッダー ファイル\Engine\Collision\3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,7 @@
 #include "IObject3D.h"
 
 /// <summary>
-/// ƒRƒ‰ƒCƒ_[Šî’êƒNƒ‰ƒXiƒIƒuƒWƒFƒNƒg‚ª‚ÂƒRƒ‰ƒCƒ_[j
+/// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼åŸºåº•ã‚¯ãƒ©ã‚¹ï¼ˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒæŒã¤ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ï¼‰
 /// </summary>
 class BaseCollider
 {
@@ -24,31 +24,31 @@ public:
 	}
 
 	/// <summary>
-	/// XV
+	/// æ›´æ–°
 	/// </summary>
 	virtual void Update() = 0;
 
 	inline const CollisionShapeType& GetShapeType() { return shapeType_; }
 
-	//”»’è‚ğ—LŒø‚É‚·‚é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO
+	//åˆ¤å®šã‚’æœ‰åŠ¹ã«ã™ã‚‹ã‹ã©ã†ã‹ã®ãƒ•ãƒ©ã‚°
 	inline void SetIsValid(bool isValid) { isValid_ = isValid; }
 	inline bool GetIsValid() { return isValid_; }
 
-	//2d‚©‚Ç‚¤‚©iƒXƒvƒ‰ƒCƒg—pj
+	//2dã‹ã©ã†ã‹ï¼ˆã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨ï¼‰
 	inline void SetIs2D(bool is2D) { is2D_ = is2D; }
 	inline bool GetIs2D() { return is2D_; }
 
 	/// <summary>
-	/// Õ“ËƒR[ƒ‹ƒoƒbƒNŠÖ”
+	/// è¡çªæ™‚ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
 	/// </summary>
-	/// <param name="info">Õ“Ëî•ñ</param>
+	/// <param name="info">è¡çªæƒ…å ±</param>
 	inline void OnCollision(const CollisionInfo& info) {
 		object_->OnCollision(info);
 	}
 
-	//”»’è‘®«ƒZƒbƒg
+	//åˆ¤å®šå±æ€§ã‚»ãƒƒãƒˆ
 	inline void SetAttribute(uint16_t attribute) { attribute_ = attribute; }
-	//“–‚½‚è”»’è‚Ì‘®«‚ğ‘‚â‚·
+	//å½“ãŸã‚Šåˆ¤å®šã®å±æ€§ã‚’å¢—ã‚„ã™
 	inline void AttAttribute(uint16_t attribute) { attribute_ |= attribute; }
 	//
 	inline void RemoveAttribute(uint16_t attribute) { attribute_ &= attribute; }
@@ -57,15 +57,15 @@ public:
 
 
 protected:
-	//‚¿å‚ÌObject‚Ìƒ|ƒCƒ“ƒ^‚ğ“ü‚ê‚é
+	//æŒã¡ä¸»ã®Objectã®ãƒã‚¤ãƒ³ã‚¿ã‚’å…¥ã‚Œã‚‹
 	IObject* object_ = nullptr;
-	// Œ`óƒ^ƒCƒv
+	// å½¢çŠ¶ã‚¿ã‚¤ãƒ—
 	CollisionShapeType shapeType_ = SHAPE_UNKNOWN;
-	//”»’èæ‚é‚©æ‚ç‚È‚¢‚©
+	//åˆ¤å®šå–ã‚‹ã‹å–ã‚‰ãªã„ã‹
 	bool isValid_ = true;
-	//ƒXƒvƒ‰ƒCƒg—p‚Ì“ñŸŒ³‚©‚Ç‚¤‚©ƒtƒ‰ƒO
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨ã®äºŒæ¬¡å…ƒã‹ã©ã†ã‹ãƒ•ãƒ©ã‚°
 	bool is2D_ = false;
-	//“–‚½‚è”»’è‘®«
+	//å½“ãŸã‚Šåˆ¤å®šå±æ€§
 	uint16_t attribute_ = 0b111111111111111;
 };
 

@@ -147,7 +147,7 @@ float4 Get5x5GaussianBlur(Texture2D<float4> tex, SamplerState smp, float2 uv, fl
 }
 
 //unityの方を
-float4 GaussianTmp(float2 drawUV, float2 pickUV, float sigma)
+float GaussianTmp(float2 drawUV, float2 pickUV, float sigma)
 {
     float d = distance(drawUV, pickUV);
     return exp(-(d * d) / (2.0 * sigma * sigma));
@@ -163,7 +163,7 @@ float4 Gaussian2(Texture2D<float4> tex, SamplerState smp, float2 uv)
         for (float px = -sigma * 2; px <= sigma * 2; px += stepWidth)
         {
             float2 pickUV = uv + float2(px, py);
-            float weight = GaussianTmp(uv, pickUV, sigma);
+            float weight = GaussianTmp(uv, pickUV, sigma);//floatにfloat4入れていたので変更
             col += tex.Sample(smp, pickUV) * weight; //重みを色にかける
             totalWeight += weight; //重みの合計値を計算
         }
@@ -177,7 +177,7 @@ float4 Gaussian2(Texture2D<float4> tex, SamplerState smp, float2 uv)
 float4 GaussianAngle(Texture2D<float4> tex, SamplerState smp, float angle, float2 uv)
 {
     float totalWeight = 0, sigma = 0.005, stepWidth = 0.001;
-    float color = float4(0, 0, 0, 0);
+    float4 color = float4(0, 0, 0, 0);
     float2 pickUV = float2(0, 0); //色を取得する座標
     float pickRange = 0.06; //ガウス関数式でいうシグマ
     float angleDeg = angle;

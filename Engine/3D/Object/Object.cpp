@@ -1,4 +1,4 @@
-﻿#include "Object.h"
+#include "Object.h"
 #include"BaseCollider.h"
 
 using namespace DirectX;
@@ -48,8 +48,6 @@ D3D12_INPUT_ELEMENT_DESC Object::sInputLayoutPrimitive_[5] = {
 //---------------------------------------
 void Object::CommonInitialize()
 {
-	HRESULT result = {};
-
 	//図形クラスの
 	primitive_.Initialize();
 

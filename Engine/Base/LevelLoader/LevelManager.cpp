@@ -30,39 +30,39 @@ void LevelManager::StaticInitialize()
 
 void LevelManager::LoadLevelData(int32_t fileIndex)
 {
-	//json“Ç‚İ‚İ
+	//jsonèª­ã¿è¾¼ã¿
 	JsonLevelLoader::Getinstance().LoadJsonFile(FILE_NAME_ + std::to_string(fileIndex));
 
-	//ƒIƒuƒWƒFƒNƒgAƒJƒƒ‰‚ğƒNƒŠƒA
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã€ã‚«ãƒ¡ãƒ©ã‚’ã‚¯ãƒªã‚¢
 	ObjectManager::GetInstance().ClearAllObj();
 	CameraManager::GetInstance().Initialize();
 	lightManager_->InitializeActive();
 
-	//ƒŒƒxƒ‹ƒf[ƒ^‚©‚çƒJƒƒ‰‚ğæ“¾
+	//ãƒ¬ãƒ™ãƒ«ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ã‚«ãƒ¡ãƒ©ã‚’å–å¾—
 	for (auto& cameraData : JsonLevelLoader::Getinstance().levelData_->cameras)
 	{
-		//ƒJƒƒ‰–¼‚©‚çƒJƒƒ‰‚ğì¬
+		//ã‚«ãƒ¡ãƒ©åã‹ã‚‰ã‚«ãƒ¡ãƒ©ã‚’ä½œæˆ
 		CameraManager::GetInstance().AddCamera(cameraData->fileName);
-		//camera‚Ìƒpƒ‰ƒ[ƒ^ƒZƒbƒg
+		//cameraã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆ
 		Camera* camera = CameraManager::GetInstance().GetCamera(cameraData->fileName);
 		camera->SetEye(cameraData->camera->GetEye());
 		camera->SetTarget(cameraData->camera->GetTarget());
 		camera->SetUp(cameraData->camera->GetUp());
 
-		//‚Æ‚è‚ ‚¦‚¸ƒJƒƒ‰‚ğƒZƒbƒg
+		//ã¨ã‚Šã‚ãˆãšã‚«ãƒ¡ãƒ©ã‚’ã‚»ãƒƒãƒˆ
 		CameraManager::GetInstance().SetUsingCamera(cameraData->fileName);
 
-		//cameraManager‚É“o˜^‚³‚ê‚Ä‚é‚Ì‚Å‚±‚Á‚¿‚Å‚Í“o˜^‚µ‚È‚¢
+		//cameraManagerã«ç™»éŒ²ã•ã‚Œã¦ã‚‹ã®ã§ã“ã£ã¡ã§ã¯ç™»éŒ²ã—ãªã„
 	}
 
-	//ƒŒƒxƒ‹ƒf[ƒ^‚©‚çƒ‰ƒCƒg‚ğæ“¾
+	//ãƒ¬ãƒ™ãƒ«ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ãƒ©ã‚¤ãƒˆã‚’å–å¾—
 	for (auto& lightData : JsonLevelLoader::Getinstance().levelData_->lights)
 	{
 		//
 		LoadLight(*lightData.get());
 	}
 
-	//ƒŒƒxƒ‹ƒf[ƒ^‚©‚çƒIƒuƒWƒFƒNƒg‚ğ¶¬A”z’u
+	//ãƒ¬ãƒ™ãƒ«ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆã€é…ç½®
 	for (auto& objData : JsonLevelLoader::Getinstance().levelData_->objects)
 	{
 		//
@@ -78,19 +78,19 @@ Weapon* LevelManager::GetChildWeapon(LevelData::ObjectData& objData)
 		return nullptr;
 	}
 
-	//ƒtƒ@ƒCƒ‹–¼‚©‚ç“o˜^Ï‚İƒ‚ƒfƒ‹‚ğŒŸõ
+	//ãƒ•ã‚¡ã‚¤ãƒ«åã‹ã‚‰ç™»éŒ²æ¸ˆã¿ãƒ¢ãƒ‡ãƒ«ã‚’æ¤œç´¢
 	IModel* model = ModelManager::GetInstance().LoadModel(objData.childData->fileName);
 
-	//ƒ‚ƒfƒ‹‚ğw’è‚µ‚Ä3DƒIƒuƒWƒFƒNƒg‚ğ¶¬
+	//ãƒ¢ãƒ‡ãƒ«ã‚’æŒ‡å®šã—ã¦3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆ
 	std::unique_ptr <Weapon> newObj = {};
 
-	//q‚ªe‚¾‚Á‚½
+	//å­ãŒéŠƒã ã£ãŸæ™‚
 	if (objData.childData && objData.childData->fileName == "gun")
 	{
-		//ƒCƒ“ƒXƒ^ƒ“ƒX
+		//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 		newObj = Gun::Create(std::move(objData.childData->worldMat), model);
 	}
-	//ˆá‚¤•Ší
+	//é•ã†æ­¦å™¨
 	else
 	{
 
@@ -98,20 +98,20 @@ Weapon* LevelManager::GetChildWeapon(LevelData::ObjectData& objData)
 
 	Weapon* ans = newObj.get();
 
-	//–¼‘O
+	//åå‰
 	newObj->SetObjName(objData.childData->fileName);
 
-	//”»’èŒn
+	//åˆ¤å®šç³»
 	SetCollider(newObj.get(), *objData.childData, true);
 
-	//³–ÊƒxƒNƒgƒ‹(obj‚ÌŠp“x‚É‚æ‚Á‚Ä‰ñ“],‰ñ“]Œã‚ÌƒxƒNƒgƒ‹‚ğŠî‘b³–Ê‚Æ‚·‚é)
+	//æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«(objã®è§’åº¦ã«ã‚ˆã£ã¦å›è»¢,å›è»¢å¾Œã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’åŸºç¤æ­£é¢ã¨ã™ã‚‹)
 	newObj->CalcFrontVec();
 	newObj->SetFrontVecTmp(newObj->GetFrontVec());
 
-	//ƒ‚ƒfƒ‹ƒZƒbƒg
+	//ãƒ¢ãƒ‡ãƒ«ã‚»ãƒƒãƒˆ
 	newObj->SetModel(model);
 
-	//“o˜^
+	//ç™»éŒ²
 	ObjectManager::GetInstance().AddObject(S_OBJ_GROUP_NAME_, std::move(newObj));
 
 	if (ans != nullptr)
@@ -124,7 +124,7 @@ Weapon* LevelManager::GetChildWeapon(LevelData::ObjectData& objData)
 
 void LevelManager::CheckLandShapeObject(const LevelData::ObjectData& objData, bool& isLandShape)
 {
-	//’nŒ`ƒIƒuƒWƒFƒNƒg
+	//åœ°å½¢ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 	if (objData.colliderData.attribute & COLLISION_ATTR_LANDSHAPE)
 	{
 		isLandShape = true;
@@ -137,7 +137,7 @@ void LevelManager::CheckLandShapeObject(const LevelData::ObjectData& objData, bo
 
 void LevelManager::SetCollider(IObject3D* obj, const LevelData::ObjectData& objData, bool isSettingCollider)
 {
-	//ƒ^ƒCƒv‚ª‚È‚¯‚ê‚ÎƒRƒ‰ƒCƒ_[–³‚µ‚È‚Ì‚Å
+	//ã‚¿ã‚¤ãƒ—ãŒãªã‘ã‚Œã°ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ç„¡ã—ãªã®ã§
 	if (objData.colliderData.colliderType != CollisionShapeType::SHAPE_UNKNOWN)
 	{
 		CollisionShapeType type = objData.colliderData.colliderType;
@@ -145,30 +145,30 @@ void LevelManager::SetCollider(IObject3D* obj, const LevelData::ObjectData& objD
 
 		if (isSettingCollider)
 		{
-			//‹…ƒRƒ‰ƒCƒ_[
+			//çƒã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
 			if (type == COLLISIONSHAPE_SPHERE)
 			{
 				obj->SetCollider(std::make_unique<SphereCollider>());
 			}
-			//ƒƒbƒVƒ…ƒRƒ‰ƒCƒ_[
+			//ãƒ¡ãƒƒã‚·ãƒ¥ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
 			else if (type == COLLISIONSHAPE_MESH)
 			{
 				obj->SetCollider(std::make_unique<MeshCollider>());
 			}
 		}
-		//”»’è‘®«ƒZƒbƒg
+		//åˆ¤å®šå±æ€§ã‚»ãƒƒãƒˆ
 		obj->GetCollider()->SetAttribute(attribute);
 	}
 }
 
 void LevelManager::CreateObjectOrTouchableObject(std::unique_ptr<IObject3D>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model)
 {
-	//’nŒ`ƒIƒuƒWƒFƒNƒg‚Æ‚µ‚Äg‚¤‚Ì‚È‚ç
-	if (isLandShape_)
+	//åœ°å½¢ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¨ã—ã¦ä½¿ã†ã®ãªã‚‰
+	if (isLandShape)
 	{
 		obj = TouchableObject::Create(std::move(objData.worldMat), model);
 	}
-	//‚»‚êˆÈŠO‚Í•’Ê‚ÌObject
+	//ãã‚Œä»¥å¤–ã¯æ™®é€šã®Object
 	else
 	{
 		obj = std::make_unique<IObject3D>();
@@ -188,15 +188,15 @@ void LevelManager::SetParentNode(IObject3D* obj, const LevelData::ObjectData& ob
 //-------------------------------------------------------------------------------------------
 void LevelManager::LoadObj(LevelData::ObjectData& objData)
 {
-	//e‚ª‚¢‚½‚çƒXƒLƒbƒv(“o˜^Ï‚İ‚È‚çworldMat‚Ímove()‚³‚ê‚Ä–³‚¢‚Ì‚Å)
+	//è¦ªãŒã„ãŸã‚‰ã‚¹ã‚­ãƒƒãƒ—(ç™»éŒ²æ¸ˆã¿ãªã‚‰worldMatã¯move()ã•ã‚Œã¦ç„¡ã„ã®ã§)
 	if (/*objData.fileName == "gun" &&*/ !objData.worldMat)
 	{
 		return;
 	}
 
 	IModel* model = nullptr;
-	//ƒtƒ@ƒCƒ‹–¼‚©‚ç“o˜^Ï‚İƒ‚ƒfƒ‹‚ğŒŸõ
-	//(enemy‚ÍƒIƒuƒWƒFAƒƒbƒVƒ…‚²‚Æ‚É‰‰o‚³‚¹‚½‚¢‚Ì‚Å•ÊX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚Æ‚µ‚Ä“Ç‚İ‚Ş)
+	//ãƒ•ã‚¡ã‚¤ãƒ«åã‹ã‚‰ç™»éŒ²æ¸ˆã¿ãƒ¢ãƒ‡ãƒ«ã‚’æ¤œç´¢
+	//(enemyã¯ã‚ªãƒ–ã‚¸ã‚§ã€ãƒ¡ãƒƒã‚·ãƒ¥ã”ã¨ã«æ¼”å‡ºã•ã›ãŸã„ã®ã§åˆ¥ã€…ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¨ã—ã¦èª­ã¿è¾¼ã‚€)
 	if (objData.fileName.find("enemy") != std::string::npos)
 	{
 		model = ModelManager::GetInstance().LoadModel(objData.fileName, false, true);
@@ -206,55 +206,55 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 		model = ModelManager::GetInstance().LoadModel(objData.fileName);
 	}
 
-	//3DƒIƒuƒWƒFƒNƒg‚ğ¶¬
+	//3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆ
 	std::unique_ptr <IObject3D> newObj = {};
-	//©•ª‚Ìqi•Šíj
+	//è‡ªåˆ†ã®å­ï¼ˆæ­¦å™¨ï¼‰
 	Weapon* childWeapon = GetChildWeapon(objData);
 
-	//’nŒ`ƒIƒuƒWƒFƒNƒg‚Æ‚µ‚Äg‚¤‚©
+	//åœ°å½¢ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¨ã—ã¦ä½¿ã†ã‹
 	CheckLandShapeObject(objData, isLandShape_);
 
-	//ƒvƒŒƒCƒ„[‚Ìê‡
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å ´åˆ
 	if (objData.fileName == "player")
 	{
-		//player‚ÍObjectƒNƒ‰ƒX‚ğŒp³‚µ‚Ä‚é‚Ì‚Åƒ|ƒŠƒ‚[ƒtƒBƒYƒ€
+		//playerã¯Objectã‚¯ãƒ©ã‚¹ã‚’ç¶™æ‰¿ã—ã¦ã‚‹ã®ã§ãƒãƒªãƒ¢ãƒ¼ãƒ•ã‚£ã‚ºãƒ 
 		newObj = Player::Create(std::move(objData.worldMat), childWeapon);
 	}
-	//“G‚Ìê‡
+	//æ•µã®å ´åˆ
 	else if (objData.fileName.find("enemy") != std::string::npos)
 	{
-		//enemy‚àObjectƒNƒ‰ƒX‚ğŒp³‚µ‚Ä‚é‚Ì‚Åƒ|ƒŠƒ‚[ƒtƒBƒYƒ€
+		//enemyã‚‚Objectã‚¯ãƒ©ã‚¹ã‚’ç¶™æ‰¿ã—ã¦ã‚‹ã®ã§ãƒãƒªãƒ¢ãƒ¼ãƒ•ã‚£ã‚ºãƒ 
 		newObj = Enemy::Create(std::move(objData.worldMat), objData.waveNum, childWeapon, model);
 	}
-	//e‚Ìê‡(e‚ª‚¢‚éê‡‚ÍŠù‚É“o˜^‚µ‚Ä‚ ‚é‚Ì‚Å’Ê‚ç‚È‚¢)
+	//éŠƒã®å ´åˆ(è¦ªãŒã„ã‚‹å ´åˆã¯æ—¢ã«ç™»éŒ²ã—ã¦ã‚ã‚‹ã®ã§é€šã‚‰ãªã„)
 	else if (objData.fileName == "gun")
 	{
 		newObj = Gun::Create(std::move(objData.worldMat), model);
 	}
-	//’nŒ`ƒIƒuƒWƒFƒNƒg‚È‚ç
+	//åœ°å½¢ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãªã‚‰
 	else if (isLandShape_)
 	{
 		newObj = LandShape::Create(std::move(objData.worldMat), model);
 	}
-	//‚½‚¾‚ÌƒIƒuƒWƒFƒNƒg(‰¼)
+	//ãŸã ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ(ä»®)
 	else
 	{
 		newObj = std::make_unique<IObject3D>();
 	}
 
-	//–¼‘O
+	//åå‰
 	newObj->SetObjName(objData.fileName);
 
-	//”»’èŒn
+	//åˆ¤å®šç³»
 	SetCollider(newObj.get(), objData, !isLandShape_);
 
-	//eƒm[ƒh‚ğƒZƒbƒg(¡‚Í‚Æ‚è‚ ‚¦‚¸•Ší‚Ì‚İ)
+	//è¦ªãƒãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆ(ä»Šã¯ã¨ã‚Šã‚ãˆãšæ­¦å™¨ã®ã¿)
 	SetParentNode(newObj.get(), objData, model, childWeapon);
 
-	//ƒ‚ƒfƒ‹ƒZƒbƒg
+	//ãƒ¢ãƒ‡ãƒ«ã‚»ãƒƒãƒˆ
 	newObj->SetModel(model);
 
-	//obj“o˜^
+	//objç™»éŒ²
 	ObjectManager::GetInstance().AddObject(S_OBJ_GROUP_NAME_, std::move(newObj));
 }
 
@@ -262,7 +262,7 @@ void LevelManager::LoadLight(LevelData::LightData& lightData)
 {
 	int32_t index = -1;
 
-	//•ûŒüƒ‰ƒCƒg‚È‚ç
+	//æ–¹å‘ãƒ©ã‚¤ãƒˆãªã‚‰
 	if (lightData.fileName.find("dir") != std::string::npos)
 	{
 		lightManager_->GetDoNotUseDirLightIndex(index);
@@ -272,7 +272,7 @@ void LevelManager::LoadLight(LevelData::LightData& lightData)
 		lightManager_->SetDirLightDir(index,
 			{ lightData.dir.x,lightData.dir.y,lightData.dir.z });
 	}
-	//ƒ|ƒCƒ“ƒgƒ‰ƒCƒg‚È‚ç
+	//ãƒã‚¤ãƒ³ãƒˆãƒ©ã‚¤ãƒˆãªã‚‰
 	else if (lightData.fileName.find("point") != std::string::npos)
 	{
 		lightManager_->GetDoNotUsePointLightIndex(index);
@@ -285,7 +285,7 @@ void LevelManager::LoadLight(LevelData::LightData& lightData)
 		lightManager_->SetPointLightAtten(index,
 			{ lightData.scale.z,lightData.scale.x,lightData.scale.y });
 	}
-	//ƒXƒ|ƒbƒgƒ‰ƒCƒg‚È‚ç
+	//ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆãªã‚‰
 	else if (lightData.fileName.find("spot") != std::string::npos)
 	{
 		lightManager_->GetDoNotUseSpotLightIndex(index);
@@ -301,16 +301,4 @@ void LevelManager::LoadLight(LevelData::LightData& lightData)
 		lightManager_->SetSpotLightDir(index,
 			{ lightData.dir.x,lightData.dir.y,lightData.dir.z });
 	}
-}
-
-void LevelManager::Update()
-{
-}
-
-void LevelManager::Draw(Camera* camera)
-{
-}
-
-void LevelManager::DrawImGui()
-{
 }

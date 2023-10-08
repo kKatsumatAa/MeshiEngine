@@ -6,12 +6,12 @@
 #include <DirectXMath.h>
 
 /// <summary>
-/// ‰~Õ“Ë”»’èƒIƒuƒWƒFƒNƒg
+/// å††è¡çªåˆ¤å®šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 /// </summary>
 class RectangleCollider : public BaseCollider, public MyRectangle
 {
-private: // ƒGƒCƒŠƒAƒX
-	// DirectX::‚ğÈ—ª
+private: // ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	// DirectX::ã‚’çœç•¥
 	using XMVECTOR = DirectX::XMVECTOR;
 public:
 	RectangleCollider(Vec2 leftUp = { -1.0f,-1.0f },
@@ -19,19 +19,19 @@ public:
 		Vec2 rightUp = { 1.0f,-1.0f },
 		Vec2 rightDown = { 1.0f,1.0f })
 	{
-		MyRectangle::leftUp = leftUp;
-		MyRectangle::leftDown = leftDown;
-		MyRectangle::rightUp = rightUp;
-		MyRectangle::rightDown = rightDown;
+		MyRectangle::iLeftUp = leftUp;
+		MyRectangle::iLeftDown = leftDown;
+		MyRectangle::iRightUp = rightUp;
+		MyRectangle::iRightDown = rightDown;
 
-		// ‹éŒ`Œ`ó‚ğƒZƒbƒg
+		// çŸ©å½¢å½¢çŠ¶ã‚’ã‚»ãƒƒãƒˆ
 		shapeType_ = COLLISIONSHAPE_RECTANGLE;
 
 		is2D_ = true;
 	}
 
 	/// <summary>
-	/// XV
+	/// æ›´æ–°
 	/// </summary>
 	void Update() override;
 };

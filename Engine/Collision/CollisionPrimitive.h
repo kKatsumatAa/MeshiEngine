@@ -18,7 +18,7 @@ public:
 	//中心座標
 	DirectX::XMVECTOR center = { 0,0,0,1 };
 	//半径
-	float radius = 1.0f;
+	float iRadius = 1.0f;
 };
 
 /// <summary>
@@ -31,9 +31,9 @@ public:
 
 public:
 	//法線ベクトル
-	DirectX::XMVECTOR normal = { 0,1,0,0 };
+	DirectX::XMVECTOR iNormal = { 0,1,0,0 };
 	//原点(0,0,0)からの距離
-	float distance = 0.0f;
+	float iDistance = 0.0f;
 };
 
 /// <summary>
@@ -42,11 +42,11 @@ public:
 struct Triangle
 {
 	//頂点座標3つ
-	DirectX::XMVECTOR p0;
-	DirectX::XMVECTOR p1;
-	DirectX::XMVECTOR p2;
+	DirectX::XMVECTOR iP0;
+	DirectX::XMVECTOR iP1;
+	DirectX::XMVECTOR iP2;
 	//法線ベクトル
-	DirectX::XMVECTOR normal;
+	DirectX::XMVECTOR iNormal;
 
 public:
 	virtual ~Triangle() { ; }
@@ -87,7 +87,7 @@ public:
 	//中心座標
 	Vec2 center = { 0,0 };
 	//半径
-	float radius = 1.0f;
+	float iRadius = 1.0f;
 };
 
 /// <summary>
@@ -100,10 +100,10 @@ public:
 
 public:
 	//各頂点
-	Vec2 leftUp = { -1.0f,-1.0f };
-	Vec2 leftDown = { -1.0f,1.0f };
-	Vec2 rightUp = { 1.0f,-1.0f };
-	Vec2 rightDown = { 1.0f,1.0f };
+	Vec2 iLeftUp = { -1.0f,-1.0f };
+	Vec2 iLeftDown = { -1.0f,1.0f };
+	Vec2 iRightUp = { 1.0f,-1.0f };
+	Vec2 iRightDown = { 1.0f,1.0f };
 };
 
 

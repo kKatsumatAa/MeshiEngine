@@ -9,21 +9,21 @@
 #include "ImguiManager.h"
 
 
-//ƒRƒ‰ƒCƒ_[‚ÌeƒNƒ‰ƒX‘O•ûéŒ¾
+//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®è¦ªã‚¯ãƒ©ã‚¹å‰æ–¹å®£è¨€
 class BaseCollider;
 
 struct ConstBufferDataMaterial
 {
-	Vec4 color = { 1.0f,1.0f,1.0f,1.0f };//F(RGBA)
+	Vec4 color = { 1.0f,1.0f,1.0f,1.0f };//è‰²(RGBA)
 };
 
-//ƒIƒuƒWƒFƒNƒgeƒNƒ‰ƒX
+//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆè¦ªã‚¯ãƒ©ã‚¹
 class IObject
 {
-protected://ƒGƒCƒŠƒAƒX
-	//Microsoft::WRL::‚ğÈ—ª
+protected://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	//DirectX::‚ğÈ—ª
+	//DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
@@ -31,7 +31,7 @@ protected://ƒGƒCƒŠƒAƒX
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
-	//ƒ‹[ƒgƒpƒ‰ƒ[ƒ^‚Ìˆø”
+	//ãƒ«ãƒ¼ãƒˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®å¼•æ•°
 	enum RootParamNum
 	{
 		COLOR,
@@ -45,11 +45,11 @@ public:
 		DISSOLVE,
 		SPECULAR_MAP,
 		NORM_MAP,
-		//—v‘f”
+		//è¦ç´ æ•°
 		count = 11
 	};
 
-	//ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìƒ^ƒCƒv
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ã‚¿ã‚¤ãƒ—
 	enum ObjectInstanceType
 	{
 		UNKNOWN = -1,
@@ -60,58 +60,58 @@ public:
 	};
 
 private:
-	// ƒOƒ‰ƒtƒBƒbƒNƒXƒpƒCƒvƒ‰ƒCƒ“İ’è
+	// ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³è¨­å®š
 	static D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_;
 
 private:
-	//‰‰o—pƒfƒXƒNƒŠƒvƒ^ƒŒƒ“ƒW
+	//æ¼”å‡ºç”¨ãƒ‡ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ¬ãƒ³ã‚¸
 	static D3D12_DESCRIPTOR_RANGE effectDescRange_[3];
 
-protected://Œp³æ‚Ü‚ÅŒöŠJ
-	//’è”ƒoƒbƒtƒ@‚Ì¶¬
+protected://ç¶™æ‰¿å…ˆã¾ã§å…¬é–‹
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	ComPtr<ID3D12Resource> constBuffMaterial_ = nullptr;
-	//’è”ƒoƒbƒtƒ@—pƒf[ƒ^\‘¢‘Ìiƒ}ƒeƒŠƒAƒ‹j
-	//’è”ƒoƒbƒtƒ@‚Ìƒ}ƒbƒsƒ“ƒO
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ç”¨ãƒ‡ãƒ¼ã‚¿æ§‹é€ ä½“ï¼ˆãƒãƒ†ãƒªã‚¢ãƒ«ï¼‰
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ãƒãƒƒãƒ”ãƒ³ã‚°
 	ConstBufferDataMaterial* constMapMaterial_ = nullptr;
 
 private:
-	//ƒ‹[ƒgƒpƒ‰ƒ[ƒ^‚Ìİ’è
+	//ãƒ«ãƒ¼ãƒˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®è¨­å®š
 	static D3D12_ROOT_PARAMETER rootParams_[RootParamNum::count];
 
 protected:
-	//ƒ[ƒ‹ƒhs—ñ—p‚Ìƒoƒbƒtƒ@‚È‚Ç
-	ConstBuffTransform cbt_;//‚±‚±‚ğ‚Ç‚¤‚É‚©‚·‚ê‚ÎAƒCƒ“ƒXƒ^ƒ“ƒXˆê‚Â‚Å‚àFX•`‰æ
-	//ƒ[ƒ‹ƒhs—ñ—pƒNƒ‰ƒX
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ç”¨ã®ãƒãƒƒãƒ•ã‚¡ãªã©
+	ConstBuffTransform cbt_;//ã“ã“ã‚’ã©ã†ã«ã‹ã™ã‚Œã°ã€ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä¸€ã¤ã§ã‚‚è‰²ã€…æç”»
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ç”¨ã‚¯ãƒ©ã‚¹
 	std::unique_ptr<WorldMat> worldMat_;
-	//eƒCƒ“ƒXƒ^ƒ“ƒX
+	//è¦ªã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	IObject* parentObj_ = nullptr;
 
 protected:
-	//ƒNƒ‰ƒX–¼(ƒfƒoƒbƒO—p)
+	//ã‚¯ãƒ©ã‚¹å(ãƒ‡ãƒãƒƒã‚°ç”¨)
 	std::string objName_;
-	//¶‚«‚Ä‚éƒtƒ‰ƒO
+	//ç”Ÿãã¦ã‚‹ãƒ•ãƒ©ã‚°
 	bool isAlive_ = true;
-	//•`‰æAXV‚·‚é‚©‚Ç‚¤‚©
+	//æç”»ã€æ›´æ–°ã™ã‚‹ã‹ã©ã†ã‹
 	bool isValid_ = true;
-	//‘¬“x
+	//é€Ÿåº¦
 	Vec3 velocity_ = { 0,0,0 };
-	//ƒRƒ‰ƒCƒ_[
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
 	std::unique_ptr<BaseCollider> collider_ = nullptr;
-	//ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìí—ŞiqƒNƒ‰ƒX‚ª‰½‚©j
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç¨®é¡ï¼ˆå­ã‚¯ãƒ©ã‚¹ãŒä½•ã‹ï¼‰
 	ObjectInstanceType objInsType_ = ObjectInstanceType::UNKNOWN;
 
 
-	//ŠÖ”------------------------------------------------------------------------------
+	//é–¢æ•°------------------------------------------------------------------------------
 public:
 	virtual ~IObject();
 	IObject();
 
 protected:
-	//‹¤’Ê‚Ì‰Šú‰»ˆ—
+	//å…±é€šã®åˆæœŸåŒ–å‡¦ç†
 	void Initialize(std::unique_ptr<WorldMat> worldMat = nullptr);
 
 public:
-	//Ã“I‰Šú‰»
+	//é™çš„åˆæœŸåŒ–
 	static void CommonInitialize();
 
 public:
@@ -120,17 +120,17 @@ public:
 	virtual void Draw() = 0;
 
 public:
-	//s—ñ‚ğXVA‚»‚ê‚É”º‚¢ƒRƒ‰ƒCƒ_[‚à
+	//è¡Œåˆ—ã‚’æ›´æ–°ã€ãã‚Œã«ä¼´ã„ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚‚
 	void WorldMatColliderUpdate();
 
-	//ƒfƒoƒbƒO—p‚Ì•\¦
+	//ãƒ‡ãƒãƒƒã‚°ç”¨ã®è¡¨ç¤º
 	virtual void DrawImGui(std::function<void()>imguiF = NULL);
 
 public:
-	//ƒ‹[ƒgƒVƒOƒlƒ`ƒƒŒn‚ÌƒRƒ}ƒ“ƒh
+	//ãƒ«ãƒ¼ãƒˆã‚·ã‚°ãƒãƒãƒ£ç³»ã®ã‚³ãƒãƒ³ãƒ‰
 	void SetRootPipe(RootPipe* pipelineSet, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
 
-	//ƒpƒCƒvƒ‰ƒCƒ“‚Ìİ’è
+	//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 	static void PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe,
 		const std::string& vSName, const std::string& pSName,
 		D3D12_INPUT_ELEMENT_DESC* inputLayout, uint32_t inputLCount,
@@ -140,42 +140,42 @@ public:
 		bool Inversion = 0, bool Translucent = 0);
 
 public:
-	//Õ“ËƒR[ƒ‹ƒoƒbƒNŠÖ”
-	virtual void OnCollision(const CollisionInfo& info) { ; }
+	//è¡çªæ™‚ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°ã€è­¦å‘Šé¿ã‘ã‚‹ãŸã‚ã«å‚ç…§ã ã‘
+	virtual void OnCollision(const CollisionInfo& info) { info; }
 
 public:
-	//ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìí—Ş‚ğ“¾‚é
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç¨®é¡ã‚’å¾—ã‚‹
 	ObjectInstanceType GetObjInsType() { return objInsType_; }
-	//2D‚©3D‚©
+	//2Dã‹3Dã‹
 
 public:
-	//¶‚«‚Ä‚é‚©
+	//ç”Ÿãã¦ã‚‹ã‹
 	void SetIsAlive(bool isAlive);
 	bool GetIsAlive() { return isAlive_; }
 
-	//•`‰æAXV‚·‚é‚©‚Ç‚¤‚©
+	//æç”»ã€æ›´æ–°ã™ã‚‹ã‹ã©ã†ã‹
 	virtual void SetIsValid(bool isValid);
 	bool GetIsValid() { return isValid_; }
 
-	//ƒXƒs[ƒhi“–‚½‚è”»’è‚Ég‚¤j
+	//ã‚¹ãƒ”ãƒ¼ãƒ‰ï¼ˆå½“ãŸã‚Šåˆ¤å®šã«ä½¿ã†ï¼‰
 	void SetVelocity(const Vec3& vec) { velocity_ = vec; }
 	const Vec3& GetVelocity() { return velocity_; }
 
 
 public:
-	//ˆÊ’u
+	//ä½ç½®
 	void SetTrans(const Vec3& pos) { worldMat_->trans_ = pos; }
 	void SetTransX(float pos) { worldMat_->trans_.x = pos; }
 	void SetTransY(float pos) { worldMat_->trans_.y = pos; }
 	void SetTransZ(float pos) { worldMat_->trans_.z = pos; }
 	Vec3 GetTrans() { return worldMat_->trans_; }
-	//ƒXƒP[ƒ‹
+	//ã‚¹ã‚±ãƒ¼ãƒ«
 	void SetScale(const Vec3& scale) { worldMat_->scale_ = scale; }
 	void SetScaleX(float scale) { worldMat_->scale_.x = scale; }
 	void SetScaleY(float scale) { worldMat_->scale_.y = scale; }
 	void SetScaleZ(float scale) { worldMat_->scale_.z = scale; }
 	const Vec3& GetScale() { return worldMat_->scale_; }
-	//‰ñ“]
+	//å›è»¢
 	void SetRot(const Vec3& rot) {
 		worldMat_->rot_ = rot;
 	}
@@ -183,43 +183,43 @@ public:
 	void SetRotY(float rot) { worldMat_->rot_.y = rot; }
 	void SetRotZ(float rot) { worldMat_->rot_.z = rot; }
 	const Vec3& GetRot() { return worldMat_->rot_; }
-	//s—ñ‚ğXV
+	//è¡Œåˆ—ã‚’æ›´æ–°
 	void CalcWorldMat() { worldMat_->CalcWorldMat(); }
 	void CalcRotMat() { worldMat_->CalcRotMat(); }
 	void CalcTransMat() { worldMat_->CalcTransMat(); }
 	void CalcScaleMat() { worldMat_->CalcScaleMat(); }
-	//e
+	//è¦ª
 	void SetParent(IObject* obj) { worldMat_->parent_ = obj->GetWorldMat(); }
 	void SetParent(WorldMat* worldMat) { worldMat_->parent_ = worldMat; }
 	WorldMat* GetParent() { return worldMat_->parent_; }
-	//ƒ[ƒ‹ƒhs—ñ—pƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ç”¨ã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—
 	WorldMat* GetWorldMat() { return worldMat_.get(); }
-	//eqŠÖŒW‚ğl—¶‚µ‚½ˆÊ’u‚ğƒQƒbƒg
+	//è¦ªå­é–¢ä¿‚ã‚’è€ƒæ…®ã—ãŸä½ç½®ã‚’ã‚²ãƒƒãƒˆ
 	Vec3 GetWorldTrans() { return worldMat_->GetWorldTrans(); }
-	//ƒ[ƒ‹ƒhs—ñ‚Ìæ“¾
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®å–å¾—
 	const M4& GetMatWorld() { return worldMat_->matWorld_; }
 
-	//ƒNƒH[ƒ^ƒjƒIƒ“Œn
+	//ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ç³»
 	Quaternion GetQuaternion() { return worldMat_->GetQuaternion(); }
 	void SetIsUseQuaternionMatRot(bool is) { worldMat_->SetIsUseQuaMatRot(is); }
 	void SetMatRot(const M4& m) { worldMat_->SetRotMat(m); }
 
 public:
-	//ƒIƒuƒWƒFƒNƒg–¼‘O
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåå‰
 	void SetObjName(std::string objName) { objName_ = objName; }
 	const std::string& GetObjName() { return objName_; }
 
-	//ƒRƒ‰ƒCƒ_[
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
 	BaseCollider* GetCollider() { return collider_.get(); }
-	//ƒRƒ‰ƒCƒ_[‚ÌƒZƒbƒg
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ã‚»ãƒƒãƒˆ
 	void SetCollider(std::unique_ptr<BaseCollider> collider);
-	//”»’è‚ğ—LŒø‚É‚·‚é‚©
+	//åˆ¤å®šã‚’æœ‰åŠ¹ã«ã™ã‚‹ã‹
 	void SetColliderIsValid(bool isValid);
 
 public:
-	//F‚ğƒZƒbƒg
+	//è‰²ã‚’ã‚»ãƒƒãƒˆ
 	void SetColor(const Vec4& color) { constMapMaterial_->color = color; }
-	//F‚ğ•Ô‚·
+	//è‰²ã‚’è¿”ã™
 	const Vec4& GetColor() { return constMapMaterial_->color; }
 
 };

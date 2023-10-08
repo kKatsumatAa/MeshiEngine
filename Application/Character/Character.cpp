@@ -6,14 +6,14 @@ using namespace DirectX;
 const float Character::IS_WALL_ROT_ = 30.0f;
 
 
-void Character::Damaged(int32_t damage, std::function<void()> deadFunc)
+void Character::Damaged(int8_t damage, std::function<void()> deadFunc)
 {
-	//ƒ_ƒ[ƒW—LŒø‚Å‚È‚¯‚ê‚Î”²‚¯‚é
+	//ãƒ€ãƒ¡ãƒ¼ã‚¸æœ‰åŠ¹ã§ãªã‘ã‚Œã°æŠœã‘ã‚‹
 	if (!isValidDamage_) { return; }
 
 	hp_ -= damage;
 
-	//€‚ñ‚¾‚Æ‚«‚Ìˆ—
+	//æ­»ã‚“ã ã¨ãã®å‡¦ç†
 	if (hp_ <= 0)
 	{
 		deadFunc();
@@ -22,12 +22,12 @@ void Character::Damaged(int32_t damage, std::function<void()> deadFunc)
 
 void Character::Update()
 {
-	//•Ší‚Ì—LŒøƒtƒ‰ƒO‚à˜A“®
+	//æ­¦å™¨ã®æœ‰åŠ¹ãƒ•ãƒ©ã‚°ã‚‚é€£å‹•
 	if (GetWeapon())
 	{
 		GetWeapon()->SetIsValid(GetIsValid());
 
-		//€‚ñ‚¾‚ç•Ší—‚Æ‚·
+		//æ­»ã‚“ã ã‚‰æ­¦å™¨è½ã¨ã™
 		if (!GetIsAlive())
 		{
 			GetWeapon()->SetIsAlive(false);
@@ -42,7 +42,7 @@ void Character::DrawImGui(std::function<void()> imguiF)
 {
 	std::function<void()> f = [=]() {
 
-		//ƒgƒ‰ƒ“ƒX‚È‚Ç
+		//ãƒˆãƒ©ãƒ³ã‚¹ãªã©
 		if (ImGui::TreeNode("Character")) {
 
 			ImGui::Checkbox("isVailidDamage", &isValidDamage_);
@@ -68,7 +68,7 @@ void Character::DrawImGui(std::function<void()> imguiF)
 			ImGui::TreePop();
 		}
 
-		//‚Á‚Ä‚é•Ší‚Ìimgui‚à
+		//æŒã£ã¦ã‚‹æ­¦å™¨ã®imguiã‚‚
 		if (weapon_)
 		{
 			if (ImGui::TreeNode(weapon_->GetObjName().c_str()))
@@ -80,7 +80,7 @@ void Character::DrawImGui(std::function<void()> imguiF)
 		}
 	};
 
-	//eƒNƒ‰ƒX‚Ì‚ğŒÄ‚Ño‚·
+	//è¦ªã‚¯ãƒ©ã‚¹ã®ã‚’å‘¼ã³å‡ºã™
 	ObjectFBX::DrawImGui(f);
 }
 
@@ -88,7 +88,7 @@ void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 {
 	SetWeapon(weapon);
 
-	//ƒVƒ‹ƒGƒbƒg‰ğœ
+	//ã‚·ãƒ«ã‚¨ãƒƒãƒˆè§£é™¤
 	weapon->SetIsSilhouette(false);
 
 	if (localPos)
@@ -101,7 +101,7 @@ void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 
 void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 {
-	//•Ší‚Á‚Ä‚½‚ç
+	//æ­¦å™¨æŒã£ã¦ãŸã‚‰
 	if (weapon_)
 	{
 		if (localPos)
@@ -109,15 +109,15 @@ void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 			GetWeapon()->SetLocalPos(*localPos);
 		}
 
-		//eƒm[ƒh‚ğ‚È‚­‚·
+		//è¦ªãƒãƒ¼ãƒ‰ã‚’ãªãã™
 		weapon_->ResetParentFbxNode();
-		//e‚È‚Ç‚ğnull
+		//è¦ªãªã©ã‚’null
 		GetWeapon()->ChangeOwner(nullptr);
-		//‰¼‚Åè‚©‚ç—£‚ê‚½‚çƒAƒCƒeƒ€‚Ì‘®«‚É‚·‚é
+		//ä»®ã§æ‰‹ã‹ã‚‰é›¢ã‚ŒãŸã‚‰ã‚¢ã‚¤ãƒ†ãƒ ã®å±æ€§ã«ã™ã‚‹
 		weapon_->SetAttribute(COLLISION_ATTR_ITEMS);
 		weapon_->SetIsThrowing(true);
 
-		//ˆÚ“®
+		//ç§»å‹•
 		GetWeapon()->SetFallVec(directionVec);
 		GetWeapon()->SetTrans(GetWeapon()->GetTrans() + directionVec);
 		weapon_->OldPosUpdate();
@@ -129,74 +129,74 @@ void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 
 void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool isJump, std::function<void()>f)
 {
-	//—‰ºˆ—
+	//è½ä¸‹å‡¦ç†
 	if (!isOnGround_)
 	{
-		//‰Á‘¬
+		//åŠ é€Ÿ
 		fallVec_.y = max((fallVec_.y + FALL_ACC_ * velocityYPow), FALL_V_Y_MIN_);
-		//ˆÚ“®
+		//ç§»å‹•
 		SetTrans(GetTrans() + fallVec_ * velocityYPow);
-		//ƒWƒƒƒ“ƒv‚ÌğŒƒgƒŠƒK[–‚½‚µ‚Ä‚È‚©‚Á‚½‚ç
+		//ã‚¸ãƒ£ãƒ³ãƒ—ã®æ¡ä»¶ãƒˆãƒªã‚¬ãƒ¼æº€ãŸã—ã¦ãªã‹ã£ãŸã‚‰
 		if (f && !isJump)
 		{
 			f();
 		}
 	}
-	//ƒWƒƒƒ“ƒv‘€ì
+	//ã‚¸ãƒ£ãƒ³ãƒ—æ“ä½œ
 	else if (isJump)
 	{
 		isOnGround_ = false;
 		fallVec_ = { 0,JUMP_V_Y_FIST_,0 };
-		//ŠÖ”‚Ìˆ—Às
+		//é–¢æ•°ã®å‡¦ç†å®Ÿè¡Œ
 		if (f)
 		{
 			f();
 		}
 	}
-	//s—ñXV
+	//è¡Œåˆ—æ›´æ–°
 	IObject3D::WorldMatColliderUpdate();
 
-	//•Ç‚Æ‚Ì“–‚½‚è”»’è
+	//å£ã¨ã®å½“ãŸã‚Šåˆ¤å®š
 	QueryCallBackUpdate();
 
-	//ã’[‚©‚ç‰º’[‚Ü‚Å‚ÌƒŒƒCƒLƒƒƒXƒg—pƒŒƒC‚ğ€”õ(“–‚½‚è”»’è‚ÍeqŠÖŒW‚àl—¶)
+	//ä¸Šç«¯ã‹ã‚‰ä¸‹ç«¯ã¾ã§ã®ãƒ¬ã‚¤ã‚­ãƒ£ã‚¹ãƒˆç”¨ãƒ¬ã‚¤ã‚’æº–å‚™(å½“ãŸã‚Šåˆ¤å®šã¯è¦ªå­é–¢ä¿‚ã‚‚è€ƒæ…®)
 	Ray ray;
 	ray.start = { GetWorldTrans().x,GetWorldTrans().y, GetWorldTrans().z };
-	//ã’[
+	//ä¸Šç«¯
 	ray.start.m128_f32[1] += LengthY;
 	ray.dir = { 0,-1.0f,0 };
 	RaycastHit info;
 
-	//Ú’nó‘Ô
+	//æ¥åœ°çŠ¶æ…‹
 	if (isOnGround_)
 	{
-		//ƒXƒ€[ƒY‚Éâ‚ğ‰º‚é‚½‚ß‚Ì‹z’…ˆ—(­‚µ’·‚ß‚É‚·‚é‚±‚Æ‚Å)
+		//ã‚¹ãƒ ãƒ¼ã‚ºã«å‚ã‚’ä¸‹ã‚‹ãŸã‚ã®å¸ç€å‡¦ç†(å°‘ã—é•·ã‚ã«ã™ã‚‹ã“ã¨ã§)
 		const float adsDistance = LengthY * 0.2f;
-		//Ú’n‚ğˆÛ
+		//æ¥åœ°ã‚’ç¶­æŒ
 		if (CollisionManager::GetInstance()->Raycast(
 			ray, COLLISION_ATTR_LANDSHAPE, &info, LengthY * 2.0f + adsDistance))
 		{
 			isOnGround_ = true;
-			//‚ß‚è‚İ•ªã‚É
+			//ã‚ã‚Šè¾¼ã¿åˆ†ä¸Šã«
 			SetTrans(GetTrans() - Vec3(0, info.distance - LengthY * 2.0f, 0));
-			//s—ñXV
+			//è¡Œåˆ—æ›´æ–°
 			ObjectFBX::WorldMatColliderUpdate();
 		}
-		//’n–Ê‚ª‚È‚¢‚Ì‚Å—‰º
+		//åœ°é¢ãŒãªã„ã®ã§è½ä¸‹
 		else
 		{
 			isOnGround_ = false;
-			//‰‘¬‚ğ0
+			//åˆé€Ÿã‚’0
 			fallVec_ = {};
 		}
 	}
-	//—‰ºó‘Ô
+	//è½ä¸‹çŠ¶æ…‹
 	else if (fallVec_.y <= 0.0f)
 	{
 		if (CollisionManager::GetInstance()->Raycast(
 			ray, COLLISION_ATTR_LANDSHAPE, &info, LengthY * 2.0f))
 		{
-			//’…’n
+			//ç€åœ°
 			isOnGround_ = true;
 			SetTrans(GetTrans() - Vec3(0, info.distance - LengthY * 2.0f, 0));
 			ObjectFBX::WorldMatColliderUpdate();
@@ -207,28 +207,28 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 
 void Character::QueryCallBackUpdate()
 {
-	//‹…ƒRƒ‰ƒCƒ_[æ“¾
+	//çƒã‚³ãƒ©ã‚¤ãƒ€ãƒ¼å–å¾—
 	SphereCollider* sphereColl = dynamic_cast<SphereCollider*>(GetCollider());
 
-	//ƒNƒGƒŠ[ƒR[ƒ‹ƒoƒbƒNƒNƒ‰ƒX
+	//ã‚¯ã‚¨ãƒªãƒ¼ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ã‚¯ãƒ©ã‚¹
 	class CharacterQueryCallBack :public QueryCallback
 	{
 	public:
 		CharacterQueryCallBack(Sphere* sphere) : sphere(sphere) {};
 
-		// Õ“ËƒR[ƒ‹ƒoƒbƒNŠÖ”
+		// è¡çªæ™‚ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
 		bool OnQueryHit(const QueryHit& info)
 		{
-			//ã•ûŒü
+			//ä¸Šæ–¹å‘
 			const XMVECTOR up = { 0,1.0f,0,0 };
-			//”rË•ûŒü
+			//æ’æ–¥æ–¹å‘
 			XMVECTOR rejectDir = XMVector3Normalize(info.reject);
-			//ã•ûŒü‚Æ”rË•ûŒü‚ÌŠp“x·‚ÌƒRƒTƒCƒ“’l
+			//ä¸Šæ–¹å‘ã¨æ’æ–¥æ–¹å‘ã®è§’åº¦å·®ã®ã‚³ã‚µã‚¤ãƒ³å€¤
 			float cos = XMVector3Dot(rejectDir, up).m128_f32[0];
 
-			// ’n–Ê”»’è‚µ‚«‚¢’lŠp“x
+			// åœ°é¢åˆ¤å®šã—ãã„å€¤è§’åº¦
 			const float threshold = cosf(XMConvertToRadians(IS_WALL_ROT_));
-			//Šp“x·‚É‚æ‚Á‚Ä“Vˆä‚Ü‚½‚Í’n–Ê‚Æ”»’è‚³‚ê‚éê‡‚ğœ‚¢‚Ä
+			//è§’åº¦å·®ã«ã‚ˆã£ã¦å¤©äº•ã¾ãŸã¯åœ°é¢ã¨åˆ¤å®šã•ã‚Œã‚‹å ´åˆã‚’é™¤ã„ã¦
 			if (-threshold < cos && cos < threshold) {
 				sphere->center += info.reject;
 				move += info.reject;
@@ -241,22 +241,22 @@ void Character::QueryCallBackUpdate()
 		DirectX::XMVECTOR move = {};
 	};
 
-	//ƒNƒGƒŠ[ƒR[ƒ‹ƒoƒbƒN‚ÌŠÖ”ƒIƒuƒWƒFƒNƒg
+	//ã‚¯ã‚¨ãƒªãƒ¼ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ã®é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 	CharacterQueryCallBack callback(sphereColl);
 
-	// ‹…‚Æ’nŒ`‚ÌŒğ·‚ğ‘SŒŸõ
+	// çƒã¨åœ°å½¢ã®äº¤å·®ã‚’å…¨æ¤œç´¢
 	CollisionManager::GetInstance()->QuerySphere(*sphereColl, &callback, COLLISION_ATTR_LANDSHAPE);
-	// Œğ·‚É‚æ‚é”rË•ª“®‚©‚·
+	// äº¤å·®ã«ã‚ˆã‚‹æ’æ–¥åˆ†å‹•ã‹ã™
 	SetTrans(GetTrans()
 		+ Vec3(callback.move.m128_f32[0], callback.move.m128_f32[1], callback.move.m128_f32[2]));
-	// ƒ[ƒ‹ƒhs—ñXV
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—æ›´æ–°
 	ObjectFBX::WorldMatColliderUpdate();
 }
 
 void Character::SetIsValid(bool isValid)
 {
 	ObjectFBX::SetIsValid(isValid);
-	//•Ší‚Ì—LŒøƒtƒ‰ƒO‚à˜A“®
+	//æ­¦å™¨ã®æœ‰åŠ¹ãƒ•ãƒ©ã‚°ã‚‚é€£å‹•
 	if (GetWeapon())
 	{
 		GetWeapon()->SetIsValid(GetIsValid());
@@ -265,13 +265,13 @@ void Character::SetIsValid(bool isValid)
 
 bool Character::CheckRayOfEyeHit(const Vec3& dir, float length, uint16_t attr, RaycastHit* info)
 {
-	//UŒ‚‚Å‚«‚é‚©‚Ç‚¤‚©
-//ƒŒƒC‚ÉƒvƒŒƒCƒ„[‚Ì³–ÊƒxƒNƒgƒ‹“ü‚ê‚é
+	//æ”»æ’ƒã§ãã‚‹ã‹ã©ã†ã‹
+//ãƒ¬ã‚¤ã«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«å…¥ã‚Œã‚‹
 	Ray ray;
 	ray.dir = { dir.x,dir.y,dir.z };
 	ray.start = { GetWorldTrans().x,GetWorldTrans().y ,GetWorldTrans().z };
 
-	//³–ÊƒxƒNƒgƒ‹‚É‰½‚©‚ ‚é‚©
+	//æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«ã«ä½•ã‹ã‚ã‚‹ã‹
 	bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, attr, info, length);
 
 	return isRayHit;

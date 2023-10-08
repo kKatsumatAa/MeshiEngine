@@ -1,5 +1,4 @@
 #include "Material.h"
-#include <DirectXTex.h>
 #include <cassert>
 #include "TextureManager.h"
 #include "Util.h"
@@ -8,13 +7,13 @@ using namespace DirectX;
 using namespace std;
 
 /// <summary>
-/// Ã“Iƒƒ“ƒo•Ï”‚ÌÀ‘Ì
+/// é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°ã®å®Ÿä½“
 /// </summary>
 ID3D12Device* Material::sDevice_ = nullptr;
 
 void Material::StaticInitialize(ID3D12Device* device)
 {
-	// Ä‰Šú‰»ƒ`ƒFƒbƒN
+	// å†åˆæœŸåŒ–ãƒã‚§ãƒƒã‚¯
 	assert(!Material::sDevice_);
 
 	Material::sDevice_ = device;
@@ -31,21 +30,21 @@ std::unique_ptr<Material> Material::Create()
 
 void Material::Initialize()
 {
-	// ’è”ƒoƒbƒtƒ@‚Ì¶¬
+	// å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	CreateConstantBuffer();
 }
 
 void Material::CreateConstantBuffer()
 {
-	// ’è”ƒoƒbƒtƒ@‚Ì¶¬
-	//ƒq[ƒvİ’è
+	// å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
+	//ãƒ’ãƒ¼ãƒ—è¨­å®š
 	D3D12_HEAP_PROPERTIES cbHeapProp{};
-	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPU‚Ö‚Ì“]‘——p
-	//ƒŠƒ\[ƒXİ’è
+	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUã¸ã®è»¢é€ç”¨
+	//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 	D3D12_RESOURCE_DESC cbResourceDesc{};
 	ResourceProperties(cbResourceDesc,
-		((uint32_t)sizeof(Material::ConstBufferDataMaterial2) + 0xff) & ~0xff/*256ƒoƒCƒgƒAƒ‰ƒCƒƒ“ƒg*/);
-	//’è”ƒoƒbƒtƒ@‚Ì¶¬
+		((uint32_t)sizeof(Material::ConstBufferDataMaterial2) + 0xff) & ~0xff/*256ãƒã‚¤ãƒˆã‚¢ãƒ©ã‚¤ãƒ¡ãƒ³ãƒˆ*/);
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	BuffProperties(cbHeapProp, cbResourceDesc, &constBuff_);
 }
 
@@ -56,9 +55,9 @@ Material::~Material()
 
 void Material::LoadTexture(const std::string& directoryPath)
 {
-	// ƒtƒ@ƒCƒ‹ƒpƒX‚ğŒ‹‡
+	// ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‚’çµåˆ
 	string filepath = directoryPath + textureFilename_;
-	// ƒeƒNƒXƒ`ƒƒ‚È‚µ
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãªã—
 	if (textureFilename_.size() == 0) {
 		filepath = "white.png";
 	}
@@ -69,7 +68,7 @@ void Material::LoadTexture(const std::string& directoryPath)
 void Material::Update()
 {
 	HRESULT result;
-	// ’è”ƒoƒbƒtƒ@‚Öƒf[ƒ^“]‘—
+	// å®šæ•°ãƒãƒƒãƒ•ã‚¡ã¸ãƒ‡ãƒ¼ã‚¿è»¢é€
 	ConstBufferDataMaterial2* constMap = nullptr;
 	result = constBuff_->Map(0, nullptr, (void**)&constMap);
 	if (SUCCEEDED(result)) {

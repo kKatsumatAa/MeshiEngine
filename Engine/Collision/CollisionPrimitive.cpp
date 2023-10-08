@@ -5,10 +5,10 @@ using namespace DirectX;
 
 void Triangle::ComputeNormal()
 {
-	XMVECTOR p0_p1 = p1 - p0;
-	XMVECTOR p0_p2 = p2 - p0;
+	XMVECTOR p0_p1 = iP1 - iP0;
+	XMVECTOR p0_p2 = iP2 - iP0;
 
-	//ŠOÏ‚É‚æ‚èA2•Ó‚É‚’¼‚ÈƒxƒNƒgƒ‹‚ğZo
-	normal = XMVector3Cross(p0_p1, p0_p2);
-	normal = XMVector3Normalize(normal);
+	//å¤–ç©ã«ã‚ˆã‚Šã€2è¾ºã«å‚ç›´ãªãƒ™ã‚¯ãƒˆãƒ«ã‚’ç®—å‡º
+	iNormal = XMVector3Cross(p0_p1, p0_p2);
+	iNormal = XMVector3Normalize(iNormal);
 }

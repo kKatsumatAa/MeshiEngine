@@ -6,11 +6,11 @@
 #include"ObjectManager.h"
 
 
-//json‚Å“Ç‚İ‚ñ‚¾ƒŒƒxƒ‹‚ğŠÇ—‚·‚é
+//jsonã§èª­ã¿è¾¼ã‚“ã ãƒ¬ãƒ™ãƒ«ã‚’ç®¡ç†ã™ã‚‹
 class LevelManager final
 {
-private://•Ï”
-	//’nŒ`ƒIƒuƒWƒFƒNƒg‚Æ‚µ‚Äg‚¤‚©
+private://å¤‰æ•°
+	//åœ°å½¢ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¨ã—ã¦ä½¿ã†ã‹
 	bool isLandShape_ = false;
 
 	const std::string FILE_NAME_ = "level";
@@ -26,16 +26,16 @@ private:
 
 
 public:
-	//ƒIƒuƒWƒFƒNƒg‚ÌƒOƒ‹[ƒv–¼
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚°ãƒ«ãƒ¼ãƒ—å
 	static const std::string S_OBJ_GROUP_NAME_;
 
 
-private://ŠÖ”
+private://é–¢æ•°
 	LevelManager() { ; }
 	~LevelManager();
 
 public:
-	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‹Ö~
+	//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ç¦æ­¢
 	LevelManager(const LevelManager& other) = delete;
 	LevelManager& operator=(const LevelManager& other) = delete;
 
@@ -44,35 +44,29 @@ public:
 	void StaticInitialize();
 
 	/// <summary>
-	///JsonLevelLoader‚Å“Ç‚İ‚ñ‚¾“à—e‚ğÀÛ‚ÉƒGƒ“ƒWƒ“ã‚Å“Ç‚İ‚Ş
+	///JsonLevelLoaderã§èª­ã¿è¾¼ã‚“ã å†…å®¹ã‚’å®Ÿéš›ã«ã‚¨ãƒ³ã‚¸ãƒ³ä¸Šã§èª­ã¿è¾¼ã‚€
 	/// </summary>
-	/// <param name="fileIndex">ƒtƒ@ƒCƒ‹‚ÌŒã‚É‚Â‚­”š</param>
+	/// <param name="fileIndex">ãƒ•ã‚¡ã‚¤ãƒ«ã®å¾Œã«ã¤ãæ•°å­—</param>
 	void LoadLevelData(int32_t fileIndex);
 
-	//ƒtƒ@ƒCƒ‹–¼‚É‚æ‚Á‚ÄƒNƒ‰ƒX¶¬
+	//ãƒ•ã‚¡ã‚¤ãƒ«åã«ã‚ˆã£ã¦ã‚¯ãƒ©ã‚¹ç”Ÿæˆ
 	void LoadObj(LevelData::ObjectData& objData);
-	//ƒ‰ƒCƒg‚ğ¶¬İ’è
+	//ãƒ©ã‚¤ãƒˆã‚’ç”Ÿæˆè¨­å®š
 	void LoadLight(LevelData::LightData& lightData);
 
-	//“Ç‚İ‚ñ‚¾‚à‚Ì‚ğ“®‚©‚·
-	void Update();
-	//“Ç‚İ‚ñ‚¾‚à‚Ì‚ğ•`‰æ
-	void Draw(Camera* camera = nullptr);
-	void DrawImGui();
-
-private://ƒQ[ƒ€ƒIƒŠƒWƒiƒ‹
-	//•Ší‚Ìƒ|ƒCƒ“ƒ^•Ô‚·
+private://ã‚²ãƒ¼ãƒ ã‚ªãƒªã‚¸ãƒŠãƒ«
+	//æ­¦å™¨ã®ãƒã‚¤ãƒ³ã‚¿è¿”ã™
 	Weapon* GetChildWeapon(LevelData::ObjectData& objData);
 
-	//’nŒ`ƒIƒuƒWƒFƒNƒg‚Æ‚µ‚Äg‚¤‚©ƒ`ƒFƒbƒN
+	//åœ°å½¢ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¨ã—ã¦ä½¿ã†ã‹ãƒã‚§ãƒƒã‚¯
 	void CheckLandShapeObject(const LevelData::ObjectData& objData, bool& isLandShape);
 
 private:
-	//ƒRƒ‰ƒCƒ_[Œn‚ÌƒZƒbƒg
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ç³»ã®ã‚»ãƒƒãƒˆ
 	void SetCollider(IObject3D* obj, const LevelData::ObjectData& objData, bool isSettingCollider);
-	//ˆø”‚É‚æ‚Á‚ÄObject‚©TouchObject‚ğì‚é
+	//å¼•æ•°ã«ã‚ˆã£ã¦Objectã‹TouchObjectã‚’ä½œã‚‹
 	void CreateObjectOrTouchableObject(std::unique_ptr<IObject3D>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model);
-	//eƒIƒuƒWƒFƒNƒg‚Ìƒ‚ƒfƒ‹‚Ìƒm[ƒh‚ğe‚Éİ’è
+	//è¦ªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ¢ãƒ‡ãƒ«ã®ãƒãƒ¼ãƒ‰ã‚’è¦ªã«è¨­å®š
 	void SetParentNode(IObject3D* obj, const LevelData::ObjectData& objData, IModel* model
 		, IObject3D* child);
 

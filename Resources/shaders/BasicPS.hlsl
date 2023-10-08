@@ -23,7 +23,7 @@ PSOutput main(VSOutput input)
     float4 specularMapCol = { 0, 0, 0, 0 };
 
 	    //ワールドの法線
-    float3 wNormal = normalize(mul(world, float4(input.normal, 0)));
+    float3 wNormal = normalize(mul(world, float4(input.normal, 0))).rgb;
     
     float3 lightNormal = wNormal;
     
@@ -72,19 +72,19 @@ PSOutput main(VSOutput input)
     }
 
 	//点光源
-    for (int i = 0; i < S_POINTLIGHT_NUM; i++)
+    for (int j = 0; j < S_POINTLIGHT_NUM; j++)
     {
-        if (pointLights[i].active)
+        if (pointLights[j].active)
         {
 			//ライトへのベクトル
-            float3 lightv = pointLights[i].lightpos - input.worldpos.xyz;
+            float3 lightv = pointLights[j].lightpos - input.worldpos.xyz;
 			//ベクトルの長さ
             float d = length(lightv);
 			//正規化し、単位ベクトルにする
             lightv = normalize(lightv);
 			//距離減衰係数
-            float atten = 1.0f / (pointLights[i].lightatten.x + pointLights[i].lightatten.y * d +
-				pointLights[i].lightatten.z * d * d);
+            float atten = 1.0f / (pointLights[j].lightatten.x + pointLights[j].lightatten.y * d +
+				pointLights[j].lightatten.z * d * d);
 			// ライトに向かうベクトルと法線の内積
             float3 dotlightnormal = dot(lightv, lightNormal);
 			// 反射光ベクトル
@@ -104,7 +104,7 @@ PSOutput main(VSOutput input)
             specular = specular * 0.9f * specularColor;
 
 			// 全て加算する
-            shadecolor.rgb += atten * (diffuse + specular) * pointLights[i].lightcolor;
+            shadecolor.rgb += atten * (diffuse + specular) * pointLights[j].lightcolor;
 			
 			//スペキュラマップ
             if (isSpecularMap)
@@ -116,23 +116,23 @@ PSOutput main(VSOutput input)
     }
 
 	//スポットライト
-    for (int i = 0; i < S_SPOTLIGHT_NUM; i++)
+    for (int k = 0; k < S_SPOTLIGHT_NUM; k++)
     {
-        if (spotLights[i].active)
+        if (spotLights[k].active)
         {
 			//ライトへの方向ベクトル
-            float3 lightv = spotLights[i].lightpos - input.worldpos.xyz;
+            float3 lightv = spotLights[k].lightpos - input.worldpos.xyz;
             float d = length(lightv);
             lightv = normalize(lightv);
 			//距離減衰係数
-            float atten = saturate(1.0f / (spotLights[i].lightatten.x + spotLights[i].lightatten.y
-				* d + spotLights[i].lightatten.z * d * d));
+            float atten = saturate(1.0f / (spotLights[k].lightatten.x + spotLights[k].lightatten.y
+				* d + spotLights[k].lightatten.z * d * d));
 			//角度減衰
-            float cos = dot(lightv, spotLights[i].lightv);
+            float cos = dot(lightv, spotLights[k].lightv);
 			//減衰開始角度から、減衰終了角度にかけて減衰
 			//減衰開始角度の内側は、1倍 減衰終了角度の外側は0倍の輝度
-            float angleatten = smoothstep(spotLights[i].lightfactoranglecos.y,
-				spotLights[i].lightfactoranglecos.x, cos);
+            float angleatten = smoothstep(spotLights[k].lightfactoranglecos.y,
+				spotLights[k].lightfactoranglecos.x, cos);
 			//角度減衰を乗算
             atten *= angleatten;
 			// ライトに向かうベクトルと法線の内積
@@ -154,7 +154,7 @@ PSOutput main(VSOutput input)
             specular = specular * 0.9f * specularColor;
 
 			//全て加算する
-            shadecolor.rgb += atten * (diffuse + specular) * spotLights[i].lightcolor;
+            shadecolor.rgb += atten * (diffuse + specular) * spotLights[k].lightcolor;
 			
 			//スペキュラマップ
             if (isSpecularMap)
@@ -166,30 +166,30 @@ PSOutput main(VSOutput input)
     }
 
 	//丸影
-    for (int i = 0; i < S_CIRCLESHADOW_NUM; i++)
+    for (int l = 0; l < S_CIRCLESHADOW_NUM; l++)
     {
-        if (circleShadows[i].active)
+        if (circleShadows[l].active)
         {
 			//ライトへの方向ベクトル
-            float3 casterv = circleShadows[i].casterPos - input.worldpos.xyz;
+            float3 casterv = circleShadows[l].casterPos - input.worldpos.xyz;
 			//投影方向での距離
-            float d = dot(casterv, circleShadows[i].dir);
+            float d = dot(casterv, circleShadows[l].dir);
 			//距離減衰係数
-            float atten = saturate(1.0f / (circleShadows[i].atten.x + circleShadows[i].atten.y
-				* d + circleShadows[i].atten.z * d * d));
+            float atten = saturate(1.0f / (circleShadows[l].atten.x + circleShadows[l].atten.y
+				* d + circleShadows[l].atten.z * d * d));
 			//距離がマイナスなら0にする
             atten *= step(0, d);
 			//仮想ライトの座標
-            float3 lightpos = circleShadows[i].casterPos + circleShadows[i].dir
-				* circleShadows[i].distanceCasterLight;
+            float3 lightpos = circleShadows[l].casterPos + circleShadows[l].dir
+				* circleShadows[l].distanceCasterLight;
 			//オブジェクト表面からライトへのベクトル（単位ベクトル）
             float3 lightv = normalize(lightpos - input.worldpos.xyz);
 			//角度減衰
-            float cos = dot(lightv, circleShadows[i].dir);
+            float cos = dot(lightv, circleShadows[l].dir);
 			//減衰開始角度から、減衰終了角度にかけて減衰
 			//減衰開始角度の内側は、1倍 減衰終了角度の外側は0倍の輝度
-            float angleatten = smoothstep(circleShadows[i].factorAngleCos.y,
-				circleShadows[i].factorAngleCos.x, cos);
+            float angleatten = smoothstep(circleShadows[l].factorAngleCos.y,
+				circleShadows[l].factorAngleCos.x, cos);
 			//角度減衰を乗算
             atten *= angleatten;
 
@@ -231,7 +231,7 @@ PSOutput main(VSOutput input)
         RGBA = float4(1, 0, 0, 1);
     }
 
-    if (isFog == true)
+    if (isFog)
     {
 		//フォグ
         float4 m_FogColor = float4(1.0f, 1.0f, 1.0f, 1.0f); //フォグカラー

@@ -15,11 +15,11 @@ class Player :
 	public Character
 {
 private:
-	const int32_t HP_TMP_ = 1;
+	const int8_t HP_TMP_ = 1;
 
 	const float VELOCITY_TMP_ = 0.75f;
 	const float ANGLE_VEL_EXTEND_ = 0.003f;
-	//ƒ}ƒEƒX‚Å‚ÌƒQ[ƒ€ƒXƒs[ƒh‰ÁZ”{—¦
+	//ãƒã‚¦ã‚¹ã§ã®ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰åŠ ç®—å€ç‡
 	const float MOUSE_GAME_VEL_EXTEND_ = 0.001f;
 
 	Vec3 cameraRot_ = { 0,0,0 };
@@ -28,31 +28,31 @@ private:
 	Vec3 upVec_ = { 0,1.0f,0 };
 	Vec3 rightVec_ = { 0,0,0 };
 
-	//UŒ‚’†‚©
+	//æ”»æ’ƒä¸­ã‹
 	bool isAttacking_ = false;
-	//UŒ‚‰Â”\‚©
+	//æ”»æ’ƒå¯èƒ½ã‹
 	bool isTarget_ = false;
 
-	//¶ƒNƒŠƒbƒN‚µ‚½‚©
+	//å·¦ã‚¯ãƒªãƒƒã‚¯ã—ãŸã‹
 	bool isClickLeft_ = false;
 
-	//UŒ‚‚ª“Í‚­‹——£
+	//æ”»æ’ƒãŒå±Šãè·é›¢
 	const float ATTACK_LENGTH_ = 11.0f;
 
-	//ƒ}ƒEƒX‚ÌƒJƒƒ‰ˆÚ“®ƒXƒs[ƒh
+	//ãƒã‚¦ã‚¹ã®ã‚«ãƒ¡ãƒ©ç§»å‹•ã‚¹ãƒ”ãƒ¼ãƒ‰
 	const float MOUSE_VELOCITY_TMP_ = 0.5f;
-	//ˆÚ“®‚É‚æ‚éƒQ[ƒ€ƒXƒs[ƒh‰ÁZ‚Ì”{—¦
+	//ç§»å‹•ã«ã‚ˆã‚‹ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰åŠ ç®—ã®å€ç‡
 	const float MOVE_ADD_VEL_EXTEND_ = 0.09f;
 
-	//è‚Ìƒ}ƒl[ƒWƒƒ[ƒNƒ‰ƒX
+	//æ‰‹ã®ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚¯ãƒ©ã‚¹
 	std::unique_ptr<PlayerHandManager> handManager_ = nullptr;
 
-	//ó‘Ô‚ÌƒXƒe[ƒg
+	//çŠ¶æ…‹ã®ã‚¹ãƒ†ãƒ¼ãƒˆ
 	std::unique_ptr<PlayerState> state_ = nullptr;
 
 	bool isDead_ = false;
 
-	//e‚ğŒ‚‚Á‚½“G‚ÌÀ•W
+	//éŠƒã‚’æ’ƒã£ãŸæ•µã®åº§æ¨™
 	Vec3 bulletOwnerEnemyPos_ = { 0,0,0 };
 
 	const float FALL_VEL_POW_ = 4.0f;
@@ -62,14 +62,14 @@ public:
 
 public:
 	/// <summary>
-	/// ƒIƒuƒWƒFƒNƒg¶¬
+	/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
 	static std::unique_ptr<Player> Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon);
 
 private:
-	//“|‚³‚ê‚½‚ ‚Æ‚ÉŒÄ‚Ño‚·
+	//å€’ã•ã‚ŒãŸã‚ã¨ã«å‘¼ã³å‡ºã™
 	void Dead(const CollisionInfo& info);
 
 public:
@@ -81,7 +81,7 @@ public:
 
 	float GetAttackLength() { return ATTACK_LENGTH_; }
 
-	//è‚Ìƒ}ƒl[ƒWƒƒ[
+	//æ‰‹ã®ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 	PlayerHandManager* GetHandManager() { return handManager_.get(); }
 
 public:
@@ -97,9 +97,9 @@ public:
 
 public:
 	void ThrowWeapon();
-	//ˆÚ“®
+	//ç§»å‹•
 	void Move();
-	//Œü‚«‚ğ•Ï‚¦‚é
+	//å‘ãã‚’å¤‰ãˆã‚‹
 	void DirectionUpdate();
 
 public:

@@ -1,13 +1,17 @@
 #pragma once
-
-#include <DirectXMath.h>
 #include "CollisionAttribute.h"
+
+#pragma warning(push)
+//c5267è­¦å‘Šã‚’ç„¡è¦–
+#pragma warning(disable:5267)
+#include <DirectXMath.h>
+#pragma warning(pop)
 
 class IObject;
 class BaseCollider;
 
 /// <summary>
-/// Õ“Ëî•ñ
+/// è¡çªæƒ…å ±
 /// </summary>
 struct CollisionInfo
 {
@@ -23,11 +27,11 @@ public:
 		inter_ = inter;
 	}
 
-	// Õ“Ë‘Šè‚ÌƒIƒuƒWƒFƒNƒg
+	// è¡çªç›¸æ‰‹ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 	IObject* object_ = nullptr;
-	// Õ“Ë‘Šè‚ÌƒRƒ‰ƒCƒ_[
+	// è¡çªç›¸æ‰‹ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
 	BaseCollider* collider_ = nullptr;
-	// Õ“Ë“_
+	// è¡çªç‚¹
 	DirectX::XMVECTOR inter_;
 };
 

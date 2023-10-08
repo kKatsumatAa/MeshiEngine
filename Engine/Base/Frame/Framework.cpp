@@ -2,10 +2,10 @@
 
 void Framework::Initialize()
 {
-	//ƒRƒ“ƒ\[ƒ‹‚Ö‚Ì•¶š“ü—Í
+	//ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã¸ã®æ–‡å­—å…¥åŠ›
 	OutputDebugStringA("Hello,DirectX!!\n");
 
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	WindowsApp::GetInstance();
 	DirectXWrapper::GetInstance().Initialize();
 
@@ -19,30 +19,30 @@ void Framework::Initialize()
 	//FBX
 	FbxLoader::GetInstance()->Initialize();
 
-	//‰¹
+	//éŸ³
 	Sound::Initialize();
 
-	//objectŒn
+	//objectç³»
 	IObject::CommonInitialize();
 	IObject3D::CommonInitialize();
 	Object::CommonInitialize();
 	ObjectFBX::CommonInitialize();
 	Sprite::CommonInitialize();
 
-	//ƒ|ƒXƒgƒGƒtƒFƒNƒg
+	//ãƒã‚¹ãƒˆã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 	PostEffectManager::GetInstance().Initialize("Resources/image/normalImage.jpg");
 
-	//ƒL[ƒ{[ƒh“ü—Í‰Šú‰»
+	//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰å…¥åŠ›åˆæœŸåŒ–
 	KeyboardInput::GetInstance();
 
-	//ƒ}ƒEƒX‚ğ•\¦‚·‚é‚©
+	//ãƒã‚¦ã‚¹ã‚’è¡¨ç¤ºã™ã‚‹ã‹
 	bool isDebug = true;
 #ifdef _DEBUG
 	isDebug = false;
 #endif // _DEBUG
 
-	//true‚É‚·‚é‚±‚Æ‚Åƒ}ƒEƒX‚ª‚Ù‚©‚ÌƒAƒvƒŠ‚Åg—p‚³‚ê‚È‚¢
-	MouseInput::GetInstance().CreateDevice(isDebug);
+	//trueã«ã™ã‚‹ã“ã¨ã§ãƒã‚¦ã‚¹ãŒã»ã‹ã®ã‚¢ãƒ—ãƒªã§ä½¿ç”¨ã•ã‚Œãªã„
+	MouseInput::GetInstance().SetIsExclusive(isDebug);
 
 	//
 	ParticleManager::GetInstance()->Initialize();
@@ -53,23 +53,23 @@ void Framework::Initialize()
 	//model
 	IModel::StaticInitialize();
 
-	//objƒ}ƒl[ƒWƒƒ
+	//objãƒãƒãƒ¼ã‚¸ãƒ£
 	ObjectManager::GetInstance().Initialize();
 
-	//ƒV[ƒ“
+	//ã‚·ãƒ¼ãƒ³
 	sceneM_ = &SceneManager::GetInstance();
 	sceneM_->Initialize();
 }
 
 void Framework::Finalize()
 {
-	//ƒ‚ƒfƒ‹‘S‚Ä‚ğ‰ğ•ú
+	//ãƒ¢ãƒ‡ãƒ«å…¨ã¦ã‚’è§£æ”¾
 	ModelManager::GetInstance().Finalize();
 
 	//FBX
 	FbxLoader::GetInstance()->Finalize();
 
-	//ƒEƒBƒ“ƒhƒEƒNƒ‰ƒX‚ğ“o˜^‰ğœ
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹ã‚’ç™»éŒ²è§£é™¤
 	WindowsApp::GetInstance().UnregisterClassA();
 
 	imguiM_->Finalize();
@@ -80,39 +80,39 @@ void Framework::Finalize()
 
 void Framework::Update()
 {
-	//I—¹
+	//çµ‚äº†
 	if (WindowsApp::GetInstance().MessegeRoop(msg_) || sceneM_->GetIsEscapingGame())
 	{
 		isEndGame_ = true;
 	}
 
-	//ƒL[ƒ{[ƒhî•ñ‚Ìæ“¾ŠJn
+	//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æƒ…å ±ã®å–å¾—é–‹å§‹
 	KeyboardInput::GetInstance().Update();
 	PadInput::GetInstance().Update();
 	MouseInput::GetInstance().Update();
 
-	//XVˆ—
+	//æ›´æ–°å‡¦ç†
 	sceneM_->Update();
 
-	//ƒ|ƒXƒgƒGƒtƒFƒNƒg
+	//ãƒã‚¹ãƒˆã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 	PostEffectManager::GetInstance().Update();
 }
 
 void Framework::Run()
 {
-	//ƒQ[ƒ€‚Ì‰Šú‰»
+	//ã‚²ãƒ¼ãƒ ã®åˆæœŸåŒ–
 	Initialize();
 
-	//ƒQ[ƒ€ƒ‹[ƒv
+	//ã‚²ãƒ¼ãƒ ãƒ«ãƒ¼ãƒ—
 	while (!isEndGame_) {
 
-		//ƒQ[ƒ€‚ÌXV
+		//ã‚²ãƒ¼ãƒ ã®æ›´æ–°
 		Update();
 
-		//ƒQ[ƒ€‚Ì•`‰æ
+		//ã‚²ãƒ¼ãƒ ã®æç”»
 		Draw();
 	}
 
-	//ƒQ[ƒ€I—¹
+	//ã‚²ãƒ¼ãƒ çµ‚äº†
 	Finalize();
 }

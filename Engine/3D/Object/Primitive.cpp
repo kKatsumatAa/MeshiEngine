@@ -6,33 +6,33 @@ using namespace DirectX;
 
 uint16_t Primitive::sIndicesBox_[6] =
 {
-	0,1,2,//OŠpŒ`1‚Â–Ú
-	2,1,3,//OŠpŒ`2‚Â–Ú
+	0,1,2,//ä¸‰è§’å½¢1ã¤ç›®
+	2,1,3,//ä¸‰è§’å½¢2ã¤ç›®
 };
 uint16_t Primitive::sIndicesTriangle_[3] =
 {
-	0,1,2//OŠpŒ`2‚Â–Ú
+	0,1,2//ä¸‰è§’å½¢2ã¤ç›®
 };
 uint16_t Primitive::sIndicesCube_[36] =
 {
-	//‘O
-	0,1,2,//OŠpŒ`1‚Â–Ú
-	2,1,3,//OŠpŒ`2‚Â–Ú
-	//‰œ
-	6,5,4,//OŠpŒ`1‚Â–Ú
-	7,5,6,//OŠpŒ`2‚Â–Ú
-	//ã
-	10,9,8,//OŠpŒ`1‚Â–Ú
-	11,9,10,//OŠpŒ`2‚Â–Ú
-	//‰º
-	12,13,14,//OŠpŒ`1‚Â–Ú
-	14,13,15,//OŠpŒ`2‚Â–Ú
-	//¶
-	16,17,18,//OŠpŒ`1‚Â–Ú
-	18,17,19,//OŠpŒ`2‚Â–Ú
-	//‰E
-	22,21,20,//OŠpŒ`1‚Â–Ú
-	23,21,22,//OŠpŒ`2‚Â–Ú
+	//å‰
+	0,1,2,//ä¸‰è§’å½¢1ã¤ç›®
+	2,1,3,//ä¸‰è§’å½¢2ã¤ç›®
+	//å¥¥
+	6,5,4,//ä¸‰è§’å½¢1ã¤ç›®
+	7,5,6,//ä¸‰è§’å½¢2ã¤ç›®
+	//ä¸Š
+	10,9,8,//ä¸‰è§’å½¢1ã¤ç›®
+	11,9,10,//ä¸‰è§’å½¢2ã¤ç›®
+	//ä¸‹
+	12,13,14,//ä¸‰è§’å½¢1ã¤ç›®
+	14,13,15,//ä¸‰è§’å½¢2ã¤ç›®
+	//å·¦
+	16,17,18,//ä¸‰è§’å½¢1ã¤ç›®
+	18,17,19,//ä¸‰è§’å½¢2ã¤ç›®
+	//å³
+	22,21,20,//ä¸‰è§’å½¢1ã¤ç›®
+	23,21,22,//ä¸‰è§’å½¢2ã¤ç›®
 };
 
 uint16_t Primitive::sIndicesCircle_[] =
@@ -63,7 +63,7 @@ uint16_t Primitive::sIndicesCircle_[] =
 
 uint16_t Primitive::sIndicesLine_[2] =
 {
-	0,1//OŠpŒ`2‚Â–Ú
+	0,1//ä¸‰è§’å½¢2ã¤ç›®
 };
 
 uint16_t Primitive::sIndicesSphere_[Primitive::S_SPHERE_INDEX_NUM_ * 36];
@@ -91,56 +91,56 @@ void Primitive::InitializeTriangle()
 	float angle2 = PI * 2.0f;
 	float angle3 = PI * 2.0f + PI * 2.0f / 3.0f;
 
-	verticesTriangle_[0] = { {sinf(angle),cosf(angle),0},{verticesTriangle_[0].normal},{0.0f,1.0f} ,{}};//¶‰º
-	verticesTriangle_[1] = { {0,cosf(angle2),0},{verticesTriangle_[1].normal},{0.5f,0.0f} ,{}};//ã
-	verticesTriangle_[2] = { {sinf(angle3),cosf(angle3),0},{verticesTriangle_[2].normal},{1.0f,1.0f} ,{}};//‰E‰º
+	verticesTriangle_[0] = { {sinf(angle),cosf(angle),0},{verticesTriangle_[0].normal},{0.0f,1.0f} ,{}};//å·¦ä¸‹
+	verticesTriangle_[1] = { {0,cosf(angle2),0},{verticesTriangle_[1].normal},{0.5f,0.0f} ,{}};//ä¸Š
+	verticesTriangle_[2] = { {sinf(angle3),cosf(angle3),0},{verticesTriangle_[2].normal},{1.0f,1.0f} ,{}};//å³ä¸‹
 
 
-	// ’¸“_ƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY = ’¸“_ƒf[ƒ^1‚Â•ª‚ÌƒTƒCƒY * ’¸“_ƒf[ƒ^‚Ì—v‘f”
+	// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º = é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿1ã¤åˆ†ã®ã‚µã‚¤ã‚º * é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®è¦ç´ æ•°
 	sizeVB_ = static_cast<uint32_t>(sizeof(verticesTriangle_[0]) * _countof(verticesTriangle_));
 
-	//’¸“_ƒoƒbƒtƒ@‚Ìİ’è		//ƒq[ƒvİ’è
-	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPU‚Ö‚Ì“]‘——p
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š		//ãƒ’ãƒ¼ãƒ—è¨­å®š
+	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUã¸ã®è»¢é€ç”¨
 
 	D3D12_RESOURCE_DESC resDesc = TextureManager::GetResDesc();
 	ResourceProperties(resDesc, sizeVB_);
 
-	//’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	BuffProperties(heapProp_, resDesc, &vertBuffTriangle_);
 
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
-	// GPU‰¼‘zƒAƒhƒŒƒX
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
+	// GPUä»®æƒ³ã‚¢ãƒ‰ãƒ¬ã‚¹
 	vbTriangleView_.BufferLocation = vertBuffTriangle_->GetGPUVirtualAddress();
-	// ’¸“_ƒoƒbƒtƒ@‚ÌƒTƒCƒY
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
 	vbTriangleView_.SizeInBytes = sizeVB_;
-	// ’¸“_1‚Â•ª‚Ìƒf[ƒ^ƒTƒCƒY
+	// é ‚ç‚¹1ã¤åˆ†ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 	vbTriangleView_.StrideInBytes = sizeof(verticesTriangle_[0]);
 
 	{
 		//03_04
-		//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^
-		//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒ‡ãƒ¼ã‚¿
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º
 		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesTriangle_));
 
-		//ƒŠƒ\[ƒXİ’è
-		D3D12_RESOURCE_DESC resDesc = TextureManager::GetResDesc();
+		//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
+		resDesc = TextureManager::GetResDesc();
 		ResourceProperties(resDesc, sizeIB);
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
-		ID3D12Resource* indexBuff = nullptr;//GPU‘¤‚Ìƒƒ‚ƒŠ
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
+		ID3D12Resource* indexBuff = nullptr;//GPUå´ã®ãƒ¡ãƒ¢ãƒª
 		BuffProperties(heapProp_, resDesc, &indexBuff);
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒ}ƒbƒsƒ“ƒO
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒãƒƒãƒ”ãƒ³ã‚°
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-		//‘SƒCƒ“ƒfƒbƒNƒX‚É‘Î‚µ‚Ä
+		//å…¨ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¯¾ã—ã¦
 		for (int32_t i = 0; i < _countof(sIndicesTriangle_); i++)
 		{
-			indexMap[i] = sIndicesTriangle_[i];//ƒCƒ“ƒfƒbƒNƒX‚ğƒRƒs[
+			indexMap[i] = sIndicesTriangle_[i];//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ã‚³ãƒ”ãƒ¼
 
 		}
-		//ƒ}ƒbƒsƒ“ƒO‚ğ‰ğœ
+		//ãƒãƒƒãƒ”ãƒ³ã‚°ã‚’è§£é™¤
 		indexBuff->Unmap(0, nullptr);
 
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 		ibViewTriangle_.BufferLocation = indexBuff->GetGPUVirtualAddress();
 		ibViewTriangle_.Format = DXGI_FORMAT_R16_UINT;
 		ibViewTriangle_.SizeInBytes = sizeIB;
@@ -149,21 +149,21 @@ void Primitive::InitializeTriangle()
 	//06_03
 	{
 		for (int32_t i = 0; i < _countof(sIndicesTriangle_) / 3; i++)
-		{//OŠpŒ`ˆê‚Â‚²‚Æ‚ÉŒvZ
-			//OŠpŒ`‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ‚èo‚µ‚ÄAˆê“I‚È•Ï”‚É“ü‚ê‚é
+		{//ä¸‰è§’å½¢ä¸€ã¤ã”ã¨ã«è¨ˆç®—
+			//ä¸‰è§’å½¢ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–ã‚Šå‡ºã—ã¦ã€ä¸€æ™‚çš„ãªå¤‰æ•°ã«å…¥ã‚Œã‚‹
 			uint16_t index0 = sIndicesTriangle_[i * 3 + 0];
 			uint16_t index1 = sIndicesTriangle_[i * 3 + 1];
 			uint16_t index2 = sIndicesTriangle_[i * 3 + 2];
-			//OŠpŒ`‚ğ\¬‚·‚é’¸“_À•W‚ğƒxƒNƒgƒ‹‚É‘ã“ü
+			//ä¸‰è§’å½¢ã‚’æ§‹æˆã™ã‚‹é ‚ç‚¹åº§æ¨™ã‚’ãƒ™ã‚¯ãƒˆãƒ«ã«ä»£å…¥
 			XMVECTOR p0 = XMLoadFloat3(&verticesTriangle_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesTriangle_[index1].pos);
 			XMVECTOR p2 = XMLoadFloat3(&verticesTriangle_[index2].pos);
-			//p0->p1ƒxƒNƒgƒ‹Ap0->p2ƒxƒNƒgƒ‹‚ğŒvZ
+			//p0->p1ãƒ™ã‚¯ãƒˆãƒ«ã€p0->p2ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
-			//ŠOÏi‚’¼‚ÈƒxƒNƒgƒ‹j
+			//å¤–ç©ï¼ˆå‚ç›´ãªãƒ™ã‚¯ãƒˆãƒ«ï¼‰
 			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-			//‹‚ß‚½–@ü‚ğ’¸“_ƒf[ƒ^‚É‘ã“ü
+			//æ±‚ã‚ãŸæ³•ç·šã‚’é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã«ä»£å…¥
 			XMStoreFloat3(&verticesTriangle_[index0].normal, normal);
 			XMStoreFloat3(&verticesTriangle_[index1].normal, normal);
 			XMStoreFloat3(&verticesTriangle_[index2].normal, normal);
@@ -175,51 +175,51 @@ void Primitive::InitializeBox()
 {
 	HRESULT result = {};
 
-	// ’¸“_ƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY = ’¸“_ƒf[ƒ^1‚Â•ª‚ÌƒTƒCƒY * ’¸“_ƒf[ƒ^‚Ì—v‘f”
+	// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º = é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿1ã¤åˆ†ã®ã‚µã‚¤ã‚º * é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®è¦ç´ æ•°
 	sizeVB_ = static_cast<uint32_t>(sizeof(verticesBox_[0]) * _countof(verticesBox_));
 
-	//’¸“_ƒoƒbƒtƒ@‚Ìİ’è		//ƒq[ƒvİ’è
-	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPU‚Ö‚Ì“]‘——p
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š		//ãƒ’ãƒ¼ãƒ—è¨­å®š
+	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUã¸ã®è»¢é€ç”¨
 
 	D3D12_RESOURCE_DESC resDesc = TextureManager::GetResDesc();
 	ResourceProperties(resDesc, sizeVB_);
 
-	//’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	BuffProperties(heapProp_, resDesc, &vertBuffBox_);
 
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
-	// GPU‰¼‘zƒAƒhƒŒƒX
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
+	// GPUä»®æƒ³ã‚¢ãƒ‰ãƒ¬ã‚¹
 	vbBoxView_.BufferLocation = vertBuffBox_->GetGPUVirtualAddress();
-	// ’¸“_ƒoƒbƒtƒ@‚ÌƒTƒCƒY
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
 	vbBoxView_.SizeInBytes = sizeVB_;
-	// ’¸“_1‚Â•ª‚Ìƒf[ƒ^ƒTƒCƒY
+	// é ‚ç‚¹1ã¤åˆ†ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 	vbBoxView_.StrideInBytes = sizeof(verticesBox_[0]);
 
 	{
 		//03_04
-		//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^
-		//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒ‡ãƒ¼ã‚¿
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º
 		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesBox_));
 
-		//ƒŠƒ\[ƒXİ’è
-		D3D12_RESOURCE_DESC resDesc = TextureManager::GetResDesc();
+		//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
+		resDesc = TextureManager::GetResDesc();
 		ResourceProperties(resDesc, sizeIB);
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
-		ID3D12Resource* indexBuff = nullptr;//GPU‘¤‚Ìƒƒ‚ƒŠ
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
+		ID3D12Resource* indexBuff = nullptr;//GPUå´ã®ãƒ¡ãƒ¢ãƒª
 		BuffProperties(heapProp_, resDesc, &indexBuff);
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒ}ƒbƒsƒ“ƒO
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒãƒƒãƒ”ãƒ³ã‚°
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-		//‘SƒCƒ“ƒfƒbƒNƒX‚É‘Î‚µ‚Ä
+		//å…¨ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¯¾ã—ã¦
 		for (int32_t i = 0; i < _countof(sIndicesBox_); i++)
 		{
-			indexMap[i] = sIndicesBox_[i];//ƒCƒ“ƒfƒbƒNƒX‚ğƒRƒs[
+			indexMap[i] = sIndicesBox_[i];//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ã‚³ãƒ”ãƒ¼
 
 		}
-		//ƒ}ƒbƒsƒ“ƒO‚ğ‰ğœ
+		//ãƒãƒƒãƒ”ãƒ³ã‚°ã‚’è§£é™¤
 		indexBuff->Unmap(0, nullptr);
 
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 		ibViewBox_.BufferLocation = indexBuff->GetGPUVirtualAddress();
 		ibViewBox_.Format = DXGI_FORMAT_R16_UINT;
 		ibViewBox_.SizeInBytes = sizeIB;
@@ -228,21 +228,21 @@ void Primitive::InitializeBox()
 	//06_03
 	{
 		for (int32_t i = 0; i < _countof(sIndicesBox_) / 3; i++)
-		{//OŠpŒ`ˆê‚Â‚²‚Æ‚ÉŒvZ
-			//OŠpŒ`‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ‚èo‚µ‚ÄAˆê“I‚È•Ï”‚É“ü‚ê‚é
+		{//ä¸‰è§’å½¢ä¸€ã¤ã”ã¨ã«è¨ˆç®—
+			//ä¸‰è§’å½¢ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–ã‚Šå‡ºã—ã¦ã€ä¸€æ™‚çš„ãªå¤‰æ•°ã«å…¥ã‚Œã‚‹
 			uint16_t index0 = sIndicesBox_[i * 3 + 0];
 			uint16_t index1 = sIndicesBox_[i * 3 + 1];
 			uint16_t index2 = sIndicesBox_[i * 3 + 2];
-			//OŠpŒ`‚ğ\¬‚·‚é’¸“_À•W‚ğƒxƒNƒgƒ‹‚É‘ã“ü
+			//ä¸‰è§’å½¢ã‚’æ§‹æˆã™ã‚‹é ‚ç‚¹åº§æ¨™ã‚’ãƒ™ã‚¯ãƒˆãƒ«ã«ä»£å…¥
 			XMVECTOR p0 = XMLoadFloat3(&verticesBox_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesBox_[index1].pos);
 			XMVECTOR p2 = XMLoadFloat3(&verticesBox_[index2].pos);
-			//p0->p1ƒxƒNƒgƒ‹Ap0->p2ƒxƒNƒgƒ‹‚ğŒvZ
+			//p0->p1ãƒ™ã‚¯ãƒˆãƒ«ã€p0->p2ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
-			//ŠOÏi‚’¼‚ÈƒxƒNƒgƒ‹j
+			//å¤–ç©ï¼ˆå‚ç›´ãªãƒ™ã‚¯ãƒˆãƒ«ï¼‰
 			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-			//‹‚ß‚½–@ü‚ğ’¸“_ƒf[ƒ^‚É‘ã“ü
+			//æ±‚ã‚ãŸæ³•ç·šã‚’é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã«ä»£å…¥
 			XMStoreFloat3(&verticesBox_[index0].normal, normal);
 			XMStoreFloat3(&verticesBox_[index1].normal, normal);
 			XMStoreFloat3(&verticesBox_[index2].normal, normal);
@@ -256,58 +256,58 @@ void Primitive::InitializeCircle()
 
 	verticesCircle_[0].pos = { 0.0f,0.0f,0.0f };
 
-	static float sCount = _countof(verticesCircle_) - 2;//’†S“_‚Æ‰Šú‚Ì“_‚ÍƒJƒEƒ“ƒg‚µ‚È‚¢
+	static float sCount = _countof(verticesCircle_) - 2;//ä¸­å¿ƒç‚¹ã¨åˆæœŸã®ç‚¹ã¯ã‚«ã‚¦ãƒ³ãƒˆã—ãªã„
 
 	for (int32_t i = 1; i < _countof(verticesCircle_); i++)
 	{
 		verticesCircle_[i].pos = { 1.0f * cosf(AngletoRadi(360 / sCount) * (i - 1)),1.0f * sinf(AngletoRadi(360 / sCount) * (i - 1)),0 };
 	}
 
-	// ’¸“_ƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY = ’¸“_ƒf[ƒ^1‚Â•ª‚ÌƒTƒCƒY * ’¸“_ƒf[ƒ^‚Ì—v‘f”
+	// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º = é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿1ã¤åˆ†ã®ã‚µã‚¤ã‚º * é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®è¦ç´ æ•°
 	sizeVB_ = static_cast<uint32_t>(sizeof(verticesCircle_[0]) * _countof(verticesCircle_));
 
-	//’¸“_ƒoƒbƒtƒ@‚Ìİ’è		//ƒq[ƒvİ’è
-	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPU‚Ö‚Ì“]‘——p
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š		//ãƒ’ãƒ¼ãƒ—è¨­å®š
+	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUã¸ã®è»¢é€ç”¨
 
 	D3D12_RESOURCE_DESC resDesc = TextureManager::GetResDesc();
 	ResourceProperties(resDesc, sizeVB_);
 
-	//’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	BuffProperties(heapProp_, resDesc, &vertBuffCircle_);
 
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
-	// GPU‰¼‘zƒAƒhƒŒƒX
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
+	// GPUä»®æƒ³ã‚¢ãƒ‰ãƒ¬ã‚¹
 	vbCircleView_.BufferLocation = vertBuffCircle_->GetGPUVirtualAddress();
-	// ’¸“_ƒoƒbƒtƒ@‚ÌƒTƒCƒY
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
 	vbCircleView_.SizeInBytes = sizeVB_;
-	// ’¸“_1‚Â•ª‚Ìƒf[ƒ^ƒTƒCƒY
+	// é ‚ç‚¹1ã¤åˆ†ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 	vbCircleView_.StrideInBytes = sizeof(verticesCircle_[0]);
 
 	{
 		//03_04
-		//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^
-		//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒ‡ãƒ¼ã‚¿
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º
 		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesCircle_));
 
-		//ƒŠƒ\[ƒXİ’è
-		D3D12_RESOURCE_DESC resDesc = TextureManager::GetResDesc();
+		//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
+		resDesc = TextureManager::GetResDesc();
 		ResourceProperties(resDesc, sizeIB);
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
-		ID3D12Resource* indexBuff = nullptr;//GPU‘¤‚Ìƒƒ‚ƒŠ
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
+		ID3D12Resource* indexBuff = nullptr;//GPUå´ã®ãƒ¡ãƒ¢ãƒª
 		BuffProperties(heapProp_, resDesc, &indexBuff);
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒ}ƒbƒsƒ“ƒO
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒãƒƒãƒ”ãƒ³ã‚°
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-		//‘SƒCƒ“ƒfƒbƒNƒX‚É‘Î‚µ‚Ä
+		//å…¨ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¯¾ã—ã¦
 		for (int32_t i = 0; i < _countof(sIndicesCircle_); i++)
 		{
-			indexMap[i] = sIndicesCircle_[i];//ƒCƒ“ƒfƒbƒNƒX‚ğƒRƒs[
+			indexMap[i] = sIndicesCircle_[i];//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ã‚³ãƒ”ãƒ¼
 
 		}
-		//ƒ}ƒbƒsƒ“ƒO‚ğ‰ğœ
+		//ãƒãƒƒãƒ”ãƒ³ã‚°ã‚’è§£é™¤
 		indexBuff->Unmap(0, nullptr);
 
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 		ibViewCircle_.BufferLocation = indexBuff->GetGPUVirtualAddress();
 		ibViewCircle_.Format = DXGI_FORMAT_R16_UINT;
 		ibViewCircle_.SizeInBytes = sizeIB;
@@ -316,21 +316,21 @@ void Primitive::InitializeCircle()
 	//06_03
 	{
 		for (int32_t i = 0; i < _countof(sIndicesCircle_) / 3; i++)
-		{//OŠpŒ`ˆê‚Â‚²‚Æ‚ÉŒvZ
-			//OŠpŒ`‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ‚èo‚µ‚ÄAˆê“I‚È•Ï”‚É“ü‚ê‚é
+		{//ä¸‰è§’å½¢ä¸€ã¤ã”ã¨ã«è¨ˆç®—
+			//ä¸‰è§’å½¢ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–ã‚Šå‡ºã—ã¦ã€ä¸€æ™‚çš„ãªå¤‰æ•°ã«å…¥ã‚Œã‚‹
 			uint16_t index0 = sIndicesCircle_[i * 3 + 0];
 			uint16_t index1 = sIndicesCircle_[i * 3 + 1];
 			uint16_t index2 = sIndicesCircle_[i * 3 + 2];
-			//OŠpŒ`‚ğ\¬‚·‚é’¸“_À•W‚ğƒxƒNƒgƒ‹‚É‘ã“ü
+			//ä¸‰è§’å½¢ã‚’æ§‹æˆã™ã‚‹é ‚ç‚¹åº§æ¨™ã‚’ãƒ™ã‚¯ãƒˆãƒ«ã«ä»£å…¥
 			XMVECTOR p0 = XMLoadFloat3(&verticesCircle_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesCircle_[index1].pos);
 			XMVECTOR p2 = XMLoadFloat3(&verticesCircle_[index2].pos);
-			//p0->p1ƒxƒNƒgƒ‹Ap0->p2ƒxƒNƒgƒ‹‚ğŒvZ
+			//p0->p1ãƒ™ã‚¯ãƒˆãƒ«ã€p0->p2ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
-			//ŠOÏi‚’¼‚ÈƒxƒNƒgƒ‹j
+			//å¤–ç©ï¼ˆå‚ç›´ãªãƒ™ã‚¯ãƒˆãƒ«ï¼‰
 			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-			//‹‚ß‚½–@ü‚ğ’¸“_ƒf[ƒ^‚É‘ã“ü
+			//æ±‚ã‚ãŸæ³•ç·šã‚’é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã«ä»£å…¥
 			XMStoreFloat3(&verticesCircle_[index0].normal, normal);
 			XMStoreFloat3(&verticesCircle_[index1].normal, normal);
 			XMStoreFloat3(&verticesCircle_[index2].normal, normal);
@@ -343,83 +343,83 @@ void Primitive::InitializeCube()
 	HRESULT result = {};
 
 	{
-		//è‘O
-		verticesCube_[0] = { {-1.0f,-1.0f,-1.0f},{verticesCube_[0].normal},{0.0f,1.0f} ,{}};//¶‰º
-		verticesCube_[1] = { {-1.0f,1.0f, -1.0f},{verticesCube_[1].normal},{0.0f,0.0f} ,{}};//¶ã
-		verticesCube_[2] = { {1.0f,-1.0f, -1.0f},{verticesCube_[2].normal},{1.0f,1.0f} ,{}};//‰E‰º
-		verticesCube_[3] = { {1.0f,1.0f,  -1.0f},{verticesCube_[3].normal},{1.0f,0.0f} ,{}};//‰Eã
+		//æ‰‹å‰
+		verticesCube_[0] = { {-1.0f,-1.0f,-1.0f},{verticesCube_[0].normal},{0.0f,1.0f} ,{}};//å·¦ä¸‹
+		verticesCube_[1] = { {-1.0f,1.0f, -1.0f},{verticesCube_[1].normal},{0.0f,0.0f} ,{}};//å·¦ä¸Š
+		verticesCube_[2] = { {1.0f,-1.0f, -1.0f},{verticesCube_[2].normal},{1.0f,1.0f} ,{}};//å³ä¸‹
+		verticesCube_[3] = { {1.0f,1.0f,  -1.0f},{verticesCube_[3].normal},{1.0f,0.0f} ,{}};//å³ä¸Š
 
-		verticesCube_[4] = { {-1.0f,-1.0f,1.0f},{verticesCube_[4].normal},{0.0f,1.0f} ,{}};//¶‰º
-		verticesCube_[5] = { {-1.0f,1.0f, 1.0f},{verticesCube_[5].normal},{0.0f,0.0f} ,{}};//¶ã
-		verticesCube_[6] = { {1.0f,-1.0f, 1.0f},{verticesCube_[6].normal},{1.0f,1.0f} ,{}};//‰E‰º
-		verticesCube_[7] = { {1.0f,1.0f,  1.0f},{verticesCube_[7].normal},{1.0f,0.0f} ,{}};//‰Eã
-		//ã
-		verticesCube_[8] = { {1.0f,1.0f,-1.0f},{verticesCube_[8].normal},{0.0f,1.0f} ,{}};//¶‰º
-		verticesCube_[9] = { {1.0f,1.0f, 1.0f},{verticesCube_[9].normal},{0.0f,0.0f} ,{}};//¶ã
-		verticesCube_[10] = { {-1.0f,1.0f, -1.0f},{verticesCube_[10].normal},{1.0f,1.0f} ,{}};//‰E‰º
-		verticesCube_[11] = { {-1.0f,1.0f, 1.0f},{verticesCube_[11].normal},{1.0f,0.0f} ,{}};//‰Eã
+		verticesCube_[4] = { {-1.0f,-1.0f,1.0f},{verticesCube_[4].normal},{0.0f,1.0f} ,{}};//å·¦ä¸‹
+		verticesCube_[5] = { {-1.0f,1.0f, 1.0f},{verticesCube_[5].normal},{0.0f,0.0f} ,{}};//å·¦ä¸Š
+		verticesCube_[6] = { {1.0f,-1.0f, 1.0f},{verticesCube_[6].normal},{1.0f,1.0f} ,{}};//å³ä¸‹
+		verticesCube_[7] = { {1.0f,1.0f,  1.0f},{verticesCube_[7].normal},{1.0f,0.0f} ,{}};//å³ä¸Š
+		//ä¸Š
+		verticesCube_[8] = { {1.0f,1.0f,-1.0f},{verticesCube_[8].normal},{0.0f,1.0f} ,{}};//å·¦ä¸‹
+		verticesCube_[9] = { {1.0f,1.0f, 1.0f},{verticesCube_[9].normal},{0.0f,0.0f} ,{}};//å·¦ä¸Š
+		verticesCube_[10] = { {-1.0f,1.0f, -1.0f},{verticesCube_[10].normal},{1.0f,1.0f} ,{}};//å³ä¸‹
+		verticesCube_[11] = { {-1.0f,1.0f, 1.0f},{verticesCube_[11].normal},{1.0f,0.0f} ,{}};//å³ä¸Š
 
-		verticesCube_[12] = { {1.0f,-1.0f,-1.0f},{verticesCube_[12].normal},{0.0f,1.0f} ,{}};//¶‰º
-		verticesCube_[13] = { {1.0f,-1.0f, 1.0f},{verticesCube_[13].normal},{0.0f,0.0f} ,{}};//¶ã
-		verticesCube_[14] = { {-1.0f,-1.0f, -1.0f},{verticesCube_[14].normal},{1.0f,1.0f} ,{}};//‰E‰º
-		verticesCube_[15] = { {-1.0f,-1.0f, 1.0f},{verticesCube_[15].normal},{1.0f,0.0f} ,{}};//‰Eã
+		verticesCube_[12] = { {1.0f,-1.0f,-1.0f},{verticesCube_[12].normal},{0.0f,1.0f} ,{}};//å·¦ä¸‹
+		verticesCube_[13] = { {1.0f,-1.0f, 1.0f},{verticesCube_[13].normal},{0.0f,0.0f} ,{}};//å·¦ä¸Š
+		verticesCube_[14] = { {-1.0f,-1.0f, -1.0f},{verticesCube_[14].normal},{1.0f,1.0f} ,{}};//å³ä¸‹
+		verticesCube_[15] = { {-1.0f,-1.0f, 1.0f},{verticesCube_[15].normal},{1.0f,0.0f} ,{}};//å³ä¸Š
 
-		verticesCube_[16] = { {-1.0f,-1.0f,-1.0f},{verticesCube_[16].normal},{0.0f,1.0f} ,{}};//¶‰º
-		verticesCube_[17] = { {-1.0f,-1.0f, 1.0f},{verticesCube_[17].normal},{0.0f,0.0f} ,{}};//¶ã
-		verticesCube_[18] = { {-1.0f,1.0f, -1.0f},{verticesCube_[18].normal},{1.0f,1.0f} ,{}};//‰E‰º
-		verticesCube_[19] = { {-1.0f,1.0f,  1.0f},{verticesCube_[19].normal},{1.0f,0.0f} ,{}};//‰Eã
+		verticesCube_[16] = { {-1.0f,-1.0f,-1.0f},{verticesCube_[16].normal},{0.0f,1.0f} ,{}};//å·¦ä¸‹
+		verticesCube_[17] = { {-1.0f,-1.0f, 1.0f},{verticesCube_[17].normal},{0.0f,0.0f} ,{}};//å·¦ä¸Š
+		verticesCube_[18] = { {-1.0f,1.0f, -1.0f},{verticesCube_[18].normal},{1.0f,1.0f} ,{}};//å³ä¸‹
+		verticesCube_[19] = { {-1.0f,1.0f,  1.0f},{verticesCube_[19].normal},{1.0f,0.0f} ,{}};//å³ä¸Š
 
-		verticesCube_[20] = { {1.0f,-1.0f,-1.0f},{verticesCube_[20].normal},{0.0f,1.0f} ,{}};//¶‰º
-		verticesCube_[21] = { {1.0f,-1.0f, 1.0f},{verticesCube_[21].normal},{0.0f,0.0f} ,{}};//¶ã
-		verticesCube_[22] = { {1.0f,1.0f, -1.0f},{verticesCube_[22].normal},{1.0f,1.0f} ,{}};//‰E‰º
-		verticesCube_[23] = { {1.0f,1.0f,  1.0f},{verticesCube_[23].normal},{1.0f,0.0f} ,{}};//‰Eã;//¶‰º
+		verticesCube_[20] = { {1.0f,-1.0f,-1.0f},{verticesCube_[20].normal},{0.0f,1.0f} ,{}};//å·¦ä¸‹
+		verticesCube_[21] = { {1.0f,-1.0f, 1.0f},{verticesCube_[21].normal},{0.0f,0.0f} ,{}};//å·¦ä¸Š
+		verticesCube_[22] = { {1.0f,1.0f, -1.0f},{verticesCube_[22].normal},{1.0f,1.0f} ,{}};//å³ä¸‹
+		verticesCube_[23] = { {1.0f,1.0f,  1.0f},{verticesCube_[23].normal},{1.0f,0.0f} ,{}};//å³ä¸Š;//å·¦ä¸‹
 	}
 
-	// ’¸“_ƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY = ’¸“_ƒf[ƒ^1‚Â•ª‚ÌƒTƒCƒY * ’¸“_ƒf[ƒ^‚Ì—v‘f”
+	// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º = é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿1ã¤åˆ†ã®ã‚µã‚¤ã‚º * é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®è¦ç´ æ•°
 	sizeVB_ = static_cast<uint32_t>(sizeof(verticesCube_[0]) * _countof(verticesCube_));
 
-	//’¸“_ƒoƒbƒtƒ@‚Ìİ’è		//ƒq[ƒvİ’è
-	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPU‚Ö‚Ì“]‘——p
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š		//ãƒ’ãƒ¼ãƒ—è¨­å®š
+	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUã¸ã®è»¢é€ç”¨
 
 	D3D12_RESOURCE_DESC resDesc = TextureManager::GetResDesc();
 	ResourceProperties(resDesc, sizeVB_);
 
-	//’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	BuffProperties(heapProp_, resDesc, &vertBuffCube_);
 
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
-	// GPU‰¼‘zƒAƒhƒŒƒX
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
+	// GPUä»®æƒ³ã‚¢ãƒ‰ãƒ¬ã‚¹
 	vbCubeView_.BufferLocation = vertBuffCube_->GetGPUVirtualAddress();
-	// ’¸“_ƒoƒbƒtƒ@‚ÌƒTƒCƒY
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
 	vbCubeView_.SizeInBytes = sizeVB_;
-	// ’¸“_1‚Â•ª‚Ìƒf[ƒ^ƒTƒCƒY
+	// é ‚ç‚¹1ã¤åˆ†ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 	vbCubeView_.StrideInBytes = sizeof(verticesCube_[0]);
 
 	{
 		//03_04
-		//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^
-		//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒ‡ãƒ¼ã‚¿
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º
 		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesCube_));
 
-		//ƒŠƒ\[ƒXİ’è
-		D3D12_RESOURCE_DESC resDesc = TextureManager::GetResDesc();
+		//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
+		resDesc = TextureManager::GetResDesc();
 		ResourceProperties(resDesc, sizeIB);
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
-		ID3D12Resource* indexBuff = nullptr;//GPU‘¤‚Ìƒƒ‚ƒŠ
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
+		ID3D12Resource* indexBuff = nullptr;//GPUå´ã®ãƒ¡ãƒ¢ãƒª
 		BuffProperties(heapProp_, resDesc, &indexBuff);
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒ}ƒbƒsƒ“ƒO
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒãƒƒãƒ”ãƒ³ã‚°
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-		//‘SƒCƒ“ƒfƒbƒNƒX‚É‘Î‚µ‚Ä
+		//å…¨ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¯¾ã—ã¦
 		for (int32_t i = 0; i < _countof(sIndicesCube_); i++)
 		{
-			indexMap[i] = sIndicesCube_[i];//ƒCƒ“ƒfƒbƒNƒX‚ğƒRƒs[
+			indexMap[i] = sIndicesCube_[i];//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ã‚³ãƒ”ãƒ¼
 
 		}
-		//ƒ}ƒbƒsƒ“ƒO‚ğ‰ğœ
+		//ãƒãƒƒãƒ”ãƒ³ã‚°ã‚’è§£é™¤
 		indexBuff->Unmap(0, nullptr);
 
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 		ibViewCube_.BufferLocation = indexBuff->GetGPUVirtualAddress();
 		ibViewCube_.Format = DXGI_FORMAT_R16_UINT;
 		ibViewCube_.SizeInBytes = sizeIB;
@@ -430,21 +430,21 @@ void Primitive::InitializeCube()
 		/*if (indexNum == SPHERE)*/
 	{
 		for (int32_t i = 0; i < _countof(sIndicesCube_) / 3; i++)
-		{//OŠpŒ`ˆê‚Â‚²‚Æ‚ÉŒvZ
-			//OŠpŒ`‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ‚èo‚µ‚ÄAˆê“I‚È•Ï”‚É“ü‚ê‚é
+		{//ä¸‰è§’å½¢ä¸€ã¤ã”ã¨ã«è¨ˆç®—
+			//ä¸‰è§’å½¢ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–ã‚Šå‡ºã—ã¦ã€ä¸€æ™‚çš„ãªå¤‰æ•°ã«å…¥ã‚Œã‚‹
 			uint16_t index0 = sIndicesCube_[i * 3 + 0];
 			uint16_t index1 = sIndicesCube_[i * 3 + 1];
 			uint16_t index2 = sIndicesCube_[i * 3 + 2];
-			//OŠpŒ`‚ğ\¬‚·‚é’¸“_À•W‚ğƒxƒNƒgƒ‹‚É‘ã“ü
+			//ä¸‰è§’å½¢ã‚’æ§‹æˆã™ã‚‹é ‚ç‚¹åº§æ¨™ã‚’ãƒ™ã‚¯ãƒˆãƒ«ã«ä»£å…¥
 			XMVECTOR p0 = XMLoadFloat3(&verticesCube_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesCube_[index1].pos);
 			XMVECTOR p2 = XMLoadFloat3(&verticesCube_[index2].pos);
-			//p0->p1ƒxƒNƒgƒ‹Ap0->p2ƒxƒNƒgƒ‹‚ğŒvZ
+			//p0->p1ãƒ™ã‚¯ãƒˆãƒ«ã€p0->p2ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
 			XMVECTOR v1 = XMVectorSubtract(p1, p0);
 			XMVECTOR v2 = XMVectorSubtract(p2, p0);
-			//ŠOÏi‚’¼‚ÈƒxƒNƒgƒ‹j
+			//å¤–ç©ï¼ˆå‚ç›´ãªãƒ™ã‚¯ãƒˆãƒ«ï¼‰
 			XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-			//‹‚ß‚½–@ü‚ğ’¸“_ƒf[ƒ^‚É‘ã“ü
+			//æ±‚ã‚ãŸæ³•ç·šã‚’é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã«ä»£å…¥
 			XMStoreFloat3(&verticesCube_[index0].normal, normal);
 			XMStoreFloat3(&verticesCube_[index1].normal, normal);
 			XMStoreFloat3(&verticesCube_[index2].normal, normal);
@@ -456,57 +456,57 @@ void Primitive::InitializeLine()
 {
 	HRESULT result = {};
 
-	verticesLine_[0] = { {-1.0,0,0},{verticesLine_[0].normal},{0.0f,1.0f} ,{}};//¶‰º
-	verticesLine_[1] = { {1.0,0,0},  {verticesLine_[1].normal},{0.5f,0.0f} ,{}};//ã
+	verticesLine_[0] = { {-1.0,0,0},{verticesLine_[0].normal},{0.0f,1.0f} ,{}};//å·¦ä¸‹
+	verticesLine_[1] = { {1.0,0,0},  {verticesLine_[1].normal},{0.5f,0.0f} ,{}};//ä¸Š
 
 	{
 		//03_04
-		//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^
-		//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒ‡ãƒ¼ã‚¿
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º
 		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesLine_));
 
-		//ƒŠƒ\[ƒXİ’è
+		//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 		D3D12_RESOURCE_DESC resDesc = TextureManager::GetResDesc();
 		ResourceProperties(resDesc, sizeIB);
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
-		ID3D12Resource* indexBuff = nullptr;//GPU‘¤‚Ìƒƒ‚ƒŠ
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
+		ID3D12Resource* indexBuff = nullptr;//GPUå´ã®ãƒ¡ãƒ¢ãƒª
 		BuffProperties(heapProp_, resDesc, &indexBuff);
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒ}ƒbƒsƒ“ƒO
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒãƒƒãƒ”ãƒ³ã‚°
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-		//‘SƒCƒ“ƒfƒbƒNƒX‚É‘Î‚µ‚Ä
+		//å…¨ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¯¾ã—ã¦
 		for (int32_t i = 0; i < _countof(sIndicesLine_); i++)
 		{
-			indexMap[i] = sIndicesLine_[i];//ƒCƒ“ƒfƒbƒNƒX‚ğƒRƒs[
+			indexMap[i] = sIndicesLine_[i];//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ã‚³ãƒ”ãƒ¼
 
 		}
-		//ƒ}ƒbƒsƒ“ƒO‚ğ‰ğœ
+		//ãƒãƒƒãƒ”ãƒ³ã‚°ã‚’è§£é™¤
 		indexBuff->Unmap(0, nullptr);
 
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 		ibViewLine_.BufferLocation = indexBuff->GetGPUVirtualAddress();
 		ibViewLine_.Format = DXGI_FORMAT_R16_UINT;
 		ibViewLine_.SizeInBytes = sizeIB;
 	}
 
-	// ’¸“_ƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY = ’¸“_ƒf[ƒ^1‚Â•ª‚ÌƒTƒCƒY * ’¸“_ƒf[ƒ^‚Ì—v‘f”
+	// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º = é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿1ã¤åˆ†ã®ã‚µã‚¤ã‚º * é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®è¦ç´ æ•°
 	sizeVB_ = static_cast<uint32_t>(sizeof(verticesLine_[0]) * _countof(verticesLine_));
 
-	//’¸“_ƒoƒbƒtƒ@‚Ìİ’è		//ƒq[ƒvİ’è
-	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPU‚Ö‚Ì“]‘——p
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š		//ãƒ’ãƒ¼ãƒ—è¨­å®š
+	heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUã¸ã®è»¢é€ç”¨
 
 	D3D12_RESOURCE_DESC resDesc = TextureManager::GetResDesc();
 	ResourceProperties(resDesc, sizeVB_);
 
-	//’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	BuffProperties(heapProp_, resDesc, &vertBuffLine_);
 
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
-	// GPU‰¼‘zƒAƒhƒŒƒX
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
+	// GPUä»®æƒ³ã‚¢ãƒ‰ãƒ¬ã‚¹
 	vbLineView_.BufferLocation = vertBuffLine_->GetGPUVirtualAddress();
-	// ’¸“_ƒoƒbƒtƒ@‚ÌƒTƒCƒY
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
 	vbLineView_.SizeInBytes = sizeVB_;
-	// ’¸“_1‚Â•ª‚Ìƒf[ƒ^ƒTƒCƒY
+	// é ‚ç‚¹1ã¤åˆ†ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 	vbLineView_.StrideInBytes = sizeof(verticesLine_[0]);
 }
 
@@ -514,42 +514,42 @@ void Primitive::InitializeSphere()
 {
 	HRESULT result = {};
 
-	//‹…‘Ì—p
+	//çƒä½“ç”¨
 	{
-		// ’¸“_ƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY = ’¸“_ƒf[ƒ^1‚Â•ª‚ÌƒTƒCƒY * ’¸“_ƒf[ƒ^‚Ì—v‘f”
+		// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º = é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿1ã¤åˆ†ã®ã‚µã‚¤ã‚º * é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®è¦ç´ æ•°
 		sizeVB_ = static_cast<uint32_t>(sizeof(verticesSphere_[0]) * (_countof(verticesSphere_)));
 
-		//’¸“_ƒoƒbƒtƒ@‚Ìİ’è		//ƒq[ƒvİ’è
-		heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPU‚Ö‚Ì“]‘——p
+		//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š		//ãƒ’ãƒ¼ãƒ—è¨­å®š
+		heapProp_.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUã¸ã®è»¢é€ç”¨
 
 		D3D12_RESOURCE_DESC resDesc = TextureManager::GetResDesc();
 		ResourceProperties(resDesc, sizeVB_);
 
-		//’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+		//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		BuffProperties(heapProp_, resDesc, vertBuffSphere_.GetAddressOf());
 
-		// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
-		// GPU‰¼‘zƒAƒhƒŒƒX
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
+		// GPUä»®æƒ³ã‚¢ãƒ‰ãƒ¬ã‚¹
 		vbViewSphere_.BufferLocation = vertBuffSphere_->GetGPUVirtualAddress();
-		// ’¸“_ƒoƒbƒtƒ@‚ÌƒTƒCƒY
+		// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
 		vbViewSphere_.SizeInBytes = sizeVB_;
-		// ’¸“_1‚Â•ª‚Ìƒf[ƒ^ƒTƒCƒY
+		// é ‚ç‚¹1ã¤åˆ†ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 		vbViewSphere_.StrideInBytes = sizeof(verticesSphere_[0]);
 
 
 		WorldMat worldMat;
 		Vec3 vec = { 0,-1.0f,0 };
 
-		//’¸“_“ñ‚Â
-		verticesSphere_[0] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} ,{}};//‰º
-		verticesSphere_[1] = { {vec.x,-vec.y,vec.z},{},{1.0f,0.0f} ,{}};//ã
+		//é ‚ç‚¹äºŒã¤
+		verticesSphere_[0] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} ,{}};//ä¸‹
+		verticesSphere_[1] = { {vec.x,-vec.y,vec.z},{},{1.0f,0.0f} ,{}};//ä¸Š
 
-		for (int32_t i = 0; i < 36; i++)//‰¡
+		for (int32_t i = 0; i < 36; i++)//æ¨ª
 		{
 			worldMat.rot_.y = (float)i * AngletoRadi(360.0f / 35.0f);
 
 
-			for (int32_t j = 0; j < 34; j++)//c
+			for (int32_t j = 0; j < 34; j++)//ç¸¦
 			{
 				worldMat.rot_.x = ((float)(j + 1) * (PI / 35.0f));
 				worldMat.CalcWorldMat();
@@ -557,19 +557,19 @@ void Primitive::InitializeSphere()
 				Vec3xM4(vec, worldMat.matWorld_, false);
 
 				int32_t p = i * 34 + j;
-				verticesSphere_[(2) + i * 34 + j] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} ,{}};
+				verticesSphere_[(2) + p] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} ,{}};
 			}
 		}
 
-		int32_t count = 0;
-		int32_t count2 = 0;
-		int32_t count3 = 0;
-		int32_t count4 = 0;
+		uint16_t count = 0;
+		uint16_t count2 = 0;
+		uint16_t count3 = 0;
+		uint16_t count4 = 0;
 		bool isLast = false;
-		//ƒCƒ“ƒfƒbƒNƒX
-		for (int32_t i = 0; i < _countof(sIndicesSphere_); i++)
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+		for (uint32_t i = 0; i < _countof(sIndicesSphere_); i++)
 		{
-			if (i % (S_SPHERE_INDEX_NUM_ * 35) == 0 && i != 0)//ÅŒã‚Ìc‚Ì—ñ
+			if (i % (S_SPHERE_INDEX_NUM_ * 35) == 0 && i != 0)//æœ€å¾Œã®ç¸¦ã®åˆ—
 			{
 				isLast = true;
 			}
@@ -578,14 +578,14 @@ void Primitive::InitializeSphere()
 			{
 
 			}
-			else if (1)//ˆê”Ô‰º‚©ã‚¶‚á‚È‚¯‚ê‚Î
+			else if (1)//ä¸€ç•ªä¸‹ã‹ä¸Šã˜ã‚ƒãªã‘ã‚Œã°
 			{
 				if (count2 % 2 == 0)
 				{
 					if (isLast)
 					{
 						sIndicesSphere_[i] = 2 + 34 * count + (count3);
-						sIndicesSphere_[i + 1] = 2 + 0 + (count3);//ˆêü‚µ‚Ä‚«‚½‚Ì‚Åˆê”ÔÅ‰‚Ì—ñ‚ğg‚¤
+						sIndicesSphere_[i + 1] = 2 + 0 + (count3);//ä¸€å‘¨ã—ã¦ããŸã®ã§ä¸€ç•ªæœ€åˆã®åˆ—ã‚’ä½¿ã†
 						sIndicesSphere_[i + 2] = 2 + 34 * count + (count3 + 1);
 
 						count3++;
@@ -605,9 +605,9 @@ void Primitive::InitializeSphere()
 				{
 					if (isLast)
 					{
-						sIndicesSphere_[i] = 2 + 0 + (count4 + 1);//ˆêü‚µ‚Ä‚«‚½‚Ì‚Åˆê”ÔÅ‰‚Ì—ñ‚ğg‚¤
+						sIndicesSphere_[i] = 2 + 0 + (count4 + 1);//ä¸€å‘¨ã—ã¦ããŸã®ã§ä¸€ç•ªæœ€åˆã®åˆ—ã‚’ä½¿ã†
 						sIndicesSphere_[i + 1] = 2 + 34 * count + (count4 + 1);
-						sIndicesSphere_[i + 2] = 2 + 0 + (count4);//ˆêü‚µ‚Ä‚«‚½‚Ì‚Åˆê”ÔÅ‰‚Ì—ñ‚ğg‚¤
+						sIndicesSphere_[i + 2] = 2 + 0 + (count4);//ä¸€å‘¨ã—ã¦ããŸã®ã§ä¸€ç•ªæœ€åˆã®åˆ—ã‚’ä½¿ã†
 
 						count4++;
 						i += 2;
@@ -627,7 +627,7 @@ void Primitive::InitializeSphere()
 			}
 			if (i % S_SPHERE_INDEX_NUM_ == 0 || i % (S_SPHERE_INDEX_NUM_ * (count + 1) - 3) == 0)
 			{
-				if (i % S_SPHERE_INDEX_NUM_ == 0)//ˆê”Ô‰º‚ÌOŠpŒ`
+				if (i % S_SPHERE_INDEX_NUM_ == 0)//ä¸€ç•ªä¸‹ã®ä¸‰è§’å½¢
 				{
 					if (isLast)
 					{
@@ -646,7 +646,7 @@ void Primitive::InitializeSphere()
 						i += 2;
 					}
 				}
-				else if (i % (S_SPHERE_INDEX_NUM_ * (count + 1) - 3) == 0)//ˆê”Ôã‚ÌOŠpŒ`
+				else if (i % (S_SPHERE_INDEX_NUM_ * (count + 1) - 3) == 0)//ä¸€ç•ªä¸Šã®ä¸‰è§’å½¢
 				{
 					if (isLast)
 					{
@@ -680,24 +680,24 @@ void Primitive::InitializeSphere()
 
 		uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * _countof(sIndicesSphere_));
 
-		//ƒŠƒ\[ƒXİ’è
+		//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 		ResourceProperties(resDesc, sizeIB);
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ìì¬
-		ID3D12Resource* indexBuff = nullptr;//GPU‘¤‚Ìƒƒ‚ƒŠ
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
+		ID3D12Resource* indexBuff = nullptr;//GPUå´ã®ãƒ¡ãƒ¢ãƒª
 		BuffProperties(heapProp_, resDesc, &indexBuff);
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒ}ƒbƒsƒ“ƒO
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒãƒƒãƒ”ãƒ³ã‚°
 		uint16_t* indexMap = nullptr;
 		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-		//‘SƒCƒ“ƒfƒbƒNƒX‚É‘Î‚µ‚Ä
+		//å…¨ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¯¾ã—ã¦
 		for (int32_t i = 0; i < _countof(sIndicesSphere_); i++)
 		{
-			indexMap[i] = sIndicesSphere_[i];//ƒCƒ“ƒfƒbƒNƒX‚ğƒRƒs[
+			indexMap[i] = sIndicesSphere_[i];//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ã‚³ãƒ”ãƒ¼
 
 		}
-		//ƒ}ƒbƒsƒ“ƒO‚ğ‰ğœ
+		//ãƒãƒƒãƒ”ãƒ³ã‚°ã‚’è§£é™¤
 		indexBuff->Unmap(0, nullptr);
 
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 		ibViewSphere_.BufferLocation = indexBuff->GetGPUVirtualAddress();
 		ibViewSphere_.Format = DXGI_FORMAT_R16_UINT;
 		ibViewSphere_.SizeInBytes = sizeIB;
@@ -707,21 +707,21 @@ void Primitive::InitializeSphere()
 		/*if (indexNum == SPHERE)*/
 		{
 			for (int32_t i = 0; i < _countof(sIndicesSphere_) / 3; i++)
-			{//OŠpŒ`ˆê‚Â‚²‚Æ‚ÉŒvZ
-				//OŠpŒ`‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ‚èo‚µ‚ÄAˆê“I‚È•Ï”‚É“ü‚ê‚é
+			{//ä¸‰è§’å½¢ä¸€ã¤ã”ã¨ã«è¨ˆç®—
+				//ä¸‰è§’å½¢ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–ã‚Šå‡ºã—ã¦ã€ä¸€æ™‚çš„ãªå¤‰æ•°ã«å…¥ã‚Œã‚‹
 				uint16_t index0 = sIndicesSphere_[i * 3 + 0];
 				uint16_t index1 = sIndicesSphere_[i * 3 + 1];
 				uint16_t index2 = sIndicesSphere_[i * 3 + 2];
-				//OŠpŒ`‚ğ\¬‚·‚é’¸“_À•W‚ğƒxƒNƒgƒ‹‚É‘ã“ü
+				//ä¸‰è§’å½¢ã‚’æ§‹æˆã™ã‚‹é ‚ç‚¹åº§æ¨™ã‚’ãƒ™ã‚¯ãƒˆãƒ«ã«ä»£å…¥
 				XMVECTOR p0 = XMLoadFloat3(&verticesSphere_[index0].pos);
 				XMVECTOR p1 = XMLoadFloat3(&verticesSphere_[index1].pos);
 				XMVECTOR p2 = XMLoadFloat3(&verticesSphere_[index2].pos);
-				//p0->p1ƒxƒNƒgƒ‹Ap0->p2ƒxƒNƒgƒ‹‚ğŒvZ
+				//p0->p1ãƒ™ã‚¯ãƒˆãƒ«ã€p0->p2ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
 				XMVECTOR v1 = XMVectorSubtract(p1, p0);
 				XMVECTOR v2 = XMVectorSubtract(p2, p0);
-				//ŠOÏi‚’¼‚ÈƒxƒNƒgƒ‹j
+				//å¤–ç©ï¼ˆå‚ç›´ãªãƒ™ã‚¯ãƒˆãƒ«ï¼‰
 				XMVECTOR normal = XMVector3Cross(XMVector3Normalize(v1), XMVector3Normalize(v2));
-				//‹‚ß‚½–@ü‚ğ’¸“_ƒf[ƒ^‚É‘ã“ü
+				//æ±‚ã‚ãŸæ³•ç·šã‚’é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã«ä»£å…¥
 				XMStoreFloat3(&verticesSphere_[index0].normal, normal);
 				XMStoreFloat3(&verticesSphere_[index1].normal, normal);
 				XMStoreFloat3(&verticesSphere_[index2].normal, normal);
@@ -736,20 +736,20 @@ void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCou
 {
 	HRESULT result = {};
 
-	// GPUã‚Ìƒoƒbƒtƒ@‚É‘Î‰‚µ‚½‰¼‘zƒƒ‚ƒŠ(ƒƒCƒ“ƒƒ‚ƒŠã)‚ğæ“¾
+	// GPUä¸Šã®ãƒãƒƒãƒ•ã‚¡ã«å¯¾å¿œã—ãŸä»®æƒ³ãƒ¡ãƒ¢ãƒª(ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ¢ãƒªä¸Š)ã‚’å–å¾—
 	Vertex* vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
-	// ‘S’¸“_‚É‘Î‚µ‚Ä
+	// å…¨é ‚ç‚¹ã«å¯¾ã—ã¦
 	for (int32_t i = 0; i < vertexCount; i++) {
 
-		vertMap[i] = vertex[i]; // À•W‚ğƒRƒs[
+		vertMap[i] = vertex[i]; // åº§æ¨™ã‚’ã‚³ãƒ”ãƒ¼
 
 	}
-	// Œq‚ª‚è‚ğ‰ğœ
+	// ç¹‹ãŒã‚Šã‚’è§£é™¤
 	vertBuff->Unmap(0, nullptr);
 
-	// ƒpƒCƒvƒ‰ƒCƒ“ƒXƒe[ƒg‚Æƒ‹[ƒgƒVƒOƒlƒ`ƒƒ‚Ìİ’èƒRƒ}ƒ“ƒh
+	// ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚¹ãƒ†ãƒ¼ãƒˆã¨ãƒ«ãƒ¼ãƒˆã‚·ã‚°ãƒãƒãƒ£ã®è¨­å®šã‚³ãƒãƒ³ãƒ‰
 	setRootParam();
 
 	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(primitiveTopology);
@@ -758,10 +758,10 @@ void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCou
 
 	DirectXWrapper::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView);
 
-	//ƒ}ƒeƒŠƒAƒ‹‚Æ‚©ƒeƒNƒXƒ`ƒƒ
+	//ãƒãƒ†ãƒªã‚¢ãƒ«ã¨ã‹ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	setMaterialLightTex();
 
-	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((uint32_t)indicesCount, 1, 0, 0, 0); // ‘S‚Ä‚Ì’¸“_‚ğg‚Á‚Ä•`‰æ
+	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((uint32_t)indicesCount, 1, 0, 0, 0); // å…¨ã¦ã®é ‚ç‚¹ã‚’ä½¿ã£ã¦æç”»
 }
 
 void Primitive::TriangleDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)

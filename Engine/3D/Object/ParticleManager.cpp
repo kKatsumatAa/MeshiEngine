@@ -1,6 +1,5 @@
-﻿#include "ParticleManager.h"
+#include "ParticleManager.h"
 #include <d3dcompiler.h>
-#include <DirectXTex.h>
 #include "CameraManager.h"
 
 using namespace DirectX;
@@ -318,7 +317,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 		rootPipe[TRIANGLE].CreateBlob("Resources/shaders/ParticleVS.hlsl", "Resources/shaders/ParticlePS.hlsl", "Resources/shaders/ParticleTriangleGS.hlsl");
 		gpipeline.GS = CD3DX12_SHADER_BYTECODE(rootPipe[TRIANGLE].gsBlob.Get());
 		// スタティックサンプラー
-		CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
+		samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
 
 		result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 			IID_PPV_ARGS(rootPipe[TRIANGLE].rootSignature.GetAddressOf()));
@@ -342,8 +341,6 @@ void ParticleManager::InitializeGraphicsPipeline()
 
 void ParticleManager::CreateModel()
 {
-	HRESULT result = S_FALSE;
-
 	//ヒープ設定
 	D3D12_HEAP_PROPERTIES cbHeapProp{};
 	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用

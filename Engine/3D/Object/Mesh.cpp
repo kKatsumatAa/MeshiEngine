@@ -8,18 +8,18 @@
 using namespace DirectX;
 
 /// <summary>
-/// Ã“Iƒƒ“ƒo•Ï”‚ÌÀ‘Ì
+/// é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°ã®å®Ÿä½“
 /// </summary>
 ID3D12Device* Mesh::sDevice_ = nullptr;
 
 void Mesh::StaticInitialize(ID3D12Device* device)
 {
-	// Ä‰Šú‰»ƒ`ƒFƒbƒN
+	// å†åˆæœŸåŒ–ãƒã‚§ãƒƒã‚¯
 	assert(!Mesh::sDevice_);
 
 	Mesh::sDevice_ = device;
 
-	// ƒ}ƒeƒŠƒAƒ‹‚ÌÃ“I‰Šú‰»
+	// ãƒãƒ†ãƒªã‚¢ãƒ«ã®é™çš„åˆæœŸåŒ–
 	Material::StaticInitialize(device);
 }
 
@@ -39,7 +39,7 @@ void Mesh::MappingVertices(std::vector<VertexPosNormalUvSkin>* vertices)
 		verticesL = *vertices;
 	}
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ìƒf[ƒ^“]‘—
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã¸ã®ãƒ‡ãƒ¼ã‚¿è»¢é€
 	VertexPosNormalUvSkin* vertMap = nullptr;
 	HRESULT result = vertBuff_->Map(0, nullptr, (void**)&vertMap);
 	if (SUCCEEDED(result)) {
@@ -77,9 +77,9 @@ void Mesh::CalculateSmoothedVertexNormals()
 {
 	auto itr = smoothData_.begin();
 	for (; itr != smoothData_.end(); ++itr) {
-		// Še–Ê—p‚Ì‹¤’Ê’¸“_ƒRƒŒƒNƒVƒ‡ƒ“
+		// å„é¢ç”¨ã®å…±é€šé ‚ç‚¹ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³
 		std::vector<uint16_t>& v = itr->second;
-		// ‘S’¸“_‚Ì–@ü‚ğ•½‹Ï‚·‚é
+		// å…¨é ‚ç‚¹ã®æ³•ç·šã‚’å¹³å‡ã™ã‚‹
 		XMVECTOR normal = {};
 		for (uint16_t index : v) {
 			normal += XMVectorSet(vertices_[index].normal.x, vertices_[index].normal.y, vertices_[index].normal.z, 0);
@@ -95,8 +95,8 @@ void Mesh::CalculateSmoothedVertexNormals()
 void Mesh::CalculateTangent()
 {
 	for (int32_t i = 0; i < indices_.size() / 3; i++)
-	{//OŠpŒ`ˆê‚Â‚²‚Æ‚ÉŒvZ
-		//OŠpŒ`‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ‚èo‚µ‚ÄAˆê“I‚È•Ï”‚É“ü‚ê‚é
+	{//ä¸‰è§’å½¢ä¸€ã¤ã”ã¨ã«è¨ˆç®—
+		//ä¸‰è§’å½¢ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–ã‚Šå‡ºã—ã¦ã€ä¸€æ™‚çš„ãªå¤‰æ•°ã«å…¥ã‚Œã‚‹
 		uint16_t index0 = indices_[i * 3 + 0];
 		uint16_t index1 = indices_[i * 3 + 1];
 		uint16_t index2 = indices_[i * 3 + 2];
@@ -153,12 +153,12 @@ void Mesh::CreateBuffers()
 	uint32_t sizeVB = static_cast<uint32_t>(sizeof(VertexPosNormalUvSkin) * vertices_.size());
 	uint32_t sizeIB = static_cast<uint32_t>(sizeof(uint16_t) * indices_.size());
 
-	// ƒq[ƒvƒvƒƒpƒeƒB
+	// ãƒ’ãƒ¼ãƒ—ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
 	CD3DX12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-	// ƒŠƒ\[ƒXİ’è
+	// ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeVB);
 
-	// ’¸“_ƒoƒbƒtƒ@¶¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 	result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
 		&heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
 		IID_PPV_ARGS(&vertBuff_));
@@ -167,20 +167,20 @@ void Mesh::CreateBuffers()
 
 	MappingVertices();
 
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 	vbView_.BufferLocation = vertBuff_->GetGPUVirtualAddress();
 	vbView_.SizeInBytes = sizeVB;
 	vbView_.StrideInBytes = sizeof(VertexPosNormalUvSkin);
 
 	if (indices_.size())
 	{
-		// ƒŠƒ\[ƒXİ’è
+		// ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 		resourceDesc.Width = sizeIB;
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@¶¬
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ç”Ÿæˆ
 		BuffProperties(heapProps, resourceDesc, &indexBuff_);
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ö‚Ìƒf[ƒ^“]‘—
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã¸ã®ãƒ‡ãƒ¼ã‚¿è»¢é€
 		uint16_t* indexMap = nullptr;
 		result = indexBuff_->Map(0, nullptr, (void**)&indexMap);
 		if (SUCCEEDED(result)) {
@@ -190,7 +190,7 @@ void Mesh::CreateBuffers()
 			indexBuff_->Unmap(0, nullptr);
 		}
 
-		// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 		ibView_.BufferLocation = indexBuff_->GetGPUVirtualAddress();
 		ibView_.Format = DXGI_FORMAT_R16_UINT;
 		ibView_.SizeInBytes = sizeIB;
@@ -205,22 +205,22 @@ void Mesh::SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt)
 	cbt_.SetViewProjMat(cbt.GetViewProjMat());
 	cbt_.SetCameraPos(cbt.GetCameraPos());
 
-	//ƒ}ƒeƒŠƒAƒ‹
+	//ãƒãƒ†ãƒªã‚¢ãƒ«
 	XMFLOAT3 amb = material_->ambient_;
 	material_->ambient_ = material_->ambient_ * materialExtend.x;
 	XMFLOAT3 diff = material_->diffuse_;
 	material_->diffuse_ = material_->diffuse_ * materialExtend.y;
 	XMFLOAT3 spe = material_->specular_;
 	material_->specular_ = material_->specular_ * materialExtend.z;
-	//XV
+	//æ›´æ–°
 	material_->Update();
 
-	//–ß‚·
+	//æˆ»ã™
 	material_->ambient_ = amb;
 	material_->diffuse_ = diff;
 	material_->specular_ = spe;
 
-	//’¸“_î•ñ
+	//é ‚ç‚¹æƒ…å ±
 	SendingVetices();
 }
 
@@ -228,12 +228,12 @@ void Mesh::SendingVetices()
 {
 	bool isVailid = false;
 
-	//ŠÔŠu‚ª—ˆ‚½‚ç
+	//é–“éš”ãŒæ¥ãŸã‚‰
 	if (timer_ % max((int32_t)polygonOffsetData_.interval, 1) == 0)
 	{
 		if (polygonOffsetData_.length != 0.0f)
 		{
-			//ƒRƒs[
+			//ã‚³ãƒ”ãƒ¼
 			offsetVertices_.clear();
 			offsetVertices_.resize(vertices_.size());
 			offsetVertices_ = vertices_;
@@ -246,10 +246,10 @@ void Mesh::SendingVetices()
 	{
 		for (int r = 0; r < (int32_t)((float)GetPolygonCount() * polygonOffsetData_.ratio); r++)
 		{
-			//ƒ‰ƒ“ƒ_ƒ€‚Éƒ|ƒŠƒSƒ“‚ÌƒCƒ“ƒfƒbƒNƒXŒˆ‚ß‚é
+			//ãƒ©ãƒ³ãƒ€ãƒ ã«ãƒãƒªã‚´ãƒ³ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹æ±ºã‚ã‚‹
 			int32_t pIndex = (int32_t)GetRand(0, (float)max((GetPolygonCount() - 1), 0));
 
-			//ƒ|ƒŠƒSƒ“‚ğ–@ü•ûŒü‚Éƒ‰ƒ“ƒ_ƒ€‚Å“®‚©‚·
+			//ãƒãƒªã‚´ãƒ³ã‚’æ³•ç·šæ–¹å‘ã«ãƒ©ãƒ³ãƒ€ãƒ ã§å‹•ã‹ã™
 			float extend = GetRand(0.1f, 1.0f);
 			Vec3 offset = GetPolygonNormal(pIndex) * (polygonOffsetData_.length * extend);
 			offsetVertices_[pIndex * 3 + 0].pos += offset;
@@ -264,36 +264,35 @@ void Mesh::SendingVetices()
 	}
 	else
 	{
-		//ƒ}ƒbƒsƒ“ƒO
+		//ãƒãƒƒãƒ”ãƒ³ã‚°
 		MappingVertices();
 	}
 }
 
-void Mesh::Draw(Vec3 materialExtend, const ConstBuffTransform& cbt,
-	const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
+void Mesh::Draw(Vec3 materialExtend, const ConstBuffTransform& cbt)
 {
 	SendingMat(materialExtend, cbt);
 
-	// ƒVƒF[ƒ_ƒŠƒ\[ƒXƒrƒ…[‚ğƒZƒbƒg
-	//SRVƒq[ƒv‚Ìæ“ªƒnƒ“ƒhƒ‹‚ğæ“¾
+	// ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ãƒ“ãƒ¥ãƒ¼ã‚’ã‚»ãƒƒãƒˆ
+	//SRVãƒ’ãƒ¼ãƒ—ã®å…ˆé ­ãƒãƒ³ãƒ‰ãƒ«ã‚’å–å¾—
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 	srvGpuHandle.ptr = material_->textureHandle_;
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(Object::RootParamNum::TEX, srvGpuHandle);
 
-	// ƒ}ƒeƒŠƒAƒ‹‚Ì’è”ƒoƒbƒtƒ@‚ğƒZƒbƒg
+	// ãƒãƒ†ãƒªã‚¢ãƒ«ã®å®šæ•°ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
 	ID3D12Resource* constBuff = material_->GetConstantBuffer();
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(Object::RootParamNum::MATERIAL, constBuff->GetGPUVirtualAddress());
 
-	//ƒƒbƒVƒ…‚²‚Æ‚Ìs—ñ
+	//ãƒ¡ãƒƒã‚·ãƒ¥ã”ã¨ã®è¡Œåˆ—
 	cbt_.DrawCommand(Object::RootParamNum::MESH_MAT);
 
-	// ’¸“_ƒoƒbƒtƒ@‚ğƒZƒbƒg
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
 	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒZƒbƒg
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
 	DirectXWrapper::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView_);
 
 
-	// •`‰æƒRƒ}ƒ“ƒh
+	// æç”»ã‚³ãƒãƒ³ãƒ‰
 	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((uint32_t)indices_.size(), 1, 0, 0, 0);
 }
 
@@ -305,7 +304,7 @@ Vec3 Mesh::GetPolygonNormal(int32_t index)
 	uint16_t index1 = indices_[index * 3 + 1];
 	uint16_t index2 = indices_[index * 3 + 2];
 
-	//À•W‚ğŒ³‚É–ß‚·
+	//åº§æ¨™ã‚’å…ƒã«æˆ»ã™
 	Vec3 normal0 = vertices_[index0].normal;
 	Vec3 normal1 = vertices_[index1].normal;
 	Vec3 normal2 = vertices_[index2].normal;

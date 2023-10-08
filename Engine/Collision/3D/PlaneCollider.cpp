@@ -5,15 +5,15 @@ using namespace DirectX;
 
 void PlaneCollider::Update()
 {
-	// ñ ÇÃÉÅÉìÉoïœêîÇçXêV
-	Plane::distance = object_->GetTrans().GetLength();
+	// Èù¢„ÅÆ„É°„É≥„ÉêÂ§âÊï∞„ÇíÊõ¥Êñ∞
+	Plane::iDistance = object_->GetTrans().GetLength();
 
-	//ñ@ê¸ÇåvéZ
+	//Ê≥ïÁ∑ö„ÇíË®àÁÆó
 	WorldMat worldNormal;
 	worldNormal.rot_ = object_->GetRot();
 	worldNormal.CalcWorldMat();
-	//âÒì]ÇÃÇ›
+	//ÂõûËª¢„ÅÆ„Åø
 	Vec3 normal = GetVec3xM4({ 0,0,-1.0f }, worldNormal.matWorld_, 1);
 	normal.Normalized();
-	Plane::normal = { normal.x,normal.y,normal.z,1.0f };
+	Plane::iNormal = { normal.x,normal.y,normal.z,1.0f };
 }

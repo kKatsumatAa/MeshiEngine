@@ -2,7 +2,6 @@
 #include <Windows.h>
 #include <wrl.h>
 #include <d3d12.h>
-#include <DirectXMath.h>
 #include <d3dx12.h>
 #include "Material.h"
 #include <vector>
@@ -11,221 +10,220 @@
 #include "ConstBuffTransform.h"
 #include "WorldMat.h"
 #include <fbxsdk.h>
-
+#include <memory.h>
 
 struct Node
 {
 	//id
 	uint64_t id = 0;
-	//‘®«
+	//å±æ€§
 	FbxNodeAttribute::EType	attribute = FbxNodeAttribute::EType::eUnknown;
-	//–¼‘O
+	//åå‰
 	std::string name = {};
-	//ƒ[ƒJƒ‹ƒXƒP[ƒ‹
-	DirectX::XMVECTOR scaling = { 1,1,1,0 };
-	//ƒ[ƒJƒ‹‰ñ“]Šp
-	DirectX::XMVECTOR rotation = { 0,0,0,0 };
-	//ƒ[ƒJƒ‹ˆÚ“®
-	DirectX::XMVECTOR translation = { 0,0,0,1 };
-	//ƒ[ƒJƒ‹•ÏŒ`s—ñ
+	//ãƒ­ãƒ¼ã‚«ãƒ«ã‚¹ã‚±ãƒ¼ãƒ«
+	DirectX::XMFLOAT4 scaling = { 1.0f,1.0f,1.0f,0 };
+	//ãƒ­ãƒ¼ã‚«ãƒ«å›è»¢è§’
+	DirectX::XMFLOAT4 rotation = { 0,0,0,0 };
+	//ãƒ­ãƒ¼ã‚«ãƒ«ç§»å‹•
+	DirectX::XMFLOAT4 translation = { 0,0,0,1.0f };
+	//ãƒ­ãƒ¼ã‚«ãƒ«å¤‰å½¢è¡Œåˆ—
 	DirectX::XMMATRIX transform = {};
-	//ƒOƒ[ƒoƒ‹•ÏŒ`s—ñie‚Ì‰e‹¿‚àŠÜ‚ß‚½j
+	//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰å½¢è¡Œåˆ—ï¼ˆè¦ªã®å½±éŸ¿ã‚‚å«ã‚ãŸï¼‰
 	DirectX::XMMATRIX globalTransform = {};
-	//eƒm[ƒh
+	//è¦ªãƒãƒ¼ãƒ‰
 	Node* parent = nullptr;
 };
 
 
 /// <summary>
-/// Œ`óƒf[ƒ^
+/// å½¢çŠ¶ãƒ‡ãƒ¼ã‚¿
 /// </summary>
 class Mesh
 {
 public:
-	//ƒtƒŒƒ“ƒhƒNƒ‰ƒX
+	//ãƒ•ãƒ¬ãƒ³ãƒ‰ã‚¯ãƒ©ã‚¹
 	friend class FbxLoader;
 
-private: // ƒGƒCƒŠƒAƒX
-	// Microsoft::WRL::‚ğÈ—ª
+private: // ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	// Microsoft::WRL::ã‚’çœç•¥
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	// DirectX::‚ğÈ—ª
+	// DirectX::ã‚’çœç•¥
 	using XMMATRIX = DirectX::XMMATRIX;
 
 
-public://’è”
-	//ƒ{[ƒ“ƒCƒ“ƒfƒbƒNƒXi‰e‹¿‚ğó‚¯‚éƒ{[ƒ“j‚ÌÅ‘å”
-	static const int32_t S_MAX_BONE_INDICES_ = 4;//hlsl‚Ìfloat4‚É‘Î‰‚·‚é‚½‚ß"4"
+public://å®šæ•°
+	//ãƒœãƒ¼ãƒ³ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ï¼ˆå½±éŸ¿ã‚’å—ã‘ã‚‹ãƒœãƒ¼ãƒ³ï¼‰ã®æœ€å¤§æ•°
+	static const int32_t S_MAX_BONE_INDICES_ = 4;//hlslã®float4ã«å¯¾å¿œã™ã‚‹ãŸã‚"4"
 
-public://ƒTƒuƒNƒ‰ƒX
-	//’¸“_ƒf[ƒ^\‘¢‘Ì
+public://ã‚µãƒ–ã‚¯ãƒ©ã‚¹
+	//é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿æ§‹é€ ä½“
 	struct VertexPosNormalUvSkin
 	{
-		Vec3 pos;//À•W
-		Vec3 normal;//–@üƒxƒNƒgƒ‹
-		Vec2 uv;//uvÀ•W
-		uint32_t boneIndex[S_MAX_BONE_INDICES_] = { 0 };//‰e‹¿‚ğó‚¯‚éƒ{[ƒ“@”Ô†
-		float boneWeight[S_MAX_BONE_INDICES_] = { 1.0f,0,0,0 };//ƒ{[ƒ“@d‚İ
-		Vec4 tangent;//–@ü‚ÌÚü
+		Vec3 pos;//åº§æ¨™
+		Vec3 normal;//æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«
+		Vec2 uv;//uvåº§æ¨™
+		uint32_t boneIndex[S_MAX_BONE_INDICES_] = { 0 };//å½±éŸ¿ã‚’å—ã‘ã‚‹ãƒœãƒ¼ãƒ³ã€€ç•ªå·
+		float boneWeight[S_MAX_BONE_INDICES_] = { 1.0f,0,0,0 };//ãƒœãƒ¼ãƒ³ã€€é‡ã¿
+		Vec4 tangent;//æ³•ç·šã®æ¥ç·š
 	};
 
-	//ƒ|ƒŠƒSƒ“‚ÌÀ•W‚ÌƒIƒtƒZƒbƒg
+	//ãƒãƒªã‚´ãƒ³ã®åº§æ¨™ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 	struct PolygonOffset
 	{
-		float ratio = 0;//ƒƒbƒVƒ…‚Ì‚Ç‚Ì‚­‚ç‚¢‚Ìƒ|ƒŠƒSƒ“‚É“K—p‚·‚é‚©
-		float length = 0;//‚Ç‚Ì‚­‚ç‚¢‰ÁZ‚·‚é‚Ì‚©(’·‚³)
-		float interval = 0;//ÀsŠÔŠu
+		float ratio = 0;//ãƒ¡ãƒƒã‚·ãƒ¥ã®ã©ã®ãã‚‰ã„ã®ãƒãƒªã‚´ãƒ³ã«é©ç”¨ã™ã‚‹ã‹
+		float length = 0;//ã©ã®ãã‚‰ã„åŠ ç®—ã™ã‚‹ã®ã‹(é•·ã•)
+		float interval = 0;//å®Ÿè¡Œé–“éš”
 	};
 
-public: // Ã“Iƒƒ“ƒoŠÖ”
+public: // é™çš„ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/// <summary>
-	/// Ã“I‰Šú‰»
+	/// é™çš„åˆæœŸåŒ–
 	/// </summary>
-	/// <param name="device">ƒfƒoƒCƒX</param>
+	/// <param name="device">ãƒ‡ãƒã‚¤ã‚¹</param>
 	static void StaticInitialize(ID3D12Device* device);
 
-private: // Ã“Iƒƒ“ƒo•Ï”
-	// ƒfƒoƒCƒX
+private: // é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°
+	// ãƒ‡ãƒã‚¤ã‚¹
 	static ID3D12Device* sDevice_;
 
-public: // ƒƒ“ƒoŠÖ”
+public: // ãƒ¡ãƒ³ãƒé–¢æ•°
 	Mesh();
 
-	//’¸“_ƒ}ƒbƒsƒ“ƒO
+	//é ‚ç‚¹ãƒãƒƒãƒ”ãƒ³ã‚°
 	void MappingVertices(std::vector<VertexPosNormalUvSkin>* vertices = nullptr);
 
 	/// <summary>
-	/// –¼‘O‚ğæ“¾
+	/// åå‰ã‚’å–å¾—
 	/// </summary>
-	/// <returns>–¼‘O</returns>
+	/// <returns>åå‰</returns>
 	const std::string& GetName() { return name_; }
 
 	/// <summary>
-	/// –¼‘O‚ğƒZƒbƒg
+	/// åå‰ã‚’ã‚»ãƒƒãƒˆ
 	/// </summary>
-	/// <param name="name_">–¼‘O</param>
+	/// <param name="name_">åå‰</param>
 	void SetName(const std::string& name);
 
 	/// <summary>
-	/// ’¸“_ƒf[ƒ^‚Ì’Ç‰Á
+	/// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®è¿½åŠ 
 	/// </summary>
-	/// <param name="vertex">’¸“_ƒf[ƒ^</param>
+	/// <param name="vertex">é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿</param>
 	void AddVertex(const VertexPosNormalUvSkin& vertex);
 
 	/// <summary>
-	/// ’¸“_ƒCƒ“ƒfƒbƒNƒX‚Ì’Ç‰Á
+	/// é ‚ç‚¹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®è¿½åŠ 
 	/// </summary>
-	/// <param name="index">ƒCƒ“ƒfƒbƒNƒX</param>
+	/// <param name="index">ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹</param>
 	void AddIndex(uint16_t index);
 
 	void PopIndex();
 
 	/// <summary>
-	/// ’¸“_ƒf[ƒ^‚Ì”‚ğæ“¾
+	/// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®æ•°ã‚’å–å¾—
 	/// </summary>
-	/// <returns>’¸“_ƒf[ƒ^‚Ì”</returns>
+	/// <returns>é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®æ•°</returns>
 	inline size_t GetVertexCount() { return vertices_.size(); }
 
 	/// <summary>
-	/// ƒGƒbƒW•½ŠŠ‰»ƒf[ƒ^‚Ì’Ç‰Á
+	/// ã‚¨ãƒƒã‚¸å¹³æ»‘åŒ–ãƒ‡ãƒ¼ã‚¿ã®è¿½åŠ 
 	/// </summary>
-	/// <param name="indexPosition">À•WƒCƒ“ƒfƒbƒNƒX</param>
-	/// <param name="indexVertex">’¸“_ƒCƒ“ƒfƒbƒNƒX</param>
+	/// <param name="indexPosition">åº§æ¨™ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹</param>
+	/// <param name="indexVertex">é ‚ç‚¹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹</param>
 	void AddSmoothData(uint16_t indexPosition, uint16_t indexVertex);
 
 
 	/// <summary>
-	/// •½ŠŠ‰»‚³‚ê‚½’¸“_–@ü‚ÌŒvZ
+	/// å¹³æ»‘åŒ–ã•ã‚ŒãŸé ‚ç‚¹æ³•ç·šã®è¨ˆç®—
 	/// </summary>
 	void CalculateSmoothedVertexNormals();
 
-	//ƒƒbƒVƒ…‚ÌÚü‚ğŒvZ
+	//ãƒ¡ãƒƒã‚·ãƒ¥ã®æ¥ç·šã‚’è¨ˆç®—
 	void CalculateTangent();
 
 	/// <summary>
-	/// ƒ}ƒeƒŠƒAƒ‹‚Ìæ“¾
+	/// ãƒãƒ†ãƒªã‚¢ãƒ«ã®å–å¾—
 	/// </summary>
-	/// <returns>ƒ}ƒeƒŠƒAƒ‹</returns>
+	/// <returns>ãƒãƒ†ãƒªã‚¢ãƒ«</returns>
 	Material* GetMaterial() { return material_; }
 
 	/// <summary>
-	/// ƒ}ƒeƒŠƒAƒ‹‚ÌŠ„‚è“–‚Ä
+	/// ãƒãƒ†ãƒªã‚¢ãƒ«ã®å‰²ã‚Šå½“ã¦
 	/// </summary>
-	/// <param name="material">ƒ}ƒeƒŠƒAƒ‹</param>
+	/// <param name="material">ãƒãƒ†ãƒªã‚¢ãƒ«</param>
 	void SetMaterial(Material* material);
 
 	/// <summary>
-	/// ƒoƒbƒtƒ@‚Ì¶¬
+	/// ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	/// </summary>
 	void CreateBuffers();
 
-	//s—ñ‚Ìî•ñ‚ğ“]‘—
+	//è¡Œåˆ—ã®æƒ…å ±ã‚’è»¢é€
 	void SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt);
 
-	//‰ÁZÀ•W‚ğ’¸“_À•W‚É‘«‚·
+	//åŠ ç®—åº§æ¨™ã‚’é ‚ç‚¹åº§æ¨™ã«è¶³ã™
 	void SendingVetices();
 
 
 	/// <summary>
-	/// ’¸“_ƒoƒbƒtƒ@æ“¾
+	/// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡å–å¾—
 	/// </summary>
-	/// <returns>’¸“_ƒoƒbƒtƒ@</returns>
+	/// <returns>é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡</returns>
 	const D3D12_VERTEX_BUFFER_VIEW& GetVBView() { return vbView_; }
 
 	/// <summary>
-	/// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@æ“¾
+	/// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡å–å¾—
 	/// </summary>
-	/// <returns>ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@</returns>
+	/// <returns>ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡</returns>
 	const D3D12_INDEX_BUFFER_VIEW& GetIBView() { return ibView_; }
 
 	/// <summary>
-	/// •`‰æ
+	/// æç”»
 	/// </summary>
-	/// <param name="cmdList">–½—ß”­sæƒRƒ}ƒ“ƒhƒŠƒXƒg</param>
-	void Draw(Vec3 materialExtend, const ConstBuffTransform& cbt,
-		const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	/// <param name="cmdList">å‘½ä»¤ç™ºè¡Œå…ˆã‚³ãƒãƒ³ãƒ‰ãƒªã‚¹ãƒˆ</param>
+	void Draw(Vec3 materialExtend, const ConstBuffTransform& cbt);
 
 public:
 	/// <summary>
-	/// ’¸“_”z—ñ‚ğæ“¾
+	/// é ‚ç‚¹é…åˆ—ã‚’å–å¾—
 	/// </summary>
 	/// <returns></returns>
 	inline const std::vector<VertexPosNormalUvSkin>& GetVertices() { return vertices_; }
 
 	/// <summary>
-	/// ƒCƒ“ƒfƒbƒNƒX”z—ñ‚ğæ“¾
+	/// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹é…åˆ—ã‚’å–å¾—
 	/// </summary>
 	/// <returns></returns>
 	inline const std::vector<unsigned short>& GetIndices() { return indices_; }
 
-private: // ƒƒ“ƒo•Ï”
-	// –¼‘O
+private: // ãƒ¡ãƒ³ãƒå¤‰æ•°
+	// åå‰
 	std::string name_;
-	// ’¸“_ƒoƒbƒtƒ@
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	ComPtr<ID3D12Resource> vertBuff_;
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 	ComPtr<ID3D12Resource> indexBuff_;
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼
 	D3D12_VERTEX_BUFFER_VIEW vbView_ = {};
-	// ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[
+	// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼
 	D3D12_INDEX_BUFFER_VIEW ibView_ = {};
-	// ’¸“_ƒf[ƒ^”z—ñ
+	// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿é…åˆ—
 	std::vector<VertexPosNormalUvSkin> vertices_;
-	//ƒIƒtƒZƒbƒg“K—pŒã
+	//ã‚ªãƒ•ã‚»ãƒƒãƒˆé©ç”¨å¾Œ
 	std::vector<VertexPosNormalUvSkin> offsetVertices_;
-	// ’¸“_ƒCƒ“ƒfƒbƒNƒX”z—ñ
+	// é ‚ç‚¹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹é…åˆ—
 	std::vector<uint16_t> indices_;
-	// ’¸“_–@üƒXƒ€[ƒWƒ“ƒO—pƒf[ƒ^
+	// é ‚ç‚¹æ³•ç·šã‚¹ãƒ ãƒ¼ã‚¸ãƒ³ã‚°ç”¨ãƒ‡ãƒ¼ã‚¿
 	std::unordered_map<uint16_t, std::vector<uint16_t>> smoothData_;
-	// ƒ}ƒeƒŠƒAƒ‹
+	// ãƒãƒ†ãƒªã‚¢ãƒ«
 	Material* material_ = nullptr;
 
-	//ƒƒbƒVƒ…‚ğ‚Âƒm[ƒh(fbx)
+	//ãƒ¡ãƒƒã‚·ãƒ¥ã‚’æŒã¤ãƒãƒ¼ãƒ‰(fbx)
 	Node* meshNode_ = nullptr;
 	//
 	int32_t timer_ = 0;
 
-	//ƒOƒ[ƒoƒ‹•ÏŒ`s—ñie‚Ì‰e‹¿‚àŠÜ‚ß‚½j
+	//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰å½¢è¡Œåˆ—ï¼ˆè¦ªã®å½±éŸ¿ã‚‚å«ã‚ãŸï¼‰
 	DirectX::XMMATRIX globalTransform_ = {};
 
 	ConstBuffTransform cbt_;
@@ -234,7 +232,7 @@ private: // ƒƒ“ƒo•Ï”
 
 public:
 	//getter
-//ƒ‚ƒfƒ‹‚Ì•ÏŒ`s—ñ‚ğæ“¾
+//ãƒ¢ãƒ‡ãƒ«ã®å¤‰å½¢è¡Œåˆ—ã‚’å–å¾—
 	const XMMATRIX& GetMeshFBXTransform() { return meshNode_->globalTransform; }
 
 	const Node& GetMeshNode() { return *meshNode_; }
@@ -243,9 +241,9 @@ public:
 	void SetMeshNode(Node* node) { meshNode_ = node; }
 
 	//getter
-	//ƒ|ƒŠƒSƒ“”‚ğæ“¾
+	//ãƒãƒªã‚´ãƒ³æ•°ã‚’å–å¾—
 	int32_t GetPolygonCount() { return (int32_t)indices_.size() / 3; }
 	Vec3 GetPolygonNormal(int32_t index);
-	//ƒƒbƒVƒ…‚Ì‰ÁZÀ•W‚ğƒ‰ƒ“ƒ_ƒ€‚Åo‚·
+	//ãƒ¡ãƒƒã‚·ãƒ¥ã®åŠ ç®—åº§æ¨™ã‚’ãƒ©ãƒ³ãƒ€ãƒ ã§å‡ºã™
 	void SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData);
 };

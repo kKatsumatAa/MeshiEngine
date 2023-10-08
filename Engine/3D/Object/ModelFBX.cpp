@@ -3,14 +3,14 @@
 
 
 /// <summary>
-/// Ã“Iƒƒ“ƒo•Ï”‚ÌÀ‘Ì
+/// é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°ã®å®Ÿä½“
 /// </summary>
 const std::string ModelFBX::S_TYPE_DIRECTORY_ = "fbx/";
 
 
 ModelFBX::~ModelFBX()
 {
-	//fbxƒV[ƒ“‚Ì‰ğ•úiFBXLoader‚ÌFinalize()‚Ì‘O‚¶‚á‚È‚¢‚ÆƒGƒ‰[o‚éj
+	//fbxã‚·ãƒ¼ãƒ³ã®è§£æ”¾ï¼ˆFBXLoaderã®Finalize()ã®å‰ã˜ã‚ƒãªã„ã¨ã‚¨ãƒ©ãƒ¼å‡ºã‚‹ï¼‰
 	fbxScene_->Destroy();
 }
 
@@ -37,7 +37,7 @@ uint64_t ModelFBX::GetBoneIndex(const std::string& name) const
 		}
 	}
 
-	return -1;
+	return 0;
 }
 
 void ModelFBX::Initialize()

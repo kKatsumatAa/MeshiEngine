@@ -18,14 +18,14 @@ void ObjectManager::Initialize()
 
 void ObjectManager::Update()
 {
-	//ƒAƒbƒvƒf[ƒg
+	//ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ
 	for (std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator itM = objsGroups_.begin();
 		itM != objsGroups_.end(); itM++)
 	{
 		for (std::vector<std::unique_ptr<IObject3D>>::iterator itG = itM->second.begin();
 			itG != itM->second.end(); itG++)
 		{
-			//—LŒø‚Å‚ ‚ê‚Î
+			//æœ‰åŠ¹ã§ã‚ã‚Œã°
 			if (itG->get()->GetIsValid())
 			{
 				itG->get()->Update();
@@ -40,13 +40,13 @@ void ObjectManager::DebugUpdate()
 {
 #ifdef _DEBUG
 
-	//¶ƒNƒŠƒbƒN‚µ‚ÄAƒfƒoƒbƒOƒJƒƒ‰‚É‚È‚Á‚Ä‚¢‚ÄAimguiã‚ÉƒJ[ƒ\ƒ‹‚ª‚È‚¯‚ê‚Î
+	//å·¦ã‚¯ãƒªãƒƒã‚¯ã—ã¦ã€ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ã«ãªã£ã¦ã„ã¦ã€imguiä¸Šã«ã‚«ãƒ¼ã‚½ãƒ«ãŒãªã‘ã‚Œã°
 	if (CameraManager::GetInstance().GetIsDebugCamera() && MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT)
 		&& ImGui::GetIO().WantCaptureMouse == false)
 	{
 		Camera* camera = CameraManager::GetInstance().GetCamera();
 
-		//ƒNƒŠƒbƒN‚µ‚½êŠ‚ÉƒŒƒC‚ğ‚¾‚·
+		//ã‚¯ãƒªãƒƒã‚¯ã—ãŸå ´æ‰€ã«ãƒ¬ã‚¤ã‚’ã ã™
 		Vec3 nearPos;
 		Vec3 farPos;
 		Vec2toNearFarPos(MouseInput::GetInstance().GetCurcorPos(), nearPos, farPos, camera->GetViewMat(), camera->GetProjMat());
@@ -58,16 +58,16 @@ void ObjectManager::DebugUpdate()
 		ray.dir = { dirV.x,dirV.y,dirV.z };
 
 		RaycastHit info;
-		//‰½‚©‚ ‚Á‚½‚ç
+		//ä½•ã‹ã‚ã£ãŸã‚‰
 		if (CollisionManager::GetInstance()->Raycast(ray, &info, 1000))
 		{
-			//ƒVƒ‹ƒGƒbƒg‰ğœ‚Å‘I‘ğ‚µ‚Ä‚È‚¢‚æ‚¤‚ÉŒ©‚¹‚é
+			//ã‚·ãƒ«ã‚¨ãƒƒãƒˆè§£é™¤ã§é¸æŠã—ã¦ãªã„ã‚ˆã†ã«è¦‹ã›ã‚‹
 			if (selectObj_)
 			{
 				selectObj_->SetIsSilhouette(false);
 			}
 
-			//‘O‰ñ‚Æ“¯‚¶‚¾‚Á‚½‚ç‰ğœ
+			//å‰å›ã¨åŒã˜ã ã£ãŸã‚‰è§£é™¤
 			if (selectObj_ == info.object)
 			{
 				selectObj_ = nullptr;
@@ -104,7 +104,7 @@ void ObjectManager::Draw()
 		for (std::vector<std::unique_ptr<IObject3D>>::iterator itG = itM->second.begin();
 			itG != itM->second.end(); itG++)
 		{
-			//—LŒø‚Å‚ ‚ê‚Î
+			//æœ‰åŠ¹ã§ã‚ã‚Œã°
 			if (itG->get()->GetIsValid())
 			{
 				itG->get()->Draw();
@@ -116,7 +116,7 @@ void ObjectManager::Draw()
 
 void ObjectManager::DrawImGui()
 {
-	//ƒNƒŠƒbƒN‚Å‘I‘ğ‚µ‚½‚à‚Ì‚ğo‚·
+	//ã‚¯ãƒªãƒƒã‚¯ã§é¸æŠã—ãŸã‚‚ã®ã‚’å‡ºã™
 	if (selectObj_)
 	{
 		selectObj_->DrawImGui();
@@ -126,7 +126,7 @@ void ObjectManager::DrawImGui()
 	for (std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator itM = objsGroups_.begin();
 		itM != objsGroups_.end(); itM++)
 	{
-		//ƒOƒ‹[ƒv‚²‚Æ‚É
+		//ã‚°ãƒ«ãƒ¼ãƒ—ã”ã¨ã«
 		if (ImGui::TreeNode(itM->first.c_str()))
 		{
 			for (std::vector<std::unique_ptr<IObject3D>>::iterator itG = itM->second.begin();
@@ -142,7 +142,7 @@ void ObjectManager::DrawImGui()
 
 void ObjectManager::PostUpdate()
 {
-	//ƒRƒ‰ƒCƒ_[‚Å¶‚«‚Ä‚éƒtƒ‰ƒOƒIƒt‚É‚È‚Á‚½‚çÁ‚·
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã§ç”Ÿãã¦ã‚‹ãƒ•ãƒ©ã‚°ã‚ªãƒ•ã«ãªã£ãŸã‚‰æ¶ˆã™
 	for (std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator itM = objsGroups_.begin();
 		itM != objsGroups_.end(); itM++)
 	{
@@ -173,10 +173,10 @@ void ObjectManager::PostUpdate()
 //-------------------------------------------------------------
 bool ObjectManager::FindObjGroup(const std::string& name)
 {
-	//ƒOƒ‹[ƒv’T‚·
+	//ã‚°ãƒ«ãƒ¼ãƒ—æ¢ã™
 	auto itr = objsGroups_.find(name);
 
-	//‚È‚¯‚ê‚Î
+	//ãªã‘ã‚Œã°
 	if (itr == objsGroups_.end())
 	{
 		return false;
@@ -187,10 +187,10 @@ bool ObjectManager::FindObjGroup(const std::string& name)
 
 std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator ObjectManager::GetObjGroup(const std::string& name)
 {
-	//ƒOƒ‹[ƒv’T‚·
+	//ã‚°ãƒ«ãƒ¼ãƒ—æ¢ã™
 	auto itr = objsGroups_.find(name);
 
-	//‚È‚¯‚ê‚Î
+	//ãªã‘ã‚Œã°
 	assert(itr != objsGroups_.end());
 
 	return itr;
@@ -204,13 +204,13 @@ void ObjectManager::AddObject(const std::string& groupName, const std::string& n
 	obj->Initialize();
 	obj->SetObjName(name);
 
-	//ƒOƒ‹[ƒv‚É’Ç‰ÁAƒOƒ‹[ƒv‚ª‚Ü‚¾‚È‚¯‚ê‚ÎƒOƒ‹[ƒv‚Ì”z—ñ‚É‚à’Ç‰Á
+	//ã‚°ãƒ«ãƒ¼ãƒ—ã«è¿½åŠ ã€ã‚°ãƒ«ãƒ¼ãƒ—ãŒã¾ã ãªã‘ã‚Œã°ã‚°ãƒ«ãƒ¼ãƒ—ã®é…åˆ—ã«ã‚‚è¿½åŠ 
 	AddObjAndGroup(std::move(obj), groupName);
 }
 
 void ObjectManager::AddObject(const std::string& groupName, std::unique_ptr<IObject3D> inst)
 {
-	//ƒOƒ‹[ƒv‚É’Ç‰ÁAƒOƒ‹[ƒv‚ª‚Ü‚¾‚È‚¯‚ê‚ÎƒOƒ‹[ƒv‚Ì”z—ñ‚É‚à’Ç‰Á
+	//ã‚°ãƒ«ãƒ¼ãƒ—ã«è¿½åŠ ã€ã‚°ãƒ«ãƒ¼ãƒ—ãŒã¾ã ãªã‘ã‚Œã°ã‚°ãƒ«ãƒ¼ãƒ—ã®é…åˆ—ã«ã‚‚è¿½åŠ 
 	AddObjAndGroup(std::move(inst), groupName);
 }
 
@@ -224,14 +224,14 @@ void ObjectManager::AddGroup(const std::string& groupName, std::unique_ptr<IObje
 
 void ObjectManager::AddObjAndGroup(std::unique_ptr<IObject3D> obj, const std::string& groupName)
 {
-	//ƒOƒ‹[ƒv‚ª‚·‚Å‚É‚ ‚ê‚Î
+	//ã‚°ãƒ«ãƒ¼ãƒ—ãŒã™ã§ã«ã‚ã‚Œã°
 	if (FindObjGroup(groupName))
 	{
 		auto itr = GetObjGroup(groupName);
 
 		itr->second.push_back(std::move(obj));
 	}
-	//‚È‚¯‚ê‚ÎV‚µ‚­ì‚é
+	//ãªã‘ã‚Œã°æ–°ã—ãä½œã‚‹
 	else
 	{
 		AddGroup(groupName, std::move(obj));
@@ -262,20 +262,20 @@ bool ObjectManager::GetSameObjName(IObject3D* obj, const std::string& name)
 //----------------------------------------------------------------------------------------
 std::vector<IObject3D*> ObjectManager::GetObjs(const std::string& groupName, const std::string& name)
 {
-	//”z—ñ‚Å•Ô‚·(ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O‚Å’T‚µ‚Ä)
+	//é…åˆ—ã§è¿”ã™(ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰ã§æ¢ã—ã¦)
 	return GetObjectInternal(groupName, [=](IObject3D* obj) {return GetSameObjName(obj, name); });
 }
 
 std::vector<IObject3D*> ObjectManager::GetObjs(const std::string& groupName, uint16_t attribute)
 {
-	//”z—ñ‚Å•Ô‚·(”»’è‘®«‚Å’T‚µ‚Ä)
+	//é…åˆ—ã§è¿”ã™(åˆ¤å®šå±æ€§ã§æ¢ã—ã¦)
 	return GetObjectInternal(groupName, [=](IObject3D* obj) {return GetSameAttribute(obj, attribute); });
 }
 
 std::vector<IObject3D*> ObjectManager::GetObjs(const std::string& groupName)
 {
-	//ƒOƒ‹[ƒv‘S‚Ä•Ô‚·
-	return GetObjectInternal(groupName, [=](IObject3D* obj) {return true; });
+	//ã‚°ãƒ«ãƒ¼ãƒ—å…¨ã¦è¿”ã™ã€‚è­¦å‘Šé¿ã‘ã‚‹ãŸã‚ã«å‚ç…§ã ã‘
+	return GetObjectInternal(groupName, [=](IObject3D* obj) { obj; return true; });
 }
 
 std::vector<IObject3D*> ObjectManager::GetObjs()
@@ -299,16 +299,16 @@ std::vector<IObject3D*> ObjectManager::GetObjectInternal(const std::string& grou
 {
 	std::vector<IObject3D*>rObjs = {};
 
-	//ƒOƒ‹[ƒv‚ªŒ©‚Â‚©‚ç‚È‚¯‚ê‚Î‰½‚à“ü‚Á‚Ä‚È‚¢”z—ñ•Ô‚·
+	//ã‚°ãƒ«ãƒ¼ãƒ—ãŒè¦‹ã¤ã‹ã‚‰ãªã‘ã‚Œã°ä½•ã‚‚å…¥ã£ã¦ãªã„é…åˆ—è¿”ã™
 	if (FindObjGroup(groupName))
 	{
-		//ƒOƒ‹[ƒv’T‚·
+		//ã‚°ãƒ«ãƒ¼ãƒ—æ¢ã™
 		auto& objects = GetObjGroup(groupName)->second;
 
 		for (std::vector<std::unique_ptr<IObject3D>>::iterator itr = objects.begin();
 			itr != objects.end(); itr++)
 		{
-			//ğŒƒNƒŠƒA‚·‚ê‚Î
+			//æ¡ä»¶ã‚¯ãƒªã‚¢ã™ã‚Œã°
 			bool is = isF(itr->get());
 			if (is)
 			{
@@ -327,7 +327,7 @@ void ObjectManager::ClearAllObj()
 	objsGroups_.clear();
 }
 
-//ƒOƒ‹[ƒv‚²‚Æ‚Éíœ
+//ã‚°ãƒ«ãƒ¼ãƒ—ã”ã¨ã«å‰Šé™¤
 void ObjectManager::ClearGroup(const std::string& groupName)
 {
 	if (FindObjGroup(groupName))

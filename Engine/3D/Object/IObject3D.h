@@ -5,84 +5,84 @@
 #include "ModelManager.h"
 
 
-//‰‰o—p‚Ìƒtƒ‰ƒO
+//æ¼”å‡ºç”¨ã®ãƒ•ãƒ©ã‚°
 struct EffectOConstBuffer
 {
-	//ƒtƒHƒO
+	//ãƒ•ã‚©ã‚°
 	uint32_t isFog = false;
-	//ƒgƒD[ƒ“
+	//ãƒˆã‚¥ãƒ¼ãƒ³
 	uint32_t isToon = false;
-	//ƒfƒBƒ]ƒ‹ƒu
+	//ãƒ‡ã‚£ã‚¾ãƒ«ãƒ–
 	uint32_t isDissolve = false;
-	//ƒfƒBƒ]ƒ‹ƒuŠ„‡
+	//ãƒ‡ã‚£ã‚¾ãƒ«ãƒ–å‰²åˆ
 	float dissolveT = 0;
 	//---
-	//ƒXƒyƒLƒ…ƒ‰ƒ}ƒbƒv
+	//ã‚¹ãƒšã‚­ãƒ¥ãƒ©ãƒãƒƒãƒ—
 	uint32_t isSpecularMap = false;
-	//ƒm[ƒ}ƒ‹ƒ}ƒbƒv
+	//ãƒãƒ¼ãƒãƒ«ãƒãƒƒãƒ—
 	uint32_t isNormalMap = false;
-	//ƒŠƒ€ƒ‰ƒCƒg
+	//ãƒªãƒ ãƒ©ã‚¤ãƒˆ
 	uint32_t isRimLight = false;
 	float pad1;
 	//---
-	//ƒŠƒ€‚ÌF
+	//ãƒªãƒ ã®è‰²
 	Vec3 rimColor = { 1.0f,1.0f,1.0f };
-	//‹^—ƒVƒ‹ƒGƒbƒg
+	//ç–‘ä¼¼ã‚·ãƒ«ã‚¨ãƒƒãƒˆ
 	uint32_t isSilhouette = false;
 	//---
-	//ƒVƒ‹ƒGƒbƒg‚ÌF
+	//ã‚·ãƒ«ã‚¨ãƒƒãƒˆã®è‰²
 	Vec3 silhouetteColor = { 1.0f,0,0 };
-	//ŠÔ
+	//æ™‚é–“
 	uint32_t time = 0;
 };
 
-//3DƒIƒuƒWƒFƒNƒg‚ÌeƒNƒ‰ƒX--------------------------------------------
+//3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è¦ªã‚¯ãƒ©ã‚¹--------------------------------------------
 class IObject3D : public IObject
 {
 private:
-	//‰‰o—pƒoƒbƒtƒ@
+	//æ¼”å‡ºç”¨ãƒãƒƒãƒ•ã‚¡
 	ComPtr <ID3D12Resource> effectFlagsBuff_;
 	EffectOConstBuffer* mapEffectFlagsBuff_;
 
 protected:
-// ’¸“_ƒŒƒCƒAƒEƒg
+// é ‚ç‚¹ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
 	static D3D12_INPUT_ELEMENT_DESC sInputLayoutM_[7];
 
 protected:
-	//ƒ‚ƒfƒ‹‚Ìƒ|ƒCƒ“ƒ^
+	//ãƒ¢ãƒ‡ãƒ«ã®ãƒã‚¤ãƒ³ã‚¿
 	IModel* model_ = nullptr;
 
 private:
-	//eqŠÖŒW‚ğŒ‹‚Ôƒ‚ƒfƒ‹‚Ìƒm[ƒh
+	//è¦ªå­é–¢ä¿‚ã‚’çµã¶ãƒ¢ãƒ‡ãƒ«ã®ãƒãƒ¼ãƒ‰
 	const Node* parentNode_ = nullptr;
 	ModelFBX* parentNodeModel_ = nullptr;
 
 protected:
-	//ƒfƒBƒ]ƒ‹ƒu‚Ì‰æ‘œƒnƒ“ƒhƒ‹
+	//ãƒ‡ã‚£ã‚¾ãƒ«ãƒ–ã®ç”»åƒãƒãƒ³ãƒ‰ãƒ«
 	uint64_t dissolveTextureHandle_ = NULL;
-	//ƒXƒyƒLƒ…ƒ‰ƒ}ƒbƒv‚Ì‰æ‘œ
+	//ã‚¹ãƒšã‚­ãƒ¥ãƒ©ãƒãƒƒãƒ—ã®ç”»åƒ
 	uint64_t specularMapTextureHandle_ = NULL;
-	//ƒm[ƒ}ƒ‹ƒ}ƒbƒv‚Ì‰æ‘œ
+	//ãƒãƒ¼ãƒãƒ«ãƒãƒƒãƒ—ã®ç”»åƒ
 	uint64_t normalMapTextureHandle_ = NULL;
-	//‰‰oƒtƒ‰ƒO
+	//æ¼”å‡ºãƒ•ãƒ©ã‚°
 	EffectOConstBuffer effectFlags_;
 
 protected:
-	//ƒƒbƒVƒ…‚ÌƒIƒtƒZƒbƒg
+	//ãƒ¡ãƒƒã‚·ãƒ¥ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 	Mesh::PolygonOffset meshOffsetData_;
 
 private:
-	//ƒ‰ƒCƒg
+	//ãƒ©ã‚¤ãƒˆ
 	static LightManager* sLightManager_;
 
 private:
-	//‰Šú‚Ì³–ÊƒxƒNƒgƒ‹
+	//åˆæœŸã®æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«
 	Vec3 frontVecTmp_ = { 0,0,-1.0f };
-	//³–ÊƒxƒNƒgƒ‹
+	//æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«
 	Vec3 frontVec_ = frontVecTmp_;
 
 
-public://ŠÖ”---------------------------------------------------------
+public://é–¢æ•°---------------------------------------------------------
 	virtual ~IObject3D() override;
 	IObject3D();
 
@@ -92,62 +92,62 @@ public:
 	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr, IModel* model = nullptr);
 
 public:
-	//XV
+	//æ›´æ–°
 	virtual void Update() override;
-	//•`‰æ
+	//æç”»
 	virtual void Draw()override;
 	//
 	void DrawModel(Camera* camera = nullptr, bool isWireFrame = false);
 
-	//‰‰oŒn‚ÌƒAƒbƒvƒf[ƒg
+	//æ¼”å‡ºç³»ã®ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ
 	void EffectUpdate();
 	//imgui
 	virtual void DrawImGui(std::function<void()>imguiF = NULL)override;
 
 protected:
-	//ƒ‚ƒfƒ‹•`‰æ‚Ì“à•”ˆ—
-	virtual void DrawModelInternal(int32_t pipelineNum) { ; }
+	//ãƒ¢ãƒ‡ãƒ«æç”»ã®å†…éƒ¨å‡¦ç†
+	virtual void DrawModelInternal(int32_t pipelineNum) { pipelineNum; }
 
 protected:
-	//s—ñƒ}ƒbƒsƒ“ƒO
+	//è¡Œåˆ—ãƒãƒƒãƒ”ãƒ³ã‚°
 	void MatMap(Camera* camera, IModel* model = nullptr);
 
-	//ƒ}ƒeƒŠƒAƒ‹Aƒ‰ƒCƒgAƒeƒNƒXƒ`ƒƒŒn‚ÌƒRƒ}ƒ“ƒh
+	//ãƒãƒ†ãƒªã‚¢ãƒ«ã€ãƒ©ã‚¤ãƒˆã€ãƒ†ã‚¯ã‚¹ãƒãƒ£ç³»ã®ã‚³ãƒãƒ³ãƒ‰
 	void SetMaterialLightMTex(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
 		uint64_t normalMapTex, bool setTex = true);
 
 public:
-	//ƒ‚ƒfƒ‹‚Ì•”ˆÊ‚ÆeqŠÖŒW‚ğ‚½‚¹‚é
+	//ãƒ¢ãƒ‡ãƒ«ã®éƒ¨ä½ã¨è¦ªå­é–¢ä¿‚ã‚’æŒãŸã›ã‚‹
 	void ParentFbxNode(IObject* obj, IModel* model, const std::string& nodeName);
-	//eƒm[ƒh‚ğ‰ğœ
+	//è¦ªãƒãƒ¼ãƒ‰ã‚’è§£é™¤
 	void ResetParentFbxNode();
 
 public:
-	//ƒfƒBƒ]ƒ‹ƒu‰æ‘œƒnƒ“ƒhƒ‹
+	//ãƒ‡ã‚£ã‚¾ãƒ«ãƒ–ç”»åƒãƒãƒ³ãƒ‰ãƒ«
 	void SetDissolveTexHandle(uint64_t dissolveTextureHandle) { dissolveTextureHandle_ = dissolveTextureHandle; }
-	//ƒfƒBƒ]ƒ‹ƒuŠ„‡
+	//ãƒ‡ã‚£ã‚¾ãƒ«ãƒ–å‰²åˆ
 	void SetDissolveT(float t) { effectFlags_.dissolveT = t; }
 	void SetisDissolve(bool isDissolve) { effectFlags_.isDissolve = isDissolve; }
 
-	//ƒXƒyƒLƒ…ƒ‰ƒ}ƒbƒv
+	//ã‚¹ãƒšã‚­ãƒ¥ãƒ©ãƒãƒƒãƒ—
 	void SetIsSpecularMap(bool isSpecularMap) { effectFlags_.isSpecularMap = isSpecularMap; }
 	void SetSpecularMapTexHandle(uint64_t specularMapTextureHandle) { specularMapTextureHandle_ = specularMapTextureHandle; }
 
-	//ƒm[ƒ}ƒ‹ƒ}ƒbƒv
+	//ãƒãƒ¼ãƒãƒ«ãƒãƒƒãƒ—
 	void SetIsNormalMap(bool isNormalMap) { effectFlags_.isNormalMap = isNormalMap; }
 	void SetNormalMapTexHandle(uint64_t normalMapTextureHandle) { normalMapTextureHandle_ = normalMapTextureHandle; }
 
-	//ƒVƒ‹ƒGƒbƒg
+	//ã‚·ãƒ«ã‚¨ãƒƒãƒˆ
 	void SetIsSilhouette(bool is) { effectFlags_.isSilhouette = is; }
 	void SetSilhouetteColor(const Vec3& color) { effectFlags_.silhouetteColor = color; }
 
 public:
-	//ƒ‚ƒfƒ‹‚Ìƒ|ƒCƒ“ƒ^
+	//ãƒ¢ãƒ‡ãƒ«ã®ãƒã‚¤ãƒ³ã‚¿
 	virtual void SetModel(IModel* model);
 	IModel* GetModel() { return model_; }
 
-	//³–ÊƒxƒNƒgƒ‹
-	//ƒIƒuƒWƒFƒNƒg‚ÌŠp“x‚Å‰ñ“]‚³‚¹‚½³–ÊƒxƒNƒgƒ‹‚ğƒQƒbƒg
+	//æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è§’åº¦ã§å›è»¢ã•ã›ãŸæ­£é¢ãƒ™ã‚¯ãƒˆãƒ«ã‚’ã‚²ãƒƒãƒˆ
 	const Vec3& GetFrontVec();
 	void CalcFrontVec();
 	const Vec3& GetFrontVecTmp() { return frontVecTmp_; }
@@ -155,12 +155,12 @@ public:
 	inline void SetFrontVec(const Vec3& vec) { frontVec_ = vec; }
 
 public:
-	//ƒƒbƒVƒ…‚ÌƒIƒtƒZƒbƒg—p
+	//ãƒ¡ãƒƒã‚·ãƒ¥ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆç”¨
 	void SetMeshPolygonOffsetData(const Mesh::PolygonOffset& offsetData) { meshOffsetData_ = offsetData; }
 
 public:
 	/// <summary>
-/// ƒ‰ƒCƒg‚ÌƒZƒbƒg
+/// ãƒ©ã‚¤ãƒˆã®ã‚»ãƒƒãƒˆ
 /// </summary>
 /// <param name="light"></param>
 	static void SetLight(LightManager* lightManager) { sLightManager_ = lightManager; }

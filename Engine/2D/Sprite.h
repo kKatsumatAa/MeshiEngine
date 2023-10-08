@@ -7,10 +7,10 @@
 
 class Sprite : public IObject
 {
-private://ƒGƒCƒŠƒAƒX
-	//Microsoft::WRL::‚ğÈ—ª
+private://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	//DirectX::‚ğÈ—ª
+	//DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
@@ -18,7 +18,7 @@ private://ƒGƒCƒŠƒAƒX
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
-	//—vC³
+	//è¦ä¿®æ­£
 	enum ROOTPARAM_NUM
 	{
 		COLOR,
@@ -41,7 +41,7 @@ protected:
 private:
 	//
 	static RootPipe spritePipelineSet_;
-	//ƒeƒNƒXƒ`ƒƒƒnƒ“ƒhƒ‹
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒ³ãƒ‰ãƒ«
 	uint64_t texHandle_ = NULL;
 
 private:
@@ -51,9 +51,9 @@ private:
 		{{100.0f,100.0f,0.0f},{1.0f,1.0f}},
 		{{100.0f,0.0f,0.0f},{1.0f,0.0f}}
 	};
-	//’¸“_ƒoƒbƒtƒ@
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	ComPtr<ID3D12Resource> vertBuff_;
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};
 
 public:
@@ -61,27 +61,27 @@ public:
 	Sprite();
 
 public:
-	//ƒXƒvƒ‰ƒCƒg‘S‘Ì‹¤’Ê‚Ì‰Šú‰»
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆå…¨ä½“å…±é€šã®åˆæœŸåŒ–
 	static void CommonInitialize();
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void Initialize(std::unique_ptr<WorldMat> worldMat = nullptr);
 
 public:
 	virtual void Update()override;
 	virtual void Draw()override;
 private:
-	//•`‰æƒRƒ}ƒ“ƒh‚È‚Ç
+	//æç”»ã‚³ãƒãƒ³ãƒ‰ãªã©
 	void SpriteDraw();
 
 private:
 	void DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 		 uint64_t textureHandle, const Vec2& ancorUV,
 		bool isReverseX, bool isReverseY, const Vec3& rotation,
-		ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
+		ConstBuffTransform* cbt);
 
 	void UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 		 uint64_t textureHandle, bool isPosLeftTop,
-		bool isReverseX, bool isReverseY, const Vec3& rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial);
+		bool isReverseX, bool isReverseY, const Vec3& rotation, ConstBuffTransform* cbt);
 
 public:
 	void DrawBoxSprite(Camera2D* camera
@@ -99,6 +99,3 @@ private:
 
 	void CalcAndSetMat(ConstBuffTransform* cbt, WorldMat& worldMat, Camera2D* camera);
 };
-
-//‹¤’Ê‚Ìˆ—
-void SpriteCommonBeginDraw(RootPipe* pipelineSet);

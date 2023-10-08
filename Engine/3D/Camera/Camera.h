@@ -3,111 +3,110 @@
 #include"ProjectionMat.h"
 #include"Shake.h"
 
-#include <DirectXMath.h>
 
 /// <summary>
-/// ƒJƒƒ‰Šî–{‹@”\
+/// ã‚«ãƒ¡ãƒ©åŸºæœ¬æ©Ÿèƒ½
 /// </summary>
 class Camera
 {
-protected: // ƒGƒCƒŠƒAƒX
-	// DirectX::‚ğÈ—ª
+protected: // ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	// DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-public: // ƒƒ“ƒoŠÖ”
+public: // ãƒ¡ãƒ³ãƒé–¢æ•°
 	/// <summary>
-	/// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	/// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	/// </summary>
-	/// <param name="window_width">‰æ–Ê•</param>
-	/// <param name="window_height">‰æ–Ê‚‚³</param>
+	/// <param name="window_width">ç”»é¢å¹…</param>
+	/// <param name="window_height">ç”»é¢é«˜ã•</param>
 	Camera();
 
 	/// <summary>
-	/// ƒfƒXƒgƒ‰ƒNƒ^
+	/// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	/// </summary>
 	virtual ~Camera() = default;
 
 	virtual void Initialize();
 
 	/// <summary>
-	/// –ˆƒtƒŒ[ƒ€XV
+	/// æ¯ãƒ•ãƒ¬ãƒ¼ãƒ æ›´æ–°
 	/// </summary>
 	virtual void Update();
 
 	/// <summary>
-	/// ƒrƒ…[s—ñ‚ğXV
+	/// ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—ã‚’æ›´æ–°
 	/// </summary>
 	void UpdateViewMatrix();
 
 	/// <summary>
-	/// Ë‰es—ñ‚ğXV
+	/// å°„å½±è¡Œåˆ—ã‚’æ›´æ–°
 	/// </summary>
 	void UpdateProjectionMatrix();
 
 	/// <summary>
-	/// ƒrƒ‹ƒ{[ƒhs—ñ‚Ìæ“¾
+	/// ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰è¡Œåˆ—ã®å–å¾—
 	/// </summary>
-	/// <returns>ƒrƒ‹ƒ{[ƒhs—ñ</returns>
+	/// <returns>ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰è¡Œåˆ—</returns>
 	inline const XMMATRIX& GetBillboardMatrix() {
 		return matBillboard_;
 	}
 
 	/// <summary>
-	/// ‹“_À•W‚Ìæ“¾
+	/// è¦–ç‚¹åº§æ¨™ã®å–å¾—
 	/// </summary>
-	/// <returns>À•W</returns>
+	/// <returns>åº§æ¨™</returns>
 	inline const Vec3& GetEye() const{
 		return viewMat_.eye_;
 	}
 
 	/// <summary>
-	/// ‹“_À•W‚Ìİ’è
+	/// è¦–ç‚¹åº§æ¨™ã®è¨­å®š
 	/// </summary>
-	/// <param name="eye">À•W</param>
+	/// <param name="eye">åº§æ¨™</param>
 	inline void SetEye(const Vec3& eye) {
 		viewMat_.eye_ = eye; viewDirty_ = true;
 	}
 
 	/// <summary>
-	/// ’‹“_À•W‚Ìæ“¾
+	/// æ³¨è¦–ç‚¹åº§æ¨™ã®å–å¾—
 	/// </summary>
-	/// <returns>À•W</returns>
+	/// <returns>åº§æ¨™</returns>
 	inline const Vec3& GetTarget() const {
 		return viewMat_.target_;
 	}
 
 	/// <summary>
-	/// ’‹“_À•W‚Ìİ’è
+	/// æ³¨è¦–ç‚¹åº§æ¨™ã®è¨­å®š
 	/// </summary>
-	/// <param name="target">À•W</param>
+	/// <param name="target">åº§æ¨™</param>
 	inline void SetTarget(const Vec3& target) {
 		viewMat_.target_ = target; viewDirty_ = true;
 	}
 
 	/// <summary>
-	/// ã•ûŒüƒxƒNƒgƒ‹‚Ìæ“¾
+	/// ä¸Šæ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã®å–å¾—
 	/// </summary>
-	/// <returns>ã•ûŒüƒxƒNƒgƒ‹</returns>
+	/// <returns>ä¸Šæ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«</returns>
 	inline const Vec3& GetUp() const {
 		return viewMat_.up_;
 	}
 
 	/// <summary>
-	/// ã•ûŒüƒxƒNƒgƒ‹‚Ìİ’è
+	/// ä¸Šæ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã®è¨­å®š
 	/// </summary>
-	/// <param name="up">ã•ûŒüƒxƒNƒgƒ‹</param>
+	/// <param name="up">ä¸Šæ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«</param>
 	inline void SetUp(const Vec3& up) {
 		viewMat_.up_ = up; viewDirty_ = true;
 	}
 
 	/// <summary>
-	/// ƒxƒNƒgƒ‹‚É‚æ‚é‹“_ˆÚ“®
+	/// ãƒ™ã‚¯ãƒˆãƒ«ã«ã‚ˆã‚‹è¦–ç‚¹ç§»å‹•
 	/// </summary>
-	/// <param name="move">ˆÚ“®—Ê</param>
+	/// <param name="move">ç§»å‹•é‡</param>
 	void MoveEyeVector(const Vec3& move);
 	void MoveEyeVector(const XMVECTOR& move);
 
@@ -115,24 +114,24 @@ public: // ƒƒ“ƒoŠÖ”
 	void CameraShake(int32_t time, float length);
 
 	/// <summary>
-	/// ƒxƒNƒgƒ‹‚É‚æ‚éˆÚ“®
+	/// ãƒ™ã‚¯ãƒˆãƒ«ã«ã‚ˆã‚‹ç§»å‹•
 	/// </summary>
-	/// <param name="move">ˆÚ“®—Ê</param>
+	/// <param name="move">ç§»å‹•é‡</param>
 	void MoveVector(const Vec3& move);
 	void MoveVector(const XMVECTOR& move);
 
-protected: // ƒƒ“ƒo•Ï”
+protected: // ãƒ¡ãƒ³ãƒå¤‰æ•°
 	Shake shake_;
 
-	// ƒrƒ‹ƒ{[ƒhs—ñ
+	// ãƒ“ãƒ«ãƒœãƒ¼ãƒ‰è¡Œåˆ—
 	XMMATRIX matBillboard_ = DirectX::XMMatrixIdentity();
-	// Y²‰ñ‚èƒrƒ‹ƒ{[ƒhs—ñ
+	// Yè»¸å›ã‚Šãƒ“ãƒ«ãƒœãƒ¼ãƒ‰è¡Œåˆ—
 	XMMATRIX matBillboardY_ = DirectX::XMMatrixIdentity();
-	//‡¬
+	//åˆæˆ
 	XMMATRIX matViewProjection_ = DirectX::XMMatrixIdentity();
-	// ƒrƒ…[s—ñƒ_[ƒeƒBƒtƒ‰ƒO
+	// ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—ãƒ€ãƒ¼ãƒ†ã‚£ãƒ•ãƒ©ã‚°
 	bool viewDirty_ = false;
-	// Ë‰es—ñƒ_[ƒeƒBƒtƒ‰ƒO
+	// å°„å½±è¡Œåˆ—ãƒ€ãƒ¼ãƒ†ã‚£ãƒ•ãƒ©ã‚°
 	bool projectionDirty_ = false;
 
 private:

@@ -8,34 +8,34 @@
 class Character : public ObjectFBX
 {
 protected:
-	//•Ší
+	//æ­¦å™¨
 	Weapon* weapon_ = nullptr;
 	//hp
 	int8_t hp_ = 0;
 
-	//’n–Ê‚Æ“–‚½‚Á‚Ä‚¢‚é‚©
+	//åœ°é¢ã¨å½“ãŸã£ã¦ã„ã‚‹ã‹
 	bool isOnGround_ = false;
 
-	//‰ºŒü‚«‰Á‘¬“x
+	//ä¸‹å‘ãåŠ é€Ÿåº¦
 	const float FALL_ACC_ = -0.15f;
 	const float FALL_V_Y_MIN_ = -3.5f;
 	Vec3 fallVec_;
 
-	const float JUMP_V_Y_FIST_ = 1.7f;//ƒWƒƒƒ“ƒvãŒü‚«‰‘¬
+	const float JUMP_V_Y_FIST_ = 1.7f;//ã‚¸ãƒ£ãƒ³ãƒ—æ™‚ä¸Šå‘ãåˆé€Ÿ
 
-	//•Ç‚Æ”F¯‚·‚éŠp“x
+	//å£ã¨èªè­˜ã™ã‚‹è§’åº¦
 	static const float IS_WALL_ROT_;
 
-	//ƒ_ƒ[ƒWó‚¯‚é‚©‚Ç‚¤‚©(ƒfƒoƒbƒO—p)
+	//ãƒ€ãƒ¡ãƒ¼ã‚¸å—ã‘ã‚‹ã‹ã©ã†ã‹(ãƒ‡ãƒãƒƒã‚°ç”¨)
 	bool isValidDamage_ = true;
 
 protected:
 	/// <summary>
-	/// ƒ_ƒ[ƒWó‚¯‚éˆ—
+	/// ãƒ€ãƒ¡ãƒ¼ã‚¸å—ã‘ã‚‹å‡¦ç†
 	/// </summary>
-	/// <param name="damage">ƒ_ƒ[ƒW—Ê</param>
-	/// <param name="deadFunc">€‚ñ‚¾‚Æ‚«‚ÉŒÄ‚Ño‚·ˆ—</param>
-	virtual void Damaged(int32_t damage, std::function<void()> deadFunc);
+	/// <param name="damage">ãƒ€ãƒ¡ãƒ¼ã‚¸é‡</param>
+	/// <param name="deadFunc">æ­»ã‚“ã ã¨ãã«å‘¼ã³å‡ºã™å‡¦ç†</param>
+	virtual void Damaged(int8_t damage, std::function<void()> deadFunc);
 
 public:
 	virtual ~Character() { ; }
@@ -46,23 +46,23 @@ public:
 	void DrawImGui(std::function<void()>imguiF = NULL)override;
 
 public:
-	//•Ší
+	//æ­¦å™¨
 	Weapon* GetWeapon() { return weapon_; }
 	void SetWeapon(Weapon* weapon) { weapon_ = weapon; }
 
-	//•ŠíE‚¤
+	//æ­¦å™¨æ‹¾ã†
 	virtual void PickUpWeapon(Weapon* weapon, Vec3* localPos = nullptr);
-	//•Ší—‚Æ‚·A“Š‚°‚é
+	//æ­¦å™¨è½ã¨ã™ã€æŠ•ã’ã‚‹
 	virtual void FallWeapon(const Vec3& directionVec, Vec3* localPos = nullptr);
 
-	//’n–Ê‚Æ•Ç‚Æ‚Ì”»’è
+	//åœ°é¢ã¨å£ã¨ã®åˆ¤å®š
 	virtual void OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool isJump = false, std::function<void()>f = nullptr);
 
-	//ƒNƒGƒŠƒR[ƒ‹ƒoƒbƒN
+	//ã‚¯ã‚¨ãƒªã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
 	virtual void QueryCallBackUpdate();
 
 	void SetIsValid(bool isValid)override;
 
-	//‚İ‚Ä‚¢‚é•ûŒü‚É‰½‚©‚ ‚Á‚½‚ç
+	//ã¿ã¦ã„ã‚‹æ–¹å‘ã«ä½•ã‹ã‚ã£ãŸã‚‰
 	bool CheckRayOfEyeHit(const Vec3& dir, float length, uint16_t attr, RaycastHit* info = nullptr);
 };

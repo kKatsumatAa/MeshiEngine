@@ -2,20 +2,20 @@
 
 void RectangleCollider::Update()
 {
-	// ƒ[ƒ‹ƒhs—ñ‚©‚çÀ•W‚ð’Šo
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã‹ã‚‰åº§æ¨™ã‚’æŠ½å‡º
 	const M4& matWorld = object_->GetMatWorld();
 
-	// ‹éŒ`‚Ìƒƒ“ƒo•Ï”‚ðXV
+	// çŸ©å½¢ã®ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’æ›´æ–°
 	Vec2 center = {
 		(float)matWorld.m_[3][0],
 	(float)matWorld.m_[3][1],
 	};
 
-	//‰ñ“]—p‚Ìs—ñ
+	//å›žè»¢ç”¨ã®è¡Œåˆ—
 	WorldMat rotWM;
 	rotWM.rot_.z = object_->GetRot().z;
 	rotWM.CalcRotMat();
-	//ƒxƒNƒgƒ‹‚ð‰ñ“]‚³‚¹‚Ä’¸“_‚Æ‚·‚é
+	//ãƒ™ã‚¯ãƒˆãƒ«ã‚’å›žè»¢ã•ã›ã¦é ‚ç‚¹ã¨ã™ã‚‹
 	Vec2 scale = { object_->GetScale().x,object_->GetScale().y };
 
 	Vec3 leftUp = GetVec3xM4({ -scale.x,-scale.y,0 }, rotWM.GetRotMat(), 0);
@@ -23,11 +23,11 @@ void RectangleCollider::Update()
 	Vec3 rightUp = GetVec3xM4({ scale.x,-scale.y,0 }, rotWM.GetRotMat(), 0);
 	Vec3 rightDown = GetVec3xM4({ scale.x,scale.y,0 }, rotWM.GetRotMat(), 0);
 
-	//’†SÀ•W‚É‘«‚µ‚Ä
-	MyRectangle::leftUp = center + Vec2(leftUp.x, leftUp.y);
-	MyRectangle::leftDown = center + Vec2(leftDown.x, leftDown.y);
-	MyRectangle::rightUp = center + Vec2(rightUp.x, rightUp.y);
-	MyRectangle::rightDown = center + Vec2(rightDown.x, rightDown.y);
+	//ä¸­å¿ƒåº§æ¨™ã«è¶³ã—ã¦
+	MyRectangle::iLeftUp = center + Vec2(leftUp.x, leftUp.y);
+	MyRectangle::iLeftDown = center + Vec2(leftDown.x, leftDown.y);
+	MyRectangle::iRightUp = center + Vec2(rightUp.x, rightUp.y);
+	MyRectangle::iRightDown = center + Vec2(rightDown.x, rightDown.y);
 };
 
 

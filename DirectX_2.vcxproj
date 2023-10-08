@@ -65,7 +65,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\LevelLoader;$(ProjectDir)Engine\Base\Frame</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\LevelLoader;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/source-charset:utf-8 /execution-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -89,7 +89,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\LevelLoader;$(ProjectDir)Engine\Base\Frame</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\LevelLoader;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/source-charset:utf-8 /execution-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -175,6 +175,12 @@
     <ClCompile Include="Engine\Base\Matrix\WorldMat.cpp" />
     <ClCompile Include="Engine\Base\RootPipe.cpp" />
     <ClCompile Include="Engine\Base\WindowsApp.cpp" />
+    <ClCompile Include="Engine\Collision\2D\CircleCollider.cpp" />
+    <ClCompile Include="Engine\Collision\2D\RectangleCollider.cpp" />
+    <ClCompile Include="Engine\Collision\3D\MeshCollider.cpp" />
+    <ClCompile Include="Engine\Collision\3D\PlaneCollider.cpp" />
+    <ClCompile Include="Engine\Collision\3D\SphereCollider.cpp" />
+    <ClCompile Include="Engine\Collision\3D\TriangleCollider.cpp" />
     <ClCompile Include="Engine\Collision\Collision.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
     </ClCompile>
@@ -182,10 +188,6 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
     </ClCompile>
     <ClCompile Include="Engine\Collision\CollisionPrimitive.cpp" />
-    <ClCompile Include="Engine\Collision\MeshCollider.cpp" />
-    <ClCompile Include="Engine\Collision\PlaneCollider.cpp" />
-    <ClCompile Include="Engine\Collision\SphereCollider.cpp" />
-    <ClCompile Include="Engine\Collision\TriangleCollider.cpp" />
     <ClCompile Include="Engine\Input\Input.cpp" />
     <ClCompile Include="Engine\Input\KeyboardInput.cpp" />
     <ClCompile Include="Engine\Input\MouseInput.cpp" />
@@ -282,6 +284,13 @@
     <ClInclude Include="Engine\Base\Matrix\WorldMat.h" />
     <ClInclude Include="Engine\Base\RootPipe.h" />
     <ClInclude Include="Engine\Base\WindowsApp.h" />
+    <ClInclude Include="Engine\Collision\2D\CircleCollider.h" />
+    <ClInclude Include="Engine\Collision\2D\RectangleCollider.h" />
+    <ClInclude Include="Engine\Collision\3D\MeshCollider.h" />
+    <ClInclude Include="Engine\Collision\3D\PlaneCollider.h" />
+    <ClInclude Include="Engine\Collision\3D\RaycastHit.h" />
+    <ClInclude Include="Engine\Collision\3D\SphereCollider.h" />
+    <ClInclude Include="Engine\Collision\3D\TriangleCollider.h" />
     <ClInclude Include="Engine\Collision\BaseCollider.h" />
     <ClInclude Include="Engine\Collision\Collision.h" />
     <ClInclude Include="Engine\Collision\CollisionAttribute.h" />
@@ -289,12 +298,7 @@
     <ClInclude Include="Engine\Collision\CollisionManager.h" />
     <ClInclude Include="Engine\Collision\CollisionPrimitive.h" />
     <ClInclude Include="Engine\Collision\CollisionTypes.h" />
-    <ClInclude Include="Engine\Collision\MeshCollider.h" />
-    <ClInclude Include="Engine\Collision\PlaneCollider.h" />
     <ClInclude Include="Engine\Collision\QueryCallback.h" />
-    <ClInclude Include="Engine\Collision\RaycastHit.h" />
-    <ClInclude Include="Engine\Collision\SphereCollider.h" />
-    <ClInclude Include="Engine\Collision\TriangleCollider.h" />
     <ClInclude Include="Engine\Input\Input.h" />
     <ClInclude Include="Engine\Input\KeyboardInput.h" />
     <ClInclude Include="Engine\Input\MouseInput.h" />

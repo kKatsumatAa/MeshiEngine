@@ -130,13 +130,13 @@ Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t)
 
 Vec3 SplinePosition(const std::vector<Vec3>& points, int32_t startIndex, float t)
 {
-	//•âŠ®‚·‚×‚«“_‚Ì”
+	//è£œå®Œã™ã¹ãç‚¹ã®æ•°
 	size_t n = points.size() - 2;
 
 	if (startIndex > n)return points[n];
 	if (startIndex < 1)return points[1];
 
-	//p0~p3‚Ì§Œä“_‚ğæ“¾@¦p1~p2‚ğ•âŠÔ
+	//p0~p3ã®åˆ¶å¾¡ç‚¹ã‚’å–å¾—ã€€â€»p1~p2ã‚’è£œé–“
 	Vec3 p0 = points[startIndex - 1];
 	Vec3 p1 = points[startIndex];
 	Vec3 p2 = points[startIndex + 1];
@@ -199,7 +199,7 @@ bool CollisionCircleCircle(const Vec3& pos1, float r1, const Vec3& pos2, float r
 
 bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, float r, const Vec3& pos, float r2)
 {
-	//ƒŒƒC‚Æ‚Ì“–‚½‚è”»’è
+	//ãƒ¬ã‚¤ã¨ã®å½“ãŸã‚Šåˆ¤å®š
 	Vec3 rayLength = ev - sv;
 	rayLength.Normalized();
 	Vec3 objLength = pos - sv;
@@ -220,21 +220,17 @@ bool CollisionBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t r1, in
 {
 	return x1 - r1 < x2 + r2 && x2 - r2 < x1 + r1 &&
 		y1 - r1 < y2 + r2 && y2 - r2 < y1 + r1;
-
-	return false;
 }
 
 bool CollisionBox(Vec2 leftUp1, Vec2 rightBottom1, Vec2 leftUp2, Vec2 rightBottom2)
 {
 	return leftUp1.x < rightBottom2.x && leftUp2.x < rightBottom1.x &&
 		leftUp1.y < rightBottom2.y && leftUp2.y < rightBottom1.y;
-
-	return false;
 }
 
 Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 {
-	//view,projection,viewports—ñ‚ğŠ|‚¯‚é
+	//view,projection,viewportè¡Œåˆ—ã‚’æ›ã‘ã‚‹
 	XMMATRIX viewPort = {
 		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,0,0,0,
 		0,-WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f,0,0,
@@ -268,29 +264,29 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 		,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f + WindowsApp::GetInstance().viewport_.TopLeftY,0,1
 	};
 
-	//‡¬s—ñ
+	//åˆæˆè¡Œåˆ—
 	XMMATRIX mVPVp = view * projection * viewPort;
 	M4 m4;
 
-	//‹ts—ñŒvZ
+	//é€†è¡Œåˆ—è¨ˆç®—
 	XMMATRIX mInverseVPVp = XMMatrixInverse(nullptr, mVPVp);
 
 	m4.PutInXMMATRIX(mInverseVPVp);
 
-	//ƒXƒNƒŠ[ƒ“À•W
+	//ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™
 	Vec3 posNear = { v.x,v.y,0 };
 	Vec3 posFar = { v.x,v.y,1 };
 
-	//ƒXƒNƒŠ[ƒ“À•W->ƒ[ƒ‹ƒhÀ•W
+	//ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™->ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™
 	Vec3xM4andDivisionW(posNear, m4, 1);
 	Vec3xM4andDivisionW(posFar, m4, 1);
 
-	//near‚©‚çfar‚Ö‚Ìü•ª
+	//nearã‹ã‚‰farã¸ã®ç·šåˆ†
 	Vec3 nearFarDirection = posFar - posNear;
 	nearFarDirection.Normalized();
 
-	//ƒJƒƒ‰‚©‚çÆ€ƒIƒuƒWƒFƒNƒg‚Ì‹——£
-	const float DISTANCE_TEST_OBJECT = distance;//‰¼
+	//ã‚«ãƒ¡ãƒ©ã‹ã‚‰ç…§æº–ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è·é›¢
+	const float DISTANCE_TEST_OBJECT = distance;//ä»®
 
 	Vec3 pos = posNear + nearFarDirection * DISTANCE_TEST_OBJECT;
 
@@ -308,20 +304,20 @@ void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, 
 		,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f + WindowsApp::GetInstance().viewport_.TopLeftY,0,1
 	};
 
-	//‡¬s—ñ
+	//åˆæˆè¡Œåˆ—
 	XMMATRIX mVPVp = view * projection * viewPort;
 	M4 m4;
 
-	//‹ts—ñŒvZ
+	//é€†è¡Œåˆ—è¨ˆç®—
 	XMMATRIX mInverseVPVp = XMMatrixInverse(nullptr, mVPVp);
 
 	m4.PutInXMMATRIX(mInverseVPVp);
 
-	//ƒXƒNƒŠ[ƒ“À•W
+	//ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™
 	Vec3 posNear = { pos.x,pos.y,0 };
 	Vec3 posFar = { pos.x,pos.y,1 };
 
-	//ƒXƒNƒŠ[ƒ“À•W->ƒ[ƒ‹ƒhÀ•W
+	//ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™->ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™
 	Vec3xM4andDivisionW(posNear, m4, 1);
 	Vec3xM4andDivisionW(posFar, m4, 1);
 
@@ -359,12 +355,12 @@ void ConstWCharTToChar(const wchar_t* wString, char(&string)[128])
 
 std::string MySubstr(const std::string& str, char findChar)
 {
-	// ƒtƒ‹ƒpƒX‚©‚çƒtƒ@ƒCƒ‹–¼‚ğæ‚èo‚·
+	// ãƒ•ãƒ«ãƒ‘ã‚¹ã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å–ã‚Šå‡ºã™
 	size_t pos1;
-	//•¶š—ñ‚ÌˆÊ’u‚ğæ“¾‚µAŒ©‚Â‚©‚ê‚Î
+	//æ–‡å­—åˆ—ã®ä½ç½®ã‚’å–å¾—ã—ã€è¦‹ã¤ã‹ã‚Œã°
 	pos1 = str.rfind(findChar);
 	if (pos1 != std::string::npos) {
-		//‚»‚ÌˆÊ’u‚Ìˆê‚ÂŒã‚ë‚©‚ç‚»‚ÌˆÊ’u‚©‚ç‚ÌƒTƒCƒY(-1)•ªæ“¾Hi—]•ª‚È•¶š—ñ‚ğ”²‚¢‚Ä‚éj
+		//ãã®ä½ç½®ã®ä¸€ã¤å¾Œã‚ã‹ã‚‰ãã®ä½ç½®ã‹ã‚‰ã®ã‚µã‚¤ã‚º(-1)åˆ†å–å¾—ï¼Ÿï¼ˆä½™åˆ†ãªæ–‡å­—åˆ—ã‚’æŠœã„ã¦ã‚‹ï¼‰
 		return str.substr(pos1 + 1, str.size() - pos1 - 1);
 	}
 
@@ -373,16 +369,16 @@ std::string MySubstr(const std::string& str, char findChar)
 
 std::string ExtractFileName(const std::string& path)
 {
-	//‹æØ‚è•¶š‚ªo‚Ä‚­‚éˆê”ÔÅŒã‚Ìˆê‚ÂŒã‚ë‚©‚ç‚Ì•¶š—ñ‚ğ•Ô‚·iResources'/'[***.png]‚İ‚½‚¢‚Èj
+	//åŒºåˆ‡ã‚Šæ–‡å­—ãŒå‡ºã¦ãã‚‹ä¸€ç•ªæœ€å¾Œã®ä¸€ã¤å¾Œã‚ã‹ã‚‰ã®æ–‡å­—åˆ—ã‚’è¿”ã™ï¼ˆResources'/'[***.png]ã¿ãŸã„ãªï¼‰
 
 	size_t pos1;
-	//‹æØ‚è•¶š '\\'‚ªo‚Ä‚­‚éˆê”ÔÅŒã‚Ì•”•ª‚ğŒŸõ
+	//åŒºåˆ‡ã‚Šæ–‡å­— '\\'ãŒå‡ºã¦ãã‚‹ä¸€ç•ªæœ€å¾Œã®éƒ¨åˆ†ã‚’æ¤œç´¢
 	pos1 = path.rfind('\\');
 	if (pos1 != std::string::npos)
 	{
 		return path.substr(pos1 + 1, path.size() - pos1 - 1);
 	}
-	//‹æØ‚è•¶š '/'‚ªo‚Ä‚­‚éˆê”ÔÅŒã‚Ì•”•ª‚ğŒŸõ
+	//åŒºåˆ‡ã‚Šæ–‡å­— '/'ãŒå‡ºã¦ãã‚‹ä¸€ç•ªæœ€å¾Œã®éƒ¨åˆ†ã‚’æ¤œç´¢
 	pos1 = path.rfind('/');
 	if (pos1 != std::string::npos)
 	{
@@ -490,12 +486,12 @@ Vec3 GetRotFromMat(M4 m)
 
 	Vec3 ansRot = {};
 
-	if (abs(m.m_[2][1] - 1.0) < threshold) { // R(2,1) = sin(x) = 1‚Ì
+	if (abs(m.m_[2][1] - 1.0) < threshold) { // R(2,1) = sin(x) = 1ã®æ™‚
 		ansRot.x = PI / 2;
 		ansRot.y = 0;
 		ansRot.z = (float)atan2(m.m_[1][0], m.m_[0][0]);
 	}
-	else if (abs(m.m_[2][1] + 1.0) < threshold) { // R(2,1) = sin(x) = -1‚Ì
+	else if (abs(m.m_[2][1] + 1.0) < threshold) { // R(2,1) = sin(x) = -1ã®æ™‚
 		ansRot.x = -PI / 2;
 		ansRot.y = 0;
 		ansRot.z = (float)atan2(m.m_[1][0], m.m_[0][0]);
@@ -537,20 +533,20 @@ bool GetFileNames(std::string folderPath, std::vector<std::string>& file_names)
 	ConstCharToWcharT(searchName.c_str(), serchNameWC);
 	LPCWSTR serchNameW = serchNameWC;
 
-	hFind = FindFirstFile(serchNameWC, &win32fd);
+	hFind = FindFirstFile(serchNameW, &win32fd);
 
 	if (hFind == INVALID_HANDLE_VALUE) {
 		throw std::runtime_error("file not found");
 		return false;
 	}
 
-	/* w’è‚ÌƒfƒBƒŒƒNƒgƒŠˆÈ‰º‚Ìƒtƒ@ƒCƒ‹–¼‚ğƒtƒ@ƒCƒ‹‚ª‚È‚­‚È‚é‚Ü‚Åæ“¾‚·‚é */
+	/* æŒ‡å®šã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªä»¥ä¸‹ã®ãƒ•ã‚¡ã‚¤ãƒ«åã‚’ãƒ•ã‚¡ã‚¤ãƒ«ãŒãªããªã‚‹ã¾ã§å–å¾—ã™ã‚‹ */
 	do {
 		if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-			/* ƒfƒBƒŒƒNƒgƒŠ‚Ìê‡‚Í‰½‚à‚µ‚È‚¢ */
+			/* ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®å ´åˆã¯ä½•ã‚‚ã—ãªã„ */
 		}
 		else {
-			/* ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚Á‚½‚çVector”z—ñ‚É•Û‘¶‚·‚é */
+			/* ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã£ãŸã‚‰Vectoré…åˆ—ã«ä¿å­˜ã™ã‚‹ */
 			char fileNameC[128];
 			ConstWCharTToChar(win32fd.cFileName, fileNameC);
 			std::string fileNameStr = fileNameC;

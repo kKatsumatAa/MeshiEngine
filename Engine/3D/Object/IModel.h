@@ -1,8 +1,6 @@
 #pragma once
 #include <string>
-#include <DirectXMath.h>
 #include <vector>
-#include <DirectXTex.h>
 #include <Windows.h>
 #include <wrl.h>
 #include <d3d12.h>
@@ -15,10 +13,10 @@
 
 class IModel
 {
-protected:// ƒGƒCƒŠƒAƒX
-	// Microsoft::WRL::‚ğÈ—ª
+protected:// ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	// Microsoft::WRL::ã‚’çœç•¥
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	// DirectX::‚ğÈ—ª
+	// DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
@@ -28,25 +26,25 @@ protected:// ƒGƒCƒŠƒAƒX
 	using string = std::string;
 	template <class T> using vector = std::vector<T>;
 
-public://’è”
-	//QÆæ‚ÌƒpƒX
+public://å®šæ•°
+	//å‚ç…§å…ˆã®ãƒ‘ã‚¹
 	static const std::string S_BASE_DIRECTORY_;
 
 
 protected:
-	// –¼‘O
+	// åå‰
 	std::string name_;
-	// ƒƒbƒVƒ…ƒRƒ“ƒeƒi
+	// ãƒ¡ãƒƒã‚·ãƒ¥ã‚³ãƒ³ãƒ†ãƒŠ
 	std::vector<std::unique_ptr<Mesh>> meshes_;
-	// ƒ}ƒeƒŠƒAƒ‹ƒRƒ“ƒeƒi
+	// ãƒãƒ†ãƒªã‚¢ãƒ«ã‚³ãƒ³ãƒ†ãƒŠ
 	std::unordered_map<std::string, std::unique_ptr<Material>> materials_;
-	// ƒfƒtƒHƒ‹ƒgƒ}ƒeƒŠƒAƒ‹
+	// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒãƒ†ãƒªã‚¢ãƒ«
 	std::unique_ptr<Material> defaultMaterial_;
 
-	//fbx‚©
+	//fbxã‹
 	bool isFbx_ = false;
 
-	//ƒXƒP[ƒ‹‚Ì”{—¦(”»’è‚È‚Ç‚É‚Í‰e‹¿‚µ‚È‚¢)
+	//ã‚¹ã‚±ãƒ¼ãƒ«ã®å€ç‡(åˆ¤å®šãªã©ã«ã¯å½±éŸ¿ã—ãªã„)
 	float scaleExtend_ = 1.0f;
 
 	Vec3 materialExtend_ = { 1.0f,1.0f,1.0f };
@@ -60,25 +58,25 @@ protected:
 	virtual void LoadTexturesInternal(const std::string& directoryPath);
 
 	/// <summary>
-	/// ‰Šú‰»
+	/// åˆæœŸåŒ–
 	/// </summary>
 	virtual void Initialize();
 
 public:
 	/// <summary>
-	/// ƒ}ƒeƒŠƒAƒ‹“o˜^
+	/// ãƒãƒ†ãƒªã‚¢ãƒ«ç™»éŒ²
 	/// </summary>
 	void AddMaterial(std::unique_ptr<Material> material);
 
 	virtual void LoadTextures() = 0;
 
-public: // ƒƒ“ƒoŠÖ”
+public: // ãƒ¡ãƒ³ãƒé–¢æ•°
 	static void StaticInitialize();
 
 	/// <summary>
-	/// •`‰æ
+	/// æç”»
 	/// </summary>
-	/// <param name="cmdList">–½—ß”­sæƒRƒ}ƒ“ƒhƒŠƒXƒg</param>
+	/// <param name="cmdList">å‘½ä»¤ç™ºè¡Œå…ˆã‚³ãƒãƒ³ãƒ‰ãƒªã‚¹ãƒˆ</param>
 	virtual void Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
 		, const ConstBuffTransform& cbt);
 
@@ -86,18 +84,18 @@ public: // ƒƒ“ƒoŠÖ”
 
 public:
 	/// <summary>
-	/// ƒƒbƒVƒ…ƒRƒ“ƒeƒi‚ğæ“¾
+	/// ãƒ¡ãƒƒã‚·ãƒ¥ã‚³ãƒ³ãƒ†ãƒŠã‚’å–å¾—
 	/// </summary>
 	/// <returns></returns>
 	inline const std::vector<std::unique_ptr<Mesh>>& GetMeshes() { return meshes_; }
 
-	//fbx‚©
+	//fbxã‹
 	bool GetIsFbx() { return isFbx_; }
 
-	//ƒXƒP[ƒ‹‚Ì”{—¦
+	//ã‚¹ã‚±ãƒ¼ãƒ«ã®å€ç‡
 	float GetScaleExtend()const { return scaleExtend_; }
 	Vec3 GetMaterialExtend() { return materialExtend_; }
 	void SetMaterialExtend(const Vec3& materialExtend) { materialExtend_ = materialExtend; }
-	//ƒ|ƒŠƒSƒ“‚ÌÀ•W‚É‰ÁZ‚·‚éÀ•W‚ğŒvZ‚·‚é‚½‚ß‚Ìî•ñ‚ğƒZƒbƒg
+	//ãƒãƒªã‚´ãƒ³ã®åº§æ¨™ã«åŠ ç®—ã™ã‚‹åº§æ¨™ã‚’è¨ˆç®—ã™ã‚‹ãŸã‚ã®æƒ…å ±ã‚’ã‚»ãƒƒãƒˆ
 	void SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData);
 };

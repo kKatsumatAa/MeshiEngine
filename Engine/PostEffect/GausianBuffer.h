@@ -3,8 +3,6 @@
 #include <vector>
 #include <string>
 #include "WindowsApp.h"
-#include <DirectXMath.h>
-#include <DirectXTex.h>
 #include "KeyboardInput.h"
 #include <d3dcompiler.h>
 #include"Sound.h"
@@ -29,6 +27,6 @@ public:
 };
 
 
-//ƒKƒEƒVƒAƒ“‚Ú‚©‚µ
+//ã‚¬ã‚¦ã‚·ã‚¢ãƒ³ã¼ã‹ã—
 std::vector<float> GetGaussianWeights(int32_t count, float s);
 

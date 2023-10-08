@@ -39,18 +39,18 @@ void TutorialState::CommonUpdate()
 		isAchievement_ = true;
 	}
 
-	//Å‰‚Ì‰‰o
+	//æœ€åˆã®æ¼”å‡º
 	if (!isAchievement_)
 	{
 		BeginingUpdate(BEGINING_TIMER_MAX_);
 	}
-	//ğŒ’B¬Œã‚Ì‰‰o
+	//æ¡ä»¶é”æˆå¾Œã®æ¼”å‡º
 	else if (isAchievement_ && beginingTimer_ >= BEGINING_TIMER_MAX_)
 	{
-		//§ŒÀŠÔI‚í‚Á‚½‚ç
+		//åˆ¶é™æ™‚é–“çµ‚ã‚ã£ãŸã‚‰
 		if (EndingUpdate(ENDING_TIMER_MAX_))
 		{
-			//Ÿ‚ÌƒXƒe[ƒg
+			//æ¬¡ã®ã‚¹ãƒ†ãƒ¼ãƒˆ
 			tutorial_->ToNextState();
 		}
 	}
@@ -64,7 +64,7 @@ bool TutorialState::BeginingUpdate(const int32_t TIMER_MAX)
 
 	alpha_ = t_;
 
-	//§ŒÀŠÔ‰ß‚¬‚½‚ç
+	//åˆ¶é™æ™‚é–“éããŸã‚‰
 	if (t_ >= 1.0f)
 	{
 		return true;
@@ -83,7 +83,7 @@ bool TutorialState::EndingUpdate(const int32_t TIMER_MAX)
 
 	alpha_ = 1.0f - t_;
 
-	//§ŒÀŠÔ‰ß‚¬‚½‚ç
+	//åˆ¶é™æ™‚é–“éããŸã‚‰
 	if (t_ >= 1.0f)
 	{
 		return true;
@@ -104,7 +104,7 @@ void TutorialState::CommonSpriteDraw()
 }
 
 //----------------------------------------------------------------------------
-//‰½‚à‚µ‚È‚¢
+//ä½•ã‚‚ã—ãªã„
 void TutorialStateNone::Initialize()
 {
 }
@@ -119,14 +119,14 @@ void TutorialStateNone::Draw()
 
 
 //----------------------------------------------------------------------------
-//Šî–{‘€ìà–¾
+//åŸºæœ¬æ“ä½œèª¬æ˜
 void TutorialStateOperation::Initialize()
 {
-	//ƒeƒNƒXƒ`ƒƒƒnƒ“ƒhƒ‹ƒZƒbƒg
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒ³ãƒ‰ãƒ«ã‚»ãƒƒãƒˆ
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial1.png");
 	texSprite_.SetTexHandle(texHandle_);
 	
-	//ƒXƒe[ƒg‚²‚Æ‚ÉÅ‘å’l‚ğ•Ï‚¦‚Ä‚¢‚é
+	//ã‚¹ãƒ†ãƒ¼ãƒˆã”ã¨ã«æœ€å¤§å€¤ã‚’å¤‰ãˆã¦ã„ã‚‹
 	rateMax_ = 50;
 }
 
@@ -150,7 +150,7 @@ void TutorialStateOperation::Draw()
 
 
 //----------------------------------------------------------------------------
-//ƒQ[ƒ€ƒXƒs[ƒhà–¾
+//ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰èª¬æ˜
 void TutorialStateGameSpeed::Initialize()
 {
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial2.png");
@@ -161,8 +161,6 @@ void TutorialStateGameSpeed::Initialize()
 
 void TutorialStateGameSpeed::Update()
 {
-	KeyboardInput& key = KeyboardInput::GetInstance();
-
 	rate_ += GameVelocityManager::GetInstance().GetVelocity();
 
 	CommonUpdate();
@@ -174,7 +172,7 @@ void TutorialStateGameSpeed::Draw()
 }
 
 //----------------------------------------------------------------------------
-//ƒ}ƒEƒXà–¾
+//ãƒã‚¦ã‚¹èª¬æ˜
 void TutorialStateMouse::Initialize()
 {
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial3.png");

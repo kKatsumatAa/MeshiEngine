@@ -20,7 +20,7 @@ std::unique_ptr<Gun> Gun::Create(std::unique_ptr<WorldMat> worldMat, IModel* mod
 		return nullptr;
 	}
 
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	if (!instance->Initialize(std::move(worldMat), model))
 	{
 		assert(0);
@@ -41,10 +41,10 @@ bool Gun::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 		return false;
 	}
 
-	//ƒAƒ“ƒrƒGƒ“ƒg‚È‚Ç‚Ì”{—¦
+	//ã‚¢ãƒ³ãƒ“ã‚¨ãƒ³ãƒˆãªã©ã®å€ç‡
 	model->SetMaterialExtend({ 1.0f,100.0f,5000.0f });
 
-	//ƒ[ƒJƒ‹À•W
+	//ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™
 	localPos_ = GetTrans();
 
 	return true;
@@ -52,21 +52,21 @@ bool Gun::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 
 void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, IObject3D* owner, float particleSize)
 {
-	//ƒN[ƒ‹ƒ^ƒCƒ€‚ª‚Ü‚¾‚ ‚Á‚½‚èAc’e‚È‚©‚Á‚½‚ç”²‚¯‚é
+	//ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ãŒã¾ã ã‚ã£ãŸã‚Šã€æ®‹å¼¾ãªã‹ã£ãŸã‚‰æŠœã‘ã‚‹
 	if (attackCoolTime_ > 0 || remainingBullets_ <= 0)
 	{
 		return;
 	}
 
-	//”­ËÀ•W(e–{‘Ì‚É“–‚½‚ç‚È‚¢‚æ‚¤‚É‚·‚é)
+	//ç™ºå°„åº§æ¨™(éŠƒæœ¬ä½“ã«å½“ãŸã‚‰ãªã„ã‚ˆã†ã«ã™ã‚‹)
 	shotPos_ = { GetWorldTrans().x + directionVec.GetNormalized().x * GetScale().x * 1.1f,
 		GetWorldTrans().y + GetScale().y,
 		GetWorldTrans().z + directionVec.GetNormalized().z * GetScale().z * 1.1f };
 
-	//’e‚¤‚Âˆ—
+	//å¼¾ã†ã¤å‡¦ç†
 	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x * 0.4f, 300, owner);
 
-	//ƒp[ƒeƒBƒNƒ‹
+	//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
 	ParticleGenerate({ 4.0f,4.0f,4.0f,1.5f }, { 4.0f,4.0f,4.0f,0 }, particleSize);
 
 	attackCoolTime_ = SHOT_COOL_TIME_MAX_;
@@ -83,15 +83,15 @@ void Gun::ChangeOwner(IObject3D* parent)
 
 void Gun::Update()
 {
-	//e‚ª–S‚­‚È‚Á‚½Œã‚Ì“®‚«
+	//è¦ªãŒäº¡ããªã£ãŸå¾Œã®å‹•ã
 	NoParentMove();
-	//’n–Ê‚æ‚è‰º‚És‚©‚È‚¢‚æ‚¤‚É
+	//åœ°é¢ã‚ˆã‚Šä¸‹ã«è¡Œã‹ãªã„ã‚ˆã†ã«
 	if (GetParent() == nullptr)
 	{
 		SetTransY(max(GetTrans().y, GetScale().x));
 	}
 
-	//ƒN[ƒ‹ƒ^ƒCƒ€‚àƒQ[ƒ€ƒXƒs[ƒh‚ğ‚©‚¯‚é
+	//ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚‚ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ã‹ã‘ã‚‹
 	attackCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
 	Weapon::Update();
@@ -106,10 +106,9 @@ void Gun::Draw()
 //----------------------------------------------------------------------------------------------------------------
 void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float particleSize)
 {
-	//ƒp[ƒeƒBƒNƒ‹
+	//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
 	for (int32_t i = 0; i < 50; ++i)
 	{
-		const float MD_VEL = 0.6f;
 		Vec3 vel{};
 		vel.x = GetRand(-0.5f, 0.5f);
 		vel.y = GetRand(-0.5f, 0.5f);
@@ -126,7 +125,7 @@ void Gun::OnLandShape(const Vec3& interPos)
 {
 	SetIsAlive(false);
 
-	//ƒp[ƒeƒBƒNƒ‹
+	//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
 	for (int32_t i = 0; i < 20; ++i)
 	{
 		Vec3 vel{};
@@ -144,10 +143,10 @@ void Gun::OnCollision(const CollisionInfo& info)
 {
 	if (info.object_->GetObjName() == "bullet")
 	{
-		//ƒp[ƒeƒBƒNƒ‹
+		//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
 		ParticleGenerate({ 0,0,0,1.5f }, { 0,0,0,0 });
 
-		//‚¿å‚ª‚Ü‚¾‚¢‚½‚ç‚¿å‚Ì•Šíƒ|ƒCƒ“ƒ^‚ğnullptr‚É
+		//æŒã¡ä¸»ãŒã¾ã ã„ãŸã‚‰æŒã¡ä¸»ã®æ­¦å™¨ãƒã‚¤ãƒ³ã‚¿ã‚’nullptrã«
 		if (owner_)
 		{
 			Character* character = dynamic_cast<Character*>(owner_);

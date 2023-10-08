@@ -8,59 +8,59 @@
 class ObjectFBX : public IObject3D
 {
 public:
-	//ƒ{[ƒ“‚ÌÅ‘å”
+	//ãƒœãƒ¼ãƒ³ã®æœ€å¤§æ•°
 	static const int32_t S_MAX_BONES_ = 90;
-	//’è”ƒoƒbƒtƒ@—pƒf[ƒ^\‘¢‘ÌiƒXƒLƒjƒ“ƒOj
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ç”¨ãƒ‡ãƒ¼ã‚¿æ§‹é€ ä½“ï¼ˆã‚¹ã‚­ãƒ‹ãƒ³ã‚°ï¼‰
 	struct ConstBufferDataSkin
 	{
 		XMMATRIX bones[S_MAX_BONES_];
 	};
 
 public:
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒf[ƒ^
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒ‡ãƒ¼ã‚¿
 	struct AnimationData
 	{
-		//ƒAƒjƒ[ƒVƒ‡ƒ“Œ»İŠÔ
+		//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ç¾åœ¨æ™‚é–“
 		double currentTime_;
-		//ƒAƒjƒ[ƒVƒ‡ƒ“ƒtƒ‰ƒO
+		//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ãƒ©ã‚°
 		bool isPlay_ = false;
-		//ƒ‹[ƒv
+		//ãƒ«ãƒ¼ãƒ—
 		bool isLoop_ = false;
-		//‹tÄ¶
+		//é€†å†ç”Ÿ
 		bool isReverse_ = false;
-		//Ä¶‚ÌƒXƒs[ƒh”{—¦
+		//å†ç”Ÿã®ã‚¹ãƒ”ãƒ¼ãƒ‰å€ç‡
 		float animationSpeed_ = 1.0f;
 	};
 
 private:
-	//ƒpƒCƒvƒ‰ƒCƒ“‚È‚Ç‚Ìİ’è
+	//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ãªã©ã®è¨­å®š
 	static RootPipe pipelineSetM_[2];
 
 protected:
-	//’è”ƒoƒbƒtƒ@iƒXƒLƒ“j
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ï¼ˆã‚¹ã‚­ãƒ³ï¼‰
 	ComPtr<ID3D12Resource> constBuffSkin_ = nullptr;
-	ConstBufferDataSkin* constMapSkin = nullptr;
+	ConstBufferDataSkin* constMapSkin_ = nullptr;
 
-private://fbxƒ‚ƒfƒ‹Œn
-	//ƒAƒjƒ[ƒVƒ‡ƒ“
+private://fbxãƒ¢ãƒ‡ãƒ«ç³»
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 	std::vector<AnimationData>animeDatas_;
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒCƒ“ƒfƒbƒNƒX
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 	int32_t animeIndex_ = 0;
 	std::vector<Node>* nodes_ = nullptr;
 
-public://ŠÖ”
+public://é–¢æ•°
 	ObjectFBX();
 	virtual ~ObjectFBX();
 
 public:
-	//‹¤’Ê‚Ì‰Šú‰»
+	//å…±é€šã®åˆæœŸåŒ–
 	static void CommonInitialize();
 
 private:
-	//ƒ}ƒeƒŠƒAƒ‹Aƒ{[ƒ“s—ñ‚È‚Ç‚ğƒZƒbƒg
+	//ãƒãƒ†ãƒªã‚¢ãƒ«ã€ãƒœãƒ¼ãƒ³è¡Œåˆ—ãªã©ã‚’ã‚»ãƒƒãƒˆ
 	void SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64_t specularMapTexhandle,
 		uint64_t normalMapTexHandle);
-	//“à•”•`‰æˆ—
+	//å†…éƒ¨æç”»å‡¦ç†
 	void DrawModelInternal(int32_t pipelineNum)override;
 
 public:
@@ -72,42 +72,42 @@ public:
 	void SetModel(IModel* model)override;
 
 public:
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ŠJn
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³é–‹å§‹
 	void PlayAnimation(bool isLoop, int32_t animeIndex = 0);
 	void PlayReverseAnimation(bool isLoop, int32_t animeIndex = 0);
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒtƒ‰ƒO
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ãƒ©ã‚°
 	void SetIsPlayAnimation(bool isPlay, int32_t animeIndex = 0) { animeDatas_[animeIndex].isPlay_ = isPlay; }
 	void SetIsLoopAnimation(bool isLoop, int32_t animeIndex = 0) { animeDatas_[animeIndex].isLoop_ = isLoop; }
 	void SetIsReverseAnimation(bool isReverse, int32_t animeIndex = 0) { animeDatas_[animeIndex].isReverse_ = isReverse; }
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒs[ƒh
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ”ãƒ¼ãƒ‰
 	void SetAnimationSpeed(float speed) {
 		animeDatas_[animeIndex_].animationSpeed_ = speed;
 	}
-	//ƒ{[ƒ“‚ğ“¾‚é
-	const XMMATRIX* GetModelBones()const { return constMapSkin->bones; }
-	//ƒIƒuƒWƒFƒNƒgƒNƒ‰ƒX‚ª‚Á‚Ä‚éfbxƒ‚ƒfƒ‹‚Ìƒm[ƒh
+	//ãƒœãƒ¼ãƒ³ã‚’å¾—ã‚‹
+	const XMMATRIX* GetModelBones()const { return constMapSkin_->bones; }
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¯ãƒ©ã‚¹ãŒæŒã£ã¦ã‚‹fbxãƒ¢ãƒ‡ãƒ«ã®ãƒãƒ¼ãƒ‰
 	const std::vector<Node>& GetNodes();
-	//ƒ{[ƒ“‚Ìƒf[ƒ^“]‘—
+	//ãƒœãƒ¼ãƒ³ã®ãƒ‡ãƒ¼ã‚¿è»¢é€
 	void MappingBoneData(ModelFBX* model);
 
 public:
-	//ƒm[ƒh‚Ìs—ñ‚ğƒAƒjƒ[ƒVƒ‡ƒ“‚É‡‚í‚¹‚Ä•ÏX
+	//ãƒãƒ¼ãƒ‰ã®è¡Œåˆ—ã‚’ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã«åˆã‚ã›ã¦å¤‰æ›´
 	void BlendAnimationUpdate();
-	//fbx‚Ìƒm[ƒh‚Ìs—ñXV
+	//fbxã®ãƒãƒ¼ãƒ‰ã®è¡Œåˆ—æ›´æ–°
 	void UpdateFBXNodeMat();
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒAƒbƒvƒf[ƒg
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ
 	void AnimationUpdate();
 
 private:
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ŠJn
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³é–‹å§‹
 	void PlayAnimationInternal(int32_t animeIndex,
 		bool isLoop = false, bool isReverse = false);
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒŠƒZƒbƒg
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒªã‚»ãƒƒãƒˆ
 	void AnimationReset(int32_t animeIndex);
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚Å•Ï‰»‚µ‚½ƒm[ƒh‚âƒ{[ƒ“‚Ìˆ—
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã§å¤‰åŒ–ã—ãŸãƒãƒ¼ãƒ‰ã‚„ãƒœãƒ¼ãƒ³ã®å‡¦ç†
 	void CalcNodeMatBoneMatInternal(ModelFBX* model);
-	//ƒ{[ƒ“‚Ìs—ñ‚ğŒvZ
+	//ãƒœãƒ¼ãƒ³ã®è¡Œåˆ—ã‚’è¨ˆç®—
 	XMMATRIX GetCalcSkinMat(IModel* model, int32_t index);
 
 };

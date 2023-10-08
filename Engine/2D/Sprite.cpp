@@ -7,13 +7,13 @@ using namespace DirectX;
 RootPipe Sprite::spritePipelineSet_;
 
 D3D12_INPUT_ELEMENT_DESC Sprite::sInputLayoutSprite_[2] = {
-		{//xyzÀ•W
+		{//xyzåº§æ¨™
 		 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 		 D3D12_APPEND_ALIGNED_ELEMENT,
 		 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
 
-		{//uvÀ•W
+		{//uvåº§æ¨™
 		 "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
 		 D3D12_APPEND_ALIGNED_ELEMENT,
 		 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
@@ -27,35 +27,35 @@ Sprite::~Sprite()
 
 Sprite::Sprite()
 {
-	//ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìí—Ş
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç¨®é¡
 	objInsType_ = ObjectInstanceType::SPRITE;
 
-	//ƒoƒbƒtƒ@İ’è
+	//ãƒãƒƒãƒ•ã‚¡è¨­å®š
 	uint32_t sizeVB;
 	D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
-	// ’¸“_ƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY = ’¸“_ƒf[ƒ^1‚Â•ª‚ÌƒTƒCƒY * ’¸“_ƒf[ƒ^‚Ì—v‘f”
+	// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º = é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿1ã¤åˆ†ã®ã‚µã‚¤ã‚º * é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®è¦ç´ æ•°
 	sizeVB = static_cast<uint32_t>(sizeof(vertices_[0]) * 4.0);
-	//’¸“_ƒoƒbƒtƒ@‚Ìİ’è		//ƒq[ƒvİ’è
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPU‚Ö‚Ì“]‘——p
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š		//ãƒ’ãƒ¼ãƒ—è¨­å®š
+	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUã¸ã®è»¢é€ç”¨
 
 	ResourceProperties(resDesc, sizeVB);
 	resDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	BuffProperties(heapProp, resDesc, vertBuff_.GetAddressOf());
 
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
-	// GPU‰¼‘zƒAƒhƒŒƒX
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
+	// GPUä»®æƒ³ã‚¢ãƒ‰ãƒ¬ã‚¹
 	vbView_.BufferLocation = vertBuff_.Get()->GetGPUVirtualAddress();
-	// ’¸“_ƒoƒbƒtƒ@‚ÌƒTƒCƒY
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
 	vbView_.SizeInBytes = sizeVB;
-	// ’¸“_1‚Â•ª‚Ìƒf[ƒ^ƒTƒCƒY
+	// é ‚ç‚¹1ã¤åˆ†ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 	vbView_.StrideInBytes = sizeof(vertices_[0]);
 }
 
 //--------------------------------------------------------------------------
 void Sprite::CommonInitialize()
 {
-	//ƒpƒCƒvƒ‰ƒCƒ“‚È‚Ç‚ğİ’è
+	//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ãªã©ã‚’è¨­å®š
 	PipeLineSetting(D3D12_FILL_MODE_SOLID, spritePipelineSet_,
 		"Resources/shaders/SpriteVS.hlsl", "Resources/shaders/SpritePS.hlsl",
 		sInputLayoutSprite_, _countof(sInputLayoutSprite_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, true);
@@ -63,7 +63,7 @@ void Sprite::CommonInitialize()
 
 void Sprite::Initialize(std::unique_ptr<WorldMat> worldMat)
 {
-	//ƒ[ƒ‹ƒhs—ñ—pƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒXƒZƒbƒg
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ç”¨ã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚»ãƒƒãƒˆ
 	IObject::Initialize(std::move(worldMat));
 }
 
@@ -74,18 +74,9 @@ void Sprite::Update()
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-void SpriteCommonBeginDraw(RootPipe* pipelineSet)
-{
-	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(pipelineSet->pipelineState.Get());
-
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSet->rootSignature.Get());
-
-	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-}
-
 void Sprite::Draw()
 {
-	//ƒ|ƒŠƒ‚[ƒtƒBƒYƒ€‚ÅŒÄ‚Ño‚³‚ê‚é‚Æ‚«—p‚É
+	//ãƒãƒªãƒ¢ãƒ¼ãƒ•ã‚£ã‚ºãƒ ã§å‘¼ã³å‡ºã•ã‚Œã‚‹ã¨ãç”¨ã«
 	DrawBoxSprite(nullptr, { 0.5f,0.5f });
 }
 
@@ -93,36 +84,38 @@ void Sprite::SpriteDraw()
 {
 	HRESULT result = {};
 
-	//ƒoƒbƒtƒ@‚¢‚ë‚¢‚ëƒZƒbƒg
-	SpriteCommonBeginDraw(&spritePipelineSet_);
+	//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ãªã©ã‚»ãƒƒãƒˆ
+	IObject::SetRootPipe(&spritePipelineSet_, 0, spritePipelineSet_.rootSignature.Get());
+	//ãƒ¡ãƒƒã‚·ãƒ¥ã®æ§‹é€ 
+	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	//F—p‚Ìƒoƒbƒtƒ@‚ğƒZƒbƒg
+	//è‰²ç”¨ã®ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(COLOR, constBuffMaterial_->GetGPUVirtualAddress());
 
-	//SRVƒq[ƒv‚Ìæ“ªƒnƒ“ƒhƒ‹‚ğæ“¾
+	//SRVãƒ’ãƒ¼ãƒ—ã®å…ˆé ­ãƒãƒ³ãƒ‰ãƒ«ã‚’å–å¾—
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-	//ƒeƒNƒXƒ`ƒƒ‚ğİ’è‚µ‚Ä‚¢‚È‚©‚Á‚½‚ç
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®šã—ã¦ã„ãªã‹ã£ãŸã‚‰
 	uint64_t texHL = texHandle_;
 	TextureManager::CheckTexHandle(texHL);
 	srvGpuHandle.ptr = texHL;
-	//ƒeƒNƒXƒ`ƒƒ
-	//SRVƒq[ƒv‚Ìİ’èƒRƒ}ƒ“ƒh
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	//SRVãƒ’ãƒ¼ãƒ—ã®è¨­å®šã‚³ãƒãƒ³ãƒ‰
 	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetDescHeapPP());
-	//srvw’è
+	//srvæŒ‡å®š
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(TEX, srvGpuHandle);
 
-	//s—ñƒZƒbƒg
+	//è¡Œåˆ—ã‚»ãƒƒãƒˆ
 	cbt_.DrawCommand(MATRIX);
 
-	// GPUã‚Ìƒoƒbƒtƒ@‚É‘Î‰‚µ‚½‰¼‘zƒƒ‚ƒŠ(ƒƒCƒ“ƒƒ‚ƒŠã)‚ğæ“¾
+	// GPUä¸Šã®ãƒãƒƒãƒ•ã‚¡ã«å¯¾å¿œã—ãŸä»®æƒ³ãƒ¡ãƒ¢ãƒª(ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ¢ãƒªä¸Š)ã‚’å–å¾—
 	VertexSprite* vertMap = nullptr;
 	result = vertBuff_->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
-	// ‘S’¸“_‚É‘Î‚µ‚Ä
+	// å…¨é ‚ç‚¹ã«å¯¾ã—ã¦
 	for (int32_t i = 0; i < 4; i++) {
-		vertMap[i] = vertices_[i]; // À•W‚ğƒRƒs[
+		vertMap[i] = vertices_[i]; // åº§æ¨™ã‚’ã‚³ãƒ”ãƒ¼
 	}
-	// Œq‚ª‚è‚ğ‰ğœ
+	// ç¹‹ãŒã‚Šã‚’è§£é™¤
 	vertBuff_->Unmap(0, nullptr);
 
 	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
@@ -133,31 +126,31 @@ void Sprite::SpriteDraw()
 void Sprite::DrawBoxSprite(Camera2D* camera,
 	const Vec2& ancorUV, bool isReverseX, bool isReverseY)
 {
-	//XV
+	//æ›´æ–°
 	Update();
 
 	DrawUpdate(camera, { GetTrans().x, GetTrans().y }, { GetScale().x,GetScale().y },
-		texHandle_, ancorUV, isReverseX, isReverseY, GetRot(), &cbt_, constMapMaterial_);
+		texHandle_, ancorUV, isReverseX, isReverseY, GetRot(), &cbt_);
 }
 
 void Sprite::DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	 bool isPosLeftTop, bool isReverseX, bool isReverseY)
 {
-	//XV
+	//æ›´æ–°
 	Update();
 
 	UpdateClipping(camera, { GetTrans().x,GetTrans().y }, { GetScale().x,GetScale().y },
 		UVleftTop, UVlength, texHandle_,
-		isPosLeftTop, isReverseX, isReverseY, { GetRot() }, &cbt_, constMapMaterial_);
+		isPosLeftTop, isReverseX, isReverseY, { GetRot() }, &cbt_);
 }
 
 //-------------------------------------------------------------------------------------
 void Sprite::DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 	uint64_t textureHandle, const Vec2& ancorUV,
 	bool isReverseX, bool isReverseY, const Vec3& rotation,
-	ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
+	ConstBuffTransform* cbt)
 {
-	//ƒeƒNƒXƒ`ƒƒ‚ğİ’è‚µ‚Ä‚¢‚È‚©‚Á‚½‚ç
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®šã—ã¦ã„ãªã‹ã£ãŸã‚‰
 	uint64_t textureHandle_;
 
 	if (textureHandle == NULL)
@@ -175,16 +168,16 @@ void Sprite::DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
-	//”½“]
+	//åè»¢
 	if (isReverseX)length.x *= -1;
 	if (isReverseY)length.y *= -1;
 
-	vertices_[0] = { {-(float)(length.x * scale.x * ancorUV.x),+(float)(length.y * scale.y * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//¶‰º
-	vertices_[1] = { {-(float)(length.x * scale.x * ancorUV.x),-(float)(length.y * scale.y * (ancorUV.y)),0.0f},{0.0f,0.0f} };//¶ã
-	vertices_[2] = { {+(float)(length.x * scale.x * (1.0f - ancorUV.x)),+(float)(length.y * scale.y * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//‰E‰º
-	vertices_[3] = { {+(float)(length.x * scale.x * (1.0f - ancorUV.x)),-(float)(length.y * scale.y * (ancorUV.y)),0.0f},{1.0f,0.0f} };//‰Eã
+	vertices_[0] = { {-(float)(length.x * scale.x * ancorUV.x),+(float)(length.y * scale.y * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//å·¦ä¸‹
+	vertices_[1] = { {-(float)(length.x * scale.x * ancorUV.x),-(float)(length.y * scale.y * (ancorUV.y)),0.0f},{0.0f,0.0f} };//å·¦ä¸Š
+	vertices_[2] = { {+(float)(length.x * scale.x * (1.0f - ancorUV.x)),+(float)(length.y * scale.y * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//å³ä¸‹
+	vertices_[3] = { {+(float)(length.x * scale.x * (1.0f - ancorUV.x)),-(float)(length.y * scale.y * (ancorUV.y)),0.0f},{1.0f,0.0f} };//å³ä¸Š
 
-	//ƒ[ƒ‹ƒhs—ñ
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—
 	WorldMat worldMat;
 
 	worldMat.rot_.x = rotation.x;
@@ -192,18 +185,18 @@ void Sprite::DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 	worldMat.rot_.z = rotation.z;
 	worldMat.trans_ = { pos.x /*+ length.x * ancorUV.x * scale*/,pos.y/* + length.y * ancorUV.y * scale*/,0.0f };
 
-	//s—ñŒvZAƒZƒbƒg
+	//è¡Œåˆ—è¨ˆç®—ã€ã‚»ãƒƒãƒˆ
 	CalcAndSetMat(cbt, worldMat, camera);
 
-	//•`‰æ
+	//æç”»
 	SpriteDraw();
 }
 
 void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 	uint64_t textureHandle, bool isPosLeftTop,
-	bool isReverseX, bool isReverseY, const Vec3& rotation, ConstBuffTransform* cbt, ConstBufferDataMaterial* constMapMaterial)
+	bool isReverseX, bool isReverseY, const Vec3& rotation, ConstBuffTransform* cbt)
 {
-	//ƒeƒNƒXƒ`ƒƒ‚ğİ’è‚µ‚Ä‚¢‚È‚©‚Á‚½‚ç
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®šã—ã¦ã„ãªã‹ã£ãŸã‚‰
 	uint64_t textureHandle_;
 
 	if (textureHandle == NULL)
@@ -221,33 +214,31 @@ void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& s
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
-	//”½“]
+	//åè»¢
 	if (isReverseX)length.x *= -1;
 	if (isReverseY)length.y *= -1;
 
 	float texLeft = UVleftTop.x * +(float)length.x * scale.x;
-	float texRight = (UVleftTop.x + UVlength.x) * +(float)length.x * scale.x;
 	float texTop = UVleftTop.y * +(float)length.y * scale.y;
-	float texBottom = (UVleftTop.y + UVlength.y) * +(float)length.y * scale.y;
 
 	if (isPosLeftTop)
 	{
-		//¶ã‚©‚ç‚ÌÀ•W
-		vertices_[0] = { {0,UVlength.y * length.y * scale.y,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//¶‰º
-		vertices_[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//¶ã
-		vertices_[2] = { {UVlength.x * length.x * scale.x,UVlength.y * length.y * scale.y,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//‰E‰º
-		vertices_[3] = { {UVlength.x * length.x * scale.x,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//‰Eã
+		//å·¦ä¸Šã‹ã‚‰ã®åº§æ¨™
+		vertices_[0] = { {0,UVlength.y * length.y * scale.y,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//å·¦ä¸‹
+		vertices_[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//å·¦ä¸Š
+		vertices_[2] = { {UVlength.x * length.x * scale.x,UVlength.y * length.y * scale.y,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//å³ä¸‹
+		vertices_[3] = { {UVlength.x * length.x * scale.x,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//å³ä¸Š
 	}
 	else
 	{
-		//Ø‚è”²‚¢‚½Œã‚Ì‰æ‘œ‚Ì’†S‚©‚ç‚ÌˆÊ’uIIIIIIII
-		vertices_[0] = { {-UVlength.x * length.x * scale.x / 2.0f,UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//¶‰º
-		vertices_[1] = { {-UVlength.x * length.x * scale.x / 2.0f,-UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//¶ã
-		vertices_[2] = { {UVlength.x * length.x * scale.x / 2.0f,UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//‰E‰º
-		vertices_[3] = { {UVlength.x * length.x * scale.x / 2.0f,-UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//‰Eã
+		//åˆ‡ã‚ŠæŠœã„ãŸå¾Œã®ç”»åƒã®ä¸­å¿ƒã‹ã‚‰ã®ä½ç½®ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼
+		vertices_[0] = { {-UVlength.x * length.x * scale.x / 2.0f,UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//å·¦ä¸‹
+		vertices_[1] = { {-UVlength.x * length.x * scale.x / 2.0f,-UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//å·¦ä¸Š
+		vertices_[2] = { {UVlength.x * length.x * scale.x / 2.0f,UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//å³ä¸‹
+		vertices_[3] = { {UVlength.x * length.x * scale.x / 2.0f,-UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//å³ä¸Š
 	}
 
-	//ƒ[ƒ‹ƒhs—ñ
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—
 	WorldMat worldMat;
 
 	worldMat.rot_.x = rotation.x;
@@ -256,21 +247,21 @@ void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& s
 
 	if (isPosLeftTop)
 	{
-		//ˆø”‚Ì¶ãÀ•W‚ğİ’è
+		//å¼•æ•°ã®å·¦ä¸Šåº§æ¨™ã‚’è¨­å®š
 		worldMat.trans_ = { leftTop.x,leftTop.y,0 };
 	}
 	else
 	{
-		//Ø‚è”²‚¢‚½Œã‚Ì‰æ‘œ‚Ì’†S‚ğİ’è
+		//åˆ‡ã‚ŠæŠœã„ãŸå¾Œã®ç”»åƒã®ä¸­å¿ƒã‚’è¨­å®š
 		worldMat.trans_ = { leftTop.x + texLeft + UVlength.x * (float)length.x * scale.x / 2.0f,
 			leftTop.y + texTop + UVlength.y * (float)length.y * scale.y / 2.0f,
 			0 };
 	}
 
-	//s—ñŒvZAƒZƒbƒg
+	//è¡Œåˆ—è¨ˆç®—ã€ã‚»ãƒƒãƒˆ
 	CalcAndSetMat(cbt, worldMat, camera);
 
-	//•`‰æ
+	//æç”»
 	SpriteDraw();
 }
 
@@ -304,7 +295,7 @@ void Sprite::CalcAndSetMat(ConstBuffTransform* cbt, WorldMat& worldMat, Camera2D
 	ViewMat view;
 	view.matView_ = GetCameraMatrix(camera);
 
-	//•½s“Š‰e‚ÌË‰es—ñ¶¬
+	//å¹³è¡ŒæŠ•å½±ã®å°„å½±è¡Œåˆ—ç”Ÿæˆ
 	ProjectionMat projection;
 	projection.matProjection_ = XMMatrixOrthographicOffCenterLH(0.0f, WindowsApp::GetInstance().WINDOW_WIDTH_,
 		WindowsApp::GetInstance().WINDOW_HEIGHT_, 0.0, 0.0f, 1.0f);

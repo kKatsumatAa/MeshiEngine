@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "fbxsdk.h"
 #include "DirectXWrapper.h"
@@ -104,26 +104,17 @@ private:
 	void ParseMesh(ModelFBX* model, FbxNode* fbxNode, Mesh* mesh);
 
 	//頂点座標読み取り
-	void ParseMeshControlPointsPos(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
+	void ParseMeshControlPointsPos(FbxMesh* fbxMesh);
 
 	//面情報読み取り
-	void ParseMeshFaces(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
-
-	//メッシュの接線取得
-	void CalcMeshTangent(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
+	void ParseMeshFaces(FbxMesh* fbxMesh, Mesh* mesh);
 
 	//マテリアル読み取り
 	void ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode);
 
 	//スキニング情報の読み取り
-	void PerseSkin(ModelFBX* model, FbxMesh* fbxMesh, Mesh* mesh);
+	void PerseSkin(ModelFBX* model, FbxMesh* fbxMesh);
 
 	//アニメーション読み込み
 	void LoadAnimation(ModelFBX* model, FbxScene* fbxScene);
-
-	//アニメーションセット後にボーンを調べる
-	void LoadBoneData(FbxScene* fbxScene, ModelFBX* model);
-
-	//アニメーションセット後にボーンを調べる処理関数
-	void LoadBoneDataInternal(FbxMesh* fbxMesh, ModelFBX* model);
 };

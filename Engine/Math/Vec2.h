@@ -1,5 +1,11 @@
 #pragma once
 
+#pragma warning(push)
+//c5267è­¦å‘Šã‚’ç„¡è¦–
+#pragma warning(disable:5267)
+#include <DirectXMath.h>
+#pragma warning(pop)
+
 class Vec2
 {
 public:
@@ -7,7 +13,7 @@ public:
 	float y;
 
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	Vec2()
 		:x(0), y(0)
 	{}
@@ -16,27 +22,27 @@ public:
 		:x(x), y(y)
 	{}
 
-	//ƒƒ“ƒoŠÖ”
+	//ãƒ¡ãƒ³ãƒé–¢æ•°
 	float GetLength() const;
 	void  Normalized();
 	Vec2  GetNormalize() const;
 	float Dot(const Vec2& v) const;
 	float Cross(const Vec2& v) const;
 
-	Vec2  operator -()const;//vec“¯m‚Ìˆø‚«Z
-	Vec2& operator -=(const Vec2& other);//•¡‡‰‰Zq(-)
+	Vec2  operator -()const;//vecåŒå£«ã®å¼•ãç®—
+	Vec2& operator -=(const Vec2& other);//è¤‡åˆæ¼”ç®—å­(-)
 
 	Vec2  operator +()const;
-	Vec2& operator +=(const Vec2& other);//•¡‡‰‰Zq(+)
+	Vec2& operator +=(const Vec2& other);//è¤‡åˆæ¼”ç®—å­(+)
 
 	Vec2  operator *(float other);
-	Vec2& operator *=(float other);//•¡‡‰‰Zq(*)
+	Vec2& operator *=(float other);//è¤‡åˆæ¼”ç®—å­(*)
 
 	Vec2  operator /(float other);
-	Vec2& operator /=(float other);//•¡‡‰‰Zq(/)
+	Vec2& operator /=(float other);//è¤‡åˆæ¼”ç®—å­(/)
 };
 
-//“ñ€‰‰ZqƒI[ƒo[ƒ[ƒh
+//äºŒé …æ¼”ç®—å­ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
 const Vec2 operator +(const Vec2& v1, const Vec2& v2);
 const Vec2 operator -(const Vec2& v1, const Vec2& v2);
 const Vec2 operator *(const Vec2& v, float s);

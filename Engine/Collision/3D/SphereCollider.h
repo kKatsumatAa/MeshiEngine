@@ -3,26 +3,24 @@
 #include "BaseCollider.h"
 #include "CollisionPrimitive.h"
 
-#include <DirectXMath.h>
-
 /// <summary>
-/// ‹…Õ“Ë”»’èƒIƒuƒWƒFƒNƒg
+/// çƒè¡çªåˆ¤å®šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 /// </summary>
 class SphereCollider : public BaseCollider, public Sphere
 {
-private: // ƒGƒCƒŠƒAƒX
-	// DirectX::‚ğÈ—ª
+private: // ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	// DirectX::ã‚’çœç•¥
 	using XMVECTOR = DirectX::XMVECTOR;
 public:
 	SphereCollider(const XMVECTOR& offset = { 0,0,0,0 }, float radius = 1.0f) :
 		offset_(offset), radius_(radius)
 	{
-		// ‹…Œ`ó‚ğƒZƒbƒg
+		// çƒå½¢çŠ¶ã‚’ã‚»ãƒƒãƒˆ
 		shapeType_ = COLLISIONSHAPE_SPHERE;
 	}
 
 	/// <summary>
-	/// XV
+	/// æ›´æ–°
 	/// </summary>
 	void Update() override;
 
@@ -30,9 +28,9 @@ public:
 	inline float GetRadius() { return radius_; }
 
 private:
-	// ƒIƒuƒWƒFƒNƒg’†S‚©‚ç‚ÌƒIƒtƒZƒbƒg
+	// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä¸­å¿ƒã‹ã‚‰ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 	XMVECTOR offset_;
-	// ”¼Œa
+	// åŠå¾„
 	float radius_;
 };
 

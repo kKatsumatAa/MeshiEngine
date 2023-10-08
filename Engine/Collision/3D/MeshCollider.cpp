@@ -1,4 +1,4 @@
-﻿#include "MeshCollider.h"
+#include "MeshCollider.h"
 #include "Collision.h"
 
 using namespace DirectX;
@@ -32,17 +32,17 @@ void MeshCollider::ConstructTriangles(IModel* model)
 			int idx2 = indices[i * 3 + 2];
 
 			//三角形の三頂点の座標を代入
-			tri.p0 = {
+			tri.iP0 = {
 				vertices[idx0].pos.x,
 				vertices[idx0].pos.y,
 				vertices[idx0].pos.z,
 				1 };
-			tri.p1 = {
+			tri.iP1 = {
 				vertices[idx1].pos.x,
 				vertices[idx1].pos.y,
 				vertices[idx1].pos.z,
 				1 };
-			tri.p2 = {
+			tri.iP2 = {
 				vertices[idx2].pos.x,
 				vertices[idx2].pos.y,
 				vertices[idx2].pos.z,
@@ -75,9 +75,9 @@ bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR*
 		//ワールドに変換
 		Triangle worldTriangle = triangle;
 
-		worldTriangle.p0 = XMVector3Transform({ triangle.p0 }, matWorld);
-		worldTriangle.p1 = XMVector3Transform({ triangle.p1 }, matWorld);
-		worldTriangle.p2 = XMVector3Transform({ triangle.p2 }, matWorld);
+		worldTriangle.iP0 = XMVector3Transform({ triangle.iP0 }, matWorld);
+		worldTriangle.iP1 = XMVector3Transform({ triangle.iP1 }, matWorld);
+		worldTriangle.iP2 = XMVector3Transform({ triangle.iP2 }, matWorld);
 		worldTriangle.ComputeNormal();
 
 		//球と三角形の当たり判定
@@ -107,9 +107,9 @@ bool MeshCollider::CheckCollisionRay(const Ray& ray, float* distance, DirectX::X
 		//ワールドに変換
 		Triangle worldTriangle = triangle;
 
-		worldTriangle.p0 = XMVector3Transform({ triangle.p0 }, matWorld);
-		worldTriangle.p1 = XMVector3Transform({ triangle.p1 }, matWorld);
-		worldTriangle.p2 = XMVector3Transform({ triangle.p2 }, matWorld);
+		worldTriangle.iP0 = XMVector3Transform({ triangle.iP0 }, matWorld);
+		worldTriangle.iP1 = XMVector3Transform({ triangle.iP1 }, matWorld);
+		worldTriangle.iP2 = XMVector3Transform({ triangle.iP2 }, matWorld);
 		worldTriangle.ComputeNormal();
 
 

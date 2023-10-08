@@ -26,7 +26,7 @@ std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Weapo
 		return nullptr;
 	}
 
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	if (!instance->Initialize(std::move(worldMat), weapon))
 	{
 		assert(0);
@@ -42,10 +42,10 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 		return false;
 	}
 
-	//ƒJƒƒ‰‚ÌˆÊ’u‚Æ‡‚í‚¹‚é
+	//ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã¨åˆã‚ã›ã‚‹
 	SetTrans(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
 
-	//è
+	//æ‰‹
 	handManager_.reset();
 	handManager_ = std::make_unique<PlayerHandManager>();
 	handManager_->Initialize(this);
@@ -53,17 +53,17 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	//hp
 	hp_ = HP_TMP_;
 
-	//‰ñ“]—p‚ÌŠp“x‚ÌŠî
+	//å›è»¢ç”¨ã®è§’åº¦ã®åŸº
 	cameraRot_ = GetRot();
 
 	if (weapon)
 	{
 		weapon_ = weapon;
-		//•Ší‚Ì”Xİ’è
+		//æ­¦å™¨ã®è«¸ã€…è¨­å®š
 		PickUpWeapon(weapon_);
 	}
 
-	//•Ší‚Á‚Ä‚½‚çƒXƒe[ƒg‚©‚¦‚é
+	//æ­¦å™¨æŒã£ã¦ãŸã‚‰ã‚¹ãƒ†ãƒ¼ãƒˆã‹ãˆã‚‹
 	if (weapon_ == nullptr)
 	{
 		ChangePlayerState(std::make_unique<PlayerStateBareHands>());
@@ -85,111 +85,108 @@ void Player::ChangePlayerState(std::unique_ptr<PlayerState> state)
 
 void Player::DirectionUpdate()
 {
-	//ƒJƒƒ‰æ“¾iØ‚è‚Ä‚é‚¾‚¯j
-	Camera* camera = CameraManager::GetInstance().GetCamera("playerCamera");
-
-	//ƒ}ƒEƒX‚Ì“®‚«‚ÅƒJƒƒ‰Šp“x•ÏX
+	//ãƒã‚¦ã‚¹ã®å‹•ãã§ã‚«ãƒ¡ãƒ©è§’åº¦å¤‰æ›´
 	Vec2 vel = MouseInput::GetInstance().GetCursorVelocity() * MOUSE_VELOCITY_TMP_;
 
-	//ƒ}ƒEƒX‚Ì“®‚«‚ÅƒQ[ƒ€ƒXƒs[ƒh‚ğ‘«‚·
+	//ãƒã‚¦ã‚¹ã®å‹•ãã§ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’è¶³ã™
 	GameVelocityManager::GetInstance().AddGameVelocity(vel.GetLength() * MOUSE_GAME_VEL_EXTEND_, "mouse");
 
-	//‰ñ“]
+	//å›è»¢
 	Vec3 rotMove = {
 		-vel.y * ANGLE_VEL_EXTEND_,
 		vel.x * ANGLE_VEL_EXTEND_,
 		0
 	};
-	//Šp“x‚ğ‘«‚·
+	//è§’åº¦ã‚’è¶³ã™
 	cameraRot_ = (cameraRot_ + rotMove);
 	cameraRot_.x = (min(cameraRot_.x, PI / 2.0f * 0.9f));
 	cameraRot_.x = (max(cameraRot_.x, -PI / 2.0f * 0.9f));
 
 	frontVec_ = GetFrontVecTmp();
-	//‰ñ“]
+	//å›è»¢
 	frontVec_ = GetTurnVec3UseQuaternionAndRot(frontVec_, cameraRot_);
 
-	//³–ÊƒxƒNƒgƒ‹ƒZƒbƒg
+	//æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«ã‚»ãƒƒãƒˆ
 	SetFrontVec(frontVec_);
 
-	//Šp“x
+	//è§’åº¦
 	SetRot(cameraRot_);
 
 
-	//ƒJƒƒ‰‚Ì‰E•ûŒüƒxƒNƒgƒ‹‚ğo‚·
+	//ã‚«ãƒ¡ãƒ©ã®å³æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’å‡ºã™
 	rightVec_ = upVec_.Cross(frontVec_);
 }
 
 void Player::Move()
 {
-	//ƒL[“ü—Í
+	//ã‚­ãƒ¼å…¥åŠ›
 	KeyboardInput* input = &KeyboardInput::GetInstance();
 
-	//ƒJƒƒ‰æ“¾iØ‚è‚Ä‚é‚¾‚¯j
+	//ã‚«ãƒ¡ãƒ©å–å¾—ï¼ˆå€Ÿã‚Šã¦ã‚‹ã ã‘ï¼‰
 	Camera* camera = CameraManager::GetInstance().GetCamera("playerCamera");
 
-	Vec3 velocity_ = { 0,0,0 };
-	//Œü‚¢‚Ä‚é•ûŒü‚ÉˆÚ“®
+	Vec3 velocity = { 0,0,0 };
+	//å‘ã„ã¦ã‚‹æ–¹å‘ã«ç§»å‹•
 	if (input->KeyPush(DIK_UPARROW) || input->KeyPush(DIK_W) || PadInput::GetInstance().GetLeftStickTilt().y < 0)
 	{
-		velocity_ += { frontVec_.x, 0, frontVec_.z };
+		velocity += { frontVec_.x, 0, frontVec_.z };
 	}
 	if (input->KeyPush(DIK_DOWNARROW) || input->KeyPush(DIK_S) || PadInput::GetInstance().GetLeftStickTilt().y > 0)
 	{
-		velocity_ += { -frontVec_.x, 0, -frontVec_.z };
+		velocity += { -frontVec_.x, 0, -frontVec_.z };
 	}
 	if (input->KeyPush(DIK_LEFTARROW) || input->KeyPush(DIK_A) || PadInput::GetInstance().GetLeftStickTilt().y < 0)
 	{
-		velocity_ += { -rightVec_.x, 0, -rightVec_.z };
+		velocity += { -rightVec_.x, 0, -rightVec_.z };
 	}
 	if (input->KeyPush(DIK_RIGHTARROW) || input->KeyPush(DIK_D) || PadInput::GetInstance().GetLeftStickTilt().y > 0)
 	{
-		velocity_ += { rightVec_.x, 0, rightVec_.z };
+		velocity += { rightVec_.x, 0, rightVec_.z };
 	}
 
-	//ƒQ[ƒ€ƒXƒs[ƒh‚ğˆÚ“®‚Å‘«‚·(ƒWƒƒƒ“ƒv’†‚ÅƒXƒy[ƒX‰Ÿ‚µ‚Ä‚È‚¯‚ê‚Î)
+	//ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ç§»å‹•ã§è¶³ã™(ã‚¸ãƒ£ãƒ³ãƒ—ä¸­ã§ã‚¹ãƒšãƒ¼ã‚¹æŠ¼ã—ã¦ãªã‘ã‚Œã°)
 	if (!(!isOnGround_ && KeyboardInput::GetInstance().KeyPush(DIK_SPACE)))
 	{
-		GameVelocityManager::GetInstance().AddGameVelocity(velocity_.GetLength() * MOVE_ADD_VEL_EXTEND_);
+		GameVelocityManager::GetInstance().AddGameVelocity(velocity.GetLength() * MOVE_ADD_VEL_EXTEND_);
 	}
 
-	//ƒWƒƒƒ“ƒv’†‚ÅƒXƒy[ƒX‰Ÿ‚µ‚Á‚Ï‚È‚µ‚¾‚Á‚½‚ç
-	if (!isOnGround_ && KeyboardInput::GetInstance().KeyPush(DIK_SPACE) && velocity_.GetLength())
+	//ã‚¸ãƒ£ãƒ³ãƒ—ä¸­ã§ã‚¹ãƒšãƒ¼ã‚¹æŠ¼ã—ã£ã±ãªã—ã ã£ãŸã‚‰
+	if (!isOnGround_ && KeyboardInput::GetInstance().KeyPush(DIK_SPACE) && velocity.GetLength())
 	{
 		GameVelocityManager::GetInstance().AddGameVelocity(-0.001f);
 	}
 
-	//ˆÊ’uƒZƒbƒg(ƒQ[ƒ€ƒXƒs[ƒh‚ğ‚©‚¯‚é)
-	SetTrans(GetTrans() + velocity_ * VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity());
+	//ä½ç½®ã‚»ãƒƒãƒˆ(ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ã‹ã‘ã‚‹)
+	SetTrans(GetTrans() + velocity * VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity());
 
-	//’n–Ê‚Æ‚Ì”»’è
+	//åœ°é¢ã¨ã®åˆ¤å®š
 	std::function<void()>gameSpeedAddFunc = [=]() {GameVelocityManager::GetInstance().AddGameVelocity(1.0f); };
 	OnGroundAndWallUpdate(4.0f, GameVelocityManager::GetInstance().GetVelocity(), KeyboardInput::GetInstance().KeyPush(DIK_SPACE), gameSpeedAddFunc);
 
-	//ƒRƒ‰ƒCƒ_[XV
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼æ›´æ–°
 	ObjectFBX::WorldMatColliderUpdate();
 
-	//ƒJƒƒ‰‚ğƒvƒŒƒCƒ„[‚Æ“¯‚¶ˆÊ’u‚É
+	//ã‚«ãƒ¡ãƒ©ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨åŒã˜ä½ç½®ã«
 	camera->SetEye(GetTrans());
 
-	//ƒJƒƒ‰‚Ì’‹“_‚É‰ñ“]‚µ‚½ƒxƒNƒgƒ‹ƒZƒbƒg
+	//ã‚«ãƒ¡ãƒ©ã®æ³¨è¦–ç‚¹ã«å›è»¢ã—ãŸãƒ™ã‚¯ãƒˆãƒ«ã‚»ãƒƒãƒˆ
 	camera->SetTarget(GetTrans() + frontVec_);
 }
 
 void Player::Update()
 {
-	//ƒNƒŠƒbƒN‚©ŠO•”‚Å¶ƒNƒŠƒbƒNˆ—‚µ‚½‚¢‚Æ‚«‚Éƒtƒ‰ƒO—§‚Ä‚é
+	//ã‚¯ãƒªãƒƒã‚¯ã‹å¤–éƒ¨ã§å·¦ã‚¯ãƒªãƒƒã‚¯å‡¦ç†ã—ãŸã„ã¨ãã«ãƒ•ãƒ©ã‚°ç«‹ã¦ã‚‹
 	isClickLeft_ = (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || isClickLeft_);
 
-	//‘fè‚âe‚È‚Ç‚ÌƒXƒe[ƒg
+	//ç´ æ‰‹ã‚„éŠƒãªã©ã®ã‚¹ãƒ†ãƒ¼ãƒˆ
 	state_->Update();
 
 	Character::Update();
 
-	//è‚ÌƒAƒbƒvƒf[ƒg
+	//æ‰‹ã®ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ
 	handManager_->Update();
 
-	//ƒIƒt
+	//ã‚ªãƒ•
 	isClickLeft_ = false;
 }
 
@@ -200,24 +197,24 @@ void Player::Draw()
 		return;
 	}
 
-	//è‚Ì•`‰æ
+	//æ‰‹ã®æç”»
 	handManager_->Draw();
 }
 
 void Player::Dead(const CollisionInfo& info)
 {
-	//hp‚ª0‚É‚È‚Á‚½‚ç
+	//hpãŒ0ã«ãªã£ãŸã‚‰
 	isDead_ = true;
 
-	//è‚ğíœ
+	//æ‰‹ã‚’å‰Šé™¤
 	handManager_->DeleteHands();
 
 	Bullet* bullet = dynamic_cast<Bullet*>(info.object_);
 
-	//‰‰o—p‚É’eŒ‚‚Á‚½“G‚ÌˆÊ’u•Û‘¶
+	//æ¼”å‡ºç”¨ã«å¼¾æ’ƒã£ãŸæ•µã®ä½ç½®ä¿å­˜
 	bulletOwnerEnemyPos_ = bullet->GetOwnerPos();
 
-	//ƒXƒe[ƒg‚ğ•ÏX
+	//ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å¤‰æ›´
 	ChangePlayerState(std::make_unique<PlayerStateDeadEffect>());
 }
 
@@ -225,19 +222,19 @@ void Player::ThrowWeapon()
 {
 	FallWeapon(GetFrontVec() * FALL_VEL_POW_ + Vec3(0, 0.2f, 0));
 
-	//ƒQ[ƒ€ƒXƒs[ƒh‰ÁZ
+	//ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰åŠ ç®—
 	GameVelocityManager::GetInstance().AddGameVelocity(0.9f);
 
-	//ƒXƒe[ƒg•ÏX(‘fè)
+	//ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´(ç´ æ‰‹)
 	ChangePlayerState(std::make_unique<PlayerStateBareHands>());
 }
 
 void Player::OnCollision(const CollisionInfo& info)
 {
-	//’e‚É“–‚½‚Á‚½‚çƒ_ƒ[ƒW
+	//å¼¾ã«å½“ãŸã£ãŸã‚‰ãƒ€ãƒ¡ãƒ¼ã‚¸
 	if (info.object_->GetObjName() == "bullet")
 	{
-		//ƒ_ƒ[ƒW
+		//ãƒ€ãƒ¡ãƒ¼ã‚¸
 		Damaged(hp_, [=]() { Dead(info); });
 	}
 }
