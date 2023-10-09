@@ -1,4 +1,4 @@
-﻿#include "TouchableObject.h"
+#include "TouchableObject.h"
 #include "MeshCollider.h"
 #include "CollisionAttribute.h"
 

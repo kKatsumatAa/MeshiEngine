@@ -102,7 +102,7 @@ Weapon* LevelManager::GetChildWeapon(LevelData::ObjectData& objData)
 	newObj->SetObjName(objData.childData->fileName);
 
 	//判定系
-	SetCollider(newObj.get(), *objData.childData, true);
+	SetCollider(newObj.get(), *objData.childData, true, model);
 
 	//正面ベクトル(objの角度によって回転,回転後のベクトルを基礎正面とする)
 	newObj->CalcFrontVec();
@@ -135,7 +135,7 @@ void LevelManager::CheckLandShapeObject(const LevelData::ObjectData& objData, bo
 	}
 }
 
-void LevelManager::SetCollider(IObject3D* obj, const LevelData::ObjectData& objData, bool isSettingCollider)
+void LevelManager::SetCollider(IObject3D* obj, const LevelData::ObjectData& objData, bool isSettingCollider, IModel* model)
 {
 	//タイプがなければコライダー無しなので
 	if (objData.colliderData.colliderType != CollisionShapeType::SHAPE_UNKNOWN)
@@ -153,7 +153,9 @@ void LevelManager::SetCollider(IObject3D* obj, const LevelData::ObjectData& objD
 			//メッシュコライダー
 			else if (type == COLLISIONSHAPE_MESH)
 			{
-				obj->SetCollider(std::make_unique<MeshCollider>());
+				auto meshCollider = std::make_unique<MeshCollider>();
+				meshCollider->ConstructTriangles(model);
+				obj->SetCollider(std::move(meshCollider));
 			}
 		}
 		//判定属性セット
@@ -246,7 +248,7 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	newObj->SetObjName(objData.fileName);
 
 	//判定系
-	SetCollider(newObj.get(), objData, !isLandShape_);
+	SetCollider(newObj.get(), objData, !isLandShape_, model);
 
 	//親ノードをセット(今はとりあえず武器のみ)
 	SetParentNode(newObj.get(), objData, model, childWeapon);
