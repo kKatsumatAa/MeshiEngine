@@ -1,6 +1,6 @@
-﻿#pragma once
+#pragma once
 ///<summary>
-/// 蠖薙◆繧雁愛螳壹・繝ｪ繝溘ユ繧｣繝・
+/// 当たり判定プリミティブ
 /// </summary>
 
 #include<DirectXMath.h>
@@ -8,21 +8,21 @@
 #include"Vec3.h"
 
 /// <summary>
-/// 逅・
+/// 球
 /// </summary>
 struct Sphere
 {
 public:
 	virtual ~Sphere() { ; }
 
-	//荳ｭ蠢・ｺｧ讓・
+	//中心座標
 	DirectX::XMVECTOR center = { 0,0,0,1 };
-	//蜊雁ｾ・
+	//半径
 	float iRadius = 1.0f;
 };
 
 /// <summary>
-/// 蟷ｳ髱｢
+/// 平面
 /// </summary>
 struct Plane
 {
@@ -30,35 +30,35 @@ public:
 	virtual ~Plane() { ; }
 
 public:
-	//豕慕ｷ壹・繧ｯ繝医Ν
+	//法線ベクトル
 	DirectX::XMVECTOR iNormal = { 0,1,0,0 };
-	//蜴溽せ(0,0,0)縺九ｉ縺ｮ霍晞屬
+	//原点(0,0,0)からの距離
 	float iDistance = 0.0f;
 };
 
 /// <summary>
-/// 豕慕ｷ壻ｻ倥″荳芽ｧ貞ｽ｢・域凾險亥屓繧翫′陦ｨ髱｢・・
+/// 法線付き三角形（時計回りが表面）
 /// </summary>
 struct Triangle
 {
-	//鬆らせ蠎ｧ讓・縺､
+	//頂点座標3つ
 	DirectX::XMVECTOR iP0;
 	DirectX::XMVECTOR iP1;
 	DirectX::XMVECTOR iP2;
-	//豕慕ｷ壹・繧ｯ繝医Ν
+	//法線ベクトル
 	DirectX::XMVECTOR iNormal;
 
 public:
 	virtual ~Triangle() { ; }
 
 	/// <summary>
-	/// 豕慕ｷ壹・險育ｮ・
+	/// 法線の計算
 	/// </summary>
 	void ComputeNormal();
 };
 
 /// <summary>
-/// 繝ｬ繧､
+/// レイ
 /// </summary>
 struct Ray
 {
@@ -66,9 +66,9 @@ public:
 	virtual ~Ray() { ; }
 
 public:
-	//隕也せ蠎ｧ讓・
+	//視点座標
 	DirectX::XMVECTOR start = { 0,0,0,1.0f };
-	//譁ｹ蜷・
+	//方向
 	DirectX::XMVECTOR dir = { 1.0f,0,0,0 };
 };
 
@@ -76,7 +76,7 @@ public:
 // 2D
 
 /// <summary>
-/// 蜀・
+/// 円
 /// </summary>
 struct Circle
 {
@@ -84,14 +84,14 @@ public:
 	virtual ~Circle() { ; }
 
 public:
-	//荳ｭ蠢・ｺｧ讓・
+	//中心座標
 	Vec2 center = { 0,0 };
-	//蜊雁ｾ・
+	//半径
 	float iRadius = 1.0f;
 };
 
 /// <summary>
-/// 遏ｩ蠖｢
+/// 矩形
 /// </summary>
 struct MyRectangle
 {
@@ -99,7 +99,7 @@ public:
 	virtual ~MyRectangle() { ; }
 
 public:
-	//蜷・らせ
+	//各頂点
 	Vec2 iLeftUp = { -1.0f,-1.0f };
 	Vec2 iLeftDown = { -1.0f,1.0f };
 	Vec2 iRightUp = { 1.0f,-1.0f };

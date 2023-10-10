@@ -1,26 +1,26 @@
-﻿#pragma once
+#pragma once
 
 #include "BaseCollider.h"
 #include "CollisionPrimitive.h"
 
 /// <summary>
-/// 逅・｡晉ｪ∝愛螳壹が繝悶ず繧ｧ繧ｯ繝・
+/// 球衝突判定オブジェクト
 /// </summary>
 class SphereCollider : public BaseCollider, public Sphere
 {
-private: // 繧ｨ繧､繝ｪ繧｢繧ｹ
-	// DirectX::繧堤怐逡･
+private: // エイリアス
+	// DirectX::を省略
 	using XMVECTOR = DirectX::XMVECTOR;
 public:
 	SphereCollider(const XMVECTOR& offset = { 0,0,0,0 }, float radius = 1.0f) :
 		offset_(offset), radius_(radius)
 	{
-		// 逅・ｽ｢迥ｶ繧偵そ繝・ヨ
+		// 球形状をセット
 		shapeType_ = COLLISIONSHAPE_SPHERE;
 	}
 
 	/// <summary>
-	/// 譖ｴ譁ｰ
+	/// 更新
 	/// </summary>
 	void Update() override;
 
@@ -28,9 +28,9 @@ public:
 	inline float GetRadius() { return radius_; }
 
 private:
-	// 繧ｪ繝悶ず繧ｧ繧ｯ繝井ｸｭ蠢・°繧峨・繧ｪ繝輔そ繝・ヨ
+	// オブジェクト中心からのオフセット
 	XMVECTOR offset_;
-	// 蜊雁ｾ・
+	// 半径
 	float radius_;
 };
 
