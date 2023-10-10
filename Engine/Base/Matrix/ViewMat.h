@@ -16,7 +16,7 @@ public:
 	Vec3 eye_;
 	Vec3 target_;
 	Vec3 up_;
-	
+
 
 	//
 	ViewMat(float eyeX, float eyeY, float eyeZ,

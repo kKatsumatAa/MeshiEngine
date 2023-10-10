@@ -1,4 +1,4 @@
-#include "SceneLoad.h"
+ï»¿#include "SceneLoad.h"
 #include "SceneManager.h"
 
 
@@ -14,18 +14,18 @@ void SceneLoad::Finalize()
 
 void SceneLoad::Initialize()
 {
-	////”ñ“¯Šúˆ—(ƒXƒe[ƒWì¬’†‚É‚àƒ[ƒh‰æ–Êo‚·“I‚È)
+	////éžåŒæœŸå‡¦ç†(ã‚¹ãƒ†ãƒ¼ã‚¸ä½œæˆä¸­ã«ã‚‚ãƒ­ãƒ¼ãƒ‰ç”»é¢å‡ºã™çš„ãª)
 	//async_.StartAsyncFunction([=]() { sceneM_->GetLoadFunc(); });
 }
 
 void SceneLoad::Update()
 {
-	////ƒV[ƒ“‘JˆÚ
+	////ã‚·ãƒ¼ãƒ³é·ç§»
 	//if (async_.GetLockFlag())
 	//{
 	//	async_.EndThread();
 
-	//	//ƒ[ƒhI‚í‚Á‚½‚ç
+	//	//ãƒ­ãƒ¼ãƒ‰çµ‚ã‚ã£ãŸã‚‰
 	//	sceneM_->ChangeScene(sceneM_->GetAfterLoadNextSceneName());
 	//}
 }

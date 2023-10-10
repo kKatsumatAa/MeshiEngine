@@ -134,7 +134,7 @@ void Sprite::DrawBoxSprite(Camera2D* camera,
 }
 
 void Sprite::DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-	 bool isPosLeftTop, bool isReverseX, bool isReverseY)
+	bool isPosLeftTop, bool isReverseX, bool isReverseY)
 {
 	//更新
 	Update();

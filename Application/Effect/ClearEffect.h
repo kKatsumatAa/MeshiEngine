@@ -7,7 +7,7 @@ class ClearEffectState;
 class ClearEffect final
 {
 private:
-	//ƒXƒe[ƒg
+	//ã‚¹ãƒ†ãƒ¼ãƒˆ
 	std::unique_ptr<ClearEffectState> state_ = nullptr;
 
 	bool isEffect_ = false;

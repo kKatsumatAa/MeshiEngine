@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"PostPera.h"
 
 class SceneManager;
@@ -6,7 +6,7 @@ class SceneManager;
 class SceneState
 {
 protected:
-	//ƒ|ƒCƒ“ƒ^Ø‚è‚Ä‚é‚¾‚¯‚È‚Ì‚Ådelete‚µ‚½‚ç~
+	//ãƒã‚¤ãƒ³ã‚¿å€Ÿã‚Šã¦ã‚‹ã ã‘ãªã®ã§deleteã—ãŸã‚‰Ã—
 	SceneManager* sceneM_;
 
 public:

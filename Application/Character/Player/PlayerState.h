@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"CollisionManager.h"
 #include"CharacterState.h"
 
@@ -6,7 +6,7 @@
 class Player;
 
 
-//‘fè‚©Ae‚ğ‚Á‚Ä‚é‚©“™‚ÌƒXƒe[ƒg
+//ç´ æ‰‹ã‹ã€éŠƒã‚’æŒã£ã¦ã‚‹ã‹ç­‰ã®ã‚¹ãƒ†ãƒ¼ãƒˆ
 class PlayerState : public CharacterState
 {
 protected:
@@ -26,7 +26,7 @@ public:
 	virtual void Update()override;
 };
 
-//‘fèó‘Ô
+//ç´ æ‰‹çŠ¶æ…‹
 class PlayerStateBareHands :
 	public PlayerState,
 	public CharacterStateBareHands
@@ -38,7 +38,7 @@ public:
 	void Update() override;
 };
 
-//e‚Á‚Ä‚é
+//éŠƒæŒã£ã¦ã‚‹
 class PlayerStateHaveWeapon :
 	public PlayerState,
 	public CharacterStateHaveWeapon
@@ -49,7 +49,7 @@ public:
 	void Update() override;
 };
 
-//€–S‰‰o
+//æ­»äº¡æ¼”å‡º
 class PlayerStateDeadEffect : public PlayerState
 {
 private:

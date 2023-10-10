@@ -1,4 +1,4 @@
-#include "PostEffectManager.h"
+ï»¿#include "PostEffectManager.h"
 #include "ImGuiManager.h"
 
 PostEffectManager& PostEffectManager::GetInstance()
@@ -9,7 +9,7 @@ PostEffectManager& PostEffectManager::GetInstance()
 
 void PostEffectManager::Initialize(const char* normalTexHandle)
 {
-	//ƒ|ƒXƒgƒGƒtƒFƒNƒg
+	//ãƒã‚¹ãƒˆã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 	postPera_[0] = std::make_unique<PostPera>();
 	postPera_[1] = std::make_unique<PostPera>();
 	postPera_[2] = std::make_unique<PostPera>();
@@ -39,43 +39,43 @@ void PostEffectManager::ImGuiUpdate()
 
 void PostEffectManager::BeforeDraw(std::function<void()> drawSceneF, const std::function<void()>& drawSpriteF)
 {
-	//1–‡–Ú‚É•`‰æ
+	//1æšç›®ã«æç”»
 	postPera_[0]->DrawToPostpera(drawSceneF, true);
 
-	//[“xƒoƒbƒtƒ@
+	//æ·±åº¦ãƒãƒƒãƒ•ã‚¡
 	DirectXWrapper::GetInstance().ResourceBarrier(
 		D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		DirectXWrapper::GetInstance().GetDepthBuff());
 
-	//‚Ú‚©‚µƒeƒNƒXƒ`ƒƒ‚É•`‰æ
+	//ã¼ã‹ã—ãƒ†ã‚¯ã‚¹ãƒãƒ£ã«æç”»
 	postPera_[0]->DrawToBlurAll();
-	//‚Ú‚©‚µ
+	//ã¼ã‹ã—
 	postPera_[0]->DrawShrinkTextureForBlur();
 
 	//------------------------------------------------------------
 
-	//ˆê–‡–Ú‚É•`‰æŒ‹‰ÊA“ñ–‡–Ú‚à•`‰æ‚·‚é
+	//ä¸€æšç›®ã«æç”»çµæœã€äºŒæšç›®ã‚‚æç”»ã™ã‚‹
 	std::function<void()>f2 = [=]() { postPera_[0]->Draw2();  };
 
 	postPera_[1]->DrawToPostpera(f2, false, drawSpriteF);
-	//ƒuƒ‰[—p‚É‘‚«‚İ
+	//ãƒ–ãƒ©ãƒ¼ç”¨ã«æ›¸ãè¾¼ã¿
 	postPera_[1]->DrawToBlurAll();
 
-	//ƒuƒ‹[ƒ€—p(ƒuƒ‰[)
+	//ãƒ–ãƒ«ãƒ¼ãƒ ç”¨(ãƒ–ãƒ©ãƒ¼)
 	postPera_[1]->DrawShrinkTextureForBlur();
 
 
 	//------------------------------------------------------------
 
-	//“ñ–‡–Ú‚É•`‰æŒ‹‰ÊAO–‡–Ú‚à•`‰æ‚·‚é
+	//äºŒæšç›®ã«æç”»çµæœã€ä¸‰æšç›®ã‚‚æç”»ã™ã‚‹
 	std::function<void()>f3 = [=]() { postPera_[1]->Draw2();  };
 
 	postPera_[2]->DrawToPostpera(f3);
-	//ƒuƒ‰[—p‚É‘‚«‚İ
+	//ãƒ–ãƒ©ãƒ¼ç”¨ã«æ›¸ãè¾¼ã¿
 	postPera_[2]->DrawToBlurAll();
 
-	//ƒuƒ‹[ƒ€—p(ƒuƒ‰[)
+	//ãƒ–ãƒ«ãƒ¼ãƒ ç”¨(ãƒ–ãƒ©ãƒ¼)
 	postPera_[2]->DrawShrinkTextureForBlur();
 }
 
@@ -83,7 +83,7 @@ void PostEffectManager::DrawDisplay()
 {
 	postPera_[2]->Draw2();
 
-	//[“xƒoƒbƒtƒ@
+	//æ·±åº¦ãƒãƒƒãƒ•ã‚¡
 	DirectXWrapper::GetInstance().ResourceBarrier(
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		D3D12_RESOURCE_STATE_DEPTH_WRITE,

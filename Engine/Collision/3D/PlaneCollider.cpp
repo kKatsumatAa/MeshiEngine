@@ -1,18 +1,18 @@
-#include "PlaneCollider.h"
+﻿#include "PlaneCollider.h"
 
 
 using namespace DirectX;
 
 void PlaneCollider::Update()
 {
-	// 面のメンバ変数を更新
+	// 髱｢縺ｮ繝｡繝ｳ繝仙､画焚繧呈峩譁ｰ
 	Plane::iDistance = object_->GetTrans().GetLength();
 
-	//法線を計算
+	//豕慕ｷ壹ｒ險育ｮ・
 	WorldMat worldNormal;
 	worldNormal.rot_ = object_->GetRot();
 	worldNormal.CalcWorldMat();
-	//回転のみ
+	//蝗櫁ｻ｢縺ｮ縺ｿ
 	Vec3 normal = GetVec3xM4({ 0,0,-1.0f }, worldNormal.matWorld_, 1);
 	normal.Normalized();
 	Plane::iNormal = { normal.x,normal.y,normal.z,1.0f };

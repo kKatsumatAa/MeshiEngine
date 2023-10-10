@@ -1,9 +1,9 @@
-#include "SceneFactory.h"
+ï»¿#include "SceneFactory.h"
 
 
 std::unique_ptr<SceneState> SceneFactory::CreateScene(const std::string& sceneName)
 {
-    //Ÿ‚ÌƒV[ƒ“‚Ì“ü‚ê•¨
+    //æ¬¡ã®ã‚·ãƒ¼ãƒ³ã®å…¥ã‚Œç‰©
     std::unique_ptr<SceneState> newScene;
 
     if (sceneName == "TITLE")

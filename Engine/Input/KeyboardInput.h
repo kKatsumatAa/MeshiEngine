@@ -5,15 +5,15 @@
 class KeyboardInput final
 {
 private:
-	//namespaceÈ—ª
+	//namespaceçœç•¥
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	//‘SƒL[‚Ì“ü—Íó‘Ô‚ğæ“¾‚·‚é
+	//å…¨ã‚­ãƒ¼ã®å…¥åŠ›çŠ¶æ…‹ã‚’å–å¾—ã™ã‚‹
 	byte key_[256] = {};
 	byte oldkey_[256] = {};
 	HRESULT result_;
 
-	//ƒL[ƒ{[ƒhƒfƒoƒCƒX‚Ì¶¬
+	//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã®ç”Ÿæˆ
 	ComPtr<IDirectInputDevice8> keyboard_ = nullptr;
 
 private:
@@ -22,9 +22,9 @@ private:
 	~KeyboardInput();
 
 public:
-	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ–³Œø
+	//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’ç„¡åŠ¹
 	KeyboardInput(const KeyboardInput& obj) = delete;
-	//‘ã“ü‰‰Zq‚à
+	//ä»£å…¥æ¼”ç®—å­ã‚‚
 	KeyboardInput& operator=(const KeyboardInput& obj) = delete;
 
 
@@ -33,7 +33,7 @@ public:
 	void Update();
 
 
-	//ƒgƒŠƒK[—p
+	//ãƒˆãƒªã‚¬ãƒ¼ç”¨
 	bool KeyPush(byte keys)
 	{
 		return key_[keys];

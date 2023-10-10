@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "DirectXWrapper.h"
 #include <map>
 
@@ -6,16 +6,16 @@
 class TextureManager
 {
 private:
-	//Microsoft::WRL::‚ğÈ—ª
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 private:
-	//Ši”[æ
+	//æ ¼ç´å…ˆ
 	static const std::string sDirectoryPath_;
 
 	static int32_t sCount_;
 
-	//ƒeƒNƒXƒ`ƒƒƒf[ƒ^‚Ì˜A‘z”z—ñ
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ‡ãƒ¼ã‚¿ã®é€£æƒ³é…åˆ—
 	static std::map < std::string, uint64_t> sTextureDatas_;
 
 	TextureManager();
@@ -24,37 +24,37 @@ private:
 
 
 private:
-	//ƒeƒNƒXƒ`ƒƒ‚ª‚È‚¢ê‡‚Ì•W€ƒeƒNƒXƒ`ƒƒƒtƒ@ƒCƒ‹–¼
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒãªã„å ´åˆã®æ¨™æº–ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ•ã‚¡ã‚¤ãƒ«å
 	static const std::string S_DEFAULT_TEX_FILE_NAME_;
 
 	static uint64_t sWhiteTexHandle_;
 
-	//ƒŠƒ\[ƒXİ’è
+	//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 	static D3D12_RESOURCE_DESC sResDesc_;
-	//İ’è‚ğ‚à‚Æ‚ÉSRV—pƒfƒXƒNƒŠƒvƒ^ƒq[ƒv‚ğ¶¬
+	//è¨­å®šã‚’ã‚‚ã¨ã«SRVç”¨ãƒ‡ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ’ãƒ¼ãƒ—ã‚’ç”Ÿæˆ
 	static  ComPtr < ID3D12DescriptorHeap> sSrvHeap_;
 	static D3D12_CPU_DESCRIPTOR_HANDLE sSrvHandle_;
 
 	static const int32_t S_SRV_COUNT_ = 512;
 	static ComPtr<ID3D12Resource> sTexBuff_[S_SRV_COUNT_];
 
-	//SRV‚ÌÅ‘åŒÂ”
+	//SRVã®æœ€å¤§å€‹æ•°
 	static const int32_t S_K_MAX_SRV_COUNT_;
-	//ƒfƒXƒNƒŠƒvƒ^ƒq[ƒv‚Ìİ’è
+	//ãƒ‡ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ’ãƒ¼ãƒ—ã®è¨­å®š
 	static D3D12_DESCRIPTOR_HEAP_DESC sSrvHeapDesc_;
 
-	//ƒfƒXƒNƒŠƒvƒ^ƒŒƒ“ƒW‚Ìİ’è
+	//ãƒ‡ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ¬ãƒ³ã‚¸ã®è¨­å®š
 	static D3D12_DESCRIPTOR_RANGE sDescriptorRange_;
 
 public:
-	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ–³Œø
+	//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’ç„¡åŠ¹
 	TextureManager(const TextureManager& obj) = delete;
-	//‘ã“ü‰‰Zq‚à
+	//ä»£å…¥æ¼”ç®—å­ã‚‚
 	TextureManager& operator=(const TextureManager& obj) = delete;
 
 	static TextureManager& GetInstance();
 
-	//ƒfƒXƒNƒŠƒvƒ^ƒq[ƒv‰Šú‰»
+	//ãƒ‡ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ’ãƒ¼ãƒ—åˆæœŸåŒ–
 	static void InitializeDescriptorHeap();
 	static void Initialize();
 	static uint64_t LoadGraph(const char* name, ID3D12Resource** texBuff = nullptr,
@@ -62,7 +62,7 @@ public:
 
 	static void AddSRVHandleCount() { sCount_++; }
 
-	//ƒeƒNƒXƒ`ƒƒƒnƒ“ƒhƒ‹‚ª‰½‚à“ü‚Á‚Ä‚È‚©‚Á‚½‚ç”’‚¢‰æ‘œ‚Ìƒnƒ“ƒhƒ‹“ü‚ê‚é
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒ³ãƒ‰ãƒ«ãŒä½•ã‚‚å…¥ã£ã¦ãªã‹ã£ãŸã‚‰ç™½ã„ç”»åƒã®ãƒãƒ³ãƒ‰ãƒ«å…¥ã‚Œã‚‹
 	static void CheckTexHandle(uint64_t& texHandle);
 
 public:

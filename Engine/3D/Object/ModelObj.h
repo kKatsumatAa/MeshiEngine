@@ -1,43 +1,43 @@
-#pragma once
+ï»¿#pragma once
 #include"IModel.h"
 
 
 struct Vertex
 {
-	DirectX::XMFLOAT3 pos;   //xyzÀ•W
-	DirectX::XMFLOAT3 normal;//–@üƒxƒNƒgƒ‹
-	DirectX::XMFLOAT2 uv;    //uvÀ•W
-	DirectX::XMFLOAT4 tangent;//–@ü‚ÌÚü
+	DirectX::XMFLOAT3 pos;   //xyzåº§æ¨™
+	DirectX::XMFLOAT3 normal;//æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«
+	DirectX::XMFLOAT2 uv;    //uvåº§æ¨™
+	DirectX::XMFLOAT4 tangent;//æ³•ç·šã®æ¥ç·š
 };
-//’¸“_ƒf[ƒ^
+//é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿
 
 
 class ModelObj : public IModel
 {
 private:
-	//QÆæ‚ÌƒpƒXˆê•”iobj‚©fbx‚©j
+	//å‚ç…§å…ˆã®ãƒ‘ã‚¹ä¸€éƒ¨ï¼ˆobjã‹fbxã‹ï¼‰
 	static const std::string S_TYPE_DIRECTORY_;
 
 
 private:
-	//OBJƒtƒ@ƒCƒ‹‚©‚ç3Dƒ‚ƒfƒ‹‚ğ“Ç‚İ‚Ş
+	//OBJãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰3Dãƒ¢ãƒ‡ãƒ«ã‚’èª­ã¿è¾¼ã‚€
 	void LoadFromOBJInternal(const std::string& folderName, bool smoothing = false);
 
 
 	/// <summary>
-	/// ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
+	/// ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
 	/// </summary>
 	void LoadTextures() override;
 
-	//‰Šú‰»(Œp³‚ÌŠÖŒW‚Å)
+	//åˆæœŸåŒ–(ç¶™æ‰¿ã®é–¢ä¿‚ã§)
 	void InitializeInternal(const std::string& folderName, bool smoothing);
 
 public:
 	void LoadMaterial(const std::string& directoryPath, const std::string& filename);
 
-public://Ã“Iƒƒ“ƒoŠÖ”
-	//OBJƒtƒ@ƒCƒ‹‚©‚ç3Dƒ‚ƒfƒ‹‚ğ“Ç‚İ‚Ş
-	//"ƒtƒHƒ‹ƒ_–¼‚Ì‚İ"‚ğw’è‚·‚ê‚Îmtl,obj,textuer‚ğ“Ç‚İ‚±‚Şi‚·‚×‚Ä“¯‚¶–¼‘O‚Å‚ ‚ê‚Îj
+public://é™çš„ãƒ¡ãƒ³ãƒé–¢æ•°
+	//OBJãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰3Dãƒ¢ãƒ‡ãƒ«ã‚’èª­ã¿è¾¼ã‚€
+	//"ãƒ•ã‚©ãƒ«ãƒ€åã®ã¿"ã‚’æŒ‡å®šã™ã‚Œã°mtl,obj,textuerã‚’èª­ã¿ã“ã‚€ï¼ˆã™ã¹ã¦åŒã˜åå‰ã§ã‚ã‚Œã°ï¼‰
 	static std::unique_ptr<ModelObj> LoadFromOBJ(const std::string& folderName, bool smoothing = false);
 };
 

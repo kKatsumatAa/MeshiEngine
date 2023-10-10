@@ -1,4 +1,4 @@
-#include "SceneClear.h"
+ï»¿#include "SceneClear.h"
 #include "SceneManager.h"
 
 
@@ -15,7 +15,7 @@ void SceneClear::Initialize()
 
 void SceneClear::Update()
 {
-	//ƒV[ƒ“‘JˆÚ
+	//ã‚·ãƒ¼ãƒ³é·ç§»
 	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
 	{
 		sceneM_->SetNextScene("TITLE");

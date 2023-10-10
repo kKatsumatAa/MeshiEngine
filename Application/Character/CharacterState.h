@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 #include"CollisionManager.h"
 
 
 class Character;
 
 
-//‘fè‚©Ae‚ğ‚Á‚Ä‚é‚©“™‚ÌƒXƒe[ƒg
+//ç´ æ‰‹ã‹ã€éŠƒã‚’æŒã£ã¦ã‚‹ã‹ç­‰ã®ã‚¹ãƒ†ãƒ¼ãƒˆ
 class CharacterState
 {
 protected:
@@ -21,7 +21,7 @@ public:
 	virtual void Update() = 0;
 };
 
-//‘fèó‘Ô
+//ç´ æ‰‹çŠ¶æ…‹
 class CharacterStateBareHands
 {
 
@@ -30,7 +30,7 @@ public:
 	virtual void Update() = 0;
 };
 
-//e‚Á‚Ä‚é
+//éŠƒæŒã£ã¦ã‚‹
 class CharacterStateHaveWeapon
 {
 

@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include"Util.h"
 #include<random>
 
-//—”ƒV[ƒh¶¬Ší
+//ä¹±æ•°ã‚·ãƒ¼ãƒ‰ç”Ÿæˆå™¨
 static std::random_device sSeedGen;
-//ƒƒ‹ƒZƒ“ƒkƒcƒCƒXƒ^[
+//ãƒ¡ãƒ«ã‚»ãƒ³ãƒŒãƒ„ã‚¤ã‚¹ã‚¿ãƒ¼
 static std::mt19937_64 sEngine(sSeedGen());
 
 class Shake

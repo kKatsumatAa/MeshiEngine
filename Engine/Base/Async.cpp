@@ -1,4 +1,4 @@
-#include "Async.h"
+ï»¿#include "Async.h"
 
 bool Async::GetIsLoading()
 {
@@ -7,7 +7,7 @@ bool Async::GetIsLoading()
 
 void Async::AsyncLoad(std::function<void()> p)
 {
-	//ŠÖ”
+	//é–¢æ•°
 	p();
 }
 
@@ -16,7 +16,7 @@ bool Async::GetFinishedAsync()
 	if (isLoading_)
 	{
 		std::future_status status = loadFunc_.wait_for(std::chrono::seconds(0));
-		//I‚í‚Á‚Ä‚¢‚½‚ç
+		//çµ‚ã‚ã£ã¦ã„ãŸã‚‰
 		if (status == std::future_status::ready)
 		{
 			return true;
@@ -28,13 +28,13 @@ bool Async::GetFinishedAsync()
 void Async::StartAsyncFunction(const std::function<void()>& p)
 {
 	isLoading_ = true;
-	//”ñ“¯Šúˆ—ƒXƒ^[ƒg
+	//éåŒæœŸå‡¦ç†ã‚¹ã‚¿ãƒ¼ãƒˆ
 	loadFunc_ = std::async(std::launch::async, [=] { return AsyncLoad(p); });
 }
 
 void Async::EndThread()
 {
-	//I‚í‚Á‚Ä‚¢‚½‚ç
+	//çµ‚ã‚ã£ã¦ã„ãŸã‚‰
 	if (isLoading_)
 	{
 		isLoading_ = false;

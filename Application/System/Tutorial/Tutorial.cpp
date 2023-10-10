@@ -1,4 +1,4 @@
-#include "Tutorial.h"
+ï»¿#include "Tutorial.h"
 #include "TutorialState.h"
 #include <fstream>
 #include <sstream>
@@ -27,7 +27,7 @@ void Tutorial::ToNextState()
 		name = nextStateNames_.front();
 		nextStateNames_.pop_front();
 	}
-	//–¼‘O‚ÅƒXƒe[ƒg•Ï‚¦‚é
+	//åå‰ã§ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰ãˆã‚‹
 	ChangeState(name);
 }
 
@@ -37,28 +37,28 @@ void Tutorial::LoadTutorialData(int32_t fileIndex)
 
 	const std::string FILE_NAME = FILE_NAME_ + std::to_string(fileIndex) + ".csv";
 
-	// ƒtƒ@ƒCƒ‹ƒXƒgƒŠ[ƒ€
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 	std::ifstream file;
-	//ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã
 	std::string fullPath = FOLDER_NAME_ + FILE_NAME;
 	file.open(fullPath);
-	// ƒtƒ@ƒCƒ‹ƒI[ƒvƒ“¸”s‚ğƒ`ƒFƒbƒN
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ¼ãƒ—ãƒ³å¤±æ•—ã‚’ãƒã‚§ãƒƒã‚¯
 	if (file.fail()) {
 		assert(0);
 	}
 
-	// 1s‚¸‚Â“Ç‚İ‚Ş
+	// 1è¡Œãšã¤èª­ã¿è¾¼ã‚€
 	std::string line;
 	while (getline(file, line)) {
 
-		// 1s•ª‚Ì•¶š—ñ‚ğƒXƒgƒŠ[ƒ€‚É•ÏŠ·‚µ‚Ä‰ğÍ‚µ‚â‚·‚­‚·‚é
+		// 1è¡Œåˆ†ã®æ–‡å­—åˆ—ã‚’ã‚¹ãƒˆãƒªãƒ¼ãƒ ã«å¤‰æ›ã—ã¦è§£æã—ã‚„ã™ãã™ã‚‹
 		std::istringstream line_stream(line);
 
-		// ”¼ŠpƒXƒy[ƒX‹æØ‚è‚Ås‚Ìæ“ª•¶š—ñ‚ğæ“¾
+		// åŠè§’ã‚¹ãƒšãƒ¼ã‚¹åŒºåˆ‡ã‚Šã§è¡Œã®å…ˆé ­æ–‡å­—åˆ—ã‚’å–å¾—
 		std::string key;
 		std::getline(line_stream, key, ' ');
 
-		//æ“ª‚ªt‚¾‚Á‚½‚çƒ`ƒ…[ƒgƒŠƒAƒ‹‚Ì–¼‘O
+		//å…ˆé ­ãŒtã ã£ãŸã‚‰ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã®åå‰
 		if (key == "t" || key == "T")
 		{
 			nextStateNames_.emplace_back();
@@ -67,7 +67,7 @@ void Tutorial::LoadTutorialData(int32_t fileIndex)
 		}
 	}
 
-	//ƒ`ƒ…[ƒgƒŠƒAƒ‹‚Ì‰Šú‰»
+	//ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã®åˆæœŸåŒ–
 	Initialize();
 }
 
@@ -79,7 +79,7 @@ void Tutorial::Initialize()
 	TextureManager::GetInstance().LoadGraph("tutorial2.png");
 	TextureManager::GetInstance().LoadGraph("tutorial3.png");
 
-	//ˆê”Ô–Ú‚ÌƒXƒe[ƒg‚É
+	//ä¸€ç•ªç›®ã®ã‚¹ãƒ†ãƒ¼ãƒˆã«
 	ToNextState();
 }
 

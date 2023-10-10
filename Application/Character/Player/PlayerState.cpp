@@ -1,4 +1,4 @@
-#include "PlayerState.h"
+ï»¿#include "PlayerState.h"
 #include "Player.h"
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
@@ -14,14 +14,14 @@ bool PlayerState::CheckEyeRayHit()
 	bool isRayHit = player_->CheckRayOfEyeHit(player_->GetFrontVec(),
 		player_->GetAttackLength(), COLLISION_ATTR_ENEMYS | COLLISION_ATTR_ITEMS, &info_);
 
-	//ƒVƒ‹ƒGƒbƒgƒIƒt
+	//ã‚·ãƒ«ã‚¨ãƒƒãƒˆã‚ªãƒ•
 	auto objs = ObjectManager::GetInstance().GetObjs();
 	for (auto obj : objs)
 	{
 		obj->SetIsSilhouette(false);
 	}
 
-	//ƒVƒ‹ƒGƒbƒg
+	//ã‚·ãƒ«ã‚¨ãƒƒãƒˆ
 	if (isRayHit)
 	{
 		info_.object->SetIsSilhouette(true);
@@ -33,15 +33,15 @@ bool PlayerState::CheckEyeRayHit()
 
 void PlayerState::Update()
 {
-	//ƒJƒƒ‰‚ÌŒü‚«•ÏX
+	//ã‚«ãƒ¡ãƒ©ã®å‘ãå¤‰æ›´
 	player_->DirectionUpdate();
 
-	//ˆÚ“®
+	//ç§»å‹•
 	player_->Move();
 }
 
 
-//‘fŽèó‘Ô-----------------------------------------------------------------------
+//ç´ æ‰‹çŠ¶æ…‹-----------------------------------------------------------------------
 void PlayerStateBareHands::Initialize()
 {
 }
@@ -52,50 +52,50 @@ void PlayerStateBareHands::Update()
 
 	bool isRayHit = PlayerState::CheckEyeRayHit();
 
-	//‰½‚©‚µ‚çÆ€‚É‚ ‚Á‚½‚ç
+	//ä½•ã‹ã—ã‚‰ç…§æº–ã«ã‚ã£ãŸã‚‰
 	if (isRayHit)
 	{
 		player_->SetIsTarget(true);
 
-		//•Ší‚ðŽ‚Á‚Ä‚È‚­‚ÄŽ‚¿Žå‚ª‚¢‚È‚¢•Ší‚ÉÆ€‚ª‚ ‚Á‚Ä‚½‚ç
+		//æ­¦å™¨ã‚’æŒã£ã¦ãªãã¦æŒã¡ä¸»ãŒã„ãªã„æ­¦å™¨ã«ç…§æº–ãŒã‚ã£ã¦ãŸã‚‰
 		if ((info_.object->GetObjName() == "gun" || info_.object->GetObjName() == "sword")
 			&& player_->GetWeapon() == nullptr && info_.object->GetParent() == nullptr)
 		{
-			//ui•ÏX
+			//uiå¤‰æ›´
 			PlayerUI::GetInstance().ChangeState("PICKUP");
 
 			if (player_->GetIsClickLeft())
 			{
 				Weapon* weapon = dynamic_cast<Weapon*>(info_.object);
-				//•ŠíE‚¤
+				//æ­¦å™¨æ‹¾ã†
 				Vec3 localPos = { -player_->GetScale().x ,-player_->GetScale().y / 2.0f ,-player_->GetScale().z * 2.0f };
 				weapon->SetRot({ 0,0,0 });
 				player_->PickUpWeapon(weapon, &localPos);
 
-				//ui•ÏX
+				//uiå¤‰æ›´
 				PlayerUI::GetInstance().ChangeState("GUN");
 
-				//ƒXƒe[ƒg•ÏX
+				//ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´
 				player_->ChangePlayerState(std::make_unique<PlayerStateHaveWeapon>());
 			}
 		}
-		//“G‚ªÆ€‚É‚ ‚Á‚½‚ç‰£‚é
+		//æ•µãŒç…§æº–ã«ã‚ã£ãŸã‚‰æ®´ã‚‹
 		else if (info_.object->GetObjName().find("enemy") != std::string::npos)
 		{
-			//ui•ÏX
+			//uiå¤‰æ›´
 			PlayerUI::GetInstance().ChangeState("PUNCH");
 
-			//UŒ‚‚·‚é
+			//æ”»æ’ƒã™ã‚‹
 			if (player_->GetIsClickLeft())
 			{
 				player_->GetHandManager()->Attack(info_);
 			}
 		}
 	}
-	//‚È‚¯‚ê‚Î
+	//ãªã‘ã‚Œã°
 	else
 	{
-		//ui•ÏX
+		//uiå¤‰æ›´
 		PlayerUI::GetInstance().ChangeState("NORMAL");
 
 		player_->SetIsTarget(false);
@@ -103,10 +103,10 @@ void PlayerStateBareHands::Update()
 }
 
 
-//•ŠíŽ‚Á‚Ä‚éó‘Ô-----------------------------------------------------------------------
+//æ­¦å™¨æŒã£ã¦ã‚‹çŠ¶æ…‹-----------------------------------------------------------------------
 void PlayerStateHaveWeapon::Initialize()
 {
-	//‰¼‚Åui•ÏX
+	//ä»®ã§uiå¤‰æ›´
 	PlayerUI::GetInstance().ChangeState("GUN");
 }
 
@@ -114,25 +114,25 @@ void PlayerStateHaveWeapon::Update()
 {
 	PlayerState::Update();
 
-	//ƒvƒŒƒCƒ„[‚ª•Ší‚ðŽ‚Á‚Ä‚¢‚½‚ç
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæ­¦å™¨ã‚’æŒã£ã¦ã„ãŸã‚‰
 	if (player_->GetWeapon() != nullptr)
 	{
 		player_->SetIsTarget(false);
 
-		//e‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+		//éŠƒã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
 		if (player_->GetWeapon()->GetObjName() == "gun")
 		{
-			//ƒN[ƒ‹ƒ^ƒCƒ€‚ÅUI‰ñ“]
+			//ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã§UIå›žè»¢
 			PlayerUI::GetInstance().SetAngle(-PI * 2.0f * player_->GetWeapon()->GetAttackCoolTimeRatio());
-			//eŠp“x
+			//éŠƒè§’åº¦
 			player_->GetWeapon()->SetRotX(LerpVec3({ PI / 4.0f,0,0 }, { 0,0,0 },
 				EaseInOutBack(player_->GetWeapon()->GetAttackCoolTimeRatio())).x);
 		}
 
-		//ƒNƒŠƒbƒN‚ÅUŒ‚
+		//ã‚¯ãƒªãƒƒã‚¯ã§æ”»æ’ƒ
 		if (player_->GetIsClickLeft())
 		{
-			//’e‚ª‚à‚¤‚È‚¯‚ê‚Î“Š‚°‚é
+			//å¼¾ãŒã‚‚ã†ãªã‘ã‚Œã°æŠ•ã’ã‚‹
 			if (player_->GetWeapon()->GetObjName() == "gun")
 			{
 				Gun* gun = dynamic_cast<Gun*>(player_->GetWeapon());
@@ -143,28 +143,28 @@ void PlayerStateHaveWeapon::Update()
 				}
 			}
 
-			//UŒ‚
+			//æ”»æ’ƒ
 			player_->GetWeapon()->Attack(player_->GetFrontVec(), 1, player_, PARTICLE_SIZE_EXTEND_);
-			//ƒQ[ƒ€ƒXƒs[ƒh‰ÁŽZ
+			//ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰åŠ ç®—
 			GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
 		}
-		//‰EƒNƒŠƒbƒN‚Å•Ší“Š‚°‚é
+		//å³ã‚¯ãƒªãƒƒã‚¯ã§æ­¦å™¨æŠ•ã’ã‚‹
 		else if (MouseInput::GetInstance().GetTriggerClick(CLICK_RIGHT))
 		{
 			player_->ThrowWeapon();
 		}
 	}
-	//‰ó‚³‚ê‚½‚è‚µ‚Ä‚È‚­‚È‚Á‚½‚ç
+	//å£Šã•ã‚ŒãŸã‚Šã—ã¦ãªããªã£ãŸã‚‰
 	else
 	{
-		//ƒXƒe[ƒg•ÏX(‘fŽè)
+		//ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´(ç´ æ‰‹)
 		player_->ChangePlayerState(std::make_unique<PlayerStateBareHands>());
 	}
 }
 
 
 //-----------------------------------------------------------------------------------------
-//Ž€–S‰‰o
+//æ­»äº¡æ¼”å‡º
 void PlayerStateDeadEffect::Initialize()
 {
 	targetPos_ = player_->GetBulletOwnerEnemyPos();
@@ -182,7 +182,7 @@ void PlayerStateDeadEffect::Update()
 
 	camera->SetEye(LerpVec3(targetPos_ - (dir_ * LENGTH_MIN_), player_->GetWorldTrans(), EaseInOut(t)));
 
-	//‰‰oI‚í‚Á‚½‚ç¶‘¶ƒtƒ‰ƒOƒIƒt
+	//æ¼”å‡ºçµ‚ã‚ã£ãŸã‚‰ç”Ÿå­˜ãƒ•ãƒ©ã‚°ã‚ªãƒ•
 	if (timer_ >= TIMER_MAX_)
 	{
 		player_->SetIsAlive(false);

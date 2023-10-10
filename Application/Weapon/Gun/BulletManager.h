@@ -4,7 +4,7 @@
 class BulletManager final
 {
 private:
-	//’e‚Ì”z—ñ
+	//å¼¾ã®é…åˆ—
 	std::list<std::unique_ptr<Bullet>> bullets_;
 
 

@@ -59,7 +59,7 @@ public: // メンバ関数
 	/// 視点座標の取得
 	/// </summary>
 	/// <returns>座標</returns>
-	inline const Vec3& GetEye() const{
+	inline const Vec3& GetEye() const {
 		return viewMat_.eye_;
 	}
 

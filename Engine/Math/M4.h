@@ -4,8 +4,8 @@
 
 class M4
 {
-private://ƒGƒCƒŠƒAƒX
-	//DirectX::‚ğÈ—ª
+private://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	//DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
@@ -13,7 +13,7 @@ private://ƒGƒCƒŠƒAƒX
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
-	//s—ñ
+	//è¡Œåˆ—
 	double m_[4][4];
 
 	static const float NORMAL_M[4][4];
@@ -23,7 +23,7 @@ public:
 
 public:
 
-	//ŠÖ”
+	//é–¢æ•°
 	M4();
 	M4(float m00, float m01, float m02, float m03,
 		float m10, float m11, float m12, float m13,
@@ -32,11 +32,11 @@ public:
 	M4(const float(*other)[4]);
 	/*void Normalize();*/
 
-	//©ì
+	//è‡ªä½œ
 
 	void TransposeM4();
 
-	//s—ñƒZƒbƒg
+	//è¡Œåˆ—ã‚»ãƒƒãƒˆ
 	void SetScaleMatrix(const Vec3& v3);
 	void SetRotationMatrix(float angle, char axis);
 	void SetTranslationMatrix(const Vec3& v3);
@@ -47,12 +47,12 @@ public:
 
 	//
 	/*M4& operator=(const float (*other)[4]);*/
-	M4 operator*(const M4& other);
+	M4 operator*(const M4& other)const;
 	M4& operator*=(const M4& other);
 
-	//‚±‚Ìƒ}ƒgƒŠƒbƒNƒXƒNƒ‰ƒX‚ÉXMMATRIX‚Ì’†g‚ğ“ü‚ê‚é
+	//ã“ã®ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã‚¯ãƒ©ã‚¹ã«XMMATRIXã®ä¸­èº«ã‚’å…¥ã‚Œã‚‹
 	void PutInXMMATRIX(const XMMATRIX& xM);
-	//M4‚Ì’†g‚ğXMMATRIX‚É“ü‚ê‚é
+	//M4ã®ä¸­èº«ã‚’XMMATRIXã«å…¥ã‚Œã‚‹
 	void MatIntoXMMATRIX(XMMATRIX& xM)const;
 };
 

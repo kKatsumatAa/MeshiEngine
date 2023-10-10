@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #include<imgui.h>
 #include"TextureManager.h"
 
-//ImGui‚ÌŠÇ—
+//ImGuiã®ç®¡ç†
 class ImGuiManager
 {
 private:
@@ -10,27 +10,27 @@ private:
 
 public:
 	/// <summary>
-	/// ‰Šú‰»
+	/// åˆæœŸåŒ–
 	/// </summary>
 	void Initialize();
 
 	/// <summary>
-	/// I—¹ˆ—
+	/// çµ‚äº†å‡¦ç†
 	/// </summary>
 	void Finalize();
 
 	/// <summary>
-	/// imGuió•tŠJn
+	/// imGuiå—ä»˜é–‹å§‹
 	/// </summary>
 	void Begin();
 
 	/// <summary>
-	/// imguió•tI—¹
+	/// imguiå—ä»˜çµ‚äº†
 	/// </summary>
 	void End();
 
 	/// <summary>
-	/// •`‰æ
+	/// æç”»
 	/// </summary>
 	void Draw();
 };

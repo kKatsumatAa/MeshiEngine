@@ -1,4 +1,4 @@
-#include "CollisionManager.h"
+﻿#include "CollisionManager.h"
 #include "BaseCollider.h"
 #include "Collision.h"
 #include "MeshCollider.h"
@@ -14,7 +14,7 @@ CollisionManager* CollisionManager::GetInstance()
 
 void CollisionManager::AddCollider(BaseCollider* collider)
 {
-	//2Dの場合は2D用の配列に追加
+	//2D縺ｮ蝣ｴ蜷医・2D逕ｨ縺ｮ驟榊・縺ｫ霑ｽ蜉
 	if (collider->GetIs2D())
 	{
 		colliders2D_.push_front(collider);
@@ -28,103 +28,103 @@ void CollisionManager::AddCollider(BaseCollider* collider)
 //----------------------------------------------------------------------------------------
 bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDistance)
 {
-	//全属性を有効にして
+	//蜈ｨ螻樊ｧ繧呈怏蜉ｹ縺ｫ縺励※
 	return Raycast(ray, 0xffff, hitInfo, maxDistance);
 }
 
 bool CollisionManager::Raycast(const Ray& ray, uint16_t attribute, RaycastHit* hitInfo, float maxDistance)
 {
 	bool result = false;
-	//走査用のイテレータ
+	//襍ｰ譟ｻ逕ｨ縺ｮ繧､繝・Ξ繝ｼ繧ｿ
 	std::forward_list<BaseCollider*>::iterator it;
-	//今までで最も近いコライダーを記録するためのイテレータ
+	//莉翫∪縺ｧ縺ｧ譛繧りｿ代＞繧ｳ繝ｩ繧､繝繝ｼ繧定ｨ倬鹸縺吶ｋ縺溘ａ縺ｮ繧､繝・Ξ繝ｼ繧ｿ
 	std::forward_list<BaseCollider*>::iterator it_hit;
-	//今までで最も近いコライダーの距離を記録する変数
+	//莉翫∪縺ｧ縺ｧ譛繧りｿ代＞繧ｳ繝ｩ繧､繝繝ｼ縺ｮ霍晞屬繧定ｨ倬鹸縺吶ｋ螟画焚
 	float distance = maxDistance;
-	//今までで最も近いコライダーとの交点を記録する変数
+	//莉翫∪縺ｧ縺ｧ譛繧りｿ代＞繧ｳ繝ｩ繧､繝繝ｼ縺ｨ縺ｮ莠､轤ｹ繧定ｨ倬鹸縺吶ｋ螟画焚
 	XMVECTOR inter = {};
 
-	// 全ての3Dコライダーと総当りチェック(colAが相手)
+	// 蜈ｨ縺ｦ縺ｮ3D繧ｳ繝ｩ繧､繝繝ｼ縺ｨ邱丞ｽ薙ｊ繝√ぉ繝・け(colA縺檎嶌謇・
 	it = colliders3D_.begin();
 	for (; it != colliders3D_.end(); ++it) {
 		BaseCollider* colA = *it;
 
-		//属性が合わなければスキップする
+		//螻樊ｧ縺悟粋繧上↑縺代ｌ縺ｰ繧ｹ繧ｭ繝・・縺吶ｋ
 		if (!(colA->attribute_ & attribute) || !colA->isValid_)
 		{
 			continue;
 		}
 
-		//球の場合
+		//逅・・蝣ｴ蜷・
 		if (colA->GetShapeType() == COLLISIONSHAPE_SPHERE) {
 			Sphere* sphere = dynamic_cast<Sphere*>(colA);
 
 			float tempDistance;
 			XMVECTOR tempInter;
 
-			//当たらなければ除外
+			//蠖薙◆繧峨↑縺代ｌ縺ｰ髯､螟・
 			if (!Collision::CheckRay2Sphere(ray, *sphere, &tempDistance, &tempInter)) continue;
-			//距離が最小でなければ除外
+			//霍晞屬縺梧怙蟆上〒縺ｪ縺代ｌ縺ｰ髯､螟・
 			if (tempDistance >= distance) continue;
 
-			//今までで最も近いので記録する
+			//莉翫∪縺ｧ縺ｧ譛繧りｿ代＞縺ｮ縺ｧ險倬鹸縺吶ｋ
 			result = true;
 			distance = tempDistance;
 			inter = tempInter;
 			it_hit = it;
 		}
 
-		//面の場合
+		//髱｢縺ｮ蝣ｴ蜷・
 		if (colA->GetShapeType() == COLLISIONSHAPE_PLANE) {
 			Plane* plane = dynamic_cast<Plane*>(colA);
 
 			float tempDistance;
 			XMVECTOR tempInter;
 
-			//当たらなければ除外
+			//蠖薙◆繧峨↑縺代ｌ縺ｰ髯､螟・
 			if (!Collision::CheckRay2Plane(ray, *plane, &tempDistance, &tempInter)) continue;
-			//距離が最小でなければ除外
+			//霍晞屬縺梧怙蟆上〒縺ｪ縺代ｌ縺ｰ髯､螟・
 			if (tempDistance >= distance) continue;
 
-			//今までで最も近いので記録する
+			//莉翫∪縺ｧ縺ｧ譛繧りｿ代＞縺ｮ縺ｧ險倬鹸縺吶ｋ
 			result = true;
 			distance = tempDistance;
 			inter = tempInter;
 			it_hit = it;
 		}
 
-		//三角の場合
+		//荳芽ｧ偵・蝣ｴ蜷・
 		if (colA->GetShapeType() == COLLISIONSHAPE_TRIANGLE) {
 			Triangle* triangle = dynamic_cast<Triangle*>(colA);
 
 			float tempDistance;
 			XMVECTOR tempInter;
 
-			//当たらなければ除外
+			//蠖薙◆繧峨↑縺代ｌ縺ｰ髯､螟・
 			if (!Collision::CheckRay2Triangle(ray, *triangle, &tempDistance, &tempInter)) continue;
-			//距離が最小でなければ除外
+			//霍晞屬縺梧怙蟆上〒縺ｪ縺代ｌ縺ｰ髯､螟・
 			if (tempDistance >= distance) continue;
 
-			//今までで最も近いので記録する
+			//莉翫∪縺ｧ縺ｧ譛繧りｿ代＞縺ｮ縺ｧ險倬鹸縺吶ｋ
 			result = true;
 			distance = tempDistance;
 			inter = tempInter;
 			it_hit = it;
 		}
 
-		//メッシュコライダーの場合
+		//繝｡繝・す繝･繧ｳ繝ｩ繧､繝繝ｼ縺ｮ蝣ｴ蜷・
 		if (colA->GetShapeType() == COLLISIONSHAPE_MESH) {
 			MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(colA);
 
 			float tempDistance;
 			XMVECTOR tempInter;
 
-			//当たらなければ除外
+			//蠖薙◆繧峨↑縺代ｌ縺ｰ髯､螟・
 			if (!meshCollider->CheckCollisionRay(ray, &tempDistance, &tempInter)) continue;
-			//距離が最小でなければ除外
+			//霍晞屬縺梧怙蟆上〒縺ｪ縺代ｌ縺ｰ髯､螟・
 			if (tempDistance >= distance) continue;
 
-			//今までで最も近いので記録する
+			//莉翫∪縺ｧ縺ｧ譛繧りｿ代＞縺ｮ縺ｧ險倬鹸縺吶ｋ
 			result = true;
 			distance = tempDistance;
 			inter = tempInter;
@@ -132,7 +132,7 @@ bool CollisionManager::Raycast(const Ray& ray, uint16_t attribute, RaycastHit* h
 		}
 	}
 
-	//最終的に何かにあたっていれば結果を書き込む
+	//譛邨ら噪縺ｫ菴輔°縺ｫ縺ゅ◆縺｣縺ｦ縺・ｌ縺ｰ邨先棡繧呈嶌縺崎ｾｼ繧
 	if (result && hitInfo) {
 		hitInfo->distance = distance;
 		hitInfo->inter = inter;
@@ -164,59 +164,59 @@ void CollisionManager::QuerySphere(const Sphere& sphere, QueryCallback* callBack
 
 	std::forward_list<BaseCollider*>::iterator it;
 
-	//全てのコライダーと総当たりチェック
+	//蜈ｨ縺ｦ縺ｮ繧ｳ繝ｩ繧､繝繝ｼ縺ｨ邱丞ｽ薙◆繧翫メ繧ｧ繝・け
 	it = colliders3D_.begin();
 	for (; it != colliders3D_.end(); ++it)
 	{
 		BaseCollider* col = *it;
 
-		//属性が合わなければスキップ
+		//螻樊ｧ縺悟粋繧上↑縺代ｌ縺ｰ繧ｹ繧ｭ繝・・
 		if (!(col->attribute_ & attribute))
 		{
 			continue;
 		}
 
-		// 球
+		// 逅・
 		if (col->GetShapeType() == COLLISIONSHAPE_SPHERE) {
 			Sphere* sphereB = dynamic_cast<Sphere*>(col);
 
 			XMVECTOR tempInter;
 			XMVECTOR tempReject;
-			//当たってなかったら
+			//蠖薙◆縺｣縺ｦ縺ｪ縺九▲縺溘ｉ
 			if (!Collision::CheckSphere2Sphere(sphere, *sphereB, &tempInter, &tempReject)) { continue; }
 
-			// 交差情報をセット
+			// 莠､蟾ｮ諠・ｱ繧偵そ繝・ヨ
 			QueryHit info;
 			info.collider = col;
 			info.object = col->GetObject3d();
 			info.inter = tempInter;
 			info.reject = tempReject;
 
-			// クエリーコールバック呼び出し
+			// 繧ｯ繧ｨ繝ｪ繝ｼ繧ｳ繝ｼ繝ｫ繝舌ャ繧ｯ蜻ｼ縺ｳ蜃ｺ縺・
 			if (!callBack->OnQueryHit(info)) {
-				// 戻り値がfalseの場合、継続せず終了
+				// 謌ｻ繧雁､縺掲alse縺ｮ蝣ｴ蜷医∫ｶ咏ｶ壹○縺夂ｵゆｺ・
 				return;
 			}
 		}
-		// メッシュ
+		// 繝｡繝・す繝･
 		else if (col->GetShapeType() == COLLISIONSHAPE_MESH) {
 			MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(col);
 
 			XMVECTOR tempInter;
 			XMVECTOR tempReject;
-			//当たってなかったら
+			//蠖薙◆縺｣縺ｦ縺ｪ縺九▲縺溘ｉ
 			if (!meshCollider->CheckCollisionSphere(sphere, &tempInter, &tempReject)) { continue; }
 
-			// 交差情報をセット
+			// 莠､蟾ｮ諠・ｱ繧偵そ繝・ヨ
 			QueryHit info;
 			info.collider = col;
 			info.object = col->GetObject3d();
 			info.inter = tempInter;
 			info.reject = tempReject;
 
-			// クエリーコールバック呼び出し
+			// 繧ｯ繧ｨ繝ｪ繝ｼ繧ｳ繝ｼ繝ｫ繝舌ャ繧ｯ蜻ｼ縺ｳ蜃ｺ縺・
 			if (!callBack->OnQueryHit(info)) {
-				// 戻り値がfalseの場合、継続せず終了
+				// 謌ｻ繧雁､縺掲alse縺ｮ蝣ｴ蜷医∫ｶ咏ｶ壹○縺夂ｵゆｺ・
 				return;
 			}
 		}
@@ -226,13 +226,13 @@ void CollisionManager::QuerySphere(const Sphere& sphere, QueryCallback* callBack
 //-----------------------------------------------------
 void CollisionManager::CheckAllCollisions()
 {
-	//3Dのすべての当たり判定チェック
+	//3D縺ｮ縺吶∋縺ｦ縺ｮ蠖薙◆繧雁愛螳壹メ繧ｧ繝・け
 	CheckAllCollision3D();
-	//2Dのすべての当たり判定チェック
+	//2D縺ｮ縺吶∋縺ｦ縺ｮ蠖薙◆繧雁愛螳壹メ繧ｧ繝・け
 	CheckAllCollision2D();
 }
 
-//3Dの判定
+//3D縺ｮ蛻､螳・
 void CollisionManager::CheckAllCollision3D()
 {
 	std::forward_list<BaseCollider*>::iterator itrB;
@@ -250,7 +250,7 @@ void CollisionManager::CheckAllCollision3D()
 			CollisionShapeType typeA = colA->GetShapeType();
 			CollisionShapeType typeB = colB->GetShapeType();
 
-			//ともに球の場合
+			//縺ｨ繧ゅ↓逅・・蝣ｴ蜷・
 			if ((colA->GetShapeType() == COLLISIONSHAPE_SPHERE &&
 				colB->GetShapeType() == COLLISIONSHAPE_SPHERE)
 				&&
@@ -266,7 +266,7 @@ void CollisionManager::CheckAllCollision3D()
 				}
 			}
 
-			//球と面の場合
+			//逅・→髱｢縺ｮ蝣ｴ蜷・
 			if ((typeA == COLLISIONSHAPE_PLANE || typeB == COLLISIONSHAPE_PLANE)
 				&&
 				(colA->GetIsValid() && colB->GetIsValid()))
@@ -275,13 +275,13 @@ void CollisionManager::CheckAllCollision3D()
 				Plane* PlaneB = nullptr;
 				DirectX::XMVECTOR inter;
 
-				//Aが球の時
+				//A縺檎帥縺ｮ譎・
 				if (typeA == COLLISIONSHAPE_SPHERE && typeB == COLLISIONSHAPE_PLANE)
 				{
 					SphereA = dynamic_cast<Sphere*>(colA);
 					PlaneB = dynamic_cast<Plane*>(colB);
 				}
-				//Aが三角形の時
+				//A縺御ｸ芽ｧ貞ｽ｢縺ｮ譎・
 				else if (typeA == COLLISIONSHAPE_PLANE && typeB == COLLISIONSHAPE_SPHERE)
 				{
 					SphereA = dynamic_cast<Sphere*>(colB);
@@ -295,7 +295,7 @@ void CollisionManager::CheckAllCollision3D()
 				}
 			}
 
-			//球と三角形の場合
+			//逅・→荳芽ｧ貞ｽ｢縺ｮ蝣ｴ蜷・
 			if ((typeA == COLLISIONSHAPE_TRIANGLE || typeB == COLLISIONSHAPE_TRIANGLE)
 				&&
 				(colA->GetIsValid() && colB->GetIsValid()))
@@ -304,13 +304,13 @@ void CollisionManager::CheckAllCollision3D()
 				Triangle* TriangleB = nullptr;
 				DirectX::XMVECTOR inter;
 
-				//Aが球の時
+				//A縺檎帥縺ｮ譎・
 				if (typeA == COLLISIONSHAPE_SPHERE && typeB == COLLISIONSHAPE_TRIANGLE)
 				{
 					SphereA = dynamic_cast<Sphere*>(colA);
 					TriangleB = dynamic_cast<Triangle*>(colB);
 				}
-				//Aが三角形の時
+				//A縺御ｸ芽ｧ貞ｽ｢縺ｮ譎・
 				else if (typeA == COLLISIONSHAPE_TRIANGLE && typeB == COLLISIONSHAPE_SPHERE)
 				{
 					SphereA = dynamic_cast<Sphere*>(colB);
@@ -324,7 +324,7 @@ void CollisionManager::CheckAllCollision3D()
 				}
 			}
 
-			//メッシュと球の判定
+			//繝｡繝・す繝･縺ｨ逅・・蛻､螳・
 			if ((typeA == COLLISIONSHAPE_MESH || typeB == COLLISIONSHAPE_MESH)
 				&&
 				(colA->GetIsValid() && colB->GetIsValid()))
@@ -333,13 +333,13 @@ void CollisionManager::CheckAllCollision3D()
 				MeshCollider* meshCollider = nullptr;
 				DirectX::XMVECTOR inter;
 
-				//Aが球の時
+				//A縺檎帥縺ｮ譎・
 				if (typeA == COLLISIONSHAPE_SPHERE && typeB == COLLISIONSHAPE_MESH)
 				{
 					SphereA = dynamic_cast<Sphere*>(colA);
 					meshCollider = dynamic_cast<MeshCollider*>(colB);
 				}
-				//Aがメッシュコライダーの時
+				//A縺後Γ繝・す繝･繧ｳ繝ｩ繧､繝繝ｼ縺ｮ譎・
 				else if (typeA == COLLISIONSHAPE_MESH && typeB == COLLISIONSHAPE_SPHERE)
 				{
 					SphereA = dynamic_cast<Sphere*>(colB);
@@ -362,7 +362,7 @@ void CollisionManager::CheckAllCollision2D()
 	std::forward_list<BaseCollider*>::iterator itrB;
 	std::forward_list<BaseCollider*>::iterator itrA = colliders2D_.begin();
 
-	//2Dのみ
+	//2D縺ｮ縺ｿ
 	for (; itrA != colliders2D_.end(); ++itrA)
 	{
 		itrB = itrA;
@@ -375,7 +375,7 @@ void CollisionManager::CheckAllCollision2D()
 			CollisionShapeType typeA = colA->GetShapeType();
 			CollisionShapeType typeB = colB->GetShapeType();
 
-			//ともに円の場合
+			//縺ｨ繧ゅ↓蜀・・蝣ｴ蜷・
 			if ((typeA == COLLISIONSHAPE_CIRCLE &&
 				typeB == COLLISIONSHAPE_CIRCLE)
 				&&

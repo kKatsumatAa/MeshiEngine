@@ -78,7 +78,7 @@ void Character::DrawImGui(std::function<void()> imguiF)
 				ImGui::TreePop();
 			}
 		}
-	};
+		};
 
 	//親クラスのを呼び出す
 	ObjectFBX::DrawImGui(f);

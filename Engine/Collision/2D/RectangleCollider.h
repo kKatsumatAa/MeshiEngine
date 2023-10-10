@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "BaseCollider.h"
 #include "CollisionPrimitive.h"
@@ -6,12 +6,12 @@
 #include <DirectXMath.h>
 
 /// <summary>
-/// 円衝突判定オブジェクト
+/// 蜀・｡晉ｪ∝愛螳壹が繝悶ず繧ｧ繧ｯ繝・
 /// </summary>
 class RectangleCollider : public BaseCollider, public MyRectangle
 {
-private: // エイリアス
-	// DirectX::を省略
+private: // 繧ｨ繧､繝ｪ繧｢繧ｹ
+	// DirectX::繧堤怐逡･
 	using XMVECTOR = DirectX::XMVECTOR;
 public:
 	RectangleCollider(Vec2 leftUp = { -1.0f,-1.0f },
@@ -24,14 +24,14 @@ public:
 		MyRectangle::iRightUp = rightUp;
 		MyRectangle::iRightDown = rightDown;
 
-		// 矩形形状をセット
+		// 遏ｩ蠖｢蠖｢迥ｶ繧偵そ繝・ヨ
 		shapeType_ = COLLISIONSHAPE_RECTANGLE;
 
 		is2D_ = true;
 	}
 
 	/// <summary>
-	/// 更新
+	/// 譖ｴ譁ｰ
 	/// </summary>
 	void Update() override;
 };

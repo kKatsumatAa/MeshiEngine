@@ -7,11 +7,11 @@ class PlayerState;
 class PlayerUIState
 {
 protected:
-	//ƒXƒvƒ‰ƒCƒg—p
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
 	Sprite reticleSprite_;
 	uint64_t reticleTexHandle_;
 
-	//‰‰o—p
+	//æ¼”å‡ºç”¨
 	float timer_ = 0;
 	const float TIMER_MAX_ = 10;
 	float scale_ = 1.0f;
@@ -33,7 +33,7 @@ public:
 };
 
 
-//’Êí
+//é€šå¸¸
 class PlayerUIStateNomal : public PlayerUIState
 {
 private:
@@ -44,7 +44,7 @@ public:
 	virtual void DrawSprite();
 };
 
-//‰£‚é
+//æ®´ã‚‹
 class PlayerUIStatePunch : public PlayerUIState
 {
 private:
@@ -55,7 +55,7 @@ public:
 	virtual void DrawSprite();
 };
 
-//e
+//éŠƒ
 class PlayerUIStateGun : public PlayerUIState
 {
 private:
@@ -66,7 +66,7 @@ public:
 	virtual void DrawSprite();
 };
 
-//E‚¤
+//æ‹¾ã†
 class PlayerUIStatePickUp : public PlayerUIState
 {
 private:

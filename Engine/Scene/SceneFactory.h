@@ -1,20 +1,20 @@
-#pragma once
+ï»¿#pragma once
 #include "AbstractSceneFactory.h"
 #include "SceneTitle.h"
 #include "SceneGame.h"
 #include "SceneStageSelect.h"
 
 
-//ƒQ[ƒ€•ÊƒV[ƒ“Hê
+//ã‚²ãƒ¼ãƒ åˆ¥ã‚·ãƒ¼ãƒ³å·¥å ´
 class SceneFactory :
     public AbstractSceneFactory
 {
 public:
     /// <summary>
-    /// ƒV[ƒ“¶¬
+    /// ã‚·ãƒ¼ãƒ³ç”Ÿæˆ
     /// </summary>
-    /// <param name="sceneName">ƒV[ƒ“–¼</param>
-    /// <returns>¶¬‚µ‚½ƒV[ƒ“</returns>
+    /// <param name="sceneName">ã‚·ãƒ¼ãƒ³å</param>
+    /// <returns>ç”Ÿæˆã—ãŸã‚·ãƒ¼ãƒ³</returns>
     std::unique_ptr<SceneState> CreateScene(const std::string& sceneName) override;
 };
 

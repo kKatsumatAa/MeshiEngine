@@ -1,4 +1,4 @@
-#include "JsonLevelLoader.h"
+ï»¿#include "JsonLevelLoader.h"
 #include "Util.h"
 #include "CollisionManager.h"
 #include <fstream>
@@ -24,52 +24,52 @@ void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 {
 	Initialize();
 
-	//˜AŒ‹‚µ‚Äƒtƒ‹ƒpƒX‚ğ“¾‚é
+	//é€£çµã—ã¦ãƒ•ãƒ«ãƒ‘ã‚¹ã‚’å¾—ã‚‹
 	const std::string FULL_PATH = S_DEFAULT_BASE_DIRECTORY_ + fileName + S_EXTENSION_;
 
-	//ƒtƒ@ƒCƒ‹ƒXƒgƒŠ[ƒ€
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 	std::ifstream file;
 
-	//ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã
 	file.open(FULL_PATH);
-	//ƒtƒ@ƒCƒ‹ƒI[ƒvƒ“¸”s‚ğƒ`ƒFƒbƒN
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ¼ãƒ—ãƒ³å¤±æ•—ã‚’ãƒã‚§ãƒƒã‚¯
 	if (file.fail())
 	{
 		assert(0);
 	}
 
-	//JSON•¶š—ñ‚©‚ç‰ğ“€‚µ‚½ƒf[ƒ^
+	//JSONæ–‡å­—åˆ—ã‹ã‚‰è§£å‡ã—ãŸãƒ‡ãƒ¼ã‚¿
 	nlohmann::json deserialized;
 
-	//‰ğ“€
+	//è§£å‡
 	file >> deserialized;
 
-	//³‚µ‚¢ƒŒƒxƒ‹ƒf[ƒ^
+	//æ­£ã—ã„ãƒ¬ãƒ™ãƒ«ãƒ‡ãƒ¼ã‚¿
 	assert(deserialized.is_object());
 	assert(deserialized.contains("name"));
 	assert(deserialized["name"].is_string());
 
-	//"name_"‚ğ•¶š—ñ‚Æ‚µ‚Äæ“¾
+	//"name_"ã‚’æ–‡å­—åˆ—ã¨ã—ã¦å–å¾—
 	std::string name = deserialized["name"].get<std::string>();
-	//³‚µ‚¢ƒŒƒxƒ‹ƒf[ƒ^ƒtƒ@ƒCƒ‹‚©ƒ`ƒFƒbƒN
+	//æ­£ã—ã„ãƒ¬ãƒ™ãƒ«ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«ã‹ãƒã‚§ãƒƒã‚¯
 	assert(name.compare("scene") == 0);
 
-	//ƒŒƒxƒ‹ƒf[ƒ^Ši”[—pƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬
+	//ãƒ¬ãƒ™ãƒ«ãƒ‡ãƒ¼ã‚¿æ ¼ç´ç”¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆ
 	//level
 
-	//"objects"‚Ì‘SƒIƒuƒWƒFƒNƒg‚ğ‘–¸
+	//"objects"ã®å…¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’èµ°æŸ»
 	for (nlohmann::json::iterator object = deserialized["objects"].begin(); object != deserialized["objects"].end(); object++)
 	{
 		assert(object->contains("type"));
 
-		//í•Ê‚ğæ“¾
+		//ç¨®åˆ¥ã‚’å–å¾—
 		std::string type = (*object)["type"].get<std::string>();
 
-		//í—Ş‚²‚Æ‚Ìˆ—
+		//ç¨®é¡ã”ã¨ã®å‡¦ç†
 		//Mesh
 		if (type.compare("MESH") == 0)
 		{
-			//Ä‹A“I
+			//å†å¸°çš„
 			LoadRecursiveChildrenData(object);
 		}
 
@@ -79,7 +79,7 @@ void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 			LoadCameraData(object);
 		}
 
-		//ƒ‰ƒCƒg
+		//ãƒ©ã‚¤ãƒˆ
 		if (type.compare("LIGHT") == 0)
 		{
 			LoadLightData(object);
@@ -89,37 +89,37 @@ void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 
 void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& object, WorldMat* parent)
 {
-	//—v‘f’Ç‰Á
+	//è¦ç´ è¿½åŠ 
 	levelData_->objects.emplace_back(std::make_unique<LevelData::ObjectData>());
-	//¡’Ç‰Á‚µ‚½—v‘f‚ÌQÆ‚ğ“¾‚é
+	//ä»Šè¿½åŠ ã—ãŸè¦ç´ ã®å‚ç…§ã‚’å¾—ã‚‹
 	std::unique_ptr<LevelData::ObjectData>& objectData = levelData_->objects.back();
 
 	if (object->contains("file_name"))
 	{
-		//ƒtƒ@ƒCƒ‹–¼
+		//ãƒ•ã‚¡ã‚¤ãƒ«å
 		objectData->fileName = (*object)["file_name"];
 	}
 
-	//ƒRƒ‰ƒCƒ_[‚Ìƒpƒ‰ƒ[ƒ^“Ç‚İ‚İ
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
 	objectData->worldMat = std::make_unique<WorldMat>();
-	// e(ˆê”Ô–Ú‚ÌƒIƒuƒWƒFƒNƒg‚Ínullptr‚ª“ü‚é‚æ‚¤‚É)
+	// è¦ª(ä¸€ç•ªç›®ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯nullptrãŒå…¥ã‚‹ã‚ˆã†ã«)
 	objectData->worldMat->parent_ = parent;
-	//•½sˆÚ“®
+	//å¹³è¡Œç§»å‹•
 	objectData->worldMat->trans_ = GetTrans(object);
-	//Šp“xi‚¤‚Ü‚­‚¢‚Á‚Ä‚È‚¢‚©‚àj
+	//è§’åº¦ï¼ˆã†ã¾ãã„ã£ã¦ãªã„ã‹ã‚‚ï¼‰
 	objectData->worldMat->rot_ = GetRot(object);
-	//ƒXƒP[ƒ‹
+	//ã‚¹ã‚±ãƒ¼ãƒ«
 	objectData->worldMat->scale_ = GetScale(object);
 
 
-	//ƒEƒF[ƒu”Ô†
+	//ã‚¦ã‚§ãƒ¼ãƒ–ç•ªå·
 	if (object->contains("wave_num"))
 	{
 		std::string numStr = (*object)["wave_num"];
 		objectData->waveNum = std::stoi(numStr);
 	}
 
-	//eƒm[ƒh
+	//è¦ªãƒãƒ¼ãƒ‰
 	if (object->contains("parent_node"))
 	{
 		nlohmann::json parent_node = (*object)["parent_node"];
@@ -127,12 +127,12 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 		objectData->parentNodeData.nodeName = parent_node["node_name"];
 	}
 
-	//“–‚½‚è”»’èƒf[ƒ^
-	//ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ìƒpƒ‰ƒ[ƒ^“Ç‚İ‚İ
+	//å½“ãŸã‚Šåˆ¤å®šãƒ‡ãƒ¼ã‚¿
+	//ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
 	nlohmann::json collider = (*object)["collider"];
 	if (collider.size())
 	{
-		//ƒRƒ‰ƒCƒ_[í—Ş
+		//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ç¨®é¡
 		std::string typeStr = collider["type"];
 		if (typeStr == "SPHERE")
 		{
@@ -142,11 +142,11 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 		{
 			objectData->colliderData.colliderType = CollisionShapeType::COLLISIONSHAPE_MESH;
 		}
-		//”»’è‘®«
+		//åˆ¤å®šå±æ€§
 		std::string line = (std::string)collider["attribute"];
-		// 1s•ª‚Ì•¶š—ñ‚ğƒXƒgƒŠ[ƒ€‚É•ÏŠ·‚µ‚Ä‰ğÍ‚µ‚â‚·‚­‚·‚é
+		// 1è¡Œåˆ†ã®æ–‡å­—åˆ—ã‚’ã‚¹ãƒˆãƒªãƒ¼ãƒ ã«å¤‰æ›ã—ã¦è§£æã—ã‚„ã™ãã™ã‚‹
 		std::istringstream line_stream(line);
-		// ','‹æØ‚è‚Ås‚Ìæ“ª•¶š—ñ‚ğæ“¾
+		// ','åŒºåˆ‡ã‚Šã§è¡Œã®å…ˆé ­æ–‡å­—åˆ—ã‚’å–å¾—
 		std::string key;
 		uint16_t attribute = 0;
 		while (std::getline(line_stream, key, ','))
@@ -170,31 +170,31 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 		}
 		objectData->colliderData.attribute = attribute;
 
-		//’†SˆÊ’u
+		//ä¸­å¿ƒä½ç½®
 		objectData->colliderData.center.x = (float)collider["center"][1];
 		objectData->colliderData.center.y = (float)collider["center"][2];
 		objectData->colliderData.center.z = -(float)collider["center"][0];
-		//ƒXƒP[ƒ‹
+		//ã‚¹ã‚±ãƒ¼ãƒ«
 		objectData->colliderData.size.x = (float)collider["size"][1];
 		objectData->colliderData.size.y = (float)collider["size"][2];
 		objectData->colliderData.size.z = (float)collider["size"][0];
 	}
 
-	//e‚ª‚¢‚½‚çA‚¨‚â‚É©•ª‚Ìƒf[ƒ^“ü‚ê‚é
+	//è¦ªãŒã„ãŸã‚‰ã€ãŠã‚„ã«è‡ªåˆ†ã®ãƒ‡ãƒ¼ã‚¿å…¥ã‚Œã‚‹
 	if (parent)
 	{
 		auto itr = levelData_->objects.end();
-		std::advance(itr, -2);//end‚Í‰½‚à‚È‚­A‚»‚ÌˆêŒÂ‘O‚ª¡‚Ì©•ª‚ª“ü‚Á‚Ä‚é‚Ì‚Å“ñ‰ñ–ß‚·
+		std::advance(itr, -2);//endã¯ä½•ã‚‚ãªãã€ãã®ä¸€å€‹å‰ãŒä»Šã®è‡ªåˆ†ãŒå…¥ã£ã¦ã‚‹ã®ã§äºŒå›æˆ»ã™
 		itr->get()->childData = objectData.get();
 	}
 
-	//q‚ª‚¢‚½‚ç
+	//å­ãŒã„ãŸã‚‰
 	if ((*object).contains("children"))
 	{
-		//q‚ğfor•¶‚Å‘–¸
+		//å­ã‚’foræ–‡ã§èµ°æŸ»
 		for (nlohmann::json::iterator child = (*object)["children"].begin(); child != (*object)["children"].end(); child++)
 		{
-			//q‚ğÄ‹A‚Å‘–¸
+			//å­ã‚’å†å¸°ã§èµ°æŸ»
 			LoadRecursiveChildrenData(child, objectData->worldMat.get());
 		}
 	}
@@ -204,7 +204,7 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 //-----------------------------------------------------------------------
 Vec3 JsonLevelLoader::GetRot(const nlohmann::json::iterator& object)
 {
-	//ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ìƒpƒ‰ƒ[ƒ^“Ç‚İ‚İ
+	//ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
 	nlohmann::json transform = (*object)["transform"];
 
 	Vec3 rot = {
@@ -217,14 +217,14 @@ Vec3 JsonLevelLoader::GetRot(const nlohmann::json::iterator& object)
 
 Vec3 JsonLevelLoader::GetRotDir(const nlohmann::json::iterator& object)
 {
-	//Šp“x‚ğ“¾‚é
+	//è§’åº¦ã‚’å¾—ã‚‹
 	WorldMat targetWorldMat;
 	targetWorldMat.rot_ = GetRot(object);
 
 	targetWorldMat.CalcWorldMat();
-	//‰œ‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ğƒ^[ƒQƒbƒg‚ÌŒ³‚Æ‚·‚é
+	//å¥¥ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®å…ƒã¨ã™ã‚‹
 	Vec3 dir = { 0,0,1.0f };
-	//“Ç‚İ‚ñ‚¾Šp“x‚Åƒ^[ƒQƒbƒg‚ğ‰ñ“]
+	//èª­ã¿è¾¼ã‚“ã è§’åº¦ã§ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’å›è»¢
 	Vec3xM4(dir, targetWorldMat.matWorld_, 0);
 
 
@@ -233,7 +233,7 @@ Vec3 JsonLevelLoader::GetRotDir(const nlohmann::json::iterator& object)
 
 Vec3 JsonLevelLoader::GetTrans(const nlohmann::json::iterator& object)
 {
-	//ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ìƒpƒ‰ƒ[ƒ^“Ç‚İ‚İ
+	//ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
 	nlohmann::json transform = (*object)["transform"];
 
 	return { (float)transform["translation"][1], (float)transform["translation"][2], -(float)transform["translation"][0] };
@@ -241,53 +241,53 @@ Vec3 JsonLevelLoader::GetTrans(const nlohmann::json::iterator& object)
 
 Vec3 JsonLevelLoader::GetScale(const nlohmann::json::iterator& object)
 {
-	//ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ìƒpƒ‰ƒ[ƒ^“Ç‚İ‚İ
+	//ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
 	nlohmann::json transform = (*object)["transform"];
 
 	return{ (float)transform["scaling"][1],	(float)transform["scaling"][2],(float)transform["scaling"][0] };
 }
 
 //-------------------------------------------------------------------------------
-//ƒJƒƒ‰‚Ìƒf[ƒ^“Ç‚İ‚İ
+//ã‚«ãƒ¡ãƒ©ã®ãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
 void JsonLevelLoader::LoadCameraData(const nlohmann::json::iterator& object)
 {
-	//—v‘f’Ç‰Á
+	//è¦ç´ è¿½åŠ 
 	levelData_->cameras.emplace_back(std::make_unique<LevelData::CameraData>());
-	//¡’Ç‰Á‚µ‚½—v‘f‚ÌQÆ‚ğ“¾‚é
+	//ä»Šè¿½åŠ ã—ãŸè¦ç´ ã®å‚ç…§ã‚’å¾—ã‚‹
 	std::unique_ptr<LevelData::CameraData>& objectData = levelData_->cameras.back();
 
 	if (object->contains("file_name"))
 	{
-		//ƒtƒ@ƒCƒ‹–¼
+		//ãƒ•ã‚¡ã‚¤ãƒ«å
 		objectData->fileName = (*object)["file_name"];
 	}
 
-	//ƒJƒƒ‰ì¬
+	//ã‚«ãƒ¡ãƒ©ä½œæˆ
 	objectData->camera = std::make_unique<Camera>();
 	objectData->camera->Initialize();
-	//•½sˆÚ“®
+	//å¹³è¡Œç§»å‹•
 	objectData->camera->SetEye(GetTrans(object));
-	//ƒ^[ƒQƒbƒg
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ
 	objectData->camera->SetTarget(GetRotDir(object));
 }
 
 void JsonLevelLoader::LoadLightData(const nlohmann::json::iterator& object)
 {
-	//—v‘f’Ç‰Á
+	//è¦ç´ è¿½åŠ 
 	levelData_->lights.emplace_back(std::make_unique<LevelData::LightData>());
-	//¡’Ç‰Á‚µ‚½—v‘f‚ÌQÆ‚ğ“¾‚é
+	//ä»Šè¿½åŠ ã—ãŸè¦ç´ ã®å‚ç…§ã‚’å¾—ã‚‹
 	std::unique_ptr<LevelData::LightData>& objectData = levelData_->lights.back();
 
 	if (object->contains("file_name"))
 	{
-		//ƒtƒ@ƒCƒ‹–¼
+		//ãƒ•ã‚¡ã‚¤ãƒ«å
 		objectData->fileName = (*object)["file_name"];
 	}
 
-	//•½sˆÚ“®
+	//å¹³è¡Œç§»å‹•
 	objectData->trans = GetTrans(object);
-	//ƒ^[ƒQƒbƒg
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ
 	objectData->dir = GetRotDir(object);
-	//ƒXƒP[ƒ‹(‹­‚³‚È‚Ç‚Ég‚¤)
+	//ã‚¹ã‚±ãƒ¼ãƒ«(å¼·ã•ãªã©ã«ä½¿ã†)
 	objectData->scale = GetScale(object);
 }

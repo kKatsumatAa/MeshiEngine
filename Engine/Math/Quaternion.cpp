@@ -1,4 +1,4 @@
-#include "Quaternion.h"
+ï»¿#include "Quaternion.h"
 #include <math.h>
 
 Quaternion Quaternion::GetMultiply(const Quaternion& rhs) const
@@ -85,7 +85,7 @@ Quaternion Quaternion::DirectionToDirection(const Vec3& u, const Vec3& v, float 
 	Vec3 U = u;
 	Vec3 V = v;
 
-	//Œü‚©‚¹‚½‚¢Œü‚«‚ª^‹t‚Ì‚Íy¬•ª‚Íƒ[ƒ‚É‚µ‚Ä‰ñ‚³‚¹‚é
+	//å‘ã‹ã›ãŸã„å‘ããŒçœŸé€†ã®æ™‚ã¯yæˆåˆ†ã¯ã‚¼ãƒ­ã«ã—ã¦å›ã•ã›ã‚‹
 	float dot = Vec3(U.x, U.y, U.z).Dot(Vec3(V.x, V.y, V.z));
 	if (dot <= dotRimitMin)
 	{
@@ -93,16 +93,16 @@ Quaternion Quaternion::DirectionToDirection(const Vec3& u, const Vec3& v, float 
 		V = { V.x,0,V.z };
 	}
 
-	//u‚Æv‚ğ³‹K‰»‚µ‚Ä“àÏ‚ğ‹‚ß‚é
+	//uã¨vã‚’æ­£è¦åŒ–ã—ã¦å†…ç©ã‚’æ±‚ã‚ã‚‹
 	dot = U.GetNormalized().Dot(V.GetNormalized());
-	//u,v‚ÌŠOÏ‚ğ‚Æ‚é(‰ñ“]²‚ğo‚·)
+	//u,vã®å¤–ç©ã‚’ã¨ã‚‹(å›è»¢è»¸ã‚’å‡ºã™)
 	Vec3 cross = U.GetNormalized().Cross(V.GetNormalized());
-	//²‚Í’PˆÊƒxƒNƒgƒ‹‚Å‚ ‚é•K—v‚ª‚ ‚é‚Ì‚Å³‹K‰»
-	//u‚Æv‚ª’PˆÊƒxƒNƒgƒ‹‚ ‚Á‚Ä‚àAŠOÏ‚ª’PˆÊƒxƒNƒgƒ‹‚Æ‚ÍŒÀ‚ç‚È‚¢‚Ì‚Å‚±‚±‚Ì³‹K‰»‚Í•K{
+	//è»¸ã¯å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã§ã‚ã‚‹å¿…è¦ãŒã‚ã‚‹ã®ã§æ­£è¦åŒ–
+	//uã¨vãŒå˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã‚ã£ã¦ã‚‚ã€å¤–ç©ãŒå˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã¨ã¯é™ã‚‰ãªã„ã®ã§ã“ã“ã®æ­£è¦åŒ–ã¯å¿…é ˆ
 	Vec3 axis = cross.GetNormalized();
-	//’PˆÊƒxƒNƒgƒ‹‚Å“àÏ‚ğ‚Æ‚Á‚Ä‚¢‚é‚Ì‚Åacos‚ÅŠp“x‚ğ‹‚ß‚é
+	//å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã§å†…ç©ã‚’ã¨ã£ã¦ã„ã‚‹ã®ã§acosã§è§’åº¦ã‚’æ±‚ã‚ã‚‹
 	float theta = acosf(dot);
-	//axis‚Ætheta‚Å”CˆÓ²‰ñ“]‚ğì‚Á‚Ä•Ô‚·
+	//axisã¨thetaã§ä»»æ„è»¸å›è»¢ã‚’ä½œã£ã¦è¿”ã™
 	return MakeAxisAngle(axis, theta);
 }
 
@@ -294,28 +294,28 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
 
 	if (dot < 0)
 	{
-		q02 = -q0; //‚à‚¤•Ğ•û‚Ì‰ñ“]‚ğ—˜—p‚·‚é
-		dot = -dot; //“àÏ‚à”½“]
+		q02 = -q0; //ã‚‚ã†ç‰‡æ–¹ã®å›è»¢ã‚’åˆ©ç”¨ã™ã‚‹
+		dot = -dot; //å†…ç©ã‚‚åè»¢
 	}
 	else
 	{
 		q02 = q0;
 	}
 
-	//‚È‚·Šp‚ğ‹‚ß‚é
+	//ãªã™è§’ã‚’æ±‚ã‚ã‚‹
 	float theta = acosf(dot);
 
-	//theta‚Æsin‚ğg‚Á‚Ä•âŠÔŒW”scale0,scale1‚ğ‹‚ß‚é
+	//thetaã¨sinã‚’ä½¿ã£ã¦è£œé–“ä¿‚æ•°scale0,scale1ã‚’æ±‚ã‚ã‚‹
 	float scale0 = sinf((1 - t) * theta) / sinf(theta);
 	float scale1 = sinf(t * theta) / sinf(theta);
 
-	//0œZ‚É‚È‚ç‚È‚¢‰ü—Ç”Å
+	//0é™¤ç®—ã«ãªã‚‰ãªã„æ”¹è‰¯ç‰ˆ
 	if (dot >= 1.0f - FLT_EPSILON)
 	{
 		return (1.0f - t) * q02 + t * q1;
 	}
 
-	//‚»‚ê‚¼‚ê‚Ì•âŠÔŒW”‚ğ—˜—p‚µ‚Ä•âŠÔŒã‚ÌQuaternion‚ğ‹‚ß‚é
+	//ãã‚Œãã‚Œã®è£œé–“ä¿‚æ•°ã‚’åˆ©ç”¨ã—ã¦è£œé–“å¾Œã®Quaternionã‚’æ±‚ã‚ã‚‹
 	return scale0 * q02 + scale1 * q1;
 }
 

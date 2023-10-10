@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Object.h"
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
@@ -9,28 +9,28 @@ class Weapon :
 	public Object
 {
 protected:
-	//ƒtƒŒ[ƒ€‚²‚Æ‚Ì”{—¦
+	//ãƒ•ãƒ¬ãƒ¼ãƒ ã”ã¨ã®å€ç‡
 	const float FRAME_VEL_EXTEND_ = 0.9f;
 
 protected:
-	//è‚ğ—£‚ê‚½‚Æ‚«‚ÌƒxƒNƒgƒ‹
+	//æ‰‹ã‚’é›¢ã‚ŒãŸã¨ãã®ãƒ™ã‚¯ãƒˆãƒ«
 	Vec3 fallVec_ = { 0,0,0 };
 	const float FALL_VEC_Y_MIN_ = -4.0f;
-	//ƒ[ƒJƒ‹À•W
+	//ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™
 	Vec3 localPos_ = { 0,0,0 };
-	//‚¿å
+	//æŒã¡ä¸»
 	IObject3D* owner_ = nullptr;
 
-	//‘O‰ñ‚ÌˆÊ’u
+	//å‰å›ã®ä½ç½®
 	Vec3 oldPos_ = { 0,0,0 };
 
-	//“Š‚°‚ç‚ê‚Ä‚¢‚é‚©
+	//æŠ•ã’ã‚‰ã‚Œã¦ã„ã‚‹ã‹
 	bool isThrowing_ = false;
 
-	//ƒN[ƒ‹ƒ^ƒCƒ€
+	//ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
 	float attackCoolTime_ = 0;
 
-	//d—Í
+	//é‡åŠ›
 	const float GRAVITY_TMP_ = 0.15f;
 	const float GRAVITY_MAX_ = 3.0f;
 
@@ -39,41 +39,41 @@ public:
 	virtual ~Weapon() { ; }
 
 protected:
-	//’nŒ`‚Æ“–‚½‚Á‚½‚ÉŒÄ‚Ño‚·
+	//åœ°å½¢ã¨å½“ãŸã£ãŸæ™‚ã«å‘¼ã³å‡ºã™
 	virtual void OnLandShape(const Vec3& interPos) = 0;
 
-	//Š—LÒ‚ª‚¢‚È‚¢‚Æ‚«‚É”ò‚ñ‚Å‚¢‚­
+	//æ‰€æœ‰è€…ãŒã„ãªã„ã¨ãã«é£›ã‚“ã§ã„ã
 	virtual void NoParentMove();
 
 	virtual void ParticleGenerate() = 0;
 
 public:
-	//UŒ‚
+	//æ”»æ’ƒ
 	virtual void Attack(const Vec3& directionVec, int32_t decreBullet = 1, IObject3D* owner = nullptr, float particleSize = 1.0f) = 0;
 
-	//‚¿å•ÏX
+	//æŒã¡ä¸»å¤‰æ›´
 	virtual void ChangeOwner(IObject3D* parent);
 
-	//”»’è‘®«
+	//åˆ¤å®šå±æ€§
 	void SetAttribute(uint16_t attribute) { GetCollider()->SetAttribute(attribute); }
 
 public:
 	//
 	virtual void SetFallVec(const Vec3& fallVec) { fallVec_ = fallVec; }
-	//ƒ[ƒJƒ‹À•WƒZƒbƒg
+	//ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã‚»ãƒƒãƒˆ
 	virtual  void SetLocalPos(const Vec3& pos) {
 		localPos_ = pos;
 	}
 
 	Vec3 GetLocalPos() { return localPos_; }
 
-	//“Š‚°‚éA”í’e‚µ‚Ä—‚¿‚é‚Æ‚«‚ÌƒXƒs[ƒh
+	//æŠ•ã’ã‚‹ã€è¢«å¼¾ã—ã¦è½ã¡ã‚‹ã¨ãã®ã‚¹ãƒ”ãƒ¼ãƒ‰
 	virtual const Vec3& GetFallVelocity() { return fallVec_; }
 
 	bool GetIsThrowing() { return isThrowing_; }
 	void SetIsThrowing(bool isThrowing) { isThrowing_ = isThrowing; }
 
-	//ƒN[ƒ‹ƒ^ƒCƒ€‚ÌI‚í‚è‚Ü‚Å‚ÌŠ„‡(0~1.0f)
+	//ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®çµ‚ã‚ã‚Šã¾ã§ã®å‰²åˆ(0~1.0f)
 	virtual float GetAttackCoolTimeRatio() = 0;
 
 public:
@@ -85,7 +85,7 @@ public:
 	virtual void OnCollision(const CollisionInfo& info) override = 0;
 
 public:
-	//ŒÃ‚¢À•W‚ÌXV
+	//å¤ã„åº§æ¨™ã®æ›´æ–°
 	void OldPosUpdate() { oldPos_ = GetWorldTrans(); }
 };
 

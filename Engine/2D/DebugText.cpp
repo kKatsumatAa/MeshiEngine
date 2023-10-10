@@ -1,4 +1,4 @@
-#include "DebugText.h"
+ï»¿#include "DebugText.h"
 using namespace std;
 
 
@@ -24,7 +24,7 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 
 		spriteIndex_++;
 	}
-	//•Ï”‚Ì’†g•\¦—p------------------------
+	//å¤‰æ•°ã®ä¸­èº«è¡¨ç¤ºç”¨------------------------
 	if (variable != 114514)
 	{
 		bool isMinus = false;
@@ -32,7 +32,7 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 		int32_t number = variable;
 		int32_t printNumber[6] = { };
 
-		//ƒ}ƒCƒiƒX
+		//ãƒã‚¤ãƒŠã‚¹
 		if (number < 0)
 		{
 			isMinus = true;
@@ -59,10 +59,10 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 
 		for (int32_t i = 0; i < _countof(printNumber); i++)
 		{
-			//Å‘å•¶š”‚ğ’´‚¦‚½‚ç
+			//æœ€å¤§æ–‡å­—æ•°ã‚’è¶…ãˆãŸã‚‰
 			if (spriteIndex_ >= S_MAX_CHAR_COUNT_) break;
 
-			//ƒ}ƒCƒiƒX‚Ì
+			//ãƒã‚¤ãƒŠã‚¹ã®æ™‚
 			if (isMinus)
 			{
 				int32_t fontIndex = '-' - 32;
@@ -76,7 +76,7 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 				UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
 				UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
 
-				// “Y‚¦š—p•Ï”‚ğƒCƒ“ƒNƒŠƒƒ“ƒg
+				// æ·»ãˆå­—ç”¨å¤‰æ•°ã‚’ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 				spriteIndex_++;
 
 				isMinus = false;
@@ -84,7 +84,7 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 				continue;
 			}
 
-			//ASCIIƒR[ƒh‚Ì1’i•ª”ò‚Î‚µ‚½”Ô†‚ğŒvZ
+			//ASCIIã‚³ãƒ¼ãƒ‰ã®1æ®µåˆ†é£›ã°ã—ãŸç•ªå·ã‚’è¨ˆç®—
 			int32_t fontIndex = printNumber[i] + 16;
 			//if (character >= 0x7f) fontIndex = 0;
 
@@ -97,7 +97,7 @@ void DebugText::Print(const std::string& text, float x, float y, int32_t variabl
 			UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
 			UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
 
-			//“Y‚¦š—p•Ï”‚ğƒCƒ“ƒNƒŠƒƒ“ƒg
+			//æ·»ãˆå­—ç”¨å¤‰æ•°ã‚’ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 			spriteIndex_++;
 		}
 	}
@@ -125,7 +125,7 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 
 		spriteIndex_++;
 	}
-	//•Ï”‚Ì’†g•\¦—p------------------------
+	//å¤‰æ•°ã®ä¸­èº«è¡¨ç¤ºç”¨------------------------
 	if (variable != 114514.0f)
 	{
 		bool isMinus = false;
@@ -133,7 +133,7 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 		float number = variable;
 		int32_t printNumber[13] = { };
 
-		//ƒ}ƒCƒiƒX
+		//ãƒã‚¤ãƒŠã‚¹
 		if (number < 0)
 		{
 			isMinus = true;
@@ -158,8 +158,8 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 		printNumber[5] = (int)(number / 1);
 		number -= (float)((int)number / 1);
 
-		//¬”“_ˆÈ‰º‚Ì•\¦
-		printNumber[6] = -2;//¬”“_(0‚æ‚è‚QŒÂ‘O)
+		//å°æ•°ç‚¹ä»¥ä¸‹ã®è¡¨ç¤º
+		printNumber[6] = -2;//å°æ•°ç‚¹(0ã‚ˆã‚Šï¼’å€‹å‰)
 
 		number *= 1000000;
 
@@ -184,10 +184,10 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 
 		for (int32_t i = 0; i < _countof(printNumber); i++)
 		{
-			//Å‘å•¶š”‚ğ’´‚¦‚½‚ç
+			//æœ€å¤§æ–‡å­—æ•°ã‚’è¶…ãˆãŸã‚‰
 			if (spriteIndex_ >= S_MAX_CHAR_COUNT_) break;
 
-			//ƒ}ƒCƒiƒX‚Ì
+			//ãƒã‚¤ãƒŠã‚¹ã®æ™‚
 			if (isMinus)
 			{
 				int32_t fontIndex = '-' - 32;
@@ -201,7 +201,7 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 				UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
 				UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
 
-				//“Y‚¦š—p•Ï”‚ğƒCƒ“ƒNƒŠƒƒ“ƒg
+				//æ·»ãˆå­—ç”¨å¤‰æ•°ã‚’ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 				spriteIndex_++;
 
 				isMinus = false;
@@ -209,7 +209,7 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 				continue;
 			}
 
-			//ASCIIƒR[ƒh‚Ì1’i•ª”ò‚Î‚µ‚½”Ô†‚ğŒvZ
+			//ASCIIã‚³ãƒ¼ãƒ‰ã®1æ®µåˆ†é£›ã°ã—ãŸç•ªå·ã‚’è¨ˆç®—
 			int32_t fontIndex = printNumber[i] + 16;
 			//if (character >= 0x7f) fontIndex = 0;
 
@@ -222,7 +222,7 @@ void DebugText::Printf(const std::string& text, float x, float y, float variable
 			UVleftTop_[spriteIndex_] = { (float)(fontIndexX) / (float)((S_FONT_INDEX_MAX_X_)) - 0.003f,(float)(fontIndexY) / (float)((S_FONT_INDEX_MAX_Y_)) - 0.003f };
 			UVlength_[spriteIndex_] = { (float)S_FONT_WIDTH_ / (float)(S_FONT_WIDTH_ * (S_FONT_INDEX_MAX_X_)) ,(float)S_FONT_HEIGHT_ / (float)(S_FONT_HEIGHT_ * (S_FONT_INDEX_MAX_Y_)) };
 
-			//“Y‚¦š—p•Ï”‚ğƒCƒ“ƒNƒŠƒƒ“ƒg
+			//æ·»ãˆå­—ç”¨å¤‰æ•°ã‚’ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 			spriteIndex_++;
 		}
 	}

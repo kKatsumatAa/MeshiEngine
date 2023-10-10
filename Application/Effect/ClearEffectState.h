@@ -9,7 +9,7 @@ class ClearEffect;
 class ClearEffectState
 {
 protected:
-	//ó‘Ô‚ğg‚¤ƒCƒ“ƒXƒ^ƒ“ƒXƒ|ƒCƒ“ƒ^
+	//çŠ¶æ…‹ã‚’ä½¿ã†ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒã‚¤ãƒ³ã‚¿
 	ClearEffect* clearEffect_ = nullptr;
 
 	int32_t timer_ = 0;
@@ -41,7 +41,7 @@ public:
 	static std::unique_ptr<ClearEffectState> GetState(const std::string& name);
 };
 
-//UŒ‚‚µ‚Ä‚¢‚È‚¢
+//æ”»æ’ƒã—ã¦ã„ãªã„
 class ClearEffectStateHyper : public ClearEffectState
 {
 	const float VOLUME_TMP_ = 2.0f;
@@ -53,7 +53,7 @@ public:
 	void Draw() override;
 };
 
-//UŒ‚’†
+//æ”»æ’ƒä¸­
 class ClearEffectStateHot : public ClearEffectState
 {
 private:

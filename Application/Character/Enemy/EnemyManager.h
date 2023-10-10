@@ -26,10 +26,10 @@ private:
 	std::vector<IObject3D*>GetEnemys();
 	Enemy* TransToEnemy(IObject3D* obj);
 
-	//Œ»İ‚ÌƒEƒF[ƒuˆÈŠO‚Ì“G‚Ì—LŒøƒtƒ‰ƒO‚ğfalse
+	//ç¾åœ¨ã®ã‚¦ã‚§ãƒ¼ãƒ–ä»¥å¤–ã®æ•µã®æœ‰åŠ¹ãƒ•ãƒ©ã‚°ã‚’false
 	void SetIsValidOtherWaveEnemy();
-	//Œ»İ‚ÌƒEƒF[ƒu‚Ì“G‚Ì—LŒøƒtƒ‰ƒO‚ğtrue
+	//ç¾åœ¨ã®ã‚¦ã‚§ãƒ¼ãƒ–ã®æ•µã®æœ‰åŠ¹ãƒ•ãƒ©ã‚°ã‚’true
 	void SetIsValidWaveEnemy();
-	//ƒEƒF[ƒu‚Ì“G‚ª‚à‚¤‚¢‚È‚¢‚©‚Ç‚¤‚©
+	//ã‚¦ã‚§ãƒ¼ãƒ–ã®æ•µãŒã‚‚ã†ã„ãªã„ã‹ã©ã†ã‹
 	bool GetIsAliveWaveEnemy();
 };

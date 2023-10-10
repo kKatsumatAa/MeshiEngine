@@ -351,8 +351,8 @@ void DirectXWrapper::UpLoadTexture()
 	ID3D12CommandList* commandLists[] = { texCommandList_.Get() };
 	texCommandQueue_->ExecuteCommandLists(1, commandLists);
 
-// ChangeScreen
-	// コマンドの実行完了を待つ
+	// ChangeScreen
+		// コマンドの実行完了を待つ
 	texCommandQueue_->Signal(texFence_.Get(), ++texFenceVal_);
 	if (texFence_->GetCompletedValue() != texFenceVal_)	//	GPUの処理が完了したか判定
 	{

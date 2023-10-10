@@ -1,4 +1,4 @@
-#include "Vec4.h"
+﻿#include "Vec4.h"
 
 float Vec4::GetLength() const
 {

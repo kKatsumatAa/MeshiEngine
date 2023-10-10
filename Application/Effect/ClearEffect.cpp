@@ -1,4 +1,4 @@
-#include "ClearEffect.h"
+ï»¿#include "ClearEffect.h"
 #include "ClearEffectState.h"
 #include "LevelManager.h"
 
@@ -22,7 +22,7 @@ void ClearEffect::BeginClearEffect()
 	if (!isEffect_)
 	{
 		isEffect_ = true;
-		//ƒXƒe[ƒg•ÏX
+		//ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´
 		ChangeState(ClearEffectState::GetState("HYPER"));
 	}
 }
@@ -46,7 +46,7 @@ void ClearEffect::Initialize()
 
 void ClearEffect::Update()
 {
-	//ƒNƒŠƒA‰‰oŠJn
+	//ã‚¯ãƒªã‚¢æ¼”å‡ºé–‹å§‹
 	if (!GetIsEffect() && 
 		ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_ENEMYS).size() <= 0)
 	{

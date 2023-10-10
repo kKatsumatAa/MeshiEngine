@@ -102,6 +102,13 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 
 	//演出更新
 	ObjectFBX::EffectUpdate();
+	//fbx前提
+	ModelFBX* modelFbx = dynamic_cast<ModelFBX*>(model);
+	//ノードごとの当たり判定
+	nodeColliders_.SetNodesPointer(modelFbx->GetNodes());
+	nodeColliders_.CreateNodeColliders();
+	nodeColliders_.SetNodeParamMagnif(modelFbx->GetScaleExtend());
+	nodeColliders_.SetScaleCollider(3.0f);
 
 	return true;
 }
@@ -223,11 +230,16 @@ void Enemy::Update()
 	state_->Update();
 
 	Character::Update();
+
+	//ノードごとの当たり判定
+	nodeColliders_.Update(GetWorldMat());
 }
 
 void Enemy::Draw()
 {
-	ObjectFBX::DrawModel(nullptr);
+	//ObjectFBX::DrawModel(nullptr);
+
+	nodeColliders_.Draw();
 }
 
 

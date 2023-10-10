@@ -28,13 +28,13 @@ public:
 private:
 	void HandAttack(PlayerHand* hand, const RaycastHit& info);
 
-	//‚Ç‚¿‚ç‚©‚Ìè‚ªUŒ‚’†‚¶‚á‚È‚©‚Á‚½‚ç
+	//ã©ã¡ã‚‰ã‹ã®æ‰‹ãŒæ”»æ’ƒä¸­ã˜ã‚ƒãªã‹ã£ãŸã‚‰
 	bool GetIsUseWitchHand();
-	//UŒ‚’†‚¶‚á‚È‚¢è‚Ìƒ|ƒCƒ“ƒ^‚à‚ç‚¤
+	//æ”»æ’ƒä¸­ã˜ã‚ƒãªã„æ‰‹ã®ãƒã‚¤ãƒ³ã‚¿ã‚‚ã‚‰ã†
 	PlayerHand* GetWitchUseHand();
 
 public:
-	//‰£‚é
+	//æ®´ã‚‹
 	void Attack(RaycastHit info);
 
 public:

@@ -3,6 +3,6 @@
 
 void SceneState::SetSceneManager(SceneManager* sceneM)
 {
-	//stateではなくSceneクラスのインスタンス//
+	//state縺ｧ縺ｯ縺ｪ縺輯cene繧ｯ繝ｩ繧ｹ縺ｮ繧､繝ｳ繧ｹ繧ｿ繝ｳ繧ｹ//
 	sceneM_ = sceneM;
 }

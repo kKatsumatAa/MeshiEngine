@@ -18,7 +18,7 @@ public:
 private:
 	std::string oldStateName = "";
 
-	//ƒXƒe[ƒg
+	//ã‚¹ãƒ†ãƒ¼ãƒˆ
 	std::unique_ptr<PlayerUIState> state_ = nullptr;
 
 private:

@@ -1,4 +1,4 @@
-#include "EnemyManager.h"
+ï»¿#include "EnemyManager.h"
 #include "ObjectManager.h"
 #include "LevelManager.h"
 
@@ -13,20 +13,20 @@ void EnemyManager::Initialize()
 {
 	waveNum_ = 1;
 
-	//“G‚ÌƒEƒF[ƒu‚Ì”Ô†‚Å”»’f‚µ‚Ä–³Œø‚É‚·‚é
+	//æ•µã®ã‚¦ã‚§ãƒ¼ãƒ–ã®ç•ªå·ã§åˆ¤æ–­ã—ã¦ç„¡åŠ¹ã«ã™ã‚‹
 	SetIsValidOtherWaveEnemy();
-	//V‚µ‚¢ƒEƒF[ƒu‚Ì“G‚Ì—LŒøƒtƒ‰ƒO‚ğƒIƒ“
+	//æ–°ã—ã„ã‚¦ã‚§ãƒ¼ãƒ–ã®æ•µã®æœ‰åŠ¹ãƒ•ãƒ©ã‚°ã‚’ã‚ªãƒ³
 	SetIsValidWaveEnemy();
 }
 
 void EnemyManager::Update()
 {
-	//ƒEƒF[ƒu‚Ì“G‚ª‚¢‚È‚­‚È‚Á‚½‚ç
+	//ã‚¦ã‚§ãƒ¼ãƒ–ã®æ•µãŒã„ãªããªã£ãŸã‚‰
 	if (GetEnemys().size() && !GetIsAliveWaveEnemy())
 	{
 		waveNum_++;
 
-		//V‚µ‚¢ƒEƒF[ƒu‚Ì“G‚Ì—LŒøƒtƒ‰ƒO‚ğƒIƒ“
+		//æ–°ã—ã„ã‚¦ã‚§ãƒ¼ãƒ–ã®æ•µã®æœ‰åŠ¹ãƒ•ãƒ©ã‚°ã‚’ã‚ªãƒ³
 		SetIsValidWaveEnemy();
 	}
 }
@@ -51,7 +51,7 @@ Enemy* EnemyManager::TransToEnemy(IObject3D* obj)
 
 void EnemyManager::SetIsValidOtherWaveEnemy()
 {
-	//“G‚ÌƒEƒF[ƒu‚Ì”Ô†‚Å”»’f‚µ‚Ä–³Œø‚É‚·‚é
+	//æ•µã®ã‚¦ã‚§ãƒ¼ãƒ–ã®ç•ªå·ã§åˆ¤æ–­ã—ã¦ç„¡åŠ¹ã«ã™ã‚‹
 	for (auto obj : GetEnemys())
 	{
 		Enemy* enemy = TransToEnemy(obj);
@@ -65,7 +65,7 @@ void EnemyManager::SetIsValidOtherWaveEnemy()
 
 void EnemyManager::SetIsValidWaveEnemy()
 {
-	//“G‚ÌƒEƒF[ƒu‚Ì”Ô†‚Å”»’f‚µ‚Ä—LŒø‚É‚·‚é
+	//æ•µã®ã‚¦ã‚§ãƒ¼ãƒ–ã®ç•ªå·ã§åˆ¤æ–­ã—ã¦æœ‰åŠ¹ã«ã™ã‚‹
 	for (auto obj : GetEnemys())
 	{
 		Enemy* enemy = TransToEnemy(obj);
@@ -73,7 +73,7 @@ void EnemyManager::SetIsValidWaveEnemy()
 		if (enemy->GetWaveNum() == waveNum_)
 		{
 			enemy->SetIsValid(true);
-			//oŒ»‰‰o‚ÌƒCƒjƒVƒƒƒ‰ƒCƒY
+			//å‡ºç¾æ¼”å‡ºã®ã‚¤ãƒ‹ã‚·ãƒ£ãƒ©ã‚¤ã‚º
 			enemy->EmergeInitialize();
 		}
 	}
@@ -85,7 +85,7 @@ bool EnemyManager::GetIsAliveWaveEnemy()
 	{
 		Enemy* enemy = TransToEnemy(obj);
 
-		//Œ»İ‚Æ“¯‚¶ƒEƒF[ƒu”Ô†‚Ì“G‚ª‚¢‚½‚ç
+		//ç¾åœ¨ã¨åŒã˜ã‚¦ã‚§ãƒ¼ãƒ–ç•ªå·ã®æ•µãŒã„ãŸã‚‰
 		if (enemy->GetWaveNum() == waveNum_)
 		{
 			return true;

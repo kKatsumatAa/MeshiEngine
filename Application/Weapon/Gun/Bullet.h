@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Object.h"
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
@@ -9,21 +9,21 @@ class Bullet :
 	public Object
 {
 private:
-	//¶‘¶ŠÔ
+	//ç”Ÿå­˜æ™‚é–“
 	float lifeTime_ = 300;
 
-	//•ûŒüƒxƒNƒgƒ‹
+	//æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
 	Vec3 directionVec_ = { 0,0,0 };
 
-	//Š—LÒ
+	//æ‰€æœ‰è€…
 	IObject* owner_ = nullptr;
 
 	Vec3 ownerPos_ = { 0,0,0 };
 
-	//‘O‚ÌƒtƒŒ[ƒ€‚ÌˆÊ’u
+	//å‰ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã®ä½ç½®
 	Vec3 oldPos_ = { 0,0,0 };
 
-	//’e“¹
+	//å¼¾é“
 	Object ballisticsObj_;
 	float ballisticsLength = 0;
 	const float BALLISTICS_LENGTH_MAX_ = 10;
@@ -31,7 +31,7 @@ private:
 
 public:
 	/// <summary>
-	/// ƒIƒuƒWƒFƒNƒg¶¬
+	/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
@@ -40,7 +40,7 @@ public:
 private:
 	void Dead(const Vec3& interPos);
 
-	//’e“¹—p‚ÌƒIƒuƒWƒFƒNƒg‚ÌˆÊ’u‚È‚Ç
+	//å¼¾é“ç”¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½ç½®ãªã©
 	void BallisticsUpdate();
 
 public:

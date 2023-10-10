@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "DirectXWrapper.h"
 #include "PointLight.h"
 #include "DirLight.h"
@@ -9,83 +9,83 @@
 class LightManager
 {
 public:
-	//“_ŒõŒ¹‚Ì”
+	//ç‚¹å…‰æºã®æ•°
 	static const int32_t S_POINT_LIGHT_NUM_ = 12;
 
-private://ƒGƒCƒŠƒAƒX
-	//Microsoft::WRL::‚ğÈ—ª
+private://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	//DirectX::‚ğÈ—ª
+	//DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-private://’è”
+private://å®šæ•°
 
-	//•½sŒõŒ¹
+	//å¹³è¡Œå…‰æº
 	static const int32_t S_DIR_LIGHT_NUM_ = 3;
 
-	//ƒXƒ|ƒbƒgƒ‰ƒCƒg‚Ì”
+	//ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆã®æ•°
 	static const int32_t S_SPOT_LIGHT_NUM_ = 3;
 
-	//ŠÛ‰e‚Ì”
+	//ä¸¸å½±ã®æ•°
 	static const int32_t S_CIRCLE_SHADOW_NUM_ = 1;
 
-private://Ã“Iƒƒ“ƒo•Ï”
+private://é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°
 	static ID3D12Device* sDevice_;
 
-private://ƒƒ“ƒo•Ï”
-	//’è”ƒoƒbƒtƒ@
+private://ãƒ¡ãƒ³ãƒå¤‰æ•°
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡
 	ComPtr<ID3D12Resource> constBuff_;
-	//ƒ_[ƒeƒBƒtƒ‰ƒO
+	//ãƒ€ãƒ¼ãƒ†ã‚£ãƒ•ãƒ©ã‚°
 	bool dirty_ = false;
-	// ŠÂ‹«Œõ‚ÌF
+	// ç’°å¢ƒå…‰ã®è‰²
 	XMFLOAT3 ambientColor_ = { 1,1,1 };
 	XMFLOAT3 diffuseColor_ = { 1,1,1 };
 	XMFLOAT3 specularColor_ = { 1,1,1 };
-	//“_ŒõŒ¹‚Ì”z—ñ
+	//ç‚¹å…‰æºã®é…åˆ—
 	PointLight pointLights_[S_POINT_LIGHT_NUM_];
-	// •½sŒõŒ¹‚Ì”z—ñ
+	// å¹³è¡Œå…‰æºã®é…åˆ—
 	DirLight dirLights_[S_DIR_LIGHT_NUM_];
-	//ƒXƒ|ƒbƒgƒ‰ƒCƒg‚Ì”z—ñ
+	//ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆã®é…åˆ—
 	SpotLight spotLights_[S_SPOT_LIGHT_NUM_];
-	//ŠÛ‰e‚Ì”z—ñ
+	//ä¸¸å½±ã®é…åˆ—
 	CircleShadow circleShadows_[S_CIRCLE_SHADOW_NUM_];
 
-public://ƒTƒuƒNƒ‰ƒX
-	//’è”ƒoƒbƒtƒ@—pƒf[ƒ^\‘¢‘Ì(•½sŒõŒ¹A“_ŒõŒ¹‚Ì”z—ñ‚ğ‚Ü‚Æ‚ß‚Ä‘—‚é)
+public://ã‚µãƒ–ã‚¯ãƒ©ã‚¹
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ç”¨ãƒ‡ãƒ¼ã‚¿æ§‹é€ ä½“(å¹³è¡Œå…‰æºã€ç‚¹å…‰æºã®é…åˆ—ã‚’ã¾ã¨ã‚ã¦é€ã‚‹)
 	struct ConstBufferData
 	{
-		// ŠÂ‹«Œõ‚ÌF
+		// ç’°å¢ƒå…‰ã®è‰²
 		XMFLOAT3 ambientColor;
 		float pad1;
-		// diffuse‚ÌF
+		// diffuseã®è‰²
 		XMFLOAT3 diffuseColor;
 		float pad2;
-		// specular‚ÌF
+		// specularã®è‰²
 		XMFLOAT3 specularColor;
 		float pad3;
 
-		// •½sŒõŒ¹‚Ì”z—ñ
+		// å¹³è¡Œå…‰æºã®é…åˆ—
 		DirLight::ConstBufferData dirLights[S_DIR_LIGHT_NUM_];
-		//“_ŒõŒ¹—p
+		//ç‚¹å…‰æºç”¨
 		PointLight::ConstBufferData pointLights[S_POINT_LIGHT_NUM_];
-		//ƒXƒ|ƒbƒgƒ‰ƒCƒg—p
+		//ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆç”¨
 		SpotLight::ConstBufferData spotLights[S_SPOT_LIGHT_NUM_];
-		//ŠÛ‰e—p
+		//ä¸¸å½±ç”¨
 		CircleShadow::ConstBufferData circleShadows[S_CIRCLE_SHADOW_NUM_];
 	};
 
 
 private:
 	/// <summary>
-/// ’è”ƒoƒbƒtƒ@“]‘—
+/// å®šæ•°ãƒãƒƒãƒ•ã‚¡è»¢é€
 /// </summary>
 	void TransferConstBuffer();
 
-public://Ã“Iƒƒ“ƒoŠÖ”
+public://é™çš„ãƒ¡ãƒ³ãƒé–¢æ•°
 	static void StaticInitialize();
 
 public:
@@ -94,12 +94,12 @@ public:
 	void InitializeActive();
 
 	/// <summary>
-	/// XV
+	/// æ›´æ–°
 	/// </summary>
 	void Update();
 
 	/// <summary>
-	/// •`‰æi•`‰æ‚Í‚¹‚¸A’è”ƒoƒbƒtƒ@ƒrƒ…[‚ÌƒZƒbƒg‚Ì‚İs‚¤j
+	/// æç”»ï¼ˆæç”»ã¯ã›ãšã€å®šæ•°ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ã‚»ãƒƒãƒˆã®ã¿è¡Œã†ï¼‰
 	/// </summary>
 	/// <param name="rootParamaterIndex"></param>
 	void Draw(uint32_t rootParamaterIndex);
@@ -108,14 +108,14 @@ public:
 	void DrawImGui();
 
 	/// <summary>
-	/// •W€‚Ìƒ‰ƒCƒgİ’è
+	/// æ¨™æº–ã®ãƒ©ã‚¤ãƒˆè¨­å®š
 	/// </summary>
 	void DefaultLightSetting();
 
 	/// <summary>
-	/// ŠÂ‹«Œõ‚Ìƒ‰ƒCƒgF‚ğƒZƒbƒg
+	/// ç’°å¢ƒå…‰ã®ãƒ©ã‚¤ãƒˆè‰²ã‚’ã‚»ãƒƒãƒˆ
 	/// </summary>
-	/// <param name="color">ƒ‰ƒCƒgF</param>
+	/// <param name="color">ãƒ©ã‚¤ãƒˆè‰²</param>
 	void SetAmbientColor(const XMFLOAT3& color);
 
 	void SetDiffuseColor(const XMFLOAT3& color);
@@ -123,63 +123,63 @@ public:
 	void SetSpecularColor(const XMFLOAT3& color);
 
 	/// <summary>
-	/// ƒCƒ“ƒXƒ^ƒ“ƒX¶¬
+	/// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç”Ÿæˆ
 	/// </summary>
 	static std::unique_ptr<LightManager> Create();
 
 	/// <summary>
-		/// •½sŒõŒ¹‚Ì—LŒøƒtƒ‰ƒO‚ğƒZƒbƒg
+		/// å¹³è¡Œå…‰æºã®æœ‰åŠ¹ãƒ•ãƒ©ã‚°ã‚’ã‚»ãƒƒãƒˆ
 		/// </summary>
-		/// <param name="index">ƒ‰ƒCƒg”Ô†</param>
-		/// <param name="active">—LŒøƒtƒ‰ƒO</param>
+		/// <param name="index">ãƒ©ã‚¤ãƒˆç•ªå·</param>
+		/// <param name="active">æœ‰åŠ¹ãƒ•ãƒ©ã‚°</param>
 	void SetDirLightActive(int32_t index, bool active);
 
 	/// <summary>
-	/// •½sŒõŒ¹‚Ìƒ‰ƒCƒg•ûŒü‚ğƒZƒbƒg
+	/// å¹³è¡Œå…‰æºã®ãƒ©ã‚¤ãƒˆæ–¹å‘ã‚’ã‚»ãƒƒãƒˆ
 	/// </summary>
-	/// <param name="index">ƒ‰ƒCƒg”Ô†</param>
-	/// <param name="lightdir">ƒ‰ƒCƒg•ûŒü</param>
+	/// <param name="index">ãƒ©ã‚¤ãƒˆç•ªå·</param>
+	/// <param name="lightdir">ãƒ©ã‚¤ãƒˆæ–¹å‘</param>
 	void SetDirLightDir(int32_t index, const XMVECTOR& lightdir);
 
 	/// <summary>
-	/// •½sŒõŒ¹‚Ìƒ‰ƒCƒgF‚ğƒZƒbƒg
+	/// å¹³è¡Œå…‰æºã®ãƒ©ã‚¤ãƒˆè‰²ã‚’ã‚»ãƒƒãƒˆ
 	/// </summary>
-	/// <param name="index">ƒ‰ƒCƒg”Ô†</param>
-	/// <param name="lightcolor">ƒ‰ƒCƒgF</param>
+	/// <param name="index">ãƒ©ã‚¤ãƒˆç•ªå·</param>
+	/// <param name="lightcolor">ãƒ©ã‚¤ãƒˆè‰²</param>
 	void SetDirLightColor(int32_t index, const XMFLOAT3& lightcolor);
 
-	///ƒ|ƒCƒ“ƒgƒ‰ƒCƒg—p
+	///ãƒã‚¤ãƒ³ãƒˆãƒ©ã‚¤ãƒˆç”¨
 	void SetPointLightActive(int32_t index, bool active);
 	void SetPointLightPos(int32_t index, const XMFLOAT3& pos);
 	void SetPointLightColor(int32_t index, const XMFLOAT3& color);
 	void SetPointLightAtten(int32_t index, const XMFLOAT3& atten);
 
-	///ƒXƒ|ƒbƒgƒ‰ƒCƒg—p
+	///ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆç”¨
 	void SetSpotLightActive(int32_t index, bool active);
-	//ƒ‰ƒCƒg‚Ì•ûŒü‚ğƒZƒbƒg
+	//ãƒ©ã‚¤ãƒˆã®æ–¹å‘ã‚’ã‚»ãƒƒãƒˆ
 	void SetSpotLightDir(int32_t index, const XMVECTOR& lightdir);
 	void SetSpotLightPos(int32_t index, const XMFLOAT3& lightpos);
 	void SetSpotLightColor(int32_t index, const XMFLOAT3& lightcolor);
-	//Œ¸ŠŒW”‚ğƒZƒbƒg
+	//æ¸›è¡°ä¿‚æ•°ã‚’ã‚»ãƒƒãƒˆ
 	void SetSpotLightAtten(int32_t index, const XMFLOAT3& lightAtten);
-	//Œ¸ŠŠJnAI—¹Šp“x
+	//æ¸›è¡°é–‹å§‹ã€çµ‚äº†è§’åº¦
 	void SetSpotLightFactorAngle(int32_t index, const XMFLOAT2& lightFactorAngle);
 
-	///ŠÛ‰e—p
+	///ä¸¸å½±ç”¨
 	void SetCircleShadowActive(int32_t index, bool active);
-	//‰e‚Ì”­¶Œ³‚ÌƒIƒuƒWƒFƒNƒg‚ÌÀ•W
+	//å½±ã®ç™ºç”Ÿå…ƒã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åº§æ¨™
 	void SetCircleShadowCasterPos(int32_t index, const XMFLOAT3& casterPos);
-	//ƒ‰ƒCƒg‚Ì•ûŒü‚ğƒZƒbƒg
+	//ãƒ©ã‚¤ãƒˆã®æ–¹å‘ã‚’ã‚»ãƒƒãƒˆ
 	void SetCircleShadowDir(int32_t index, const XMVECTOR& lightdir);
-	//‰e‚©‚çƒ‰ƒCƒg‚Ü‚Å‚Ì‹——£
+	//å½±ã‹ã‚‰ãƒ©ã‚¤ãƒˆã¾ã§ã®è·é›¢
 	void SetCircleShadowDistanceCasterLight(int32_t index, float distanceCasterLight);
-	//Œ¸ŠŒW”‚ğƒZƒbƒg
+	//æ¸›è¡°ä¿‚æ•°ã‚’ã‚»ãƒƒãƒˆ
 	void SetCircleShadowAtten(int32_t index, const XMFLOAT3& lightAtten);
-	//Œ¸ŠŠJnAI—¹Šp“x
+	//æ¸›è¡°é–‹å§‹ã€çµ‚äº†è§’åº¦
 	void SetCircleShadowFactorAngle(int32_t index, const XMFLOAT2& lightFactorAngle);
 
 public:
-	//g—p‚³‚ê‚Ä‚È‚¢ƒ|ƒCƒ“ƒgƒ‰ƒCƒg‚ÌƒCƒ“ƒfƒbƒNƒX
+	//ä½¿ç”¨ã•ã‚Œã¦ãªã„ãƒã‚¤ãƒ³ãƒˆãƒ©ã‚¤ãƒˆã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 	bool GetDoNotUseDirLightIndex(int32_t& index);
 	bool GetDoNotUsePointLightIndex(int32_t& index);
 	bool GetDoNotUseSpotLightIndex(int32_t& index);

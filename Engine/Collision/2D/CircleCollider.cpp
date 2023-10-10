@@ -1,19 +1,19 @@
-#include "CircleCollider.h"
+ï»¿#include "CircleCollider.h"
 
 
 using namespace DirectX;
 
 void CircleCollider::Update()
 {
-	// ƒ[ƒ‹ƒhs—ñ‚©‚çÀ•W‚ð’Šo
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã‹ã‚‰åº§æ¨™ã‚’æŠ½å‡º
 	const M4& matWorld = object_->GetMatWorld();
 
-	// ‰~‚Ìƒƒ“ƒo•Ï”‚ðXV
+	// å††ã®ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’æ›´æ–°
 	Circle::center = {
 		(float)matWorld.m_[3][0],
 	(float)matWorld.m_[3][1],
 	};
-	//ƒ[ƒ‹ƒhs—ñ‚ÌƒXƒP[ƒ‹‚©‚ç”¼Œa
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®ã‚¹ã‚±ãƒ¼ãƒ«ã‹ã‚‰åŠå¾„
 	Circle::iRadius =
 		(object_->GetScale().x / 2.0f + object_->GetScale().y / 2.0f) / 2.0f;
 }

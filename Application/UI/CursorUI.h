@@ -11,13 +11,13 @@ private:
 	Vec2 cursorPos_;
 	Vec2 drawPos_;
 
-	//“_–Å‚Ì‰ñ”iˆê•bŠÔj
+	//ç‚¹æ»…ã®å›æ•°ï¼ˆä¸€ç§’é–“ï¼‰
 	const int32_t flashingNum_ = 2;
-	//“_–Å‚Ì’·‚³
+	//ç‚¹æ»…ã®é•·ã•
 	const int32_t flashingIntervalWidth_ = 2;
 
 public:
-	//ƒJ[ƒ\ƒ‹‚ÌƒTƒCƒY
+	//ã‚«ãƒ¼ã‚½ãƒ«ã®ã‚µã‚¤ã‚º
 	static const  Vec2 cursorSize_;
 
 

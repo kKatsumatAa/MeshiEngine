@@ -1,25 +1,25 @@
-#pragma once
+ï»¿#pragma once
 #include"PostEffectManager.h"
 #include"Async.h"
 
-//‘O•ûéŒ¾
+//å‰æ–¹å®£è¨€
 class SceneTransitionEffectState;
 
 //-----------------------------------
-//ƒV[ƒ“‘JˆÚ‰‰o
+//ã‚·ãƒ¼ãƒ³é·ç§»æ¼”å‡º
 class SceneTransitionManager final
 {
 private:
-	//‰‰o’†‚©
+	//æ¼”å‡ºä¸­ã‹
 	bool isDoingEffect_ = false;
-	//ƒ[ƒh‚ÌŠÖ”‚ğŒÄ‚Ño‚·‚Ì‚ğ‘Ò‹@’†
-	//‰‰oƒXƒe[ƒg
+	//ãƒ­ãƒ¼ãƒ‰ã®é–¢æ•°ã‚’å‘¼ã³å‡ºã™ã®ã‚’å¾…æ©Ÿä¸­
+	//æ¼”å‡ºã‚¹ãƒ†ãƒ¼ãƒˆ
 	std::unique_ptr<SceneTransitionEffectState> effectState_;
 
-	//”ñ“¯Šú—p
+	//éåŒæœŸç”¨
 	Async async_;
 
-	//“Ç‚İ‚İ‚ÌŠÖ”•Û‘¶—p
+	//èª­ã¿è¾¼ã¿ã®é–¢æ•°ä¿å­˜ç”¨
 	std::function<void()>loadFunc_;
 
 public:
@@ -33,7 +33,7 @@ private:
 public:
 	SceneTransitionManager& operator=(const SceneTransitionManager& inst) = delete;
 	SceneTransitionManager(const SceneTransitionManager& inst) = delete;
-	//ƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
 	static SceneTransitionManager& GetInstance();
 
 public:
@@ -49,14 +49,14 @@ public:
 	void SetIsDoingEffect(bool isDoingEffect) { isDoingEffect_ = isDoingEffect; }
 	bool GetIsDoingEffect() { return isDoingEffect_; }
 
-	//“Ç‚İ‚İ’†‚©
+	//èª­ã¿è¾¼ã¿ä¸­ã‹
 	bool GetIsLoadingOnly() { return async_.GetIsLoading(); }
-	//ƒV[ƒ“‘JˆÚ‰‰o’†‚©(‰‰o‘S‘Ì)
+	//ã‚·ãƒ¼ãƒ³é·ç§»æ¼”å‡ºä¸­ã‹(æ¼”å‡ºå…¨ä½“)
 	bool GetIsDoingLoadEffect() { return isDoingEffect_; }
 
-	//ƒV[ƒ“‘JˆÚ‰‰oŠJn
+	//ã‚·ãƒ¼ãƒ³é·ç§»æ¼”å‡ºé–‹å§‹
 	void BeginSceneTransition(const std::function<void()>& loadFunc);
 
-	//—a‚©‚Á‚Ä‚¢‚½“Ç‚İ‚İ—p‚ÌŠÖ”‚ğ”ñ“¯Šú‚ÅŠJn
+	//é ã‹ã£ã¦ã„ãŸèª­ã¿è¾¼ã¿ç”¨ã®é–¢æ•°ã‚’éåŒæœŸã§é–‹å§‹
 	void BeginAsyncLoad(std::function<void()> loadFunc);
 };

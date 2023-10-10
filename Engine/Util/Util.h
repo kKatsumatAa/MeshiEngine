@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Vec3.h"
 #include "Vec2.h"
@@ -8,35 +8,35 @@
 #include"TextureManager.h"
 
 
-//©ì
+//è‡ªä½œ
 void Vec4xM4(Vec4& v, const M4& m4);
 void Vec3xM4(Vec3& v, const M4& m4, bool w);
 Vec3 GetVec3xM4(const Vec3& v, const M4& m4, bool w);
 void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w);
 
 //--------------------------------------------------------------------------------------------------
-//ƒ‰ƒWƒAƒ“Œn
+//ãƒ©ã‚¸ã‚¢ãƒ³ç³»
 float AngletoRadi(float angle);
 float RaditoAngle(float radian);
 float GetRadianVec3(const Vec3& v1, const Vec3& v2);
 
 //--------------------------------------------------------------------------------------------------
-//üŒ`•âŠ®
+//ç·šå½¢è£œå®Œ
 Vec3 LerpVec3(const Vec3& v1, const Vec3& v2, float t);
 Vec2 LerpVec2(const Vec2& v1, const Vec2& v2, float t);
 Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t);
 
-//ƒXƒvƒ‰ƒCƒ“•âŠÔ
+//ã‚¹ãƒ—ãƒ©ã‚¤ãƒ³è£œé–“
 Vec3 SplinePosition(const std::vector<Vec3>& points, int32_t startIndex, float t);
 
-//ƒC[ƒWƒ“ƒO
+//ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°
 float EaseIn(float t);
 float EaseOut(float t);
 float EaseInOutBack(float t);
 float EaseInOut(float t);
 
 //--------------------------------------------------------------------------------------------------
-//Õ“Ë
+//è¡çª
 bool CollisionCircleCircle(const Vec3& pos1, float r1,
 	const Vec3& pos2, float r2);
 
@@ -46,18 +46,18 @@ bool CollisionBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t r1, in
 bool CollisionBox(Vec2 leftUp1, Vec2 rightBottom1, Vec2 leftUp2, Vec2 rightBottom2);
 
 //--------------------------------------------------------------------------------------------------
-//•Ö—˜
+//ä¾¿åˆ©
 /// <summary>
-/// 1‚©]1‚Å•Ô‚·i0‚Í0j
+/// 1ã‹â€1ã§è¿”ã™ï¼ˆ0ã¯0ï¼‰
 /// </summary>
 /// <returns></returns>
 float sign(float num);
 
 //--------------------------------------------------------------------------------------------------
-//•ÏŠ·
+//å¤‰æ›
 Vec2 Vec3toVec2(const Vec3& v, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection);
 /// <summary>
-/// distance‚ÍAprojection‚ÌnearPos‚©‚ç‚ÌˆÊ’u!!
+/// distanceã¯ã€projectionã®nearPosã‹ã‚‰ã®ä½ç½®!!
 /// </summary>
 /// <param name="v"></param>
 /// <param name="view"></param>
@@ -67,7 +67,7 @@ Vec2 Vec3toVec2(const Vec3& v, const DirectX::XMMATRIX& view, const DirectX::XMM
 Vec3 Vec2toVec3(const Vec2& v, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection, float distance);
 
 /// <summary>
-/// ƒXƒNƒŠ[ƒ“À•W‚ğprojection‚Ìnear,far‚ÌˆÊ’u‚É•ÏŠ·‚µ‚Äreturn...Pos‚É‘ã“ü
+/// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‚’projectionã®near,farã®ä½ç½®ã«å¤‰æ›ã—ã¦return...Posã«ä»£å…¥
 /// </summary>
 /// <param name="v"></param>
 /// <param name="returnNearPos"></param>
@@ -77,45 +77,45 @@ Vec3 Vec2toVec3(const Vec2& v, const DirectX::XMMATRIX& view, const DirectX::XMM
 void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection);
 
 //--------------------------------------------------------------------------------------------------
-//ƒAƒ‰ƒCƒƒ“ƒg‚É‚»‚ë‚¦‚½ƒTƒCƒY‚ğ•Ô‚·
+//ã‚¢ãƒ©ã‚¤ãƒ¡ãƒ³ãƒˆã«ãã‚ãˆãŸã‚µã‚¤ã‚ºã‚’è¿”ã™
 int32_t AligmentSize(int32_t size, int32_t aligment);
 
 //-----------------------------------------------------------
-//•¶š•ÏŠ·Œn
-//char* ‚ğ const wchar_t* ‚É•ÏŠ·
+//æ–‡å­—å¤‰æ›ç³»
+//char* ã‚’ const wchar_t* ã«å¤‰æ›
 void ConstCharToWcharT(const char* string, wchar_t(&wString)[128]);
 
-//const wchar_t* ‚ğ char* ‚É•ÏŠ·
+//const wchar_t* ã‚’ char* ã«å¤‰æ›
 void ConstWCharTToChar(const wchar_t* wString, char(&string)[128]);
 
-//•¶š—ñ‚©‚çfindCharˆÈŠO‚ğ”²‚«æ‚é(‚»‚Ì•¶š‚©‚çŒã‚ë‚Ì‚İ)
+//æ–‡å­—åˆ—ã‹ã‚‰findCharä»¥å¤–ã‚’æŠœãå–ã‚‹(ãã®æ–‡å­—ã‹ã‚‰å¾Œã‚ã®ã¿)
 std::string MySubstr(const std::string& str, char findChar);
 
-//ƒfƒBƒŒƒNƒgƒŠ‚ğŠÜ‚ñ‚¾ƒtƒ@ƒCƒ‹ƒpƒX‚©‚çƒtƒ@ƒCƒ‹–¼(***.pmg)‚ğ’Šo‚·‚é
+//ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’å«ã‚“ã ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«å(***.pmg)ã‚’æŠ½å‡ºã™ã‚‹
 std::string ExtractFileName(const std::string& path);
 
 //-------------------------------------------------------------
-//ƒXƒ€[ƒXƒXƒeƒbƒv
+//ã‚¹ãƒ ãƒ¼ã‚¹ã‚¹ãƒ†ãƒƒãƒ—
 float SmoothStep(float min, float max, float v);
 
-//ƒNƒ‰ƒ“ƒv
+//ã‚¯ãƒ©ãƒ³ãƒ—
 float Clamp(float v,float min, float max);
 
-//ƒ‰ƒ“ƒ_ƒ€
+//ãƒ©ãƒ³ãƒ€ãƒ 
 float GetRand(float min, float max);
 
 //------------------------------------------------------------------------
-//‰ñ“]s—ñ‚©‚çŠp“x‚ğ‹‚ß‚é
+//å›è»¢è¡Œåˆ—ã‹ã‚‰è§’åº¦ã‚’æ±‚ã‚ã‚‹
 Vec3 GetRotFromQuaternion(Quaternion q);
 Vec3 GetRotFromMat(M4 m);
-//‚Ù‚Ú“™‚µ‚¢‚©‚Ç‚¤‚©
+//ã»ã¼ç­‰ã—ã„ã‹ã©ã†ã‹
 bool Approximately(float a, float b);
 
-//ƒxƒNƒgƒ‹‚ğŠp“x‚ğg‚Á‚ÄƒNƒH[ƒ^ƒjƒIƒ“‚Å‰ñ“]
+//ãƒ™ã‚¯ãƒˆãƒ«ã‚’è§’åº¦ã‚’ä½¿ã£ã¦ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã§å›è»¢
 Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot);
 
 //-----------------------------------------------------------------------
-//ƒtƒHƒ‹ƒ_Œn
+//ãƒ•ã‚©ãƒ«ãƒ€ç³»
 bool GetFileNames(std::string folderPath, std::vector<std::string>& file_names);
 
 

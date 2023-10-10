@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Object.h"
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
@@ -10,47 +10,47 @@ class Gun :
 	public Weapon
 {
 private:
-	//UŒ‚‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+	//æ”»æ’ƒã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
 	const float SHOT_COOL_TIME_MAX_ = 35;
 
 	const float BULLET_VELOCITY_ = 2.3f;
 
-	//’e‚Ìc—Ê
+	//å¼¾ã®æ®‹é‡
 	const int32_t BULLETS_TMP_ = 3;
 	int32_t remainingBullets_ = BULLETS_TMP_;
 
-	//”­ËˆÊ’u
+	//ç™ºå°„ä½ç½®
 	Vec3 shotPos_ = { 0,0,0 };
 
 public:
 	/// <summary>
-	/// ƒIƒuƒWƒFƒNƒg¶¬
+	/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
 	static std::unique_ptr<Gun> Create(std::unique_ptr<WorldMat> worldMat, IModel* model);
 
 private:
-	////Š—LÒ‚ª‚¢‚È‚¢‚Æ‚«‚É”ò‚ñ‚Å‚¢‚­
+	////æ‰€æœ‰è€…ãŒã„ãªã„ã¨ãã«é£›ã‚“ã§ã„ã
 	//void NoParentMove() override;
 
 	void ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float particleSize = 1.0f);
 	void ParticleGenerate()override { ; }
 
-	//’nŒ`‚Æ“–‚½‚Á‚½‚Ìˆ—
+	//åœ°å½¢ã¨å½“ãŸã£ãŸæ™‚ã®å‡¦ç†
 	void OnLandShape(const Vec3& interPos)override;
 
 
 public:
-	//ËŒ‚
+	//å°„æ’ƒ
 	void Attack(const Vec3& directionVec, int32_t decreBullet = 1, IObject3D* owner = nullptr, float particleSize = 1.0f) override;
 
-	//‚¿å•ÏX
+	//æŒã¡ä¸»å¤‰æ›´
 	void ChangeOwner(IObject3D* parent) override;
 
 	//
 	int32_t GetBulletNum() { return remainingBullets_; }
-	//ƒN[ƒ‹ƒ^ƒCƒ€‚ÌI‚í‚è‚Ü‚Å‚ÌŠ„‡(0~1.0f)
+	//ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®çµ‚ã‚ã‚Šã¾ã§ã®å‰²åˆ(0~1.0f)
 	float GetAttackCoolTimeRatio() override;
 
 public:

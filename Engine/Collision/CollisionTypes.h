@@ -1,24 +1,24 @@
-#pragma once
+﻿#pragma once
 
 /// <summary>
-/// �Փ˔���p�֘A�̌^��`
+/// 衝突判定用関連の型定義
 /// </summary>
 
 enum CollisionShapeType
 {
-	SHAPE_UNKNOWN = -1, // ���ݒ�
+	SHAPE_UNKNOWN = -1, // 未設定
 
 	//3D
-	COLLISIONSHAPE_SPHERE, // ��
+	COLLISIONSHAPE_SPHERE, // 球
 
-	COLLISIONSHAPE_PLANE, // ����
+	COLLISIONSHAPE_PLANE, // 平面
 
-	COLLISIONSHAPE_TRIANGLE, // �O�p�`
+	COLLISIONSHAPE_TRIANGLE, // 三角形
 
-	COLLISIONSHAPE_MESH,//���b�V��
+	COLLISIONSHAPE_MESH,//メッシュ
 
 	//2D
-	COLLISIONSHAPE_CIRCLE,//�~
+	COLLISIONSHAPE_CIRCLE,//円
 
-	COLLISIONSHAPE_RECTANGLE,//�~
+	COLLISIONSHAPE_RECTANGLE,//円
 };

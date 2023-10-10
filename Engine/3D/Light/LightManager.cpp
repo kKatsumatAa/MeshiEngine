@@ -1,4 +1,4 @@
-#include "LightManager.h"
+ï»¿#include "LightManager.h"
 #include "ImGuiManager.h"
 
 ID3D12Device* LightManager::sDevice_ = nullptr;
@@ -8,30 +8,30 @@ using namespace DirectX;
 
 void LightManager::StaticInitialize()
 {
-	//Ä‰Šú‰»‚ğƒ`ƒFƒbƒN
+	//å†åˆæœŸåŒ–ã‚’ãƒã‚§ãƒƒã‚¯
 	assert(!LightManager::sDevice_);
-	//nullptrƒ`ƒFƒbƒN
+	//nullptrãƒã‚§ãƒƒã‚¯
 	assert(DirectXWrapper::GetInstance().GetDevice());
-	//ƒZƒbƒg
+	//ã‚»ãƒƒãƒˆ
 	LightManager::sDevice_ = DirectXWrapper::GetInstance().GetDevice();
 }
 
 void LightManager::Initialize()
 {
-	//ƒq[ƒvİ’è
+	//ãƒ’ãƒ¼ãƒ—è¨­å®š
 	uint32_t sizeVB;
 	D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
-	// ’¸“_ƒf[ƒ^‘S‘Ì‚ÌƒTƒCƒY = ’¸“_ƒf[ƒ^1‚Â•ª‚ÌƒTƒCƒY * ’¸“_ƒf[ƒ^‚Ì—v‘f”
+	// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ã‚µã‚¤ã‚º = é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿1ã¤åˆ†ã®ã‚µã‚¤ã‚º * é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®è¦ç´ æ•°
 	sizeVB = static_cast<uint32_t>(sizeof(ConstBufferData));
-	//’¸“_ƒoƒbƒtƒ@‚Ìİ’è		//ƒq[ƒvİ’è
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPU‚Ö‚Ì“]‘——p
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š		//ãƒ’ãƒ¼ãƒ—è¨­å®š
+	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUã¸ã®è»¢é€ç”¨
 
 	ResourceProperties(resDesc, sizeVB);
 	resDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//’è”ƒoƒbƒtƒ@‚Ì¶¬
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	BuffProperties(heapProp, resDesc, constBuff_.GetAddressOf());
 
-	//’è”ƒoƒbƒtƒ@‚Öƒf[ƒ^“]‘—
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã¸ãƒ‡ãƒ¼ã‚¿è»¢é€
 	TransferConstBuffer();
 }
 
@@ -56,33 +56,33 @@ void LightManager::InitializeActive()
 void LightManager::TransferConstBuffer()
 {
 	HRESULT result;
-	//’è”ƒoƒbƒtƒ@‚Öƒf[ƒ^“]‘—
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã¸ãƒ‡ãƒ¼ã‚¿è»¢é€
 	ConstBufferData* constMap = nullptr;
 	result = constBuff_->Map(0, nullptr, (void**)&constMap);
 	if (SUCCEEDED(result))
 	{
-		//ŠÂ‹«Œõ
+		//ç’°å¢ƒå…‰
 		constMap->ambientColor = ambientColor_;
 		constMap->diffuseColor = diffuseColor_;
 		constMap->specularColor = specularColor_;
 
 		for (int32_t i = 0; i < S_DIR_LIGHT_NUM_; i++) {
 
-			//•½sŒõŒ¹
-			// ƒ‰ƒCƒg‚ª—LŒø‚È‚çİ’è‚ğ“]‘—
+			//å¹³è¡Œå…‰æº
+			// ãƒ©ã‚¤ãƒˆãŒæœ‰åŠ¹ãªã‚‰è¨­å®šã‚’è»¢é€
 			if (dirLights_[i].GetActive()) {
 				constMap->dirLights[i].active = 1;
 				constMap->dirLights[i].lightv = -dirLights_[i].GetLightDir();
 				constMap->dirLights[i].lightColor = dirLights_[i].GetLightColor();
 			}
-			// ƒ‰ƒCƒg‚ª–³Œø‚È‚çƒ‰ƒCƒgF‚ğ0‚É
+			// ãƒ©ã‚¤ãƒˆãŒç„¡åŠ¹ãªã‚‰ãƒ©ã‚¤ãƒˆè‰²ã‚’0ã«
 			else {
 				constMap->dirLights[i].active = 0;
 			}
 		}
 		for (int32_t i = 0; i < S_POINT_LIGHT_NUM_; i++) {
-			//“_ŒõŒ¹
-			//ƒ‰ƒCƒg‚ª—LŒø‚È‚çİ’è‚ğ“]‘—
+			//ç‚¹å…‰æº
+			//ãƒ©ã‚¤ãƒˆãŒæœ‰åŠ¹ãªã‚‰è¨­å®šã‚’è»¢é€
 			if (pointLights_[i].GetActive())
 			{
 				constMap->pointLights[i].active = 1;
@@ -92,16 +92,16 @@ void LightManager::TransferConstBuffer()
 				constMap->pointLights[i].lightatten =
 					pointLights_[i].GetLightAtten();
 			}
-			//ƒ‰ƒCƒg‚ª–³Œø‚È‚çƒ‰ƒCƒgF‚ğ0‚É
+			//ãƒ©ã‚¤ãƒˆãŒç„¡åŠ¹ãªã‚‰ãƒ©ã‚¤ãƒˆè‰²ã‚’0ã«
 			else
 			{
 				constMap->pointLights[i].active = 0;
 			}
 		}
-		//ƒXƒ|ƒbƒgƒ‰ƒCƒg
+		//ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆ
 		for (int32_t i = 0; i < S_SPOT_LIGHT_NUM_; i++)
 		{
-			//ƒ‰ƒCƒg‚ª—LŒø‚È‚çİ’è‚ğ“]‘—
+			//ãƒ©ã‚¤ãƒˆãŒæœ‰åŠ¹ãªã‚‰è¨­å®šã‚’è»¢é€
 			if (spotLights_[i].GetActive())
 			{
 				constMap->spotLights[i].active = 1;
@@ -114,16 +114,16 @@ void LightManager::TransferConstBuffer()
 				constMap->spotLights[i].lightfactoranglecos =
 					spotLights_[i].GetLightFactorAngleCos();
 			}
-			//ƒ‰ƒCƒg‚ª–³Œø‚È‚çƒ‰ƒCƒgF‚ğ0‚É
+			//ãƒ©ã‚¤ãƒˆãŒç„¡åŠ¹ãªã‚‰ãƒ©ã‚¤ãƒˆè‰²ã‚’0ã«
 			else
 			{
 				constMap->spotLights[i].active = 0;
 			}
 		}
-		//ŠÛ‰e
+		//ä¸¸å½±
 		for (int32_t i = 0; i < S_CIRCLE_SHADOW_NUM_; i++)
 		{
-			//ƒ‰ƒCƒg‚ª—LŒø‚È‚çİ’è‚ğ“]‘—
+			//ãƒ©ã‚¤ãƒˆãŒæœ‰åŠ¹ãªã‚‰è¨­å®šã‚’è»¢é€
 			if (circleShadows_[i].GetLightActive())
 			{
 				constMap->circleShadows[i].active = 1;
@@ -136,7 +136,7 @@ void LightManager::TransferConstBuffer()
 				constMap->circleShadows[i].factorAngleCos =
 					circleShadows_[i].GetFactorAngleCos();
 			}
-			//ƒ‰ƒCƒg‚ª–³Œø‚È‚çƒ‰ƒCƒgF‚ğ0‚É
+			//ãƒ©ã‚¤ãƒˆãŒç„¡åŠ¹ãªã‚‰ãƒ©ã‚¤ãƒˆè‰²ã‚’0ã«
 			else
 			{
 				constMap->circleShadows[i].active = 0;
@@ -182,7 +182,7 @@ void LightManager::SetSpecularColor(const XMFLOAT3& color)
 
 void LightManager::Update()
 {
-	//’l‚ÌXV‚ª‚ ‚Á‚½‚¾‚¯’è”ƒoƒbƒtƒ@‚É“]‘—
+	//å€¤ã®æ›´æ–°ãŒã‚ã£ãŸæ™‚ã ã‘å®šæ•°ãƒãƒƒãƒ•ã‚¡ã«è»¢é€
 	if (dirty_)
 	{
 		TransferConstBuffer();
@@ -192,7 +192,7 @@ void LightManager::Update()
 
 void LightManager::Draw(uint32_t rootParamaterIndex)
 {
-	//’è”ƒoƒbƒtƒ@ƒrƒ…[‚ğƒZƒbƒg
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã‚’ã‚»ãƒƒãƒˆ
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(
 		rootParamaterIndex, constBuff_->GetGPUVirtualAddress()
 	);
@@ -231,11 +231,11 @@ void LightManager::DrawImGui()
 
 std::unique_ptr<LightManager> LightManager::Create()
 {
-	//3DƒIƒuƒWƒFƒNƒg‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬
+	//3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆ
 	std::unique_ptr<LightManager> instance = std::make_unique< LightManager>();
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	instance->Initialize();
-	//¶¬‚µ‚½ƒCƒ“ƒXƒ^ƒ“ƒX‚ğ•Ô‚·
+	//ç”Ÿæˆã—ãŸã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è¿”ã™
 	return std::move(instance);
 }
 
@@ -398,7 +398,7 @@ bool LightManager::GetDoNotUseDirLightIndex(int32_t& index)
 {
 	for (int i = 0; i < S_DIR_LIGHT_NUM_; i++)
 	{
-		//Œ©‚Â‚©‚ê‚Î
+		//è¦‹ã¤ã‹ã‚Œã°
 		if (!dirLights_[i].GetActive())
 		{
 			index = i;
@@ -413,7 +413,7 @@ bool LightManager::GetDoNotUsePointLightIndex(int32_t& index)
 {
 	for (int i = 0; i < S_POINT_LIGHT_NUM_; i++)
 	{
-		//Œ©‚Â‚©‚ê‚Î
+		//è¦‹ã¤ã‹ã‚Œã°
 		if (!pointLights_[i].GetActive())
 		{
 			index = i;
@@ -428,7 +428,7 @@ bool LightManager::GetDoNotUseSpotLightIndex(int32_t& index)
 {
 	for (int i = 0; i < S_SPOT_LIGHT_NUM_; i++)
 	{
-		//Œ©‚Â‚©‚ê‚Î
+		//è¦‹ã¤ã‹ã‚Œã°
 		if (!spotLights_[i].GetActive())
 		{
 			index = i;

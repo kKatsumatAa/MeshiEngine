@@ -7,28 +7,28 @@ class StageSelect final
 {
 private:
 	const std::string BASE_DIRECTORY_ = "Resources/Level/levelData/";
-	//ƒXƒe[ƒW–¼‚ÌŠg‘å—¦
+	//ã‚¹ãƒ†ãƒ¼ã‚¸åã®æ‹¡å¤§ç‡
 	const float TEXT_EXTEND_ = 1.5f;
 
 private:
 	const float nameFrameWidthExtend_ = 20.0f;
-	//‘I‘ğÏ‚İ‚©
+	//é¸æŠæ¸ˆã¿ã‹
 	bool isSelected_ = false;
-	//‘I‘ğ‚µ‚½ƒXƒe[ƒW–¼
+	//é¸æŠã—ãŸã‚¹ãƒ†ãƒ¼ã‚¸å
 	std::string selectStageName_;
 	int32_t selectStageIndex_ = 0;
-	//ƒZƒŒƒNƒgˆê‚Â‚Ì•
+	//ã‚»ãƒ¬ã‚¯ãƒˆä¸€ã¤ã®å¹…
 	Vec2 nameWidthHeight_;
-	//ƒZƒŒƒNƒg‚Ü‚Æ‚Ü‚è‚Ì¶ãˆÊ’u
+	//ã‚»ãƒ¬ã‚¯ãƒˆã¾ã¨ã¾ã‚Šã®å·¦ä¸Šä½ç½®
 	 Vec2 namesLeftUpPos_;
-	//ƒXƒe[ƒW‚ª‚Ç‚ê‚¾‚¯‚ ‚é‚©“Ç‚İ‚İA‚½‚ß‚Ä‚¨‚­
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ãŒã©ã‚Œã ã‘ã‚ã‚‹ã‹èª­ã¿è¾¼ã¿ã€ãŸã‚ã¦ãŠã
 	std::vector<std::string> stageNames_;
-	//‚Ç‚ê‚¾‚¯ƒXƒNƒ[ƒ‹‚³‚ê‚½‚©
+	//ã©ã‚Œã ã‘ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã•ã‚ŒãŸã‹
 	float scrollValue_ = 0;
-	//ƒJ[ƒ\ƒ‹‚ª‚ ‚Á‚Ä‚¢‚é‚Æ‚«‚Ì”ÍˆÍƒXƒvƒ‰ƒCƒg
+	//ã‚«ãƒ¼ã‚½ãƒ«ãŒã‚ã£ã¦ã„ã‚‹ã¨ãã®ç¯„å›²ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ
 	Sprite selectBox_;
 
-	//ƒfƒoƒbƒOƒeƒLƒXƒg
+	//ãƒ‡ãƒãƒƒã‚°ãƒ†ã‚­ã‚¹ãƒˆ
 	DebugText debugText_;
 	uint64_t debugTextHandle_;
 
@@ -43,7 +43,7 @@ public:
 	static StageSelect& GetInstance();
 
 private:
-	//ƒXƒe[ƒW‚Ì–¼‘O“Ç‚İ‚İ
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ã®åå‰èª­ã¿è¾¼ã¿
 	void LoadStageNames();
 
 public:

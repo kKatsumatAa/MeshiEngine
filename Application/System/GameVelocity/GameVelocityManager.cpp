@@ -23,7 +23,7 @@ void GameVelocityManager::AddGameVelocity(float velocity, std::string velName)
 	}
 
 
-	//�ő�X�s�[�h�����Ȃ��悤��
+	//最大スピード超えないように
 	if (velName == "mouse" && gameVelocity_ >= MOUSE_VEL_MAX_)
 	{
 		velocity = 0;
@@ -41,24 +41,24 @@ float GameVelocityManager::GetVelocity()
 
 void GameVelocityManager::Update(bool isScalingPostPera)
 {
-	//�i�O�ڂɕ`�悳�ꂽ���̂��j�X�s�[�h�Řp�Ȃ̋����ς���
+	//（三つ目に描画されたものを）スピードで湾曲の強さ変える
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = (1.0f - gameVelocity_ / GAME_VELOCITY_MAX_) * 0.6f;
-	//�i��ڂ́j��ʂ̑傫����
+	//（二つ目の）画面の大きさも
 	if (isScalingPostPera)
 	{
 		PostEffectManager::GetInstance().GetPostEffect2()->SetPera2Extend(
 			LerpVec3({ PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ ,0,0 }, { 1.0f,0,0 },
 				(gameVelocity_ / GAME_VELOCITY_MAX_)).x);
 	}
-	//�O�ڂ̐F��
+	//三つ目の色も
 	Vec3 col = LerpVec3(VEL_COL_MIN_, { 1.0f,1.0f,1.0f }, gameVelocity_);
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.color = { col.x,col.y,col.z,1.0f };
 
 	if (gameVelocity_ > GAME_VELOCITY_MIN_)
 	{
-		//���炵�Ă���
+		//減らしていく
 		gameVelocity_ *= 0.83f;
-		//�Œ�X�s�[�h�͕ۂ�
+		//最低スピードは保つ
 		gameVelocity_ = max(GAME_VELOCITY_MIN_, gameVelocity_);
 	}
 }

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include<thread>
 #include<mutex>
 #include<functional>
@@ -14,21 +14,21 @@ private:
 
 
 private:
-	//ˆ—‚ğ‚µ‚Ä‚­‚ê‚éŠÖ”
+	//å‡¦ç†ã‚’ã—ã¦ãã‚Œã‚‹é–¢æ•°
 	void AsyncLoad(std::function<void()> p);
 
 public:
-	//”ñ“¯Šúˆ—‚ğ‚µ‚Ä‚¢‚é‚©
+	//éåŒæœŸå‡¦ç†ã‚’ã—ã¦ã„ã‚‹ã‹
 	bool GetIsLoading();
 	void SetIsLoading(bool isLoading) { isLoading_ = isLoading; }
 
-	//”ñ“¯Šú‚ªI‚í‚Á‚½uŠÔ‚©
+	//éåŒæœŸãŒçµ‚ã‚ã£ãŸç¬é–“ã‹
 	bool GetFinishedAsync();
 
-	//”ñ“¯Šú‚ğŠJn
+	//éåŒæœŸã‚’é–‹å§‹
 	void StartAsyncFunction(const std::function<void()>& p);
 
-	//lockFlag‚ª‚½‚Á‚½‚çâ‘Î‚ÉÀs‚·‚é‚±‚Æ
+	//lockFlagãŒãŸã£ãŸã‚‰çµ¶å¯¾ã«å®Ÿè¡Œã™ã‚‹ã“ã¨
 	void EndThread();
 };
 

@@ -1,4 +1,4 @@
-#include "Bullet.h"
+ï»¿#include "Bullet.h"
 #include "KeyboardInput.h"
 #include "DebugText.h"
 #include "CameraManager.h"
@@ -20,7 +20,7 @@ std::unique_ptr<Bullet> Bullet::Create(const Vec3& pos, const Vec3& directionVec
 		return nullptr;
 	}
 
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	if (!instance->Initialize(pos, directionVec, scale, lifeTime, owner))
 	{
 		assert(0);
@@ -36,14 +36,14 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 		return false;
 	}
 
-	//–¼‘O
+	//åå‰
 	SetObjName("bullet");
 
-	//ƒRƒ‰ƒCƒ_[‚Ì’Ç‰Á
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®è¿½åŠ 
 	SetCollider(std::make_unique<SphereCollider>());
 
 	SetTrans(pos);
-	//‰¼‚Åe‚ÍƒLƒƒƒ‰‚Ìè‘O‚É‚ ‚é‚Ì‚Å­‚µŒã‚ë‚ğƒŒƒC‚Ìn“_‚É‚·‚é‚½‚ß
+	//ä»®ã§éŠƒã¯ã‚­ãƒ£ãƒ©ã®æ‰‹å‰ã«ã‚ã‚‹ã®ã§å°‘ã—å¾Œã‚ã‚’ãƒ¬ã‚¤ã®å§‹ç‚¹ã«ã™ã‚‹ãŸã‚
 	oldPos_ = GetTrans() - directionVec;
 
 	directionVec_ = directionVec;
@@ -51,14 +51,14 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	lifeTime_ = lifeTime;
 	owner_ = owner;
 	ownerPos_ = owner->GetTrans();
-	//‘®«
+	//å±æ€§
 	GetCollider()->SetAttribute(COLLISION_ATTR_ITEMS);
 
-	//’e“¹ƒ‚ƒfƒ‹
+	//å¼¾é“ãƒ¢ãƒ‡ãƒ«
 	ballisticsObj_.Initialize();
 	ballisticsObj_.SetModel(ModelManager::GetInstance().LoadModel("ballistics"));
 
-	//FƒZƒbƒg
+	//è‰²ã‚»ãƒƒãƒˆ
 	SetColor({ 0.1f,0.1f,0.1f,1.0f });
 
 	return true;
@@ -68,7 +68,7 @@ void Bullet::Dead(const Vec3& interPos)
 {
 	SetIsAlive(false);
 
-	//ƒp[ƒeƒBƒNƒ‹
+	//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
 	for (int32_t i = 0; i < 20; ++i)
 	{
 		Vec3 vel{};
@@ -86,52 +86,52 @@ void Bullet::BallisticsUpdate()
 {
 	ballisticsObj_.SetIsSilhouette(true);
 
-	//ˆÊ’uƒZƒbƒg(¡‚ÌˆÊ’u‚©‚ç•ûŒü‚ÌƒxƒNƒgƒ‹‚Ì‹tƒxƒNƒgƒ‹‚É’·‚³•ªi‚ß‚½êŠ)
+	//ä½ç½®ã‚»ãƒƒãƒˆ(ä»Šã®ä½ç½®ã‹ã‚‰æ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ã®é€†ãƒ™ã‚¯ãƒˆãƒ«ã«é•·ã•åˆ†é€²ã‚ãŸå ´æ‰€)
 	ballisticsObj_.SetTrans({ GetWorldTrans() - GetFrontVec() * ballisticsLength });
 
-	//‚š‚Ì‚İ’e“¹‚Ì’·‚³‚ğİ’è
+	//ï½šã®ã¿å¼¾é“ã®é•·ã•ã‚’è¨­å®š
 	ballisticsObj_.SetScale({ GetScale().x, GetScale().y,ballisticsLength });
 
-	//³–Ê‚ÌŠîƒxƒNƒgƒ‹‚Í‚š²‚Ì‰œ
+	//æ­£é¢ã®åŸºãƒ™ã‚¯ãƒˆãƒ«ã¯ï½šè»¸ã®å¥¥
 	ballisticsObj_.SetFrontVecTmp({ 0,0,1.0f });
 
-	//’e‚ªŒü‚©‚Á‚Ä‚é•ûŒü‚É‰ñ“]‚³‚¹‚éƒNƒH[ƒ^ƒjƒIƒ“
+	//å¼¾ãŒå‘ã‹ã£ã¦ã‚‹æ–¹å‘ã«å›è»¢ã•ã›ã‚‹ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³
 	Quaternion directionQ = Quaternion::DirectionToDirection(ballisticsObj_.GetFrontVecTmp(), GetFrontVec(), -1.0f);
 
-	//s—ñ‚ğ‚»‚Ì‚Ü‚Üg‚¤
+	//è¡Œåˆ—ã‚’ãã®ã¾ã¾ä½¿ã†
 	ballisticsObj_.SetIsUseQuaternionMatRot(true);
 	ballisticsObj_.SetMatRot(directionQ.MakeRotateMatrix());
 
 	ballisticsObj_.Update();
 
-	//’e“¹‚ğ­‚µ‚¸‚ÂL‚Î‚·
+	//å¼¾é“ã‚’å°‘ã—ãšã¤ä¼¸ã°ã™
 	ballisticsLength += GameVelocityManager::GetInstance().GetVelocity();
 	ballisticsLength = min(ballisticsLength, BALLISTICS_LENGTH_MAX_);
 }
 
 void Bullet::Update()
 {
-	//ƒN[ƒ‹ƒ^ƒCƒ€‚àƒQ[ƒ€ƒXƒs[ƒh‚ğ‚©‚¯‚é
+	//ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚‚ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ã‹ã‘ã‚‹
 	lifeTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
-	//ˆÚ“®‚àƒQ[ƒ€ƒXƒs[ƒh‚ğ‚©‚¯‚é
+	//ç§»å‹•ã‚‚ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ã‹ã‘ã‚‹
 	SetTrans(GetTrans() + directionVec_ * GameVelocityManager::GetInstance().GetVelocity());
 
 	Object::Update();
 
-	//³–ÊƒxƒNƒgƒ‹‚É‚ÍŒü‚©‚Á‚Ä‚é•ûŒü‚ÌƒxƒNƒgƒ‹
+	//æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«ã«ã¯å‘ã‹ã£ã¦ã‚‹æ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«
 	SetFrontVec((GetWorldTrans() - oldPos_).GetNormalized());
 
-	//’e“¹
+	//å¼¾é“
 	BallisticsUpdate();
 
-	//‘O‰ñ‚ÌˆÊ’u‚©‚ç¡‚ÌˆÊ’u‚ÌƒxƒNƒgƒ‹‚ğƒŒƒC‚Æ‚µ‚Ä”»’è
+	//å‰å›ã®ä½ç½®ã‹ã‚‰ä»Šã®ä½ç½®ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’ãƒ¬ã‚¤ã¨ã—ã¦åˆ¤å®š
 	{
 		RaycastHit info;
 
 		if (CollisionManager::GetInstance()->RaycastUtil(GetTrans(), oldPos_, COLLISION_ATTR_LANDSHAPE, &info))
 		{
-			//Œ‚‚Á‚½–{l‚É‚Í“–‚½‚ç‚È‚¢‚æ‚¤‚É
+			//æ’ƒã£ãŸæœ¬äººã«ã¯å½“ãŸã‚‰ãªã„ã‚ˆã†ã«
 			if (owner_ != info.object)
 			{
 				Dead({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
@@ -139,10 +139,10 @@ void Bullet::Update()
 		}
 	}
 
-	//‘O‰ñ‚ÌˆÊ’u‚ğ‹L˜^
+	//å‰å›ã®ä½ç½®ã‚’è¨˜éŒ²
 	oldPos_ = GetTrans();
 
-	//¶‘¶ŠÔ’´‚¦‚½‚ç
+	//ç”Ÿå­˜æ™‚é–“è¶…ãˆãŸã‚‰
 	if (lifeTime_ <= 0)
 	{
 		SetIsAlive(false);
@@ -151,19 +151,19 @@ void Bullet::Update()
 
 void Bullet::Draw()
 {
-	//’e“¹
+	//å¼¾é“
 	ballisticsObj_.DrawModel(nullptr, nullptr);
 
 	DrawSphere();
 
-	//‹^—ƒVƒ‹ƒGƒbƒg‰ğœ
+	//ç–‘ä¼¼ã‚·ãƒ«ã‚¨ãƒƒãƒˆè§£é™¤
 	SetIsSilhouette(false);
 }
 
 
 void Bullet::OnCollision(const CollisionInfo& info)
 {
-	//Œ‚‚Á‚½–{l‚É‚Í“–‚½‚ç‚È‚¢‚æ‚¤‚É
+	//æ’ƒã£ãŸæœ¬äººã«ã¯å½“ãŸã‚‰ãªã„ã‚ˆã†ã«
 	if (owner_ != info.object_)
 	{
 		Dead({ info.inter_.m128_f32[0],info.inter_.m128_f32[1], info.inter_.m128_f32[2] });

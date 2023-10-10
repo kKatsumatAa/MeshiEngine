@@ -1,10 +1,11 @@
-#pragma once
+ï»¿#pragma once
 #include "ObjectFBX.h"
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
 #include "Gun.h"
 #include "Character.h"
+#include "FBXNodeColliders.h"
 
 
 class EnemyState;
@@ -20,12 +21,12 @@ private:
 	const float VELOCITY_TMP_ = 0.6f;
 	bool isCantMove = false;
 
-	//ƒEƒF[ƒu”Ô†
+	//ã‚¦ã‚§ãƒ¼ãƒ–ç•ªå·
 	int32_t waveNum_ = -1;
 
-	//Œü‚«‚ğƒvƒŒƒCƒ„[‚ÉŒü‚¯‚é‚½‚ß‚ÌƒNƒH[ƒ^ƒjƒIƒ“
+	//å‘ãã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å‘ã‘ã‚‹ãŸã‚ã®ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³
 	Quaternion directionQua_;
-	//‰ñ“]‚ÌŠÔ
+	//å›è»¢ã®æ™‚é–“
 	float directionRotTime_ = 0;
 	const float DIRCTION_ROT_TIME_ = 60;
 
@@ -42,13 +43,16 @@ private:
 
 	const float WEAPON_FALL_VEL_EXTEND_ = 1.2f;
 
-	//oŒ»‰‰o
+	//å‡ºç¾æ¼”å‡º
 	const int32_t LIGHT_INDEX_INIT_ = -1;
 	int32_t lightIndexTmp_ = LIGHT_INDEX_INIT_;
 	DirectX::XMFLOAT3 EMERGE_COL_ = { 1.0f,0,0 };
 
-	//ƒXƒe[ƒg
+	//ã‚¹ãƒ†ãƒ¼ãƒˆ
 	std::unique_ptr<EnemyState> state_ = nullptr;
+
+	//ãƒãƒ¼ãƒ‰ã”ã¨ã®å½“ãŸã‚Šåˆ¤å®š
+	FBXNodeColliders nodeColliders_;
 
 public:
 	static const float S_LENGTH_MAX_;
@@ -56,7 +60,7 @@ public:
 
 public:
 	/// <summary>
-	/// ƒIƒuƒWƒFƒNƒg¶¬
+	/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
@@ -64,14 +68,14 @@ public:
 		IModel* model);
 
 private:
-	//e‚ğƒmƒbƒNƒoƒbƒN‚µ‚Ä—‚Æ‚·
+	//éŠƒã‚’ãƒãƒƒã‚¯ãƒãƒƒã‚¯ã—ã¦è½ã¨ã™
 	void KnockBack(const CollisionInfo& info);
 
-	//”í’e‚Ìƒp[ƒeƒBƒNƒ‹
+	//è¢«å¼¾æ™‚ã®ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
 	void DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExtend = { 1.0f / 8.0f,1.0f / 8.0f,1.0f / 8.0f },
 		int32_t particleNum = 200);
 
-	//ƒ^[ƒQƒbƒg‚ÉŒü‚©‚Á‚Ä“®‚­ˆ—‚Ì‚İ
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«å‘ã‹ã£ã¦å‹•ãå‡¦ç†ã®ã¿
 	void WalkToTarget(const Vec3& targetPos);
 
 public:
@@ -91,15 +95,15 @@ public:
 	void ChangeEnemyState(std::unique_ptr<EnemyState> state);
 
 public:
-	//•Ç‚â’n–Ê‚Ì‚İ‚Æ”»’è
+	//å£ã‚„åœ°é¢ã®ã¿ã¨åˆ¤å®š
 	void CollisionWallAndFloor();
-	//ˆÚ“®
+	//ç§»å‹•
 	void AllMove(const Vec3& targetPos);
-	//UŒ‚
+	//æ”»æ’ƒ
 	void Attack(const Vec3& targetPos);
-	//Œü‚«‚ğ•ÏX
+	//å‘ãã‚’å¤‰æ›´
 	void DirectionUpdate(const Vec3& targetPos);
-	//hpˆ—
+	//hpå‡¦ç†
 	void HPUpdate();
 
 public:
@@ -108,4 +112,3 @@ public:
 	int32_t GetLightIndexTmp() { return lightIndexTmp_; }
 	int32_t GetLightIndexInit() { return LIGHT_INDEX_INIT_; }
 };
-

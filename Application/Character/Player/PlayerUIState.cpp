@@ -1,4 +1,4 @@
-#include "PlayerUIState.h"
+Ôªø#include "PlayerUIState.h"
 #include "PlayerUI.h"
 
 
@@ -54,7 +54,7 @@ void PlayerUIState::DrawSprite()
 
 
 //------------------------------------------------------------------------------------------
-//í èÌ
+//ÈÄöÂ∏∏
 void PlayerUIStateNomal::Initialize()
 {
 	reticleTexHandle_ = TextureManager::LoadGraph("normalReticle.png");
@@ -73,7 +73,7 @@ void PlayerUIStateNomal::DrawSprite()
 
 
 //------------------------------------------------------------------------------------------
-//â£ÇÍÇÈ
+//ÊÆ¥„Çå„Çã
 void PlayerUIStatePunch::Initialize()
 {
 	reticleTexHandle_ = TextureManager::LoadGraph("punchReticle.png");
@@ -92,7 +92,7 @@ void PlayerUIStatePunch::DrawSprite()
 
 
 //------------------------------------------------------------------------------------------
-//èe
+//ÈäÉ
 void PlayerUIStateGun::Initialize()
 {
 	reticleTexHandle_ = TextureManager::LoadGraph("gunReticle.png");
@@ -110,7 +110,7 @@ void PlayerUIStateGun::DrawSprite()
 }
 
 //------------------------------------------------------------------------------------------
-//èEÇ¶ÇÈ
+//Êãæ„Åà„Çã
 void PlayerUIStatePickUp::Initialize()
 {
 	reticleTexHandle_ = TextureManager::LoadGraph("pickUpReticle.png");

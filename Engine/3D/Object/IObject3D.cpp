@@ -5,47 +5,47 @@
 using namespace DirectX;
 
 //--------------------------------------------------------
-//ƒ‰ƒCƒg
+//ãƒ©ã‚¤ãƒˆ
 LightManager* IObject3D::sLightManager_ = nullptr;
-//ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg
+//ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
 D3D12_INPUT_ELEMENT_DESC IObject3D::sInputLayoutM_[7] = {
-	{//xyzÀ•W
+	{//xyzåº§æ¨™
 	 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
 	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 	},
 
-	{//–@üƒxƒNƒgƒ‹
+	{//æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«
 	 "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
 	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 	},
 
-	{//uvÀ•W
+	{//uvåº§æ¨™
 	 "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
 	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 	},
 
-	{//‰e‹¿‚ğó‚¯‚éƒ{[ƒ“”Ô†
+	{//å½±éŸ¿ã‚’å—ã‘ã‚‹ãƒœãƒ¼ãƒ³ç•ªå·
 	 "BONEINDICES", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
 	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 	},
 
-	{//ƒ{[ƒ“‚ÌƒXƒLƒ“ƒEƒFƒCƒgi4‚Âj
+	{//ãƒœãƒ¼ãƒ³ã®ã‚¹ã‚­ãƒ³ã‚¦ã‚§ã‚¤ãƒˆï¼ˆ4ã¤ï¼‰
 	 "BONEWEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
 	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 	},
 
-	{//Úü
+	{//æ¥ç·š
 	 "TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
 	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 	},
 
-	{//]–@ü
+	{//å¾“æ³•ç·š
 	 "BINORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
 	 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
@@ -64,28 +64,28 @@ IObject3D::IObject3D()
 {
 	HRESULT result = S_OK;
 
-	//ƒCƒ“ƒXƒ^ƒ“ƒXƒ^ƒCƒv
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚¿ã‚¤ãƒ—
 	objInsType_ = ObjectInstanceType::THREE_D;
 
-	//‰‰o—p
+	//æ¼”å‡ºç”¨
 	{
-		//ƒq[ƒvİ’è
+		//ãƒ’ãƒ¼ãƒ—è¨­å®š
 		D3D12_HEAP_PROPERTIES cbHeapProp{};
-		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPU‚Ö‚Ì“]‘——p
-		//ƒŠƒ\[ƒXİ’è
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUã¸ã®è»¢é€ç”¨
+		//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 		D3D12_RESOURCE_DESC cbResourceDesc{};
-		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPU‚Ö‚Ì“]‘——p
-		//ƒŠƒ\[ƒXİ’è
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUã¸ã®è»¢é€ç”¨
+		//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 		ResourceProperties(cbResourceDesc,
-			((uint32_t)sizeof(EffectOConstBuffer) + 0xff) & ~0xff/*256ƒoƒCƒgƒAƒ‰ƒCƒƒ“ƒg*/);
-		//’è”ƒoƒbƒtƒ@‚Ì¶¬
+			((uint32_t)sizeof(EffectOConstBuffer) + 0xff) & ~0xff/*256ãƒã‚¤ãƒˆã‚¢ãƒ©ã‚¤ãƒ¡ãƒ³ãƒˆ*/);
+		//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		BuffProperties(cbHeapProp, cbResourceDesc, &effectFlagsBuff_);
-		//’è”ƒoƒbƒtƒ@‚Ìƒ}ƒbƒsƒ“ƒO
-		result = effectFlagsBuff_->Map(0, nullptr, (void**)&mapEffectFlagsBuff_);//ƒ}ƒbƒsƒ“ƒO
+		//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ãƒãƒƒãƒ”ãƒ³ã‚°
+		result = effectFlagsBuff_->Map(0, nullptr, (void**)&mapEffectFlagsBuff_);//ãƒãƒƒãƒ”ãƒ³ã‚°
 		assert(SUCCEEDED(result));
 	}
 
-	//ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€s—ñ
+	//ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ è¡Œåˆ—
 	cbt_.Initialize();
 }
 
@@ -125,7 +125,7 @@ void IObject3D::EffectUpdate()
 {
 	effectFlags_.time++;
 
-	//‰æ–ÊŒø‰Ê—p
+	//ç”»é¢åŠ¹æœç”¨
 	{
 		*mapEffectFlagsBuff_ = effectFlags_;
 	}
@@ -133,9 +133,9 @@ void IObject3D::EffectUpdate()
 
 void IObject3D::Update()
 {
-	//‰‰oXV
+	//æ¼”å‡ºæ›´æ–°
 	EffectUpdate();
-	//eƒNƒ‰ƒX‚Ì
+	//è¦ªã‚¯ãƒ©ã‚¹ã®
 	IObject::Update();
 }
 
@@ -143,22 +143,22 @@ void IObject3D::Update()
 void IObject3D::DrawModel(Camera* camera, bool isWireFrame)
 {
 	Camera* lCamera = camera;
-	//ƒJƒƒ‰‚ªƒZƒbƒg‚³‚ê‚Ä‚È‚¯‚ê‚Îg—p‚³‚ê‚Ä‚éƒJƒƒ‰‚ğg‚¤
+	//ã‚«ãƒ¡ãƒ©ãŒã‚»ãƒƒãƒˆã•ã‚Œã¦ãªã‘ã‚Œã°ä½¿ç”¨ã•ã‚Œã¦ã‚‹ã‚«ãƒ¡ãƒ©ã‚’ä½¿ã†
 	if (camera == nullptr)
 	{
 		lCamera = CameraManager::GetInstance().usingCamera_;
 	}
 
-	//s—ñƒ}ƒbƒsƒ“ƒO
+	//è¡Œåˆ—ãƒãƒƒãƒ”ãƒ³ã‚°
 	MatMap(lCamera, model_);
 
-	//•`‰æƒRƒ}ƒ“ƒh‚È‚Ç(false‚¾‚Á‚½‚ç[0]‚Å’Êí•`‰æ)
+	//æç”»ã‚³ãƒãƒ³ãƒ‰ãªã©(falseã ã£ãŸã‚‰[0]ã§é€šå¸¸æç”»)
 	DrawModelInternal((int32_t)isWireFrame);
 }
 
 void IObject3D::Draw()
 {
-	//ƒ‚ƒfƒ‹‚ğ•`‰æ
+	//ãƒ¢ãƒ‡ãƒ«ã‚’æç”»
 	DrawModel();
 }
 
@@ -166,54 +166,54 @@ void IObject3D::Draw()
 void IObject3D::SetMaterialLightMTex(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
 	uint64_t normalMapTex, bool setTex)
 {
-	//ƒƒbƒVƒ…‚Ì\¬
+	//ãƒ¡ãƒƒã‚·ãƒ¥ã®æ§‹æˆ
 	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	//SRVƒq[ƒv‚Ìİ’èƒRƒ}ƒ“ƒh
+	//SRVãƒ’ãƒ¼ãƒ—ã®è¨­å®šã‚³ãƒãƒ³ãƒ‰
 	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetDescHeapPP());
 
-	//SRVƒq[ƒv‚Ìæ“ªƒnƒ“ƒhƒ‹‚ğæ“¾
+	//SRVãƒ’ãƒ¼ãƒ—ã®å…ˆé ­ãƒãƒ³ãƒ‰ãƒ«ã‚’å–å¾—
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-	//ƒeƒNƒXƒ`ƒƒ‚ğİ’è‚µ‚Ä‚¢‚È‚©‚Á‚½‚ç
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®šã—ã¦ã„ãªã‹ã£ãŸã‚‰
 	uint64_t texHL = textureHandle;
 	TextureManager::CheckTexHandle(texHL);
 	srvGpuHandle.ptr = texHL;
 
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(COLOR, constBuffMaterial_->GetGPUVirtualAddress());
 
-	//ƒ‚ƒfƒ‹‚ÍƒƒbƒVƒ…‚²‚Æ‚És—ñ“™ƒZƒbƒg‚·‚é‚Ì‚Å
-	//ƒeƒNƒXƒ`ƒƒ
+	//ãƒ¢ãƒ‡ãƒ«ã¯ãƒ¡ãƒƒã‚·ãƒ¥ã”ã¨ã«è¡Œåˆ—ç­‰ã‚»ãƒƒãƒˆã™ã‚‹ã®ã§
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	if (setTex)
 	{
-		//(ƒCƒ“ƒXƒ^ƒ“ƒX‚Å“Ç‚İ‚ñ‚¾ƒeƒNƒXƒ`ƒƒ—p‚ÌSRV‚ğw’è)
+		//(ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã§èª­ã¿è¾¼ã‚“ã ãƒ†ã‚¯ã‚¹ãƒãƒ£ç”¨ã®SRVã‚’æŒ‡å®š)
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(TEX, srvGpuHandle);
 	}
-	//s—ñ
+	//è¡Œåˆ—
 	cbt_.DrawCommand(MATRIX);
 
-	//ƒ‰ƒCƒg
+	//ãƒ©ã‚¤ãƒˆ
 	sLightManager_->Draw(LIGHT);
 
-	//ƒfƒBƒ]ƒ‹ƒuƒeƒNƒXƒ`ƒƒ
+	//ãƒ‡ã‚£ã‚¾ãƒ«ãƒ–ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	srvGpuHandle.ptr = dissolveTex;
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(DISSOLVE, srvGpuHandle);
 
-	//ƒXƒyƒLƒ…ƒ‰ƒ}ƒbƒvƒeƒNƒXƒ`ƒƒ
+	//ã‚¹ãƒšã‚­ãƒ¥ãƒ©ãƒãƒƒãƒ—ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	srvGpuHandle.ptr = specularMapTex;
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(SPECULAR_MAP, srvGpuHandle);
 
-	//ƒm[ƒ}ƒ‹ƒ}ƒbƒvƒeƒNƒXƒ`ƒƒ
+	//ãƒãƒ¼ãƒãƒ«ãƒãƒƒãƒ—ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	srvGpuHandle.ptr = normalMapTex;
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(NORM_MAP, srvGpuHandle);
 
-	//‰‰oƒtƒ‰ƒO
+	//æ¼”å‡ºãƒ•ãƒ©ã‚°
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(EFFECT, effectFlagsBuff_->GetGPUVirtualAddress());
 }
 
 //--------------------------------------------------------------------------------
 void IObject3D::MatMap(Camera* camera, IModel* model)
 {
-	//‘å‚«‚·‚¬‚½‚è‚·‚é‚Ì‚ğ–h‚®—p‚É
+	//å¤§ãã™ããŸã‚Šã™ã‚‹ã®ã‚’é˜²ãç”¨ã«
 	Vec3 scale = worldMat_->scale_;
 
 	if (model)
@@ -223,24 +223,24 @@ void IObject3D::MatMap(Camera* camera, IModel* model)
 
 	XMMATRIX matW;
 
-	//•ÏŠ·s—ñ‚ğGPU‚É‘—M
+	//å¤‰æ›è¡Œåˆ—ã‚’GPUã«é€ä¿¡
 	if (parentNode_ && worldMat_->parent_ &&
 		parentObj_->GetObjInsType() == ObjectInstanceType::FBX && parentNodeModel_->GetIsFbx())
 	{
-		//ƒIƒuƒWƒFƒNƒg‚Ìƒ[ƒJƒ‹
+		//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ­ãƒ¼ã‚«ãƒ«
 		worldMat_->CalcWorldMat();
-		//es—ñ
+		//è¦ªè¡Œåˆ—
 		M4 pM = worldMat_->GetOnlyParentALLTreeMat();
-		//ƒ{[ƒ“(ƒ{[ƒ“‚ÌƒOƒ[ƒoƒ‹ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€A)
+		//ãƒœãƒ¼ãƒ³(ãƒœãƒ¼ãƒ³ã®ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã€)
 		M4 bM;
 		{
-			//eƒm[ƒh‚Æ“¯‚¶–¼‘O‚Ìƒ{[ƒ“‚ÌƒCƒ“ƒfƒbƒNƒX‚ğ“¾‚é
+			//è¦ªãƒãƒ¼ãƒ‰ã¨åŒã˜åå‰ã®ãƒœãƒ¼ãƒ³ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å¾—ã‚‹
 			uint64_t bIndex = parentNodeModel_->GetBoneIndex(parentNode_->name);
-			//eƒm[ƒh‚ª‚ ‚éƒ‚ƒfƒ‹‚Ìƒ{[ƒ“‚ğƒCƒ“ƒfƒbƒNƒX‚Åw’è‚µ‚Äs—ñ‚ÌŒvZ
+			//è¦ªãƒãƒ¼ãƒ‰ãŒã‚ã‚‹ãƒ¢ãƒ‡ãƒ«ã®ãƒœãƒ¼ãƒ³ã‚’ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã§æŒ‡å®šã—ã¦è¡Œåˆ—ã®è¨ˆç®—
 			XMMATRIX bXM;
-			//e‚Ìƒ[ƒ‹ƒhs—ñ
+			//è¦ªã®ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—
 			pM.MatIntoXMMATRIX(bXM);
-			//e‚Ìƒm[ƒhs—ñ‚Éƒ[ƒ‹ƒhs—ñ‚ğŠ|‚¯‚é
+			//è¦ªã®ãƒãƒ¼ãƒ‰è¡Œåˆ—ã«ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã‚’æ›ã‘ã‚‹
 			auto modelL = dynamic_cast<ObjectFBX*>(parentObj_);
 			bXM = modelL->GetNodes()[bIndex].globalTransform;
 			bM.PutInXMMATRIX(bXM);
@@ -249,13 +249,9 @@ void IObject3D::MatMap(Camera* camera, IModel* model)
 			bM.m_[3][2] *= parentNodeModel_->GetScaleExtend();
 		}
 		(worldMat_->matWorld_ * (bM * pM)).MatIntoXMMATRIX(matW);
-		worldMat_->matWorld_.PutInXMMATRIX(matW);
 	}
-	else
-	{
-		worldMat_->CalcAllTreeMat();
-		worldMat_->matWorld_.MatIntoXMMATRIX(matW);
-	}
+
+	worldMat_->matWorld_.MatIntoXMMATRIX(matW);
 	worldMat_->scale_ = scale;
 
 	cbt_.SetWorldMat(matW);
@@ -289,7 +285,7 @@ void IObject3D::ResetParentFbxNode()
 void IObject3D::DrawImGui(std::function<void()> imguiF)
 {
 	auto f = [=]() {
-		//³–ÊƒxƒNƒgƒ‹
+		//æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«
 		if (ImGui::TreeNode("FrontVec")) {
 
 			ImGui::Text("FrontVec: %.2f %.2f %.2f", frontVec_.x, frontVec_.y, frontVec_.z);
@@ -298,7 +294,7 @@ void IObject3D::DrawImGui(std::function<void()> imguiF)
 			ImGui::TreePop();
 		}
 
-		//ƒ‚ƒfƒ‹
+		//ãƒ¢ãƒ‡ãƒ«
 		if (ImGui::TreeNode("Model")) {
 
 			std::string modelPState = "MODEL_NULL";
@@ -317,14 +313,14 @@ void IObject3D::DrawImGui(std::function<void()> imguiF)
 			}
 			ImGui::TreePop();
 
-			//qƒNƒ‰ƒX‚Ìˆ—
+			//å­ã‚¯ãƒ©ã‚¹ã®å‡¦ç†
 			if (imguiF)
 			{
 				imguiF();
 			}
 		}
 
-		//‰‰o
+		//æ¼”å‡º
 		if (ImGui::TreeNode("Effect")) {
 
 			ImGui::Checkbox("isDissolve", (bool*)&effectFlags_.isDissolve);
@@ -339,8 +335,8 @@ void IObject3D::DrawImGui(std::function<void()> imguiF)
 
 			ImGui::TreePop();
 		}
-	};
+		};
 
-	//eƒNƒ‰ƒX‚Ì
+	//è¦ªã‚¯ãƒ©ã‚¹ã®
 	IObject::DrawImGui(f);
 }

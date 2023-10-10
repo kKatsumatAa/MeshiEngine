@@ -1,4 +1,4 @@
-#include "BulletManager.h"
+ï»¿#include "BulletManager.h"
 
 BulletManager& BulletManager::GetInstance()
 {
@@ -19,7 +19,7 @@ void BulletManager::CreateBullet(const Vec3& pos, const Vec3& directionVec, floa
 
 void BulletManager::Update()
 {
-	//ƒtƒ‰ƒO‚ª‚½‚Á‚Ä‚È‚©‚Á‚½‚çÁ‚·
+	//ãƒ•ãƒ©ã‚°ãŒãŸã£ã¦ãªã‹ã£ãŸã‚‰æ¶ˆã™
 	bullets_.remove_if(
 		[](auto& b) { return !b->GetIsAlive(); }
 	);

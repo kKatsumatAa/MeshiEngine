@@ -2,19 +2,19 @@
 #include"PostEffectManager.h"
 
 
-//‘O•ûéŒ¾
+//å‰æ–¹å®£è¨€
 class SceneTransitionManager;
 
-//ƒXƒe[ƒgeƒNƒ‰ƒX
+//ã‚¹ãƒ†ãƒ¼ãƒˆè¦ªã‚¯ãƒ©ã‚¹
 class SceneTransitionEffectState
 {
 protected:
 	int32_t timer_ = 0;
 	SceneTransitionManager* sceneTransitionManager_ = nullptr;
-	//“Ç‚İ‚İ—pŠÖ”
+	//èª­ã¿è¾¼ã¿ç”¨é–¢æ•°
 	std::function<void()>loadFunc_;
 
-	//‰‰o‚Ì‰æ–ÊƒTƒCƒY”{—¦
+	//æ¼”å‡ºã®ç”»é¢ã‚µã‚¤ã‚ºå€ç‡
 	const float WINDOW_SIZE_EXTEND_ = 0.8f;
 
 
@@ -25,18 +25,18 @@ public:
 	virtual void Update();
 	virtual void Draw() = 0;
 
-	//ŠÔ‚ÌŒo‰ßŠ„‡
+	//æ™‚é–“ã®çµŒéå‰²åˆ
 	float GetTimerT(int32_t timer, const int32_t TIMER_MAX) { return min((float)timer / (float)TIMER_MAX, 1.0f); }
-	//ŠÔ‚ªƒI[ƒo[‚µ‚½‚©
+	//æ™‚é–“ãŒã‚ªãƒ¼ãƒãƒ¼ã—ãŸã‹
 	bool GetIsTimeOver(int32_t timer, const int32_t TIMER_MAX) { return GetTimerT(timer, TIMER_MAX) >= 1.0f; }
 
-	//ƒXƒe[ƒg‚Ì‚¿å‚Ìƒ|ƒCƒ“ƒ^‚Æ“Ç‚İ‚İ—pŠÖ”‚ğ‚à‚ç‚¤
+	//ã‚¹ãƒ†ãƒ¼ãƒˆã®æŒã¡ä¸»ã®ãƒã‚¤ãƒ³ã‚¿ã¨èª­ã¿è¾¼ã¿ç”¨é–¢æ•°ã‚’ã‚‚ã‚‰ã†
 	void SetSceneTransitionEffect(SceneTransitionManager* sceneTransitionEffect,
 		const std::function<void()>& loadFunc);
 };
 
 
-//‰‰o‚µ‚Ä‚¢‚È‚¢
+//æ¼”å‡ºã—ã¦ã„ãªã„
 class TransitionEffectNothingState : public SceneTransitionEffectState
 {
 private:
@@ -48,7 +48,7 @@ public:
 	void Draw()override;
 };
 
-//‰‰o‚Í‚¶‚ß
+//æ¼”å‡ºã¯ã˜ã‚
 class TransitionEffectBeginState : public SceneTransitionEffectState
 {
 private:
@@ -60,7 +60,7 @@ public:
 	void Draw()override;
 };
 
-//‰‰o’†
+//æ¼”å‡ºä¸­
 class TransitionEffectDoingState : public SceneTransitionEffectState
 {
 private:
@@ -72,7 +72,7 @@ public:
 	void Draw()override;
 };
 
-//‰‰oI‚í‚è
+//æ¼”å‡ºçµ‚ã‚ã‚Š
 class TransitionEffectEndState : public SceneTransitionEffectState
 {
 private:
