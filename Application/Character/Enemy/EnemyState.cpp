@@ -60,7 +60,6 @@ Vec3 EnemyState::GetRayHitGunOrPlayerPos()
 void EnemyState::Update()
 {
 	enemy_->HPUpdate();
-	enemy_->EffectUpdate();
 }
 
 

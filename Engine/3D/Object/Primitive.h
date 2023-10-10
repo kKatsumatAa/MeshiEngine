@@ -1,16 +1,16 @@
-#pragma once
+ï»¿#pragma once
 #include"ModelObj.h"
 
 
 /// <summary>
-/// }Œ`—p‚Ìî•ñ‚ğ‚Á‚½ƒNƒ‰ƒXidraw‚Åg‚¤‚Ì‚ÅˆêŒÂ‚Ì‚İ¶¬j
+/// å›³å½¢ç”¨ã®æƒ…å ±ã‚’æŒã£ãŸã‚¯ãƒ©ã‚¹ï¼ˆdrawã§ä½¿ã†ã®ã§ä¸€å€‹ã®ã¿ç”Ÿæˆï¼‰
 /// </summary>
 class Primitive
 {
-private://ƒGƒCƒŠƒAƒX
-	//Microsoft::WRL::‚ğÈ—ª
+private://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	//DirectX::‚ğÈ—ª
+	//DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
@@ -18,10 +18,10 @@ private://ƒGƒCƒŠƒAƒX
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
-	//‹…‚ÌƒCƒ“ƒfƒbƒNƒX—p
+	//çƒã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ç”¨
 	static const int32_t S_SPHERE_INDEX_NUM_ = 66 * 3 + 6;
 
-	//’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	ComPtr < ID3D12Resource> vertBuffTriangle_ = nullptr;
 	ComPtr < ID3D12Resource> vertBuffBox_ = nullptr;
 	ComPtr < ID3D12Resource> vertBuffCircle_ = nullptr;
@@ -29,22 +29,22 @@ public:
 	ComPtr < ID3D12Resource> vertBuffLine_ = nullptr;
 	ComPtr<ID3D12Resource> vertBuffSphere_ = nullptr;
 
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 	D3D12_VERTEX_BUFFER_VIEW vbTriangleView_{};
 	D3D12_VERTEX_BUFFER_VIEW vbBoxView_{};
 	D3D12_VERTEX_BUFFER_VIEW vbCircleView_{};
 	D3D12_VERTEX_BUFFER_VIEW vbCubeView_{};
 	D3D12_VERTEX_BUFFER_VIEW vbLineView_{};
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 	D3D12_VERTEX_BUFFER_VIEW vbViewSphere_{};
 
 	//04_01
-		//’¸“_ƒf[ƒ^\‘¢‘Ì
+		//é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿æ§‹é€ ä½“
 
-	//’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	D3D12_HEAP_PROPERTIES heapProp_{};
 
-	//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+	//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 	D3D12_INDEX_BUFFER_VIEW ibViewTriangle_{};
 	D3D12_INDEX_BUFFER_VIEW ibViewBox_{};
 	D3D12_INDEX_BUFFER_VIEW ibViewCircle_{};
@@ -52,24 +52,24 @@ public:
 	D3D12_INDEX_BUFFER_VIEW ibViewCube_{};
 	D3D12_INDEX_BUFFER_VIEW ibViewSphere_{};
 
-	//‚¢‚ë‚ñ‚È}Œ`—p
+	//ã„ã‚ã‚“ãªå›³å½¢ç”¨
 	Vertex verticesTriangle_[3] = {
-		//è‘O
-		{{-1.0f,-1.0f,0.0f},{}, {0.0f,1.0f},{}},//¶‰º
-		{{-1.0f,1.0f, 0.0f},{},{0.0f,0.0f},{}},//¶ã
-		{{1.0f,-1.0f, 0.0f},{},{1.0f,1.0f},{}},//‰E‰º
+		//æ‰‹å‰
+		{{-1.0f,-1.0f,0.0f},{}, {0.0f,1.0f},{}},//å·¦ä¸‹
+		{{-1.0f,1.0f, 0.0f},{},{0.0f,0.0f},{}},//å·¦ä¸Š
+		{{1.0f,-1.0f, 0.0f},{},{1.0f,1.0f},{}},//å³ä¸‹
 	};
 	Vertex verticesBox_[4] = {
-		//è‘O
-		{{-1.0f,-1.0f,0.0f},{},{0.0f,1.0f},{}},//¶‰º
-		{{-1.0f,1.0f, 0.0f},{},{0.0f,0.0f},{}},//¶ã
-		{{1.0f,-1.0f, 0.0f},{},{1.0f,1.0f},{}},//‰E‰º
-		{{1.0f,1.0f,  0.0f},{},{1.0f,0.0f},{}},//‰Eã
+		//æ‰‹å‰
+		{{-1.0f,-1.0f,0.0f},{},{0.0f,1.0f},{}},//å·¦ä¸‹
+		{{-1.0f,1.0f, 0.0f},{},{0.0f,0.0f},{}},//å·¦ä¸Š
+		{{1.0f,-1.0f, 0.0f},{},{1.0f,1.0f},{}},//å³ä¸‹
+		{{1.0f,1.0f,  0.0f},{},{1.0f,0.0f},{}},//å³ä¸Š
 	};
 	Vertex verticesCircle_[24] = {};
 	Vertex verticesCube_[24] = {};
 	Vertex verticesLine_[2] = {};
-	//‹…‘Ì
+	//çƒä½“
 	Vertex verticesSphere_[2 + 34 * 36];
 
 private:
@@ -84,7 +84,7 @@ private:
 
 
 public:
-	//‰Šú‰»Œn
+	//åˆæœŸåŒ–ç³»
 	void Initialize();
 
 	void InitializeTriangle();
@@ -94,7 +94,7 @@ public:
 	void InitializeLine();
 	void InitializeSphere();
 
-	//Draw‚É•K—v‚ÈƒRƒ}ƒ“ƒh
+	//Drawã«å¿…è¦ãªã‚³ãƒãƒ³ãƒ‰
 	void DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCount, Vertex* vertex, const D3D12_PRIMITIVE_TOPOLOGY& primitiveTopology,
 		const D3D12_VERTEX_BUFFER_VIEW& buffView, const D3D12_INDEX_BUFFER_VIEW& ibView, int32_t indicesCount,
 		const std::function<void()>& setRootParam,const std::function<void()>& setMaterialLightTex);

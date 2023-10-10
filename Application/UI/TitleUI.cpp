@@ -1,4 +1,4 @@
-#include "TitleUI.h"
+ï»¿#include "TitleUI.h"
 
 TitleUI& TitleUI::GetInstance()
 {
@@ -13,14 +13,14 @@ void TitleUI::Initialize()
 	t_ = 0;
 	titleScale_ = TITLE_SCALE_MAX_;
 
-	//ƒZƒbƒg
+	//ã‚»ãƒƒãƒˆ
 	titleSprite_.SetTexHandle(titleTex_);
 	titleSprite_.SetColor({ 3.0f,3.0f,3.0f,1.0f });
 }
 
 void TitleUI::Update()
 {
-	//ƒ^ƒCƒgƒ‹‰æ–Ê‚Ì“®‚«
+	//ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ã®å‹•ã
 	if (t_ < 1.0f)
 	{
 		t_ = (float)timer_ / (float)TITLE_TIME_MAX_;
@@ -33,9 +33,9 @@ void TitleUI::Update()
 
 void TitleUI::DrawSprite()
 {
-	//ƒZƒbƒg
+	//ã‚»ãƒƒãƒˆ
 	titleSprite_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
 	titleSprite_.SetScale({ titleScale_,titleScale_ ,1.0f });
-	//•`‰æ
+	//æç”»
 	titleSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
 }

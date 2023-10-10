@@ -6,16 +6,16 @@ class GameVelocityManager final
 {
 private:
 	float gameVelocity_ = 0;
-	//ゲームスピードの加算無効
+	//繧ｲ繝ｼ繝繧ｹ繝斐�ｼ繝峨�ｮ蜉邂礼┌蜉ｹ
 	bool isInvalidAddGameVel_ = false;
-	//色
+	//濶ｲ
 	const Vec3 VEL_COL_MIN_ = { 0.5f,0.8f,0.8f };
 
 public:
 	const float GAME_VELOCITY_MAX_ = 1.0f;
 	const float GAME_VELOCITY_MIN_ = 0.03f;
 
-	//マウスのみの最大速度
+	//繝槭え繧ｹ縺ｮ縺ｿ縺ｮ譛螟ｧ騾溷ｺｦ
 	const float MOUSE_VEL_MAX_ = GAME_VELOCITY_MAX_ / 7.0f;
 
 private:

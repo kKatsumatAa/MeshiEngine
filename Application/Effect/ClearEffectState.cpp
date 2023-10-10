@@ -1,4 +1,4 @@
-#include "ClearEffectState.h"
+ï»¿#include "ClearEffectState.h"
 #include "ClearEffect.h"
 
 
@@ -12,7 +12,7 @@ void ClearEffectState::SpriteUpdate(const std::string& soundName, const std::str
 
 	timer_ = min(timer_, TIMER_MAX_);
 
-	//§ŒÀŠÔ‰ß‚¬‚ÄA‰¹‚àI‚í‚Á‚½‚ç
+	//åˆ¶é™æ™‚é–“éãã¦ã€éŸ³ã‚‚çµ‚ã‚ã£ãŸã‚‰
 	if (!Sound::GetInstance().CheckPlayingWave(soundName) && t_ >= 1.0f)
 	{
 		Sound::GetInstance().StopWave(soundName);
@@ -52,12 +52,12 @@ std::unique_ptr<ClearEffectState> ClearEffectState::GetState(const std::string& 
 //HYPER
 void ClearEffectStateHyper::Initialize()
 {
-	//ƒ‹[ƒv‚ğƒIƒ“‚É‚µ‚È‚¢‚Æ~‚Ü‚Á‚½‚©‚Ç‚¤‚©‚ÌŠÖ”g‚¦‚È‚¢
+	//ãƒ«ãƒ¼ãƒ—ã‚’ã‚ªãƒ³ã«ã—ãªã„ã¨æ­¢ã¾ã£ãŸã‹ã©ã†ã‹ã®é–¢æ•°ä½¿ãˆãªã„
 	Sound::GetInstance().PlayWave(SOUND_NAME_, VOLUME_TMP_);
 
 	texHandle_ = TextureManager::GetInstance().LoadGraph("hyper.png");
 
-	//ƒZƒbƒg
+	//ã‚»ãƒƒãƒˆ
 	texSprite_.SetTexHandle(texHandle_);
 	texSprite_.SetColor({ 2.0f,2.0f ,2.0f ,1.0f });
 }
@@ -77,12 +77,12 @@ void ClearEffectStateHyper::Draw()
 //HOT
 void ClearEffectStateHot::Initialize()
 {
-	//ƒ‹[ƒv‚ğƒIƒ“‚É‚µ‚È‚¢‚Æ~‚Ü‚Á‚½‚©‚Ç‚¤‚©‚ÌŠÖ”g‚¦‚È‚¢
+	//ãƒ«ãƒ¼ãƒ—ã‚’ã‚ªãƒ³ã«ã—ãªã„ã¨æ­¢ã¾ã£ãŸã‹ã©ã†ã‹ã®é–¢æ•°ä½¿ãˆãªã„
 	Sound::GetInstance().PlayWave(SOUND_NAME_, VOLUME_TMP);
 
 	texHandle_ = TextureManager::LoadGraph("hot.png");
 
-	//ƒZƒbƒg
+	//ã‚»ãƒƒãƒˆ
 	texSprite_.SetTexHandle(texHandle_);
 	texSprite_.SetColor({ 2.0f,2.0f ,2.0f ,1.0f });
 }

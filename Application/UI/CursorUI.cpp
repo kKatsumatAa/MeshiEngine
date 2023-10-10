@@ -1,4 +1,4 @@
-#include "CursorUI.h"
+ï»¿#include "CursorUI.h"
 #include "MouseInput.h"
 
 
@@ -19,7 +19,7 @@ void CursorUI::Update()
 {
 	timer_++;
 
-	//“_–Å‚³‚¹‚é
+	//ç‚¹æ»…ã•ã›ã‚‹
 	int32_t interval = timer_ % 60 % (60 / flashingNum_);
 	if (interval >= 0
 		&& interval <= flashingIntervalWidth_)
@@ -31,22 +31,22 @@ void CursorUI::Update()
 		alpha_ = 1.0f;
 	}
 
-	//ƒJ[ƒ\ƒ‹‚ÌˆÊ’u‚ğ‰æ–Ê“à‚Éû‚ß‚é
+	//ã‚«ãƒ¼ã‚½ãƒ«ã®ä½ç½®ã‚’ç”»é¢å†…ã«åã‚ã‚‹
 	cursorPos_.x = Clamp(MouseInput::GetInstance().GetCurcorPos().x, cursorSize_.x * 2.0f, WindowsApp::WINDOW_WIDTH_ - cursorSize_.x * 2.0f);
 	cursorPos_.y = Clamp(MouseInput::GetInstance().GetCurcorPos().y, 0, WindowsApp::WINDOW_HEIGHT_ - cursorSize_.y );
 
 
-	//•`‰æ‚·‚é‚Æ‚«‚ÌƒJ[ƒ\ƒ‹ˆÊ’u
+	//æç”»ã™ã‚‹ã¨ãã®ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®
 	drawPos_.x = (float)((cursorSize_.x / 2.0f) + (int32_t)cursorPos_.x / (int32_t)cursorSize_.x * (int32_t)cursorSize_.x);
 	drawPos_.y = (float)((cursorSize_.y / 2.0f) + (int32_t)cursorPos_.y / (int32_t)cursorSize_.y * (int32_t)cursorSize_.y);
 }
 
 void CursorUI::Draw()
 {
-	//ˆÊ’u‚È‚Ç‚ğƒZƒbƒg
+	//ä½ç½®ãªã©ã‚’ã‚»ãƒƒãƒˆ
 	texSprite_.SetTrans({ drawPos_,0 });
 	texSprite_.SetScale({ cursorSize_.x,cursorSize_.y,1.0f });
 	texSprite_.SetColor({ 8.0f,0.2f,0.2f,alpha_ });
-	//•`‰æ
+	//æç”»
 	texSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
 }

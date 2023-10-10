@@ -23,7 +23,7 @@ private:
 	int32_t stageNum_ = 1;
 	std::unique_ptr<StageState> state_ = nullptr;
 
-	//ƒXƒe[ƒWƒNƒŠƒA‚µ‚½‚©
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¯ãƒªã‚¢ã—ãŸã‹
 	bool isClear_ = false;
 	bool isGameOver_ = false;
 
@@ -44,23 +44,23 @@ private:
 	void Initialize();
 
 public:
-	//ƒXƒe[ƒW“Ç‚İ‚İ
+	//ã‚¹ãƒ†ãƒ¼ã‚¸èª­ã¿è¾¼ã¿
 	void LoadStage(int32_t stageIndex);
 
-	//ƒXƒe[ƒW”Ô†
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ç•ªå·
 	void SetStageNum(int32_t stageNum) { stageNum_ = stageNum; }
 	int32_t GetStageNum() { return stageNum_; }
 
-	//ƒXƒe[ƒWƒNƒŠƒA‚µ‚½‚©
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¯ãƒªã‚¢ã—ãŸã‹
 	void SetIsClear(bool isClear) { isClear_ = isClear; }
 	bool GetIsGameClear() { return isClear_; }
 
-	//ƒXƒe[ƒWƒQ[ƒ€ƒI[ƒo[
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼
 	void SetIsGameOver(bool isGameOver) { isGameOver_ = isGameOver; }
 	bool GetIsGameOver() { return isGameOver_; }
 
 public:
-	//ƒXƒe[ƒg•ÏX
+	//ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´
 	void ChangeState(const std::string& name);
 	
 public:

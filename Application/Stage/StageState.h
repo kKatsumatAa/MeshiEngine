@@ -2,7 +2,7 @@
 #include"Util.h"
 
 
-//ƒXƒe[ƒW‚Ìó‘ÔeƒNƒ‰ƒX
+//ã‚¹ãƒ†ãƒ¼ã‚¸ã®çŠ¶æ…‹è¦ªã‚¯ãƒ©ã‚¹
 class StageState
 {
 protected:
@@ -24,7 +24,7 @@ public:
 
 
 //---------------------------------------------------
-//ŠJn
+//é–‹å§‹æ™‚
 class StageStateBegining : public StageState
 {
 protected:
@@ -37,7 +37,7 @@ public:
 	void DrawSprite() override;
 };
 
-//í“¬
+//æˆ¦é—˜æ™‚
 class StageStateBattle : public StageState
 {
 protected:
@@ -54,7 +54,7 @@ public:
 };
 
 
-//€–SŒã
+//æ­»äº¡å¾Œ
 class StageStateDead : public StageState
 {
 private:
@@ -68,7 +68,7 @@ public:
 };
 
 
-//ƒNƒŠƒAŒã
+//ã‚¯ãƒªã‚¢å¾Œ
 class StageStateClear : public StageState
 {
 private:

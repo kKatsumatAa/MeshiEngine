@@ -1,24 +1,24 @@
-#pragma once
+ï»¿#pragma once
 #include"Framework.h"
 
 
-//ƒQ[ƒ€‘S‘Ì
+//ã‚²ãƒ¼ãƒ å…¨ä½“
 class MyGame : public Framework
 {
 private:
 
 
 public:
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void Initialize() override;
 
-	//I—¹
+	//çµ‚äº†
 	void Finalize() override;
 
-	//–ˆƒtƒŒ[ƒ€XV
+	//æ¯ãƒ•ãƒ¬ãƒ¼ãƒ æ›´æ–°
 	void Update() override;
 
-	//•`‰æ
+	//æç”»
 	void Draw() override;
 };
 

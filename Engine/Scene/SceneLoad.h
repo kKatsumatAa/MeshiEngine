@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include"SceneState.h"
 #include"Object.h"
 #include"Async.h"

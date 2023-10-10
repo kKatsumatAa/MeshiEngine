@@ -16,16 +16,16 @@ void SceneTransitionEffectState::Update()
 }
 
 //--------------------------------------------------------
-//‰½‚à‚µ‚Ä‚¢‚È‚¢
+//ä½•ã‚‚ã—ã¦ã„ãªã„
 void TransitionEffectNothingState::Initialize()
 {
-	//‰¹Ž~‚ß‚é
+	//éŸ³æ­¢ã‚ã‚‹
 	Sound::GetInstance().StopWave(SceneTransitionManager::TRANSITION_SOUND_NAME_);
 
-	//‚Q‚Â–Ú‚ðƒmƒCƒY
+	//ï¼’ã¤ç›®ã‚’ãƒŽã‚¤ã‚º
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isNoise = false;
 
-	//‰‰oƒtƒ‰ƒOƒIƒt
+	//æ¼”å‡ºãƒ•ãƒ©ã‚°ã‚ªãƒ•
 	sceneTransitionManager_->SetIsDoingEffect(false);
 }
 
@@ -40,19 +40,19 @@ void TransitionEffectNothingState::Draw()
 
 
 //--------------------------------------------------------
-//‰‰oŽn‚ß
+//æ¼”å‡ºå§‹ã‚
 void TransitionEffectBeginState::Initialize()
 {
-	//‰¹—¬‚·
+	//éŸ³æµã™
 	Sound::GetInstance().PlayWave(SceneTransitionManager::TRANSITION_SOUND_NAME_, true);
 
-	//“ñ‚Â–ÚƒmƒCƒY
+	//äºŒã¤ç›®ãƒŽã‚¤ã‚º
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isNoise = true;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.noisePow = 1.0f;
-	//ŽO‚Â–Ú‚É•`‰æ‚³‚ê‚½‚à‚Ìi‚Q–‡–Ú‚Ü‚Åj‚ð˜p‹È
+	//ä¸‰ã¤ç›®ã«æç”»ã•ã‚ŒãŸã‚‚ã®ï¼ˆï¼’æžšç›®ã¾ã§ï¼‰ã‚’æ¹¾æ›²
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
 
-	//ƒuƒ‹[ƒ€
+	//ãƒ–ãƒ«ãƒ¼ãƒ 
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = true;
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.bloomPow = PostPera::S_BLOOM_MAX_POW_ / 2.0f;
 
@@ -67,17 +67,17 @@ void TransitionEffectBeginState::Update()
 {
 	SceneTransitionEffectState::Update();
 
-	//˜p‹È‚ð™X‚É‚Â‚æ‚­
+	//æ¹¾æ›²ã‚’å¾ã€…ã«ã¤ã‚ˆã
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = EaseInOutBack(GetTimerT(timer_, TIMER_MAX_));
-	//2–‡–Ú‚Ì‰æ–Ê‚Ì‘å‚«‚³‚ð™X‚É¬‚³‚­
+	//2æžšç›®ã®ç”»é¢ã®å¤§ãã•ã‚’å¾ã€…ã«å°ã•ã
 	PostEffectManager::GetInstance().GetPostEffect2()->SetPera2Extend(LerpVec3(
 		{ 1.0f ,0,0 }, { PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 },
 		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x);
 
-	//ŽžŠÔ‚ªI‚í‚Á‚½‚ç
+	//æ™‚é–“ãŒçµ‚ã‚ã£ãŸã‚‰
 	if (GetIsTimeOver(timer_, TIMER_MAX_))
 	{
-		//‰‰o‚È‚¢ƒXƒe[ƒg‚É
+		//æ¼”å‡ºãªã„ã‚¹ãƒ†ãƒ¼ãƒˆã«
 		sceneTransitionManager_->ChangeEffectState(std::make_unique<TransitionEffectDoingState>());
 	}
 }
@@ -88,10 +88,10 @@ void TransitionEffectBeginState::Draw()
 
 
 //--------------------------------------------------------
-//‰‰o’†
+//æ¼”å‡ºä¸­
 void TransitionEffectDoingState::Initialize()
 {
-	//—a‚©‚Á‚Ä‚¢‚½ƒ[ƒh—p‚ÌŠÖ”‚ðŽÀs
+	//é ã‹ã£ã¦ã„ãŸãƒ­ãƒ¼ãƒ‰ç”¨ã®é–¢æ•°ã‚’å®Ÿè¡Œ
 	sceneTransitionManager_->BeginAsyncLoad(loadFunc_);
 }
 
@@ -99,7 +99,7 @@ void TransitionEffectDoingState::Update()
 {
 	SceneTransitionEffectState::Update();
 
-	//ƒ[ƒfƒBƒ“ƒOI‚í‚Á‚½‚ç
+	//ãƒ­ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°çµ‚ã‚ã£ãŸã‚‰
 	if (!sceneTransitionManager_->GetIsLoadingOnly() && GetIsTimeOver(timer_, TIMER_MAX_))
 	{
 		sceneTransitionManager_->ChangeEffectState(std::make_unique<TransitionEffectEndState>());
@@ -112,7 +112,7 @@ void TransitionEffectDoingState::Draw()
 
 
 //--------------------------------------------------------
-//‰‰oI‚í‚è
+//æ¼”å‡ºçµ‚ã‚ã‚Š
 void TransitionEffectEndState::Initialize()
 {
 }
@@ -121,20 +121,20 @@ void TransitionEffectEndState::Update()
 {
 	SceneTransitionEffectState::Update();
 
-	//˜p‹È‚ð™X‚ÉŽã‚­
+	//æ¹¾æ›²ã‚’å¾ã€…ã«å¼±ã
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = 1.0f - EaseIn(GetTimerT(timer_, TIMER_MAX_ / 2));
-	//2‚Â–Ú‚Ì2–‡–Ú‚Ì‰æ–Ê‚Ì‘å‚«‚³‚ð™X‚É‘å‚«‚­
+	//2ã¤ç›®ã®2æžšç›®ã®ç”»é¢ã®å¤§ãã•ã‚’å¾ã€…ã«å¤§ãã
 	PostEffectManager::GetInstance().GetPostEffect2()->SetPera2Extend(LerpVec3(
 		{ PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 }, { 1.0f ,0,0 },
 		EaseIn(GetTimerT(timer_, TIMER_MAX_ / 2))).x);
 
-	//ƒmƒCƒY‚ð™X‚É
+	//ãƒŽã‚¤ã‚ºã‚’å¾ã€…ã«
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.noisePow = 1.0f - EaseIn(GetTimerT(timer_, TIMER_MAX_));
 
-	//ŽžŠÔ‚ªI‚í‚Á‚½‚ç
+	//æ™‚é–“ãŒçµ‚ã‚ã£ãŸã‚‰
 	if (GetIsTimeOver(timer_, TIMER_MAX_))
 	{
-		//‰‰o‚È‚¢ƒXƒe[ƒg‚É
+		//æ¼”å‡ºãªã„ã‚¹ãƒ†ãƒ¼ãƒˆã«
 		sceneTransitionManager_->ChangeEffectState(std::make_unique<TransitionEffectNothingState>());
 	}
 }

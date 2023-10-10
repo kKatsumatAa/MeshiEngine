@@ -1,24 +1,24 @@
-#pragma once
+ï»¿#pragma once
 #include<DirectXMath.h>
 #include <wrl.h>
 
 /// <summary>
-/// “_ŒõŒ¹
+/// ç‚¹å…‰æº
 /// </summary>
 class PointLight
 {
-private://ƒGƒCƒŠƒAƒX
-	//Microsoft::WRL::‚ğÈ—ª
+private://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using Comptr = Microsoft::WRL::ComPtr<T>;
-	//DirectX::‚ğÈ—ª
+	//DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-public://ƒTƒuƒNƒ‰ƒX
-	//’è”ƒoƒbƒtƒ@—pƒf[ƒ^\‘¢‘Ì
+public://ã‚µãƒ–ã‚¯ãƒ©ã‚¹
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ç”¨ãƒ‡ãƒ¼ã‚¿æ§‹é€ ä½“
 	struct ConstBufferData
 	{
 		XMFLOAT3 lightpos;
@@ -29,19 +29,19 @@ public://ƒTƒuƒNƒ‰ƒX
 		uint32_t active;
 	};
 
-private://ƒƒ“ƒo•Ï”
-	//ƒ‰ƒCƒgÀ•Wiƒ[ƒ‹ƒhÀ•WŒnj
+private://ãƒ¡ãƒ³ãƒå¤‰æ•°
+	//ãƒ©ã‚¤ãƒˆåº§æ¨™ï¼ˆãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ï¼‰
 	XMFLOAT3 lightpos_ = { 0,0,0 };
-	//ƒ‰ƒCƒgF
+	//ãƒ©ã‚¤ãƒˆè‰²
 	XMFLOAT3 lightcolor_ = { 1.0f,1.0f,1.0f };
-	//ƒ‰ƒCƒg‹——£Œ¸ŠŒW”
+	//ãƒ©ã‚¤ãƒˆè·é›¢æ¸›è¡°ä¿‚æ•°
 	XMFLOAT3 lightatten_ = { 1.0f,1.0f,1.0f };
-	//—LŒøƒtƒ‰ƒO
+	//æœ‰åŠ¹ãƒ•ãƒ©ã‚°
 	bool active_ = false;
 
 
 
-public://ƒƒ“ƒoŠÖ”
+public://ãƒ¡ãƒ³ãƒé–¢æ•°
 	void SetLightPos(const XMFLOAT3& lightpos) { lightpos_ = lightpos; }
 	const XMFLOAT3& GetLightPos() { return lightpos_; }
 	void SetLightColor(const XMFLOAT3& lightcolor) { lightcolor_ = lightcolor; }

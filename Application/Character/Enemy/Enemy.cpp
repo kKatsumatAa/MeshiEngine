@@ -24,17 +24,15 @@ void Enemy::EmergeInitialize()
 {
 	LightManager* lightM = LevelManager::GetInstance().GetLightManager();
 
-	//�g���郉�C�g�������
+	//使えるライトがあれば
 	if (lightM->GetDoNotUsePointLightIndex(lightIndexTmp_))
 	{
 		lightM->SetPointLightActive(lightIndexTmp_, true);
 		lightM->SetPointLightAtten(lightIndexTmp_, { 0.977f,0.493f,0.458f });
 		lightM->SetPointLightColor(lightIndexTmp_, { 5.0f,0,0 });
 		lightM->SetPointLightPos(lightIndexTmp_,
-			{ IObject::GetTrans().x, IObject::GetTrans().y, IObject::GetTrans().z });
+			{ IObject::GetTrans().x,IObject::GetTrans().y, IObject::GetTrans().z });
 	}
-	//hp�n
-	HPUpdate();
 }
 
 void Enemy::ChangeEnemyState(std::unique_ptr<EnemyState> state)
@@ -54,7 +52,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t
 		return nullptr;
 	}
 
-	//������
+	//初期化
 	if (!instance->Initialize(std::move(worldMat), waveNum, weapon, model))
 	{
 		assert(0);
@@ -74,7 +72,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	if (weapon)
 	{
 		weapon_ = weapon;
-		//�������X�ݒ�
+		//武器を諸々設定
 		PickUpWeapon(weapon_);
 	}
 
@@ -85,21 +83,32 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	//model
 	model->SetMaterialExtend({ 1.0f,3.0f,140.0f });
 
-	//�f�B�]���u
-	ObjectFBX::SetisDissolve(true);
-	//�f�B�]���u�摜
+	//ディゾルブ
+	SetisDissolve(true);
+	SetDissolveT(1.0f);
+	//ディゾルブ画像
 	uint64_t handle;
 	handle = TextureManager::LoadGraph("dissolveMask.png");
-	ObjectFBX::SetDissolveTexHandle(handle);
+	SetDissolveTexHandle(handle);
 
-	//�X�e�[�g�ύX
+	//ステート変更
 	ChangeEnemyState(std::make_unique<EnemyStateEmergeEffect>());
 
-	//�A�j���[�V�����J�n
+	//アニメーション開始
 	PlayAnimation(true);
 
-	//�F
+	//色
 	SetColor({ 3.0f,0,0,1.0f });
+
+	//演出更新
+	ObjectFBX::EffectUpdate();
+	//fbx前提
+	ModelFBX* modelFbx = dynamic_cast<ModelFBX*>(model);
+	//ノードごとの当たり判定
+	nodeColliders_.SetNodesPointer(modelFbx->GetNodes());
+	nodeColliders_.CreateNodeColliders();
+	nodeColliders_.SetNodeParamMagnif(modelFbx->GetScaleExtend());
+	nodeColliders_.SetScaleCollider(3.0f);
 
 	return true;
 }
@@ -113,7 +122,7 @@ void Enemy::AllMove(const Vec3& targetPos)
 
 void Enemy::Attack(const Vec3& targetPos)
 {
-	//����ōU��
+	//武器で攻撃
 	if (weapon_ != nullptr && weapon_->GetIsAlive())
 	{
 		Vec3 directionV = targetPos - weapon_->GetWorldTrans();
@@ -123,80 +132,80 @@ void Enemy::Attack(const Vec3& targetPos)
 
 void Enemy::WalkToTarget(const Vec3& targetPos)
 {
-	//�����Ȃ��������΂�
+	//動けなかったら飛ばす
 	if (isCantMove)
 	{
 		isCantMove = false;
 		return;
 	}
 
-	//���K��
+	//正規化
 	directionVec_.y = 0;
 	directionVec_.Normalized();
 
-	//���݂̃X�s�[�h�ɕ����x�N�g�������A�Q�[���X�s�[�h�������
+	//現在のスピードに方向ベクトル足し、ゲームスピードをかける
 	velocity_ = GetVelocity() + directionVec_ * VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity();
-	//�X�s�[�h�̏���͒����Ȃ��悤��
+	//スピードの上限は超えないように
 	float length = velocity_.GetLength();
-	//�X�s�[�h���v���X�ɂȂ��Ă���
+	//スピードがプラスになってたら
 	if (velocity_.Dot(directionVec_) >= 0)
 	{
 		directionVec_ = targetPos - IObject::GetTrans();
-		//������x�߂Â�����~�܂�
+		//ある程度近づいたら止まる
 		if (directionVec_.GetLength() < IObject::GetScale().GetLength() * 1.5f)
 		{
 			velocity_ = { 0,0,0 };
 		}
 		directionVec_.Normalized();
 
-		//�_���[�W�̃N�[�����Z�b�g
+		//ダメージのクールリセット
 		damageCoolTime_ = 0;
 	}
-	//�X�s�[�h�̏�������Ȃ�
+	//スピードの上限超えない
 	velocity_ = velocity_.GetNormalized() * min(fabsf(length), GameVelocityManager::GetInstance().GetVelocity() * VELOCITY_TMP_ / 1.5f);
 
-	//�����蔻��p�ɃZ�b�g
+	//当たり判定用にセット
 	IObject::SetVelocity(velocity_);
 
-	//�ʒu�Z�b�g
+	//位置セット
 	IObject::SetTrans(IObject::GetTrans() + velocity_);
 
-	//�����ύX
+	//向き変更
 	DirectionUpdate(targetPos);
 }
 
 void Enemy::CollisionWallAndFloor()
 {
-	//�n�ʂƕǂƂ̔���
+	//地面と壁との判定
 	OnGroundAndWallUpdate(IObject::GetScale().y, GameVelocityManager::GetInstance().GetVelocity());
 }
 
 void Enemy::DirectionUpdate(const Vec3& targetPos)
 {
-	//�G����^�[�Q�b�g�ւ̃x�N�g��
+	//敵からターゲットへのベクトル
 	directionVec_ = targetPos - GetTrans();
-	//�������ʃx�N�g���ƃ^�[�Q�b�g�ւ̃x�N�g��
+	//初期正面ベクトルとターゲットへのベクトル
 	Vec3 fVTmp = GetFrontVecTmp().GetNormalized();
 	Vec3 pDVTmp = directionVec_.GetNormalized();
 
-	//���ʃx�N�g������^�[�Q�b�g�̕����x�N�g���ւ̉�]�N�H�[�^�j�I��
+	//正面ベクトルからターゲットの方向ベクトルへの回転クォータニオン
 	Quaternion q = Quaternion::DirectionToDirection(fVTmp, pDVTmp, 0.0f);
-	//��]��̃x�N�g��
+	//回転後のベクトル
 	fVTmp = q.GetRotateVector(fVTmp);
-	//���ʃx�N�g���Z�b�g
+	//正面ベクトルセット
 	IObject3D::SetFrontVec(fVTmp);
 
-	//�p�x����Ȃ��čs�����̂܂܎g��
+	//角度じゃなくて行列をそのまま使う
 	IObject::SetIsUseQuaternionMatRot(true);
 	IObject::SetMatRot(q.MakeRotateMatrix());
 }
 
 void Enemy::HPUpdate()
 {
-	//hp�ɂ���ăf�B�]���u
+	//hpによってディゾルブ
 	IObject3D::SetDissolveT((1.0f - (float)hp_ / (float)HP_TMP_) * DISSOLVE_POW_);
 
-	//�|���S�����Ƃɓ����悤��
+	//ポリゴンごとに動くように
 	Mesh::PolygonOffset offsetData;
 	offsetData.interval = GetRand(15.0f, 35.0f) * (1.0f - GameVelocityManager::GetInstance().GetVelocity() * 1.5f);
 	offsetData.length = GetRand(-IObject::GetScale().x, IObject::GetScale().x) * 5.5f * max(1.0f - (float)hp_ / (float)HP_TMP_, 0);
@@ -207,43 +216,51 @@ void Enemy::HPUpdate()
 //----------------------------------------------------------------
 void Enemy::Update()
 {
-	//�_���[�W�󂯂�N�[���^�C����Q�[���X�s�[�h�������
+	//ダメージ受けるクールタイムもゲームスピードをかける
 	damageCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
-	//�A�j���[�V������Q�[���X�s�[�h
+	//アニメーションもゲームスピード
 	SetAnimationSpeed(min(GameVelocityManager::GetInstance().GetVelocity() * 3.0f,
 		GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_));
 
-	//�X�e�[�g
+	//演出更新
+	ObjectFBX::EffectUpdate();
+
+	//ステート
 	state_->Update();
 
 	Character::Update();
+
+	//ノードごとの当たり判定
+	nodeColliders_.Update(GetWorldMat());
 }
 
 void Enemy::Draw()
 {
-	ObjectFBX::DrawModel(nullptr);
+	//ObjectFBX::DrawModel(nullptr);
+
+	nodeColliders_.Draw();
 }
 
 
 //----------------------------------------------------------------------------------
 void Enemy::KnockBack(const CollisionInfo& info)
 {
-	//����
+	//長さ
 	float length = (info.object_->GetScale().z + IObject::GetScale().z);
-	//�����̃x�N�g��
+	//距離のベクトル
 	Vec3 distanceVec = IObject::GetTrans() - info.object_->GetWorldTrans();
-	//��
+	//仮
 	distanceVec.y = 0;
 	velocity_.y = 0;
 	distanceVec.Normalized();
-	//�m�b�N�o�b�N
+	//ノックバック
 	velocity_ += distanceVec * length * KNOCK_BACK_POW_;
 	IObject::SetVelocity(velocity_);
-	//�_���[�W��󂯂�N�[���^�C��
+	//ダメージを受けるクールタイム
 	damageCoolTime_ = 20;
 
-	//���펝���Ă����痎�Ƃ�
+	//武器持っていたら落とす
 	if (weapon_)
 	{
 		distanceVec.y = 0.2f;
@@ -267,7 +284,7 @@ void Enemy::DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExten
 
 		const int32_t LIFE_TIME = 40;
 
-		//����̑��x��g��
+		//相手の速度も使う
 		Vec3 infoVec = info.object_->GetVelocity().GetNormalized();
 
 		Vec3 vel = Vec3(infoVec.x * GetRand(-0.1f, 1.0f),
@@ -284,63 +301,60 @@ void Enemy::DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExten
 
 void Enemy::OnCollision(const CollisionInfo& info)
 {
-	//�v���C���[�ɓ���������
+	//プレイヤーに当たったら
 	if (info.object_->GetObjName() == "player")
 	{
-		////����
+		////長さ
 		float length = (info.object_->GetScale().x + IObject::GetScale().x);
-		//�����̃x�N�g��
+		//距離のベクトル
 		Vec3 distanceVec = IObject::GetTrans() - info.object_->GetTrans();
-		//����y�͓������Ȃ�
+		//仮でyは動かさない
 		distanceVec.y = 0;
 		distanceVec.Normalized();
 
-		//�߂荞�܂Ȃ��悤�Ɉʒu�Z�b�g(���a�{���a�̒�����x�N�g���̕�����g���đ���)
-		//Vec3 ansPosP = info.object_->GetTrans() + distanceVec * length * 0.5f;
+		//めり込まないように位置セット(半径＋半径の長さをベクトルの方向を使って足す)
 		Vec3 ansPosE = info.object_->GetTrans() + distanceVec * length * 1.001f;
-		//SetTrans(ansPosP);
 		IObject::SetTrans(ansPosE);
 
-		//info.object_->SetTrans(ansPos);
 		IObject::SetVelocity({ 0,0,0 });
 
-		//�����Ȃ��悤�ɂ���
+		//動けないようにする
 		isCantMove = true;
 	}
-	//�v���C���[�̍U���Ƃ̔���
+	//プレイヤーの攻撃との判定
 	else if (info.object_->GetObjName().find("hand") != std::string::npos)
 	{
 		if (damageCoolTime_ <= 0)
 		{
-			//�m�b�N�o�b�N
+			//ノックバック
 			KnockBack(info);
 
-			//hp���炷
-			Damaged(1, [=]() {IObject::SetIsAlive(false); });
+			//hp減らす
+			Damaged(1, [=]() { IObject::SetIsAlive(false); });
 
-			//�p�[�e�B�N��
+			//パーティクル
 			DamageParticle(info);
 		}
 	}
-	//�e�ɓ���������
+	//弾に当たったら
 	else if (info.object_->GetObjName() == "bullet")
 	{
-		//�e��������{�l��������
+		//弾を撃った本人だったら
 		if (this == dynamic_cast<Bullet*>(info.object_)->GetOwner())
 		{
 			return;
 		}
 
-		//����hp���_���[�W�󂯂ē|���
+		//今のhp分ダメージ受けて倒れる
 		Damaged(hp_, [=]() {IObject::SetIsAlive(false); });
 
-		//�m�b�N�o�b�N
+		//ノックバック
 		KnockBack(info);
 
-		//�p�[�e�B�N��
+		//パーティクル
 		DamageParticle(info, { 0.5f,1.0f,0.5f }, 400);
 	}
-	//�e�ɓ���������
+	//銃に当たったら
 	else if (info.object_->GetObjName() == "gun")
 	{
 		Gun* gun = dynamic_cast<Gun*>(info.object_);
@@ -350,42 +364,42 @@ void Enemy::OnCollision(const CollisionInfo& info)
 			return;
 		}
 
-		//�������Ă���Ƃ��̂�
+		//投げられているときのみ
 		if (gun->GetIsThrowing() && gun->GetFallVelocity().GetLength() != 0)
 		{
 			//
 			KnockBack(info);
 		}
-		//�����Ă�������E��
+		//おいてあったら拾う
 		else
 		{
 			PickUpWeapon(gun);
 		}
 	}
-	//�G���m�œ���������߂荞�܂Ȃ��悤�ɂ���
+	//敵同士で当たったらめり込まないようにする
 	else if (info.object_->GetObjName().find("enemy") != std::string::npos)
 	{
-		//����
+		//長さ
 		float length = (info.object_->GetScale().x + IObject::GetScale().x);
-		//�����̃x�N�g��
+		//距離のベクトル
 		Vec3 distanceVec = IObject::GetTrans() - info.object_->GetTrans();
-		//��
+		//仮
 		distanceVec.y = 0;
 		distanceVec.Normalized();
-		//�ʒu�Z�b�g(���a�{���a�̒�����x�N�g���̕�����g���đ���)
+		//位置セット(半径＋半径の長さをベクトルの方向を使って足す)
 		IObject::SetTrans(info.object_->GetTrans() + distanceVec * length * 1.001f);
 
-		//���͓����Ȃ��悤�ɂ���
-		IObject::SetVelocity({ IObject::GetVelocity().x,0,GetVelocity().z });
+		//ｙは動かないようにする
+		IObject::SetVelocity({ IObject::GetVelocity().x,0,IObject::GetVelocity().z });
 		info.object_->SetVelocity({ info.object_->GetVelocity().x,0,info.object_->GetVelocity().z });
-		//��̃x�N�g���̍��v�̒���
+		//二つのベクトルの合計の長さ
 		float addLength = GetVelocity().GetLength() + info.object_->GetVelocity().GetLength();
-		//�����̃X�s�[�h�̃x�N�g���̒����̊����i���v�̒����Ŋ���i0�`1.0f�j�j
+		//自分のスピードのベクトルの長さの割合（合計の長さで割る（0～1.0f））
 		float myLengthRatio = GetVelocity().GetLength() / addLength;
 
-		//�Փˌ�̎����̃X�s�[�h�x�N�g����[���݂̃X�s�[�h�x�N�g��]+[���肩�玩���ւ̃x�N�g��]*[����̒����̊���]
+		//衝突後の自分のスピードベクトルは[現在のスピードベクトル]+[相手から自分へのベクトル]*[相手の長さの割合]
 		SetVelocity((GetVelocity() + distanceVec.GetNormalized() * addLength * (1.0f - myLengthRatio)) * 0.63f);
-		//�Փˌ�̑���̃X�s�[�h�x�N�g����[���݂̃X�s�[�h�x�N�g��]+[���̃C���X�^���X���瑊��ւ̃x�N�g��]*[���̃C���X�^���X�̒����̊���]
+		//衝突後の相手のスピードベクトルは[現在のスピードベクトル]+[このインスタンスから相手へのベクトル]*[このインスタンスの長さの割合]
 		info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * 0.63f);
 	}
 }

@@ -21,7 +21,7 @@ private:
 	DirectX::XMMATRIX cameraMatrix_;
 	//シェイク
 	Shake shake_;
-	
+
 	//追従
 	bool isFollow_ = false;
 	//追従用

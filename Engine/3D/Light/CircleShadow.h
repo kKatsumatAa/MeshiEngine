@@ -1,23 +1,23 @@
-#pragma once
+ï»¿#pragma once
 #include<DirectXMath.h>
 
 
 /// <summary>
-/// ŠÛ‰e
+/// ä¸¸å½±
 /// </summary>
 class CircleShadow
 {
-private://ƒGƒCƒŠƒAƒX
-		//DirectX::‚ğÈ—ª
+private://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+		//DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-public://ƒTƒuƒNƒ‰ƒX
+public://ã‚µãƒ–ã‚¯ãƒ©ã‚¹
 
-	//’è”ƒoƒbƒtƒ@—pƒf[ƒ^\‘¢‘Ì
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ç”¨ãƒ‡ãƒ¼ã‚¿æ§‹é€ ä½“
 	struct ConstBufferData
 	{
 		XMVECTOR dir;
@@ -31,7 +31,7 @@ public://ƒTƒuƒNƒ‰ƒX
 	};
 
 
-public://ƒƒ“ƒoŠÖ”
+public://ãƒ¡ãƒ³ãƒé–¢æ•°
 	inline void SetDir(const XMVECTOR& dir) { dir_ = DirectX::XMVector3Normalize(dir); }
 	inline const XMVECTOR& GetDir() { return dir_; }
 
@@ -59,18 +59,18 @@ public://ƒƒ“ƒoŠÖ”
 		return active_;
 	};
 
-private://ƒƒ“ƒo•Ï”
-	//•ûŒüi’PˆÊƒxƒNƒgƒ‹j
+private://ãƒ¡ãƒ³ãƒå¤‰æ•°
+	//æ–¹å‘ï¼ˆå˜ä½ãƒ™ã‚¯ãƒˆãƒ«ï¼‰
 	XMVECTOR dir_ = { 1.0f,0,0 };
-	//ƒLƒƒƒXƒ^[‚Æƒ‰ƒCƒg‚Ì‹——£
+	//ã‚­ãƒ£ã‚¹ã‚¿ãƒ¼ã¨ãƒ©ã‚¤ãƒˆã®è·é›¢
 	float distanceCasterLight_ = 100.0f;
-	//ƒLƒƒƒXƒ^[À•Wiƒ[ƒ‹ƒhÀ•WŒnj
+	//ã‚­ãƒ£ã‚¹ã‚¿ãƒ¼åº§æ¨™ï¼ˆãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ï¼‰
 	XMFLOAT3 casterPos_ = { 0,0,0 };
-	//‹——£Œ¸ŠŒW”
+	//è·é›¢æ¸›è¡°ä¿‚æ•°
 	XMFLOAT3 atten_ = { 0.5f,0.6f,0.0f };
-	//Œ¸ŠŠp“x
+	//æ¸›è¡°è§’åº¦
 	XMFLOAT2 factorAngleCos_ = { 0.2f,0.5f };
-	//—LŒøƒtƒ‰ƒO
+	//æœ‰åŠ¹ãƒ•ãƒ©ã‚°
 	bool active_ = false;
 };
 

@@ -6,16 +6,16 @@ void ConstBuffTransform::Initialize()
 {
 	HRESULT result;
 
-	//ƒoƒbƒtƒ@ì¬
+	//ãƒãƒƒãƒ•ã‚¡ä½œæˆ
 	{
-		//ƒq[ƒvÝ’è
+		//ãƒ’ãƒ¼ãƒ—è¨­å®š
 		D3D12_HEAP_PROPERTIES cbHeapProp{};
-		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPU‚Ö‚Ì“]‘——p
-		//ƒŠƒ\[ƒXÝ’è
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUã¸ã®è»¢é€ç”¨
+		//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 		D3D12_RESOURCE_DESC cbResourceDesc{};
 
 		cbResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		cbResourceDesc.Width = (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff/*256ƒoƒCƒgƒAƒ‰ƒCƒƒ“ƒg*/;
+		cbResourceDesc.Width = (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff/*256ãƒã‚¤ãƒˆã‚¢ãƒ©ã‚¤ãƒ¡ãƒ³ãƒˆ*/;
 		cbResourceDesc.Height = 1;
 		cbResourceDesc.DepthOrArraySize = 1;
 		cbResourceDesc.MipLevels = 1;
@@ -23,22 +23,22 @@ void ConstBuffTransform::Initialize()
 		cbResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 		result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
-			&cbHeapProp,//ƒq[ƒvÝ’è
+			&cbHeapProp,//ãƒ’ãƒ¼ãƒ—è¨­å®š
 			D3D12_HEAP_FLAG_NONE,
-			&cbResourceDesc,//ƒŠƒ\[ƒXÝ’è
+			&cbResourceDesc,//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
 			IID_PPV_ARGS(&constBuffTransform_));
 		assert(SUCCEEDED(result));
 
 	}
-	//’è”ƒoƒbƒtƒ@‚Ìƒ}ƒbƒsƒ“ƒO
-	result = constBuffTransform_->Map(0, nullptr, (void**)&constMapTransform_);//ƒ}ƒbƒsƒ“ƒO
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ãƒžãƒƒãƒ”ãƒ³ã‚°
+	result = constBuffTransform_->Map(0, nullptr, (void**)&constMapTransform_);//ãƒžãƒƒãƒ”ãƒ³ã‚°
 	assert(SUCCEEDED(result));
 }
 
 void ConstBuffTransform::DrawCommand(int32_t index)
 {
-	//’è”ƒoƒbƒtƒ@ƒrƒ…[(CBV)‚ÌÝ’èƒRƒ}ƒ“ƒh
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼(CBV)ã®è¨­å®šã‚³ãƒžãƒ³ãƒ‰
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(index, constBuffTransform_->GetGPUVirtualAddress());
 }

@@ -8,33 +8,33 @@
 class CameraManager
 {
 private:
-	//ƒfƒoƒbƒO—p
+	//ãƒ‡ãƒãƒƒã‚°ç”¨
 	WorldMat debugWorldMat_;
 	Vec3 cameraPos_ = { 0,0,-100 };
 	bool isDebugCamera_ = false;
 
-	//ƒJƒƒ‰‚Æ–¼‘O‚ğƒZƒbƒg‚Å‚Á‚Ä‚¨‚­
+	//ã‚«ãƒ¡ãƒ©ã¨åå‰ã‚’ã‚»ãƒƒãƒˆã§æŒã£ã¦ãŠã
 	std::map< std::string, std::unique_ptr<Camera>> cameraAndNames_;
-	//2D—p‚ÌƒJƒƒ‰
+	//2Dç”¨ã®ã‚«ãƒ¡ãƒ©
 	std::map< std::string, std::unique_ptr<Camera2D>> camera2DAndNames_;
-	//ƒJƒƒ‰‚ğ‡‚ÉØ‚è‘Ö‚¦‚é‚½‚ß‚ÌƒCƒeƒŒ[ƒ^
+	//ã‚«ãƒ¡ãƒ©ã‚’é †ã«åˆ‡ã‚Šæ›¿ãˆã‚‹ãŸã‚ã®ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
 	std::map< std::string, std::unique_ptr<Camera>>::iterator cameraItr_;
 	std::map< std::string, std::unique_ptr<Camera2D>>::iterator camera2DItr_;
 
 public:
-	//‚±‚±‚É‚¢‚ë‚ñ‚ÈƒJƒƒ‰‚Ìƒ|ƒCƒ“ƒ^‚ğ“ü‚ê‚ÄA•`‰æ‚Ég‚¤
+	//ã“ã“ã«ã„ã‚ã‚“ãªã‚«ãƒ¡ãƒ©ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å…¥ã‚Œã¦ã€æç”»æ™‚ã«ä½¿ã†
 	Camera* usingCamera_;
 	Camera2D* usingCamera2D_;
 
-	//‰‰o‚È‚Ç‚ªI‚í‚Á‚½Œã‚É‚»‚ÌƒJƒƒ‰‚ÉØ‚è‘Ö‚¦‚é‚½‚ß‚Ìƒ|ƒCƒ“ƒ^
+	//æ¼”å‡ºãªã©ãŒçµ‚ã‚ã£ãŸå¾Œã«ãã®ã‚«ãƒ¡ãƒ©ã«åˆ‡ã‚Šæ›¿ãˆã‚‹ãŸã‚ã®ãƒã‚¤ãƒ³ã‚¿
 	Camera* afterCamera_ = nullptr;
 
-private://ŠÖ”
+private://é–¢æ•°
 	CameraManager();
 	~CameraManager();
 
 private:
-	//ƒJƒƒ‰‚ğ‡‚ÉØ‚è‘Ö‚¦‚é
+	//ã‚«ãƒ¡ãƒ©ã‚’é †ã«åˆ‡ã‚Šæ›¿ãˆã‚‹
 	void ChangeCamera();
 
 public:
@@ -50,18 +50,18 @@ public:
 	void ImguiUpdate();
 
 public:
-	//ƒJƒƒ‰‚ğV‚½‚É’Ç‰Á‚·‚é
+	//ã‚«ãƒ¡ãƒ©ã‚’æ–°ãŸã«è¿½åŠ ã™ã‚‹
 	void AddCamera(const std::string& cameraName);
 	void AddCamera2D(const std::string& cameraName);
-	//–¼‘O‚ğw’è‚µ‚ÄƒJƒƒ‰‚ğæ“¾
+	//åå‰ã‚’æŒ‡å®šã—ã¦ã‚«ãƒ¡ãƒ©ã‚’å–å¾—
 	Camera* GetCamera(const std::string& cameraName);
-	//usingCamera‚ÉƒZƒbƒg‚³‚ê‚Ä‚éƒJƒƒ‰æ“¾
+	//usingCameraã«ã‚»ãƒƒãƒˆã•ã‚Œã¦ã‚‹ã‚«ãƒ¡ãƒ©å–å¾—
 	Camera* GetCamera();
-	//–¼‘O‚ğw’è‚µ‚ÄƒJƒƒ‰‚ğæ“¾
+	//åå‰ã‚’æŒ‡å®šã—ã¦ã‚«ãƒ¡ãƒ©ã‚’å–å¾—
 	Camera2D* GetCamera2D(const std::string& cameraName);
-	//usingCamera‚ÉƒZƒbƒg‚³‚ê‚Ä‚éƒJƒƒ‰æ“¾
+	//usingCameraã«ã‚»ãƒƒãƒˆã•ã‚Œã¦ã‚‹ã‚«ãƒ¡ãƒ©å–å¾—
 	Camera2D* GetCamera2D();
-	//ƒJƒƒ‰‚ğg—p‚µ‚Ä‚¢‚éƒJƒƒ‰‚ÉƒZƒbƒg
+	//ã‚«ãƒ¡ãƒ©ã‚’ä½¿ç”¨ã—ã¦ã„ã‚‹ã‚«ãƒ¡ãƒ©ã«ã‚»ãƒƒãƒˆ
 	void SetUsingCamera(const std::string& cameraName);
 	void SetUsingCamera2D(const std::string& cameraName);
 

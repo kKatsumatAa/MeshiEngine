@@ -20,6 +20,6 @@ public:
 
 	//
 	ProjectionMat();
-	ProjectionMat(float nearPos, float farPos, float aspectX, float aspectY,float fovY);
+	ProjectionMat(float nearPos, float farPos, float aspectX, float aspectY, float fovY);
 	void SetMat();
 };

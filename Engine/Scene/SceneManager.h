@@ -21,19 +21,19 @@ class Player;
 class SceneManager final
 {
 private:
-	//ƒV[ƒ“‚Ìó‘Ôis“®j
+	//ã‚·ãƒ¼ãƒ³ã®çŠ¶æ…‹ï¼ˆè¡Œå‹•ï¼‰
 	std::unique_ptr<SceneState> state_;
 	std::unique_ptr<SceneState> nextScene_;
-	//ƒV[ƒ“ƒtƒ@ƒNƒgƒŠ[iƒ|ƒCƒ“ƒ^‚ğØ‚è‚éj
+	//ã‚·ãƒ¼ãƒ³ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ï¼ˆãƒã‚¤ãƒ³ã‚¿ã‚’å€Ÿã‚Šã‚‹ï¼‰
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 private:
 	uint64_t texhandle_[10];
 
-	//”š‚Ì‰æ‘œ
+	//æ•°å­—ã®ç”»åƒ
 	uint64_t textureNumHundle_[12];
 
-	//ƒ‰ƒCƒg
+	//ãƒ©ã‚¤ãƒˆ
 	std::unique_ptr<LightManager> lightManager_;
 
 	float ambientColor_[3] = { 1,1,1 };
@@ -42,7 +42,7 @@ private:
 
 	std::unique_ptr<Camera> camera_;
 
-	//ƒQ[ƒ€‚ªI—¹‚µ‚½‚©
+	//ã‚²ãƒ¼ãƒ ãŒçµ‚äº†ã—ãŸã‹
 	bool isEscapingGame_ = false;
 
 private:
@@ -51,19 +51,19 @@ private:
 
 public:
 	static SceneManager& GetInstance() { static SceneManager sInst; return sInst; }
-	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ–³Œø
+	//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’ç„¡åŠ¹
 	SceneManager(const SceneManager& obj) = delete;
-	//‘ã“ü‰‰Zq‚à
+	//ä»£å…¥æ¼”ç®—å­ã‚‚
 	SceneManager& operator=(const SceneManager& obj) = delete;
 
-	//ƒV[ƒ“ƒXƒe[ƒg•ÏX
+	//ã‚·ãƒ¼ãƒ³ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´
 	void ChangeScene();
 
 public:
-	//Ÿ‚ÌƒV[ƒ“ƒZƒbƒg
+	//æ¬¡ã®ã‚·ãƒ¼ãƒ³ã‚»ãƒƒãƒˆ
 	void SetNextScene(std::string sceneName);
 
-	//ƒV[ƒ“ƒtƒ@ƒNƒgƒŠ[‚ÌƒZƒbƒ^[
+	//ã‚·ãƒ¼ãƒ³ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ã®ã‚»ãƒƒã‚¿ãƒ¼
 	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
 
 	void Initialize();

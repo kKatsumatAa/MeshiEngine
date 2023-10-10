@@ -1,4 +1,4 @@
-#include "PlayerHandManager.h"
+ï»¿#include "PlayerHandManager.h"
 #include "Player.h"
 #include "CollisionManager.h"
 #include "MouseInput.h"
@@ -14,10 +14,10 @@ void PlayerHandManager::Initialize(Player* player)
 {
 	player_ = player;
 
-	//ˆÊ’u(ƒ[ƒJƒ‹À•W‚ğƒZƒbƒg)
+	//ä½ç½®(ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã‚’ã‚»ãƒƒãƒˆ)
 	Vec3 playerPos = player->GetTrans();
 	Vec3 distance = { 1.0f,1.0f,1.0f };
-	//¶¬i‰¼j
+	//ç”Ÿæˆï¼ˆä»®ï¼‰
 	ObjectManager::GetInstance().AddObject(OBJ_GROUP_NAME_,
 		std::move(PlayerHand::Create(player, { -distance.x * 2.0f,0 - distance.y,distance.z }, true, HAND_R_NAME_)));
 	ObjectManager::GetInstance().AddObject(OBJ_GROUP_NAME_,
@@ -34,53 +34,53 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 		return;
 	}
 
-	//“–‚½‚Á‚½‘Šè‚ª“G
+	//å½“ãŸã£ãŸç›¸æ‰‹ãŒæ•µ
 	if (info.collider->GetObject3d()->GetObjName().find("enemy") != std::string::npos && player_)
 	{
-		//Õ“Ë“_‚Ü‚Å‚Ì‹——£
+		//è¡çªç‚¹ã¾ã§ã®è·é›¢
 		Vec3 lengthV = Vec3(info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2]) - player_->GetTrans();
 		hand->SetInterLength(lengthV.GetLength());
 
-		//ƒXƒe[ƒg•ÏX
+		//ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´
 		hand->ChangeAttackState(std::make_unique<PlayerAttackStateDoing>());
 
-		//ƒXƒe[ƒg“à‚ÅŒÄ‚Ño‚·
+		//ã‚¹ãƒ†ãƒ¼ãƒˆå†…ã§å‘¼ã³å‡ºã™
 		std::function<void(PlayerHand*)>f = [=](PlayerHand* playerHand) {
-			//“G‚ªe‚Å“|‚³‚ê‚Ä‚é‰Â”\«‚ª‚ ‚é‚Ì‚Å‚à‚¤ˆê‰ñ’²‚×‚é
-			//ƒŒƒC‚ÉƒvƒŒƒCƒ„[‚Ì³–ÊƒxƒNƒgƒ‹“ü‚ê‚é
+			//æ•µãŒéŠƒã§å€’ã•ã‚Œã¦ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ã®ã§ã‚‚ã†ä¸€å›èª¿ã¹ã‚‹
+			//ãƒ¬ã‚¤ã«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«å…¥ã‚Œã‚‹
 			Ray ray;
 			ray.dir = { player_->GetFrontVec().x,player_->GetFrontVec().y,player_->GetFrontVec().z };
 			ray.start = { player_->GetTrans().x,player_->GetTrans().y,player_->GetTrans().z };
 
-			//³–ÊƒxƒNƒgƒ‹‚É‰½‚©‚ ‚é‚©
+			//æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«ã«ä½•ã‹ã‚ã‚‹ã‹
 			RaycastHit info;
 			uint16_t attribute = COLLISION_ATTR_ENEMYS | COLLISION_ATTR_ITEMS;
 			bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, attribute, &info, player_->GetAttackLength());
 
 			if (isRayHit)
 			{
-				//“–‚½‚è”»’èŒÄ‚Ño‚µˆ—‚ÅAƒvƒŒƒCƒ„[‚ÌˆÊ’u“™‚ğg‚¢A“G‚ÉUŒ‚”í’e‚Ìˆ—‚ğ‚³‚¹‚é‚½‚ß
+				//å½“ãŸã‚Šåˆ¤å®šå‘¼ã³å‡ºã—å‡¦ç†ã§ã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ç­‰ã‚’ä½¿ã„ã€æ•µã«æ”»æ’ƒè¢«å¼¾æ™‚ã®å‡¦ç†ã‚’ã•ã›ã‚‹ãŸã‚
 				c_ = CollisionInfo(playerHand, playerHand->GetCollider(), info.inter);
 				/*c_.object_->SetObjName("playerAttack");*/
 				info.collider->OnCollision(c_);
 				/*c_.object_->SetObjName("player");*/
 
-				//ƒJƒƒ‰ƒVƒFƒCƒN
+				//ã‚«ãƒ¡ãƒ©ã‚·ã‚§ã‚¤ã‚¯
 				CameraManager::GetInstance().GetCamera("playerCamera")->CameraShake(5, 1.05f);
 			}
 		};
 
-		//“G‚Ì”í’eˆ—ƒZƒbƒg
+		//æ•µã®è¢«å¼¾å‡¦ç†ã‚»ãƒƒãƒˆ
 		hand->GetAttackState()->SetEnemyDamageFunc(f);
 
-		//ƒQ[ƒ€‚ÌƒXƒs[ƒh(‰¼)
+		//ã‚²ãƒ¼ãƒ ã®ã‚¹ãƒ”ãƒ¼ãƒ‰(ä»®)
 		GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
 	}
 }
 
 bool PlayerHandManager::GetIsUseWitchHand()
 {
-	//è‚Ì‚Ç‚¿‚ç‚©‚ªg‚¦‚½‚çUŒ‚
+	//æ‰‹ã®ã©ã¡ã‚‰ã‹ãŒä½¿ãˆãŸã‚‰æ”»æ’ƒ
 	if (!handR_->GetIsAttacking() || !handL_->GetIsAttacking())
 	{
 		return true;
@@ -105,10 +105,10 @@ PlayerHand* PlayerHandManager::GetWitchUseHand()
 
 void PlayerHandManager::Attack(RaycastHit info)
 {
-	//è‚Ì‚Ç‚¿‚ç‚©‚ªg‚¦‚½‚çUŒ‚
+	//æ‰‹ã®ã©ã¡ã‚‰ã‹ãŒä½¿ãˆãŸã‚‰æ”»æ’ƒ
 	if (GetIsUseWitchHand())
 	{
-		//UŒ‚
+		//æ”»æ’ƒ
 		HandAttack(GetWitchUseHand(), info);
 	}
 }

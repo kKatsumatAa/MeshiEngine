@@ -1,4 +1,4 @@
-#include "StageManager.h"
+ï»¿#include "StageManager.h"
 #include "StageState.h"
 
 
@@ -10,42 +10,42 @@ StageManager& StageManager::GetInstance()
 
 void StageManager::LoadStage(int32_t stageIndex)
 {
-	//ƒvƒŒƒCƒ„[ui
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ui
 	PlayerUI::GetInstance().Initialize();
 
 	//json
 	JsonLevelLoader::Getinstance().Initialize();
-	//ƒŒƒxƒ‹ƒ}ƒl[ƒWƒƒ[
+	//ãƒ¬ãƒ™ãƒ«ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 	LevelManager::GetInstance().StaticInitialize();
 	LevelManager::GetInstance().LoadLevelData(stageIndex);
 
-	//ƒ`ƒ…[ƒgƒŠƒAƒ‹‚à“Ç‚İ‚İ
+	//ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚‚èª­ã¿è¾¼ã¿
 	Tutorial::GetInstance().LoadTutorialData(stageIndex);
 
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	StageManager::Initialize();
 }
 
 void StageManager::Initialize()
 {
-	//ƒJƒƒ‰‚ğƒZƒbƒg
+	//ã‚«ãƒ¡ãƒ©ã‚’ã‚»ãƒƒãƒˆ
 	CameraManager::GetInstance().SetUsingCamera("playerCamera");
-	//ƒQ[ƒ€ƒXƒs[ƒh
+	//ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰
 	GameVelocityManager::GetInstance().Initialize();
-	//’e
+	//å¼¾
 	BulletManager::GetInstance().Initialize();
 
-	//“Gƒ}ƒl[ƒWƒƒ[
+	//æ•µãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 	EnemyManager::GetInstance().Initialize();
 
-	//ƒtƒ‰ƒO
+	//ãƒ•ãƒ©ã‚°
 	isClear_ = false;
 	isGameOver_ = false;
 
 	//
 	ChangeState("BEGINING");
 
-	//XV
+	//æ›´æ–°
 	Update();
 }
 

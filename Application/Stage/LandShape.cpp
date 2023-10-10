@@ -4,13 +4,13 @@
 
 std::unique_ptr<LandShape> LandShape::Create(std::unique_ptr<WorldMat> worldMat, IModel* model)
 {
-	// ƒIƒuƒWƒFƒNƒg‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬
+	// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆ
 	std::unique_ptr<LandShape> instance = std::make_unique<LandShape>();
 	if (instance == nullptr) {
 		return nullptr;
 	}
 
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	if (!instance->Initialize(std::move(worldMat), model)) {
 		instance.reset();
 		assert(0);
@@ -26,12 +26,12 @@ bool LandShape::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 		return false;
 	}
 
-	//ƒfƒBƒ]ƒ‹ƒu‚Ì‰æ‘œ
+	//ãƒ‡ã‚£ã‚¾ãƒ«ãƒ–ã®ç”»åƒ
 	SetisDissolve(true);
 	SetDissolveT(0);
 	SetDissolveTexHandle(TextureManager::GetInstance().LoadGraph("dissolveMask.png"));
 
-	//ƒm[ƒ}ƒ‹ƒ}ƒbƒv
+	//ãƒãƒ¼ãƒãƒ«ãƒãƒƒãƒ—
 	SetIsNormalMap(true);
 	SetNormalMapTexHandle(TextureManager::GetInstance().LoadGraph("landShapeNormal.jpg"));
 

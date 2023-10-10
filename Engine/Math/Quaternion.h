@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include"M4.h"
 
-//ƒNƒH[ƒ^ƒjƒIƒ“
+//ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³
 class Quaternion
 {
-public://•Ï”
+public://å¤‰æ•°
 	//v
 	float x;
 	float y;
@@ -13,49 +13,49 @@ public://•Ï”
 	float w;
 
 
-public://ŠÖ”
+public://é–¢æ•°
 	Quaternion()
 		: x(0), y(0), z(0), w(0) {};
 	Quaternion(float x, float y, float z, float w)
 		: x(x), y(y), z(z), w(w) {};
 
 
-	//Ï
+	//ç©
 	Quaternion GetMultiply(const Quaternion& rhs) const;
-	//‹¤–ğƒNƒH[ƒ^ƒjƒIƒ“‚ğ•Ô‚·
+	//å…±å½¹ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚’è¿”ã™
 	Quaternion GetConjugate() const;
-	//ƒNƒH[ƒ^ƒjƒIƒ“‚ÌNorm‚ğ•Ô‚·
+	//ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã®Normã‚’è¿”ã™
 	float GetLength() const;
-	//³‹K‰»‚µ‚½ƒNƒH[ƒ^ƒjƒIƒ“‚ğ•Ô‚·
+	//æ­£è¦åŒ–ã—ãŸã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚’è¿”ã™
 	Quaternion GetNormalize() const;
-	//‹tƒNƒH[ƒ^ƒjƒIƒ“‚ğ•Ô‚·
+	//é€†ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚’è¿”ã™
 	Quaternion GetInverse() const;
 
 
-	//ƒxƒNƒgƒ‹‚ğƒNƒH[ƒ^ƒjƒIƒ“‚Å‰ñ“]‚³‚¹‚½Œ‹‰Ê‚ÌƒxƒNƒgƒ‹‚ğ‹‚ß‚é
+	//ãƒ™ã‚¯ãƒˆãƒ«ã‚’ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã§å›è»¢ã•ã›ãŸçµæœã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ã‚‹
 	Vec3 GetRotateVector(const Vec3& vector) const;
-	//ƒNƒH[ƒ^ƒjƒIƒ“‚©‚ç‰ñ“]s—ñ‚ğ‹‚ß‚é
+	//ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‹ã‚‰å›è»¢è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	M4 MakeRotateMatrix() const;
 
-	//“àÏ
+	//å†…ç©
 	float DotQuaternion(const Quaternion& rhs)const;
 
-	//x,y,z‚ğƒZƒbƒg
+	//x,y,zã‚’ã‚»ãƒƒãƒˆ
 	void SetVec(const Vec3& vec);
 
 
-public://Ã“Iƒƒ“ƒoŠÖ”
-	//’PˆÊƒNƒH[ƒ^ƒjƒIƒ“‚ğ¶¬
+public://é™çš„ãƒ¡ãƒ³ãƒé–¢æ•°
+	//å˜ä½ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚’ç”Ÿæˆ
 	static Quaternion GetIdentityQuaternion();
 
-	//”CˆÓ²‰ñ“]‚ğ•\‚·ƒNƒH[ƒ^ƒjƒIƒ“‚ğ•Ô‚·
+	//ä»»æ„è»¸å›è»¢ã‚’è¡¨ã™ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚’è¿”ã™
 	static Quaternion MakeAxisAngle(const Vec3& axis, float angle);
 
-	//u‚©‚çv‚Ö‚Ì‰ñ“]‚ğ¶¬
+	//uã‹ã‚‰vã¸ã®å›è»¢ã‚’ç”Ÿæˆ
 	static Quaternion DirectionToDirection(const Vec3& u, const Vec3& v, float dotRimitMin = -0.5f);
 
 
-public://ƒIƒoƒ‰‰Zq
+public://ã‚ªãƒãƒ­æ¼”ç®—å­
 	Quaternion  operator+();
 	Quaternion& operator+=(const Quaternion& other);
 	Quaternion  operator-()const;
@@ -71,7 +71,7 @@ public://ƒIƒoƒ‰‰Zq
 
 
 
-//“ñ€‰‰ZqƒI[ƒo[ƒ[ƒh
+//äºŒé …æ¼”ç®—å­ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
 const Quaternion operator +(const Quaternion& q1, const Quaternion& q2);
 const Quaternion operator -(const Quaternion& q1, const Quaternion& q2);
 const Quaternion operator *(const Quaternion& v, float s);
@@ -82,7 +82,7 @@ Quaternion  operator*(const Quaternion& q1, const Quaternion& q2);
 
 
 
-//‹…–ÊüŒ`•âŠ®
+//çƒé¢ç·šå½¢è£œå®Œ
 Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
 Quaternion SlerpUseVec3(const Vec3& v0, const Vec3& v1, float t);
 

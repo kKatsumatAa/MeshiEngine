@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "BaseCollider.h"
 #include "CollisionPrimitive.h"
@@ -6,12 +6,12 @@
 #include <DirectXMath.h>
 
 /// <summary>
-/// 円衝突判定オブジェクト
+/// 蜀・｡晉ｪ∝愛螳壹が繝悶ず繧ｧ繧ｯ繝・
 /// </summary>
 class CircleCollider : public BaseCollider, public Circle
 {
-private: // エイリアス
-	// DirectX::を省略
+private: // 繧ｨ繧､繝ｪ繧｢繧ｹ
+	// DirectX::繧堤怐逡･
 	using XMVECTOR = DirectX::XMVECTOR;
 public:
 	CircleCollider(const Vec2 center = { 0,0 }, float radius = 1.0f)
@@ -19,14 +19,14 @@ public:
 		Circle::center = center;
 		Circle::iRadius = radius;
 
-		// 球形状をセット
+		// 逅・ｽ｢迥ｶ繧偵そ繝・ヨ
 		shapeType_ = COLLISIONSHAPE_CIRCLE;
 
 		is2D_ = true;
 	}
 
 	/// <summary>
-	/// 更新
+	/// 譖ｴ譁ｰ
 	/// </summary>
 	void Update() override;
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"SceneManager.h"
 #include"DebugText.h"
 #include"FbxLoader.h"
@@ -9,15 +9,15 @@
 #include"ObjectFBX.h"
 
 
-//ƒQ[ƒ€‘S‘Ìi‹¤’Êˆ—j
+//ã‚²ãƒ¼ãƒ å…¨ä½“ï¼ˆå…±é€šå‡¦ç†ï¼‰
 class Framework
 {
 protected:
 	SceneManager* sceneM_ = nullptr;
 
-	MSG msg_{};	//ƒƒbƒZ[ƒW
+	MSG msg_{};	//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 
-	//ƒV[ƒ“ƒtƒ@ƒNƒgƒŠ[
+	//ã‚·ãƒ¼ãƒ³ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼
 	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 
 	std::unique_ptr <ImGuiManager> imguiM_;
@@ -25,23 +25,23 @@ protected:
 	bool isEndGame_ = false;
 
 public:
-	//‰¼‘zƒfƒXƒgƒ‰ƒNƒ^(”h¶ƒNƒ‰ƒX‚ÌƒfƒXƒgƒ‰ƒNƒ^‚ğŒÄ‚×‚é‚æ‚¤‚É)
+	//ä»®æƒ³ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿(æ´¾ç”Ÿã‚¯ãƒ©ã‚¹ã®ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’å‘¼ã¹ã‚‹ã‚ˆã†ã«)
 	virtual ~Framework() = default;
 
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	virtual void Initialize();
 
-	//I—¹
+	//çµ‚äº†
 	virtual void Finalize();
 
-	//–ˆƒtƒŒ[ƒ€XV
+	//æ¯ãƒ•ãƒ¬ãƒ¼ãƒ æ›´æ–°
 	virtual void Update();
 
-	//•`‰æ(Œp³‚µ‚È‚¢‚ÆƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬o—ˆ‚È‚­‚·‚é‚½‚ß)
+	//æç”»(ç¶™æ‰¿ã—ãªã„ã¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆå‡ºæ¥ãªãã™ã‚‹ãŸã‚)
 	virtual void Draw() = 0;
 
 public:
-	//Às
+	//å®Ÿè¡Œ
 	void Run();
 };
 

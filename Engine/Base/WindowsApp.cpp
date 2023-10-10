@@ -1,4 +1,4 @@
-#include "WindowsApp.h"
+ï»¿#include "WindowsApp.h"
 #include<imgui_impl_win32.h>
 
 #pragma comment(lib,"winmm.lib")
@@ -11,67 +11,67 @@ const float WindowsApp::WINDOW_WIDTH_ = 1280.0f;
 const float WindowsApp::WINDOW_HEIGHT_ = 720.0f;
 
 
-// imguiê—p‚ÌƒEƒBƒ“ƒhƒEƒvƒƒV[ƒWƒƒ
+// imguiå°‚ç”¨ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam,
 	LPARAM lParam);
 
 
 LRESULT WindowsApp::WindowProc(HWND hwnd, uint32_t msg, WPARAM wparam, LPARAM lparam) {
 	
-	//imgui—p‚ÌƒEƒBƒ“ƒhƒEƒvƒƒV[ƒWƒƒŒÄ‚Ño‚µ
+	//imguiç”¨ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£å‘¼ã³å‡ºã—
 	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam))
 	{
 		return true;
 	}
 	
-	//ƒƒbƒZ[ƒW‚É‰ž‚¶‚ÄƒQ[ƒ€ŒÅ—L‚Ìˆ—‚ðs‚¤
+	//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¿œã˜ã¦ã‚²ãƒ¼ãƒ å›ºæœ‰ã®å‡¦ç†ã‚’è¡Œã†
 	switch (msg) {
-		//ƒEƒBƒ“ƒhƒE‚ª”jŠü‚³‚ê‚½
+		//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒç ´æ£„ã•ã‚ŒãŸ
 	case WM_DESTROY:
-		//OS‚É‘Î‚µ‚ÄAƒAƒvƒŠ‚ÌC—¹‚ð“`‚¦‚é
+		//OSã«å¯¾ã—ã¦ã€ã‚¢ãƒ—ãƒªã®ä¿®äº†ã‚’ä¼ãˆã‚‹
 		PostQuitMessage(0);
 		return 0;
 	}
 
-	//•W€‚ÌƒƒbƒZ[ƒWˆ—‚ðs‚¤
+	//æ¨™æº–ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†ã‚’è¡Œã†
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
 WindowsApp::WindowsApp()
 {
-	//ƒVƒXƒeƒ€ƒ^ƒCƒ}[‚Ì•ª‰ð”\‚ðã‚°‚é
+	//ã‚·ã‚¹ãƒ†ãƒ ã‚¿ã‚¤ãƒžãƒ¼ã®åˆ†è§£èƒ½ã‚’ä¸Šã’ã‚‹
 	timeBeginPeriod(1);
 
-	//ƒEƒCƒ“ƒhƒEƒNƒ‰ƒX‚ÌÝ’è
+	//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹ã®è¨­å®š
 	wndclassEX_.cbSize = sizeof(WNDCLASSEX);
-	wndclassEX_.lpfnWndProc = (WNDPROC)WindowProc;		//ƒEƒCƒ“ƒhƒEƒvƒƒV[ƒWƒƒ‚ÌÝ’è
-	wndclassEX_.lpszClassName = L"DirectX";				//ƒEƒCƒ“ƒhƒEƒNƒ‰ƒX–¼
-	wndclassEX_.hInstance = GetModuleHandle(nullptr);		//ƒEƒCƒ“ƒhƒEƒnƒ“ƒhƒ‹
-	wndclassEX_.hCursor = LoadCursor(NULL, IDC_ARROW);	//ƒJ[ƒ\ƒ‹Žw’è
+	wndclassEX_.lpfnWndProc = (WNDPROC)WindowProc;		//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã®è¨­å®š
+	wndclassEX_.lpszClassName = L"DirectX";				//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹å
+	wndclassEX_.hInstance = GetModuleHandle(nullptr);		//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+	wndclassEX_.hCursor = LoadCursor(NULL, IDC_ARROW);	//ã‚«ãƒ¼ã‚½ãƒ«æŒ‡å®š
 
-	//ƒEƒCƒ“ƒhƒEƒNƒ‰ƒX‚ðOS‚É“o˜^‚·‚é
+	//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹ã‚’OSã«ç™»éŒ²ã™ã‚‹
 	RegisterClassEx(&wndclassEX_);
-	//ƒEƒCƒ“ƒhƒEƒTƒCƒY{X,Y,‰¡•,c•}
+	//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚º{X,Y,æ¨ªå¹…,ç¸¦å¹…}
 	RECT wrc = { 0,0,(long)WINDOW_WIDTH_,(long)WINDOW_HEIGHT_ };
-	//Ž©“®‚ÅƒTƒCƒY•â³
+	//è‡ªå‹•ã§ã‚µã‚¤ã‚ºè£œæ­£
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
-	//ƒEƒBƒ“ƒhƒEƒIƒuƒWƒFƒNƒg‚Ì¶¬
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿæˆ
 	hwnd_ = CreateWindow(
-		wndclassEX_.lpszClassName,		//ƒNƒ‰ƒX–¼
-		L"HYPERHOT",			//ƒ^ƒCƒgƒ‹ƒo[‚Ì•¶Žš
-		WS_OVERLAPPEDWINDOW,	//•W€“I‚ÈƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹
-		CW_USEDEFAULT,			//•\Ž¦XÀ•W(OS‚É”C‚¹‚é)
-		CW_USEDEFAULT,			//•\Ž¦YÀ•W(OS‚É”C‚¹‚é)
-		wrc.right - wrc.left,	//ƒEƒBƒ“ƒhƒE‰¡•
-		wrc.bottom - wrc.top,	//ƒEƒBƒ“ƒhƒEc•
-		nullptr,				//eƒEƒBƒ“ƒhƒEƒnƒ“ƒhƒ‹
-		nullptr,				//ƒƒjƒ…[ƒnƒ“ƒhƒ‹
-		wndclassEX_.hInstance,			//ŒÄ‚Ño‚µƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒnƒ“ƒhƒ‹
-		nullptr					//ƒIƒvƒVƒ‡ƒ“
+		wndclassEX_.lpszClassName,		//ã‚¯ãƒ©ã‚¹å
+		L"HYPERHOT",			//ã‚¿ã‚¤ãƒˆãƒ«ãƒãƒ¼ã®æ–‡å­—
+		WS_OVERLAPPEDWINDOW,	//æ¨™æº–çš„ãªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¹ã‚¿ã‚¤ãƒ«
+		CW_USEDEFAULT,			//è¡¨ç¤ºXåº§æ¨™(OSã«ä»»ã›ã‚‹)
+		CW_USEDEFAULT,			//è¡¨ç¤ºYåº§æ¨™(OSã«ä»»ã›ã‚‹)
+		wrc.right - wrc.left,	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦æ¨ªå¹…
+		wrc.bottom - wrc.top,	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ç¸¦å¹…
+		nullptr,				//è¦ªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+		nullptr,				//ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ³ãƒ‰ãƒ«
+		wndclassEX_.hInstance,			//å‘¼ã³å‡ºã—ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒãƒ³ãƒ‰ãƒ«
+		nullptr					//ã‚ªãƒ—ã‚·ãƒ§ãƒ³
 	);
 
-	//ƒEƒCƒ“ƒhƒE‚ð•\Ž¦ó‘Ô‚É‚·‚é
+	//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’è¡¨ç¤ºçŠ¶æ…‹ã«ã™ã‚‹
 	ShowWindow(hwnd_, SW_SHOW);
 
 	viewport_ = { 0, 0, WINDOW_WIDTH_, WINDOW_HEIGHT_, 0.0f, 1.0f };
@@ -79,19 +79,19 @@ WindowsApp::WindowsApp()
 
 WindowsApp& WindowsApp::GetInstance()
 {
-	static WindowsApp sInst; // private ‚ÈƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ðŒÄ‚Ño‚·B
+	static WindowsApp sInst; // private ãªã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’å‘¼ã³å‡ºã™ã€‚
 	return sInst;
 }
 
 bool WindowsApp::MessegeRoop(MSG msg)
 {
-	//ƒƒbƒZ[ƒW‚ª‚ ‚é‚©?
+	//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒã‚ã‚‹ã‹?
 	if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-		TranslateMessage(&msg);	//ƒL[“ü—ÍƒƒbƒZ[ƒW‚Ìˆ—
-		DispatchMessage(&msg);	//ƒvƒƒV[ƒWƒƒ‚ÉƒƒbƒZ[ƒW‚ð‘—‚é
+		TranslateMessage(&msg);	//ã‚­ãƒ¼å…¥åŠ›ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®å‡¦ç†
+		DispatchMessage(&msg);	//ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é€ã‚‹
 	}
 
-	//~ƒ{ƒ^ƒ“‚ÅI—¹
+	//Ã—ãƒœã‚¿ãƒ³ã§çµ‚äº†
 	if (msg.message == WM_QUIT) {
 		return true;
 	}

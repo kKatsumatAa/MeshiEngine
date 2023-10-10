@@ -1,15 +1,15 @@
-#pragma once
+ï»¿#pragma once
 #include"ModelObj.h"
 #include"ModelFBX.h"
 
 class ModelManager final
 {
 private:
-	//ƒ‚ƒfƒ‹–¼‚Æobj
+	//ãƒ¢ãƒ‡ãƒ«åã¨obj
 	std::map<std::string, std::unique_ptr<ModelObj>>nameAndModels_;
-	//ƒ‚ƒfƒ‹–¼‚Æfbx
+	//ãƒ¢ãƒ‡ãƒ«åã¨fbx
 	std::map<std::string, std::unique_ptr<ModelFBX>>nameAndModelFBXs_;
-	//“¯‚¶–¼‘O‚Ì•Ê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	//åŒã˜åå‰ã®åˆ¥ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	std::vector<std::unique_ptr<IModel>>sameNameOtherModels_;
 
 public:
@@ -30,15 +30,15 @@ public:
 
 	static ModelManager& GetInstance();
 
-	//Œãn––
+	//å¾Œå§‹æœ«
 	void Finalize();
 
 	/// <summary>
-	///fbx‚Å‚àobj‚Å‚à“Ç‚İ‚İifbx‚Ìê‡‚Í "xxx.fbx"‚Æ‚·‚éj
+	///fbxã§ã‚‚objã§ã‚‚èª­ã¿è¾¼ã¿ï¼ˆfbxã®å ´åˆã¯ "xxx.fbx"ã¨ã™ã‚‹ï¼‰
 	/// </summary>
-	/// <param name="fileName">ƒtƒ@ƒCƒ‹–¼</param>
-	/// <param name="smoothing">ƒXƒ€[ƒWƒ“ƒO</param>
-	/// <param name="otherSameNameModel">“¯‚¶–¼‘O‚Ì•Ê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX</param>
-	/// <returns>ƒ‚ƒfƒ‹‚Ìƒ|ƒCƒ“ƒ^</returns>
+	/// <param name="fileName">ãƒ•ã‚¡ã‚¤ãƒ«å</param>
+	/// <param name="smoothing">ã‚¹ãƒ ãƒ¼ã‚¸ãƒ³ã‚°</param>
+	/// <param name="otherSameNameModel">åŒã˜åå‰ã®åˆ¥ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹</param>
+	/// <returns>ãƒ¢ãƒ‡ãƒ«ã®ãƒã‚¤ãƒ³ã‚¿</returns>
 	IModel* LoadModel(const std::string& fileName, bool smoothing = false, bool sameNameOtherModel = false);
 };

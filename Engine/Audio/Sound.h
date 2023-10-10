@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include<xaudio2.h>
 #include<cassert>
 #include <fstream>
@@ -11,34 +11,34 @@
 class Sound final
 {
 private:
-	//Microsoft::WRL::‚ğÈ—ª
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 public:
-	//‰¹
+	//éŸ³
 	static IXAudio2MasteringVoice* sMasterVoice_;
-	//‰¹
+	//éŸ³
 	static ComPtr<IXAudio2> sXAudio2_;
 
 
-public://ƒTƒuƒNƒ‰ƒX
-	//ƒ`ƒƒƒ“ƒNƒwƒbƒ_
+public://ã‚µãƒ–ã‚¯ãƒ©ã‚¹
+	//ãƒãƒ£ãƒ³ã‚¯ãƒ˜ãƒƒãƒ€
 	struct ChunkHeader
 	{
-		char id[4];//ƒ`ƒƒƒ“ƒN‚²‚Æ‚ÌID
-		int32_t size;//ƒ`ƒƒƒ“ƒNƒTƒCƒY
+		char id[4];//ãƒãƒ£ãƒ³ã‚¯ã”ã¨ã®ID
+		int32_t size;//ãƒãƒ£ãƒ³ã‚¯ã‚µã‚¤ã‚º
 	};
-	//RIFFƒwƒbƒ_
+	//RIFFãƒ˜ãƒƒãƒ€
 	struct RiffHeader
 	{
 		ChunkHeader chunk;//"RIFF"
 		char type[4];//"WAVE"
 	};
-	//fmtƒ`ƒƒƒ“ƒN
+	//fmtãƒãƒ£ãƒ³ã‚¯
 	struct FormatChunk
 	{
 		ChunkHeader chunk;//"fmt"
-		WAVEFORMATEX fmt;//"”gŒ`ƒtƒH[ƒ}ƒbƒg"
+		WAVEFORMATEX fmt;//"æ³¢å½¢ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ"
 	};
 
 	struct CheckSoundData
@@ -49,20 +49,20 @@ public://ƒTƒuƒNƒ‰ƒX
 
 	struct SoundData
 	{
-		//”gŒ`ƒtƒH[ƒ}ƒbƒg
+		//æ³¢å½¢ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ
 		WAVEFORMATEX wfex;
-		//ƒoƒbƒtƒ@‚Ìæ“ªƒAƒhƒŒƒX
+		//ãƒãƒƒãƒ•ã‚¡ã®å…ˆé ­ã‚¢ãƒ‰ãƒ¬ã‚¹
 		std::vector<BYTE> pBuffer;
-		//ƒoƒbƒtƒ@‚ÌƒTƒCƒY
+		//ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
 		uint32_t bufferSize;
 		//
 		std::vector<CheckSoundData> checkDatas;
 	};
 
 private:
-	//ƒTƒEƒ“ƒhƒf[ƒ^‚Ì˜A‘z”z—ñ
+	//ã‚µã‚¦ãƒ³ãƒ‰ãƒ‡ãƒ¼ã‚¿ã®é€£æƒ³é…åˆ—
 	static std::map < std::string, SoundData> sSoundDatas_;
-	//ƒTƒEƒ“ƒhŠi”[ƒfƒBƒŒƒNƒgƒŠ
+	//ã‚µã‚¦ãƒ³ãƒ‰æ ¼ç´ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
 	static std::string sDirectoryPath_;
 
 
@@ -73,19 +73,19 @@ private:
 private:
 	SoundData* GetSoundData(const std::string& name);
 
-public://ƒƒ“ƒoŠÖ”
+public://ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	static void Initialize(const std::string& directoryPath = "Resources/sound/");
 
 	/// <summary>
-/// ‰¹‚Ì“Ç‚İ‚İi‘æ2‚ÍŠî–{true,“Ç‚İ‚ß‚È‚¢/Ä¶‚³‚ê‚È‚¢‚Æ‚«‚Ífalse‚É‚·‚éj
+/// éŸ³ã®èª­ã¿è¾¼ã¿ï¼ˆç¬¬2ã¯åŸºæœ¬true,èª­ã¿è¾¼ã‚ãªã„/å†ç”Ÿã•ã‚Œãªã„ã¨ãã¯falseã«ã™ã‚‹ï¼‰
 /// </summary>
 /// <param name="filename"></param>
 /// <param name="isConvert"></param>
 /// <returns></returns>
 	void LoadWave(const std::string& filename, bool isConvert);
 	/// <summary>
-	/// ‰ğ•úˆ—
+	/// è§£æ”¾å‡¦ç†
 	/// </summary>
 	/// <param name="soudData"></param>
 	/// <returns></returns>
@@ -93,26 +93,26 @@ public://ƒƒ“ƒoŠÖ”
 
 
 	/// <summary>
-	/// ‰¹ºÄ¶
+	/// éŸ³å£°å†ç”Ÿ
 	/// </summary>
-	/// <param name="">wavƒtƒ@ƒCƒ‹–¼</param>
-	/// <param name="volume">‰¹—Ê</param>
-	/// <param name="Loop">ƒ‹[ƒvÄ¶</param>
+	/// <param name="">wavãƒ•ã‚¡ã‚¤ãƒ«å</param>
+	/// <param name="volume">éŸ³é‡</param>
+	/// <param name="Loop">ãƒ«ãƒ¼ãƒ—å†ç”Ÿ</param>
 	void PlayWave(const std::string& filename, float volume = 1.0f, bool Loop = false);
 
 	void StopWave(const std::string& filename);
 
-	//Ä¶~‚Ü‚Á‚½‚©
+	//å†ç”Ÿæ­¢ã¾ã£ãŸã‹
 	bool CheckPlayingWave(const std::string& name);
 
 
-public://ƒVƒ“ƒOƒ‹ƒgƒ“
-	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ–³Œø
+public://ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³
+	//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’ç„¡åŠ¹
 	Sound(const Sound& obj) = delete;
-	//‘ã“ü‰‰Zq‚à
+	//ä»£å…¥æ¼”ç®—å­ã‚‚
 	Sound& operator=(const Sound& obj) = delete;
 
-	//ŠÖ”
+	//é–¢æ•°
 	static Sound& GetInstance();
 };
 

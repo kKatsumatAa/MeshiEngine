@@ -75,12 +75,12 @@ private:
 
 private:
 	void DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
-		 uint64_t textureHandle, const Vec2& ancorUV,
+		uint64_t textureHandle, const Vec2& ancorUV,
 		bool isReverseX, bool isReverseY, const Vec3& rotation,
 		ConstBuffTransform* cbt);
 
 	void UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-		 uint64_t textureHandle, bool isPosLeftTop,
+		uint64_t textureHandle, bool isPosLeftTop,
 		bool isReverseX, bool isReverseY, const Vec3& rotation, ConstBuffTransform* cbt);
 
 public:
@@ -88,7 +88,7 @@ public:
 		, const Vec2& ancorUV = { 0,0 }, bool isReverseX = false, bool isReverseY = false);
 
 	void DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
-		 bool isPosLeftTop = true,
+		bool isPosLeftTop = true,
 		bool isReverseX = false, bool isReverseY = false);
 
 public:

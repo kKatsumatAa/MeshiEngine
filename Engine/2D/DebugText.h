@@ -1,13 +1,13 @@
-#pragma once
+ï»¿#pragma once
 #include"Sprite.h"
 
 //
 class DebugText
 {
-private://ƒGƒCƒŠƒAƒX
-	//Microsoft::WRL::‚ğÈ—ª
+private://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	//DirectX::‚ğÈ—ª
+	//DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
@@ -28,7 +28,7 @@ private:
 	XMFLOAT2 UVleftTop_[S_MAX_CHAR_COUNT_];
 	XMFLOAT2 UVlength_[S_MAX_CHAR_COUNT_];
 
-	//“Y‚¦š—p‚Ì•Ï”
+	//æ·»ãˆå­—ç”¨ã®å¤‰æ•°
 	int32_t spriteIndex_ = 0;
 
 public:

@@ -125,7 +125,7 @@ void TutorialStateOperation::Initialize()
 	//テクスチャハンドルセット
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial1.png");
 	texSprite_.SetTexHandle(texHandle_);
-	
+
 	//ステートごとに最大値を変えている
 	rateMax_ = 50;
 }

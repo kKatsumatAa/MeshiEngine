@@ -78,7 +78,7 @@ void Character::DrawImGui(std::function<void()> imguiF)
 				ImGui::TreePop();
 			}
 		}
-	};
+		};
 
 	//親クラスのを呼び出す
 	ObjectFBX::DrawImGui(f);
@@ -207,8 +207,10 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 
 void Character::QueryCallBackUpdate()
 {
-	//球コライダー取得
-	SphereCollider* sphereColl = dynamic_cast<SphereCollider*>(GetCollider());
+	//キャラの使用しているコライダーが球以外もあり得るので
+	std::unique_ptr<SphereCollider> sphereColl = std::make_unique<SphereCollider>();
+	sphereColl->SetObject(this);
+	sphereColl->Update();
 
 	//クエリーコールバッククラス
 	class CharacterQueryCallBack :public QueryCallback
@@ -242,10 +244,10 @@ void Character::QueryCallBackUpdate()
 	};
 
 	//クエリーコールバックの関数オブジェクト
-	CharacterQueryCallBack callback(sphereColl);
+	CharacterQueryCallBack callback(sphereColl.get());
 
 	// 球と地形の交差を全検索
-	CollisionManager::GetInstance()->QuerySphere(*sphereColl, &callback, COLLISION_ATTR_LANDSHAPE);
+	CollisionManager::GetInstance()->QuerySphere(*sphereColl.get(), &callback, COLLISION_ATTR_LANDSHAPE);
 	// 交差による排斥分動かす
 	SetTrans(GetTrans()
 		+ Vec3(callback.move.m128_f32[0], callback.move.m128_f32[1], callback.move.m128_f32[2]));

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"ConstBuffTransform.h"
 #include "ViewMat.h"
 #include "ProjectionMat.h"
@@ -6,20 +6,20 @@
 
 struct SpriteBuff
 {
-private://ƒGƒCƒŠƒAƒX
-	//Microsoft::WRL::‚ğÈ—ª
+private://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 public:
-	//’¸“_ƒoƒbƒtƒ@
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 	ComPtr < ID3D12Resource> vertBuff = nullptr;
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ìì¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
-	//’è”ƒoƒbƒtƒ@‚Ì¶¬
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 };
 struct VertexSprite
 {
-	DirectX::XMFLOAT3 pos;//xyzÀ•W
-	DirectX::XMFLOAT2 uv;//uvÀ•W
+	DirectX::XMFLOAT3 pos;//xyzåº§æ¨™
+	DirectX::XMFLOAT2 uv;//uvåº§æ¨™
 };
 
 class SpriteCommon

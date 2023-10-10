@@ -1,4 +1,4 @@
-#include "StageSelect.h"
+ï»¿#include "StageSelect.h"
 #include "MouseInput.h"
 #include "CursorUI.h"
 
@@ -17,18 +17,18 @@ void StageSelect::LoadStageNames()
 //----------------------------------------------------------
 void StageSelect::Initialize()
 {
-	//‰æ‘œ
+	//ç”»åƒ
 	debugTextHandle_ = TextureManager::LoadGraph("ascii.png");
 
-	//ƒŠƒZƒbƒg
+	//ãƒªã‚»ãƒƒãƒˆ
 	stageNames_.clear();
 	isSelected_ = false;
 
-	//ƒXƒe[ƒW–¼‚Ì˜g‚Ì‘å‚«‚³
+	//ã‚¹ãƒ†ãƒ¼ã‚¸åã®æ ã®å¤§ãã•
 	nameWidthHeight_ = { CursorUI::cursorSize_.x * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y };
 	namesLeftUpPos_ = { CursorUI::cursorSize_.x * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y * 4.0f };
 
-	//F
+	//è‰²
 	selectBox_.SetColor({ 8.0f,0,0,1.0f });
 
 	LoadStageNames();
@@ -36,21 +36,21 @@ void StageSelect::Initialize()
 
 void StageSelect::Update()
 {
-	//ƒXƒNƒ[ƒ‹ˆ—
+	//ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«å‡¦ç†
 
 
-	//ƒNƒŠƒbƒN‚³‚ê‚½‚ç
+	//ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸã‚‰
 	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT))
 	{
 		Vec2 cursorPos = CursorUI::GetInstance().GetCursorPos();
 
-		//“–‚½‚è”»’è‚ğ’²‚×‚é
+		//å½“ãŸã‚Šåˆ¤å®šã‚’èª¿ã¹ã‚‹
 		int32_t count = 0;
 		for (auto stageName : stageNames_)
 		{
-			//“–‚½‚Á‚Ä‚¢‚ê‚Î‘I‚ñ‚¾–¼‘O,”Ô†‚ğ•Û‘¶
-			if (CollisionBox(namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y* (float)count},//¶ã
-				namesLeftUpPos_ + Vec2{nameWidthHeight_.x, nameWidthHeight_.y* (float)(count + 1)},//‰E‰º
+			//å½“ãŸã£ã¦ã„ã‚Œã°é¸ã‚“ã åå‰,ç•ªå·ã‚’ä¿å­˜
+			if (CollisionBox(namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y* (float)count},//å·¦ä¸Š
+				namesLeftUpPos_ + Vec2{nameWidthHeight_.x, nameWidthHeight_.y* (float)(count + 1)},//å³ä¸‹
 				cursorPos + Vec2{0, scrollValue_},
 				cursorPos + Vec2{0, scrollValue_}))
 			{
@@ -76,14 +76,14 @@ void StageSelect::DrawSprite()
 
 	for (auto stageName : stageNames_)
 	{
-		//ƒXƒe[ƒW–¼•\¦
+		//ã‚¹ãƒ†ãƒ¼ã‚¸åè¡¨ç¤º
 		debugText_.Print(stageName.c_str(), namesLeftUpPos_.x, namesLeftUpPos_.y + nameWidthHeight_.y * count, 114514,
 			TEXT_EXTEND_);
 
 		Vec2 cursorPos = MouseInput::GetInstance().GetCurcorPos();
-		//ƒJ[ƒ\ƒ‹‚ª‚ ‚Á‚Ä‚½‚çÔ‚­•\¦
-		if (CollisionBox(namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y* (float)count},//¶ã
-			namesLeftUpPos_ + Vec2{nameWidthHeight_.x, nameWidthHeight_.y* (float)(count + 1)},//‰E‰º
+		//ã‚«ãƒ¼ã‚½ãƒ«ãŒã‚ã£ã¦ãŸã‚‰èµ¤ãè¡¨ç¤º
+		if (CollisionBox(namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y* (float)count},//å·¦ä¸Š
+			namesLeftUpPos_ + Vec2{nameWidthHeight_.x, nameWidthHeight_.y* (float)(count + 1)},//å³ä¸‹
 			cursorPos + Vec2{0, scrollValue_},
 			cursorPos + Vec2{0, scrollValue_}))
 		{

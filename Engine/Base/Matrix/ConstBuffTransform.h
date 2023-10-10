@@ -3,13 +3,13 @@
 #include<memory>
 #include"Vec3.h"
 
-//ƒAƒtƒBƒ“•ÏŠ·s—ñ—p
+//ã‚¢ãƒ•ã‚£ãƒ³å¤‰æ›è¡Œåˆ—ç”¨
 class ConstBuffTransform
 {
-protected://ƒGƒCƒŠƒAƒX
-	//Microsoft::WRL::‚ğÈ—ª
+protected://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	//DirectX::‚ğÈ—ª
+	//DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
@@ -17,19 +17,19 @@ protected://ƒGƒCƒŠƒAƒX
 	using XMMATRIX = DirectX::XMMATRIX;
 
 private:
-	//’è”ƒoƒbƒtƒ@—pƒf[ƒ^\‘¢
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ç”¨ãƒ‡ãƒ¼ã‚¿æ§‹é€ 
 	struct ConstBufferDataTransform
 	{
-		XMMATRIX viewproj; //ƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ
-		XMMATRIX world;    //ƒ[ƒ‹ƒhs—ñ
-		Vec3 cameraPos;//ƒJƒƒ‰À•Wiƒ[ƒ‹ƒhÀ•Wj
+		XMMATRIX viewproj; //ãƒ“ãƒ¥ãƒ¼ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—
+		XMMATRIX world;    //ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—
+		Vec3 cameraPos;//ã‚«ãƒ¡ãƒ©åº§æ¨™ï¼ˆãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ï¼‰
 		float pad;
 	};
 
-private://•`‰æ—p
-	//ƒoƒbƒtƒ@
+private://æç”»ç”¨
+	//ãƒãƒƒãƒ•ã‚¡
 	ComPtr<ID3D12Resource> constBuffTransform_;
-	ConstBufferDataTransform* constMapTransform_ = nullptr;//’è”ƒoƒbƒtƒ@‚Ìƒ}ƒbƒsƒ“ƒO—pƒ|ƒCƒ“ƒ^
+	ConstBufferDataTransform* constMapTransform_ = nullptr;//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ãƒãƒƒãƒ”ãƒ³ã‚°ç”¨ãƒã‚¤ãƒ³ã‚¿
 
 public:
 	ConstBuffTransform() { ; }
@@ -43,7 +43,7 @@ public:
 	void SetWorldMat(const XMMATRIX& mat) { constMapTransform_->world = mat; }
 	void SetCameraPos(const Vec3& pos) { constMapTransform_->cameraPos = pos; }
 
-	const XMMATRIX& GetWorldMat() const{ return constMapTransform_->world; }
+	const XMMATRIX& GetWorldMat() const { return constMapTransform_->world; }
 	const XMMATRIX& GetViewProjMat()const { return constMapTransform_->viewproj; }
 	const Vec3& GetCameraPos()const { return constMapTransform_->cameraPos; }
 };

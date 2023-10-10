@@ -17,108 +17,108 @@ struct PeraVertex
 class PostPera
 {
 private:
-	//Microsoft::WRL::‚ğÈ—ª
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 public:
 	static const float S_BLOOM_POW_;
 
-	//ƒuƒ‹[ƒ€‚ÌÅ‘å‹­‚³
+	//ãƒ–ãƒ«ãƒ¼ãƒ ã®æœ€å¤§å¼·ã•
 	static const float S_BLOOM_MAX_POW_;
-	//ƒ‰ƒWƒAƒ‹‚ÌÅ‘å‹­‚³
+	//ãƒ©ã‚¸ã‚¢ãƒ«ã®æœ€å¤§å¼·ã•
 	static const float S_RADIAL_MAX_POW_;
 
 
 private:
-	//‰æ–ÊŒø‰Ê—p‚Ìƒtƒ‰ƒO
+	//ç”»é¢åŠ¹æœç”¨ã®ãƒ•ãƒ©ã‚°
 	struct EffectConstBuffer
 	{
-		//F
+		//è‰²
 		Vec4 color = { 1.0f,1.0f,1.0f,1.0f };
-		//‰Û‘è—pƒ}ƒ‹ƒ`ƒeƒNƒXƒ`ƒƒ‘g‚İ‡‚í‚¹
+		//èª²é¡Œç”¨ãƒãƒ«ãƒãƒ†ã‚¯ã‚¹ãƒãƒ£çµ„ã¿åˆã‚ã›
 		uint32_t isMultiTex = false;
-		//‚Ú‚©‚µ
+		//ã¼ã‹ã—
 		uint32_t isGaussian = false;
-		//ƒKƒEƒVƒAƒ“‚Ú‚©‚µ
+		//ã‚¬ã‚¦ã‚·ã‚¢ãƒ³ã¼ã‹ã—
 		uint32_t isGaussian2 = false;
-		//ƒ‰ƒWƒAƒ‹ƒuƒ‰[
+		//ãƒ©ã‚¸ã‚¢ãƒ«ãƒ–ãƒ©ãƒ¼
 		uint32_t isRadialBlur = false;
-		//ƒ‰ƒWƒAƒ‹‹­‚³
+		//ãƒ©ã‚¸ã‚¢ãƒ«å¼·ã•
 		float radialPow = 1.0f;
-		//ƒGƒ“ƒ{ƒX
+		//ã‚¨ãƒ³ãƒœã‚¹
 		uint32_t isEmboss = false;
-		//ƒVƒƒ[ƒvƒlƒX
+		//ã‚·ãƒ£ãƒ¼ãƒ—ãƒã‚¹
 		uint32_t isSharpness = false;
-		//æ~’²
+		//è«§èª¿
 		uint32_t isGradation = false;
-		//ƒAƒEƒgƒ‰ƒCƒ“
+		//ã‚¢ã‚¦ãƒˆãƒ©ã‚¤ãƒ³
 		uint32_t isOutLine = false;
-		//ƒrƒlƒbƒg
+		//ãƒ“ãƒãƒƒãƒˆ
 		uint32_t isVignette = false;
-		//’Mó˜p‹È
+		//æ¨½çŠ¶æ¹¾æ›²
 		uint32_t isBarrelCurve = false;
 		float barrelCurvePow = 1.0f;
-		//‘–¸ü
+		//èµ°æŸ»ç·š
 		uint32_t isScanningLine = false;
-		//ƒOƒŒ[ƒXƒP[ƒ‹
+		//ã‚°ãƒ¬ãƒ¼ã‚¹ã‚±ãƒ¼ãƒ«
 		uint32_t isGrayScale = false;
 		float grayScalePow = 1.0f;
-		//ƒKƒ‰ƒXƒtƒBƒ‹ƒ^[
+		//ã‚¬ãƒ©ã‚¹ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼
 		uint32_t isGlassFilter = false;
-		//ƒ‚ƒUƒCƒN
+		//ãƒ¢ã‚¶ã‚¤ã‚¯
 		uint32_t isMosaic = false;
-		//ƒlƒKƒ|ƒW
+		//ãƒã‚¬ãƒã‚¸
 		uint32_t isNega = false;
-		//RGB‚¸‚ç‚µ
+		//RGBãšã‚‰ã—
 		uint32_t isRGBShift = false;
 		float RGBShiftPow = 0.05f;
-		//ƒuƒ‹[ƒ€
+		//ãƒ–ãƒ«ãƒ¼ãƒ 
 		uint32_t isBloom = false;
-		//ƒNƒƒXƒtƒBƒ‹ƒ^
+		//ã‚¯ãƒ­ã‚¹ãƒ•ã‚£ãƒ«ã‚¿
 		uint32_t isCrossFilter = false;
-		//ƒuƒ‹[ƒ€‚Ì‹­‚³
+		//ãƒ–ãƒ«ãƒ¼ãƒ ã®å¼·ã•
 		float bloomPow = PostPera::S_BLOOM_POW_;
-		//ƒmƒCƒY
+		//ãƒã‚¤ã‚º
 		uint32_t isNoise = false;
-		//ƒmƒCƒY‹­‚³
+		//ãƒã‚¤ã‚ºå¼·ã•
 		float noisePow = 1.0f;
-		//”íÊŠE[“x
+		//è¢«å†™ç•Œæ·±åº¦
 		uint32_t isDepthField = false;
-		//ƒtƒH[ƒJƒX‡‚í‚¹‚é[“x’l
+		//ãƒ•ã‚©ãƒ¼ã‚«ã‚¹åˆã‚ã›ã‚‹æ·±åº¦å€¤
 		float focusDepth = 0.05f;
-		//ƒtƒH[ƒJƒX‚ÌƒXƒ€[ƒXƒXƒeƒbƒv‚Ì•‚Ì‰ºŒÀ
+		//ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã®ã‚¹ãƒ ãƒ¼ã‚¹ã‚¹ãƒ†ãƒƒãƒ—ã®å¹…ã®ä¸‹é™
 		float nFocusWidth = 0.005f;
-		//ƒtƒH[ƒJƒX‚ÌƒXƒ€[ƒXƒXƒeƒbƒv‚Ì•‚ÌãŒÀ
+		//ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã®ã‚¹ãƒ ãƒ¼ã‚¹ã‚¹ãƒ†ãƒƒãƒ—ã®å¹…ã®ä¸Šé™
 		float focusDiffPow = 0.01f;
-		//ŠÔ
+		//æ™‚é–“
 		uint32_t time = 0;
 	};
 
 private:
-	//ƒyƒ‰‚ÌŠg‘å—¦
+	//ãƒšãƒ©ã®æ‹¡å¤§ç‡
 	float pera1Extend_ = 1.0f;
 	float peraGExtend_ = 1.0f;
 	float pera2Extend_ = 1.0f;
-	//ˆê–‡–Ú‚Ì’¸“_
+	//ä¸€æšç›®ã®é ‚ç‚¹
 	PeraVertex p1Vertices_[4] = {
-			{{-1.0f, -1.0f,0},{0,1.0f}},//¶‰º
-			{{-1.0f, +1.0f,0},{0,0}},//¶ã
-			{{+1.0f, -1.0f,0},{1.0f,1.0f}},//‰E‰º
-			{{+1.0f, +1.0f,0},{1.0f,0}}//‰Eã
+			{{-1.0f, -1.0f,0},{0,1.0f}},//å·¦ä¸‹
+			{{-1.0f, +1.0f,0},{0,0}},//å·¦ä¸Š
+			{{+1.0f, -1.0f,0},{1.0f,1.0f}},//å³ä¸‹
+			{{+1.0f, +1.0f,0},{1.0f,0}}//å³ä¸Š
 	};
-	//ƒKƒEƒVƒAƒ“—p‚Ì’¸“_
+	//ã‚¬ã‚¦ã‚·ã‚¢ãƒ³ç”¨ã®é ‚ç‚¹
 	PeraVertex pGVertices_[4] = {
-			{{-1.0f, -1.0f,0},{0,1.0f}},//¶‰º
-			{{-1.0f, +1.0f,0},{0,0}},//¶ã
-			{{+1.0f, -1.0f,0},{1.0f,1.0f}},//‰E‰º
-			{{+1.0f, +1.0f,0},{1.0f,0}}//‰Eã
+			{{-1.0f, -1.0f,0},{0,1.0f}},//å·¦ä¸‹
+			{{-1.0f, +1.0f,0},{0,0}},//å·¦ä¸Š
+			{{+1.0f, -1.0f,0},{1.0f,1.0f}},//å³ä¸‹
+			{{+1.0f, +1.0f,0},{1.0f,0}}//å³ä¸Š
 	};
-	//“ñ–‡–Ú‚Ì’¸“_
+	//äºŒæšç›®ã®é ‚ç‚¹
 	PeraVertex p2Vertices_[4] = {
-			{{-1.0f, -1.0f,0},{0,1.0f}},//¶‰º
-			{{-1.0f, +1.0f,0},{0,0}},//¶ã
-			{{+1.0f, -1.0f,0},{1.0f,1.0f}},//‰E‰º
-			{{+1.0f, +1.0f,0},{1.0f,0}}//‰Eã
+			{{-1.0f, -1.0f,0},{0,1.0f}},//å·¦ä¸‹
+			{{-1.0f, +1.0f,0},{0,0}},//å·¦ä¸Š
+			{{+1.0f, -1.0f,0},{1.0f,1.0f}},//å³ä¸‹
+			{{+1.0f, +1.0f,0},{1.0f,0}}//å³ä¸Š
 	};
 
 	ComPtr<ID3D12Resource> pera1VB_;
@@ -138,75 +138,75 @@ private:
 	ComPtr<ID3D12PipelineState> peraPipeline_ = NULL;
 	ComPtr<ID3D12PipelineState> peraPipeline2_ = NULL;
 
-	//‰æ–ÊŒø‰Ê—p
+	//ç”»é¢åŠ¹æœç”¨
 	ComPtr <ID3D12Resource> effectFlagsBuff_;
-	//ƒ}ƒbƒsƒ“ƒO—p
+	//ãƒãƒƒãƒ”ãƒ³ã‚°ç”¨
 	EffectConstBuffer* mapEffectFlagsBuff_;
 
-	//ƒ|ƒXƒgƒGƒtƒFƒNƒg—p
+	//ãƒã‚¹ãƒˆã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”¨
 	D3D12_CPU_DESCRIPTOR_HANDLE peraSRHandle_;
 	ComPtr<ID3D12Resource> peraResources_[2];
 	ComPtr<ID3D12Resource> peraResource2_;
-	ComPtr<ID3D12DescriptorHeap> peraRTVHeap_;//ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg—p
-	ComPtr<ID3D12DescriptorHeap> peraSRVHeap_;//ƒeƒNƒXƒ`ƒƒ—p
+	ComPtr<ID3D12DescriptorHeap> peraRTVHeap_;//ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç”¨
+	ComPtr<ID3D12DescriptorHeap> peraSRVHeap_;//ãƒ†ã‚¯ã‚¹ãƒãƒ£ç”¨
 	bool isPeraClear_ = false;
 
 	GausianBuffer gaussianBuff_;
 
-	//–@üƒ}ƒbƒv—p
+	//æ³•ç·šãƒãƒƒãƒ—ç”¨
 	ComPtr<ID3D12Resource>effectTexBuffer_;
 
-	//ƒuƒ‹[ƒ€ƒoƒbƒtƒ@[
+	//ãƒ–ãƒ«ãƒ¼ãƒ ãƒãƒƒãƒ•ã‚¡ãƒ¼
 	ComPtr<ID3D12Resource>bloomBuffers_[3];
-	//‰æ–Ê‘S‘Ì‚Ú‚©‚µ—pƒpƒCƒvƒ‰ƒCƒ“(ƒuƒ‹[ƒ€)
+	//ç”»é¢å…¨ä½“ã¼ã‹ã—ç”¨ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³(ãƒ–ãƒ«ãƒ¼ãƒ )
 	ComPtr<ID3D12PipelineState> blurPipeline_;
 
-	//”íÊŠE[“xƒoƒbƒtƒ@
+	//è¢«å†™ç•Œæ·±åº¦ãƒãƒƒãƒ•ã‚¡
 	ComPtr<ID3D12Resource>dofBuffer_;
 
-	//ƒeƒNƒXƒ`ƒƒ‚Ì‘å‚«‚³
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®å¤§ãã•
 	float peraExtend_ = 1.0f;
 
 public:
-	//‰æ–ÊŒø‰Ê—p
+	//ç”»é¢åŠ¹æœç”¨
 	EffectConstBuffer effectFlags_;
 
 
-private://ŠÖ”
-	//’¸“_ƒoƒbƒtƒ@ì¬
+private://é–¢æ•°
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ä½œæˆ
 	void CreateVertexBuff(PeraVertex* vertex, int32_t vertexCount, ID3D12Resource** vB, D3D12_VERTEX_BUFFER_VIEW* vBV);
-	//’¸“_ƒoƒbƒtƒ@ƒ}ƒbƒsƒ“ƒO
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒãƒƒãƒ”ãƒ³ã‚°
 	void MappingVertexBuff(PeraVertex* vertex, int32_t vertexCount, float peraExtend, ID3D12Resource* vB);
 
 	void InitializeBuffRTV(const char* normalImageFileName);
 	void GenerateRSPL();
 	void GlassFilterBuffGenerate(const char* fileName);
-	//ƒKƒ‰ƒX—p‚Ìƒoƒbƒtƒ@‚Æƒrƒ…[ì¬
+	//ã‚¬ãƒ©ã‚¹ç”¨ã®ãƒãƒƒãƒ•ã‚¡ã¨ãƒ“ãƒ¥ãƒ¼ä½œæˆ
 	bool CreateEffectBufferAndView(const char* fileName);
-	//ƒuƒ‹[ƒ€—p‚Ìƒoƒbƒtƒ@ì¬
+	//ãƒ–ãƒ«ãƒ¼ãƒ ç”¨ã®ãƒãƒƒãƒ•ã‚¡ä½œæˆ
 	bool CreateBloomBuffer(const D3D12_RESOURCE_DESC& resDesc,
 		const D3D12_HEAP_PROPERTIES& heapProp, D3D12_CLEAR_VALUE clearValue);
 	bool CreateBloomBuffView();
-	//”íÊŠE[“x—pƒoƒbƒtƒ@ì¬
+	//è¢«å†™ç•Œæ·±åº¦ç”¨ãƒãƒƒãƒ•ã‚¡ä½œæˆ
 	bool CreateDofBuffer(const D3D12_RESOURCE_DESC& resDesc,
 		const D3D12_HEAP_PROPERTIES& heapProp, D3D12_CLEAR_VALUE clearValue);
-	//”íÊŠE[“x—pSRV
+	//è¢«å†™ç•Œæ·±åº¦ç”¨SRV
 	bool CreateDofSRV();
 
-	//[“x’lƒeƒNƒXƒ`ƒƒ—pSRV
+	//æ·±åº¦å€¤ãƒ†ã‚¯ã‚¹ãƒãƒ£ç”¨SRV
 	bool CreateDepthTexBuffAndSRV();
 
-	//ˆê–‡–Ú‚É•`‰æ
+	//ä¸€æšç›®ã«æç”»
 	void PreDraw(bool isFirstPostPera);
 	void PostDraw();
 
-	//“ñ–‡–Ú‚É•`‰æ
+	//äºŒæšç›®ã«æç”»
 	void PreDraw2();
 	void PostDraw2();
-	//“ñ‰ñ–Ú‚ÌƒGƒtƒFƒNƒg‚©‚¯‚é
+	//äºŒå›ç›®ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‹ã‘ã‚‹
 	void Draw();
 
-	//ƒq[ƒv‚Æƒq[ƒvã‚Éì‚Á‚½ƒoƒbƒtƒ@ƒrƒ…[“™‚ğƒZƒbƒg
+	//ãƒ’ãƒ¼ãƒ—ã¨ãƒ’ãƒ¼ãƒ—ä¸Šã«ä½œã£ãŸãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ç­‰ã‚’ã‚»ãƒƒãƒˆ
 	void SetHeapAllBuffView(bool isPost2 = false, bool isPost1 = false);
 
 public:
@@ -215,16 +215,16 @@ public:
 	void Update();
 	void ImGuiUpdate(int32_t num);
 
-	//“ñ‰ñ–Ú‚ÌƒGƒtƒFƒNƒg‚©‚¯‚é—p‚Ì•`‰æ
+	//äºŒå›ç›®ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‹ã‘ã‚‹ç”¨ã®æç”»
 	void DrawToBlurAll();
 
-	//k¬ƒoƒbƒtƒ@‘‚«‚İ
+	//ç¸®å°ãƒãƒƒãƒ•ã‚¡æ›¸ãè¾¼ã¿
 	void DrawShrinkTextureForBlur();
 
-	//ƒGƒtƒFƒNƒg‚©‚¯I‚í‚Á‚ÄÀÛ‚É•`‰æ‚·‚é
+	//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‹ã‘çµ‚ã‚ã£ã¦å®Ÿéš›ã«æç”»ã™ã‚‹
 	void Draw2();
 
-	//ˆê–‡–Ú‚Æ“ñ–‡–Ú‚ğ•`‰æ‚·‚é(ˆø”‚Ì•`‰æŠÖ”‚ğˆê–‡–Ú‚É•`‰æ)
+	//ä¸€æšç›®ã¨äºŒæšç›®ã‚’æç”»ã™ã‚‹(å¼•æ•°ã®æç”»é–¢æ•°ã‚’ä¸€æšç›®ã«æç”»)
 	void DrawToPostpera(const std::function<void()>& f, bool isFirstPostPera = false, const std::function<void()>& drawSpriteF = nullptr);
 
 public:

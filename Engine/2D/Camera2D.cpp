@@ -1,4 +1,4 @@
-#include "Camera2D.h"
+ï»¿#include "Camera2D.h"
 #include "Util.h"
 
 using namespace DirectX;
@@ -13,13 +13,13 @@ void Camera2D::Update()
 
 	ZoomUpdate();
 
-	//ƒVƒFƒCƒNXV
+	//ã‚·ã‚§ã‚¤ã‚¯æ›´æ–°
 	shake_.Update();
 
-	//Œ©‚¦‚é”ÍˆÍXV
+	//è¦‹ãˆã‚‹ç¯„å›²æ›´æ–°
 	VisiableUpdate();
 
-	//s—ñXV
+	//è¡Œåˆ—æ›´æ–°
 	MatrixUpdate();
 }
 
@@ -31,11 +31,11 @@ void Camera2D::VisiableUpdate()
 
 void Camera2D::MatrixUpdate()
 {
-	//3D‚É•ÏŠ·
+	//3Dã«å¤‰æ›
 	Vec3 pos = { pos_.x + shake_.GetShake(),pos_.y + shake_.GetShake(),0 };
 	Vec3 screenPos = { screenCenterPos_.x,screenCenterPos_.y,0 };
 
-	//s—ñì¬
+	//è¡Œåˆ—ä½œæˆ
 	cameraMatrix_ = XMMatrixIdentity();
 	cameraMatrix_ *= XMMatrixTranslation(-pos.x, -pos.y, -pos.z);
 	cameraMatrix_ *= XMMatrixScaling(zoom_.x, zoom_.y, 1.0f);
@@ -95,13 +95,13 @@ void Camera2D::BeginShake(uint32_t time, float maxLength)
 
 void Camera2D::BeginFollow(float maxLength)
 {
-	//’Ç]
+	//è¿½å¾“
 	isFollow_ = true;
-	//’Ç]—p
+	//è¿½å¾“ç”¨
 	followLengthMax_ = maxLength;
-	//Š„‡
+	//å‰²åˆ
 	followT_ = 0;
-	//‘O‚ÌÀ•W
+	//å‰ã®åº§æ¨™
 	oldPos_ = pos_;
 }
 

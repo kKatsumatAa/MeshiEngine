@@ -1,4 +1,4 @@
-#include "ProjectionMat.h"
+ï»¿#include "ProjectionMat.h"
 
 using namespace DirectX;
 
@@ -20,7 +20,7 @@ void ProjectionMat::SetMat()
 {
 	matProjection_ = XMMatrixPerspectiveFovLH(
 		fovY_,//fovY
-		(float)aspect_.x / aspect_.y,//ƒAƒXƒyƒNƒg”ä
-		nearPos_, farPos_//‘O’[A‰œ’[
+		(float)aspect_.x / aspect_.y,//ã‚¢ã‚¹ãƒšã‚¯ãƒˆæ¯”
+		nearPos_, farPos_//å‰ç«¯ã€å¥¥ç«¯
 	);
 }

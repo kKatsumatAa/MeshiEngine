@@ -1,19 +1,19 @@
-#include "ImGuiManager.h"
+ï»¿#include "ImGuiManager.h"
 #include<imgui_impl_win32.h>
 #include<imgui_impl_dx12.h>
 
 
 void ImGuiManager::Initialize()
 {
-	//imgui‚ÌƒRƒ“ƒeƒLƒXƒg‚ğ¶¬
+	//imguiã®ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’ç”Ÿæˆ
 	ImGui::CreateContext();
-	//imgui‚ÌƒXƒ^ƒCƒ‹‚ğİ’è
+	//imguiã®ã‚¹ã‚¿ã‚¤ãƒ«ã‚’è¨­å®š
 	ImGui::StyleColorsDark();
 
-	//win32—p‰Šú‰»
+	//win32ç”¨åˆæœŸåŒ–
 	ImGui_ImplWin32_Init(WindowsApp::GetInstance().Gethwnd());
 
-	//directx12—p‰Šú‰»
+	//directx12ç”¨åˆæœŸåŒ–
 	ImGui_ImplDX12_Init(
 		DirectXWrapper::GetInstance().GetDevice(),
 		static_cast<int>(DirectXWrapper::GetInstance().GetBackBufferCount()),
@@ -24,7 +24,7 @@ void ImGuiManager::Initialize()
 
 	TextureManager::AddSRVHandleCount();
 
-	//•W€ƒtƒHƒ“ƒg‚Ì’Ç‰Á
+	//æ¨™æº–ãƒ•ã‚©ãƒ³ãƒˆã®è¿½åŠ 
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->AddFontDefault();
 }
@@ -38,7 +38,7 @@ void ImGuiManager::Finalize()
 
 void ImGuiManager::Begin()
 {
-	//imguiƒtƒŒ[ƒ€ŠJn
+	//imguiãƒ•ãƒ¬ãƒ¼ãƒ é–‹å§‹
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
@@ -46,7 +46,7 @@ void ImGuiManager::Begin()
 
 void ImGuiManager::End()
 {
-	//•`‰æŠJn€”õ(“à•”‚Ì•\¦•¨‚ğ•\¦ƒf[ƒ^‚Æ‚µ‚Ä‚Ü‚Æ‚ß‚é‚Ì‚ÅA•`‰æ‚Å‚Í‚È‚¢)
+	//æç”»é–‹å§‹æº–å‚™(å†…éƒ¨ã®è¡¨ç¤ºç‰©ã‚’è¡¨ç¤ºãƒ‡ãƒ¼ã‚¿ã¨ã—ã¦ã¾ã¨ã‚ã‚‹ã®ã§ã€æç”»ã§ã¯ãªã„)
 	ImGui::Render();
 }
 
@@ -54,9 +54,9 @@ void ImGuiManager::Draw()
 {
 	ID3D12GraphicsCommandList* commandlist = DirectXWrapper::GetInstance().GetCommandList();
 
-	//ƒfƒXƒNƒŠƒvƒ^ƒq[ƒv‚Ì”z—ñ‚ğƒZƒbƒg‚·‚éƒRƒ}ƒ“ƒh
+	//ãƒ‡ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ’ãƒ¼ãƒ—ã®é…åˆ—ã‚’ã‚»ãƒƒãƒˆã™ã‚‹ã‚³ãƒãƒ³ãƒ‰
 	ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetDescHeapP() };
 	commandlist->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
-	//•`‰æƒRƒ}ƒ“ƒh‚ğ”­s
+	//æç”»ã‚³ãƒãƒ³ãƒ‰ã‚’ç™ºè¡Œ
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandlist);
 }

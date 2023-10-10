@@ -1,4 +1,4 @@
-#include "SceneGame.h"
+ï»¿#include "SceneGame.h"
 #include "SceneManager.h"
 #include "StageManager.h"
 #include "StageState.h"
@@ -13,7 +13,7 @@ void SceneGame::Finalize()
 //---------------------------------------------------------------------------------------
 void SceneGame::Initialize()
 {
-	//ƒXƒe[ƒW“Ç‚Ýž‚Ý
+	//ã‚¹ãƒ†ãƒ¼ã‚¸èª­ã¿è¾¼ã¿
 	StageManager::GetInstance().LoadStage(StageSelect::GetInstance().GetSelectStageIndex());
 
 	//
@@ -22,7 +22,7 @@ void SceneGame::Initialize()
 	ParticleManager::GetInstance()->SetBlendNum(ParticleManager::TRIANGLE);
 	ParticleManager::GetInstance()->ClearParticles();
 
-	//ƒ|ƒXƒgƒGƒtƒFƒNƒg
+	//ãƒã‚¹ãƒˆã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isVignette = true;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = false;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isBloom = true;
@@ -34,19 +34,19 @@ void SceneGame::Initialize()
 
 void SceneGame::Update()
 {
-	//ƒŠƒZƒbƒg
+	//ãƒªã‚»ãƒƒãƒˆ
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_R))
 	{
 		sceneM_->SetNextScene("GAME");
 	}
 
-	//ƒXƒe[ƒWƒAƒbƒvƒf[ƒg
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ
 	StageManager::GetInstance().Update();
 
-	//ƒQ[ƒ€ƒXƒs[ƒh
+	//ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰
 	GameVelocityManager::GetInstance().Update(true);
 
-	//ƒV[ƒ“‘JˆÚ
+	//ã‚·ãƒ¼ãƒ³é·ç§»
 	if (StageManager::GetInstance().GetIsGameOver())
 	{
 		sceneM_->SetNextScene("GAME");

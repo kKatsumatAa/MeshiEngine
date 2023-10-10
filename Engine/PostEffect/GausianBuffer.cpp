@@ -11,25 +11,25 @@ GausianBuffer::GausianBuffer()
 void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle, ID3D12Device& device,
 	const D3D12_DESCRIPTOR_HEAP_DESC& heapDesc)
 {
-	//ƒKƒEƒVƒAƒ“—p‚Ìƒoƒbƒtƒ@
+	//ã‚¬ã‚¦ã‚·ã‚¢ãƒ³ç”¨ã®ãƒãƒƒãƒ•ã‚¡
 	{
 		HRESULT result;
 
-		//ƒq[ƒvİ’è
+		//ãƒ’ãƒ¼ãƒ—è¨­å®š
 		D3D12_HEAP_PROPERTIES cbHeapProp{};
-		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPU‚Ö‚Ì“]‘——p
-		//ƒŠƒ\[ƒXİ’è
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUã¸ã®è»¢é€ç”¨
+		//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 		D3D12_RESOURCE_DESC cbResourceDesc{};
 
 		weights_ = std::move(GetGaussianWeights(8, 10.0f));
 
-		//ƒŠƒ\[ƒXİ’è
+		//ãƒªã‚½ãƒ¼ã‚¹è¨­å®š
 		ResourceProperties(cbResourceDesc,
 			(uint32_t)AligmentSize(sizeof(weights_[0]) * (uint32_t)weights_.size(), D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT));
-		//’è”ƒoƒbƒtƒ@‚Ì¶¬
+		//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 		BuffProperties(cbHeapProp, cbResourceDesc, &buff_);
 
-		//’è”ƒoƒbƒtƒ@‚Ìƒ}ƒbƒsƒ“ƒO
+		//å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ãƒãƒƒãƒ”ãƒ³ã‚°
 		float* mappedWeight = nullptr;
 		result = buff_->Map(0, nullptr, (void**)&mappedWeight);
 
@@ -38,7 +38,7 @@ void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle, ID3D12De
 		buff_->Unmap(0, nullptr);
 	}
 
-	//ƒ{ƒP’è”ƒoƒbƒtƒ@ƒrƒ…[İ’è
+	//ãƒœã‚±å®šæ•°ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼è¨­å®š
 	peraHandle.ptr += device.GetDescriptorHandleIncrementSize(heapDesc.Type);
 
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
@@ -51,7 +51,7 @@ void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle, ID3D12De
 
 std::vector<float> GetGaussianWeights(int32_t count, float s)
 {
-	std::vector<float> weights(count); // ƒEƒFƒCƒg ”z—ñ •Ô‹p —p 
+	std::vector<float> weights(count); // ã‚¦ã‚§ã‚¤ãƒˆ é…åˆ— è¿”å´ ç”¨ 
 	float x = 0.0f;
 	float total = 0.0f;
 	for (auto& wgt : weights)
@@ -62,7 +62,7 @@ std::vector<float> GetGaussianWeights(int32_t count, float s)
 	}
 	total = total * 2.0f - 1.0f;
 
-	// ‘«‚µ ‚Ä 1 ‚É ‚È‚é ‚æ‚¤ ‚É ‚·‚é 
+	// è¶³ã— ã¦ 1 ã« ãªã‚‹ ã‚ˆã† ã« ã™ã‚‹ 
 	for (auto& wgt : weights)
 	{
 		wgt /= total;

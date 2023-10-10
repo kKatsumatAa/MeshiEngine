@@ -1,4 +1,4 @@
-#include "M4.h"
+﻿#include "M4.h"
 
 using namespace DirectX;
 
@@ -281,20 +281,8 @@ M4 M4::GetInverseMatrix()const
 	return M4(mat);
 }
 
-//M4& M4::operator=(const float (*other)[4])
-//{
-//	for (int32_t i = 0; i < 4; i++)
-//	{
-//		for (int32_t j = 0; j < 4; j++)
-//		{
-//			m[i][j] = other[i][j];
-//		}
-//	}
-//
-//	return *this;
-//}
 
-M4 M4::operator*(const M4& other)
+M4 M4::operator*(const M4& other)const
 {
 	M4 m4;
 

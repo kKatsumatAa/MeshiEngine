@@ -1,14 +1,14 @@
-#pragma once
+ï»¿#pragma once
 #include "CollisionPrimitive.h"
 
 /// <summary>
-/// “–‚½‚è”»’èƒwƒ‹ƒp[ƒNƒ‰ƒX
+/// å½“ãŸã‚Šåˆ¤å®šãƒ˜ãƒ«ãƒ‘ãƒ¼ã‚¯ãƒ©ã‚¹
 /// </summary>
 class Collision
 {
 public:
 	/// <summary>
-	/// ‹…“¯m‚Ì“–‚½‚è”»’è
+	/// çƒåŒå£«ã®å½“ãŸã‚Šåˆ¤å®š
 	/// </summary>
 	/// <param name="sphere"></param>
 	/// <param name="sphere"></param>
@@ -16,7 +16,7 @@ public:
 	static bool CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2, DirectX::XMVECTOR* inter
 		, DirectX::XMVECTOR* reject = nullptr);
 	/// <summary>
-	/// ‹…‚Æ•½–Ê‚Ì“–‚½‚è”»’è
+	/// çƒã¨å¹³é¢ã®å½“ãŸã‚Šåˆ¤å®š
 	/// </summary>
 	/// <param name="sphere"></param>
 	/// <param name="plane"></param>
@@ -26,7 +26,7 @@ public:
 		DirectX::XMVECTOR* inter = nullptr);
 
 	/// <summary>
-	/// “_‚ÆOŠpŒ`‚ÌÅ‹ßÚ“_‚ğ‹‚ß‚é
+	/// ç‚¹ã¨ä¸‰è§’å½¢ã®æœ€è¿‘æ¥ç‚¹ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
 	/// <param name="point"></param>
 	/// <param name="triangle"></param>
@@ -35,7 +35,7 @@ public:
 		const Triangle& triangle, DirectX::XMVECTOR* closest);
 
 	/// <summary>
-	/// ‹…‚Æ–@ü•t‚«OŠpŒ`‚Ì“–‚½‚è”»’èƒ`ƒFƒbƒN
+	/// çƒã¨æ³•ç·šä»˜ãä¸‰è§’å½¢ã®å½“ãŸã‚Šåˆ¤å®šãƒã‚§ãƒƒã‚¯
 	/// </summary>
 	/// <param name="sphere"></param>
 	/// <param name="triangle"></param>
@@ -45,7 +45,7 @@ public:
 		DirectX::XMVECTOR* inter = nullptr, DirectX::XMVECTOR* reject = nullptr);
 
 	/// <summary>
-	/// ƒŒƒC‚Æ•½–Ê‚Ì“–‚½‚è”»’è
+	/// ãƒ¬ã‚¤ã¨å¹³é¢ã®å½“ãŸã‚Šåˆ¤å®š
 	/// </summary>
 	/// <param name="ray"></param>
 	/// <param name="plane"></param>
@@ -56,7 +56,7 @@ public:
 		float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
 
 	/// <summary>
-	/// ƒŒƒC‚Æ–@ü•t‚«OŠpŒ`‚Ì“–‚½‚è”»’è
+	/// ãƒ¬ã‚¤ã¨æ³•ç·šä»˜ãä¸‰è§’å½¢ã®å½“ãŸã‚Šåˆ¤å®š
 	/// </summary>
 	/// <param name="ray"></param>
 	/// <param name="triangle"></param>
@@ -67,7 +67,7 @@ public:
 		float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
 
 	/// <summary>
-	/// ƒŒƒC‚Æ‹…‚Ì“–‚½‚è”»’è
+	/// ãƒ¬ã‚¤ã¨çƒã®å½“ãŸã‚Šåˆ¤å®š
 	/// </summary>
 	/// <param name="ray"></param>
 	/// <param name="sphere"></param>
@@ -79,7 +79,7 @@ public:
 
 public://2D
 	/// <summary>
-	/// ‰~‚Æ‰~‚Ì”»’è
+	/// å††ã¨å††ã®åˆ¤å®š
 	/// </summary>
 	/// <param name="circle"></param>
 	/// <param name="circle2"></param>

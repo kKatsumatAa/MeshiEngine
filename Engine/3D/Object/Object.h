@@ -1,13 +1,13 @@
-#pragma once
+ï»¿#pragma once
 #include "IObject3D.h"
 #include "Primitive.h"
 
 
-//ƒIƒuƒWƒFƒNƒgƒNƒ‰ƒX
+//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¯ãƒ©ã‚¹
 class Object : public IObject3D
 {
 private:
-	// ƒIƒuƒWƒFƒNƒg‚Ìƒ^ƒCƒv
+	// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¿ã‚¤ãƒ—
 	enum ObjType
 	{
 		TRIANGLE,
@@ -22,32 +22,32 @@ private:
 	};
 
 private:
-	// ’¸“_ƒŒƒCƒAƒEƒg‚Ìİ’è
-// ’¸“_ƒŒƒCƒAƒEƒg
+	// é ‚ç‚¹ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã®è¨­å®š
+// é ‚ç‚¹ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
 	static D3D12_INPUT_ELEMENT_DESC sInputLayoutPrimitive_[5];
 
 private:
-	//}Œ`‚ÌƒNƒ‰ƒX
+	//å›³å½¢ã®ã‚¯ãƒ©ã‚¹
 	static Primitive primitive_;
-	//ƒpƒCƒvƒ‰ƒCƒ“‚È‚Ç‚Ìİ’è
+	//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ãªã©ã®è¨­å®š
 	static RootPipe primitivePipeLineSet_[3];
-	//.obj‚Ì
+	//.objã®
 	static RootPipe pipelineSetM_[2];
 
 private:
-	//•`‰æ‚·‚éŒ`ó‚ğw’è‚³‚ê‚½‚çŒÄ‚Ô•`‰æ—pŠÖ”
+	//æç”»ã™ã‚‹å½¢çŠ¶ã‚’æŒ‡å®šã•ã‚ŒãŸã‚‰å‘¼ã¶æç”»ç”¨é–¢æ•°
 	void DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, ConstBuffTransform* constBuffTransform,
 		Camera* camera, IModel* model = nullptr, bool isWireFrame = false);
 
 public:
-	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	Object();
 
-	//ƒfƒXƒgƒ‰ƒNƒ^
+	//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	virtual ~Object();
 
 public:
-	//—Dæ‚µ‚ÄÅ‰‚Ì•û‚É‰Šú‰»
+	//å„ªå…ˆã—ã¦æœ€åˆã®æ–¹ã«åˆæœŸåŒ–
 	static void CommonInitialize();
 
 	virtual void Update()override;

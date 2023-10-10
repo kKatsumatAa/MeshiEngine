@@ -1,12 +1,12 @@
-#pragma once
+ï»¿#pragma once
 #include"Sprite.h"
 
 class DrawIntNumImage
 {
-private://ƒGƒCƒŠƒAƒX
-	//Microsoft::WRL::‚ğÈ—ª
+private://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	//DirectX::‚ğÈ—ª
+	//DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
@@ -28,9 +28,9 @@ private:
 
 private:
 	NumImage numImages_[6];
-	//—]‚è
+	//ä½™ã‚Š
 	int32_t numRemainder_;
-	//‚»‚ÌŒ…
+	//ãã®æ¡
 	int32_t numDigit_;
 
 	uint64_t texhandle_;

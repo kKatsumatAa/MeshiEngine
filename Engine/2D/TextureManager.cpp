@@ -177,7 +177,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	DirectXWrapper::GetInstance().GetDevice()->GetCopyableFootprints(
 		&textureResourceDesc, 0, 1, 0, &footprint, nullptr, nullptr, &total_bytes);
 
-// Upload
+	// Upload
 	D3D12_RESOURCE_DESC uploadResDesc{};
 
 	//テクスチャをアップロードするバッファのリストに先に積んでおく
@@ -225,8 +225,8 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	}
 	DirectXWrapper::GetInstance().GetTexUploadBuffP()->Unmap(0, nullptr);	//	unmap
 
-// CopyCommand
-	//	グラフィックボード上のコピー先アドレス
+	// CopyCommand
+		//	グラフィックボード上のコピー先アドレス
 	D3D12_TEXTURE_COPY_LOCATION texCopyDest{};
 	texCopyDest.pResource = *texBuffL;
 	texCopyDest.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
@@ -249,7 +249,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	copyBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
 
 	DirectXWrapper::GetInstance().GetTexCommandList()->ResourceBarrier(1, &copyBarrier);
-	
+
 	//ローカル
 	uint64_t textureHandle;
 	//SRV

@@ -1,19 +1,19 @@
-#include "KeyboardInput.h"
+ï»¿#include "KeyboardInput.h"
 
 KeyboardInput::KeyboardInput()
 {
-	//ƒL[ƒ{[ƒhƒfƒoƒCƒX‚Ì¶¬
+	//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãƒ‡ãƒã‚¤ã‚¹ã®ç”Ÿæˆ
 	result_ = Input::GetInstance().GetDirectInput()->CreateDevice(GUID_SysKeyboard, &keyboard_, NULL);
 	assert(SUCCEEDED(result_));
 
-	//“ü—Íƒf[ƒ^Œ`Ž®‚ÌƒZƒbƒg
+	//å…¥åŠ›ãƒ‡ãƒ¼ã‚¿å½¢å¼ã®ã‚»ãƒƒãƒˆ
 	result_ = keyboard_->SetDataFormat(&c_dfDIKeyboard);
 	assert(SUCCEEDED(result_));
 
-	//”r‘¼§ŒäƒŒƒxƒ‹‚ÌƒŠƒZƒbƒg
+	//æŽ’ä»–åˆ¶å¾¡ãƒ¬ãƒ™ãƒ«ã®ãƒªã‚»ãƒƒãƒˆ
 	result_ = keyboard_->SetCooperativeLevel(
 		WindowsApp::GetInstance().Gethwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-	//‰æ–Ê‚ªŽè‘O‚É‚ ‚é‚Æ‚«“ü—ÍŽó•tbƒfƒoƒCƒX‚ð‚±‚ÌƒAƒvƒŠ‚¾‚¯‚Åê—L‚µ‚È‚¢bWindowsƒL[‚ð–³Œø
+	//ç”»é¢ãŒæ‰‹å‰ã«ã‚ã‚‹ã¨ãå…¥åŠ›å—ä»˜ï½œãƒ‡ãƒã‚¤ã‚¹ã‚’ã“ã®ã‚¢ãƒ—ãƒªã ã‘ã§å°‚æœ‰ã—ãªã„ï½œWindowsã‚­ãƒ¼ã‚’ç„¡åŠ¹
 	assert(SUCCEEDED(result_));
 }
 
@@ -23,17 +23,17 @@ KeyboardInput::~KeyboardInput()
 
 KeyboardInput& KeyboardInput::GetInstance()
 {
-	static KeyboardInput sInst; // private ‚ÈƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ðŒÄ‚Ño‚·B
+	static KeyboardInput sInst; // private ãªã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’å‘¼ã³å‡ºã™ã€‚
 	return sInst;
 }
 
 void KeyboardInput::Update()
 {
-	//‘O‰ñ‚ÌƒL[î•ñ
+	//å‰å›žã®ã‚­ãƒ¼æƒ…å ±
 	memcpy(oldkey_, key_, sizeof(key_));
 
-	//ƒL[ƒ{[ƒhî•ñ‚ÌŽæ“¾ŠJŽn
+	//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æƒ…å ±ã®å–å¾—é–‹å§‹
 	keyboard_->Acquire();
-	//‘SƒL[‚Ì“ü—Íî•ñ‚ðŽæ“¾
+	//å…¨ã‚­ãƒ¼ã®å…¥åŠ›æƒ…å ±ã‚’å–å¾—
 	keyboard_->GetDeviceState(sizeof(key_), key_);
 }

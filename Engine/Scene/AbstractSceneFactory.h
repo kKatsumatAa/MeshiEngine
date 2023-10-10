@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "SceneState.h"
 #include <string>
@@ -6,15 +6,15 @@
 
 
 /// <summary>
-/// ƒV[ƒ“HêiŠT”OE’ŠÛƒNƒ‰ƒXj
+/// ã‚·ãƒ¼ãƒ³å·¥å ´ï¼ˆæ¦‚å¿µãƒ»æŠ½è±¡ã‚¯ãƒ©ã‚¹ï¼‰
 /// </summary>
 class AbstractSceneFactory
 {
 public:
-	//‰¼‘zƒfƒXƒgƒ‰ƒNƒ^
+	//ä»®æƒ³ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	virtual ~AbstractSceneFactory() = default;
 
-	//ƒV[ƒ“¶¬
+	//ã‚·ãƒ¼ãƒ³ç”Ÿæˆ
 	virtual std::unique_ptr<SceneState> CreateScene(const std::string& sceneName) = 0;
 };
 

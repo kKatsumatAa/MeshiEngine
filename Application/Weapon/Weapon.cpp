@@ -1,4 +1,4 @@
-#include "Weapon.h"
+ï»¿#include "Weapon.h"
 #include "GameVelocityManager.h"
 #include "CollisionManager.h"
 #include "ParticleManager.h"
@@ -9,32 +9,32 @@ void Weapon::NoParentMove()
 {
 	if (GetParent() == nullptr && isThrowing_)
 	{
-		//‘O‰ñ‚ÌˆÊ’u
+		//å‰å›ã®ä½ç½®
 		oldPos_ = GetTrans();
 
 		const float FRAME_VEL_EXTEND_REM = 1.0f - FRAME_VEL_EXTEND_;
 
-		//ƒN[ƒ‹ƒ^ƒCƒ€‚àƒQ[ƒ€ƒXƒs[ƒh‚ğ‚©‚¯‚é
+		//ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚‚ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ã‹ã‘ã‚‹
 		SetTrans(GetTrans() + fallVec_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
 
 		SetRot(GetRot() + fallVec_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
 
-		//‚¾‚ñ‚¾‚ñã‚­
+		//ã ã‚“ã ã‚“å¼±ã
 		fallVec_.x *= (FRAME_VEL_EXTEND_ + FRAME_VEL_EXTEND_REM * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
 
-		//d—Í
+		//é‡åŠ›
 		float gravity = GRAVITY_TMP_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2);
 		fallVec_.y = max(fallVec_.y - gravity, -GRAVITY_MAX_);
 
-		//‚¾‚ñ‚¾‚ñã‚­
+		//ã ã‚“ã ã‚“å¼±ã
 		fallVec_.z *= (FRAME_VEL_EXTEND_ + FRAME_VEL_EXTEND_REM * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
 
 
-		//‘O‰ñ‚ÌˆÊ’u‚©‚ç¡‚ÌˆÊ’u‚ÌƒxƒNƒgƒ‹‚ğƒŒƒC‚Æ‚µ‚Ä”»’è
+		//å‰å›ã®ä½ç½®ã‹ã‚‰ä»Šã®ä½ç½®ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’ãƒ¬ã‚¤ã¨ã—ã¦åˆ¤å®š
 		{
 			RaycastHit info;
 
-			//“G‚Æ’nŒ`‚Æ”»’è‚ğ‚Æ‚é
+			//æ•µã¨åœ°å½¢ã¨åˆ¤å®šã‚’ã¨ã‚‹
 			if (CollisionManager::GetInstance()->RaycastUtil(GetTrans() + fallVec_ * GetScale().GetLength(), oldPos_, COLLISION_ATTR_LANDSHAPE | COLLISION_ATTR_ENEMYS, &info))
 			{
 				info.collider->OnCollision(CollisionInfo(this, GetCollider(), info.inter));
@@ -48,28 +48,28 @@ void Weapon::ChangeOwner(IObject3D* parent)
 {
 	if (parent == nullptr)
 	{
-		//—£‚ê‚½uŠÔ‚Éƒ[ƒ‹ƒhÀ•W‚ğ“ü‚ê‚é(e‚ª‚¢‚È‚­‚È‚é‚Ì‚Å)
+		//é›¢ã‚ŒãŸç¬é–“ã«ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’å…¥ã‚Œã‚‹(è¦ªãŒã„ãªããªã‚‹ã®ã§)
 		SetTrans(GetWorldTrans());
-		//e‚ğnull
+		//è¦ªã‚’null
 		SetParent((WorldMat*)nullptr);
 		isThrowing_ = true;
 	}
 	else
 	{
-		//E‚í‚êAe‚ª‚Í‚¢‚Á‚½‚çƒ[ƒJƒ‹À•W‚ÉØ‚è‘Ö‚¦
+		//æ‹¾ã‚ã‚Œã€è¦ªãŒã¯ã„ã£ãŸã‚‰ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã«åˆ‡ã‚Šæ›¿ãˆ
 		SetTrans(localPos_);
-		//eİ’è
+		//è¦ªè¨­å®š
 		SetParent(parent->GetWorldMat());
 		isThrowing_ = false;
 	}
-	//Š—LÒ‚àİ’è
+	//æ‰€æœ‰è€…ã‚‚è¨­å®š
 	owner_ = parent;
 	fallVec_.y = 0;
 }
 
 void Weapon::Update()
 {
-	//Á‚¦‚½‚çe‚ğ‰ğœ
+	//æ¶ˆãˆãŸã‚‰è¦ªã‚’è§£é™¤
 	if (!GetIsAlive() && owner_)
 	{
 		Character* chara = dynamic_cast<Character*>(owner_);

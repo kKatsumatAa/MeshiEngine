@@ -1,11 +1,11 @@
-#include "DrawIntNumImage.h"
+ï»¿#include "DrawIntNumImage.h"
 #include <math.h>
 
 void DrawIntNumImage::Initialize(uint64_t texhandle)
 {
-	//—]‚è
+	//ä½™ã‚Š
 	numRemainder_ = 0;
-	//‚»‚ÌŒ…
+	//ãã®æ¡
 	numDigit_ = 0;
 
 	texhandle_ = texhandle;
@@ -20,23 +20,23 @@ void DrawIntNumImage::Initialize(uint64_t texhandle)
 
 void DrawIntNumImage::SetNum(int32_t num, const Vec2& pos, const Vec2& sizeUV, const Vec2& numImageSize, float scale, const Vec4& color)
 {
-	//Å‰‚É”š‘S•”“ü‚ê‚é
+	//æœ€åˆã«æ•°å­—å…¨éƒ¨å…¥ã‚Œã‚‹
 	numRemainder_ = num;
 
-	//Œ…‚ªn‚Ü‚Á‚½‚ç‚»‚±‚©‚ç‘S•”•`‰æ‚·‚é—p
+	//æ¡ãŒå§‹ã¾ã£ãŸã‚‰ãã“ã‹ã‚‰å…¨éƒ¨æç”»ã™ã‚‹ç”¨
 	isStartDigit_ = false;
 
-	//”š‚Ì”‚ğƒJƒEƒ“ƒg
+	//æ•°å­—ã®æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆ
 	numCount_ = 0;
 
 	for (int32_t i = _countof(numImages_) - 1; i >= 0; i--)
 	{
-		//‚»‚ÌŒ…‚Ì”š‚ğo‚·
+		//ãã®æ¡ã®æ•°å­—ã‚’å‡ºã™
 		numDigit_ = numRemainder_ / (int)std::pow(10, i);
-		//—]‚è‚ğo‚µ‚ÄŸ‚ÌŒ…‚Åg‚¤
+		//ä½™ã‚Šã‚’å‡ºã—ã¦æ¬¡ã®æ¡ã§ä½¿ã†
 		numRemainder_ = numRemainder_ % (int)std::pow(10, i);
 
-		//‚»‚ÌŒ…‚ª‚ ‚é‚©A‘O‚ÌŒ…‚ª‚ ‚Á‚½‚ç,0‚¾‚Á‚½‚çA0ˆêŒ…‚¾‚Á‚½‚ç
+		//ãã®æ¡ãŒã‚ã‚‹ã‹ã€å‰ã®æ¡ãŒã‚ã£ãŸã‚‰,0ã ã£ãŸã‚‰ã€0ä¸€æ¡ã ã£ãŸã‚‰
 		if (numDigit_ > 0 || isStartDigit_ == true ||
 			(numDigit_ == 0 && numRemainder_ == 0 && i == _countof(numImages_) - 1))
 		{
@@ -70,12 +70,12 @@ void DrawIntNumImage::SetNum(int32_t num, const Vec2& pos, const Vec2& sizeUV, c
 
 void DrawIntNumImage::Draw(Camera2D* camera)
 {
-	//ˆê”Ô‘å‚«‚¢Œ…‚©‚çƒXƒ^[ƒg
+	//ä¸€ç•ªå¤§ãã„æ¡ã‹ã‚‰ã‚¹ã‚¿ãƒ¼ãƒˆ
 	for (int32_t i = numCount_; i >= 0; i--)
 	{
 		if (numImages_[i].isTrue)
 		{
-			//Œ…‚Ì”‚àl—¶‚µ‚ÄA¶ãÀ•W
+			//æ¡ã®æ•°ã‚‚è€ƒæ…®ã—ã¦ã€å·¦ä¸Šåº§æ¨™
 			Vec2 pos = { numImages_[i].pos.x + numImages_[i].numImageSize.x * ((float)(numCount_) - (float)i)
 				* numImages_[i].scale
 				,numImages_[i].pos.y };

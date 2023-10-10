@@ -8,14 +8,14 @@ class PlayerHand;
 class PlayerAttackState
 {
 protected:
-	//ó‘Ô‚ğg‚¤ƒCƒ“ƒXƒ^ƒ“ƒXƒ|ƒCƒ“ƒ^
+	//çŠ¶æ…‹ã‚’ä½¿ã†ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒã‚¤ãƒ³ã‚¿
 	PlayerHand* playerHand_ = nullptr;
 	float timer_ = 0;
 
-	//‰ñ“]‚Ég‚¤Šî€’l
+	//å›è»¢ã«ä½¿ã†åŸºæº–å€¤
 	static Vec3 rotTmp_;
 
-	//“G‚Ì”í’eˆ—
+	//æ•µã®è¢«å¼¾å‡¦ç†
 	std::function<void(PlayerHand*)> enemyDamageFunc_ = nullptr;
 
 public:
@@ -30,7 +30,7 @@ public:
 	virtual void Draw() = 0;
 };
 
-//UŒ‚‚µ‚Ä‚¢‚È‚¢
+//æ”»æ’ƒã—ã¦ã„ãªã„
 class PlayerAttackStateNone : public PlayerAttackState
 {
 private:
@@ -42,7 +42,7 @@ public:
 	void Draw() override;
 };
 
-//UŒ‚’†
+//æ”»æ’ƒä¸­
 class PlayerAttackStateDoing : public PlayerAttackState
 {
 private:
@@ -54,7 +54,7 @@ public:
 	void Draw() override;
 };
 
-//UŒ‚’†‚Q
+//æ”»æ’ƒä¸­ï¼’
 class PlayerAttackStateDoing2 : public PlayerAttackState
 {
 private:

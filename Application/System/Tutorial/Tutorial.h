@@ -10,10 +10,10 @@ class Tutorial final
 private:
 	std::unique_ptr<TutorialState> state_ = nullptr;
 
-	//Ÿ‚ÌƒXƒe[ƒg‚Ì–¼‘O
+	//æ¬¡ã®ã‚¹ãƒ†ãƒ¼ãƒˆã®åå‰
 	std::list<std::string> nextStateNames_;
 
-	//ƒtƒHƒ‹ƒ_–¼
+	//ãƒ•ã‚©ãƒ«ãƒ€å
 	const std::string FOLDER_NAME_ = "Resources/tutorialData/";
 	const std::string FILE_NAME_ = "tutorial";
 
@@ -34,10 +34,10 @@ private:
 	void ChangeState(const std::string& stateName);
 
 public:
-	//Ÿ‚ÌƒXƒe[ƒg
+	//æ¬¡ã®ã‚¹ãƒ†ãƒ¼ãƒˆ
 	void ToNextState();
 
-	//ƒXƒe[ƒW‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹“Ç‚İ‚İ
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«èª­ã¿è¾¼ã¿
 	void LoadTutorialData(int32_t fileIndex);
 
 public:

@@ -1,4 +1,4 @@
-#include "SceneTransitionManager.h"
+ï»¿#include "SceneTransitionManager.h"
 #include "SceneTransitionEffectState.h"
 
 
@@ -16,10 +16,10 @@ void SceneTransitionManager::Initialize()
 {
 	isDoingEffect_ = false;
 
-	//ƒV[ƒ“‘JˆÚ‰¹
+	//ã‚·ãƒ¼ãƒ³é·ç§»éŸ³
 	Sound::GetInstance().LoadWave(TRANSITION_SOUND_NAME_, false);
 
-	//ƒXƒe[ƒg
+	//ã‚¹ãƒ†ãƒ¼ãƒˆ
 	ChangeEffectState(std::make_unique<TransitionEffectNothingState>());
 }
 
@@ -38,23 +38,23 @@ void SceneTransitionManager::BeginSceneTransition(const std::function<void()>& l
 {
 	isDoingEffect_ = true;
 
-	//“Ç‚İ‚İ‚ÌŠÖ”ƒRƒs[
+	//èª­ã¿è¾¼ã¿ã®é–¢æ•°ã‚³ãƒ”ãƒ¼
 	loadFunc_ = loadFunc;
 
-	//ƒXƒe[ƒg•ÏX
+	//ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´
 	ChangeEffectState(std::make_unique<TransitionEffectBeginState>());
 }
 
 void SceneTransitionManager::BeginAsyncLoad(std::function<void()> loadFunc)
 {
-	//”ñ“¯Šú‚Å“Ç‚İ‚İŠJn
+	//éåŒæœŸã§èª­ã¿è¾¼ã¿é–‹å§‹
 	async_.StartAsyncFunction(loadFunc);
 }
 
 //---------------------------------------------
 void SceneTransitionManager::Update()
 {
-	//ƒ[ƒhI‚í‚Á‚½uŠÔ
+	//ãƒ­ãƒ¼ãƒ‰çµ‚ã‚ã£ãŸç¬é–“
 	if (async_.GetFinishedAsync())
 	{
 		async_.EndThread();

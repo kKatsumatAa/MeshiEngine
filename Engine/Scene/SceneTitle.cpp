@@ -1,4 +1,4 @@
-#include "SceneTitle.h"
+ï»¿#include "SceneTitle.h"
 #include "SceneManager.h"
 #include "GameVelocityManager.h"
 #include "TitleUI.h"
@@ -17,41 +17,41 @@ void SceneTitle::Initialize()
 
 	sceneM_->StopWaveAllScene();
 
-	//ƒ|ƒXƒgƒGƒtƒFƒNƒg
+	//ãƒã‚¹ãƒˆã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = true;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.barrelCurvePow = 0.7f;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isDepthField = false;
-	//ƒuƒ‹[ƒ€
+	//ãƒ–ãƒ«ãƒ¼ãƒ 
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = true;
 #ifdef _DEBUG
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = false;
 #endif // _DEBUG
 
 
-	//ƒJ[ƒ\ƒ‹ui
+	//ã‚«ãƒ¼ã‚½ãƒ«ui
 	CursorUI::GetInstance().Initialize();
-	//ƒ^ƒCƒgƒ‹
+	//ã‚¿ã‚¤ãƒˆãƒ«
 	TitleUI::GetInstance().Initialize();
-	//ƒQ[ƒ€ƒXƒs[ƒh
+	//ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰
 	GameVelocityManager::GetInstance().Initialize();
 }
 
 void SceneTitle::Update()
 {
-	//ƒJ[ƒ\ƒ‹ui
+	//ã‚«ãƒ¼ã‚½ãƒ«ui
 	CursorUI::GetInstance().Update();
-	//ƒ^ƒCƒgƒ‹
+	//ã‚¿ã‚¤ãƒˆãƒ«
 	TitleUI::GetInstance().Update();
 
-	//ƒV[ƒ“‘JˆÚ
+	//ã‚·ãƒ¼ãƒ³é·ç§»
 	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || KeyboardInput::GetInstance().KeyTrigger(DIK_R))
 	{
 		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = false;
 
 		sceneM_->SetNextScene("STAGESELECT");
 	}
-	//ƒ^ƒCƒgƒ‹‚Åescape‚ÅI—¹
+	//ã‚¿ã‚¤ãƒˆãƒ«ã§escapeã§çµ‚äº†
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_ESCAPE))
 	{
 		sceneM_->SetIsEscapingGame(true);
@@ -65,10 +65,10 @@ void SceneTitle::Draw()
 
 void SceneTitle::DrawSprite()
 {
-	//ƒ^ƒCƒgƒ‹
+	//ã‚¿ã‚¤ãƒˆãƒ«
 	TitleUI::GetInstance().DrawSprite();
 
-	//ƒJ[ƒ\ƒ‹ui
+	//ã‚«ãƒ¼ã‚½ãƒ«ui
 	CursorUI::GetInstance().Draw();
 }
 

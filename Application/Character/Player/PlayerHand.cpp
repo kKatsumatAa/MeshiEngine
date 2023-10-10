@@ -1,4 +1,4 @@
-#include "PlayerHand.h"
+ï»¿#include "PlayerHand.h"
 #include "PlayerAttackState.h"
 #include "Player.h"
 
@@ -11,7 +11,7 @@ std::unique_ptr<PlayerHand> PlayerHand::Create(Player* player, const Vec3& trans
 		return nullptr;
 	}
 
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	if (!instance->Initialize(player, transTmp, isRight, objName))
 	{
 		assert(0);
@@ -29,25 +29,25 @@ bool PlayerHand::Initialize(Player* player, const Vec3& transTmp, bool isRight, 
 
 	SetObjName(objName.c_str());
 
-	//ƒRƒ‰ƒCƒ_[
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
 	SetCollider(std::make_unique<SphereCollider>());
-	//“–‚½‚è”»’è‚Í‚¢‚Á‚½‚ñØ‚é
+	//å½“ãŸã‚Šåˆ¤å®šã¯ã„ã£ãŸã‚“åˆ‡ã‚‹
 	GetCollider()->SetIsValid(false);
 	GetCollider()->SetAttribute(COLLISION_ATTR_ALLIES);
 
 	player_ = player;
 	isAttacking_ = false;
-	//eqŠÖŒW
+	//è¦ªå­é–¢ä¿‚
 	SetParent(player_);
-	//‰¼‚ÅƒXƒP[ƒ‹
+	//ä»®ã§ã‚¹ã‚±ãƒ¼ãƒ«
 	SetScale({ 0.5f,0.5f,2.5f });
-	//UŒ‚ó‘Ô•ÏX
+	//æ”»æ’ƒçŠ¶æ…‹å¤‰æ›´
 	ChangeAttackState(std::make_unique<PlayerAttackStateNone>());
 
-	//‰Eè‚©‚Ç‚¤‚©
+	//å³æ‰‹ã‹ã©ã†ã‹
 	isRight_ = isRight;
 
-	//Œ³‚Æ‚È‚éÀ•W
+	//å…ƒã¨ãªã‚‹åº§æ¨™
 	transTmp_ = transTmp;
 	SetTrans(transTmp_);
 
@@ -59,7 +59,7 @@ void PlayerHand::Update()
 {
 	attackState_->Update();
 
-	//“®‚©‚·
+	//å‹•ã‹ã™
 	SetTrans(transTmp_ + addTrans_);
 
 	Object::Update();
@@ -75,7 +75,7 @@ void PlayerHand::Draw()
 void PlayerHand::ChangeAttackState(std::unique_ptr<PlayerAttackState> state)
 {
 	attackState_.reset();
-	//Š—LŒ ‚²‚Æ“n‚·
+	//æ‰€æœ‰æ¨©ã”ã¨æ¸¡ã™
 	attackState_ = std::move(state);
 	attackState_->SetPlayerHand(this);
 	attackState_->Initialize();

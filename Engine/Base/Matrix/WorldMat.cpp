@@ -1,4 +1,4 @@
-#include "WorldMat.h"
+ï»¿#include "WorldMat.h"
 #include "Util.h"
 
 WorldMat::WorldMat()
@@ -66,7 +66,7 @@ void WorldMat::CalcRotMat()
 
 void WorldMat::CalcQuaternionRotMat()
 {
-	//Šp“x‚¶‚á‚È‚­A‰ñ“]s—ñ‚»‚Ì‚Ü‚Üg‚¤
+	//è§’åº¦ã˜ã‚ƒãªãã€å›è»¢è¡Œåˆ—ãã®ã¾ã¾ä½¿ã†
 	if (isUseQMat_)
 	{
 		matWorld_ *= matRot_;
@@ -101,15 +101,15 @@ void WorldMat::CalcTransMat()
 
 void WorldMat::CalcAllTreeMat()
 {
-	//s—ñŒvZ
+	//è¡Œåˆ—è¨ˆç®—
 	CalcWorldMat();
 
-	//e‚ª‚¢‚½‚ç
+	//è¦ªãŒã„ãŸã‚‰
 	if (parent_ != nullptr)
 	{
-		//e‚Ìs—ñ‚àŒvZ(d‚¢‚©‚à)
+		//è¦ªã®è¡Œåˆ—ã‚‚è¨ˆç®—(é‡ã„ã‹ã‚‚)
 		SetParentWorld(parent_);
-		//e‚Ìs—ñ‚ğ©•ª‚Ìs—ñ‚É‚©‚¯‚Ä‚¢‚­
+		//è¦ªã®è¡Œåˆ—ã‚’è‡ªåˆ†ã®è¡Œåˆ—ã«ã‹ã‘ã¦ã„ã
 		RecursiveCalcParentMat(parent_, matWorld_);
 	}
 }
@@ -118,7 +118,7 @@ M4 WorldMat::GetOnlyParentALLTreeMat()
 {
 	if (parent_)
 	{
-		//e‚©‚çã‚Ì‚İ‚Ìs—ñŒvZ
+		//è¦ªã‹ã‚‰ä¸Šã®ã¿ã®è¡Œåˆ—è¨ˆç®—
 		parent_->CalcAllTreeMat();
 
 		return parent_->matWorld_;
@@ -129,10 +129,10 @@ M4 WorldMat::GetOnlyParentALLTreeMat()
 
 void WorldMat::SetParentWorld(WorldMat* parent)
 {
-	//e‚Ìs—ñŒvZ
+	//è¦ªã®è¡Œåˆ—è¨ˆç®—
 	parent->CalcWorldMat();
 
-	//e‚Ée‚ª‚ ‚Á‚½‚ç
+	//è¦ªã«è¦ªãŒã‚ã£ãŸã‚‰
 	if (parent->parent_)
 	{
 		SetParentWorld(parent->parent_);
@@ -141,10 +141,10 @@ void WorldMat::SetParentWorld(WorldMat* parent)
 
 void WorldMat::RecursiveCalcParentMat(WorldMat* parent, M4& childMat)
 {
-	//q‚Ìs—ñ‚Ée‚Ìs—ñ‚ğ‚©‚¯‚é
+	//å­ã®è¡Œåˆ—ã«è¦ªã®è¡Œåˆ—ã‚’ã‹ã‘ã‚‹
 	childMat *= parent->matWorld_;
 
-	//‚Ü‚¾e‚ª‚¢‚ê‚Î
+	//ã¾ã è¦ªãŒã„ã‚Œã°
 	if (parent->parent_)
 	{
 		RecursiveCalcParentMat(parent->parent_, childMat);
@@ -156,7 +156,7 @@ void WorldMat::CalcWorldMat()
 	matWorld_ = M4::NORMAL_M;
 
 	CalcScaleMat();
-	//‰ñ“]‚ÉƒNƒH[ƒ^ƒjƒIƒ“
+	//å›è»¢ã«ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³
 	CalcQuaternionRotMat();
 	CalcTransMat();
 }
@@ -170,7 +170,7 @@ Quaternion WorldMat::GetQuaternion()
 	//y
 	Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot_.y);
 
-	//‡¬(‚ ‚Á‚Ä‚é‚©‚í‚©‚ç‚È‚¢)
+	//åˆæˆ(ã‚ã£ã¦ã‚‹ã‹ã‚ã‹ã‚‰ãªã„)
 	qZ = qZ * qY * qX;
 
 	return Quaternion(qZ);

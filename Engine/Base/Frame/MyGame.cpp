@@ -1,15 +1,15 @@
-#include "MyGame.h"
+ï»¿#include "MyGame.h"
 #include"SceneFactory.h"
 #include"GameVelocityManager.h"
 
 
 void MyGame::Initialize()
 {
-	//Šî’êƒNƒ‰ƒX‚Ì‰Šú‰»ˆ—
+	//åŸºåº•ã‚¯ãƒ©ã‚¹ã®åˆæœŸåŒ–å‡¦ç†
 	Framework::Initialize();
 
-	//ƒQ[ƒ€ŒÅ—L‚Ì‰Šú‰»
-	//ƒJƒƒ‰
+	//ã‚²ãƒ¼ãƒ å›ºæœ‰ã®åˆæœŸåŒ–
+	//ã‚«ãƒ¡ãƒ©
 	CameraManager::GetInstance().Initialize();
 	//3d
 	CameraManager::GetInstance().AddCamera("camera");
@@ -18,7 +18,7 @@ void MyGame::Initialize()
 	CameraManager::GetInstance().AddCamera2D("camera");
 	CameraManager::GetInstance().SetUsingCamera2D("camera");
 
-	//ƒV[ƒ“ƒtƒ@ƒNƒgƒŠ[‚ğ¶¬‚µAƒ}ƒl[ƒWƒƒ[‚ÉƒZƒbƒg
+	//ã‚·ãƒ¼ãƒ³ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ã‚’ç”Ÿæˆã—ã€ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã«ã‚»ãƒƒãƒˆ
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneM_->SetSceneFactory(sceneFactory_.get());
 	sceneM_->Initialize();
@@ -27,38 +27,38 @@ void MyGame::Initialize()
 
 void MyGame::Finalize()
 {
-	//ƒQ[ƒ€ŒÅ—L‚ÌI—¹ˆ—
+	//ã‚²ãƒ¼ãƒ å›ºæœ‰ã®çµ‚äº†å‡¦ç†
 
 
-	//Šî’êƒNƒ‰ƒX‚ÌI—¹ˆ—
+	//åŸºåº•ã‚¯ãƒ©ã‚¹ã®çµ‚äº†å‡¦ç†
 	Framework::Finalize();
 }
 
 void MyGame::Update()
 {
-	//Šî’êƒNƒ‰ƒX‚ÌXVˆ—
+	//åŸºåº•ã‚¯ãƒ©ã‚¹ã®æ›´æ–°å‡¦ç†
 	Framework::Update();
 
-	//ƒQ[ƒ€ŒÅ—L‚ÌXVˆ—
-		//ƒp[ƒeƒBƒNƒ‹
+	//ã‚²ãƒ¼ãƒ å›ºæœ‰ã®æ›´æ–°å‡¦ç†
+		//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
 	ParticleManager::GetInstance()->Update(GameVelocityManager::GetInstance().GetVelocity());
 }
 
 void MyGame::Draw()
 {
-	//ƒ|ƒXƒgƒyƒ‰‚É•`‰æ‚·‚é
+	//ãƒã‚¹ãƒˆãƒšãƒ©ã«æç”»ã™ã‚‹
 	{
 		std::function<void()>f = [=]() {sceneM_->Draw(); };
 		std::function<void()>spriteF = [=]() {sceneM_->DrawSprite(); };
 		PostEffectManager::GetInstance().BeforeDraw(f, spriteF);
 	}
 
-	//ÀÛ‚É•`‰æ
+	//å®Ÿéš›ã«æç”»
 	{
-		//ÀÛ‚É•`‰æ----------------
+		//å®Ÿéš›ã«æç”»----------------
 		DirectXWrapper::GetInstance().PreDraw();
 
-		//ƒ|ƒXƒgƒyƒ‰ÀÛ‚É•`‰æ
+		//ãƒã‚¹ãƒˆãƒšãƒ©å®Ÿéš›ã«æç”»
 		PostEffectManager::GetInstance().DrawDisplay();
 
 
@@ -70,7 +70,7 @@ void MyGame::Draw()
 
 			//(imgui)
 			sceneM_->DrawImgui();
-			//ƒ|ƒXƒgƒGƒtƒFƒNƒg
+			//ãƒã‚¹ãƒˆã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 			PostEffectManager::GetInstance().ImGuiUpdate();
 
 
@@ -80,7 +80,7 @@ void MyGame::Draw()
 		}
 #endif // DEBUG
 
-		// 4.•`‰æƒRƒ}ƒ“ƒh‚±‚±‚Ü‚Å //
+		// 4.æç”»ã‚³ãƒãƒ³ãƒ‰ã“ã“ã¾ã§ //
 		DirectXWrapper::GetInstance().PostDraw();
 	}
 }

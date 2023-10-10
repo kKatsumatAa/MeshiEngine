@@ -12,10 +12,10 @@ PlayerAttackState::~PlayerAttackState()
 {
 }
 
-//‰½‚à‚µ‚È‚¢---------------------------------------------------------------
+//ä½•ã‚‚ã—ãªã„---------------------------------------------------------------
 void PlayerAttackStateNone::Initialize()
 {
-	//“®‚¢‚Ä‚È‚¢ê‡‚Í”»’è‚Æ‚ç‚È‚¢
+	//å‹•ã„ã¦ãªã„å ´åˆã¯åˆ¤å®šã¨ã‚‰ãªã„
 	if (playerHand_->GetCollider())
 	{
 		playerHand_->GetCollider()->SetIsValid(false);
@@ -32,18 +32,18 @@ void PlayerAttackStateNone::Draw()
 }
 
 
-//UŒ‚1---------------------------------------------------------------
+//æ”»æ’ƒ1---------------------------------------------------------------
 void PlayerAttackStateDoing::Initialize()
 {
 	playerHand_->SetIsAttacking(true);
 
-	//”»’è—LŒø‚É
+	//åˆ¤å®šæœ‰åŠ¹ã«
 	if (playerHand_->GetCollider())
 	{
 		playerHand_->GetCollider()->SetIsValid(true);
 	}
 
-	//Žè‚É‚æ‚Á‚Ä‰ñ“]Šp“x‹t‚É
+	//æ‰‹ã«ã‚ˆã£ã¦å›žè»¢è§’åº¦é€†ã«
 	if (playerHand_->GetIsRight())
 	{
 		rotTmp_.y = -PI;
@@ -52,7 +52,7 @@ void PlayerAttackStateDoing::Initialize()
 	{
 		rotTmp_.y = PI;
 	}
-	//ƒ‰ƒ“ƒ_ƒ€‚ÉŠp“x
+	//ãƒ©ãƒ³ãƒ€ãƒ ã«è§’åº¦
 	rotTmp_ = { GetRand(-PI / 8.0f,PI / 4.0f) ,rotTmp_.y / 2.0f,GetRand(-PI,PI) / 2.0f };
 }
 
@@ -60,29 +60,29 @@ void PlayerAttackStateDoing::Update()
 {
 	float t = min((float)timer_ / (float)TIMER_MAX_, 1.0f);
 
-	//Œo‰ßŽžŠÔ‚ÅŽè‚ðˆÚ“®
+	//çµŒéŽæ™‚é–“ã§æ‰‹ã‚’ç§»å‹•
 	Vec3 addTrans = LerpVec3({ 0,0,0 }, playerHand_->GetFrontVecTmp() * (playerHand_->GetInterLength() - playerHand_->GetScale().z / 2.0f), EaseOut(t));
 
-	//‰ñ“]‚à
+	//å›žè»¢ã‚‚
 	Vec3 rot = LerpVec3({ 0,0,0 }, rotTmp_, EaseOut(t));
 	playerHand_->SetRot(rot);
 
 
-	//ƒXƒs[ƒh‚ðƒZƒbƒg(ƒxƒNƒgƒ‹‚ðƒvƒŒƒCƒ„[–{‘ÌŠp“x‚Å‰ñ“]‚³‚¹‚Ä)
+	//ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆ(ãƒ™ã‚¯ãƒˆãƒ«ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æœ¬ä½“è§’åº¦ã§å›žè»¢ã•ã›ã¦)
 	Vec3 rotatedVec = addTrans;
 	playerHand_->GetPlayer()->GetWorldMat()->CalcRotMat();
 	playerHand_->SetVelocity(GetVec3xM4(addTrans, playerHand_->GetPlayer()->GetWorldMat()->GetRotMat(),0));
 
-	//ŽžŠÔŒo‰ß‚àƒQ[ƒ€ƒXƒs[ƒh‚ð‚©‚¯‚é
+	//æ™‚é–“çµŒéŽã‚‚ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ã‹ã‘ã‚‹
 	timer_ += 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
-	//ƒXƒe[ƒg•ÏX
+	//ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´
 	if (t >= 1.0f)
 	{
-		//“G‚Ì”í’eˆ—
+		//æ•µã®è¢«å¼¾å‡¦ç†
 		enemyDamageFunc_(playerHand_);
 
-		//ƒXƒs[ƒh‚ð‚È‚­‚·
+		//ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ãªãã™
 		playerHand_->SetVelocity({ 0,0,0 });
 
 		playerHand_->ChangeAttackState(std::make_unique<PlayerAttackStateDoing2>());
@@ -95,7 +95,7 @@ void PlayerAttackStateDoing::Draw()
 }
 
 
-//UŒ‚2i–ß‚·j---------------------------------------------------------------
+//æ”»æ’ƒ2ï¼ˆæˆ»ã™ï¼‰---------------------------------------------------------------
 void PlayerAttackStateDoing2::Initialize()
 {
 }
@@ -104,18 +104,18 @@ void PlayerAttackStateDoing2::Update()
 {
 	float t = (float)timer_ / (float)TIMER_MAX_;
 
-	//Œo‰ßŽžŠÔ‚ÅŽè‚ð–ß‚·
+	//çµŒéŽæ™‚é–“ã§æ‰‹ã‚’æˆ»ã™
 	Vec3 addTrans = LerpVec3(playerHand_->GetFrontVecTmp() * (playerHand_->GetInterLength() - playerHand_->GetScale().z / 2.0f), { 0,0,0 }, EaseOut(t));
 	playerHand_->SetAddTrans(addTrans);
 
-	//‰ñ“]‚à
+	//å›žè»¢ã‚‚
 	Vec3 rot = LerpVec3(rotTmp_, { 0,0,0 }, EaseOut(t));
 	playerHand_->SetRot(rot);
 
-	//ŽžŠÔŒo‰ß‚àƒQ[ƒ€ƒXƒs[ƒh‚ð‚©‚¯‚é
+	//æ™‚é–“çµŒéŽã‚‚ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ã‹ã‘ã‚‹
 	timer_ += 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
-	//ƒXƒe[ƒg•ÏX
+	//ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´
 	if (t >= 1.0f)
 	{
 		playerHand_->SetIsAttacking(false);

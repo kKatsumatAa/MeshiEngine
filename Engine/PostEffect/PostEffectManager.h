@@ -1,16 +1,16 @@
-#pragma once
+ï»¿#pragma once
 #include"PostPera.h"
 
 
 class PostEffectManager final
 {
 public:
-	//‰‰o—p‚Ì‰æ–Ê‚ÌÅ’áƒTƒCƒY
+	//æ¼”å‡ºç”¨ã®ç”»é¢ã®æœ€ä½ã‚µã‚¤ã‚º
 	const float DISPLAY_SIZE_MIN_ = 0.9f;
 	static const int32_t POST_PERA_NUM_ = 3;
 
 private:
-	//ƒ|ƒXƒgƒyƒ‰
+	//ãƒã‚¹ãƒˆãƒšãƒ©
 	std::unique_ptr<PostPera> postPera_[POST_PERA_NUM_];
 
 private:
@@ -27,9 +27,9 @@ public:
 	void Initialize(const char* normalTexHandle);
 	void Update();
 	void ImGuiUpdate();
-	//ƒV[ƒ“‚Ì‚à‚Ì‚ğƒ|ƒXƒgƒyƒ‰‚É•`‰æ‚·‚é
+	//ã‚·ãƒ¼ãƒ³ã®ã‚‚ã®ã‚’ãƒã‚¹ãƒˆãƒšãƒ©ã«æç”»ã™ã‚‹
 	void BeforeDraw(std::function<void()>drawSceneF, const std::function<void()>& drawSpriteF = nullptr);
-	//ÀÛ‚É‰æ–Ê‚É•`‰æ
+	//å®Ÿéš›ã«ç”»é¢ã«æç”»
 	void DrawDisplay();
 
 public:

@@ -1,17 +1,17 @@
-#pragma once
+ï»¿#pragma once
 #include<DirectXMath.h>
 #include <wrl.h>
 
 
 /// <summary>
-/// Æ–¾(—lX‚Èƒ‰ƒCƒg‚ğì‚é‚Æ‚«‚Íƒ|ƒŠƒ‚[ƒtƒBƒYƒ€‚ÅŒp³‚·‚é‚Æ‚¢‚¢)
+/// ç…§æ˜(æ§˜ã€…ãªãƒ©ã‚¤ãƒˆã‚’ä½œã‚‹ã¨ãã¯ãƒãƒªãƒ¢ãƒ¼ãƒ•ã‚£ã‚ºãƒ ã§ç¶™æ‰¿ã™ã‚‹ã¨ã„ã„)
 /// </summary>
 class DirLight
 {
-private://ƒGƒCƒŠƒAƒX
-	//Microsoft::WRL::‚ğÈ—ª
+private://ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	//Microsoft::WRL::ã‚’çœç•¥
 	template<class T> using Comptr = Microsoft::WRL::ComPtr<T>;
-	//DirectX::‚ğÈ—ª
+	//DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
@@ -19,60 +19,60 @@ private://ƒGƒCƒŠƒAƒX
 	using XMMATRIX = DirectX::XMMATRIX;
 
 
-private://ƒƒ“ƒo•Ï”
-	//ƒ‰ƒCƒgŒõü•ûŒü
+private://ãƒ¡ãƒ³ãƒå¤‰æ•°
+	//ãƒ©ã‚¤ãƒˆå…‰ç·šæ–¹å‘
 	XMVECTOR lightdir_ = { 1,0,0,0 };
-	//ƒ‰ƒCƒgF
+	//ãƒ©ã‚¤ãƒˆè‰²
 	XMFLOAT3 lightColor_ = { 1,1,1 };
-	// —LŒøƒtƒ‰ƒO
+	// æœ‰åŠ¹ãƒ•ãƒ©ã‚°
 	bool active_ = false;
 
 
-public://ƒTƒuƒNƒ‰ƒX
-	//’è”ƒoƒbƒtƒ@—pƒf[ƒ^\‘¢‘Ì
+public://ã‚µãƒ–ã‚¯ãƒ©ã‚¹
+	//å®šæ•°ãƒãƒƒãƒ•ã‚¡ç”¨ãƒ‡ãƒ¼ã‚¿æ§‹é€ ä½“
 	struct ConstBufferData
 	{
-		XMVECTOR lightv;     //ƒ‰ƒCƒg‚Ì•ûŒü‚ğ•\‚·ƒxƒNƒgƒ‹
-		XMFLOAT3 lightColor; //ƒ‰ƒCƒg‚ÌF
-		uint32_t active; //—LŒø‚©
+		XMVECTOR lightv;     //ãƒ©ã‚¤ãƒˆã®æ–¹å‘ã‚’è¡¨ã™ãƒ™ã‚¯ãƒˆãƒ«
+		XMFLOAT3 lightColor; //ãƒ©ã‚¤ãƒˆã®è‰²
+		uint32_t active; //æœ‰åŠ¹ã‹
 	};
 
 
 public:
 	/// <summary>
-	/// ƒ‰ƒCƒg•ûŒü‚ğƒZƒbƒg
+	/// ãƒ©ã‚¤ãƒˆæ–¹å‘ã‚’ã‚»ãƒƒãƒˆ
 	/// </summary>
-	/// <param name="lightdir_">ƒ‰ƒCƒg•ûŒü</param>
+	/// <param name="lightdir_">ãƒ©ã‚¤ãƒˆæ–¹å‘</param>
 	inline void SetLightDir(const XMVECTOR& lightdir) { lightdir_ = DirectX::XMVector3Normalize(lightdir); }
 
 	/// <summary>
-	/// ƒ‰ƒCƒg•ûŒü‚ğæ“¾
+	/// ãƒ©ã‚¤ãƒˆæ–¹å‘ã‚’å–å¾—
 	/// </summary>
-	/// <returns>ƒ‰ƒCƒg•ûŒü</returns>
+	/// <returns>ãƒ©ã‚¤ãƒˆæ–¹å‘</returns>
 	inline const XMVECTOR& GetLightDir() { return lightdir_; }
 
 	/// <summary>
-	/// ƒ‰ƒCƒgF‚ğƒZƒbƒg
+	/// ãƒ©ã‚¤ãƒˆè‰²ã‚’ã‚»ãƒƒãƒˆ
 	/// </summary>
-	/// <param name="lightcolor">ƒ‰ƒCƒgF</param>
+	/// <param name="lightcolor">ãƒ©ã‚¤ãƒˆè‰²</param>
 	inline void SetLightColor(const XMFLOAT3& lightcolor) { lightColor_ = lightcolor; }
 
 	/// <summary>
-	/// ƒ‰ƒCƒgF‚ğæ“¾
+	/// ãƒ©ã‚¤ãƒˆè‰²ã‚’å–å¾—
 	/// </summary>
-	/// <returns>ƒ‰ƒCƒgF</returns>
+	/// <returns>ãƒ©ã‚¤ãƒˆè‰²</returns>
 	inline const XMFLOAT3& GetLightColor() { return lightColor_; }
 
 	/// <summary>
-	/// —LŒøƒtƒ‰ƒO‚ğƒZƒbƒg
+	/// æœ‰åŠ¹ãƒ•ãƒ©ã‚°ã‚’ã‚»ãƒƒãƒˆ
 	/// </summary>
-	/// <param name="active">—LŒøƒtƒ‰ƒO</param>
+	/// <param name="active">æœ‰åŠ¹ãƒ•ãƒ©ã‚°</param>
 	inline void SetActive(bool active) { active_ = active; }
 
 	/// <summary>
-	/// —LŒøƒ`ƒFƒbƒN
+	/// æœ‰åŠ¹ãƒã‚§ãƒƒã‚¯
 	/// </summary>
-	/// <returns>—LŒøƒtƒ‰ƒO</returns>
+	/// <returns>æœ‰åŠ¹ãƒ•ãƒ©ã‚°</returns>
 	inline bool GetActive() { return active_; }
 
 	//

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include"Object.h"
 
 class Player;
@@ -12,15 +12,15 @@ private:
 	std::unique_ptr<PlayerAttackState> attackState_ = nullptr;
 	Player* player_ = nullptr;
 
-	//“G‚ÌÕ“Ë“_‚Ü‚Å‚Ì‹——£
+	//æ•µã®è¡çªç‚¹ã¾ã§ã®è·é›¢
 	float interLength_ = 0;
 
-	//‰Eè‚©
+	//å³æ‰‹ã‹
 	bool isRight_ = false;
 
-	//UŒ‚‚É‘«‚·—p‚Ìƒ|ƒWƒVƒ‡ƒ“
+	//æ”»æ’ƒæ™‚ã«è¶³ã™ç”¨ã®ãƒã‚¸ã‚·ãƒ§ãƒ³
 	Vec3 addTrans_ = { 0,0,0 };
-	//Œ³‚Æ‚È‚éÀ•W
+	//å…ƒã¨ãªã‚‹åº§æ¨™
 	Vec3 transTmp_ = { 0,0,0 };
 
 public:
@@ -30,7 +30,7 @@ public:
 	void SetIsAttacking(bool is) { isAttacking_ = is; }
 	bool GetIsAttacking() { return isAttacking_; }
 
-	//“G‚ÌÕ“Ë“_‚Ü‚Å‚Ì‹——£
+	//æ•µã®è¡çªç‚¹ã¾ã§ã®è·é›¢
 	void SetInterLength(float length) { interLength_ = length; }
 	float GetInterLength() { return interLength_; }
 
@@ -39,7 +39,7 @@ public:
 
 	bool GetIsRight() { return isRight_; }
 
-	//ƒXƒe[ƒg
+	//ã‚¹ãƒ†ãƒ¼ãƒˆ
 	PlayerAttackState* GetAttackState() { return attackState_.get(); }
 
 
@@ -52,6 +52,6 @@ public:
 	void Draw()override;
 
 
-	//UŒ‚‚ÌƒXƒe[ƒg•ÏX
+	//æ”»æ’ƒã®ã‚¹ãƒ†ãƒ¼ãƒˆå¤‰æ›´
 	void ChangeAttackState(std::unique_ptr<PlayerAttackState> state);
 };

@@ -1,4 +1,4 @@
-#include "CameraManager.h"
+ï»¿#include "CameraManager.h"
 #include "MouseInput.h"
 #include "ImGuiManager.h"
 
@@ -17,26 +17,26 @@ void CameraManager::ChangeCamera()
 	{
 		cameraItr_++;
 
-		//ÅŒã‚Ü‚Ås‚Á‚½‚ç
+		//æœ€å¾Œã¾ã§è¡Œã£ãŸã‚‰
 		if (cameraItr_ == cameraAndNames_.end())
 		{
 			cameraItr_ = cameraAndNames_.begin();
 		}
 
-		//ƒJƒƒ‰ƒ|ƒCƒ“ƒ^‚ğƒZƒbƒg
+		//ã‚«ãƒ¡ãƒ©ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚»ãƒƒãƒˆ
 		usingCamera_ = cameraItr_->second.get();
 	}
 	if (KeyboardInput::GetInstance().KeyTrigger(DIK_B))
 	{
 		camera2DItr_++;
 
-		//ÅŒã‚Ü‚Ås‚Á‚½‚ç
+		//æœ€å¾Œã¾ã§è¡Œã£ãŸã‚‰
 		if (camera2DItr_ == camera2DAndNames_.end())
 		{
 			camera2DItr_ = camera2DAndNames_.begin();
 		}
 
-		//ƒJƒƒ‰ƒ|ƒCƒ“ƒ^‚ğƒZƒbƒg
+		//ã‚«ãƒ¡ãƒ©ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚»ãƒƒãƒˆ
 		usingCamera2D_ = camera2DItr_->second.get();
 	}
 }
@@ -57,7 +57,7 @@ void CameraManager::Initialize()
 
 #endif
 
-	//ƒJƒƒ‰‚ğ‡‚ÉØ‚è‘Ö‚¦‚é‚½‚ß‚ÌƒCƒeƒŒ[ƒ^
+	//ã‚«ãƒ¡ãƒ©ã‚’é †ã«åˆ‡ã‚Šæ›¿ãˆã‚‹ãŸã‚ã®ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿
 	cameraItr_ = cameraAndNames_.begin();
 	camera2DItr_ = camera2DAndNames_.begin();
 }
@@ -70,7 +70,7 @@ void CameraManager::Update()
 
 		if (KeyboardInput::GetInstance().KeyTrigger(DIK_C))
 		{
-			//ƒfƒoƒbƒOƒJƒƒ‰‚É•ÏX
+			//ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ã«å¤‰æ›´
 			if (usingCamera_ != debugCamera)
 			{
 				isDebugCamera_ = true;
@@ -84,7 +84,7 @@ void CameraManager::Update()
 			}
 		}
 
-		//ƒfƒoƒbƒOƒJƒƒ‰‚ª—LŒø‚Ì
+		//ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ãŒæœ‰åŠ¹ã®æ™‚
 		if (usingCamera_ == debugCamera)
 		{
 
@@ -92,7 +92,7 @@ void CameraManager::Update()
 			{
 				Vec2 vel = MouseInput::GetInstance().GetCursorVelocity();
 
-				//‰ñ“]
+				//å›è»¢
 				Vec3 rotMove = {
 					vel.y * 0.01f,
 					vel.x * 0.01f,
@@ -116,7 +116,7 @@ void CameraManager::Update()
 		}
 	}
 #endif
-	//ƒJƒƒ‰Ø‚è‘Ö‚¦
+	//ã‚«ãƒ¡ãƒ©åˆ‡ã‚Šæ›¿ãˆ
 	ChangeCamera();
 
 	if (usingCamera_)
@@ -191,51 +191,51 @@ void CameraManager::ImguiUpdate()
 
 void CameraManager::AddCamera(const std::string& cameraName)
 {
-	//ƒtƒ@ƒCƒ‹–¼‚©‚ç’T‚·
+	//ãƒ•ã‚¡ã‚¤ãƒ«åã‹ã‚‰æ¢ã™
 	std::map< std::string, std::unique_ptr<Camera>>::iterator it = cameraAndNames_.find(cameraName);
-	//‚·‚Å‚É“¯‚¶–¼‘O‚ÌƒJƒƒ‰‚ª‚ ‚Á‚½‚ç
+	//ã™ã§ã«åŒã˜åå‰ã®ã‚«ãƒ¡ãƒ©ãŒã‚ã£ãŸã‚‰
 	if (it != cameraAndNames_.end())
 	{
 		return;
 	}
 
-	//‚È‚¯‚ê‚Î“Ç‚İ‚İ
+	//ãªã‘ã‚Œã°èª­ã¿è¾¼ã¿
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>();
 	camera->Initialize();
 
-	//•Û‘¶‚µ‚Ä‚¨‚­
+	//ä¿å­˜ã—ã¦ãŠã
 	cameraAndNames_.insert(std::make_pair(cameraName, std::move(camera)));
 }
 
 void CameraManager::AddCamera2D(const std::string& cameraName)
 {
-	//ƒtƒ@ƒCƒ‹–¼‚©‚ç’T‚·
+	//ãƒ•ã‚¡ã‚¤ãƒ«åã‹ã‚‰æ¢ã™
 	std::map< std::string, std::unique_ptr<Camera2D>>::iterator it = camera2DAndNames_.find(cameraName);
-	//‚·‚Å‚É“¯‚¶–¼‘O‚ÌƒJƒƒ‰‚ª‚ ‚Á‚½‚çƒGƒ‰[
+	//ã™ã§ã«åŒã˜åå‰ã®ã‚«ãƒ¡ãƒ©ãŒã‚ã£ãŸã‚‰ã‚¨ãƒ©ãƒ¼
 	if (it != camera2DAndNames_.end())
 	{
 		return;
 	}
 
-	//‚È‚¯‚ê‚Î“Ç‚İ‚İ
+	//ãªã‘ã‚Œã°èª­ã¿è¾¼ã¿
 	std::unique_ptr<Camera2D> camera = std::make_unique<Camera2D>();
 	camera->Initialize();
 
-	//•Û‘¶‚µ‚Ä‚¨‚­
+	//ä¿å­˜ã—ã¦ãŠã
 	camera2DAndNames_.insert(std::make_pair(cameraName, std::move(camera)));
 }
 
 Camera* CameraManager::GetCamera(const std::string& cameraName)
 {
-	//ƒtƒ@ƒCƒ‹–¼‚©‚ç’T‚·
+	//ãƒ•ã‚¡ã‚¤ãƒ«åã‹ã‚‰æ¢ã™
 	std::map< std::string, std::unique_ptr<Camera>>::iterator it = cameraAndNames_.find(cameraName);
-	//w’è‚µ‚½–¼‘O‚ÌƒJƒƒ‰‚ª‚ ‚ê‚Îƒ|ƒCƒ“ƒ^‚ğ•Ô‚·
+	//æŒ‡å®šã—ãŸåå‰ã®ã‚«ãƒ¡ãƒ©ãŒã‚ã‚Œã°ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™
 	if (it != cameraAndNames_.end())
 	{
 		return it->second.get();
 	}
 
-	//‚È‚¯‚ê‚Înullptr
+	//ãªã‘ã‚Œã°nullptr
 	assert(false);
 	return nullptr;
 }
@@ -247,15 +247,15 @@ Camera* CameraManager::GetCamera()
 
 Camera2D* CameraManager::GetCamera2D(const std::string& cameraName)
 {
-	//ƒtƒ@ƒCƒ‹–¼‚©‚ç’T‚·
+	//ãƒ•ã‚¡ã‚¤ãƒ«åã‹ã‚‰æ¢ã™
 	std::map< std::string, std::unique_ptr<Camera2D>>::iterator it = camera2DAndNames_.find(cameraName);
-	//w’è‚µ‚½–¼‘O‚ÌƒJƒƒ‰‚ª‚ ‚ê‚Îƒ|ƒCƒ“ƒ^‚ğ•Ô‚·
+	//æŒ‡å®šã—ãŸåå‰ã®ã‚«ãƒ¡ãƒ©ãŒã‚ã‚Œã°ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™
 	if (it != camera2DAndNames_.end())
 	{
 		return it->second.get();
 	}
 
-	//‚È‚¯‚ê‚Înullptr
+	//ãªã‘ã‚Œã°nullptr
 	assert(false);
 	return nullptr;
 }
@@ -267,30 +267,30 @@ Camera2D* CameraManager::GetCamera2D()
 
 void CameraManager::SetUsingCamera(const std::string& cameraName)
 {
-	//ƒtƒ@ƒCƒ‹–¼‚©‚ç’T‚·
+	//ãƒ•ã‚¡ã‚¤ãƒ«åã‹ã‚‰æ¢ã™
 	std::map< std::string, std::unique_ptr<Camera>>::iterator it = cameraAndNames_.find(cameraName);
-	//w’è‚µ‚½–¼‘O‚ÌƒJƒƒ‰‚ª‚ ‚ê‚Îƒ|ƒCƒ“ƒ^usingCamera_‚Éƒ|ƒCƒ“ƒ^ƒZƒbƒg
+	//æŒ‡å®šã—ãŸåå‰ã®ã‚«ãƒ¡ãƒ©ãŒã‚ã‚Œã°ãƒã‚¤ãƒ³ã‚¿usingCamera_ã«ãƒã‚¤ãƒ³ã‚¿ã‚»ãƒƒãƒˆ
 	if (it != cameraAndNames_.end())
 	{
 		usingCamera_ = it->second.get();
 		return;
 	}
 
-	//‚È‚¯‚ê‚Î
+	//ãªã‘ã‚Œã°
 	assert(false);
 }
 
 void CameraManager::SetUsingCamera2D(const std::string& cameraName)
 {
-	//ƒtƒ@ƒCƒ‹–¼‚©‚ç’T‚·
+	//ãƒ•ã‚¡ã‚¤ãƒ«åã‹ã‚‰æ¢ã™
 	std::map< std::string, std::unique_ptr<Camera2D>>::iterator it = camera2DAndNames_.find(cameraName);
-	//w’è‚µ‚½–¼‘O‚ÌƒJƒƒ‰‚ª‚ ‚ê‚Îƒ|ƒCƒ“ƒ^usingCamera_‚Éƒ|ƒCƒ“ƒ^ƒZƒbƒg
+	//æŒ‡å®šã—ãŸåå‰ã®ã‚«ãƒ¡ãƒ©ãŒã‚ã‚Œã°ãƒã‚¤ãƒ³ã‚¿usingCamera_ã«ãƒã‚¤ãƒ³ã‚¿ã‚»ãƒƒãƒˆ
 	if (it != camera2DAndNames_.end())
 	{
 		usingCamera2D_ = it->second.get();
 		return;
 	}
 
-	//‚È‚¯‚ê‚Î
+	//ãªã‘ã‚Œã°
 	assert(false);
 }

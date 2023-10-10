@@ -12,72 +12,72 @@
 
 struct LevelData
 {
-	//ƒRƒ‰ƒCƒ_[ƒf[ƒ^
+	//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ãƒ‡ãƒ¼ã‚¿
 	struct ColliderData
 	{
-		//ƒRƒ‰ƒCƒ_[g‚¤‚©
+		//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ä½¿ã†ã‹
 		bool isVailid = false;
-		//’†SÀ•W
+		//ä¸­å¿ƒåº§æ¨™
 		Vec3 center = { 0,0,0 };
-		//ƒXƒP[ƒ‹
+		//ã‚¹ã‚±ãƒ¼ãƒ«
 		Vec3 size = { 1,1,1 };
-		//ƒRƒ‰ƒCƒ_[ƒ^ƒCƒv
+		//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚¿ã‚¤ãƒ—
 		CollisionShapeType colliderType = SHAPE_UNKNOWN;
-		//’n–Ê‚âA•Ç‚Æ‚µ‚Äˆµ‚¤‚©
+		//åœ°é¢ã‚„ã€å£ã¨ã—ã¦æ‰±ã†ã‹
 		uint16_t attribute = 0;
 	};
 
-	//eƒm[ƒhƒf[ƒ^
+	//è¦ªãƒãƒ¼ãƒ‰ãƒ‡ãƒ¼ã‚¿
 	struct ParentNodeData
 	{
 		std::string parentName;
 		std::string nodeName;
 	};
 
-	//ƒIƒuƒWƒFƒNƒgˆêŒÂ•ª‚Ìƒf[ƒ^
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä¸€å€‹åˆ†ã®ãƒ‡ãƒ¼ã‚¿
 	struct ObjectData
 	{
 		//worldMat
 		std::unique_ptr<WorldMat> worldMat;
-		//ƒtƒ@ƒCƒ‹–¼
+		//ãƒ•ã‚¡ã‚¤ãƒ«å
 		std::string fileName;
-		//ƒRƒ‰ƒCƒ_[‚Ìƒf[ƒ^
+		//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ãƒ‡ãƒ¼ã‚¿
 		ColliderData colliderData;
-		//q‚Ìƒf[ƒ^
+		//å­ã®ãƒ‡ãƒ¼ã‚¿
 		ObjectData* childData;
-		//ƒEƒF[ƒu”Ô†
+		//ã‚¦ã‚§ãƒ¼ãƒ–ç•ªå·
 		int32_t waveNum = -1;
-		//eƒm[ƒh–¼
+		//è¦ªãƒãƒ¼ãƒ‰å
 		ParentNodeData parentNodeData;
 	};
 
-	//ƒJƒƒ‰‚Ìƒf[ƒ^
+	//ã‚«ãƒ¡ãƒ©ã®ãƒ‡ãƒ¼ã‚¿
 	struct CameraData
 	{
-		//ƒJƒƒ‰
+		//ã‚«ãƒ¡ãƒ©
 		std::unique_ptr<Camera> camera;
-		//ƒtƒ@ƒCƒ‹–¼
+		//ãƒ•ã‚¡ã‚¤ãƒ«å
 		std::string fileName;
 	};
 
-	//ƒ‰ƒCƒg‚Ìƒf[ƒ^
+	//ãƒ©ã‚¤ãƒˆã®ãƒ‡ãƒ¼ã‚¿
 	struct LightData
 	{
-		//ˆÊ’u
+		//ä½ç½®
 		Vec3 trans;
-		//•ûŒü
+		//æ–¹å‘
 		Vec3 dir;
-		//ƒXƒP[ƒ‹(‹­‚³‚È‚Ç‚Ég‚¤)
+		//ã‚¹ã‚±ãƒ¼ãƒ«(å¼·ã•ãªã©ã«ä½¿ã†)
 		Vec3 scale;
-		//ƒtƒ@ƒCƒ‹–¼
+		//ãƒ•ã‚¡ã‚¤ãƒ«å
 		std::string fileName;
 	};
 
-	//ƒIƒuƒWƒFƒNƒg‚Ì”z—ñ
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®é…åˆ—
 	std::vector<std::unique_ptr<ObjectData>> objects;
-	//ƒJƒƒ‰
+	//ã‚«ãƒ¡ãƒ©
 	std::vector<std::unique_ptr<CameraData>> cameras;
-	//ƒ‰ƒCƒg
+	//ãƒ©ã‚¤ãƒˆ
 	std::vector<std::unique_ptr<LightData>> lights;
 };
 
@@ -88,7 +88,7 @@ private:
 	static const std::string S_EXTENSION_;
 
 public:
-	//ƒŒƒxƒ‹ƒf[ƒ^
+	//ãƒ¬ãƒ™ãƒ«ãƒ‡ãƒ¼ã‚¿
 	std::unique_ptr<LevelData> levelData_ = nullptr;
 
 private:
@@ -96,31 +96,31 @@ private:
 	~JsonLevelLoader() { ; }
 
 private:
-	//Šp“x‚ğ“¾‚é
+	//è§’åº¦ã‚’å¾—ã‚‹
 	Vec3 GetRot(const nlohmann::json::iterator& object);
-	//Šp“x‚ğæ“¾‚µA‚»‚ê‚ğg‚¢ƒxƒNƒgƒ‹‚ğ“¾‚é
+	//è§’åº¦ã‚’å–å¾—ã—ã€ãã‚Œã‚’ä½¿ã„ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¾—ã‚‹
 	Vec3 GetRotDir(const nlohmann::json::iterator& object);
-	//ˆÊ’u‚ğ“¾‚é
+	//ä½ç½®ã‚’å¾—ã‚‹
 	Vec3 GetTrans(const nlohmann::json::iterator& object);
-	//ƒXƒP[ƒ‹‚ğ“¾‚é
+	//ã‚¹ã‚±ãƒ¼ãƒ«ã‚’å¾—ã‚‹
 	Vec3 GetScale(const nlohmann::json::iterator& object);
 
 
 public:
-	//ƒRƒs[ƒRƒ“ƒXƒgƒ‰ƒNƒ^‹Ö~
+	//ã‚³ãƒ”ãƒ¼ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ç¦æ­¢
 	JsonLevelLoader& operator=(const JsonLevelLoader& inst) = delete;
 	JsonLevelLoader(const JsonLevelLoader& inst) = delete;
 
 	static JsonLevelLoader& Getinstance();
 	void Initialize();
 
-	//jsonƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+	//jsonãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
 	void LoadJsonFile(const std::string& fileName);
 
-	//Ä‹A“I‚Éq‹Ÿ‚ğ“Ç‚İ‚İ(ƒIƒuƒWƒFƒNƒgƒf[ƒ^)
+	//å†å¸°çš„ã«å­ä¾›ã‚’èª­ã¿è¾¼ã¿(ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒ‡ãƒ¼ã‚¿)
 	void LoadRecursiveChildrenData(const nlohmann::json::iterator& object, WorldMat* parent = nullptr);
-	//ƒJƒƒ‰‚Ìƒf[ƒ^“Ç‚İ‚İ
+	//ã‚«ãƒ¡ãƒ©ã®ãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
 	void LoadCameraData(const nlohmann::json::iterator& object);
-	//ƒ‰ƒCƒg‚Ìƒf[ƒ^“Ç‚İ‚İ
+	//ãƒ©ã‚¤ãƒˆã®ãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
 	void LoadLightData(const nlohmann::json::iterator& object);
 };

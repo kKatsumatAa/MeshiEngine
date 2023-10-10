@@ -9,10 +9,10 @@ class TutorialState
 protected:
 	Tutorial* tutorial_;
 
-	//ğŒ’B¬‚µ‚½‚©
+	//æ¡ä»¶é”æˆã—ãŸã‹
 	bool isAchievement_ = false;
 
-	//‰‰o‚Ìƒ^ƒCƒ}[
+	//æ¼”å‡ºã®ã‚¿ã‚¤ãƒãƒ¼
 	int32_t endingTimer_ = 0;
 	int32_t beginingTimer_ = 0;
 
@@ -23,15 +23,15 @@ protected:
 
 	float alpha_ = 0.0f;
 
-	//‰æ‘œ
+	//ç”»åƒ
 	uint64_t texHandle_ = NULL;
 	Sprite texSprite_;
 
-	//‰‰o‚ÌŠÔ§ŒÀ
+	//æ¼”å‡ºã®æ™‚é–“åˆ¶é™
 	const int32_t BEGINING_TIMER_MAX_ = 10;
 	const int32_t ENDING_TIMER_MAX_ = 10;
 
-	//ğŒ’B¬—¦
+	//æ¡ä»¶é”æˆç‡
 	float rate_ = 0;
 	int32_t rateMax_ = 150;
 
@@ -47,9 +47,9 @@ public:
 	virtual void CommonUpdate();
 	virtual void CommonSpriteDraw();
 
-	//ğŒ’B¬Œã‚Ì‰‰o
+	//æ¡ä»¶é”æˆå¾Œã®æ¼”å‡º
 	virtual bool EndingUpdate(const int32_t TIMER_MAX);
-	//Å‰‚Ì‰‰oˆ—
+	//æœ€åˆã®æ¼”å‡ºå‡¦ç†
 	virtual bool BeginingUpdate(const int32_t TIMER_MAX);
 
 	virtual void Initialize() = 0;
@@ -58,7 +58,7 @@ public:
 };
 
 
-//‰½‚à‚È‚¢
+//ä½•ã‚‚ãªã„
 class TutorialStateNone : public TutorialState
 {
 private:
@@ -69,7 +69,7 @@ public:
 	void Draw() override;
 };
 
-//Šî–{‘€ìà–¾
+//åŸºæœ¬æ“ä½œèª¬æ˜
 class TutorialStateOperation : public TutorialState
 {
 private:
@@ -81,7 +81,7 @@ public:
 	void Draw() override;
 };
 
-//ƒQ[ƒ€ƒXƒs[ƒh‚Ìà–¾
+//ã‚²ãƒ¼ãƒ ã‚¹ãƒ”ãƒ¼ãƒ‰ã®èª¬æ˜
 class TutorialStateGameSpeed : public TutorialState
 {
 private:
@@ -93,7 +93,7 @@ public:
 	void Draw() override;
 };
 
-//ƒ}ƒEƒX‘€ìà–¾
+//ãƒã‚¦ã‚¹æ“ä½œèª¬æ˜
 class TutorialStateMouse : public TutorialState
 {
 private:

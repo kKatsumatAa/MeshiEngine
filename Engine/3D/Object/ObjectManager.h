@@ -2,13 +2,13 @@
 #include"IObject3D.h"
 
 
-//¡‚Í3D‚Ì‚İ‚ÌŠÇ—
+//ä»Šã¯3Dã®ã¿ã®ç®¡ç†
 class ObjectManager final
 {
 private:
-	//‘I‘ğ’†‚ÌƒIƒuƒWƒFƒNƒg
+	//é¸æŠä¸­ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 	IObject3D* selectObj_ = nullptr;
-	//ƒIƒuƒWƒFƒNƒg‚Ì”z—ñ‚ğƒOƒ‹[ƒv‚²‚Æ‚É•ª‚¯‚½
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®é…åˆ—ã‚’ã‚°ãƒ«ãƒ¼ãƒ—ã”ã¨ã«åˆ†ã‘ãŸ
 	std::map<std::string, std::vector<std::unique_ptr<IObject3D>>> objsGroups_;
 
 
@@ -30,48 +30,48 @@ public:
 	void PostUpdate();
 
 public:
-	//ƒfƒoƒbƒO—pƒAƒbƒvƒf[ƒg(ƒRƒ‰ƒCƒ_[‚ª‚È‚¢‚ÆƒNƒŠƒbƒN‚µ‚Ä‚à”½‰‚µ‚È‚¢)
+	//ãƒ‡ãƒãƒƒã‚°ç”¨ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ(ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ãŒãªã„ã¨ã‚¯ãƒªãƒƒã‚¯ã—ã¦ã‚‚åå¿œã—ãªã„)
 	void DebugUpdate();
 
 private:
-	//ƒOƒ‹[ƒv‚ª‚ ‚é‚©’²‚×‚é
+	//ã‚°ãƒ«ãƒ¼ãƒ—ãŒã‚ã‚‹ã‹èª¿ã¹ã‚‹
 	bool FindObjGroup(const std::string& name);
 
 	std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator
 		GetObjGroup(const std::string& name);
 
-	//ƒOƒ‹[ƒv‚ğ’Ç‰Á‚·‚é
+	//ã‚°ãƒ«ãƒ¼ãƒ—ã‚’è¿½åŠ ã™ã‚‹
 	void AddGroup(const std::string& groupName, std::unique_ptr<IObject3D> inst);
-	//ƒOƒ‹[ƒv‚ÉƒIƒuƒWƒFƒNƒg’Ç‰ÁAƒOƒ‹[ƒv‚ª‚Ü‚¾‚È‚¯‚ê‚ÎƒOƒ‹[ƒv‚à”z—ñ‚É’Ç‰Á
+	//ã‚°ãƒ«ãƒ¼ãƒ—ã«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆè¿½åŠ ã€ã‚°ãƒ«ãƒ¼ãƒ—ãŒã¾ã ãªã‘ã‚Œã°ã‚°ãƒ«ãƒ¼ãƒ—ã‚‚é…åˆ—ã«è¿½åŠ 
 	void AddObjAndGroup(std::unique_ptr<IObject3D> obj, const std::string& groupName);
 
-	//”»’è‘®«‚Æ“¯‚¶‚È‚ç
+	//åˆ¤å®šå±æ€§ã¨åŒã˜ãªã‚‰
 	bool GetSameAttribute(IObject3D* obj, uint16_t attribute);
-	//ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O‚Æ‚ ‚Á‚Ä‚¢‚½‚ç
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰ã¨ã‚ã£ã¦ã„ãŸã‚‰
 	bool GetSameObjName(IObject3D* obj, const std::string& name);
 
 
 
-	//–¼‘O‚ğ•t‚¯‚ÄƒIƒuƒWƒF‚ğ’Ç‰ÁA“o˜^
+	//åå‰ã‚’ä»˜ã‘ã¦ã‚ªãƒ–ã‚¸ã‚§ã‚’è¿½åŠ ã€ç™»éŒ²
 	std::vector<IObject3D*> GetObjectInternal(const std::string& groupName,
 		const std::function<bool(IObject3D* obj)>& isF);
 
 public:
-	//–¼‘O‚ğ•t‚¯‚ÄƒIƒuƒWƒF‚ğ’Ç‰ÁA“o˜^
+	//åå‰ã‚’ä»˜ã‘ã¦ã‚ªãƒ–ã‚¸ã‚§ã‚’è¿½åŠ ã€ç™»éŒ²
 	void AddObject(const std::string& groupName, const std::string& name);
-	//‚»‚Ì‚Ü‚ÜƒCƒ“ƒXƒ^ƒ“ƒX‚ğ“o˜^()
+	//ãã®ã¾ã¾ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç™»éŒ²()
 	void AddObject(const std::string& groupName, std::unique_ptr<IObject3D>inst);
-	//–¼‘O‚ğw’è‚µ‚ÄƒIƒuƒWƒF‚Ìƒ|ƒCƒ“ƒg‚ğ”z—ñ‚Å•Ô‚·
+	//åå‰ã‚’æŒ‡å®šã—ã¦ã‚ªãƒ–ã‚¸ã‚§ã®ãƒã‚¤ãƒ³ãƒˆã‚’é…åˆ—ã§è¿”ã™
 	std::vector<IObject3D*> GetObjs(const std::string& groupName, const std::string& name);
-	//”»’è‘®«‚ğw’è‚µ‚ÄƒIƒuƒWƒF‚Ìƒ|ƒCƒ“ƒg‚ğ”z—ñ‚Å•Ô‚·
+	//åˆ¤å®šå±æ€§ã‚’æŒ‡å®šã—ã¦ã‚ªãƒ–ã‚¸ã‚§ã®ãƒã‚¤ãƒ³ãƒˆã‚’é…åˆ—ã§è¿”ã™
 	std::vector<IObject3D*> GetObjs(const std::string& groupName, uint16_t attribute);
-	//ƒOƒ‹[ƒv‘S•”
+	//ã‚°ãƒ«ãƒ¼ãƒ—å…¨éƒ¨
 	std::vector<IObject3D*>GetObjs(const std::string& groupName);
-	//‘S•”(ğŒ‚È‚­)
+	//å…¨éƒ¨(æ¡ä»¶ãªã)
 	std::vector<IObject3D*>GetObjs();
 
-	//objƒNƒŠƒA
+	//objã‚¯ãƒªã‚¢
 	void ClearAllObj();
-	//ƒOƒ‹[ƒvƒNƒŠƒA
+	//ã‚°ãƒ«ãƒ¼ãƒ—ã‚¯ãƒªã‚¢
 	void ClearGroup(const std::string& groupName);
 };

@@ -63,7 +63,8 @@ private://ゲームオリジナル
 
 private:
 	//コライダー系のセット
-	void SetCollider(IObject3D* obj, const LevelData::ObjectData& objData, bool isSettingCollider);
+	void SetCollider(IObject3D* obj, const LevelData::ObjectData& objData, bool isSettingCollider
+		, IModel* model);
 	//引数によってObjectかTouchObjectを作る
 	void CreateObjectOrTouchableObject(std::unique_ptr<IObject3D>& obj, LevelData::ObjectData& objData, bool isLandShape, IModel* model);
 	//親オブジェクトのモデルのノードを親に設定

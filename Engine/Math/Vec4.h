@@ -19,14 +19,14 @@ public:
 		:x(x), y(y), z(z), w(w)
 	{}
 
-	//•Ö—˜ŠÖ”
+	//ä¾¿åˆ©é–¢æ•°
 	float GetLength() const;
 	void Normalized();
 	Vec4 GetNormalized() const;
 	Vec4 Cross(const Vec4& other) const;
 	float Dot(const Vec4& other) const;
 
-	//ƒIƒoƒ‰‰Zq
+	//ã‚ªãƒãƒ­æ¼”ç®—å­
 	Vec4 operator+(const Vec4& other);
 	Vec4& operator+=(const Vec4& other);
 	Vec4 operator-(const Vec4& other);
@@ -37,7 +37,7 @@ public:
 	Vec4& operator/=(float other);
 };
 
-//“ñ€‰‰ZqƒI[ƒo[ƒ[ƒh
+//äºŒé …æ¼”ç®—å­ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
 const Vec4 operator +(const Vec4& v1, const Vec4& v2);
 const Vec4 operator -(const Vec4& v1, const Vec4& v2);
 const Vec4 operator *(const Vec4& v, float s);

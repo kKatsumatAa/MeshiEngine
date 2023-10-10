@@ -1,12 +1,12 @@
-#include"MyGame.h"
+Ôªø#include"MyGame.h"
 
 
 int32_t WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
-	//ÉQÅ[ÉÄ
+	//„Ç≤„Éº„É†
 	std::unique_ptr<Framework> game = std::make_unique<MyGame>();
 	
-	//ÉQÅ[ÉÄé¿çs
+	//„Ç≤„Éº„É†ÂÆüË°å
 	game->Run();
 
 	return 0;

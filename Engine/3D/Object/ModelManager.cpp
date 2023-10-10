@@ -1,4 +1,4 @@
-#include "ModelManager.h"
+ï»¿#include "ModelManager.h"
 #include "FbxLoader.h"
 #include <sstream>
 
@@ -22,44 +22,44 @@ void ModelManager::Finalize()
 
 IModel* ModelManager::LoadModel(const std::string& fileName, bool smoothing, bool sameNameOtherModel)
 {
-	// 1s•ª‚Ì•¶š—ñ‚ğƒXƒgƒŠ[ƒ€‚É•ÏŠ·‚µ‚Ä‰ğÍ‚µ‚â‚·‚­‚·‚é
+	// 1è¡Œåˆ†ã®æ–‡å­—åˆ—ã‚’ã‚¹ãƒˆãƒªãƒ¼ãƒ ã«å¤‰æ›ã—ã¦è§£æã—ã‚„ã™ãã™ã‚‹
 	std::istringstream line_stream(fileName);
 
-	// '/'‹æØ‚è‚Ås‚Ìæ“ª•¶š—ñ‚ğæ“¾
+	// '/'åŒºåˆ‡ã‚Šã§è¡Œã®å…ˆé ­æ–‡å­—åˆ—ã‚’å–å¾—
 	std::string modelType;
 	std::string modelName;
 
-	//ƒ‚ƒfƒ‹–¼‚Æƒ‚ƒfƒ‹‚Ìƒ^ƒCƒv‚ğ‚à‚ç‚¤('.'‹æØ‚è‚Å)
+	//ãƒ¢ãƒ‡ãƒ«åã¨ãƒ¢ãƒ‡ãƒ«ã®ã‚¿ã‚¤ãƒ—ã‚’ã‚‚ã‚‰ã†('.'åŒºåˆ‡ã‚Šã§)
 	getline(line_stream, modelName, '.');
 	getline(line_stream, modelType, '.');
 
-	//fbx‚È‚ç
+	//fbxãªã‚‰
 	if (modelType == "FBX" || modelType == "fbx")
 	{
-		//ƒ‚ƒfƒ‹–¼‚à‚ç‚Á‚Ä“Ç‚İ‚Ş
+		//ãƒ¢ãƒ‡ãƒ«åã‚‚ã‚‰ã£ã¦èª­ã¿è¾¼ã‚€
 		return LoadModelFBX(modelName, smoothing, sameNameOtherModel);
 	}
 
-	//.fbx“™‚ª‚Â‚¢‚Ä‚È‚¢ê‡‚Íobj‚Æ”»’f
+	//.fbxç­‰ãŒã¤ã„ã¦ãªã„å ´åˆã¯objã¨åˆ¤æ–­
 	return LoadModelObj(modelName, smoothing, sameNameOtherModel);
 }
 
 ModelObj* ModelManager::LoadModelObj(const std::string& fileName, bool smoothing, bool sameNameOtherModel)
 {
-	//ƒtƒ@ƒCƒ‹–¼‚©‚ç’T‚·
+	//ãƒ•ã‚¡ã‚¤ãƒ«åã‹ã‚‰æ¢ã™
 	std::map<std::string, std::unique_ptr<ModelObj>>::iterator it = nameAndModels_.find(fileName);
-	//‚·‚Å‚É“Ç‚İ‚Ü‚ê‚Ä‚¢‚½‚ç‚»‚Ìƒ‚ƒfƒ‹‚Ìƒ|ƒCƒ“ƒ^‚ğ•Ô‚·
+	//ã™ã§ã«èª­ã¿è¾¼ã¾ã‚Œã¦ã„ãŸã‚‰ãã®ãƒ¢ãƒ‡ãƒ«ã®ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™
 	if (!sameNameOtherModel && it != nameAndModels_.end())
 	{
 		return it->second.get();
 	}
 
-	//‚È‚¯‚ê‚Î“Ç‚İ‚İ
+	//ãªã‘ã‚Œã°èª­ã¿è¾¼ã¿
 	std::unique_ptr<ModelObj> model = ModelObj::LoadFromOBJ(fileName, smoothing);
 
 	ModelObj* ansM = model.get();
 
-	//•Û‘¶‚µ‚Ä‚¨‚­
+	//ä¿å­˜ã—ã¦ãŠã
 	if (sameNameOtherModel)
 	{
 		sameNameOtherModels_.push_back(std::move(model));
@@ -69,26 +69,26 @@ ModelObj* ModelManager::LoadModelObj(const std::string& fileName, bool smoothing
 		nameAndModels_.insert(std::make_pair(fileName, std::move(model)));
 	}
 
-	//ƒ|ƒCƒ“ƒ^•Ô‚·
+	//ãƒã‚¤ãƒ³ã‚¿è¿”ã™
 	return ansM;
 }
 
 ModelFBX* ModelManager::LoadModelFBX(const std::string& fileName, bool smoothing, bool sameNameOtherModel)
 {
-	//ƒtƒ@ƒCƒ‹–¼‚©‚ç’T‚·
+	//ãƒ•ã‚¡ã‚¤ãƒ«åã‹ã‚‰æ¢ã™
 	std::map<std::string, std::unique_ptr<ModelFBX>>::iterator it = nameAndModelFBXs_.find(fileName);
-	//‚·‚Å‚É“Ç‚İ‚Ü‚ê‚Ä‚¢‚½‚ç‚»‚Ìƒ‚ƒfƒ‹‚Ìƒ|ƒCƒ“ƒ^‚ğ•Ô‚·
+	//ã™ã§ã«èª­ã¿è¾¼ã¾ã‚Œã¦ã„ãŸã‚‰ãã®ãƒ¢ãƒ‡ãƒ«ã®ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™
 	if (!sameNameOtherModel && it != nameAndModelFBXs_.end())
 	{
 		return it->second.get();
 	}
 
-	//‚È‚¯‚ê‚Î“Ç‚İ‚İ
+	//ãªã‘ã‚Œã°èª­ã¿è¾¼ã¿
 	std::unique_ptr<ModelFBX> model = FbxLoader::GetInstance()->LoadModelFromFile(fileName, smoothing);
 
 	ModelFBX* ansM = model.get();
 
-	//•Û‘¶‚µ‚Ä‚¨‚­
+	//ä¿å­˜ã—ã¦ãŠã
 	if (sameNameOtherModel)
 	{
 		sameNameOtherModels_.push_back(std::move(model));
@@ -98,6 +98,6 @@ ModelFBX* ModelManager::LoadModelFBX(const std::string& fileName, bool smoothing
 		nameAndModelFBXs_.insert(std::make_pair(fileName, std::move(model)));
 	}
 
-	//ƒ|ƒCƒ“ƒ^•Ô‚·
+	//ãƒã‚¤ãƒ³ã‚¿è¿”ã™
 	return ansM;
 }

@@ -1,20 +1,20 @@
-#pragma once
+﻿#pragma once
 #include "BaseCollider.h"
 
 class IObject3D;
 
 /// <summary>
-/// レイキャストによる情報を得る為の構造体（CollisionInfoのようなもの）
+/// 繝ｬ繧､繧ｭ繝｣繧ｹ繝医↓繧医ｋ諠・ｱ繧貞ｾ励ｋ轤ｺ縺ｮ讒矩菴難ｼ・ollisionInfo縺ｮ繧医≧縺ｪ繧ゅ・・・
 /// </summary>
 struct RaycastHit
 {
-	// 衝突相手のオブジェクト
+	// 陦晉ｪ∫嶌謇九・繧ｪ繝悶ず繧ｧ繧ｯ繝・
 	IObject3D* object = nullptr;
-	// 衝突相手のコライダー
+	// 陦晉ｪ∫嶌謇九・繧ｳ繝ｩ繧､繝繝ｼ
 	BaseCollider* collider = nullptr;
-	// 衝突点
+	// 陦晉ｪ∫せ
 	DirectX::XMVECTOR inter;
-	// 衝突点までの距離
+	// 陦晉ｪ∫せ縺ｾ縺ｧ縺ｮ霍晞屬
 	float distance = 0.0f;
 };
 
