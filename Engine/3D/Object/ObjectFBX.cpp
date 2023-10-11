@@ -557,6 +557,9 @@ void ObjectFBX::DrawImGui(std::function<void()> imguiF)
 
 			anime = dynamic_cast<ModelFBX*>(model_)->GetAnimations()[animeIndex_];
 
+			//ノードごとの当たり判定描画
+			ImGui::Checkbox("isValidNodeCollidersDraw", &isValidNodeCollidersDraw_);
+
 			ImGui::Checkbox("isPlay", &animeData.isPlay_);
 			ImGui::Checkbox("isLoop", &animeData.isLoop_);
 			ImGui::Checkbox("isReverse", &animeData.isReverse_);
@@ -591,4 +594,13 @@ void ObjectFBX::SetModel(IModel* model)
 		//
 		AnimationUpdate();
 	}
+}
+
+void ObjectFBX::InitializeNodeColliders(ModelFBX* model, float colliderScale, uint16_t attribute)
+{
+	nodeColliders_.SetNodesPointer(model->GetNodes());
+	nodeColliders_.CreateNodeColliders(attribute);
+	nodeColliders_.SetNodeParamMagnif(model->GetScaleExtend());
+	nodeColliders_.SetScaleCollider(colliderScale);
+	nodeColliders_.SetParentObj(this);
 }

@@ -1,4 +1,4 @@
-﻿#include "PlayerState.h"
+#include "PlayerState.h"
 #include "Player.h"
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
@@ -80,7 +80,7 @@ void PlayerStateBareHands::Update()
 			}
 		}
 		//敵が照準にあったら殴る
-		else if (info_.object->GetObjName().find("enemy") != std::string::npos)
+		else if (info_.collider->GetAttribute() & COLLISION_ATTR_ENEMYS)
 		{
 			//ui変更
 			PlayerUI::GetInstance().ChangeState("PUNCH");

@@ -49,6 +49,10 @@ protected:
 	static D3D12_INPUT_ELEMENT_DESC sInputLayoutM_[7];
 
 protected:
+	//モデルの有効フラグ
+	bool isValidModel_ = true;
+
+protected:
 	//モデルのポインタ
 	IModel* model_ = nullptr;
 
@@ -100,7 +104,7 @@ public:
 	void DrawModel(Camera* camera = nullptr, bool isWireFrame = false);
 
 	//演出系のアップデート
-	void EffectUpdate();
+	void EffectUpdate(IObject3D* effectCopyObj = nullptr);
 	//imgui
 	virtual void DrawImGui(std::function<void()>imguiF = NULL)override;
 

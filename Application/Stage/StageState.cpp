@@ -136,7 +136,7 @@ void StageStateBattle::Update()
 		StageManager::GetInstance().ChangeState("GAMEOVER");
 	}
 	//ゲームクリア
-	else if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_ENEMYS).size() <= 0)
+	else if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "enemy").size() <= 0)
 	{
 		//ゲームスピードの加算無効
 		GameVelocityManager::GetInstance().SetIsInvalidAddGameVel(true);

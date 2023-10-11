@@ -3,8 +3,18 @@
 
 using namespace DirectX;
 
+
+//----------------------------------------------
+void FBXNodeColliders::ColliderObject::OnCollision(const CollisionInfo& info)
+{
+	if (onCollFunc_)
+	{
+		onCollFunc_(info);
+	}
+}
+
 //---------------------------------------------
-void FBXNodeColliders::CreateNodeColliders()
+void FBXNodeColliders::CreateNodeColliders(uint16_t attribute)
 {
 	if (nodes_ == nullptr)
 	{
@@ -22,7 +32,9 @@ void FBXNodeColliders::CreateNodeColliders()
 		{
 			obj = std::make_unique<ColliderObject>();
 			obj->SetObjName(node.name);
-			//obj->SetCollider(std::make_unique<SphereCollider>());
+			std::unique_ptr<SphereCollider>collider = std::make_unique<SphereCollider>();
+			collider->SetAttribute(attribute);
+			obj->SetCollider(std::move(collider));
 		}
 
 		//要素追加
@@ -73,6 +85,9 @@ void FBXNodeColliders::Update(WorldMat* worldMat)
 			colliderObjs_[i]->SetScale({ scale_ ,scale_ ,scale_ });
 			colliderObjs_[i]->CalcWorldMat();
 			colliderObjs_[i]->SetMatWorld(colliderObjs_[i]->GetMatWorld() * mat);
+
+			//コライダーのパラメータ更新
+			colliderObjs_[i]->ColliderUpdate();
 		}
 	}
 
@@ -89,6 +104,41 @@ void FBXNodeColliders::Draw()
 		if (collObj->get())
 		{
 			collObj->get()->DrawSphere();
+		}
+	}
+}
+
+//--------------------------------------------------------------------------
+void FBXNodeColliders::SetParentObj(IObject3D* parentObj)
+{
+	parentObj_ = parentObj;
+
+	if (colliderObjs_.size())
+	{
+		for (auto collObj = colliderObjs_.begin(); collObj != colliderObjs_.end();
+			collObj++)
+		{
+			//親オブジェクトをセット
+			if (collObj->get())
+			{
+				collObj->get()->SetParentObj(parentObj);
+			}
+		}
+	}
+}
+
+void FBXNodeColliders::SetOnCollisionFunc(std::function<void(const CollisionInfo& info)> onCollisionF)
+{
+	if (colliderObjs_.size())
+	{
+		for (auto collObj = colliderObjs_.begin(); collObj != colliderObjs_.end();
+			collObj++)
+		{
+			//当たり判定処理をセット
+			if (collObj->get())
+			{
+				collObj->get()->SetOnCollFunc(onCollisionF);
+			}
 		}
 	}
 }

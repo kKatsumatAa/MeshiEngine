@@ -12,12 +12,15 @@ public:
 	private:
 		//onCollisionが呼ばれたときに呼び出す関数のポインタ
 		std::function<void(const CollisionInfo& info)>onCollFunc_ = NULL;
+		//親オブジェクトのポインタ
+		IObject3D* parentObj_ = nullptr;
 
 	public:
 		void SetOnCollFunc(const std::function<void(const CollisionInfo& info)>f) { onCollFunc_ = f; }
+		void SetParentObj(IObject3D* parentObj) { parentObj_ = parentObj; }
 
 	public:
-		void OnCollision(const CollisionInfo& info)override { if (onCollFunc_) { onCollFunc_(info); } }
+		void OnCollision(const CollisionInfo& info)override;
 	};
 
 private:
@@ -29,6 +32,8 @@ private:
 	float nodeParamMagnif_ = 1.0f;
 	//オブジェクトのスケール
 	float scale_ = 1.0f;
+	//親オブジェクト
+	IObject3D* parentObj_ = nullptr;
 
 public://関数------------
 	void Update(WorldMat* worldMat);
@@ -41,6 +46,10 @@ public:
 	void SetNodeParamMagnif(float magnif) { nodeParamMagnif_ = magnif; }
 	//スケールセット
 	void SetScaleCollider(float scale) { scale_ = scale; }
+	//親オブジェクトセット
+	void SetParentObj(IObject3D* parentObj);
+	//判定処理のセット
+	void SetOnCollisionFunc(std::function<void(const CollisionInfo& info)>onCollisionF);
 
 public:
 	//コライダーオブジェクトの配列を取得(ノードと同じ順番)
@@ -48,5 +57,5 @@ public:
 
 public:
 	//ノードの配列の一つ一つのコライダーをセットする
-	void CreateNodeColliders();
+	void CreateNodeColliders(uint16_t attribute);
 };

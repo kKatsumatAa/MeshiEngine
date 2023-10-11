@@ -92,7 +92,8 @@ protected:
 	//生きてるフラグ
 	bool isAlive_ = true;
 	//描画、更新するかどうか
-	bool isValid_ = true;
+	bool isValidUpdate_ = true;
+	bool isValidDraw_ = true;
 	//速度
 	Vec3 velocity_ = { 0,0,0 };
 	//コライダー
@@ -122,6 +123,8 @@ public:
 public:
 	//行列を更新、それに伴いコライダーも
 	void WorldMatColliderUpdate();
+	//コライダーのみ更新
+	void ColliderUpdate();
 
 	//デバッグ用の表示
 	virtual void DrawImGui(std::function<void()>imguiF = NULL);
@@ -155,7 +158,11 @@ public:
 
 	//描画、更新するかどうか
 	virtual void SetIsValid(bool isValid);
-	bool GetIsValid() { return isValid_; }
+	void SetIsValidUpdate(bool isvalid) { isValidUpdate_ = isvalid; }
+	void SetIsValidDraw(bool isvalid) { isValidDraw_ = isvalid; }
+
+	bool GetIsValidUpdate() { return isValidUpdate_; }
+	bool GetIsValidDraw() { return isValidDraw_; }
 
 	//スピード（当たり判定に使う）
 	void SetVelocity(const Vec3& vec) { velocity_ = vec; }

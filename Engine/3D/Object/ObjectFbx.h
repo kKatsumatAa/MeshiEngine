@@ -3,6 +3,7 @@
 #include <FbxLoader.h>
 #include "LightManager.h"
 #include "Mesh.h"
+#include "FBXNodeColliders.h"
 
 
 class ObjectFBX : public IObject3D
@@ -41,6 +42,12 @@ protected:
 	ComPtr<ID3D12Resource> constBuffSkin_ = nullptr;
 	ConstBufferDataSkin* constMapSkin_ = nullptr;
 
+private:
+	//ノードごとの当たり判定
+	FBXNodeColliders nodeColliders_;
+	//ノードごとの当たり判定を描画するかどうか
+	bool isValidNodeCollidersDraw_ = false;
+
 private://fbxモデル系
 	//アニメーション
 	std::vector<AnimationData>animeDatas_;
@@ -70,6 +77,21 @@ public:
 
 public:
 	void SetModel(IModel* model)override;
+
+public:
+	//ノードごとの当たり判定を描画するかどうか
+	void SetIsValidNodeCollidersDraw(bool isValid) { isValidNodeCollidersDraw_ = isValid; }
+	bool GetIsValidNodeCollidersDraw() { return isValidNodeCollidersDraw_; }
+
+	//ノードごとの当たり判定の判定処理をセット
+	void SetNodeCollidersOnCollision(std::function<void(const CollisionInfo& info)>onCollisionF) { nodeColliders_.SetOnCollisionFunc(onCollisionF); }
+
+	//ノードごとの当たり判定初期化
+	void InitializeNodeColliders(ModelFBX* model, float colliderScale, uint16_t attribute);
+	//ノードごとの当たり判定更新
+	void UpdateNodeColliders() { nodeColliders_.Update(worldMat_.get()); }
+	//ノードごとの当たり判定描画
+	void DrawNodeColliders() { if (isValidNodeCollidersDraw_) { nodeColliders_.Draw(); } }
 
 public:
 	//アニメーション開始
