@@ -1,11 +1,10 @@
-﻿#pragma once
+#pragma once
 #include "ObjectFBX.h"
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
 #include "Gun.h"
 #include "Character.h"
-#include "FBXNodeColliders.h"
 
 
 class EnemyState;
@@ -50,9 +49,6 @@ private:
 
 	//ステート
 	std::unique_ptr<EnemyState> state_ = nullptr;
-
-	//ノードごとの当たり判定
-	FBXNodeColliders nodeColliders_;
 
 public:
 	static const float S_LENGTH_MAX_;

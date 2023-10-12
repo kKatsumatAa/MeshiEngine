@@ -105,10 +105,10 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	//fbx前提
 	ModelFBX* modelFbx = dynamic_cast<ModelFBX*>(model);
 	//ノードごとの当たり判定
-	nodeColliders_.SetNodesPointer(modelFbx->GetNodes());
-	nodeColliders_.CreateNodeColliders();
-	nodeColliders_.SetNodeParamMagnif(modelFbx->GetScaleExtend());
-	nodeColliders_.SetScaleCollider(3.0f);
+	InitializeNodeColliders(modelFbx, 3.0f, COLLISION_ATTR_ENEMYS);
+	//ボーンの当たり判定時に処理させる
+	auto onCollF = [=](const CollisionInfo& info) {OnCollision(info); };
+	SetNodeCollidersOnCollision(onCollF);
 
 	return true;
 }
@@ -232,14 +232,15 @@ void Enemy::Update()
 	Character::Update();
 
 	//ノードごとの当たり判定
-	nodeColliders_.Update(GetWorldMat());
+	UpdateNodeColliders();
 }
 
 void Enemy::Draw()
 {
-	//ObjectFBX::DrawModel(nullptr);
+	ObjectFBX::DrawModel(nullptr);
 
-	nodeColliders_.Draw();
+	//ノードごとの当たり判定描画
+	DrawNodeColliders();
 }
 
 

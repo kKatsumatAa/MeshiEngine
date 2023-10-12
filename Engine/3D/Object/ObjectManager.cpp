@@ -26,7 +26,7 @@ void ObjectManager::Update()
 			itG != itM->second.end(); itG++)
 		{
 			//有効であれば
-			if (itG->get()->GetIsValid())
+			if (itG->get()->GetIsValidUpdate())
 			{
 				itG->get()->Update();
 			}
@@ -105,7 +105,7 @@ void ObjectManager::Draw()
 			itG != itM->second.end(); itG++)
 		{
 			//有効であれば
-			if (itG->get()->GetIsValid())
+			if (itG->get()->GetIsValidDraw())
 			{
 				itG->get()->Draw();
 			}
@@ -241,7 +241,7 @@ void ObjectManager::AddObjAndGroup(std::unique_ptr<IObject3D> obj, const std::st
 //---------------------------------------------------------------------------------------
 bool ObjectManager::GetSameAttribute(IObject3D* obj, uint16_t attribute)
 {
-	if (obj->GetCollider()->GetAttribute() & attribute)
+	if (obj->GetCollider() && obj->GetCollider()->GetAttribute() & attribute)
 	{
 		return true;
 	}
@@ -251,7 +251,7 @@ bool ObjectManager::GetSameAttribute(IObject3D* obj, uint16_t attribute)
 
 bool ObjectManager::GetSameObjName(IObject3D* obj, const std::string& name)
 {
-	if (obj->GetObjName() == name)
+	if (obj->GetObjName().find(name) != std::string::npos)
 	{
 		return true;
 	}

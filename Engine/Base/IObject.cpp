@@ -162,7 +162,8 @@ void IObject::SetIsAlive(bool isAlive)
 
 void IObject::SetIsValid(bool isValid)
 {
-	isValid_ = isValid;
+	isValidDraw_ = isValid;
+	isValidUpdate_ = isValid;
 	SetColliderIsValid(isValid);
 
 	if (isValid == true)
@@ -176,6 +177,12 @@ void IObject::WorldMatColliderUpdate()
 {
 	//行列更新（ワールド座標系にして当たり判定を行う）
 	worldMat_->CalcAllTreeMat();
+	//当たり判定更新
+	ColliderUpdate();
+}
+
+void IObject::ColliderUpdate()
+{
 	//当たり判定更新
 	if (collider_.get())
 	{
@@ -206,6 +213,10 @@ void IObject::DrawImGui(std::function<void()>imguiF)
 	{
 		collider_->SetIsValid(false);
 	}
+
+	//有効フラグ
+	ImGui::Checkbox("isValidUpdate: ", &isValidUpdate_);
+	ImGui::Checkbox("isValidDraw: ", &isValidDraw_);
 
 	//トランスなど
 	if (ImGui::TreeNode("TransScaleRot")) {

@@ -1,37 +1,37 @@
-﻿#include "MeshCollider.h"
+#include "MeshCollider.h"
 #include "Collision.h"
 
 using namespace DirectX;
 
 void MeshCollider::ConstructTriangles(IModel* model)
 {
-	//荳芽ｧ貞ｽ｢繝ｪ繧ｹ繝医ｒ繧ｯ繝ｪ繧｢
+	//三角形リストをクリア
 	triangles_.clear();
-	//繝｢繝・Ν縺ｮ謖√▽繝｡繝・す繝･繝ｪ繧ｹ繝医ｒ蜿門ｾ・
+	//モデルの持つメッシュリストを取得
 	const std::vector<std::unique_ptr<Mesh>>& meshes = model->GetMeshes();
-	//迴ｾ蝨ｨ縺ｮ繝｡繝・す繝･縺ｮ髢句ｧ倶ｸ芽ｧ貞ｽ｢逡ｪ蜿ｷ繧貞・繧後※縺翫￥螟画焚
+	//現在のメッシュの開始三角形番号を入れておく変数
 	int32_t start = 0;
 
-	//蜈ｨ繝｡繝・す繝･縺ｫ縺､縺・※鬆・ｼ医Γ繝・す繝･豈趣ｼ峨↓蜃ｦ逅・☆繧・
+	//全メッシュについて順（メッシュ毎）に処理する
 	std::vector<std::unique_ptr<Mesh>>::const_iterator it = meshes.cbegin();
 	for (; it != meshes.cend(); ++it) {
 		Mesh* mesh = it->get();
 		const std::vector<Mesh::VertexPosNormalUvSkin>& vertices = mesh->GetVertices();
 		const std::vector<unsigned short>& indices = mesh->GetIndices();
 
-		//繧､繝ｳ繝・ャ繧ｯ繧ｹ縺ｯ荳芽ｧ貞ｽ｢縺ｮ謨ｰ*3縺ゅｋ縺ｮ縺ｧ縲√◎縺薙°繧峨Γ繝・す繝･蜀・・荳芽ｧ貞ｽ｢縺ｮ謨ｰ繧帝・ｮ・
+		//インデックスは三角形の数*3あるので、そこからメッシュ内の三角形の数を逆算
 		size_t triangleNum = indices.size() / 3;
-		//迴ｾ蝨ｨ縺ｮ繝｡繝・す繝･縺ｮ荳芽ｧ貞ｽ｢縺ｮ謨ｰ縺縺台ｸ芽ｧ貞ｽ｢繝ｪ繧ｹ繝医↓繧ｹ繝壹・繧ｹ繧定ｿｽ蜉
+		//現在のメッシュの三角形の数だけ三角形リストにスペースを追加
 		triangles_.resize(triangles_.size() + triangleNum);
-		//蜈ｨ荳芽ｧ貞ｽ｢縺ｫ縺､縺・※鬆・↓蜃ｦ逅・
+		//全三角形について順に処理
 		for (int i = 0; i < triangleNum; i++) {
-			//莉翫°繧芽ｨ育ｮ励☆繧倶ｸ芽ｧ貞ｽ｢縺ｮ蜿ら・
+			//今から計算する三角形の参照
 			Triangle& tri = triangles_[start + i];
 			int idx0 = indices[i * 3 + 0];
 			int idx1 = indices[i * 3 + 1];
 			int idx2 = indices[i * 3 + 2];
 
-			//荳芽ｧ貞ｽ｢縺ｮ荳蛾らせ縺ｮ蠎ｧ讓吶ｒ莉｣蜈･
+			//三角形の三頂点の座標を代入
 			tri.iP0 = {
 				vertices[idx0].pos.x,
 				vertices[idx0].pos.y,
@@ -47,10 +47,10 @@ void MeshCollider::ConstructTriangles(IModel* model)
 				vertices[idx2].pos.y,
 				vertices[idx2].pos.z,
 				1 };
-			//荳蛾らせ縺九ｉ豕慕ｷ壹ｒ險育ｮ・
+			//三頂点から法線を計算
 			tri.ComputeNormal();
 		}
-		//谺｡縺ｮ繝｡繝・す繝･縺ｯ縲∽ｻ翫∪縺ｧ縺ｮ荳芽ｧ貞ｽ｢逡ｪ蜿ｷ縺ｮ谺｡縺九ｉ菴ｿ縺・
+		//次のメッシュは、今までの三角形番号の次から使う
 		start += (int32_t)triangleNum;
 	}
 }
@@ -63,16 +63,16 @@ bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR*
 	DirectX::XMVECTOR* reject)
 {
 
-	//繝ｯ繝ｼ繝ｫ繝牙ｺｧ讓・
+	//ワールド座標
 	XMMATRIX matWorld;
 	GetObject3d()->GetMatWorld().MatIntoXMMATRIX(matWorld);
 
-	//繝ｯ繝ｼ繝ｫ繝牙ｺｧ讓咏ｳｻ縺ｧ莠､蟾ｮ繧偵メ繧ｧ繝・け
+	//ワールド座標系で交差をチェック
 	std::vector<Triangle>::const_iterator it = triangles_.cbegin();
 	for (; it != triangles_.cend(); ++it) {
 		const Triangle& triangle = *it;
 
-		//繝ｯ繝ｼ繝ｫ繝峨↓螟画鋤
+		//ワールドに変換
 		Triangle worldTriangle = triangle;
 
 		worldTriangle.iP0 = XMVector3Transform({ triangle.iP0 }, matWorld);
@@ -80,7 +80,7 @@ bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR*
 		worldTriangle.iP2 = XMVector3Transform({ triangle.iP2 }, matWorld);
 		worldTriangle.ComputeNormal();
 
-		//逅・→荳芽ｧ貞ｽ｢縺ｮ蠖薙◆繧雁愛螳・
+		//球と三角形の当たり判定
 		if (Collision::CheckSphere2Triangle(sphere, worldTriangle, inter, reject)) {
 			return true;
 		}
@@ -91,20 +91,20 @@ bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR*
 
 bool MeshCollider::CheckCollisionRay(const Ray& ray, float* distance, DirectX::XMVECTOR* inter)
 {
-	//譛遏ｭ霍晞屬繧剃ｿ晏ｭ倥☆繧・
+	//最短距離を保存する
 	float minDistance = 999999;
 	bool isReturn = false;
 
-	//繝ｯ繝ｼ繝ｫ繝牙ｺｧ讓・
+	//ワールド座標
 	XMMATRIX matWorld;
 	GetObject3d()->GetMatWorld().MatIntoXMMATRIX(matWorld);
 
-	//繝ｯ繝ｼ繝ｫ繝牙ｺｧ讓咏ｳｻ縺ｧ莠､蟾ｮ繧偵メ繧ｧ繝・け
+	//ワールド座標系で交差をチェック
 	std::vector<Triangle>::const_iterator it = triangles_.cbegin();
 	for (; it != triangles_.cend(); ++it) {
 		const Triangle& triangle = *it;
 
-		//繝ｯ繝ｼ繝ｫ繝峨↓螟画鋤
+		//ワールドに変換
 		Triangle worldTriangle = triangle;
 
 		worldTriangle.iP0 = XMVector3Transform({ triangle.iP0 }, matWorld);
@@ -114,27 +114,27 @@ bool MeshCollider::CheckCollisionRay(const Ray& ray, float* distance, DirectX::X
 
 
 		XMVECTOR tempInter;
-		//繝ｬ繧､縺ｨ荳芽ｧ貞ｽ｢縺ｮ蠖薙◆繧雁愛螳・
+		//レイと三角形の当たり判定
 		if (Collision::CheckRay2Triangle(ray, worldTriangle, nullptr, &tempInter)) {
 
-			//繝ｯ繝ｼ繝ｫ繝牙ｺｧ讓咏ｳｻ縺ｧ縺ｮ莠､轤ｹ縺ｨ繝ｬ繧､縺ｮ霍晞屬繧定ｨ育ｮ・
+			//ワールド座標系での交点とレイの距離を計算
 			XMVECTOR length = tempInter - ray.start;
 			Vec3 lengthV = { length.m128_f32[0],length.m128_f32[1], length.m128_f32[2] };
 
-			//莉翫∪縺ｧ縺ｧ霍晞屬縺御ｸ逡ｪ遏ｭ縺代ｌ縺ｰ險倬鹸
+			//今までで距離が一番短ければ記録
 			if (lengthV.GetLength() < minDistance)
 			{
 				minDistance = lengthV.GetLength();
 				if (distance) {
-					//莠､轤ｹ縺ｨ繝ｬ繧､縺ｮ霍晞屬繧定ｨ育ｮ・
+					//交点とレイの距離を計算
 					*distance = XMVector3Dot(length, ray.dir).m128_f32[0];
 				}
 				if (inter) {
-					//陦晉ｪ∫せ
+					//衝突点
 					*inter = tempInter;
 				}
 			}
-			//陦晉ｪ√＠縺溘ヵ繝ｩ繧ｰ繧偵が繝ｳ
+			//衝突したフラグをオン
 			isReturn = true;
 		}
 	}

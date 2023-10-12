@@ -107,6 +107,12 @@ bool IObject3D::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 //--------------------------------------------------------
 void IObject3D::SetModel(IModel* model)
 {
+	isValidModel_ = false;
+	if (model)
+	{
+		isValidModel_ = true;
+	}
+
 	model_ = model;
 }
 
@@ -121,9 +127,15 @@ void IObject3D::CalcFrontVec()
 }
 
 //--------------------------------------------------------
-void IObject3D::EffectUpdate()
+void IObject3D::EffectUpdate(IObject3D* effectCopyObj)
 {
 	effectFlags_.time++;
+
+	//コピー
+	if (effectCopyObj)
+	{
+		effectFlags_ = effectCopyObj->effectFlags_;
+	}
 
 	//画面効果用
 	{
@@ -142,6 +154,11 @@ void IObject3D::Update()
 //------------------------------
 void IObject3D::DrawModel(Camera* camera, bool isWireFrame)
 {
+	if (!isValidModel_)
+	{
+		return;
+	}
+
 	Camera* lCamera = camera;
 	//カメラがセットされてなければ使用されてるカメラを使う
 	if (camera == nullptr)
@@ -297,12 +314,8 @@ void IObject3D::DrawImGui(std::function<void()> imguiF)
 		//モデル
 		if (ImGui::TreeNode("Model")) {
 
-			std::string modelPState = "MODEL_NULL";
-			if (model_ != nullptr)
-			{
-				modelPState = "MODEL_SET";
-			}
-			ImGui::Text(modelPState.c_str());
+			//モデルが有効か（描画するか）
+			ImGui::Checkbox("isValidModel", &isValidModel_);
 			if (model_ != nullptr)
 			{
 				ImGui::Text("modelIsFbx: %d", model_->GetIsFbx());

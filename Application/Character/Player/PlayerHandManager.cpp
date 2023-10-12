@@ -1,4 +1,4 @@
-﻿#include "PlayerHandManager.h"
+#include "PlayerHandManager.h"
 #include "Player.h"
 #include "CollisionManager.h"
 #include "MouseInput.h"
@@ -35,7 +35,7 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 	}
 
 	//当たった相手が敵
-	if (info.collider->GetObject3d()->GetObjName().find("enemy") != std::string::npos && player_)
+	if (info.collider->GetAttribute() & COLLISION_ATTR_ENEMYS && player_)
 	{
 		//衝突点までの距離
 		Vec3 lengthV = Vec3(info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2]) - player_->GetTrans();
@@ -61,9 +61,7 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 			{
 				//当たり判定呼び出し処理で、プレイヤーの位置等を使い、敵に攻撃被弾時の処理をさせるため
 				c_ = CollisionInfo(playerHand, playerHand->GetCollider(), info.inter);
-				/*c_.object_->SetObjName("playerAttack");*/
 				info.collider->OnCollision(c_);
-				/*c_.object_->SetObjName("player");*/
 
 				//カメラシェイク
 				CameraManager::GetInstance().GetCamera("playerCamera")->CameraShake(5, 1.05f);

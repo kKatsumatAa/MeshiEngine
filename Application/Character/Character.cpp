@@ -25,7 +25,7 @@ void Character::Update()
 	//武器の有効フラグも連動
 	if (GetWeapon())
 	{
-		GetWeapon()->SetIsValid(GetIsValid());
+		GetWeapon()->SetIsValid(GetIsValidUpdate());
 
 		//死んだら武器落とす
 		if (!GetIsAlive())
@@ -261,7 +261,7 @@ void Character::SetIsValid(bool isValid)
 	//武器の有効フラグも連動
 	if (GetWeapon())
 	{
-		GetWeapon()->SetIsValid(GetIsValid());
+		GetWeapon()->SetIsValid(GetIsValidUpdate());
 	}
 }
 
