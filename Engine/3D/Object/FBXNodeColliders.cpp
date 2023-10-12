@@ -82,7 +82,7 @@ void FBXNodeColliders::Update(WorldMat* worldMat)
 			mat.PutInXMMATRIX(xMatNodeG * xMatP);
 
 			//スケール反映した行列とボーンや親の行列をかける
-			colliderObjs_[i]->SetScale({ scale_ ,scale_ ,scale_ });
+			colliderObjs_[i]->SetScale(Vec3(scale_, scale_, scale_) * nodeParamMagnif_);
 			colliderObjs_[i]->CalcWorldMat();
 			colliderObjs_[i]->SetMatWorld(colliderObjs_[i]->GetMatWorld() * mat);
 
