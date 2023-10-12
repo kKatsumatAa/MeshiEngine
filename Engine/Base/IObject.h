@@ -100,6 +100,8 @@ protected:
 	std::unique_ptr<BaseCollider> collider_ = nullptr;
 	//インスタンスの種類（子クラスが何か）
 	ObjectInstanceType objInsType_ = ObjectInstanceType::UNKNOWN;
+	//インスタンスの番号
+	int32_t instanceNum_ = 0;
 
 
 	//関数------------------------------------------------------------------------------
@@ -167,6 +169,10 @@ public:
 	//スピード（当たり判定に使う）
 	void SetVelocity(const Vec3& vec) { velocity_ = vec; }
 	const Vec3& GetVelocity() { return velocity_; }
+
+	//インスタンスの番号
+	void SetInstanceNum(int32_t instanceNum) { instanceNum_ = instanceNum; }
+	int32_t GetInstanceNum() { return instanceNum_; }
 
 
 public:

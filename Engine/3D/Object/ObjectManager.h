@@ -50,11 +50,12 @@ private:
 	//オブジェクトの名前とあっていたら
 	bool GetSameObjName(IObject3D* obj, const std::string& name);
 
-
-
 	//名前を付けてオブジェを追加、登録
 	std::vector<IObject3D*> GetObjectInternal(const std::string& groupName,
 		const std::function<bool(IObject3D* obj)>& isF);
+
+	//同じ名前のオブジェクトの数を取得
+	int32_t GetSameNameCount(const std::string& groupName, const std::string& name);
 
 public:
 	//名前を付けてオブジェを追加、登録

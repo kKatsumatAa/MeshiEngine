@@ -237,7 +237,7 @@ void Enemy::Update()
 
 void Enemy::Draw()
 {
-	ObjectFBX::DrawModel(nullptr);
+	//ObjectFBX::DrawModel(nullptr);
 
 	//ノードごとの当たり判定描画
 	DrawNodeColliders();

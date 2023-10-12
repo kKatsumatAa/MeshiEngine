@@ -220,6 +220,10 @@ void ObjectManager::AddGroup(const std::string& groupName, std::unique_ptr<IObje
 	group.push_back(std::move(inst));
 
 	objsGroups_.insert(std::make_pair(groupName, std::move(group)));
+
+	//同じ名前のインスタンスに数字振って分ける
+	auto& instL = GetObjGroup(groupName)->second.back();
+	instL->SetInstanceNum(GetSameNameCount(groupName, instL->GetObjName()));
 }
 
 void ObjectManager::AddObjAndGroup(std::unique_ptr<IObject3D> obj, const std::string& groupName)
@@ -228,6 +232,9 @@ void ObjectManager::AddObjAndGroup(std::unique_ptr<IObject3D> obj, const std::st
 	if (FindObjGroup(groupName))
 	{
 		auto itr = GetObjGroup(groupName);
+
+		//同じ名前のインスタンスに数字振って分ける
+		obj->SetInstanceNum(GetSameNameCount(groupName, obj->GetObjName()));
 
 		itr->second.push_back(std::move(obj));
 	}
@@ -318,6 +325,21 @@ std::vector<IObject3D*> ObjectManager::GetObjectInternal(const std::string& grou
 	}
 
 	return rObjs;
+}
+
+int32_t ObjectManager::GetSameNameCount(const std::string& groupName, const std::string& name)
+{
+	int32_t count = 0;
+
+	for (auto& a : GetObjGroup(groupName)->second)
+	{
+		if (a->GetObjName() == name)
+		{
+			count++;
+		}
+	}
+
+	return count;
 }
 
 //---------------------------------------------------------------------------------------------
