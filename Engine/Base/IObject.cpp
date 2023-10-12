@@ -125,7 +125,7 @@ void IObject::Initialize(std::unique_ptr<WorldMat> worldMat)
 	if (worldMat)
 	{
 		worldMat_.reset();
-	
+
 		//引数のインスタンスの所有権移動
 		worldMat_ = std::move(worldMat);
 	}
@@ -204,6 +204,9 @@ void IObject::DrawImGui(std::function<void()>imguiF)
 	{
 		str = objName_;
 	}
+
+	//同じ名前の場合にimguiが使えなくなるので
+	str = str + "-" + std::to_string(instanceNum_);
 
 	ImGui::Begin(str.c_str());
 

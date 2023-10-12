@@ -100,12 +100,15 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	//色
 	SetColor({ 3.0f,0,0,1.0f });
 
+	//モデル
+	SetModel(model);
+
 	//演出更新
 	ObjectFBX::EffectUpdate();
 	//fbx前提
 	ModelFBX* modelFbx = dynamic_cast<ModelFBX*>(model);
 	//ノードごとの当たり判定
-	InitializeNodeColliders(modelFbx, 3.0f, COLLISION_ATTR_ENEMYS);
+	InitializeNodeColliders(modelFbx, 14.0f, COLLISION_ATTR_ENEMYS);
 	//ボーンの当たり判定時に処理させる
 	auto onCollF = [=](const CollisionInfo& info) {OnCollision(info); };
 	SetNodeCollidersOnCollision(onCollF);

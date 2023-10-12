@@ -147,6 +147,8 @@ void IObject3D::Update()
 {
 	//演出更新
 	EffectUpdate();
+	//行列計算
+	worldMat_->CalcAllTreeMat();
 	//親クラスの
 	IObject::Update();
 }
@@ -244,6 +246,10 @@ void IObject3D::MatMap(Camera* camera, IModel* model)
 	if (parentNode_ && worldMat_->parent_ &&
 		parentObj_->GetObjInsType() == ObjectInstanceType::FBX && parentNodeModel_->GetIsFbx())
 	{
+		//親のスケールは反映しない
+		Vec3 pScale = worldMat_->parent_->scale_;
+		worldMat_->parent_->scale_ = { 1.0f,1.0f,1.0f };
+
 		//オブジェクトのローカル
 		worldMat_->CalcWorldMat();
 		//親行列
@@ -266,6 +272,9 @@ void IObject3D::MatMap(Camera* camera, IModel* model)
 			bM.m_[3][2] *= parentNodeModel_->GetScaleExtend();
 		}
 		(worldMat_->matWorld_ * (bM * pM)).MatIntoXMMATRIX(matW);
+
+		//親のスケール戻す
+		worldMat_->parent_->scale_ = pScale;
 	}
 
 	worldMat_->matWorld_.MatIntoXMMATRIX(matW);
