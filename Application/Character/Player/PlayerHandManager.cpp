@@ -46,18 +46,9 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 
 		//ステート内で呼び出す
 		std::function<void(PlayerHand*)>f = [=](PlayerHand* playerHand) {
-			//敵が銃で倒されてる可能性があるのでもう一回調べる
-			//レイにプレイヤーの正面ベクトル入れる
-			Ray ray;
-			ray.dir = { player_->GetFrontVec().x,player_->GetFrontVec().y,player_->GetFrontVec().z };
-			ray.start = { player_->GetTrans().x,player_->GetTrans().y,player_->GetTrans().z };
 
-			//正面ベクトルに何かあるか
-			RaycastHit info;
-			uint16_t attribute = COLLISION_ATTR_ENEMYS | COLLISION_ATTR_ITEMS;
-			bool isRayHit = CollisionManager::GetInstance()->Raycast(ray, attribute, &info, player_->GetAttackLength());
-
-			if (isRayHit)
+			//敵がもう倒されてる可能性があるので
+			if (info.collider)
 			{
 				//当たり判定呼び出し処理で、プレイヤーの位置等を使い、敵に攻撃被弾時の処理をさせるため
 				c_ = CollisionInfo(playerHand, playerHand->GetCollider(), info.inter);

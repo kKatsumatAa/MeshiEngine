@@ -55,9 +55,11 @@ void FBXNodeColliders::Update(WorldMat* worldMat)
 
 	//親のスケールを無効
 	Vec3 pScale = worldMat->scale_;
-	worldMat->scale_ = Vec3(nodeParamMagnif_ * worldMat->scale_.x,
-		nodeParamMagnif_ * worldMat->scale_.y,
-		nodeParamMagnif_ * worldMat->scale_.z);
+
+	WorldMat worldMatL = *worldMat;
+	worldMat->scale_ = Vec3(parentObj_->GetModel()->GetScaleExtend() * worldMat->scale_.x,
+		parentObj_->GetModel()->GetScaleExtend() * worldMat->scale_.y,
+		parentObj_->GetModel()->GetScaleExtend() * worldMat->scale_.z);
 	worldMat->CalcWorldMat();
 
 	//ノードのコライダーのパラメータを更新していく
@@ -73,19 +75,18 @@ void FBXNodeColliders::Update(WorldMat* worldMat)
 
 			//モデルが大きすぎたりするので
 			XMMATRIX xMatNodeG = node.globalTransform;
-			/*		xMatNodeG.r[3].m128_f32[0] *= nodeParamMagnif_;
-					xMatNodeG.r[3].m128_f32[1] *= nodeParamMagnif_;
-					xMatNodeG.r[3].m128_f32[2] *= nodeParamMagnif_;*/
-
+			
 			M4 mat;
 			//matにボーンのグローバルトランスフォーム*モデルの所有者のワールド行列入れる
 			mat.PutInXMMATRIX(xMatNodeG * xMatP);
 
 			//スケール反映した行列とボーンや親の行列をかける
-			colliderObjs_[i]->SetScale(Vec3(scale_, scale_, scale_) * nodeParamMagnif_);
+			colliderObjs_[i]->SetScale(Vec3(scale_, scale_, scale_));
 			colliderObjs_[i]->CalcWorldMat();
 			colliderObjs_[i]->SetMatWorld(colliderObjs_[i]->GetMatWorld() * mat);
 
+			//コライダーは小さくするため
+			colliderObjs_[i]->SetScale(Vec3(scale_, scale_, scale_) * parentObj_->GetModel()->GetScaleExtend() * 2.0f);
 			//コライダーのパラメータ更新
 			colliderObjs_[i]->ColliderUpdate();
 		}

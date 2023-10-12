@@ -28,8 +28,6 @@ private:
 	std::vector<Node>* nodes_ = nullptr;
 	//ノードのコライダー用オブジェクトの配列(これとセットで関数ポインタとかやれば部位ごとに処理できるかも)
 	std::vector<std::unique_ptr<ColliderObject>> colliderObjs_;
-	//ノードのパラメータ倍率（モデルが大きすぎたりするので）
-	float nodeParamMagnif_ = 1.0f;
 	//オブジェクトのスケール
 	float scale_ = 1.0f;
 	//親オブジェクト
@@ -42,8 +40,6 @@ public://関数------------
 public:
 	//ノードの配列のポインタを保存
 	void SetNodesPointer(std::vector<Node>* nodes) { nodes_ = nodes; }
-	//パラメータ倍率をセット
-	void SetNodeParamMagnif(float magnif) { nodeParamMagnif_ = magnif; }
 	//スケールセット
 	void SetScaleCollider(float scale) { scale_ = scale; }
 	//親オブジェクトセット

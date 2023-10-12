@@ -600,7 +600,6 @@ void ObjectFBX::InitializeNodeColliders(ModelFBX* model, float colliderScale, ui
 {
 	nodeColliders_.SetNodesPointer(model->GetNodes());
 	nodeColliders_.CreateNodeColliders(attribute);
-	nodeColliders_.SetNodeParamMagnif(model->GetScaleExtend());
 	nodeColliders_.SetScaleCollider(colliderScale);
 	nodeColliders_.SetParentObj(this);
 }
