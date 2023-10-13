@@ -223,8 +223,8 @@
             "file_name": "enemy2.fbx",
             "wave_num": "2",
             "collider": {
-                "type": "SPHERE",
-                "attribute": "ENEMYS,",
+                "type": "",
+                "attribute": "",
                 "center": [
                     0.0,
                     0.0,
@@ -419,8 +419,8 @@
             "file_name": "enemy2.fbx",
             "wave_num": "1",
             "collider": {
-                "type": "SPHERE",
-                "attribute": "ENEMYS,",
+                "type": "",
+                "attribute": "",
                 "center": [
                     0.0,
                     0.0,

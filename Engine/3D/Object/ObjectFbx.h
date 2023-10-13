@@ -84,7 +84,8 @@ public:
 	bool GetIsValidNodeCollidersDraw() { return isValidNodeCollidersDraw_; }
 
 	//ノードごとの当たり判定の判定処理をセット
-	void SetNodeCollidersOnCollision(std::function<void(const CollisionInfo& info)>onCollisionF) { nodeColliders_.SetOnCollisionFunc(onCollisionF); }
+	void SetNodeCollidersOnCollision(std::function<void(const IObject3D& obj, const CollisionInfo& info)>onCollisionF)
+	{ nodeColliders_.SetOnCollisionFunc(onCollisionF); }
 
 	//ノードごとの当たり判定初期化
 	void InitializeNodeColliders(ModelFBX* model, float colliderScale, uint16_t attribute);

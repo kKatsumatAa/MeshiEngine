@@ -18,6 +18,8 @@ private:
 
 public:
 	M4 matWorld_;
+	//ローカルの親行列（一つ上の親の行列）
+	M4 localParentMat_;
 	Vec3 scale_ = { 1.0f,1.0f,1.0f };
 	Vec3 rot_ = { 0,0,0 };
 	Vec3 trans_ = { 0,0,0 };
@@ -47,8 +49,10 @@ public:
 	const M4& GetRotMat() { return matRot_; }
 
 	//行列をそのままセット
-	void SetMatWorld(const M4& mat) { matWorld_ = mat; }
+	void SetLocalParentMat(const M4& mat) { localParentMat_ = mat; }
 
 	//親子関係を考慮した位置を得る
 	Vec3 GetWorldTrans();
+	//親子関係を考慮したスケールを得る
+	Vec3 GetWorldScale();
 };

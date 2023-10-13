@@ -87,6 +87,8 @@ public:
 	void Draw()override;
 
 	void OnCollision(const CollisionInfo& info) override;
+	//当たり判定時の処理を行う
+	void OnCollision(const IObject3D& obj, const CollisionInfo& info);
 
 	void ChangeEnemyState(std::unique_ptr<EnemyState> state);
 

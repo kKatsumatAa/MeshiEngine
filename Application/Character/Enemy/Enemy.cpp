@@ -72,6 +72,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	if (weapon)
 	{
 		weapon_ = weapon;
+		weapon_->SetScale(weapon_->GetScale() * 2.0f);
 		//武器を諸々設定
 		PickUpWeapon(weapon_);
 	}
@@ -110,7 +111,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	//ノードごとの当たり判定
 	InitializeNodeColliders(modelFbx, 14.0f, COLLISION_ATTR_ENEMYS);
 	//ボーンの当たり判定時に処理させる
-	auto onCollF = [=](const CollisionInfo& info) {OnCollision(info); };
+	auto onCollF = [=](const IObject3D& obj, const CollisionInfo& info) {OnCollision(obj, info); };
 	SetNodeCollidersOnCollision(onCollF);
 
 	return true;
@@ -305,20 +306,25 @@ void Enemy::DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExten
 
 void Enemy::OnCollision(const CollisionInfo& info)
 {
+	OnCollision(*this, info);
+}
+
+void Enemy::OnCollision(const IObject3D& obj, const CollisionInfo& info)
+{
 	//プレイヤーに当たったら
 	if (info.object_->GetObjName() == "player")
 	{
 		////長さ
-		float length = (info.object_->GetScale().x + IObject::GetScale().x);
+		float length = (info.object_->GetScale().x + obj.GetWorldScale().x);
 		//距離のベクトル
-		Vec3 distanceVec = IObject::GetTrans() - info.object_->GetTrans();
+		Vec3 distanceVec = IObject3D::GetWorldTrans() - info.object_->GetTrans();
 		//仮でyは動かさない
 		distanceVec.y = 0;
 		distanceVec.Normalized();
 
 		//めり込まないように位置セット(半径＋半径の長さをベクトルの方向を使って足す)
 		Vec3 ansPosE = info.object_->GetTrans() + distanceVec * length * 1.001f;
-		IObject::SetTrans(ansPosE);
+		IObject3D::SetTrans(ansPosE);
 
 		IObject::SetVelocity({ 0,0,0 });
 
@@ -384,9 +390,9 @@ void Enemy::OnCollision(const CollisionInfo& info)
 	else if (info.object_->GetObjName().find("enemy") != std::string::npos)
 	{
 		//長さ
-		float length = (info.object_->GetScale().x + IObject::GetScale().x);
+		float length = (info.object_->GetScale().x + obj.GetWorldScale().x);
 		//距離のベクトル
-		Vec3 distanceVec = IObject::GetTrans() - info.object_->GetTrans();
+		Vec3 distanceVec = obj.GetWorldTrans() - info.object_->GetTrans();
 		//仮
 		distanceVec.y = 0;
 		distanceVec.Normalized();
