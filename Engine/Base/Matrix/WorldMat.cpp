@@ -1,9 +1,15 @@
-﻿#include "WorldMat.h"
+#include "WorldMat.h"
 #include "Util.h"
 
 WorldMat::WorldMat()
 {
 	matWorld_ =
+	{ 1,0,0,0,
+	  0,1,0,0,
+	  0,0,1,0,
+	  0,0,0,1 };
+
+	localParentMat_ =
 	{ 1,0,0,0,
 	  0,1,0,0,
 	  0,0,1,0,
@@ -159,6 +165,9 @@ void WorldMat::CalcWorldMat()
 	//回転にクォータニオン
 	CalcQuaternionRotMat();
 	CalcTransMat();
+
+	//直属の親行列をかける
+	matWorld_ *= localParentMat_;
 }
 
 Quaternion WorldMat::GetQuaternion()
@@ -181,4 +190,16 @@ Vec3 WorldMat::GetWorldTrans()
 	CalcAllTreeMat();
 
 	return Vec3((float)matWorld_.m_[3][0], (float)matWorld_.m_[3][1], (float)matWorld_.m_[3][2]);
+}
+
+Vec3 WorldMat::GetWorldScale()
+{
+	CalcAllTreeMat();
+
+	Vec3 scale;
+	scale.x = GetVec3xM4({ 1,0,0 }, matWorld_, 0).GetLength();
+	scale.y = GetVec3xM4({ 0,1,0 }, matWorld_, 0).GetLength();
+	scale.z = GetVec3xM4({ 0,0,1 }, matWorld_, 0).GetLength();
+
+	return scale;
 }

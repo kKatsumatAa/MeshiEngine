@@ -181,13 +181,13 @@ public:
 	void SetTransX(float pos) { worldMat_->trans_.x = pos; }
 	void SetTransY(float pos) { worldMat_->trans_.y = pos; }
 	void SetTransZ(float pos) { worldMat_->trans_.z = pos; }
-	Vec3 GetTrans() { return worldMat_->trans_; }
+	Vec3 GetTrans()const { return worldMat_->trans_; }
 	//スケール
 	void SetScale(const Vec3& scale) { worldMat_->scale_ = scale; }
 	void SetScaleX(float scale) { worldMat_->scale_.x = scale; }
 	void SetScaleY(float scale) { worldMat_->scale_.y = scale; }
 	void SetScaleZ(float scale) { worldMat_->scale_.z = scale; }
-	const Vec3& GetScale() { return worldMat_->scale_; }
+	const Vec3& GetScale()const { return worldMat_->scale_; }
 	//回転
 	void SetRot(const Vec3& rot) {
 		worldMat_->rot_ = rot;
@@ -195,9 +195,9 @@ public:
 	void SetRotX(float rot) { worldMat_->rot_.x = rot; }
 	void SetRotY(float rot) { worldMat_->rot_.y = rot; }
 	void SetRotZ(float rot) { worldMat_->rot_.z = rot; }
-	const Vec3& GetRot() { return worldMat_->rot_; }
+	const Vec3& GetRot()const { return worldMat_->rot_; }
 	//行列を更新
-	void SetMatWorld(const M4& mat) { worldMat_->SetMatWorld(mat); }
+	void SetLocalParentMat(const M4& mat) { worldMat_->SetLocalParentMat(mat); }
 	void CalcWorldMat() { worldMat_->CalcWorldMat(); }
 	void CalcRotMat() { worldMat_->CalcRotMat(); }
 	void CalcTransMat() { worldMat_->CalcTransMat(); }
@@ -209,7 +209,9 @@ public:
 	//ワールド行列用クラスのインスタンスを取得
 	WorldMat* GetWorldMat() { return worldMat_.get(); }
 	//親子関係を考慮した位置をゲット
-	Vec3 GetWorldTrans() { return worldMat_->GetWorldTrans(); }
+	Vec3 GetWorldTrans()const { return worldMat_->GetWorldTrans(); }
+	//親子関係を考慮したスケールをゲット
+	Vec3 GetWorldScale()const { return worldMat_->GetWorldScale(); }
 	//ワールド行列の取得
 	const M4& GetMatWorld() { return worldMat_->matWorld_; }
 

@@ -16,6 +16,7 @@ void SphereCollider::Update()
 	(float)matWorld.m_[3][3] + offset_.m128_f32[3],
 	};
 	//ワールド行列のスケールから半径
+	Vec3 scale = object_->GetWorldScale();
 	Sphere::iRadius =
-		(object_->GetScale().x + object_->GetScale().y + object_->GetScale().z) / 3.0f;
+		(scale.x + scale.y + scale.z) / 3.0f;
 }

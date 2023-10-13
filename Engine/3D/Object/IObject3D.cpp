@@ -267,17 +267,21 @@ void IObject3D::MatMap(Camera* camera, IModel* model)
 			auto modelL = dynamic_cast<ObjectFBX*>(parentObj_);
 			bXM = modelL->GetNodes()[bIndex].globalTransform;
 			bM.PutInXMMATRIX(bXM);
-			bM.m_[3][0] *= parentNodeModel_->GetScaleExtend();
-			bM.m_[3][1] *= parentNodeModel_->GetScaleExtend();
-			bM.m_[3][2] *= parentNodeModel_->GetScaleExtend();
+			bM.m_[3][0] *= parentNodeModel_->GetScaleExtend() * pScale.x;
+			bM.m_[3][1] *= parentNodeModel_->GetScaleExtend() * pScale.y;
+			bM.m_[3][2] *= parentNodeModel_->GetScaleExtend() * pScale.z;
 		}
 		(worldMat_->matWorld_ * (bM * pM)).MatIntoXMMATRIX(matW);
 
 		//親のスケール戻す
 		worldMat_->parent_->scale_ = pScale;
 	}
+	else
+	{
+		worldMat_->CalcAllTreeMat();
+		worldMat_->matWorld_.MatIntoXMMATRIX(matW);
+	}
 
-	worldMat_->matWorld_.MatIntoXMMATRIX(matW);
 	worldMat_->scale_ = scale;
 
 	cbt_.SetWorldMat(matW);

@@ -11,12 +11,12 @@ public:
 	{
 	private:
 		//onCollisionが呼ばれたときに呼び出す関数のポインタ
-		std::function<void(const CollisionInfo& info)>onCollFunc_ = NULL;
+		std::function<void(const IObject3D& obj, const CollisionInfo& info)>onCollFunc_ = NULL;
 		//親オブジェクトのポインタ
 		IObject3D* parentObj_ = nullptr;
 
 	public:
-		void SetOnCollFunc(const std::function<void(const CollisionInfo& info)>f) { onCollFunc_ = f; }
+		void SetOnCollFunc(const std::function<void(const IObject3D& obj, const CollisionInfo& info)>f) { onCollFunc_ = f; }
 		void SetParentObj(IObject3D* parentObj) { parentObj_ = parentObj; }
 
 	public:
@@ -45,7 +45,7 @@ public:
 	//親オブジェクトセット
 	void SetParentObj(IObject3D* parentObj);
 	//判定処理のセット
-	void SetOnCollisionFunc(std::function<void(const CollisionInfo& info)>onCollisionF);
+	void SetOnCollisionFunc(std::function<void(const IObject3D& obj, const CollisionInfo& info)>onCollisionF);
 
 public:
 	//コライダーオブジェクトの配列を取得(ノードと同じ順番)

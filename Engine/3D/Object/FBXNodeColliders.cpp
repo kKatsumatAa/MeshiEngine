@@ -9,7 +9,7 @@ void FBXNodeColliders::ColliderObject::OnCollision(const CollisionInfo& info)
 {
 	if (onCollFunc_)
 	{
-		onCollFunc_(info);
+		onCollFunc_(*this, info);
 	}
 }
 
@@ -57,10 +57,10 @@ void FBXNodeColliders::Update(WorldMat* worldMat)
 	Vec3 pScale = worldMat->scale_;
 
 	WorldMat worldMatL = *worldMat;
-	worldMat->scale_ = Vec3(parentObj_->GetModel()->GetScaleExtend() * worldMat->scale_.x,
+	worldMatL.scale_ = Vec3(parentObj_->GetModel()->GetScaleExtend() * worldMat->scale_.x,
 		parentObj_->GetModel()->GetScaleExtend() * worldMat->scale_.y,
 		parentObj_->GetModel()->GetScaleExtend() * worldMat->scale_.z);
-	worldMat->CalcWorldMat();
+	worldMatL.CalcWorldMat();
 
 	//ノードのコライダーのパラメータを更新していく
 	for (uint16_t i = 0; i < (uint16_t)colliderObjs_.size(); i++)
@@ -71,29 +71,23 @@ void FBXNodeColliders::Update(WorldMat* worldMat)
 
 			//親の行列をxmmatrixに入れる
 			XMMATRIX xMatP;
-			worldMat->matWorld_.MatIntoXMMATRIX(xMatP);
+			worldMatL.matWorld_.MatIntoXMMATRIX(xMatP);
 
-			//モデルが大きすぎたりするので
+			//ボーンの行列を入れる
 			XMMATRIX xMatNodeG = node.globalTransform;
-			
+
 			M4 mat;
 			//matにボーンのグローバルトランスフォーム*モデルの所有者のワールド行列入れる
 			mat.PutInXMMATRIX(xMatNodeG * xMatP);
+			//ローカルの一つ上の親行列としてセット
+			colliderObjs_[i]->SetLocalParentMat(mat);
 
-			//スケール反映した行列とボーンや親の行列をかける
+				//コライダーのパラメータ更新
+				//コライダーは小さく,モデルの縮小率反映するため
 			colliderObjs_[i]->SetScale(Vec3(scale_, scale_, scale_));
-			colliderObjs_[i]->CalcWorldMat();
-			colliderObjs_[i]->SetMatWorld(colliderObjs_[i]->GetMatWorld() * mat);
-
-			//コライダーは小さくするため
-			colliderObjs_[i]->SetScale(Vec3(scale_, scale_, scale_) * parentObj_->GetModel()->GetScaleExtend() * 2.0f);
-			//コライダーのパラメータ更新
 			colliderObjs_[i]->ColliderUpdate();
 		}
 	}
-
-	//スケール戻す
-	worldMat->scale_ = pScale;
 }
 
 void FBXNodeColliders::Draw()
@@ -128,7 +122,7 @@ void FBXNodeColliders::SetParentObj(IObject3D* parentObj)
 	}
 }
 
-void FBXNodeColliders::SetOnCollisionFunc(std::function<void(const CollisionInfo& info)> onCollisionF)
+void FBXNodeColliders::SetOnCollisionFunc(std::function<void(const IObject3D& obj, const CollisionInfo& info)> onCollisionF)
 {
 	if (colliderObjs_.size())
 	{
