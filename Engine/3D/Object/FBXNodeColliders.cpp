@@ -13,6 +13,23 @@ void FBXNodeColliders::ColliderObject::OnCollision(const CollisionInfo& info)
 	}
 }
 
+IObject3D* FBXNodeColliders::GetColliderObj(const std::string& nodeName)
+{
+	for (uint16_t i = 0; i < (uint16_t)colliderObjs_.size(); i++)
+	{
+		if (colliderObjs_[i])
+		{
+			//一致する文字列があればその当たり判定用オブジェクトを返す
+			if (colliderObjs_[i]->GetObjName().find(nodeName) != std::string::npos)
+			{
+				return colliderObjs_[i].get();
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 //---------------------------------------------
 void FBXNodeColliders::CreateNodeColliders(uint16_t attribute)
 {
@@ -82,10 +99,13 @@ void FBXNodeColliders::Update(WorldMat* worldMat)
 			//ローカルの一つ上の親行列としてセット
 			colliderObjs_[i]->SetLocalParentMat(mat);
 
-				//コライダーのパラメータ更新
-				//コライダーは小さく,モデルの縮小率反映するため
+			//コライダーのパラメータ更新
+			//コライダーは小さく,モデルの縮小率反映するため
 			colliderObjs_[i]->SetScale(Vec3(scale_, scale_, scale_));
 			colliderObjs_[i]->ColliderUpdate();
+
+			//ボーンを反映した位置をセット(parent_は設定してないのでできる)
+			colliderObjs_[i]->SetLocalTrans(colliderObjs_[i]->GetWorldTrans());
 		}
 	}
 }

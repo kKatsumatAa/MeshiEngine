@@ -182,6 +182,8 @@ public:
 	void SetTransY(float pos) { worldMat_->trans_.y = pos; }
 	void SetTransZ(float pos) { worldMat_->trans_.z = pos; }
 	Vec3 GetTrans()const { return worldMat_->trans_; }
+	void SetLocalTrans(const Vec3& pos) { worldMat_->localTrans_ = pos; }
+	Vec3 GetLocalTrans()const { return worldMat_->localTrans_; }
 	//スケール
 	void SetScale(const Vec3& scale) { worldMat_->scale_ = scale; }
 	void SetScaleX(float scale) { worldMat_->scale_.x = scale; }
@@ -223,7 +225,7 @@ public:
 public:
 	//オブジェクト名前
 	void SetObjName(std::string objName) { objName_ = objName; }
-	const std::string& GetObjName() { return objName_; }
+	const std::string& GetObjName()const { return objName_; }
 
 	//コライダー
 	BaseCollider* GetCollider() { return collider_.get(); }

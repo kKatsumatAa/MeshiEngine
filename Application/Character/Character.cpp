@@ -14,7 +14,7 @@ void Character::Damaged(int8_t damage, std::function<void()> deadFunc)
 	hp_ -= damage;
 
 	//死んだときの処理
-	if (hp_ <= 0)
+	if (hp_ <= 0 && deadFunc)
 	{
 		deadFunc();
 	}

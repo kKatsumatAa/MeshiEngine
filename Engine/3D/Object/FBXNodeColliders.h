@@ -50,6 +50,8 @@ public:
 public:
 	//コライダーオブジェクトの配列を取得(ノードと同じ順番)
 	const std::vector<std::unique_ptr<ColliderObject>>& GetColliders() { return colliderObjs_; }
+	//コライダーオブジェクトを名前で取得
+	IObject3D* GetColliderObj(const std::string& nodeName);
 
 public:
 	//ノードの配列の一つ一つのコライダーをセットする

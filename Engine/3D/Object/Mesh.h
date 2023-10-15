@@ -24,6 +24,8 @@ struct Node
 	DirectX::XMFLOAT4 scaling = { 1.0f,1.0f,1.0f,0 };
 	//ローカル回転角
 	DirectX::XMFLOAT4 rotation = { 0,0,0,0 };
+	//現在の角度に足す角度
+	DirectX::XMFLOAT4 addRot = { 0,0,0,0 };
 	//ローカル移動
 	DirectX::XMFLOAT4 translation = { 0,0,0,1.0f };
 	//ローカル変形行列

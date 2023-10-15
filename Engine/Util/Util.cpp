@@ -112,6 +112,11 @@ Vec3 LerpVec3(const Vec3& v1, const Vec3& v2, float t)
 	return v1 + t * (v2 - v1);
 }
 
+float Lerp(float v1, float v2, float t)
+{
+	return v1 + t * (v2 - v1);
+}
+
 Vec2 LerpVec2(const Vec2& v1, const Vec2& v2, float t)
 {
 	return v1 + t * (v2 - v1);

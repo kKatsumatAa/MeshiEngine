@@ -22,6 +22,7 @@ public:
 	M4 localParentMat_;
 	Vec3 scale_ = { 1.0f,1.0f,1.0f };
 	Vec3 rot_ = { 0,0,0 };
+	Vec3 localTrans_ = { 0,0,0 };
 	Vec3 trans_ = { 0,0,0 };
 	WorldMat* parent_ = nullptr;
 

@@ -12,6 +12,15 @@ class EnemyState;
 class Enemy :
 	public Character
 {
+public:
+	//ダメージ時のノードに加算する角度
+	struct DamagedNodeAddRot
+	{
+		std::string nodeName;
+		Vec3 addRotBegin = { 0,0,0 };
+		Vec3 addRotEnd = { 0,0,0 };
+	};
+
 private:
 	const float PARTICLE_SIZE_EXTEND_ = 2.0f;
 
@@ -38,7 +47,7 @@ private:
 
 	const float KNOCK_BACK_POW_ = 0.365f;
 
-	const float DISSOLVE_POW_ = 0.6f;
+	const float DISSOLVE_POW_ = 0.5f;
 
 	const float WEAPON_FALL_VEL_EXTEND_ = 1.2f;
 
@@ -46,6 +55,9 @@ private:
 	const int32_t LIGHT_INDEX_INIT_ = -1;
 	int32_t lightIndexTmp_ = LIGHT_INDEX_INIT_;
 	DirectX::XMFLOAT3 EMERGE_COL_ = { 1.0f,0,0 };
+
+	//被攻撃時の加算角度
+	std::vector<DamagedNodeAddRot> damagedAddRots_;
 
 	//ステート
 	std::unique_ptr<EnemyState> state_ = nullptr;
@@ -66,13 +78,13 @@ public:
 private:
 	//銃をノックバックして落とす
 	void KnockBack(const CollisionInfo& info);
-
 	//被弾時のパーティクル
 	void DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExtend = { 1.0f / 8.0f,1.0f / 8.0f,1.0f / 8.0f },
 		int32_t particleNum = 200);
-
 	//ターゲットに向かって動く処理のみ
 	void WalkToTarget(const Vec3& targetPos);
+	//攻撃された部位ごとにノードに加算する角度を決める
+	void SetAllNodeAddRots(const IObject& nodeObj);
 
 public:
 	~Enemy();
@@ -102,11 +114,13 @@ public:
 	//向きを変更
 	void DirectionUpdate(const Vec3& targetPos);
 	//hp処理
-	void HPUpdate();
+	void HPUpdate(float t = 1.0f);
 
 public:
 	int32_t GetWaveNum() { return waveNum_; }
-	//
+	//ライト
 	int32_t GetLightIndexTmp() { return lightIndexTmp_; }
 	int32_t GetLightIndexInit() { return LIGHT_INDEX_INIT_; }
+	//被ダメージ時の加算角度
+	const std::vector<DamagedNodeAddRot>& GetDamagedAddRots() { return damagedAddRots_; }
 };

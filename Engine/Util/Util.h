@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "Vec3.h"
 #include "Vec2.h"
@@ -23,6 +23,7 @@ float GetRadianVec3(const Vec3& v1, const Vec3& v2);
 //--------------------------------------------------------------------------------------------------
 //線形補完
 Vec3 LerpVec3(const Vec3& v1, const Vec3& v2, float t);
+float Lerp(float v1, float v2, float t);
 Vec2 LerpVec2(const Vec2& v1, const Vec2& v2, float t);
 Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t);
 

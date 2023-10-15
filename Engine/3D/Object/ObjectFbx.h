@@ -85,7 +85,9 @@ public:
 
 	//ノードごとの当たり判定の判定処理をセット
 	void SetNodeCollidersOnCollision(std::function<void(const IObject3D& obj, const CollisionInfo& info)>onCollisionF)
-	{ nodeColliders_.SetOnCollisionFunc(onCollisionF); }
+	{
+		nodeColliders_.SetOnCollisionFunc(onCollisionF);
+	}
 
 	//ノードごとの当たり判定初期化
 	void InitializeNodeColliders(ModelFBX* model, float colliderScale, uint16_t attribute);
@@ -93,6 +95,9 @@ public:
 	void UpdateNodeColliders() { nodeColliders_.Update(worldMat_.get()); }
 	//ノードごとの当たり判定描画
 	void DrawNodeColliders() { if (isValidNodeCollidersDraw_) { nodeColliders_.Draw(); } }
+
+	//ノードごとの当たり判定を名前で取得
+	IObject3D* GetNodeColliderObj(const std::string& nodeName);
 
 public:
 	//アニメーション開始
@@ -120,6 +125,10 @@ public:
 	void UpdateFBXNodeMat();
 	//アニメーションのアップデート
 	void AnimationUpdate();
+
+public:
+	//ノードの足す角度をセット
+	void SetNodeAddRot(const std::string& nodeName, const Vec3& addRot);
 
 private:
 	//アニメーション開始

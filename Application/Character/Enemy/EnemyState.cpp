@@ -57,6 +57,19 @@ Vec3 EnemyState::GetRayHitGunOrPlayerPos()
 	return CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
 }
 
+void EnemyState::ChangeState()
+{
+	//銃があれば
+	if (enemy_->GetWeapon())
+	{
+		enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeapon>());
+	}
+	else
+	{
+		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
+	}
+}
+
 void EnemyState::Update()
 {
 	enemy_->HPUpdate();
@@ -91,15 +104,8 @@ void EnemyStateEmergeEffect::Update()
 
 		enemy_->SetColliderIsValid(true);
 
-		//銃があれば
-		if (enemy_->GetWeapon())
-		{
-			enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeapon>());
-		}
-		else
-		{
-			enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
-		}
+		//武器持ってるかどうかでステート変更
+		ChangeState();
 	}
 
 	timer_++;
@@ -164,5 +170,54 @@ void EnemyStateHaveWeapon::Update()
 	if (enemy_->GetWeapon() == nullptr)
 	{
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
+	}
+}
+
+
+//被ダメージ始め---------------------------------------------------------------------------
+void EnemyStateHaveDamagedBegin::Initialize()
+{
+}
+
+void EnemyStateHaveDamagedBegin::Update()
+{
+	//時間を加算して割合を得る
+	timer_ += GameVelocityManager::GetInstance().GetVelocity();
+	float t = min(timer_ / TIMER_MAX_, 1.0f);
+
+	//割合を使用して線形補完
+	for (auto nodeAddRot : enemy_->GetDamagedAddRots())
+	{
+		enemy_->ObjectFBX::SetNodeAddRot(nodeAddRot.nodeName, LerpVec3(nodeAddRot.addRotBegin, nodeAddRot.addRotEnd, t));
+	}
+
+	enemy_->HPUpdate(t);
+
+	if (t >= 1.0f)
+	{
+		enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveDamagedEnd>());
+	}
+}
+
+//被ダメージ終わり---------------------------------------------------------------------------
+void EnemyStateHaveDamagedEnd::Initialize()
+{
+}
+
+void EnemyStateHaveDamagedEnd::Update()
+{
+	//時間を加算して割合を得る
+	timer_ += GameVelocityManager::GetInstance().GetVelocity();
+	float t = timer_ / TIMER_MAX_;
+
+	//割合を使用して線形補完(今度は元に戻す)
+	for (auto nodeAddRot : enemy_->GetDamagedAddRots())
+	{
+		enemy_->ObjectFBX::SetNodeAddRot(nodeAddRot.nodeName, LerpVec3(nodeAddRot.addRotEnd, nodeAddRot.addRotBegin, t));
+	}
+
+	if (t >= 1.0f)
+	{
+		ChangeState();
 	}
 }

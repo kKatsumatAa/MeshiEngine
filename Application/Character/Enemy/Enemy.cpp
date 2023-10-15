@@ -178,6 +178,22 @@ void Enemy::WalkToTarget(const Vec3& targetPos)
 	DirectionUpdate(targetPos);
 }
 
+//---------------------------------------------------------------------------------------------
+void Enemy::SetAllNodeAddRots(const IObject& nodeObj)
+{
+	damagedAddRots_.clear();
+
+	Vec3 addRot = { 0,0,0 };
+	//Spine2(仮)からの距離で回転方向を決めるため
+	Vec3 localPosFromSpine2 = nodeObj.GetLocalTrans() - ObjectFBX::GetNodeColliderObj("Spine2")->GetLocalTrans();
+
+	addRot.x = max(min(-localPosFromSpine2.y, PI / 4.0f), -PI / 4.0f);
+	addRot.y = max(min(-localPosFromSpine2.x, PI / 4.0f), -PI / 4.0f);
+
+	damagedAddRots_.push_back({ "Spine2", {0,0,0},addRot });
+}
+
+//---------------------------------------------------------------------------------------------
 void Enemy::CollisionWallAndFloor()
 {
 	//地面と壁との判定
@@ -204,17 +220,23 @@ void Enemy::DirectionUpdate(const Vec3& targetPos)
 	IObject::SetMatRot(q.MakeRotateMatrix());
 }
 
-void Enemy::HPUpdate()
+void Enemy::HPUpdate(float t)
 {
-	//hpによってディゾルブ
-	IObject3D::SetDissolveT((1.0f - (float)hp_ / (float)HP_TMP_) * DISSOLVE_POW_);
+	//hpによってディゾルブ(減った後のhpとの線形補完)
+	IObject3D::SetDissolveT((1.0f - Lerp((float)hp_ + 1.0f, (float)hp_, t) / (float)HP_TMP_) * DISSOLVE_POW_);
 
 	//ポリゴンごとに動くように
 	Mesh::PolygonOffset offsetData;
 	offsetData.interval = GetRand(15.0f, 35.0f) * (1.0f - GameVelocityManager::GetInstance().GetVelocity() * 1.5f);
-	offsetData.length = GetRand(-IObject::GetScale().x, IObject::GetScale().x) * 5.5f * max(1.0f - (float)hp_ / (float)HP_TMP_, 0);
+	offsetData.length = GetRand(-IObject::GetScale().x, IObject::GetScale().x) * 2.0f;
 	offsetData.ratio = (1.0f - (float)hp_ / (float)HP_TMP_);
 	ObjectFBX::SetMeshPolygonOffsetData(offsetData);
+
+	//hpが0で割合もmaxになったら
+	if (hp_ <= 0 && t >= 1.0f)
+	{
+		IObject::SetIsAlive(false);
+	}
 }
 
 //----------------------------------------------------------------
@@ -340,10 +362,15 @@ void Enemy::OnCollision(const IObject3D& obj, const CollisionInfo& info)
 			KnockBack(info);
 
 			//hp減らす
-			Damaged(1, [=]() { IObject::SetIsAlive(false); });
+			Damaged(1, NULL);
 
 			//パーティクル
 			DamageParticle(info);
+
+			//ノードの角度を加算するため
+			SetAllNodeAddRots(obj);
+
+			ChangeEnemyState(std::make_unique<EnemyStateHaveDamagedBegin>());
 		}
 	}
 	//弾に当たったら
@@ -356,7 +383,7 @@ void Enemy::OnCollision(const IObject3D& obj, const CollisionInfo& info)
 		}
 
 		//今のhp分ダメージ受けて倒れる
-		Damaged(hp_, [=]() {IObject::SetIsAlive(false); });
+		Damaged(hp_, NULL);
 
 		//ノックバック
 		KnockBack(info);

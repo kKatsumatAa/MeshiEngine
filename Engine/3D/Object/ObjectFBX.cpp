@@ -301,6 +301,21 @@ void ObjectFBX::AnimationUpdate()
 	}
 }
 
+void ObjectFBX::SetNodeAddRot(const std::string& nodeName, const Vec3& addRot)
+{
+	if (nodes_)
+	{
+		for (auto& node : *nodes_)
+		{
+			//一部でも文字列が一致していたら加算用の角度をセット
+			if (node.name.find(nodeName) != std::string::npos)
+			{
+				node.addRot = { addRot.x,addRot.y,addRot.z,0 };
+			}
+		}
+	}
+}
+
 void ObjectFBX::UpdateFBXNodeMat()
 {
 	//オブジェクトクラスが持ってるfbxモデルのノード全て
@@ -313,7 +328,10 @@ void ObjectFBX::UpdateFBXNodeMat()
 			node.scaling.y,
 			node.scaling.z);
 		//回転
-		XMVECTOR rotVec = { node.rotation.x,node.rotation.y, node.rotation.z, node.rotation.w };
+		XMVECTOR rotVec = { node.rotation.x + node.addRot.x,
+			node.rotation.y + node.addRot.y,
+			node.rotation.z + node.addRot.z,
+			node.rotation.w };
 		DirectX::XMMATRIX R = DirectX::XMMatrixRotationQuaternion(rotVec);
 		//位置
 		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(
@@ -383,6 +401,11 @@ void ObjectFBX::AnimationReset(int32_t animeIndex)
 
 	//開始時間取得
 	animeDatas_[animeIndex].currentTime_ = dynamic_cast<ModelFBX*>(model_)->GetAnimations()[animeIndex].startTime;
+}
+
+IObject3D* ObjectFBX::GetNodeColliderObj(const std::string& nodeName)
+{
+	return nodeColliders_.GetColliderObj(nodeName);
 }
 
 void ObjectFBX::PlayAnimation(bool isLoop, int32_t animeIndex)
@@ -499,40 +522,6 @@ XMMATRIX ObjectFBX::GetCalcSkinMat(IModel* model, int32_t index)
 	//ボーン行列(上の二つを掛け合わせる)
 	DirectX::XMMATRIX boneTransform =
 		offsetTransform * worldTransform;
-
-	////スケールを省く処理
-	// 
-	//DirectX::XMFLOAT3 l_scale = {};
-	//l_scale.x = 1 / scale.x;
-	//l_scale.y = 1 / scale.y;
-	//l_scale.z = 1 / scale.z;
-	//worldTransform.r[0].m128_f32[0] *= l_scale.x;
-	//worldTransform.r[0].m128_f32[1] *= l_scale.x;
-	//worldTransform.r[0].m128_f32[2] *= l_scale.x;
-	//worldTransform.r[1].m128_f32[0] *= l_scale.y;
-	//worldTransform.r[1].m128_f32[1] *= l_scale.y;
-	//worldTransform.r[1].m128_f32[2] *= l_scale.y;
-	//worldTransform.r[2].m128_f32[0] *= l_scale.z;
-	//worldTransform.r[2].m128_f32[1] *= l_scale.z;
-	//worldTransform.r[2].m128_f32[2] *= l_scale.z;
-
-	//fbxData.push_back(std::make_pair(
-	//	nodes.at(model->GetNodeIndices().at(i)).name,
-	//	worldTransform * matWorld));
-	//DirectX::XMFLOAT4 fbxMatRot = {};
-	//fbxMatRot = nodes.at(model->GetNodeIndices().at(i)).rotate;
-
-	//DirectX::XMMATRIX matRot = DirectX::XMMatrixIdentity();
-	//matRot *= DirectX::XMMatrixRotationZ(fbxMatRot.z);
-	//matRot *= DirectX::XMMatrixRotationX(fbxMatRot.x);
-	//matRot *= DirectX::XMMatrixRotationY(fbxMatRot.y);
-	//localMatRots.push_back(matRot);
-
-	//std::string l_name = nodes.at(model->GetNodeIndices().at(i)).name;
-	//if (l_name.find("RightHand", 0) != std::string::npos)
-	//{
-	//	matrix = worldTransform * matWorld;
-	//}
 
 	return boneTransform;
 }

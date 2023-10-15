@@ -24,6 +24,9 @@ public:
 	//持ち主のいない銃が見えたらその座標、なければプレイヤーの座標
 	Vec3 GetRayHitGunOrPlayerPos();
 
+	//武器持ってるかどうかでステート変更
+	void ChangeState();
+
 public:
 	virtual void Update();
 
@@ -57,6 +60,30 @@ class EnemyStateHaveWeapon :
 	public CharacterStateHaveWeapon,
 	public EnemyState
 {
+
+public:
+	void Initialize() override;
+	void Update() override;
+};
+
+//被ダメージ始め
+class EnemyStateHaveDamagedBegin : public EnemyState
+{
+private:
+	float timer_ = 0;
+	const float TIMER_MAX_ = 20.0f;
+
+public:
+	void Initialize() override;
+	void Update() override;
+};
+
+//被ダメージ終わり
+class EnemyStateHaveDamagedEnd : public EnemyState
+{
+private:
+	float timer_ = 0;
+	const float TIMER_MAX_ = 20.0f;
 
 public:
 	void Initialize() override;
