@@ -77,7 +77,9 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 		PickUpWeapon(weapon_);
 	}
 
+	//hpセット
 	hp_ = HP_TMP_;
+	oldHP_ = hp_;
 
 	waveNum_ = waveNum;
 
@@ -222,8 +224,15 @@ void Enemy::DirectionUpdate(const Vec3& targetPos)
 
 void Enemy::HPUpdate(float t)
 {
+	//ディゾルブ強すぎると敵が見えなくなるので
+	float lDissolvePow = DISSOLVE_POW_;
+	if (hp_ <= 0.0f)
+	{
+		lDissolvePow = Lerp(DISSOLVE_POW_, 1.0f, EaseOut(t));
+	}
+
 	//hpによってディゾルブ(減った後のhpとの線形補完)
-	IObject3D::SetDissolveT((1.0f - Lerp((float)hp_ + 1.0f, (float)hp_, t) / (float)HP_TMP_) * DISSOLVE_POW_);
+	IObject3D::SetDissolveT((1.0f - Lerp((float)oldHP_, (float)hp_, t) / (float)HP_TMP_) * lDissolvePow);
 
 	//ポリゴンごとに動くように
 	Mesh::PolygonOffset offsetData;

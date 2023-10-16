@@ -12,6 +12,7 @@ protected:
 	Weapon* weapon_ = nullptr;
 	//hp
 	int8_t hp_ = 0;
+	int8_t oldHP_ = 0;
 
 	//地面と当たっているか
 	bool isOnGround_ = false;

@@ -11,6 +11,8 @@ void Character::Damaged(int8_t damage, std::function<void()> deadFunc)
 	//ダメージ有効でなければ抜ける
 	if (!isValidDamage_) { return; }
 
+	//減る前を保存しておく
+	oldHP_ = hp_;
 	hp_ -= damage;
 
 	//死んだときの処理
