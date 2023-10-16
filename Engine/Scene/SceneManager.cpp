@@ -87,6 +87,8 @@ void SceneManager::Initialize()
 	IObject3D::SetLight(lightManager_.get());
 	//レベルマネージャーにも
 	LevelManager::GetInstance().SetLightManager(lightManager_.get());
+	//パーティクルマネージャにも
+	ParticleManager::GetInstance()->SetLightManager(lightManager_.get());
 
 	//シーン遷移マネージャ
 	SceneTransitionManager::GetInstance().Initialize();

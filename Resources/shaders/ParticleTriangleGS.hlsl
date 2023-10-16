@@ -54,7 +54,6 @@ void main(
         element.svpos = mul(mat, element.svpos);
         element.uv = S_UV_ARRAY[i];
         element.color = input[0].color;
-        element.rot = input[0].rot;
         output.Append(element);
     }
 }

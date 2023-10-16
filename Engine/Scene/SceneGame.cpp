@@ -1,4 +1,4 @@
-﻿#include "SceneGame.h"
+#include "SceneGame.h"
 #include "SceneManager.h"
 #include "StageManager.h"
 #include "StageState.h"
@@ -16,10 +16,13 @@ void SceneGame::Initialize()
 	//ステージ読み込み
 	StageManager::GetInstance().LoadStage(StageSelect::GetInstance().GetSelectStageIndex());
 
-	//
+	//クリア演出初期化
 	ClearEffect::GetInstance().Initialize();
-
-	ParticleManager::GetInstance()->SetBlendNum(ParticleManager::TRIANGLE);
+	//パーティクルの種類をセット
+	ParticleManager::GetInstance()->SetBlendNum(ParticleManager::CRYSTAL);
+	ParticleManager::GetInstance()->SetAmbient(PARTICLE_AMBIENT_);
+	ParticleManager::GetInstance()->SetDiffuse(PARTICLE_DIFFUSE_);
+	ParticleManager::GetInstance()->SetSpecular(PARTICLE_SPECULAR_);
 	ParticleManager::GetInstance()->ClearParticles();
 
 	//ポストエフェクト

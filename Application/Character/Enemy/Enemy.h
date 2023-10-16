@@ -79,7 +79,7 @@ private:
 	//銃をノックバックして落とす
 	void KnockBack(const CollisionInfo& info);
 	//被弾時のパーティクル
-	void DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExtend = { 1.0f / 8.0f,1.0f / 8.0f,1.0f / 8.0f },
+	void DamageParticle(const CollisionInfo& info, IObject3D* obj = nullptr, const Vec3& offsetPosExtend = { 1.0f / 8.0f,1.0f / 8.0f,1.0f / 8.0f },
 		int32_t particleNum = 200);
 	//ターゲットに向かって動く処理のみ
 	void WalkToTarget(const Vec3& targetPos);
@@ -100,7 +100,7 @@ public:
 
 	void OnCollision(const CollisionInfo& info) override;
 	//当たり判定時の処理を行う
-	void OnCollision(const IObject3D& obj, const CollisionInfo& info);
+	void OnCollision(IObject3D* obj, const CollisionInfo& info);
 
 	void ChangeEnemyState(std::unique_ptr<EnemyState> state);
 

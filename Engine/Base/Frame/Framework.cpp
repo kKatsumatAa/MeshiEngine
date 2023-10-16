@@ -44,11 +44,11 @@ void Framework::Initialize()
 	//trueにすることでマウスがほかのアプリで使用されない
 	MouseInput::GetInstance().SetIsExclusive(isDebug);
 
-	//
-	ParticleManager::GetInstance()->Initialize();
-
 	//Light
 	LightManager::StaticInitialize();
+
+	//パーティクル
+	ParticleManager::GetInstance()->Initialize();
 
 	//model
 	IModel::StaticInitialize();

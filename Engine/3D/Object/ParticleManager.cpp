@@ -19,15 +19,34 @@ void ParticleManager::Initialize()
 	// モデル生成
 	CreateModel();
 
-	//ヒープ設定
-	D3D12_HEAP_PROPERTIES cbHeapProp{};
-	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
-	//リソース設定
-	D3D12_RESOURCE_DESC cbResourceDesc{};
-	ResourceProperties(cbResourceDesc,
-		((uint32_t)sizeof(ConstBufferData) + 0xff) & ~0xff/*256バイトアライメント*/);
-	//定数バッファの生成
-	BuffProperties(cbHeapProp, cbResourceDesc, &constBuff_);
+	//マテリアル
+	material_ = Material::Create();
+
+	//ビュー、ビルボード行列のバッファ
+	{
+		//ヒープ設定
+		D3D12_HEAP_PROPERTIES cbHeapProp{};
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+		//リソース設定
+		D3D12_RESOURCE_DESC cbResourceDesc{};
+		ResourceProperties(cbResourceDesc,
+			((uint32_t)sizeof(ViewBillConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
+		//定数バッファの生成
+		BuffProperties(cbHeapProp, cbResourceDesc, &viewBillConstBuff_);
+	}
+
+	//カメラ位置のバッファ
+	{
+		//ヒープ設定
+		D3D12_HEAP_PROPERTIES cbHeapProp{};
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+		//リソース設定
+		D3D12_RESOURCE_DESC cbResourceDesc{};
+		ResourceProperties(cbResourceDesc,
+			((uint32_t)sizeof(CameraPosBuff) + 0xff) & ~0xff/*256バイトアライメント*/);
+		//定数バッファの生成
+		BuffProperties(cbHeapProp, cbResourceDesc, &cameraPosBuff_);
+	}
 }
 
 void ParticleManager::Update(float speed, Camera* camera)
@@ -103,12 +122,35 @@ void ParticleManager::Update(float speed, Camera* camera)
 		vertBuff_->Unmap(0, nullptr);
 	}
 
-	// 定数バッファへデータ転送
-	ConstBufferData* constMap = nullptr;
-	result = constBuff_->Map(0, nullptr, (void**)&constMap);
+	// 定数バッファマッピング
+	ViewBillConstBuffer* constMap = nullptr;
+	result = viewBillConstBuff_->Map(0, nullptr, (void**)&constMap);
 	constMap->mat = cameraL->GetViewMat() * cameraL->GetProjMat();
 	constMap->matBillboard = cameraL->GetBillboardMat();
-	constBuff_->Unmap(0, nullptr);
+	viewBillConstBuff_->Unmap(0, nullptr);
+	
+	//カメラ位置
+	CameraPosBuff* constMapC = nullptr;
+	result = cameraPosBuff_->Map(0, nullptr, (void**)&constMapC);
+	constMapC->pos = cameraL->GetEye();
+	cameraPosBuff_->Unmap(0, nullptr);
+
+	//マテリアル
+	material_->Update();
+}
+
+//-------------------------------------------------------------------------------------------------------
+void ParticleManager::SetMaterialLight()
+{
+	//カメラ位置をセット
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(RootParamNum::CAMERAPOS, cameraPosBuff_->GetGPUVirtualAddress());
+
+	//ライトのバッファセット
+	lightManager_->Draw(LIGHT);
+
+	// マテリアルの定数バッファをセット
+	ID3D12Resource* constBuff = material_->GetConstantBuffer();
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(RootParamNum::MATERIAL, constBuff->GetGPUVirtualAddress());
 }
 
 void ParticleManager::Draw(uint64_t texHandle)
@@ -143,7 +185,10 @@ void ParticleManager::Draw(uint64_t texHandle)
 	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
 	// 定数バッファビューをセット
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuff_->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, viewBillConstBuff_->GetGPUVirtualAddress());
+	//ライトやマテリアルなどをセット
+	SetMaterialLight();
+
 	// シェーダリソースビューをセット
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
@@ -154,6 +199,8 @@ void ParticleManager::Draw(uint64_t texHandle)
 	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(drawNum, 1, 0, 0);
 }
 
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
 void ParticleManager::Add(int32_t life, const Vec3& position, const Vec3& velocity, const Vec3& accel, float start_scale, float end_scale
 	, const XMFLOAT4& start_color, const XMFLOAT4& end_color, float start_rot, float end_rot)
 {
@@ -219,8 +266,6 @@ void ParticleManager::InitializeGraphicsPipeline()
 	gpipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 	// ラスタライザステート
 	gpipeline.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	//gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-	//gpipeline.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 	// デプスステンシルステート
 	gpipeline.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	// デプスの書き込みを禁止
@@ -265,9 +310,12 @@ void ParticleManager::InitializeGraphicsPipeline()
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
 
 	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparams[2] = {};
-	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootparams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+	CD3DX12_ROOT_PARAMETER rootparams[RootParamNum::NUM] = {};
+	rootparams[RootParamNum::VIEW_BILLBOARD].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
+	rootparams[RootParamNum::TEX].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+	rootparams[RootParamNum::CAMERAPOS].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL);
+	rootparams[RootParamNum::LIGHT].InitAsConstantBufferView(2, 0, D3D12_SHADER_VISIBILITY_ALL);
+	rootparams[RootParamNum::MATERIAL].InitAsConstantBufferView(3, 0, D3D12_SHADER_VISIBILITY_ALL);
 
 	// スタティックサンプラー
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
@@ -332,6 +380,30 @@ void ParticleManager::InitializeGraphicsPipeline()
 		gpipeline.BlendState.RenderTarget[1] = blenddesc;
 		gpipeline.BlendState.RenderTarget[2] = blenddesc;
 		result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(rootPipe[TRIANGLE].pipelineState.GetAddressOf()));
+	}
+	//結晶
+	{
+		rootPipe[CRYSTAL] = rootPipe[SUB];
+		rootPipe[CRYSTAL].CreateBlob("Resources/shaders/ParticleVS.hlsl", "Resources/shaders/ParticlePSLight.hlsl", "Resources/shaders/ParticleCrystalGS.hlsl");
+		//gs,psだけ違うので
+		gpipeline.GS = CD3DX12_SHADER_BYTECODE(rootPipe[CRYSTAL].gsBlob.Get());
+		gpipeline.PS = CD3DX12_SHADER_BYTECODE(rootPipe[CRYSTAL].psBlob.Get());
+		// スタティックサンプラー
+		samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
+
+		result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
+			IID_PPV_ARGS(rootPipe[CRYSTAL].rootSignature.GetAddressOf()));
+		gpipeline.pRootSignature = rootPipe[CRYSTAL].rootSignature.Get();
+		if (FAILED(result)) {
+			assert(0);
+		}
+		blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
+		blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+		gpipeline.BlendState.RenderTarget[0] = blenddesc;
+		gpipeline.BlendState.RenderTarget[1] = blenddesc;
+		gpipeline.BlendState.RenderTarget[2] = blenddesc;
+		result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(rootPipe[CRYSTAL].pipelineState.GetAddressOf()));
 	}
 
 	if (FAILED(result)) {

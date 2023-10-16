@@ -10,6 +10,8 @@
 #include "TextureManager.h"
 #include "Camera.h"
 #include "RootPipe.h"
+#include "Material.h"
+#include "LightManager.h"
 
 /// <summary>
 /// パーティクルマネージャ
@@ -25,6 +27,18 @@ private: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+private:
+	enum RootParamNum
+	{
+		VIEW_BILLBOARD,//ビューとビルボード行列
+		TEX,//テクスチャ
+		CAMERAPOS,//カメラ位置
+		LIGHT,//ライト
+		MATERIAL,//マテリアル
+
+		NUM//要素数
+	};
+
 public: // サブクラス
 	// 頂点データ構造体
 	struct VertexPos
@@ -36,18 +50,26 @@ public: // サブクラス
 	};
 
 	// 定数バッファ用データ構造体
-	struct ConstBufferData
+	struct ViewBillConstBuffer
 	{
 		XMMATRIX mat;	// ビュープロジェクション行列
 		XMMATRIX matBillboard;	// ビルボード行列
 	};
 
+	//カメラ位置
+	struct CameraPosBuff
+	{
+		Vec3 pos;
+	};
+
+public:
 	//ブレンドモード
 	enum BLEND_NUM
 	{
 		ADD,
 		SUB,
-		TRIANGLE
+		TRIANGLE,
+		CRYSTAL
 	};
 
 	// パーティクル1粒
@@ -90,6 +112,10 @@ public: // サブクラス
 
 private: // 定数
 	static const int32_t S_VERTEX_COUNT_ = 65536;		// 頂点数
+	//マテリアル
+	std::unique_ptr<Material> material_ = nullptr;
+	//ライトマネージャ
+	LightManager* lightManager_ = nullptr;
 
 public:// 静的メンバ関数
 	static ParticleManager* GetInstance();
@@ -122,6 +148,7 @@ public: // メンバ関数
 	/// </summary>
 	void Draw(uint64_t texHandle = NULL);
 
+public:
 	/// <summary>
 	/// パーティクルの追加
 	/// </summary>
@@ -140,18 +167,35 @@ public: // メンバ関数
 
 	void ClearParticles() { particles_.clear(); }
 
+public:
+	//ブレンド設定をセット
 	void SetBlendNum(BLEND_NUM blendNum) { blendNum_ = blendNum; }
+	//ライトマネージャのポインタセット
+	void SetLightManager(LightManager* lightManager) { lightManager_ = lightManager; }
+	//アンビエントセット
+	void SetAmbient(const Vec3& ambient) { material_->ambient_ = { ambient.x,ambient.y,ambient.z }; }
+	//ディフューズセット
+	void SetDiffuse(const Vec3& diffuse) { material_->diffuse_ = { diffuse.x,diffuse.y,diffuse.z }; }
+	//スペキュラセット
+	void SetSpecular(const Vec3& specular) { material_->specular_ = { specular.x,specular.y,specular.z }; }
+
+
+private:
+	//ライトやマテリアルをセットする
+	void SetMaterialLight();
+
 
 private: // メンバ変数
 	BLEND_NUM blendNum_ = ADD;
 	//ルートシグネチャ等
-	RootPipe rootPipe[BLEND_NUM::TRIANGLE + 1];
+	RootPipe rootPipe[BLEND_NUM::CRYSTAL + 1];
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff_;
 	// 頂点バッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vbView_;
 	// 定数バッファ
-	ComPtr<ID3D12Resource> constBuff_;
+	ComPtr<ID3D12Resource> viewBillConstBuff_;
+	ComPtr<ID3D12Resource> cameraPosBuff_;
 	// パーティクル配列
 	std::forward_list<Particle> particles_;
 	//

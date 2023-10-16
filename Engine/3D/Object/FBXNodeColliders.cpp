@@ -9,7 +9,7 @@ void FBXNodeColliders::ColliderObject::OnCollision(const CollisionInfo& info)
 {
 	if (onCollFunc_)
 	{
-		onCollFunc_(*this, info);
+		onCollFunc_(this, info);
 	}
 }
 
@@ -142,7 +142,7 @@ void FBXNodeColliders::SetParentObj(IObject3D* parentObj)
 	}
 }
 
-void FBXNodeColliders::SetOnCollisionFunc(std::function<void(const IObject3D& obj, const CollisionInfo& info)> onCollisionF)
+void FBXNodeColliders::SetOnCollisionFunc(std::function<void(IObject3D* obj, const CollisionInfo& info)> onCollisionF)
 {
 	if (colliderObjs_.size())
 	{

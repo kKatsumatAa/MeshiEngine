@@ -113,7 +113,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	//ノードごとの当たり判定
 	InitializeNodeColliders(modelFbx, 14.0f, COLLISION_ATTR_ENEMYS);
 	//ボーンの当たり判定時に処理させる
-	auto onCollF = [=](const IObject3D& obj, const CollisionInfo& info) {OnCollision(obj, info); };
+	auto onCollF = [=](IObject3D* obj, const CollisionInfo& info) {OnCollision(obj, info); };
 	SetNodeCollidersOnCollision(onCollF);
 
 	return true;
@@ -304,11 +304,15 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	}
 }
 
-void Enemy::DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExtend, int32_t particleNum)
+void Enemy::DamageParticle(const CollisionInfo& info, IObject3D* obj, const Vec3& offsetPosExtend, int32_t particleNum)
 {
 	for (int32_t i = 0; i < particleNum; ++i)
 	{
 		Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
+		if (obj)
+		{
+			pos = obj->GetWorldTrans();
+		}
 
 		float scaleTmp = IObject::GetScale().GetLength();
 
@@ -331,22 +335,22 @@ void Enemy::DamageParticle(const CollisionInfo& info, const Vec3& offsetPosExten
 		float scale2 = 0;
 
 		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.002f,0 }, scale, scale2, { 3.0f,0.02f,0.02f,0.95f }, { 3.0f,0.02f,0.02f,0.95f },
-			PI * 2.0f, -PI * 2.0f);
+			PI * 4.0f, -PI * 4.0f);
 	}
 }
 
 void Enemy::OnCollision(const CollisionInfo& info)
 {
-	OnCollision(*this, info);
+	OnCollision(this, info);
 }
 
-void Enemy::OnCollision(const IObject3D& obj, const CollisionInfo& info)
+void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 {
 	//プレイヤーに当たったら
 	if (info.object_->GetObjName() == "player")
 	{
 		////長さ
-		float length = (info.object_->GetScale().x + obj.GetWorldScale().x);
+		float length = (info.object_->GetScale().x + obj->GetWorldScale().x);
 		//距離のベクトル
 		Vec3 distanceVec = IObject3D::GetWorldTrans() - info.object_->GetTrans();
 		//仮でyは動かさない
@@ -374,10 +378,10 @@ void Enemy::OnCollision(const IObject3D& obj, const CollisionInfo& info)
 			Damaged(1, NULL);
 
 			//パーティクル
-			DamageParticle(info);
+			DamageParticle(info, obj);
 
 			//ノードの角度を加算するため
-			SetAllNodeAddRots(obj);
+			SetAllNodeAddRots(*obj);
 
 			ChangeEnemyState(std::make_unique<EnemyStateHaveDamagedBegin>());
 		}
@@ -398,7 +402,7 @@ void Enemy::OnCollision(const IObject3D& obj, const CollisionInfo& info)
 		KnockBack(info);
 
 		//パーティクル
-		DamageParticle(info, { 0.5f,1.0f,0.5f }, 400);
+		DamageParticle(info, obj, { 0.5f,1.0f,0.5f }, 400);
 	}
 	//銃に当たったら
 	else if (info.object_->GetObjName() == "gun")
@@ -426,9 +430,9 @@ void Enemy::OnCollision(const IObject3D& obj, const CollisionInfo& info)
 	else if (info.object_->GetObjName().find("enemy") != std::string::npos)
 	{
 		//長さ
-		float length = (info.object_->GetScale().x + obj.GetWorldScale().x);
+		float length = (info.object_->GetScale().x + obj->GetWorldScale().x);
 		//距離のベクトル
-		Vec3 distanceVec = obj.GetWorldTrans() - info.object_->GetTrans();
+		Vec3 distanceVec = obj->GetWorldTrans() - info.object_->GetTrans();
 		//仮
 		distanceVec.y = 0;
 		distanceVec.Normalized();

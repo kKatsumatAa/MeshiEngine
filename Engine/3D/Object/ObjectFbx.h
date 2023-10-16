@@ -84,7 +84,7 @@ public:
 	bool GetIsValidNodeCollidersDraw() { return isValidNodeCollidersDraw_; }
 
 	//ノードごとの当たり判定の判定処理をセット
-	void SetNodeCollidersOnCollision(std::function<void(const IObject3D& obj, const CollisionInfo& info)>onCollisionF)
+	void SetNodeCollidersOnCollision(std::function<void(IObject3D* obj, const CollisionInfo& info)>onCollisionF)
 	{
 		nodeColliders_.SetOnCollisionFunc(onCollisionF);
 	}
