@@ -189,8 +189,8 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj)
 	//Spine2(仮)からの距離で回転方向を決めるため
 	Vec3 localPosFromSpine2 = nodeObj.GetLocalTrans() - ObjectFBX::GetNodeColliderObj("Spine2")->GetLocalTrans();
 
-	addRot.x = max(min(-localPosFromSpine2.y, PI / 4.0f), -PI / 4.0f);
-	addRot.y = max(min(-localPosFromSpine2.x, PI / 4.0f), -PI / 4.0f);
+	addRot.x = max(min(-localPosFromSpine2.y, PI / 6.0f), -PI / 6.0f);
+	addRot.y = max(min(-localPosFromSpine2.x, PI / 6.0f), -PI / 6.0f);
 
 	//右か左か
 	std::string leftOrRightStr = "";
@@ -256,14 +256,13 @@ void Enemy::HPUpdate(float t)
 	{
 		lDissolvePow = Lerp(DISSOLVE_POW_, 1.0f, EaseOut(t));
 	}
-
 	//hpによってディゾルブ(減った後のhpとの線形補完)
 	IObject3D::SetDissolveT((1.0f - Lerp((float)oldHP_, (float)hp_, t) / (float)HP_TMP_) * lDissolvePow);
 
 	//ポリゴンごとに動くように
 	Mesh::PolygonOffset offsetData;
-	offsetData.interval = GetRand(15.0f, 35.0f) * (1.0f - GameVelocityManager::GetInstance().GetVelocity() * 1.5f);
-	offsetData.length = GetRand(-IObject::GetScale().x, IObject::GetScale().x) * 2.0f;
+	offsetData.interval = GetRand(15.0f, 35.0f) * (1.0f - GameVelocityManager::GetInstance().GetVelocity() * 1.1f);
+	offsetData.length = GetRand(-IObject::GetScale().x, IObject::GetScale().x) * 1.3f;
 	offsetData.ratio = (1.0f - (float)hp_ / (float)HP_TMP_);
 	ObjectFBX::SetMeshPolygonOffsetData(offsetData);
 
@@ -335,18 +334,22 @@ void Enemy::DamageParticle(const CollisionInfo& info, IObject3D* obj, const Vec3
 	for (int32_t i = 0; i < particleNum; ++i)
 	{
 		Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
+
+		float scaleTmp = IObject::GetScale().GetLength();
+
+		//引数がセットされてたらその座標をそのまま使う
 		if (obj)
 		{
 			pos = obj->GetWorldTrans();
 		}
+		//else
+		{
+			Vec3 addPos = Vec3(GetRand(-IObject::GetScale().x, IObject::GetScale().x) * offsetPosExtend.x,
+				GetRand(-IObject::GetScale().y, IObject::GetScale().y) * offsetPosExtend.y,
+				GetRand(-IObject::GetScale().z, IObject::GetScale().z) * offsetPosExtend.z);
 
-		float scaleTmp = IObject::GetScale().GetLength();
-
-		Vec3 addPos = Vec3(GetRand(-IObject::GetScale().x, IObject::GetScale().x) * offsetPosExtend.x,
-			GetRand(-IObject::GetScale().y, IObject::GetScale().y) * offsetPosExtend.y,
-			GetRand(-IObject::GetScale().z, IObject::GetScale().z) * offsetPosExtend.z);
-
-		pos += addPos;
+			pos += addPos;
+		}
 
 		const int32_t LIFE_TIME = 40;
 

@@ -56,9 +56,9 @@ void main(
 
             //面の中で違いを出すために少しランダムに法線してもいいかも
             float3 normalL = normals[j];
-            normalL = float4(rotate(normalL.xyz, (input[0].rot.x + input[0].rot.y + input[0].rot.z) / 3.0f, input[0].rot.xyz), 1.0f)
-            + normalize(random(input[0].rot.xy, 1.0f)) * 0.1f;
-            o.normal = normalL;
+            normalL = float4(rotate(normalL.xyz, (input[0].rot.x + input[0].rot.y + input[0].rot.z) / 3.0f, input[0].rot.xyz), 1.0f) +
+             normalize(o.svpos - input[0].pos);
+            o.normal = normalize(normalL);
             
             //色
             o.color = input[0].color;
