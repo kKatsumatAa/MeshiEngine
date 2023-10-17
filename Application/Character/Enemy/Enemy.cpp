@@ -192,6 +192,32 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj)
 	addRot.x = max(min(-localPosFromSpine2.y, PI / 4.0f), -PI / 4.0f);
 	addRot.y = max(min(-localPosFromSpine2.x, PI / 4.0f), -PI / 4.0f);
 
+	//右か左か
+	std::string leftOrRightStr = "";
+	if (nodeObj.GetObjName().find("Right") != std::string::npos)
+	{
+		leftOrRightStr = "Right";
+	}
+	else if (nodeObj.GetObjName().find("Left") != std::string::npos)
+	{
+		leftOrRightStr = "Left";
+	}
+
+	//足に攻撃されたら
+	if (nodeObj.GetObjName().find("Toe") != std::string::npos ||
+		nodeObj.GetObjName().find("Foot") != std::string::npos||
+		nodeObj.GetObjName().find("Leg") != std::string::npos)
+	{
+		//Spine2(仮)からの距離で回転方向を決めるため
+		Vec3 localPosFromLeg = nodeObj.GetLocalTrans() - ObjectFBX::GetNodeColliderObj("UpLeg")->GetLocalTrans();
+
+		Vec3 addRotLeg = { 0,0,0 };
+		addRotLeg.x = max(min(localPosFromLeg.y, PI / 8.0f), -PI / 8.0f);
+		addRotLeg.y = max(min(-localPosFromLeg.x, PI / 8.0f), -PI / 8.0f);
+
+		damagedAddRots_.push_back({ leftOrRightStr + "Leg", {0,0,0},addRotLeg });
+	}
+
 	damagedAddRots_.push_back({ "Spine2", {0,0,0},addRot });
 }
 
