@@ -205,7 +205,7 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj)
 
 	//足に攻撃されたら
 	if (nodeObj.GetObjName().find("Toe") != std::string::npos ||
-		nodeObj.GetObjName().find("Foot") != std::string::npos||
+		nodeObj.GetObjName().find("Foot") != std::string::npos ||
 		nodeObj.GetObjName().find("Leg") != std::string::npos)
 	{
 		//Spine2(仮)からの距離で回転方向を決めるため
@@ -398,22 +398,19 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 	//プレイヤーの攻撃との判定
 	else if (info.object_->GetObjName().find("hand") != std::string::npos)
 	{
-		if (damageCoolTime_ <= 0)
-		{
-			//ノックバック
-			KnockBack(info);
+		//ノックバック
+		KnockBack(info);
 
-			//hp減らす
-			Damaged(1, NULL);
+		//hp減らす
+		Damaged(1, NULL);
 
-			//パーティクル
-			DamageParticle(info, obj);
+		//パーティクル
+		DamageParticle(info, obj);
 
-			//ノードの角度を加算するため
-			SetAllNodeAddRots(*obj);
+		//ノードの角度を加算するため
+		SetAllNodeAddRots(*obj);
 
-			ChangeEnemyState(std::make_unique<EnemyStateHaveDamagedBegin>());
-		}
+		ChangeEnemyState(std::make_unique<EnemyStateHaveDamagedBegin>());
 	}
 	//弾に当たったら
 	else if (info.object_->GetObjName() == "bullet")

@@ -216,6 +216,8 @@ void EnemyStateHaveDamagedEnd::Update()
 		enemy_->ObjectFBX::SetNodeAddRot(nodeAddRot.nodeName, LerpVec3(nodeAddRot.addRotEnd, nodeAddRot.addRotBegin, t));
 	}
 
+	enemy_->HPUpdate(t);
+
 	if (t >= 1.0f)
 	{
 		ChangeState();
