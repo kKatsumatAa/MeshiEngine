@@ -364,6 +364,7 @@ void Enemy::DamageParticle(const CollisionInfo& info, IObject3D* obj, const Vec3
 		float scale2 = 0;
 
 		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.002f,0 }, scale, scale2, { 3.0f,0.02f,0.02f,0.95f }, { 3.0f,0.02f,0.02f,0.95f },
+			ParticleManager::BLEND_NUM::CRYSTAL,
 			PI * 4.0f, -PI * 4.0f);
 	}
 }

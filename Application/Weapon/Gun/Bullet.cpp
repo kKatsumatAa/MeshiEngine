@@ -1,4 +1,4 @@
-﻿#include "Bullet.h"
+#include "Bullet.h"
 #include "KeyboardInput.h"
 #include "DebugText.h"
 #include "CameraManager.h"
@@ -78,7 +78,8 @@ void Bullet::Dead(const Vec3& interPos)
 
 		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 4.0f);
 
-		ParticleManager::GetInstance()->Add(30, interPos, vel, { 0,0,0 }, scale, 0, { 0,0,0,1.5f }, { 0,0,0,0.0f });
+		ParticleManager::GetInstance()->Add(30, interPos, vel, { 0,0,0 }, scale, 0, { 0,0,0,1.5f }, { 0,0,0,0.0f },
+			ParticleManager::BLEND_NUM::TRIANGLE);
 	}
 }
 

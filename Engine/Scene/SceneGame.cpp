@@ -19,7 +19,6 @@ void SceneGame::Initialize()
 	//クリア演出初期化
 	ClearEffect::GetInstance().Initialize();
 	//パーティクルの種類をセット
-	ParticleManager::GetInstance()->SetBlendNum(ParticleManager::CRYSTAL);
 	ParticleManager::GetInstance()->SetAmbient(PARTICLE_AMBIENT_);
 	ParticleManager::GetInstance()->SetDiffuse(PARTICLE_DIFFUSE_);
 	ParticleManager::GetInstance()->SetSpecular(PARTICLE_SPECULAR_);

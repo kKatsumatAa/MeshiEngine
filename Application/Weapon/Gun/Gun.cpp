@@ -116,7 +116,8 @@ void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float
 
 		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 2.0f);
 
-		ParticleManager::GetInstance()->Add(20, shotPos_, vel * 0.5f, { 0,0,0 }, scale * particleSize, 0, sColor, eColor);
+		ParticleManager::GetInstance()->Add(20, shotPos_, vel * 0.5f, { 0,0,0 }, scale * particleSize, 0, sColor, eColor,
+			ParticleManager::BLEND_NUM::TRIANGLE );
 	}
 
 }
@@ -135,7 +136,8 @@ void Gun::OnLandShape(const Vec3& interPos)
 
 		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 4.0f);
 
-		ParticleManager::GetInstance()->Add(30, interPos, vel, { 0,0,0 }, scale, 0, { 0,0,0,1.5f }, { 0,0,0,0.0f });
+		ParticleManager::GetInstance()->Add(30, interPos, vel, { 0,0,0 }, scale, 0, { 0,0,0,1.5f }, { 0,0,0,0.0f },
+			ParticleManager::BLEND_NUM::TRIANGLE);
 	}
 }
 

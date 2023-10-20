@@ -44,12 +44,9 @@ void main(
         offset = mul(matBillboard, offset);
 
         //疑似的に回転
-        offset.r = sin(input[0].rot.r) * offset.r;
-        offset.g = cos(input[0].rot.g) * offset.g;
-        offset.b = -sin(input[0].rot.b) * offset.b;
-        offset.a = -cos(input[0].rot.b) * offset.a;
-		// オフセット分ずらす（ワールド座標）
-        element.svpos = input[0].pos + offset;
+         //中心を起点に回転させる
+        element.svpos = input[0].pos +
+                float4(rotate(offset.xyz, (input[0].rot.x + input[0].rot.y + input[0].rot.z) / 3.0f, input[0].rot.xyz), 1.0f) * input[0].scale;
 		// ビュープロジェクション変換
         element.svpos = mul(mat, element.svpos);
         element.uv = S_UV_ARRAY[i];

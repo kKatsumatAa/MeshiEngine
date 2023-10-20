@@ -36,7 +36,7 @@ private:
 		LIGHT,//ライト
 		MATERIAL,//マテリアル
 
-		NUM//要素数
+		COUNT//要素数
 	};
 
 public: // サブクラス
@@ -69,7 +69,9 @@ public:
 		ADD,
 		SUB,
 		TRIANGLE,
-		CRYSTAL
+		CRYSTAL,
+
+		NUM_COUNT//要素数
 	};
 
 	// パーティクル1粒
@@ -111,7 +113,8 @@ public:
 	};
 
 private: // 定数
-	static const int32_t S_VERTEX_COUNT_ = 65536;		// 頂点数
+	static const int32_t S_VERTEX_COUNT_ALL_ = 65536;		// 頂点数
+	static const int32_t S_VERTEX_COUNT_ = S_VERTEX_COUNT_ALL_ / BLEND_NUM::NUM_COUNT;		// パーティクル種類ごとの頂点数
 	//マテリアル
 	std::unique_ptr<Material> material_ = nullptr;
 	//ライトマネージャ
@@ -159,17 +162,17 @@ public:
 	/// <param name="start_scale">開始時スケール</param>
 	/// <param name="end_scale">終了時スケール</param>
 	void Add(int32_t life, const Vec3& position, const Vec3& velocity, const Vec3& accel, float start_scale, float end_scale
-		, const XMFLOAT4& start_color = { 1.0f,1.0f,1.0f,1.0f }, const XMFLOAT4& end_color = { 1.0f,1.0f,1.0f,1.0f }, float start_rot = PI * 2.0f, float end_rot = -PI * 2.0f);
+		, const XMFLOAT4& start_color = { 1.0f,1.0f,1.0f,1.0f }, const XMFLOAT4& end_color = { 1.0f,1.0f,1.0f,1.0f },
+		BLEND_NUM blendNum = BLEND_NUM::ADD,
+		float start_rot = PI * 2.0f, float end_rot = -PI * 2.0f);
 
 	//ランダムに生成
 	void GenerateRandomParticle(int32_t num, int32_t lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale
 		, const XMFLOAT4& start_color = { 1.0f,1.0f,1.0f,1.0f }, const XMFLOAT4& end_color = { 1.0f,1.0f,1.0f,1.0f });
 
-	void ClearParticles() { particles_.clear(); }
+	void ClearParticles();
 
 public:
-	//ブレンド設定をセット
-	void SetBlendNum(BLEND_NUM blendNum) { blendNum_ = blendNum; }
 	//ライトマネージャのポインタセット
 	void SetLightManager(LightManager* lightManager) { lightManager_ = lightManager; }
 	//アンビエントセット
@@ -186,18 +189,17 @@ private:
 
 
 private: // メンバ変数
-	BLEND_NUM blendNum_ = ADD;
 	//ルートシグネチャ等
-	RootPipe rootPipe[BLEND_NUM::CRYSTAL + 1];
+	RootPipe rootPipe[BLEND_NUM::NUM_COUNT];
 	// 頂点バッファ
-	ComPtr<ID3D12Resource> vertBuff_;
+	ComPtr<ID3D12Resource> vertBuff_[BLEND_NUM::NUM_COUNT];
 	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView_;
+	D3D12_VERTEX_BUFFER_VIEW vbView_[BLEND_NUM::NUM_COUNT];
 	// 定数バッファ
 	ComPtr<ID3D12Resource> viewBillConstBuff_;
 	ComPtr<ID3D12Resource> cameraPosBuff_;
-	// パーティクル配列
-	std::forward_list<Particle> particles_;
+	// パーティクル配列の配列
+	std::vector< std::forward_list<Particle>> particlesArray_;
 	//
 	ViewMat* view_ = nullptr;
 	ProjectionMat* projection_ = nullptr;
@@ -207,7 +209,7 @@ public:
 
 
 private:
-	ParticleManager() { ; }
+	ParticleManager();
 	~ParticleManager();
 
 public:

@@ -11,6 +11,11 @@ ParticleManager* ParticleManager::GetInstance()
 	return &sInstance;
 }
 
+ParticleManager::ParticleManager()
+{
+	particlesArray_.resize(BLEND_NUM::NUM_COUNT);
+}
+
 void ParticleManager::Initialize()
 {
 	// パイプライン初期化
@@ -53,11 +58,6 @@ void ParticleManager::Update(float speed, Camera* camera)
 {
 	HRESULT result;
 
-	if (particles_.empty())
-	{
-		return;
-	}
-
 	//カメラがセットされてなかったら
 	Camera* cameraL = camera;
 	if (camera == nullptr)
@@ -65,61 +65,73 @@ void ParticleManager::Update(float speed, Camera* camera)
 		cameraL = CameraManager::GetInstance().usingCamera_;
 	}
 
-	// 全パーティクル更新
-	for (std::forward_list<Particle>::iterator it = particles_.begin();
-		it != particles_.end();
-		it++) {
+	//パイプラインの要素番号
+	int32_t pipeNum = -1;
 
+	for (auto& particles : particlesArray_)
+	{
+		pipeNum++;
 
-		// 経過フレーム数をカウント
-		it->frame_ += 1.0f * speed;
-		// 進行度を0～1の範囲に換算
-		float f = (float)it->numFrame_ / it->frame_;
-
-		// 速度に加速度を加算
-		it->velocity_ = it->velocity_ + it->accel_;
-
-		// 速度による移動
-		it->position_ = it->position_ + it->velocity_ * speed;
-
-		// カラーの線形補間
-		it->color_ = it->sColor_ + (it->eColor_ - it->sColor_) / f;
-
-		// スケールの線形補間
-		it->scale_ = it->sScale_ + (it->eScale_ - it->sScale_) / f;
-
-		// 回転の線形補間
-		float t = (float)it->frame_ / it->numFrame_;
-		it->rotation_ = LerpVec3(it->sRotation_, it->eRotation_, t);
-	}
-
-	// 寿命が尽きたパーティクルを全削除
-	particles_.remove_if([](Particle& x) { return x.frame_ >= x.numFrame_; });
-
-	// 頂点バッファへデータ転送
-	int32_t vertCount = 0;
-	VertexPos* vertMap = nullptr;
-	result = vertBuff_->Map(0, nullptr, (void**)&vertMap);
-	if (SUCCEEDED(result)) {
-		// パーティクルの情報を1つずつ反映
-		for (std::forward_list<Particle>::iterator it = particles_.begin();
-			it != particles_.end();
-			it++) {
-			// 座標
-			vertMap->pos = it->position_;
-			// スケール
-			vertMap->scale = it->scale_;
-			// 色
-			vertMap->color = it->color_;
-			// 色
-			vertMap->rot = it->rotation_;
-			// 次の頂点へ
-			vertMap++;
-			if (++vertCount >= S_VERTEX_COUNT_) {
-				break;
-			}
+		if (particles.empty())
+		{
+			continue;
 		}
-		vertBuff_->Unmap(0, nullptr);
+
+		// 全パーティクル更新
+		for (std::forward_list<Particle>::iterator it = particles.begin();
+			it != particles.end();
+			it++) {
+
+			// 経過フレーム数をカウント
+			it->frame_ += 1.0f * speed;
+			// 進行度を0～1の範囲に換算
+			float f = (float)it->numFrame_ / it->frame_;
+
+			// 速度に加速度を加算
+			it->velocity_ = it->velocity_ + it->accel_;
+
+			// 速度による移動
+			it->position_ = it->position_ + it->velocity_ * speed;
+
+			// カラーの線形補間
+			it->color_ = it->sColor_ + (it->eColor_ - it->sColor_) / f;
+
+			// スケールの線形補間
+			it->scale_ = it->sScale_ + (it->eScale_ - it->sScale_) / f;
+
+			// 回転の線形補間
+			float t = (float)it->frame_ / it->numFrame_;
+			it->rotation_ = LerpVec3(it->sRotation_, it->eRotation_, t);
+		}
+
+		// 寿命が尽きたパーティクルを全削除
+		particles.remove_if([](Particle& x) { return x.frame_ >= x.numFrame_; });
+
+		// 頂点バッファへデータ転送
+		int32_t vertCount = 0;
+		VertexPos* vertMap = nullptr;
+		result = vertBuff_[pipeNum]->Map(0, nullptr, (void**)&vertMap);
+		if (SUCCEEDED(result)) {
+			// パーティクルの情報を1つずつ反映
+			for (std::forward_list<Particle>::iterator it = particles.begin();
+				it != particles.end();
+				it++) {
+				// 座標
+				vertMap->pos = it->position_;
+				// スケール
+				vertMap->scale = it->scale_;
+				// 色
+				vertMap->color = it->color_;
+				// 色
+				vertMap->rot = it->rotation_;
+				// 次の頂点へ
+				vertMap++;
+				if (++vertCount >= S_VERTEX_COUNT_) {
+					break;
+				}
+			}
+			vertBuff_[pipeNum]->Unmap(0, nullptr);
+		}
 	}
 
 	// 定数バッファマッピング
@@ -128,7 +140,7 @@ void ParticleManager::Update(float speed, Camera* camera)
 	constMap->mat = cameraL->GetViewMat() * cameraL->GetProjMat();
 	constMap->matBillboard = cameraL->GetBillboardMat();
 	viewBillConstBuff_->Unmap(0, nullptr);
-	
+
 	//カメラ位置
 	CameraPosBuff* constMapC = nullptr;
 	result = cameraPosBuff_->Map(0, nullptr, (void**)&constMapC);
@@ -160,54 +172,63 @@ void ParticleManager::Draw(uint64_t texHandle)
 		texHandle = TextureManager::GetWhiteTexHandle();
 	}
 
-	uint32_t drawNum = (uint32_t)std::distance(particles_.begin(), particles_.end());
-	if (drawNum > S_VERTEX_COUNT_) {
-		drawNum = S_VERTEX_COUNT_;
+	//パイプラインの要素番号
+	int32_t num = -1;
+
+	//パーティクルの種類ごとに
+	for (auto& particles : particlesArray_)
+	{
+		num++;
+
+		//上限決める
+		int32_t drawNum = (uint32_t)std::distance(particles.begin(), particles.end());
+		if (drawNum > S_VERTEX_COUNT_) {
+			drawNum = S_VERTEX_COUNT_;
+		}
+		// パーティクルが1つもない場合
+		if (drawNum == 0) {
+			continue;
+		}
+
+		// パイプラインステートの設定
+		DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(rootPipe[num].pipelineState.Get());
+		// ルートシグネチャの設定
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootPipe[num].rootSignature.Get());
+		// プリミティブ形状を設定
+		DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+		// 頂点バッファの設定
+		DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView_[num]);
+
+		// デスクリプタヒープの配列
+		ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetDescHeapP() };
+		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+
+		// 定数バッファビューをセット
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, viewBillConstBuff_->GetGPUVirtualAddress());
+		//ライトやマテリアルなどをセット
+		SetMaterialLight();
+
+		// シェーダリソースビューをセット
+		//SRVヒープの先頭ハンドルを取得
+		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+		srvGpuHandle.ptr = texHandle;
+		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		// 描画コマンド
+		DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(drawNum, 1, 0, 0);
 	}
-
-	// パーティクルが1つもない場合
-	if (drawNum == 0) {
-		return;
-	}
-
-	// パイプラインステートの設定
-	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(rootPipe[blendNum_].pipelineState.Get());
-	// ルートシグネチャの設定
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootPipe[blendNum_].rootSignature.Get());
-	// プリミティブ形状を設定
-	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
-
-	// 頂点バッファの設定
-	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
-
-	// デスクリプタヒープの配列
-	ID3D12DescriptorHeap* ppHeaps[] = { TextureManager::GetDescHeapP() };
-	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
-
-	// 定数バッファビューをセット
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, viewBillConstBuff_->GetGPUVirtualAddress());
-	//ライトやマテリアルなどをセット
-	SetMaterialLight();
-
-	// シェーダリソースビューをセット
-	//SRVヒープの先頭ハンドルを取得
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-	srvGpuHandle.ptr = texHandle;
-	//(インスタンスで読み込んだテクスチャ用のSRVを指定)
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
-	// 描画コマンド
-	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(drawNum, 1, 0, 0);
 }
 
 
 //------------------------------------------------------------------------------------------------------------------------------------------------
 void ParticleManager::Add(int32_t life, const Vec3& position, const Vec3& velocity, const Vec3& accel, float start_scale, float end_scale
-	, const XMFLOAT4& start_color, const XMFLOAT4& end_color, float start_rot, float end_rot)
+	, const XMFLOAT4& start_color, const XMFLOAT4& end_color, BLEND_NUM blendNum, float start_rot, float end_rot)
 {
 	// リストに要素を追加
-	particles_.emplace_front();
+	particlesArray_[blendNum].emplace_front();
 	// 追加した要素の参照
-	Particle& p = particles_.front();
+	Particle& p = particlesArray_[blendNum].front();
 	p.position_ = position;
 	p.velocity_ = velocity;
 	p.accel_ = accel;
@@ -310,7 +331,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
 
 	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparams[RootParamNum::NUM] = {};
+	CD3DX12_ROOT_PARAMETER rootparams[RootParamNum::COUNT] = {};
 	rootparams[RootParamNum::VIEW_BILLBOARD].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparams[RootParamNum::TEX].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
 	rootparams[RootParamNum::CAMERAPOS].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL);
@@ -413,20 +434,23 @@ void ParticleManager::InitializeGraphicsPipeline()
 
 void ParticleManager::CreateModel()
 {
-	//ヒープ設定
-	D3D12_HEAP_PROPERTIES cbHeapProp{};
-	cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
-	//リソース設定
-	D3D12_RESOURCE_DESC cbResourceDesc{};
-	ResourceProperties(cbResourceDesc,
-		((uint32_t)sizeof(VertexPos) * S_VERTEX_COUNT_));
-	//定数バッファの生成
-	BuffProperties(cbHeapProp, cbResourceDesc, &vertBuff_);
+	for (int32_t pipeNum = 0; pipeNum < particlesArray_.size(); pipeNum++)
+	{
+		//ヒープ設定
+		D3D12_HEAP_PROPERTIES cbHeapProp{};
+		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
+		//リソース設定
+		D3D12_RESOURCE_DESC cbResourceDesc{};
+		ResourceProperties(cbResourceDesc,
+			((uint32_t)sizeof(VertexPos) * S_VERTEX_COUNT_));
+		//定数バッファの生成
+		BuffProperties(cbHeapProp, cbResourceDesc, &vertBuff_[pipeNum]);
 
-	// 頂点バッファビューの作成
-	vbView_.BufferLocation = vertBuff_->GetGPUVirtualAddress();
-	vbView_.SizeInBytes = sizeof(VertexPos) * S_VERTEX_COUNT_;
-	vbView_.StrideInBytes = sizeof(VertexPos);
+		// 頂点バッファビューの作成
+		vbView_[pipeNum].BufferLocation = vertBuff_[pipeNum]->GetGPUVirtualAddress();
+		vbView_[pipeNum].SizeInBytes = sizeof(VertexPos) * S_VERTEX_COUNT_;
+		vbView_[pipeNum].StrideInBytes = sizeof(VertexPos);
+	}
 }
 
 void ParticleManager::GenerateRandomParticle(int32_t num, int32_t lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale, const XMFLOAT4& start_color, const XMFLOAT4& end_color)
@@ -451,7 +475,18 @@ void ParticleManager::GenerateRandomParticle(int32_t num, int32_t lifeTime, floa
 	}
 }
 
+void ParticleManager::ClearParticles()
+{
+	for (auto& particles : particlesArray_)
+	{
+		particles.clear();
+	}
+}
+
 ParticleManager::~ParticleManager()
 {
-	{ particles_.clear(); }
+	for (auto& particles : particlesArray_)
+	{
+		particles.clear();
+	}
 }
