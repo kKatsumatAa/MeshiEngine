@@ -52,10 +52,10 @@ void FBXNodeColliders::CreateNodeColliders(uint16_t attribute)
 			std::unique_ptr<SphereCollider>collider = std::make_unique<SphereCollider>();
 			collider->SetAttribute(attribute);
 			obj->SetCollider(std::move(collider));
-		}
 
-		//要素追加
-		colliderObjs_.push_back(std::move(obj));
+			//要素追加
+			colliderObjs_.push_back(std::move(obj));
+		}
 	}
 }
 
@@ -73,6 +73,7 @@ void FBXNodeColliders::Update(WorldMat* worldMat)
 	//親のスケールを無効
 	Vec3 pScale = worldMat->scale_;
 
+	//関数内だけの行列
 	WorldMat worldMatL = *worldMat;
 	worldMatL.scale_ = Vec3(parentObj_->GetModel()->GetScaleExtend() * worldMat->scale_.x,
 		parentObj_->GetModel()->GetScaleExtend() * worldMat->scale_.y,

@@ -2,6 +2,7 @@
 #include"ObjectFBX.h"
 #include"Weapon.h"
 #include"CollisionManager.h"
+#include"Counter.h"
 #include<functional>
 
 
@@ -30,13 +31,19 @@ protected:
 	//ダメージ受けるかどうか(デバッグ用)
 	bool isValidDamage_ = true;
 
+	//死亡時のタイマー上限
+	float deadTimerMax_ = 0;
+
+	//カウンター
+	Counter counter_;
+
 protected:
 	/// <summary>
 	/// ダメージ受ける処理
 	/// </summary>
 	/// <param name="damage">ダメージ量</param>
 	/// <param name="deadFunc">死んだときに呼び出す処理</param>
-	virtual void Damaged(int8_t damage, std::function<void()> deadFunc);
+	virtual void Damaged(int8_t damage, std::function<void()> deadFunc, std::function<void()> notDeadFunc = NULL);
 
 public:
 	virtual ~Character() { ; }
@@ -66,4 +73,9 @@ public:
 
 	//みている方向に何かあったら
 	bool CheckRayOfEyeHit(const Vec3& dir, float length, uint16_t attr, RaycastHit* info = nullptr);
+
+public:
+	float GetDeadTimerMax() { return deadTimerMax_; }
+
+	uint64_t GetCount() { return counter_.GetCount(); }
 };

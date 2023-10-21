@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include"Object.h"
 
 class Player;
@@ -23,12 +23,18 @@ private:
 	//元となる座標
 	Vec3 transTmp_ = { 0,0,0 };
 
+	//攻撃できる状態か
+	bool isCanAttack_ = false;
+
 public:
 	void SetPlayer(Player* player) { player_ = player; }
 	Player* GetPlayer() { return player_; }
 
 	void SetIsAttacking(bool is) { isAttacking_ = is; }
 	bool GetIsAttacking() { return isAttacking_; }
+	
+	void SetIsCanAttack(bool is) { isCanAttack_ = is; }
+	bool GetIsCanAttack() { return isCanAttack_; }
 
 	//敵の衝突点までの距離
 	void SetInterLength(float length) { interLength_ = length; }

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include"CollisionManager.h"
 
 
@@ -33,6 +33,17 @@ public:
 //銃持ってる
 class CharacterStateHaveWeapon
 {
+
+public:
+	virtual void Initialize() = 0;
+	virtual void Update() = 0;
+};
+
+//死亡時
+class CharacterStateDead
+{
+protected:
+	float t_ = 0;
 
 public:
 	virtual void Initialize() = 0;

@@ -23,6 +23,10 @@ public:
 
 private:
 	const float PARTICLE_SIZE_EXTEND_ = 2.0f;
+	//被ダメージ時のよろめき時間
+	const float DAMAGED_MAX_TIME_ = 20.0f;
+	//死亡時
+	const float DEAD_TIMER_MAX_ = 60.0f;
 
 private:
 	Vec3 velocity_ = { 0,0,0 };
@@ -78,13 +82,19 @@ public:
 private:
 	//銃をノックバックして落とす
 	void KnockBack(const CollisionInfo& info);
-	//被弾時のパーティクル
-	void DamageParticle(const CollisionInfo& info, IObject3D* obj = nullptr, const Vec3& offsetPosExtend = { 1.0f / 8.0f,1.0f / 8.0f,1.0f / 8.0f },
-		int32_t particleNum = 60);
 	//ターゲットに向かって動く処理のみ
 	void WalkToTarget(const Vec3& targetPos);
 	//攻撃された部位ごとにノードに加算する角度を決める
-	void SetAllNodeAddRots(const IObject& nodeObj);
+	void SetAllNodeAddRots(const IObject& nodeObj, float angleExtend = 1.0f);
+
+private:
+	//被弾時のパーティクル
+	void DamageParticle(int32_t particleNum, uint64_t interval, float vecPow = 1.0f, const CollisionInfo* info = nullptr, IObject3D* obj = nullptr, Vec3* pos = nullptr,
+		const Vec3& offsetPosExtend = { 0,0,0 });
+
+public:
+	//ノードごとにパーティクルだす
+	void DeadNodesParticle(int32_t particleNum, uint64_t interval);
 
 public:
 	~Enemy();

@@ -44,6 +44,7 @@ void Enemy::ChangeEnemyState(std::unique_ptr<EnemyState> state)
 }
 
 
+//--------------------------------------------------------------------------------------------------------------------------
 std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon, IModel* model)
 {
 	std::unique_ptr<Enemy> instance = std::make_unique<Enemy>();
@@ -82,6 +83,9 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	oldHP_ = hp_;
 
 	waveNum_ = waveNum;
+
+	//死亡時のタイマー上限
+	deadTimerMax_ = DEAD_TIMER_MAX_;
 
 	//model
 	model->SetMaterialExtend({ 1.0f,3.0f,140.0f });
@@ -181,7 +185,7 @@ void Enemy::WalkToTarget(const Vec3& targetPos)
 }
 
 //---------------------------------------------------------------------------------------------
-void Enemy::SetAllNodeAddRots(const IObject& nodeObj)
+void Enemy::SetAllNodeAddRots(const IObject& nodeObj, float angleExtend)
 {
 	damagedAddRots_.clear();
 
@@ -189,8 +193,8 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj)
 	//Spine2(仮)からの距離で回転方向を決めるため
 	Vec3 localPosFromSpine2 = nodeObj.GetLocalTrans() - ObjectFBX::GetNodeColliderObj("Spine2")->GetLocalTrans();
 
-	addRot.x = max(min(-localPosFromSpine2.y, PI / 6.0f), -PI / 6.0f);
-	addRot.y = max(min(-localPosFromSpine2.x, PI / 6.0f), -PI / 6.0f);
+	addRot.x = max(min(-localPosFromSpine2.y, PI / 6.0f), -PI / 6.0f) * angleExtend;
+	addRot.y = max(min(-localPosFromSpine2.x, PI / 6.0f), -PI / 6.0f) * angleExtend;
 
 	//右か左か
 	std::string leftOrRightStr = "";
@@ -212,8 +216,8 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj)
 		Vec3 localPosFromLeg = nodeObj.GetLocalTrans() - ObjectFBX::GetNodeColliderObj("UpLeg")->GetLocalTrans();
 
 		Vec3 addRotLeg = { 0,0,0 };
-		addRotLeg.x = max(min(localPosFromLeg.y, PI / 8.0f), -PI / 8.0f);
-		addRotLeg.y = max(min(-localPosFromLeg.x, PI / 8.0f), -PI / 8.0f);
+		addRotLeg.x = max(min(localPosFromLeg.y, PI / 8.0f), -PI / 8.0f) * angleExtend;
+		addRotLeg.y = max(min(-localPosFromLeg.x, PI / 8.0f), -PI / 8.0f) * angleExtend;
 
 		damagedAddRots_.push_back({ leftOrRightStr + "Leg", {0,0,0},addRotLeg });
 	}
@@ -265,12 +269,6 @@ void Enemy::HPUpdate(float t)
 	offsetData.length = GetRand(-IObject::GetScale().x, IObject::GetScale().x) * 1.3f;
 	offsetData.ratio = (1.0f - (float)hp_ / (float)HP_TMP_);
 	ObjectFBX::SetMeshPolygonOffsetData(offsetData);
-
-	//hpが0で割合もmaxになったら
-	if (hp_ <= 0 && t >= 1.0f)
-	{
-		IObject::SetIsAlive(false);
-	}
 }
 
 //----------------------------------------------------------------
@@ -329,46 +327,77 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	}
 }
 
-void Enemy::DamageParticle(const CollisionInfo& info, IObject3D* obj, const Vec3& offsetPosExtend, int32_t particleNum)
+//------------------------------------------------------------------------------------------------------------------------
+void Enemy::DamageParticle(int32_t particleNum, uint64_t interval, float vecPow, const CollisionInfo* info, IObject3D* obj, Vec3* pos, const Vec3& offsetPosExtend)
 {
+	//間隔的に出すため
+	if (interval != 0 && GetCount() % interval != 0)
+	{
+		return;
+	}
+
 	for (int32_t i = 0; i < particleNum; ++i)
 	{
-		Vec3 pos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
-
 		float scaleTmp = IObject::GetScale().GetLength();
 
+		Vec3 posL = { 0,0,0 };
+		//衝突相手のポインタセットされてたら
+		if (info)
+		{
+			posL = { info->inter_.m128_f32[0],info->inter_.m128_f32[1],info->inter_.m128_f32[2] };
+		}
+		//ポジション指定されていたら
+		if (pos)
+		{
+			posL = *pos;
+		}
 		//引数がセットされてたらその座標をそのまま使う
-		if (obj)
+		else if (obj)
 		{
-			pos = obj->GetWorldTrans();
+			posL = obj->GetWorldTrans();
 		}
-		//else
-		{
-			Vec3 addPos = Vec3(GetRand(-IObject::GetScale().x, IObject::GetScale().x) * offsetPosExtend.x,
-				GetRand(-IObject::GetScale().y, IObject::GetScale().y) * offsetPosExtend.y,
-				GetRand(-IObject::GetScale().z, IObject::GetScale().z) * offsetPosExtend.z);
+		Vec3 addPos = Vec3(GetRand(-IObject::GetScale().x, IObject::GetScale().x) * offsetPosExtend.x,
+			GetRand(-IObject::GetScale().y, IObject::GetScale().y) * offsetPosExtend.y,
+			GetRand(-IObject::GetScale().z, IObject::GetScale().z) * offsetPosExtend.z);
 
-			pos += addPos;
-		}
+		posL += addPos;
 
-		const int32_t LIFE_TIME = 40;
+		const int32_t LIFE_TIME = 20;
 
 		//相手の速度も使う
-		Vec3 infoVec = info.object_->GetVelocity().GetNormalized();
+		Vec3 infoVec = { 0,0,0 };
+		if (info)
+		{
+			infoVec = info->object_->GetVelocity().GetNormalized();
+		}
 
-		Vec3 vel = Vec3(infoVec.x * GetRand(-0.1f, 1.0f),
-			infoVec.y * GetRand(-0.1f, 1.0f) + GetRand(0, IObject::GetScale().y / 8.0f),
-			infoVec.z * GetRand(-0.1f, 1.0f));
+		const float ADD_VEC = IObject::GetScale().y / 16.0f;
+
+		Vec3 vel = Vec3(infoVec.x * GetRand(-0.1f, 1.0f) + GetRand(-ADD_VEC, ADD_VEC) * vecPow,
+			infoVec.y * GetRand(-0.1f, 1.0f) + GetRand(-ADD_VEC, ADD_VEC) * vecPow,
+			infoVec.z * GetRand(-0.1f, 1.0f) + GetRand(-ADD_VEC, ADD_VEC) * vecPow);
 
 		float scale = scaleTmp / 30.0f;
 		float scale2 = 0;
 
-		ParticleManager::GetInstance()->Add(LIFE_TIME, pos, vel, { 0,-0.002f,0 }, scale, scale2, { 3.0f,0.02f,0.02f,0.95f }, { 3.0f,0.02f,0.02f,0.95f },
+		ParticleManager::GetInstance()->Add(LIFE_TIME, posL, vel, { 0,-0.002f,0 }, scale, scale2, { 3.0f,0.02f,0.02f,0.95f }, { 3.0f,0.02f,0.02f,0.95f },
 			ParticleManager::BLEND_NUM::CRYSTAL,
 			PI * 4.0f, -PI * 4.0f);
 	}
 }
 
+void Enemy::DeadNodesParticle(int32_t particleNum, uint64_t interval)
+{
+	for (auto& node : GetNodeColliders())
+	{
+		//ノードのワールド座標（親オブジェクトの行列も反映）
+		Vec3 posL = node->GetWorldTrans();
+
+		DamageParticle(particleNum, interval, 0.2f, nullptr, nullptr, &posL);
+	}
+}
+
+//---------------------------------------------------------
 void Enemy::OnCollision(const CollisionInfo& info)
 {
 	OnCollision(this, info);
@@ -403,15 +432,15 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		KnockBack(info);
 
 		//hp減らす
-		Damaged(1, NULL);
+		auto stateChangeF = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDead>()); };
+		auto stateChangeF2 = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDamagedBegin>()); };
+		Damaged(1, stateChangeF, stateChangeF2);
 
 		//パーティクル
-		DamageParticle(info, obj);
+		DamageParticle(60, 1, 1.0f, &info, obj);
 
 		//ノードの角度を加算するため
 		SetAllNodeAddRots(*obj);
-
-		ChangeEnemyState(std::make_unique<EnemyStateHaveDamagedBegin>());
 	}
 	//弾に当たったら
 	else if (info.object_->GetObjName() == "bullet")
@@ -422,14 +451,18 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 			return;
 		}
 
-		//今のhp分ダメージ受けて倒れる
-		Damaged(hp_, NULL);
-
 		//ノックバック
 		KnockBack(info);
 
+		//今のhp分ダメージ受けて倒れる
+		auto stateChangeF = [=]() {ChangeEnemyState(std::make_unique<EnemyStateDead>()); };
+		Damaged(hp_, stateChangeF);
+
+		//ノードの角度を加算するため
+		SetAllNodeAddRots(*obj, 1.5f);
+
 		//パーティクル
-		DamageParticle(info, obj, { 0.5f,1.0f,0.5f }, 400);
+		DamageParticle(100, 1, 1.3f, &info, obj, nullptr);
 	}
 	//銃に当たったら
 	else if (info.object_->GetObjName() == "gun")

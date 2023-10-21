@@ -175,11 +175,11 @@ void EnemyStateHaveWeapon::Update()
 
 
 //被ダメージ始め---------------------------------------------------------------------------
-void EnemyStateHaveDamagedBegin::Initialize()
+void EnemyStateDamagedBegin::Initialize()
 {
 }
 
-void EnemyStateHaveDamagedBegin::Update()
+void EnemyStateDamagedBegin::Update()
 {
 	//時間を加算して割合を得る
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
@@ -195,16 +195,16 @@ void EnemyStateHaveDamagedBegin::Update()
 
 	if (t >= 1.0f)
 	{
-		enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveDamagedEnd>());
+		enemy_->ChangeEnemyState(std::make_unique<EnemyStateDamagedEnd>());
 	}
 }
 
 //被ダメージ終わり---------------------------------------------------------------------------
-void EnemyStateHaveDamagedEnd::Initialize()
+void EnemyStateDamagedEnd::Initialize()
 {
 }
 
-void EnemyStateHaveDamagedEnd::Update()
+void EnemyStateDamagedEnd::Update()
 {
 	//時間を加算して割合を得る
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
@@ -221,5 +221,35 @@ void EnemyStateHaveDamagedEnd::Update()
 	if (t >= 1.0f)
 	{
 		ChangeState();
+	}
+}
+
+
+//死亡時------------------------------------------------------------------------
+void EnemyStateDead::Initialize()
+{
+}
+
+void EnemyStateDead::Update()
+{
+	//時間を加算して割合を得る
+	timer_ += GameVelocityManager::GetInstance().GetVelocity();
+	float t = timer_ / enemy_->GetDeadTimerMax();
+
+	//割合を使用して線形補完
+	for (auto nodeAddRot : enemy_->GetDamagedAddRots())
+	{
+		enemy_->ObjectFBX::SetNodeAddRot(nodeAddRot.nodeName, LerpVec3(nodeAddRot.addRotBegin, nodeAddRot.addRotEnd, t));
+	}
+
+	enemy_->HPUpdate(t);
+
+	//ノードの位置からパーティクルだす
+	enemy_->DeadNodesParticle((uint64_t)(1 / t), (uint64_t)(PARTICLE_INTERVAL_ / (PARTICLE_INTERVAL_ * t)));
+
+	//終わったら生きてるフラグオフ
+	if (t >= 1.0f)
+	{
+		enemy_->SetIsAlive(false);
 	}
 }

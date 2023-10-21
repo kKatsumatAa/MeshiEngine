@@ -178,12 +178,12 @@ void PlayerStateDeadEffect::Update()
 {
 	Camera* camera = CameraManager::GetInstance().GetCamera("playerCamera");
 
-	float t = (float)timer_ / (float)TIMER_MAX_;
+	t_ = (float)timer_ / player_->GetDeadTimerMax();
 
-	camera->SetEye(LerpVec3(targetPos_ - (dir_ * LENGTH_MIN_), player_->GetWorldTrans(), EaseInOut(t)));
+	camera->SetEye(LerpVec3(targetPos_ - (dir_ * LENGTH_MIN_), player_->GetWorldTrans(), EaseInOut(t_)));
 
 	//演出終わったら生存フラグオフ
-	if (timer_ >= TIMER_MAX_)
+	if (timer_ >= player_->GetDeadTimerMax())
 	{
 		player_->SetIsAlive(false);
 	}

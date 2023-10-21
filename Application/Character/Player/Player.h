@@ -15,6 +15,9 @@ class Player :
 	public Character
 {
 private:
+	const float DEAD_TIMER_MAX_ = 70.0f;
+
+private:
 	const int8_t HP_TMP_ = 1;
 
 	const float VELOCITY_TMP_ = 0.75f;

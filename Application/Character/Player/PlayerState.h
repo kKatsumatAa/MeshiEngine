@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include"CollisionManager.h"
 #include"CharacterState.h"
 
@@ -50,10 +50,11 @@ public:
 };
 
 //死亡演出
-class PlayerStateDeadEffect : public PlayerState
+class PlayerStateDeadEffect : 
+	public PlayerState,
+	public CharacterStateDead
 {
 private:
-	const int32_t TIMER_MAX_ = 70;
 	Vec3 targetPos_;
 	Vec3 dir_;
 	const float LENGTH_MIN_ = 5.0f;

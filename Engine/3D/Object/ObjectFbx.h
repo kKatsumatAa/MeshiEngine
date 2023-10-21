@@ -98,6 +98,8 @@ public:
 
 	//ノードごとの当たり判定を名前で取得
 	IObject3D* GetNodeColliderObj(const std::string& nodeName);
+	//ノードの当たり判定の配列
+	const std::vector<std::unique_ptr<FBXNodeColliders::ColliderObject>>& GetNodeColliders() { return nodeColliders_.GetColliders(); }
 
 public:
 	//アニメーション開始

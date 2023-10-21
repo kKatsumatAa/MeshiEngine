@@ -48,7 +48,7 @@ public:
 	void SetOnCollisionFunc(std::function<void(IObject3D* obj, const CollisionInfo& info)>onCollisionF);
 
 public:
-	//コライダーオブジェクトの配列を取得(ノードと同じ順番)
+	//コライダーオブジェクトの配列を取得(ボーンのみ抽出)
 	const std::vector<std::unique_ptr<ColliderObject>>& GetColliders() { return colliderObjs_; }
 	//コライダーオブジェクトを名前で取得
 	IObject3D* GetColliderObj(const std::string& nodeName);

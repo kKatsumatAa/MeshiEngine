@@ -67,7 +67,7 @@ public:
 };
 
 //被ダメージ始め
-class EnemyStateHaveDamagedBegin : public EnemyState
+class EnemyStateDamagedBegin : public EnemyState
 {
 private:
 	float timer_ = 0;
@@ -79,11 +79,25 @@ public:
 };
 
 //被ダメージ終わり
-class EnemyStateHaveDamagedEnd : public EnemyState
+class EnemyStateDamagedEnd : public EnemyState
 {
 private:
 	float timer_ = 0;
 	const float TIMER_MAX_ = 20.0f;
+
+public:
+	void Initialize() override;
+	void Update() override;
+};
+
+//死亡時
+class EnemyStateDead :
+	public EnemyState,
+	public CharacterStateDead
+{
+private:
+	float timer_ = 0;
+	const uint64_t PARTICLE_INTERVAL_ = 10;
 
 public:
 	void Initialize() override;

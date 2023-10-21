@@ -519,6 +519,9 @@
     <ClCompile Include="Engine\3D\Object\FBXNodeColliders.cpp">
       <Filter>ソース ファイル\Engine\3D\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Util\Counter.cpp">
+      <Filter>ソース ファイル\Engine\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -850,6 +853,9 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Object\FBXNodeColliders.h">
       <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Util\Counter.h">
+      <Filter>ヘッダー ファイル\Engine\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

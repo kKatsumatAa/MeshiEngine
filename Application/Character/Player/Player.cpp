@@ -56,6 +56,9 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	//回転用の角度の基
 	cameraRot_ = GetRot();
 
+	//死亡時のタイマー上限
+	deadTimerMax_ = DEAD_TIMER_MAX_;
+
 	if (weapon)
 	{
 		weapon_ = weapon;

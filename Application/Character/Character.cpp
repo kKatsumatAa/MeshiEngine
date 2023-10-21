@@ -6,7 +6,7 @@ using namespace DirectX;
 const float Character::IS_WALL_ROT_ = 30.0f;
 
 
-void Character::Damaged(int8_t damage, std::function<void()> deadFunc)
+void Character::Damaged(int8_t damage, std::function<void()> deadFunc, std::function<void()> notDeadFunc)
 {
 	//ダメージ有効でなければ抜ける
 	if (!isValidDamage_) { return; }
@@ -20,10 +20,17 @@ void Character::Damaged(int8_t damage, std::function<void()> deadFunc)
 	{
 		deadFunc();
 	}
+	else if(notDeadFunc)
+	{
+		notDeadFunc();
+	}
 }
 
 void Character::Update()
 {
+	//カウント増やす
+	counter_.AddCount();
+
 	//武器の有効フラグも連動
 	if (GetWeapon())
 	{

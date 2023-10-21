@@ -41,6 +41,9 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 		Vec3 lengthV = Vec3(info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2]) - player_->GetTrans();
 		hand->SetInterLength(lengthV.GetLength());
 
+		//攻撃可能に変更
+		hand->SetColliderIsValid(true);
+
 		//ステート変更
 		hand->ChangeAttackState(std::make_unique<PlayerAttackStateDoing>());
 
@@ -56,6 +59,9 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 
 				//カメラシェイク
 				CameraManager::GetInstance().GetCamera("playerCamera")->CameraShake(5, 1.05f);
+
+				//一回当たったらもう呼び出さないようにするため
+				playerHand->SetColliderIsValid(false);
 			}
 		};
 
