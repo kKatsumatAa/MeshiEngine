@@ -80,10 +80,14 @@ void FBXNodeColliders::Update(WorldMat* worldMat)
 		parentObj_->GetModel()->GetScaleExtend() * worldMat->scale_.z);
 	worldMatL.CalcWorldMat();
 
+	//ノードごとの当たり判定の要素番号用
+	int32_t count = 0;
+
 	//ノードのコライダーのパラメータを更新していく
-	for (uint16_t i = 0; i < (uint16_t)colliderObjs_.size(); i++)
+	for (uint16_t i = 0; i < (uint16_t)nodes_->size(); i++)
 	{
-		if (colliderObjs_[i])
+		//ノードがボーンなら
+		if ((*nodes_)[i].attribute == FbxNodeAttribute::eSkeleton)
 		{
 			Node node = (*nodes_)[i];
 
@@ -98,15 +102,17 @@ void FBXNodeColliders::Update(WorldMat* worldMat)
 			//matにボーンのグローバルトランスフォーム*モデルの所有者のワールド行列入れる
 			mat.PutInXMMATRIX(xMatNodeG * xMatP);
 			//ローカルの一つ上の親行列としてセット
-			colliderObjs_[i]->SetLocalParentMat(mat);
+			colliderObjs_[count]->SetLocalParentMat(mat);
 
 			//コライダーのパラメータ更新
 			//コライダーは小さく,モデルの縮小率反映するため
-			colliderObjs_[i]->SetScale(Vec3(scale_, scale_, scale_));
-			colliderObjs_[i]->ColliderUpdate();
+			colliderObjs_[count]->SetScale(Vec3(scale_, scale_, scale_));
+			colliderObjs_[count]->ColliderUpdate();
 
 			//ボーンを反映した位置をセット(parent_は設定してないのでできる)
-			colliderObjs_[i]->SetLocalTrans(colliderObjs_[i]->GetWorldTrans());
+			colliderObjs_[count]->SetLocalTrans(colliderObjs_[count]->GetWorldTrans());
+
+			count++;
 		}
 	}
 }
@@ -154,6 +160,22 @@ void FBXNodeColliders::SetOnCollisionFunc(std::function<void(IObject3D* obj, con
 			if (collObj->get())
 			{
 				collObj->get()->SetOnCollFunc(onCollisionF);
+			}
+		}
+	}
+}
+
+void FBXNodeColliders::SetIsValidNodeColliders(bool isValidColliders)
+{
+	if (colliderObjs_.size())
+	{
+		for (auto collObj = colliderObjs_.begin(); collObj != colliderObjs_.end();
+			collObj++)
+		{
+			//当たり判定有効フラグをセット
+			if (collObj->get())
+			{
+				collObj->get()->SetColliderIsValid(isValidColliders);
 			}
 		}
 	}

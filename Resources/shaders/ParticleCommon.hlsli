@@ -1,25 +1,18 @@
 
-
-//‰ñ“]‚³‚¹‚é
-//p‚Í‰ñ“]‚³‚¹‚½‚¢À•W@angle‚Í‰ñ“]‚³‚¹‚éŠp“x@axis‚Í‚Ç‚Ì²‚ğŒ³‚É‰ñ“]‚³‚¹‚é‚©@
-float3 rotate(float3 p, float angle, float3 axis)
-{
-    float3 a = normalize(axis);
-    float s = sin(angle);
-    float c = cos(angle);
-    float r = 1.0 - c;
-    float3x3 m = float3x3(
-                    a.x * a.x * r + c, a.y * a.x * r + a.z * s, a.z * a.x * r - a.y * s,
-                    a.x * a.y * r - a.z * s, a.y * a.y * r + c, a.z * a.y * r + a.x * s,
-                    a.x * a.z * r + a.y * s, a.y * a.z * r - a.x * s, a.z * a.z * r + c
-                );
-
-    return mul(m, p);
-}
-
 //ƒ‰ƒ“ƒ_ƒ€
 float random(float2 p, float extend = 1.0f);
 float random(float2 p, float extend)
 {
     return frac(sin(dot(p, float2(12.9898f, 78.233f))) * (43758.5453f + extend));
 }
+
+// ‰ñ“]s—ñ‚ğ‚©‚¯‚é
+float4 rotate3(float4 pos, float4 axis, float angle)
+{
+    float4 nAxis = normalize(axis);
+    return mul(float4x4(cos(angle) + pow(nAxis.x, 2) * (1 - cos(angle)), nAxis.x * nAxis.y * (1 - cos(angle)) - nAxis.z * sin(angle), nAxis.x * nAxis.z * (1 - cos(angle)) + nAxis.y * sin(angle), 0,
+                                nAxis.y * nAxis.x * (1 - cos(angle)) + nAxis.z * sin(angle), cos(angle) + pow(nAxis.y, 2) * (1 - cos(angle)), nAxis.y * nAxis.z * (1 - cos(angle)) - nAxis.x * sin(angle), 0,
+                                nAxis.z * nAxis.x * (1 - cos(angle)) - nAxis.y * sin(angle), nAxis.z * nAxis.y * (1 - cos(angle)) + nAxis.x * sin(angle), cos(angle) + pow(nAxis.z, 2) * (1 - cos(angle)), 0,
+                                0, 0, 0, 1
+                    ), pos);
+};

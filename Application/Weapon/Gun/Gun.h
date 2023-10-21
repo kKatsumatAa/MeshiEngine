@@ -1,9 +1,10 @@
-﻿#pragma once
+#pragma once
 #include "Object.h"
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
 #include "Weapon.h"
+#include "ParticleManager.h"
 
 
 class Gun :
@@ -34,7 +35,8 @@ private:
 	////所有者がいないときに飛んでいく
 	//void NoParentMove() override;
 
-	void ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float particleSize = 1.0f);
+	void ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float particleSize = 1.0f
+		, ParticleManager::BLEND_NUM blendNum = ParticleManager::BLEND_NUM::TRIANGLE);
 	void ParticleGenerate()override { ; }
 
 	//地形と当たった時の処理

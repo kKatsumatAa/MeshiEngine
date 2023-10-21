@@ -104,7 +104,7 @@ void Gun::Draw()
 
 
 //----------------------------------------------------------------------------------------------------------------
-void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float particleSize)
+void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float particleSize, ParticleManager::BLEND_NUM blendNum)
 {
 	//パーティクル
 	for (int32_t i = 0; i < 50; ++i)
@@ -117,7 +117,7 @@ void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float
 		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 2.0f);
 
 		ParticleManager::GetInstance()->Add(20, shotPos_, vel * 0.5f, { 0,0,0 }, scale * particleSize, 0, sColor, eColor,
-			ParticleManager::BLEND_NUM::TRIANGLE );
+			blendNum);
 	}
 
 }
@@ -136,8 +136,8 @@ void Gun::OnLandShape(const Vec3& interPos)
 
 		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 4.0f);
 
-		ParticleManager::GetInstance()->Add(30, interPos, vel, { 0,0,0 }, scale, 0, { 0,0,0,1.5f }, { 0,0,0,0.0f },
-			ParticleManager::BLEND_NUM::TRIANGLE);
+		ParticleManager::GetInstance()->Add(30, interPos, vel, { 0,0,0 }, scale, 0, { 0.001f,0.001f,0.01f,1.5f }, { 0.1f,0.1f,0.1f,1.0f },
+			ParticleManager::BLEND_NUM::CRYSTAL);
 	}
 }
 
@@ -145,8 +145,8 @@ void Gun::OnCollision(const CollisionInfo& info)
 {
 	if (info.object_->GetObjName() == "bullet")
 	{
-		//パーティクル
-		ParticleGenerate({ 0,0,0,1.5f }, { 0,0,0,0 });
+		//パーティクルと死亡フラグ
+		OnLandShape({ info.inter_.m128_f32[0],info.inter_.m128_f32[1] ,info.inter_.m128_f32[2] });
 
 		//持ち主がまだいたら持ち主の武器ポインタをnullptrに
 		if (owner_)
@@ -154,7 +154,5 @@ void Gun::OnCollision(const CollisionInfo& info)
 			Character* character = dynamic_cast<Character*>(owner_);
 			character->FallWeapon({ 0,0,0 });
 		}
-
-		SetIsAlive(false);
 	}
 }

@@ -95,6 +95,8 @@ public:
 	void UpdateNodeColliders() { nodeColliders_.Update(worldMat_.get()); }
 	//ノードごとの当たり判定描画
 	void DrawNodeColliders() { if (isValidNodeCollidersDraw_) { nodeColliders_.Draw(); } }
+	//ノードごとの当たり判定の無効化
+	void SetIsValidNodeColliders(bool isValidColliders) { nodeColliders_.SetIsValidNodeColliders(isValidColliders); }
 
 	//ノードごとの当たり判定を名前で取得
 	IObject3D* GetNodeColliderObj(const std::string& nodeName);

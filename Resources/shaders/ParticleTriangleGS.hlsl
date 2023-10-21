@@ -39,14 +39,12 @@ void main(
     for (uint i = 0; i < S_V_NUM; i++)
     {
 		// 中心からのオフセットをスケーリング
-        offset = S_OFFSET_ARRAY[i] * input[0].scale;
-        		// 中心からのオフセットをビルボード回転（モデル座標）
-        offset = mul(matBillboard, offset);
+        offset = S_OFFSET_ARRAY[i];
 
         //疑似的に回転
          //中心を起点に回転させる
         element.svpos = input[0].pos +
-                float4(rotate(offset.xyz, (input[0].rot.x + input[0].rot.y + input[0].rot.z) / 3.0f, input[0].rot.xyz), 1.0f) * input[0].scale;
+                float4(rotate3(offset, float4(input[0].rot.xyz, 0), (input[0].rot.x + input[0].rot.y + input[0].rot.z) / 3.0f)) * input[0].scale;
 		// ビュープロジェクション変換
         element.svpos = mul(mat, element.svpos);
         element.uv = S_UV_ARRAY[i];

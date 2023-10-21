@@ -46,6 +46,8 @@ public:
 	void SetParentObj(IObject3D* parentObj);
 	//判定処理のセット
 	void SetOnCollisionFunc(std::function<void(IObject3D* obj, const CollisionInfo& info)>onCollisionF);
+	//判定の有効フラグセット
+	void SetIsValidNodeColliders(bool isValidColliders);
 
 public:
 	//コライダーオブジェクトの配列を取得(ボーンのみ抽出)

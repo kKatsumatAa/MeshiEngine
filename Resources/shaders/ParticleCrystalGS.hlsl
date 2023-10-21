@@ -3,7 +3,7 @@
 // 頂点数
 static const uint S_V_NUM = 12;
 
-static const float3 vertexs[S_V_NUM] =
+static const float3 S_VERTEXS[S_V_NUM] =
 {
     float3(0.0, 0.5, 0.0),
 float3(0.235703, -0.166665, 0.408249),
@@ -19,7 +19,7 @@ float3(0.235703, -0.166665, -0.408249),
 float3(0.235703, -0.166665, 0.408249)
 };
 
-static const float3 normals[4] =
+static const float3 S_NORMALS[4] =
 {
     float3(0.942809, 0.333335, -0.0),
 float3(-0.471404, 0.333335, -0.816496),
@@ -44,20 +44,20 @@ void main(
         for (int k = 0; k < 3; k++)
         {
             const int vid = j * 3 + k;
-            offset = float4(vertexs[vid], 1.0f);
+            offset = float4(S_VERTEXS[vid], 0);
             //疑似的に回転
             //中心を起点に回転させる
             o.svpos = input[0].pos +
-                float4(rotate(offset.xyz, (input[0].rot.x + input[0].rot.y + input[0].rot.z) / 3.0f, input[0].rot.xyz), 1.0f) * input[0].scale;
+                float4(rotate3(offset, float4(input[0].rot.xyz, 0), (input[0].rot.x + input[0].rot.y + input[0].rot.z) / 3.0f)) * input[0].scale;
             //ワールド位置
             o.worldpos = o.svpos;
             // ビュープロジェクション変換
             o.svpos = mul(mat, o.svpos);
 
             //面の中で違いを出すために少しランダムに法線してもいいかも
-            float3 normalL = normals[j];
-            normalL = float4(rotate(normalL.xyz, (input[0].rot.x + input[0].rot.y + input[0].rot.z) / 3.0f, input[0].rot.xyz), 1.0f) +
-             normalize(o.svpos - input[0].pos);
+            float3 normalL = S_NORMALS[j];
+            normalL = normalize(float4(rotate3(float4(normalL, 0), float4(input[0].rot.xyz, 1.0f), (input[0].rot.x + input[0].rot.y + input[0].rot.z) / 3.0f)) +
+             normalize(o.svpos - input[0].pos));
             o.normal = normalize(normalL);
             
             //色

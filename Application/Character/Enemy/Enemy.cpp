@@ -284,13 +284,13 @@ void Enemy::Update()
 	//演出更新
 	ObjectFBX::EffectUpdate();
 
+	//ノードごとの当たり判定
+	UpdateNodeColliders();
+
 	//ステート
 	state_->Update();
 
 	Character::Update();
-
-	//ノードごとの当たり判定
-	UpdateNodeColliders();
 }
 
 void Enemy::Draw()
@@ -380,7 +380,7 @@ void Enemy::DamageParticle(int32_t particleNum, uint64_t interval, float vecPow,
 		float scale = scaleTmp / 30.0f;
 		float scale2 = 0;
 
-		ParticleManager::GetInstance()->Add(LIFE_TIME, posL, vel, { 0,-0.002f,0 }, scale, scale2, { 3.0f,0.02f,0.02f,0.95f }, { 3.0f,0.02f,0.02f,0.95f },
+		ParticleManager::GetInstance()->Add(LIFE_TIME, posL, vel, { 0,-0.0002f,0 }, scale, scale2, { 3.0f,0.02f,0.02f,0.95f }, { 3.0f,0.02f,0.02f,0.95f },
 			ParticleManager::BLEND_NUM::CRYSTAL,
 			PI * 4.0f, -PI * 4.0f);
 	}
@@ -391,9 +391,9 @@ void Enemy::DeadNodesParticle(int32_t particleNum, uint64_t interval)
 	for (auto& node : GetNodeColliders())
 	{
 		//ノードのワールド座標（親オブジェクトの行列も反映）
-		Vec3 posL = node->GetWorldTrans();
+		Vec3 posL = node->GetLocalTrans();
 
-		DamageParticle(particleNum, interval, 0.2f, nullptr, nullptr, &posL);
+		DamageParticle(particleNum, interval, 0.3f, nullptr, nullptr, &posL);
 	}
 }
 

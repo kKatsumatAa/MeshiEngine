@@ -205,7 +205,7 @@ void ParticleManager::Draw(uint64_t texHandle)
 		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
 		// 定数バッファビューをセット
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(0, viewBillConstBuff_->GetGPUVirtualAddress());
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(RootParamNum::VIEW_BILLBOARD, viewBillConstBuff_->GetGPUVirtualAddress());
 		//ライトやマテリアルなどをセット
 		SetMaterialLight();
 
@@ -214,7 +214,7 @@ void ParticleManager::Draw(uint64_t texHandle)
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
 		srvGpuHandle.ptr = texHandle;
 		//(インスタンスで読み込んだテクスチャ用のSRVを指定)
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(RootParamNum::TEX, srvGpuHandle);
 		// 描画コマンド
 		DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(drawNum, 1, 0, 0);
 	}

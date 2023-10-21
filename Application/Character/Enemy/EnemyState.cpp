@@ -228,6 +228,8 @@ void EnemyStateDamagedEnd::Update()
 //死亡時------------------------------------------------------------------------
 void EnemyStateDead::Initialize()
 {
+	//死んだのでノードごとの当たり判定は無効に
+	enemy_->SetIsValidNodeColliders(false);
 }
 
 void EnemyStateDead::Update()
@@ -245,7 +247,7 @@ void EnemyStateDead::Update()
 	enemy_->HPUpdate(t);
 
 	//ノードの位置からパーティクルだす
-	enemy_->DeadNodesParticle((uint64_t)(1 / t), (uint64_t)(PARTICLE_INTERVAL_ / (PARTICLE_INTERVAL_ * t)));
+	enemy_->DeadNodesParticle((uint64_t)(10.0f * t), (uint64_t)(Lerp((float)PARTICLE_INTERVAL_ * 2.0f, (float)PARTICLE_INTERVAL_, EaseIn(t))));
 
 	//終わったら生きてるフラグオフ
 	if (t >= 1.0f)
