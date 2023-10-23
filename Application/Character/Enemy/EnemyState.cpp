@@ -188,7 +188,7 @@ void EnemyStateDamagedBegin::Update()
 	//割合を使用して線形補完
 	for (auto nodeAddRot : enemy_->GetDamagedAddRots())
 	{
-		enemy_->ObjectFBX::SetNodeAddRot(nodeAddRot.nodeName, LerpVec3(nodeAddRot.addRotBegin, nodeAddRot.addRotEnd, t));
+		enemy_->ObjectFBX::SetNodeAddRot(nodeAddRot.nodeName, LerpVec3(nodeAddRot.addRotBegin, nodeAddRot.addRotEnd, EaseOut(t)));
 	}
 
 	enemy_->HPUpdate(t);
