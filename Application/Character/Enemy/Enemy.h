@@ -30,7 +30,7 @@ private:
 
 private:
 	Vec3 velocity_ = { 0,0,0 };
-	const float VELOCITY_TMP_ = 0.6f;
+	const float VELOCITY_TMP_ = 0.45f;
 	bool isCantMove = false;
 
 	//ウェーブ番号
@@ -53,7 +53,7 @@ private:
 
 	const float DISSOLVE_POW_ = 0.3f;
 
-	const float WEAPON_FALL_VEL_EXTEND_ = 1.2f;
+	const float WEAPON_FALL_VEL_EXTEND_ = 0.3f;
 
 	//出現演出
 	const int32_t LIGHT_INDEX_INIT_ = -1;

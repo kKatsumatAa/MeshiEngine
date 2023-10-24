@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Object.h"
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
@@ -10,12 +10,12 @@ class Weapon :
 {
 protected:
 	//フレームごとの倍率
-	const float FRAME_VEL_EXTEND_ = 0.9f;
+	const float FRAME_VEL_EXTEND_ = 0.97f;
 
 protected:
 	//手を離れたときのベクトル
 	Vec3 fallVec_ = { 0,0,0 };
-	const float FALL_VEC_Y_MIN_ = -4.0f;
+	const float FALL_VEC_Y_MIN_ = -3.1f;
 	//ローカル座標
 	Vec3 localPos_ = { 0,0,0 };
 	//持ち主

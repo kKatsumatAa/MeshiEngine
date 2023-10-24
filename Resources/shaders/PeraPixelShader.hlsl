@@ -244,11 +244,11 @@ PSOutput PS(Output input) : SV_TARGET
 
     if (isEffect)
     {
-        output.color = ret * color;
+        output.color = ret;
     }
     else
     {
-        output.color = RGBA * color;
+        output.color = RGBA;
     }
 
 //ブルーム
@@ -272,6 +272,9 @@ PSOutput PS(Output input) : SV_TARGET
 
 //色違い
     output.color2 = float4(1.0f - RGBA.r, 1.0f - RGBA.g, 1.0f - RGBA.b, 1.0f);
+    
+    //色
+    output.color *= color;
 
     return output;
 }

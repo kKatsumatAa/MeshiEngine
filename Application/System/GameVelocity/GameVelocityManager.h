@@ -9,7 +9,7 @@ private:
 	//ゲームスピードの加算無効
 	bool isInvalidAddGameVel_ = false;
 	//色
-	const Vec3 VEL_COL_MIN_ = { 0.5f,0.8f,0.8f };
+	const Vec3 VEL_COL_MIN_ = { 0.3f,0.6f,0.8f };
 
 public:
 	const float GAME_VELOCITY_MAX_ = 1.0f;

@@ -58,10 +58,16 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, IObject3D* owner
 		return;
 	}
 
+	Vec3 trans = worldTrans_;
+	if (trans.GetLength() == 0)
+	{
+		trans = GetWorldTrans();
+	}
+
 	//発射座標(銃本体に当たらないようにする)
-	shotPos_ = { GetWorldTrans().x + directionVec.GetNormalized().x * GetScale().x * 1.1f,
-		GetWorldTrans().y + GetScale().y,
-		GetWorldTrans().z + directionVec.GetNormalized().z * GetScale().z * 1.1f };
+	shotPos_ = { trans.x + directionVec.GetNormalized().x * GetScale().x * 1.1f,
+				 trans.y + GetScale().y,
+				 trans.z + directionVec.GetNormalized().z * GetScale().z * 1.1f };
 
 	//弾うつ処理
 	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x * 0.4f, 300, owner);

@@ -20,7 +20,7 @@ private:
 private:
 	const int8_t HP_TMP_ = 1;
 
-	const float VELOCITY_TMP_ = 0.75f;
+	const float VELOCITY_TMP_ = 0.6f;
 	const float ANGLE_VEL_EXTEND_ = 0.003f;
 	//マウスでのゲームスピード加算倍率
 	const float MOUSE_GAME_VEL_EXTEND_ = 0.001f;
@@ -58,7 +58,7 @@ private:
 	//銃を撃った敵の座標
 	Vec3 bulletOwnerEnemyPos_ = { 0,0,0 };
 
-	const float FALL_VEL_POW_ = 4.0f;
+	const float FALL_VEL_POW_ = 2.0f;
 
 public:
 	~Player();

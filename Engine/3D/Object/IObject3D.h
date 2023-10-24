@@ -85,6 +85,10 @@ private:
 	//正面ベクトル
 	Vec3 frontVec_ = frontVecTmp_;
 
+protected:
+	//ワールド座標
+	Vec3 worldTrans_ = { 0,0,0 };
+
 
 public://関数---------------------------------------------------------
 	virtual ~IObject3D() override;

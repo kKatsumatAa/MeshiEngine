@@ -94,6 +94,14 @@ Texture2D<float4> effectTex : register(t6);
 Texture2D<float> depthTex : register(t7);
 
 
+//-------------------------------------------------------
+//ランダム
+float random(float2 p, float extend = 1.0f);
+float random(float2 p, float extend)
+{
+    return frac(sin(dot(p, float2(12.9898f, 78.233f))) * (43758.5453f + extend));
+}
+
 //ぼかした後の画像を返す
 float4 Get5x5GaussianBlur(Texture2D<float4> tex, SamplerState smp, float2 uv, float dx, float dy, float4 rect)
 {
@@ -163,7 +171,7 @@ float4 Gaussian2(Texture2D<float4> tex, SamplerState smp, float2 uv)
         for (float px = -sigma * 2; px <= sigma * 2; px += stepWidth)
         {
             float2 pickUV = uv + float2(px, py);
-            float weight = GaussianTmp(uv, pickUV, sigma);//floatにfloat4入れていたので変更
+            float weight = GaussianTmp(uv, pickUV, sigma); //floatにfloat4入れていたので変更
             col += tex.Sample(smp, pickUV) * weight; //重みを色にかける
             totalWeight += weight; //重みの合計値を計算
         }
@@ -202,7 +210,7 @@ float4 GetRadialBlur(Texture2D<float4> tex, SamplerState smp, float2 center, flo
     float4 Color[10];
    
    //ブラーの中心位置 ← 現在のテクセル位置
-    float2 dir = center - float2(uv.r * center.r * 2.0,
+    float2 dir = center - float2(uv.r * center.r * 2.0f,
     uv.g * center.g * 2.0);
    
    //距離を計算する
@@ -228,13 +236,6 @@ float4 GetRadialBlur(Texture2D<float4> tex, SamplerState smp, float2 center, flo
     Color[9] = tex.Sample(smp, uv + dir * 9.0f) * 0.01f;
    
     return Color[0] + Color[1] + Color[2] + Color[3] + Color[4] + Color[5] + Color[6] + Color[7] + Color[8] + Color[9];
-}
-
-//ランダム
-float random(float2 p, float extend = 1.0f);
-float random(float2 p, float extend)
-{
-    return frac(sin(dot(p, float2(12.9898f, 78.233f))) * (43758.5453f + extend));
 }
 
 //ノイズ
