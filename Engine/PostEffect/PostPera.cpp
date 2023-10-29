@@ -334,97 +334,97 @@ void PostPera::GenerateRSPL()
 	rsDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	//rootsig
-	D3D12_DESCRIPTOR_RANGE range[9] = {};
+	D3D12_DESCRIPTOR_RANGE range[RootParamIndex::COUNT] = {};
 	//一枚目の1つ目(通常カラー)
-	range[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[0].BaseShaderRegister = 0;//0
-	range[0].NumDescriptors = 1;
+	range[RootParamIndex::COLOR].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range[RootParamIndex::COLOR].BaseShaderRegister = 0;//0
+	range[RootParamIndex::COLOR].NumDescriptors = 1;
 	//一枚目の2つ目(違うカラー)
-	range[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[1].BaseShaderRegister = 1;//1
-	range[1].NumDescriptors = 1;
+	range[RootParamIndex::COLOR2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range[RootParamIndex::COLOR2].BaseShaderRegister = 1;//1
+	range[RootParamIndex::COLOR2].NumDescriptors = 1;
 	//一枚目の3つ目(高輝度)
-	range[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[2].BaseShaderRegister = 2;//2
-	range[2].NumDescriptors = 1;
+	range[RootParamIndex::HIGH_LUMI].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range[RootParamIndex::HIGH_LUMI].BaseShaderRegister = 2;//2
+	range[RootParamIndex::HIGH_LUMI].NumDescriptors = 1;
 	//1.5枚目の1つ目(縮小)
-	range[3].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[3].BaseShaderRegister = 3;//3
-	range[3].NumDescriptors = 1;
+	range[RootParamIndex::SHRINK].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range[RootParamIndex::SHRINK].BaseShaderRegister = 3;//3
+	range[RootParamIndex::SHRINK].NumDescriptors = 1;
 	//1.5枚目の2つ目(縮小2)
-	range[4].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[4].BaseShaderRegister = 4;//4
-	range[4].NumDescriptors = 1;
+	range[RootParamIndex::SHRINK2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range[RootParamIndex::SHRINK2].BaseShaderRegister = 4;//4
+	range[RootParamIndex::SHRINK2].NumDescriptors = 1;
 	//1.5枚目の3つ目（被写界深度用
-	range[5].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[5].BaseShaderRegister = 5;//5
-	range[5].NumDescriptors = 1;
+	range[RootParamIndex::DEPTH_FIELD].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range[RootParamIndex::DEPTH_FIELD].BaseShaderRegister = 5;//5
+	range[RootParamIndex::DEPTH_FIELD].NumDescriptors = 1;
 	//ガウシアン定数
-	range[6].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//b
-	range[6].BaseShaderRegister = 1;//フラグを送るのがb0なので1
-	range[6].NumDescriptors = 1;
+	range[RootParamIndex::GAUSS_PARAM].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//b
+	range[RootParamIndex::GAUSS_PARAM].BaseShaderRegister = 1;//フラグを送るのがb0なので1
+	range[RootParamIndex::GAUSS_PARAM].NumDescriptors = 1;
 	//ガラス
-	range[7].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[7].BaseShaderRegister = 6;//6
-	range[7].NumDescriptors = 1;
+	range[RootParamIndex::GLASS].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range[RootParamIndex::GLASS].BaseShaderRegister = 6;//6
+	range[RootParamIndex::GLASS].NumDescriptors = 1;
 	//深度値テクスチャ用
-	range[8].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[8].BaseShaderRegister = 7;//7
-	range[8].NumDescriptors = 1;
+	range[RootParamIndex::DEPTH_TEX].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
+	range[RootParamIndex::DEPTH_TEX].BaseShaderRegister = 7;//7
+	range[RootParamIndex::DEPTH_TEX].NumDescriptors = 1;
 
 
 	//実際に使うルートパラメータ
-	D3D12_ROOT_PARAMETER rp[10] = {};
+	D3D12_ROOT_PARAMETER rp[RootParamIndex::COUNT] = {};
 	//SRV(一枚目の1つ目(通常カラー))
-	rp[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rp[0].DescriptorTable.pDescriptorRanges = &range[0];
-	rp[0].DescriptorTable.NumDescriptorRanges = 1;
+	rp[RootParamIndex::COLOR].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[RootParamIndex::COLOR].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[RootParamIndex::COLOR].DescriptorTable.pDescriptorRanges = &range[COLOR];
+	rp[RootParamIndex::COLOR].DescriptorTable.NumDescriptorRanges = 1;
 	//SRV(一枚目の2つ目(違うカラー))
-	rp[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rp[1].DescriptorTable.pDescriptorRanges = &range[1];
-	rp[1].DescriptorTable.NumDescriptorRanges = 1;
+	rp[RootParamIndex::COLOR2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[RootParamIndex::COLOR2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[RootParamIndex::COLOR2].DescriptorTable.pDescriptorRanges = &range[COLOR2];
+	rp[RootParamIndex::COLOR2].DescriptorTable.NumDescriptorRanges = 1;
 	//SRV(一枚目の3つ目(高輝度))
-	rp[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rp[2].DescriptorTable.pDescriptorRanges = &range[2];
-	rp[2].DescriptorTable.NumDescriptorRanges = 1;
+	rp[RootParamIndex::HIGH_LUMI].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[RootParamIndex::HIGH_LUMI].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[RootParamIndex::HIGH_LUMI].DescriptorTable.pDescriptorRanges = &range[HIGH_LUMI];
+	rp[RootParamIndex::HIGH_LUMI].DescriptorTable.NumDescriptorRanges = 1;
 	//SRV(1.5枚目の4つ目(縮小))
-	rp[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rp[3].DescriptorTable.pDescriptorRanges = &range[3];
-	rp[3].DescriptorTable.NumDescriptorRanges = 1;
+	rp[RootParamIndex::SHRINK].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[RootParamIndex::SHRINK].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[RootParamIndex::SHRINK].DescriptorTable.pDescriptorRanges = &range[SHRINK];
+	rp[RootParamIndex::SHRINK].DescriptorTable.NumDescriptorRanges = 1;
 	//SRV(1.5枚目の5つ目(縮小2))
-	rp[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rp[4].DescriptorTable.pDescriptorRanges = &range[4];
-	rp[4].DescriptorTable.NumDescriptorRanges = 1;
+	rp[RootParamIndex::SHRINK2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[RootParamIndex::SHRINK2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[RootParamIndex::SHRINK2].DescriptorTable.pDescriptorRanges = &range[SHRINK2];
+	rp[RootParamIndex::SHRINK2].DescriptorTable.NumDescriptorRanges = 1;
 	//SRV(6つ目(被写界深度用))
-	rp[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rp[5].DescriptorTable.pDescriptorRanges = &range[5];
-	rp[5].DescriptorTable.NumDescriptorRanges = 1;
+	rp[RootParamIndex::DEPTH_FIELD].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[RootParamIndex::DEPTH_FIELD].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[RootParamIndex::DEPTH_FIELD].DescriptorTable.pDescriptorRanges = &range[DEPTH_FIELD];
+	rp[RootParamIndex::DEPTH_FIELD].DescriptorTable.NumDescriptorRanges = 1;
 	//ボケ定数用
-	rp[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rp[6].DescriptorTable.pDescriptorRanges = &range[6];
-	rp[6].DescriptorTable.NumDescriptorRanges = 1;
+	rp[RootParamIndex::GAUSS_PARAM].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[RootParamIndex::GAUSS_PARAM].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[RootParamIndex::GAUSS_PARAM].DescriptorTable.pDescriptorRanges = &range[GAUSS_PARAM];
+	rp[RootParamIndex::GAUSS_PARAM].DescriptorTable.NumDescriptorRanges = 1;
 	//ポストエフェクトのフラグ
-	rp[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rp[7].Descriptor.ShaderRegister = 0;//定数バッファ番号(b0)
-	rp[7].Descriptor.RegisterSpace = 0;//デフォルト値
-	rp[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	rp[RootParamIndex::EFFECT_FLAG].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rp[RootParamIndex::EFFECT_FLAG].Descriptor.ShaderRegister = 0;//定数バッファ番号(b0)
+	rp[RootParamIndex::EFFECT_FLAG].Descriptor.RegisterSpace = 0;//デフォルト値
+	rp[RootParamIndex::EFFECT_FLAG].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//ガラスフィルタ
-	rp[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rp[8].DescriptorTable.pDescriptorRanges = &range[7];
-	rp[8].DescriptorTable.NumDescriptorRanges = 1;
+	rp[RootParamIndex::GLASS].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[RootParamIndex::GLASS].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[RootParamIndex::GLASS].DescriptorTable.pDescriptorRanges = &range[GLASS];
+	rp[RootParamIndex::GLASS].DescriptorTable.NumDescriptorRanges = 1;
 	//深度値テクスチャ
-	rp[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[9].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rp[9].DescriptorTable.pDescriptorRanges = &range[8];
-	rp[9].DescriptorTable.NumDescriptorRanges = 1;
+	rp[RootParamIndex::DEPTH_TEX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[RootParamIndex::DEPTH_TEX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rp[RootParamIndex::DEPTH_TEX].DescriptorTable.pDescriptorRanges = &range[DEPTH_TEX];
+	rp[RootParamIndex::DEPTH_TEX].DescriptorTable.NumDescriptorRanges = 1;
 
 
 	D3D12_STATIC_SAMPLER_DESC sampler = CD3DX12_STATIC_SAMPLER_DESC(0, D3D12_FILTER_MIN_MAG_MIP_LINEAR); //s0
@@ -1069,7 +1069,7 @@ void PostPera::SetHeapAllBuffView(bool isPost2, bool isPost1)
 	auto peraHandle = peraSRVHeap_->GetGPUDescriptorHandleForHeapStart();
 	//パラメーターとヒープを関連付ける(一枚目の3つ(通常カラー、違うカラー、高輝度))
 	//+ 1.5枚目の3つ（ぼかし、ぼかし２、通常ぼかし（被写界深度用）
-	for (uint32_t i = 0; i < 6; i++)
+	for (uint32_t i = 0; i < RootParamIndex::DEPTH_FIELD + 1; i++)
 	{
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(i, peraHandle);
 		peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
@@ -1079,27 +1079,27 @@ void PostPera::SetHeapAllBuffView(bool isPost2, bool isPost1)
 	//二枚目
 	if (isPost2)
 	{
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(0, peraHandle);//SRVなのでrp[0](とりあえず一枚目)
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(RootParamIndex::COLOR, peraHandle);//SRVなのでrp[0](とりあえず一枚目)
 	}
 
 	//ボケ定数
 	peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(6, peraHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(RootParamIndex::GAUSS_PARAM, peraHandle);
 
 	//ポストエフェクトの「フラグ」なのでrp[6]
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(7, effectFlagsBuff_->GetGPUVirtualAddress());
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(RootParamIndex::EFFECT_FLAG, effectFlagsBuff_->GetGPUVirtualAddress());
 
 	//ガラスフィルター
 	peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(8, peraHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(RootParamIndex::GLASS, peraHandle);
 
 	if (!isPost1)
 	{
 		//深度値テクスチャ
 		peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 			GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(9, peraHandle);
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(RootParamIndex::DEPTH_TEX, peraHandle);
 	}
 }

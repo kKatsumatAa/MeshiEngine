@@ -17,6 +17,23 @@ struct PeraVertex
 class PostPera
 {
 private:
+	enum RootParamIndex
+	{
+		COLOR,
+		COLOR2,
+		HIGH_LUMI,
+		SHRINK,
+		SHRINK2,
+		DEPTH_FIELD,
+		GAUSS_PARAM,
+		EFFECT_FLAG,
+		GLASS,
+		DEPTH_TEX,
+
+		COUNT//要素数
+	};
+
+private:
 	//Microsoft::WRL::を省略
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
