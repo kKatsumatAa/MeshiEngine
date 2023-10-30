@@ -84,6 +84,8 @@ void Gun::ChangeOwner(IObject3D* parent)
 	remainingBullets_ = BULLETS_TMP_;
 	attackCoolTime_ = 0;
 
+	worldTrans_ = { 0,0,0 };
+
 	Weapon::ChangeOwner(parent);
 }
 
