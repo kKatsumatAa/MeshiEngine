@@ -11,7 +11,7 @@ private://エイリアス
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 private:
-	const uint64_t SHADOW_DIFINITION_ = 40;
+	const uint64_t SHADOW_DIFINITION_ = 1280;
 	bool isFirstFrame_ = true;
 
 private:

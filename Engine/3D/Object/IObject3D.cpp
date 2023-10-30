@@ -6,7 +6,7 @@ using namespace DirectX;
 
 //--------------------------------------------------------
 // 
-XMFLOAT4 IObject3D::sLightCameraParam_ = { 40,40,1.0f,100.0f };
+XMFLOAT4 IObject3D::sLightCameraParam_ = { 76.0f,77.0f,1.0f,150.0f };
 //シャドウマップ用の深度SRVの要素番号
 int32_t IObject3D::sShadowSRVIndex_;
 //ライト
@@ -324,7 +324,8 @@ void IObject3D::MatMap(Camera* camera, Camera* lightCamera, IModel* model)
 	cbt_.SetWorldMat(matW);
 	cbt_.SetViewProjMat(camera->GetViewMat() * camera->GetProjMat());
 	//ライトから見える範囲(左右:-20~20, 上下:-20~20, 奥行:1~100)
-	cbt_.SetLightViewProjMat(lightCamera->GetViewMat() * XMMatrixOrthographicLH(sLightCameraParam_.x, sLightCameraParam_.y, sLightCameraParam_.z, sLightCameraParam_.w));//全てのものが同じ大きさで計算するので平行投影
+	cbt_.SetLightViewProjMat(lightCamera->GetViewMat()
+		* XMMatrixOrthographicLH(sLightCameraParam_.x+0.1f, sLightCameraParam_.y + 0.1f, sLightCameraParam_.z, sLightCameraParam_.w));//全てのものが同じ大きさで計算するので平行投影
 	cbt_.SetCameraPos(camera->GetEye());
 }
 

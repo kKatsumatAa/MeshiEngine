@@ -165,8 +165,6 @@ void DirectXWrapper::InitializeDepthBuffer()
 		assert(SUCCEEDED(result_));
 
 		//ライト用深度バッファ---------
-		depthResourceDesc.Width = SHADOW_DIFINITION_;//ライトデプス幅
-		depthResourceDesc.Height = (UINT)SHADOW_DIFINITION_;//ライトデプス高
 		//リソース生成
 		result_ = device_->CreateCommittedResource(
 			&depthHeapProp,//ヒープ設定

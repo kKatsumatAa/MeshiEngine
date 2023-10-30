@@ -1,4 +1,4 @@
-﻿#include "JsonLevelLoader.h"
+#include "JsonLevelLoader.h"
 #include "Util.h"
 #include "CollisionManager.h"
 #include <fstream>
@@ -215,11 +215,16 @@ Vec3 JsonLevelLoader::GetRot(const nlohmann::json::iterator& object)
 	return rot;
 }
 
-Vec3 JsonLevelLoader::GetRotDir(const nlohmann::json::iterator& object)
+Vec3 JsonLevelLoader::GetRotDir(const nlohmann::json::iterator& object, bool isCamera)
 {
 	//角度を得る
 	WorldMat targetWorldMat;
 	targetWorldMat.rot_ = GetRot(object);
+
+	if (isCamera)
+	{
+		targetWorldMat.rot_ = { 3.14f / 2.0f - targetWorldMat.rot_.z, targetWorldMat.rot_.y + 3.14f / 2.0f, targetWorldMat.rot_.x };
+	}
 
 	targetWorldMat.CalcWorldMat();
 	//奥に向かうベクトルをターゲットの元とする
@@ -228,7 +233,7 @@ Vec3 JsonLevelLoader::GetRotDir(const nlohmann::json::iterator& object)
 	Vec3xM4(dir, targetWorldMat.matWorld_, 0);
 
 
-	return dir;
+	return dir.GetNormalized();
 }
 
 Vec3 JsonLevelLoader::GetTrans(const nlohmann::json::iterator& object)
@@ -268,7 +273,7 @@ void JsonLevelLoader::LoadCameraData(const nlohmann::json::iterator& object)
 	//平行移動
 	objectData->camera->SetEye(GetTrans(object));
 	//ターゲット
-	objectData->camera->SetTarget(GetRotDir(object));
+	objectData->camera->SetTarget(objectData->camera->GetEye() + GetRotDir(object, true));
 }
 
 void JsonLevelLoader::LoadLightData(const nlohmann::json::iterator& object)
