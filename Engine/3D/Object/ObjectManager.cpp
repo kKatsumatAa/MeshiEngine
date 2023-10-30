@@ -96,6 +96,23 @@ void ObjectManager::DebugUpdate()
 }
 
 
+void ObjectManager::DrawShadow()
+{
+	for (std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator itM = objsGroups_.begin();
+		itM != objsGroups_.end(); itM++)
+	{
+		for (std::vector<std::unique_ptr<IObject3D>>::iterator itG = itM->second.begin();
+			itG != itM->second.end(); itG++)
+		{
+			//有効であれば
+			if (itG->get()->GetIsValidDraw())
+			{
+				itG->get()->DrawShadow();
+			}
+		}
+	}
+}
+
 void ObjectManager::Draw()
 {
 	for (std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator itM = objsGroups_.begin();

@@ -43,6 +43,11 @@ void LandShape::Update()
 	Object::Update();
 }
 
+void LandShape::DrawShadow()
+{
+	Object::DrawModel(nullptr, nullptr, nullptr, Object::PipelineStateNumObj::SHADOW_OBJ);
+}
+
 void LandShape::Draw()
 {
 	Object::DrawModel(nullptr);

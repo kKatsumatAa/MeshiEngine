@@ -1,4 +1,4 @@
-﻿#include "BulletManager.h"
+#include "BulletManager.h"
 
 BulletManager& BulletManager::GetInstance()
 {
@@ -27,6 +27,14 @@ void BulletManager::Update()
 	for (auto& bullet : bullets_)
 	{
 		bullet->Update();
+	}
+}
+
+void BulletManager::DrawShadow()
+{
+	for (auto& bullet : bullets_)
+	{
+		bullet->DrawShadow();
 	}
 }
 

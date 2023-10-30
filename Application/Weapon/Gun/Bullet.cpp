@@ -150,6 +150,11 @@ void Bullet::Update()
 	}
 }
 
+void Bullet::DrawShadow()
+{
+	DrawSphere(nullptr, nullptr, NULL, Object::PipelineStateNumPrim::NORMAL_PRIM);
+}
+
 void Bullet::Draw()
 {
 	//弾道

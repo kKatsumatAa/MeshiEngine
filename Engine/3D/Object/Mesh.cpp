@@ -269,19 +269,23 @@ void Mesh::SendingVetices()
 	}
 }
 
-void Mesh::Draw(Vec3 materialExtend, const ConstBuffTransform& cbt)
+void Mesh::Draw(Vec3 materialExtend, const ConstBuffTransform& cbt, bool isShadow)
 {
 	SendingMat(materialExtend, cbt);
 
-	// シェーダリソースビューをセット
-	//SRVヒープの先頭ハンドルを取得
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-	srvGpuHandle.ptr = material_->textureHandle_;
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(Object::RootParamNum::TEX, srvGpuHandle);
+	//シャドウマップ用の前描画の時は必要ない
+	if (!isShadow)
+	{
+		// シェーダリソースビューをセット
+		//SRVヒープの先頭ハンドルを取得
+		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+		srvGpuHandle.ptr = material_->textureHandle_;
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(Object::RootParamNum::TEX, srvGpuHandle);
 
-	// マテリアルの定数バッファをセット
-	ID3D12Resource* constBuff = material_->GetConstantBuffer();
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(Object::RootParamNum::MATERIAL, constBuff->GetGPUVirtualAddress());
+		// マテリアルの定数バッファをセット
+		ID3D12Resource* constBuff = material_->GetConstantBuffer();
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(Object::RootParamNum::MATERIAL, constBuff->GetGPUVirtualAddress());
+	}
 
 	//メッシュごとの行列
 	cbt_.DrawCommand(Object::RootParamNum::MESH_MAT);

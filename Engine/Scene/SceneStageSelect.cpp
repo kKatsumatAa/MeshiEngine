@@ -51,6 +51,10 @@ void SceneStageSelect::Update()
 	}
 }
 
+void SceneStageSelect::DrawShadow()
+{
+}
+
 void SceneStageSelect::Draw()
 {
 

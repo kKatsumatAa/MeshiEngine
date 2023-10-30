@@ -60,6 +60,11 @@ void SceneGame::Update()
 	}
 }
 
+void SceneGame::DrawShadow()
+{
+	StageManager::GetInstance().DrawShadow();
+}
+
 void SceneGame::Draw()
 {
 	StageManager::GetInstance().Draw();

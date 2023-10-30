@@ -45,8 +45,9 @@ public:
 		DISSOLVE,
 		SPECULAR_MAP,
 		NORM_MAP,
+		SHADOW_TEX,
 		//要素数
-		count = 11
+		count
 	};
 
 	//インスタンスのタイプ
@@ -65,7 +66,7 @@ private:
 
 private:
 	//演出用デスクリプタレンジ
-	static D3D12_DESCRIPTOR_RANGE effectDescRange_[3];
+	static D3D12_DESCRIPTOR_RANGE effectDescRange_[4];
 
 protected://継承先まで公開
 	//定数バッファの生成
@@ -74,7 +75,7 @@ protected://継承先まで公開
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial_ = nullptr;
 
-private:
+protected:
 	//ルートパラメータの設定
 	static D3D12_ROOT_PARAMETER rootParams_[RootParamNum::count];
 
@@ -132,14 +133,15 @@ public:
 	virtual void DrawImGui(std::function<void()>imguiF = NULL);
 
 public:
-	//ルートシグネチャ系のコマンド
+	//ルートシグネチャ系のコマンド(パイプラインステートとルートシグネチャ別のも組み合わせられる)
 	void SetRootPipe(RootPipe* pipelineSet, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
 
 	//パイプラインの設定
 	static void PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe,
 		const std::string& vSName, const std::string& pSName,
 		D3D12_INPUT_ELEMENT_DESC* inputLayout, uint32_t inputLCount,
-		D3D12_PRIMITIVE_TOPOLOGY_TYPE priTopoType, bool isSprite);
+		D3D12_PRIMITIVE_TOPOLOGY_TYPE priTopoType, int32_t numRTarget = 3,
+		bool isSprite = false);
 
 	static void Blend(const D3D12_BLEND_OP& blendMode,
 		bool Inversion = 0, bool Translucent = 0);

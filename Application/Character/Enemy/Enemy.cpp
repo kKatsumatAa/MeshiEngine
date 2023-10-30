@@ -293,9 +293,14 @@ void Enemy::Update()
 	Character::Update();
 }
 
+void Enemy::DrawShadow()
+{
+	ObjectFBX::DrawModel(nullptr, nullptr, ObjectFBX::PipelineStateNum::SHADOW);
+}
+
 void Enemy::Draw()
 {
-	ObjectFBX::DrawModel(nullptr);
+	ObjectFBX::DrawModel();
 
 	//ノードごとの当たり判定描画
 	DrawNodeColliders();

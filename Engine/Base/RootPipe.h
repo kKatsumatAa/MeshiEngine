@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include"DirectXWrapper.h"
 
 struct RootPipe

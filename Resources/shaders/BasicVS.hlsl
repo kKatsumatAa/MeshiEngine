@@ -10,6 +10,7 @@ float4 tangent : TANGENT, float4 binormal : BINORMAL)
     VSOutput output; //ピクセルシェーダに渡す値
     output.svpos = mul(mul(viewproj, world), pos);
     output.worldpos = wpos;
+    output.tpos = mul(lightCamera, wpos);
     //ローカルの法線を送り、ピクセルシェーダでワールド変換
     output.normal = normal;
     output.tangent = normalize(tangent.rgb);

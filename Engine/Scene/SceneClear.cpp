@@ -1,4 +1,4 @@
-﻿#include "SceneClear.h"
+#include "SceneClear.h"
 #include "SceneManager.h"
 
 
@@ -20,6 +20,10 @@ void SceneClear::Update()
 	{
 		sceneM_->SetNextScene("TITLE");
 	}
+}
+
+void SceneClear::DrawShadow()
+{
 }
 
 void SceneClear::Draw()

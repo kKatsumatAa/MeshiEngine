@@ -22,6 +22,7 @@ private:
 	{
 		XMMATRIX viewproj; //ビュープロジェクション行列
 		XMMATRIX world;    //ワールド行列
+		XMMATRIX lightCamera;    //ライトカメラ行列
 		Vec3 cameraPos;//カメラ座標（ワールド座標）
 		float pad;
 	};
@@ -40,6 +41,7 @@ public:
 
 public:
 	void SetViewProjMat(const XMMATRIX& mat) { constMapTransform_->viewproj = mat; }
+	void SetLightViewProjMat(const XMMATRIX& mat) { constMapTransform_->lightCamera = mat; }
 	void SetWorldMat(const XMMATRIX& mat) { constMapTransform_->world = mat; }
 	void SetCameraPos(const Vec3& pos) { constMapTransform_->cameraPos = pos; }
 

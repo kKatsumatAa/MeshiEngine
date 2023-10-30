@@ -4,6 +4,7 @@ Texture2D<float4> tex : register(t0); //0番スロットに設定されたテクスチャ
 Texture2D<float4> tex2 : register(t1); //1番スロットに設定されたテクスチャ(ディゾルブ)
 Texture2D<float4> tex3 : register(t2); //2番スロットに設定されたテクスチャ(スペキュラマップテクスチャ)
 Texture2D<float4> tex4 : register(t3); //3番スロットに設定されたテクスチャ(ノーマルマップマップテクスチャ)
+Texture2D<float4> lightDepthTex : register(t4); //4番スロットに設定されたテクスチャ(シャドウマップ用のライト深度テクスチャ)
 SamplerState smp : register(s0); //0番スロットに設定されたサンプラー
 
 struct PSOutput
@@ -22,6 +23,7 @@ struct VSOutput
     float2 uv : TEXCOORD; //uv座標
     float3 tangent : TANGENT; //法線の接線
     float3 binormal : BINORMAL; //従法線
+    float4 tpos : TPOS;//ライトビューを掛けた座標
 };
 
 //----------------------------------------------------------------------------------------------
@@ -113,6 +115,7 @@ cbuffer ConstBufferDataTransform : register(b1)
 {
     matrix viewproj; //ビュープロジェクション行列
     matrix world; //ワールド行列
+    matrix lightCamera; //ライトカメラ
     float3 cameraPos; //カメラ座標（ワールド座標）
 }
 

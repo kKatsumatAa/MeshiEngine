@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include"SceneState.h"
 #include"Object.h"
 #include"Async.h"
@@ -14,6 +14,7 @@ public:
 	void Finalize()override;
 	void Initialize()override;
 	void Update() override;
+	void DrawShadow() override;
 	void Draw() override;
 	void DrawSprite()override;
 

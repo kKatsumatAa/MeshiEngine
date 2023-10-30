@@ -8,6 +8,16 @@
 
 class ObjectFBX : public IObject3D
 {
+protected:
+	enum PipelineStateNum
+	{
+		NORMAL,
+		WIREFRAME,
+		SHADOW,
+
+		COUNT//要素数
+	};
+
 public:
 	//ボーンの最大数
 	static const int32_t S_MAX_BONES_ = 90;
@@ -35,7 +45,7 @@ public:
 
 private:
 	//パイプラインなどの設定
-	static RootPipe pipelineSetM_[2];
+	static RootPipe pipelineSetM_[COUNT];
 
 protected:
 	//定数バッファ（スキン）

@@ -26,14 +26,17 @@ void StageState::Update()
 	PlayerUI::GetInstance().Update();
 }
 
+void StageState::DrawShadow()
+{
+	//弾のシャドウマップ用描画
+	BulletManager::GetInstance().DrawShadow();
+}
+
 //共通の処理
 void StageState::Draw()
 {
 	//弾
 	BulletManager::GetInstance().Draw();
-
-	//敵マネージャー
-	EnemyManager::GetInstance().Draw();
 }
 
 void StageState::DrawSprite()
@@ -102,6 +105,12 @@ void StageStateBegining::Update()
 	timer_++;
 }
 
+void StageStateBegining::DrawShadow()
+{
+	//共通
+	StageState::DrawShadow();
+}
+
 void StageStateBegining::Draw()
 {
 	StageState::Draw();
@@ -155,6 +164,12 @@ void StageStateBattle::Update()
 
 		timer_++;
 	}
+}
+
+void StageStateBattle::DrawShadow()
+{
+	//共通
+	StageState::DrawShadow();
 }
 
 void StageStateBattle::Draw()
@@ -212,6 +227,12 @@ void StageStateDead::Update()
 	timer_++;
 }
 
+void StageStateDead::DrawShadow()
+{
+	//共通
+	StageState::DrawShadow();
+}
+
 void StageStateDead::Draw()
 {
 	//共通
@@ -249,6 +270,12 @@ void StageStateClear::Update()
 	}
 
 	timer_ = min(timer_ + 1, CLEAR_COOL_TIME_MAX_);
+}
+
+void StageStateClear::DrawShadow()
+{
+	//共通
+	StageState::DrawShadow();
 }
 
 void StageStateClear::Draw()

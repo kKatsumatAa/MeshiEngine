@@ -21,6 +21,28 @@ private:
 		FBX
 	};
 
+protected:
+	enum PipelineStateNumObj
+	{
+		NORMAL_OBJ,
+		WIREFRAME_OBJ,
+		SHADOW_OBJ,
+
+		COUNT_O//要素数
+	};
+
+	enum PipelineStateNumPrim
+	{
+		NORMAL_PRIM,
+		WIREFRAME_PRIM,
+		SHADOW_PRIM,
+
+		NORMAL_LINE,
+		SHADOW_LINE,
+
+		COUNT_P//要素数
+	};
+
 private:
 	// 頂点レイアウトの設定
 // 頂点レイアウト
@@ -30,14 +52,14 @@ private:
 	//図形のクラス
 	static Primitive primitive_;
 	//パイプラインなどの設定
-	static RootPipe primitivePipeLineSet_[3];
+	static RootPipe primitivePipeLineSet_[5];
 	//.objの
-	static RootPipe pipelineSetM_[2];
+	static RootPipe pipelineSetM_[3];
 
 private:
 	//描画する形状を指定されたら呼ぶ描画用関数
 	void DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, ConstBuffTransform* constBuffTransform,
-		Camera* camera, IModel* model = nullptr, bool isWireFrame = false);
+		Camera* camera, Camera* lightCamera, IModel* model = nullptr);
 
 public:
 	//コンストラクタ
@@ -56,26 +78,30 @@ public:
 
 	virtual void Draw()override;
 
+private:
+	//シャドウマップ用に事前に描画
+	void PreDrawShadow()override;
+
 public:
-	void DrawTriangle(Camera* camera = nullptr,
+	void DrawTriangle(Camera* camera = nullptr, Camera* lightCamera = nullptr,
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawBox(Camera* camera = nullptr,
+	void DrawBox(Camera* camera = nullptr, Camera* lightCamera = nullptr,
 
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawCube3D(Camera* camera = nullptr,
+	void DrawCube3D(Camera* camera = nullptr, Camera* lightCamera = nullptr,
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawLine(Camera* camera = nullptr,
+	void DrawLine(Camera* camera = nullptr, Camera* lightCamera = nullptr,
 		uint64_t textureHandle = NULL);
 
-	void DrawCircle(Camera* camera = nullptr,
+	void DrawCircle(Camera* camera = nullptr, Camera* lightCamera = nullptr,
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawSphere(Camera* camera = nullptr,
+	void DrawSphere(Camera* camera = nullptr, Camera* lightCamera = nullptr,
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
 
-	void DrawModel(IModel* model, Camera* camera = nullptr,
+	void DrawModel(IModel* model, Camera* camera = nullptr, Camera* lightCamera = nullptr,
 		int32_t pipelineNum = 0);
 };

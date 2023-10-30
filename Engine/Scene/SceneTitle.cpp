@@ -57,6 +57,10 @@ void SceneTitle::Update()
 	}
 }
 
+void SceneTitle::DrawShadow()
+{
+}
+
 void SceneTitle::Draw()
 {
 

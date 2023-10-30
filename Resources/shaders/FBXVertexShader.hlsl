@@ -75,6 +75,7 @@ VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOOR
     VSOutput output; //ピクセルシェーダに渡す値
     output.svpos = mul(mul(viewproj, worldL), skinned.pos);
     output.worldpos = wpos;
+    output.tpos = mul(lightCamera, wpos);
     //ローカルの法線を送り、ピクセルシェーダでワールド変換
     output.normal = normalize(skinned.normal);
     output.tangent = normalize(skinned.tangent).rgb;

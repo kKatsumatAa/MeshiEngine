@@ -24,6 +24,7 @@ private:
 public:
 	//ここにいろんなカメラのポインタを入れて、描画時に使う
 	Camera* usingCamera_;
+	Camera* usingLightCamera_;
 	Camera2D* usingCamera2D_;
 
 	//演出などが終わった後にそのカメラに切り替えるためのポインタ
@@ -57,12 +58,15 @@ public:
 	Camera* GetCamera(const std::string& cameraName);
 	//usingCameraにセットされてるカメラ取得
 	Camera* GetCamera();
+	//usingLightCameraにセットされてるカメラ取得
+	Camera* GetUsingLightCamera();
 	//名前を指定してカメラを取得
 	Camera2D* GetCamera2D(const std::string& cameraName);
 	//usingCameraにセットされてるカメラ取得
 	Camera2D* GetCamera2D();
 	//カメラを使用しているカメラにセット
 	void SetUsingCamera(const std::string& cameraName);
+	void SetUsingLightCamera(const std::string& cameraName);
 	void SetUsingCamera2D(const std::string& cameraName);
 
 public:

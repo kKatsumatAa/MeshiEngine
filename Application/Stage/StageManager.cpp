@@ -1,4 +1,4 @@
-﻿#include "StageManager.h"
+#include "StageManager.h"
 #include "StageState.h"
 
 
@@ -30,6 +30,8 @@ void StageManager::Initialize()
 {
 	//カメラをセット
 	CameraManager::GetInstance().SetUsingCamera("playerCamera");
+	//ライトカメラ
+	CameraManager::GetInstance().SetUsingLightCamera("lightCamera");
 	//ゲームスピード
 	GameVelocityManager::GetInstance().Initialize();
 	//弾
@@ -60,6 +62,11 @@ void StageManager::ChangeState(const std::string& name)
 void StageManager::Update()
 {
 	state_->Update();
+}
+
+void StageManager::DrawShadow()
+{
+	state_->DrawShadow();
 }
 
 void StageManager::Draw()

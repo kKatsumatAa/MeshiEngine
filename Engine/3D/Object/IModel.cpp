@@ -80,16 +80,19 @@ void IModel::AddMaterial(std::unique_ptr<Material> material)
 
 
 void IModel::Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
-	, const ConstBuffTransform& cbt)
+	, const ConstBuffTransform& cbt, bool isShadow)
 {
 	//パイプラインなどセット
 	setRootParam();
 	//ライトなどをセット
 	setMaterialLightTex();
 
+	//メッシュの構成
+	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	// 全メッシュを描画
 	for (auto& mesh : meshes_) {
-		mesh->Draw(materialExtend_, cbt);
+		mesh->Draw(materialExtend_, cbt, isShadow);
 	}
 }
 

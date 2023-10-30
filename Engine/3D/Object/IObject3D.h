@@ -44,9 +44,15 @@ private:
 	ComPtr <ID3D12Resource> effectFlagsBuff_;
 	EffectOConstBuffer* mapEffectFlagsBuff_;
 
+	static XMFLOAT4 sLightCameraParam_;
+
 protected:
 	// 頂点レイアウト
 	static D3D12_INPUT_ELEMENT_DESC sInputLayoutM_[7];
+
+protected:
+	//シャドウマップ用の深度SRVの要素番号
+	static int32_t sShadowSRVIndex_;
 
 protected:
 	//モデルの有効フラグ
@@ -99,18 +105,29 @@ public:
 
 	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr, IModel* model = nullptr);
 
+private:
+	//シャドウマップ用の深度SRVを作る
+	static void CreateDepthSRV();
+
 public:
 	//更新
 	virtual void Update() override;
+	//シャドウマップ用の深度値描画
+	virtual void DrawShadow();
 	//描画
 	virtual void Draw()override;
-	//
-	void DrawModel(Camera* camera = nullptr, bool isWireFrame = false);
+	//モデル描画
+	void DrawModel(Camera* camera = nullptr, Camera* lightCamera = nullptr, int32_t pipelineNum = 0);
+
+	//シャドウマップ用に事前に描画
+	virtual void PreDrawShadow() { ; }
 
 	//演出系のアップデート
 	void EffectUpdate(IObject3D* effectCopyObj = nullptr);
 	//imgui
 	virtual void DrawImGui(std::function<void()>imguiF = NULL)override;
+
+	static void StaticDrawImGui();
 
 protected:
 	//モデル描画の内部処理
@@ -118,7 +135,7 @@ protected:
 
 protected:
 	//行列マッピング
-	void MatMap(Camera* camera, IModel* model = nullptr);
+	void MatMap(Camera* camera, Camera* lightCamera, IModel* model = nullptr);
 
 	//マテリアル、ライト、テクスチャ系のコマンド
 	void SetMaterialLightMTex(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,

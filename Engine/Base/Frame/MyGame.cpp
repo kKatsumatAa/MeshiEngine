@@ -1,4 +1,4 @@
-﻿#include "MyGame.h"
+#include "MyGame.h"
 #include"SceneFactory.h"
 #include"GameVelocityManager.h"
 
@@ -46,6 +46,13 @@ void MyGame::Update()
 
 void MyGame::Draw()
 {
+	//シャドウマップ用
+	{
+		DirectXWrapper::GetInstance().PreShadowDraw();
+		sceneM_->DrawShadow();
+		DirectXWrapper::GetInstance().PostShadowDraw();
+	}
+
 	//ポストペラに描画する
 	{
 		std::function<void()>f = [=]() {sceneM_->Draw(); };
@@ -67,6 +74,7 @@ void MyGame::Draw()
 			//imgui
 			imguiM_->Begin();
 
+			IObject3D::StaticDrawImGui();
 
 			//(imgui)
 			sceneM_->DrawImgui();

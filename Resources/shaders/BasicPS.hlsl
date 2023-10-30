@@ -27,6 +27,21 @@ PSOutput main(VSOutput input)
     
     float3 lightNormal = wNormal;
     
+    
+    //シャドウマップ--------------------------
+    //テクスチャ座標への変換(tpos.zが深度値)
+    float3 posFromLightVP = input.tpos.xyz / input.tpos.w;
+    float2 shadowUV = (posFromLightVP.xy + float2(1, -1)) * float2(0.5, -0.5);
+    //影テクスチャの値
+    float depthFromLight = lightDepthTex.Sample(smp, shadowUV);
+    //ライトから見て最初の撮影結果より遠いと影になる
+    float shadowWeight = 1.0f;
+    if (depthFromLight < posFromLightVP.z - 0.001f)
+    {
+        shadowWeight = 0.5f;
+    }
+  
+    
     //ノーマルマップが有効ならライトの計算に使う法線を算出
     if (isNormalMap)
     {
@@ -211,7 +226,7 @@ PSOutput main(VSOutput input)
     }
 
 	// シェーディングによる色で描画
-    float4 DSC = dotL * shadecolor;
+    float4 DSC = dotL * shadecolor * float4(shadowWeight, shadowWeight, shadowWeight, 1.0f);
     float4 RIM = float4(rimColor.rgb, 1.0f) * (1.0f - dotL);
     float4 RGBA = (DSC * texcolor * color) + RIM;
     float4 RGBA2 = (DSC * color) + RIM;

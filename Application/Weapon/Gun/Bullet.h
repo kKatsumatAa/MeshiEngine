@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Object.h"
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
@@ -54,6 +54,7 @@ public:
 
 	void Update() override;
 
+	void DrawShadow() override;
 	void Draw() override;
 
 	void OnCollision(const CollisionInfo& info) override;

@@ -5,6 +5,10 @@
 using namespace DirectX;
 
 //--------------------------------------------------------
+// 
+XMFLOAT4 IObject3D::sLightCameraParam_ = { 40,40,1.0f,100.0f };
+//シャドウマップ用の深度SRVの要素番号
+int32_t IObject3D::sShadowSRVIndex_;
 //ライト
 LightManager* IObject3D::sLightManager_ = nullptr;
 //インプットレイアウト
@@ -92,7 +96,7 @@ IObject3D::IObject3D()
 //--------------------------------------------------------
 void IObject3D::CommonInitialize()
 {
-
+	CreateDepthSRV();
 }
 
 bool IObject3D::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
@@ -102,6 +106,29 @@ bool IObject3D::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 	SetModel(model);
 
 	return true;
+}
+
+void IObject3D::CreateDepthSRV()
+{
+	sShadowSRVIndex_ = TextureManager::GetSRVCount();
+	TextureManager::AddSRVHandleCount();
+
+	//位置を決める
+	auto handle = TextureManager::GetDescHeapP()->GetCPUDescriptorHandleForHeapStart();
+	handle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		* sShadowSRVIndex_;
+
+	//設定
+	D3D12_SHADER_RESOURCE_VIEW_DESC resDesc = {};
+	resDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	resDesc.Texture2D.MipLevels = 1;
+	resDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	resDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+
+	//ライト用深度
+	DirectXWrapper::GetInstance().GetDevice()->CreateShaderResourceView(DirectXWrapper::GetInstance().GetLightDepthBuff(),
+		&resDesc,
+		handle);
 }
 
 //--------------------------------------------------------
@@ -153,8 +180,12 @@ void IObject3D::Update()
 	IObject::Update();
 }
 
+void IObject3D::DrawShadow()
+{
+}
+
 //------------------------------
-void IObject3D::DrawModel(Camera* camera, bool isWireFrame)
+void IObject3D::DrawModel(Camera* camera, Camera* lightCamera, int32_t pipelineNum)
 {
 	if (!isValidModel_)
 	{
@@ -162,17 +193,22 @@ void IObject3D::DrawModel(Camera* camera, bool isWireFrame)
 	}
 
 	Camera* lCamera = camera;
+	Camera* lLightCamera = lightCamera;
 	//カメラがセットされてなければ使用されてるカメラを使う
 	if (camera == nullptr)
 	{
 		lCamera = CameraManager::GetInstance().usingCamera_;
 	}
+	if (lightCamera == nullptr)
+	{
+		lLightCamera = CameraManager::GetInstance().usingLightCamera_;
+	}
 
 	//行列マッピング
-	MatMap(lCamera, model_);
+	MatMap(lCamera, lLightCamera, model_);
 
 	//描画コマンドなど(falseだったら[0]で通常描画)
-	DrawModelInternal((int32_t)isWireFrame);
+	DrawModelInternal(pipelineNum);
 }
 
 void IObject3D::Draw()
@@ -185,9 +221,6 @@ void IObject3D::Draw()
 void IObject3D::SetMaterialLightMTex(uint64_t textureHandle, uint64_t dissolveTex, uint64_t specularMapTex,
 	uint64_t normalMapTex, bool setTex)
 {
-	//メッシュの構成
-	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 	//SRVヒープの設定コマンド
 	DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetDescHeapPP());
 
@@ -230,7 +263,7 @@ void IObject3D::SetMaterialLightMTex(uint64_t textureHandle, uint64_t dissolveTe
 }
 
 //--------------------------------------------------------------------------------
-void IObject3D::MatMap(Camera* camera, IModel* model)
+void IObject3D::MatMap(Camera* camera, Camera* lightCamera, IModel* model)
 {
 	//大きすぎたりするのを防ぐ用に
 	Vec3 scale = worldMat_->scale_;
@@ -287,8 +320,11 @@ void IObject3D::MatMap(Camera* camera, IModel* model)
 
 	worldMat_->scale_ = scale;
 
+	//行列
 	cbt_.SetWorldMat(matW);
 	cbt_.SetViewProjMat(camera->GetViewMat() * camera->GetProjMat());
+	//ライトから見える範囲(左右:-20~20, 上下:-20~20, 奥行:1~100)
+	cbt_.SetLightViewProjMat(lightCamera->GetViewMat() * XMMatrixOrthographicLH(sLightCameraParam_.x, sLightCameraParam_.y, sLightCameraParam_.z, sLightCameraParam_.w));//全てのものが同じ大きさで計算するので平行投影
 	cbt_.SetCameraPos(camera->GetEye());
 }
 
@@ -368,4 +404,13 @@ void IObject3D::DrawImGui(std::function<void()> imguiF)
 
 	//親クラスの
 	IObject::DrawImGui(f);
+}
+
+void IObject3D::StaticDrawImGui()
+{
+	ImGui::Begin("lightCamera");
+
+	ImGui::DragFloat4("w,h,n,f", &sLightCameraParam_.x);
+
+	ImGui::End();
 }

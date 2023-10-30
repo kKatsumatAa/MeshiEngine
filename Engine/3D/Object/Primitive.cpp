@@ -759,7 +759,10 @@ void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCou
 	DirectXWrapper::GetInstance().GetCommandList()->IASetIndexBuffer(&ibView);
 
 	//マテリアルとかテクスチャ
-	setMaterialLightTex();
+	if (setMaterialLightTex)
+	{
+		setMaterialLightTex();
+	}
 
 	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((uint32_t)indicesCount, 1, 0, 0, 0); // 全ての頂点を使って描画
 }

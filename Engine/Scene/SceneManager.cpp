@@ -116,6 +116,17 @@ void SceneManager::Update()
 	lightManager_->Update();
 }
 
+void SceneManager::DrawShadow()
+{
+	//ロードしてなければ描画だけ
+	if (!SceneTransitionManager::GetInstance().GetIsLoadingOnly() && state_)
+	{
+		//objマネージャ
+		ObjectManager::GetInstance().DrawShadow();
+		state_->DrawShadow();
+	}
+}
+
 void SceneManager::Draw()
 {
 	//ロードしてなければ描画だけ

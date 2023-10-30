@@ -14,6 +14,7 @@ public:
 
 	virtual void Initialize();
 	virtual void Update();
+	virtual void DrawShadow();
 	virtual void Draw();
 	virtual void DrawSprite();
 	virtual void DrawImgui();
@@ -33,6 +34,7 @@ protected:
 public:
 	void Initialize() override;
 	void Update() override;
+	void DrawShadow() override;
 	void Draw() override;
 	void DrawSprite() override;
 };
@@ -49,6 +51,7 @@ protected:
 public:
 	void Initialize() override;
 	void Update() override;
+	void DrawShadow() override;
 	void Draw() override;
 	void DrawSprite() override;
 };
@@ -63,6 +66,7 @@ private:
 public:
 	void Initialize() override;
 	void Update() override;
+	void DrawShadow() override;
 	void Draw() override;
 	void DrawSprite() override;
 };
@@ -77,6 +81,7 @@ private:
 public:
 	void Initialize() override;
 	void Update() override;
+	void DrawShadow() override;
 	void Draw() override;
 	void DrawSprite() override;
 };

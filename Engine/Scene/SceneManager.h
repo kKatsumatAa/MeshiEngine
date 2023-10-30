@@ -68,6 +68,7 @@ public:
 
 	void Initialize();
 	void Update();
+	void DrawShadow();
 	void Draw();
 	void DrawSprite();
 

@@ -11,11 +11,18 @@ private://エイリアス
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 private:
+	const uint64_t SHADOW_DIFINITION_ = 40;
+	bool isFirstFrame_ = true;
+
+private:
 	//成果物系
 	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
 	ComPtr < ID3D12CommandQueue> commandQueue_ = nullptr;
 	ComPtr < ID3D12CommandQueue> texCommandQueue_ = nullptr;
+	//深度バッファ
 	ComPtr<ID3D12Resource> depthBuff_;
+	//シャドウマップ用深度バッファ
+	ComPtr<ID3D12Resource> lightDepthBuff_;
 	// スワップチェーンの設定
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc_{};
 	ComPtr<IDXGISwapChain4> swapChain_;
@@ -28,8 +35,6 @@ private:
 	std::vector< ComPtr <ID3D12Resource>> backBuffers_;
 	//深度バッファビュー用
 	ComPtr < ID3D12DescriptorHeap> dsvHeap_ = nullptr;
-	//深度値テクスチャ用
-	ComPtr < ID3D12DescriptorHeap> depthSRVHeap_ = nullptr;
 
 	// フェンスの生成
 	ComPtr < ID3D12Fence> fence_ = nullptr;
@@ -99,7 +104,11 @@ public:
 	//テクスチャを描画とは別のコマンドリストでアップするコマンド
 	void UpLoadTexture();
 
-	//1枚目のテクスチャに描画
+	//実際に描画
+	void PreShadowDraw();
+	void PostShadowDraw();
+	
+	//実際に描画
 	void PreDraw();
 	void PostDraw();
 
@@ -119,8 +128,7 @@ public:
 	std::vector< ComPtr <ID3D12Resource>>& GetBackBuffer() { return backBuffers_; }
 	ID3D12DescriptorHeap* GetDSVHeap() { return dsvHeap_.Get(); }
 	ID3D12Resource* GetDepthBuff() { return depthBuff_.Get(); }
-	ID3D12DescriptorHeap* GetDepthSRVHeap() { return depthSRVHeap_.Get(); }
-	ID3D12DescriptorHeap** GetDepthSRVHeapPP() { return depthSRVHeap_.GetAddressOf(); }
+	ID3D12Resource* GetLightDepthBuff() { return lightDepthBuff_.Get(); }
 	ID3D12Resource** GetTexUploadBuffPP() { return texUploadBuff_.back().GetAddressOf(); }
 	ID3D12Resource* GetTexUploadBuffP() { return texUploadBuff_.back().Get(); }
 	void EmplaceBackUploadBuff() { texUploadBuff_.emplace_back(); }

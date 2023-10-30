@@ -17,6 +17,7 @@ public:
 	void Finalize()override;
 	void Initialize()override;
 	void Update()override;
+	void DrawShadow()override;
 	void Draw()override;
 	void DrawSprite()override;
 

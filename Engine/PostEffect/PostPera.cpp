@@ -876,12 +876,12 @@ void PostPera::PreDraw(bool isFirstPostPera)
 	}
 
 
-	//一番最初のポストペラだったら深度
 	if (!isFirstPostPera)
 	{
 		//レンダーターゲットをセット
 		DirectXWrapper::GetInstance().GetCommandList()->OMSetRenderTargets(3, rtvs, false, nullptr);
 	}
+	//一番最初のポストペラだったら深度
 	else
 	{
 		//レンダーターゲットをセット

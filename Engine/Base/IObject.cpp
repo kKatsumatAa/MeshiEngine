@@ -8,7 +8,7 @@ using namespace DirectX;
 //ルートパラメータの設定
 D3D12_ROOT_PARAMETER IObject::rootParams_[RootParamNum::count] = {};
 D3D12_GRAPHICS_PIPELINE_STATE_DESC IObject::pipelineDesc_ = {};
-D3D12_DESCRIPTOR_RANGE IObject::effectDescRange_[3] = {};
+D3D12_DESCRIPTOR_RANGE IObject::effectDescRange_[4] = {};
 
 //--------------------------------------------------------------------
 IObject::~IObject()
@@ -117,6 +117,13 @@ void IObject::CommonInitialize()
 	rootParams_[NORM_MAP].DescriptorTable.pDescriptorRanges = &effectDescRange_[2];//デスクリプタレンジ
 	rootParams_[NORM_MAP].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[NORM_MAP].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//シャドウマップテクスチャ
+	rootParams_[SHADOW_TEX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+	effectDescRange_[3] = *TextureManager::GetDescRange();//デスクリプタレンジ
+	effectDescRange_[3].BaseShaderRegister += 4;
+	rootParams_[SHADOW_TEX].DescriptorTable.pDescriptorRanges = &effectDescRange_[3];//デスクリプタレンジ
+	rootParams_[SHADOW_TEX].DescriptorTable.NumDescriptorRanges = 1;//〃数
+	rootParams_[SHADOW_TEX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 }
 
 //-------------------------------------------------------------------------
@@ -254,7 +261,7 @@ void IObject::SetRootPipe(RootPipe* pipelineSet, int32_t pipelineNum, ID3D12Root
 void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe,
 	const std::string& vSName, const std::string& pSName,
 	D3D12_INPUT_ELEMENT_DESC* inputLayout, uint32_t inputLCount,
-	D3D12_PRIMITIVE_TOPOLOGY_TYPE priTopoType, bool isSprite)
+	D3D12_PRIMITIVE_TOPOLOGY_TYPE priTopoType, int32_t numRTarget, bool isSprite)
 {
 	HRESULT result = {};
 
@@ -263,8 +270,16 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 	// シェーダーの設定
 	pipelineDesc_.VS.pShaderBytecode = rootPipe.vsBlob->GetBufferPointer();
 	pipelineDesc_.VS.BytecodeLength = rootPipe.vsBlob->GetBufferSize();
-	pipelineDesc_.PS.pShaderBytecode = rootPipe.psBlob->GetBufferPointer();
-	pipelineDesc_.PS.BytecodeLength = rootPipe.psBlob->GetBufferSize();
+	if (pSName.size())
+	{
+		pipelineDesc_.PS.pShaderBytecode = rootPipe.psBlob->GetBufferPointer();
+		pipelineDesc_.PS.BytecodeLength = rootPipe.psBlob->GetBufferSize();
+	}
+	else
+	{
+		pipelineDesc_.PS.pShaderBytecode = nullptr;
+		pipelineDesc_.PS.BytecodeLength = 0;
+	}
 
 	// サンプルマスクの設定
 	pipelineDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
@@ -293,10 +308,19 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 	pipelineDesc_.PrimitiveTopologyType = priTopoType;
 
 	// その他の設定
-	pipelineDesc_.NumRenderTargets = 3; // 描画対象は3つ（ポストエフェクトの一枚目の3つ）
-	pipelineDesc_.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
-	pipelineDesc_.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
-	pipelineDesc_.RTVFormats[2] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
+	pipelineDesc_.NumRenderTargets = numRTarget; // 描画対象は基本3つ（ポストエフェクトの一枚目の3つ）
+	//レンダーターゲットの数によって設定変えるため
+	for (int32_t i = 0; i < 3; i++)
+	{
+		if (numRTarget > 0)
+		{
+			pipelineDesc_.RTVFormats[i] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
+		}
+		else
+		{
+			pipelineDesc_.RTVFormats[i] = DXGI_FORMAT_UNKNOWN;//レンダーターゲット必要なし
+		}
+	}
 	pipelineDesc_.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
 
 	//04_02
@@ -333,7 +357,6 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 	//06_01
 	//デプスステンシルステート
 	pipelineDesc_.DepthStencilState = D3D12_DEPTH_STENCIL_DESC();
-
 	pipelineDesc_.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 	if (isSprite)
 	{
@@ -347,7 +370,8 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 	}
 	pipelineDesc_.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 
-	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_, IID_PPV_ARGS(rootPipe.pipelineState.GetAddressOf()));
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_, 
+		IID_PPV_ARGS(rootPipe.pipelineState.ReleaseAndGetAddressOf()));
 	assert(SUCCEEDED(result));
 }
 

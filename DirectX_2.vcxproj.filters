@@ -106,9 +106,6 @@
     <Filter Include="ヘッダー ファイル\Engine\PostEffect">
       <UniqueIdentifier>{06310e1f-70bb-4773-8867-d21016d4fdad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Engine\3D\Assimp">
-      <UniqueIdentifier>{db463434-2f88-4178-82f5-3b1f811d3713}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Application\Character">
       <UniqueIdentifier>{203ceeb8-626e-4f6e-9671-3b464cdb538c}</UniqueIdentifier>
     </Filter>
@@ -908,6 +905,15 @@
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\ParticleCrystalGS.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\BasicShadowVS.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\FBXShadowVS.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\OBJShadowVS.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
   </ItemGroup>

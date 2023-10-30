@@ -1,4 +1,4 @@
-﻿#include "CameraManager.h"
+#include "CameraManager.h"
 #include "MouseInput.h"
 #include "ImGuiManager.h"
 
@@ -123,6 +123,10 @@ void CameraManager::Update()
 	{
 		usingCamera_->Update();
 	}
+	if (usingLightCamera_)
+	{
+		usingLightCamera_->Update();
+	}
 	if (usingCamera2D_)
 	{
 		usingCamera2D_->Update();
@@ -161,8 +165,8 @@ void CameraManager::ImguiUpdate()
 
 		usingCamera2D_->SetPos(pos);
 		usingCamera2D_->SetRot(rot);
-		usingCamera2D_->SetZoom(zoom); 
-		
+		usingCamera2D_->SetZoom(zoom);
+
 		ImGui::TreePop();
 	}
 
@@ -245,6 +249,11 @@ Camera* CameraManager::GetCamera()
 	return usingCamera_;
 }
 
+Camera* CameraManager::GetUsingLightCamera()
+{
+	return usingLightCamera_;
+}
+
 Camera2D* CameraManager::GetCamera2D(const std::string& cameraName)
 {
 	//ファイル名から探す
@@ -267,30 +276,15 @@ Camera2D* CameraManager::GetCamera2D()
 
 void CameraManager::SetUsingCamera(const std::string& cameraName)
 {
-	//ファイル名から探す
-	std::map< std::string, std::unique_ptr<Camera>>::iterator it = cameraAndNames_.find(cameraName);
-	//指定した名前のカメラがあればポインタusingCamera_にポインタセット
-	if (it != cameraAndNames_.end())
-	{
-		usingCamera_ = it->second.get();
-		return;
-	}
+	usingCamera_ = GetCamera(cameraName);
+}
 
-	//なければ
-	assert(false);
+void CameraManager::SetUsingLightCamera(const std::string& cameraName)
+{
+	usingLightCamera_ = GetCamera(cameraName);
 }
 
 void CameraManager::SetUsingCamera2D(const std::string& cameraName)
 {
-	//ファイル名から探す
-	std::map< std::string, std::unique_ptr<Camera2D>>::iterator it = camera2DAndNames_.find(cameraName);
-	//指定した名前のカメラがあればポインタusingCamera_にポインタセット
-	if (it != camera2DAndNames_.end())
-	{
-		usingCamera2D_ = it->second.get();
-		return;
-	}
-
-	//なければ
-	assert(false);
+	usingCamera2D_ = GetCamera2D(cameraName);
 }

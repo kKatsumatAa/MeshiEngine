@@ -1,4 +1,4 @@
-﻿#include "SceneLoad.h"
+#include "SceneLoad.h"
 #include "SceneManager.h"
 
 
@@ -28,6 +28,10 @@ void SceneLoad::Update()
 	//	//ロード終わったら
 	//	sceneM_->ChangeScene(sceneM_->GetAfterLoadNextSceneName());
 	//}
+}
+
+void SceneLoad::DrawShadow()
+{
 }
 
 void SceneLoad::Draw()

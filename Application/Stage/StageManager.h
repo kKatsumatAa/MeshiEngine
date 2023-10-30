@@ -65,6 +65,7 @@ public:
 	
 public:
 	void Update();
+	void DrawShadow();
 	void Draw();
 	void DrawImGui();
 	void DrawSprite();

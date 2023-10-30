@@ -25,6 +25,7 @@ public:
 public:
 	void Initialize();
 	void Update();
+	void DrawShadow();
 	void Draw();
 	void DrawImGui();
 	void PostUpdate();

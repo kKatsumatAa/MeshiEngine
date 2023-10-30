@@ -20,6 +20,6 @@ public:
 
 	void Update()override;
 
+	void DrawShadow()override;
 	void Draw()override;
-
 };

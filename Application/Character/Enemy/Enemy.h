@@ -106,6 +106,7 @@ public:
 
 	void Update() override;
 
+	void DrawShadow()override;
 	void Draw()override;
 
 	void OnCollision(const CollisionInfo& info) override;

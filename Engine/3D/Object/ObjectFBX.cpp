@@ -5,7 +5,7 @@ using namespace DirectX;
 
 //------------------------------------------
 //パイプラインなどの設定
-RootPipe ObjectFBX::pipelineSetM_[2];
+RootPipe ObjectFBX::pipelineSetM_[COUNT];
 
 //--------------------------------------------------------------------------------------
 ObjectFBX::~ObjectFBX()
@@ -40,13 +40,17 @@ ObjectFBX::ObjectFBX()
 void ObjectFBX::CommonInitialize()
 {
 	//パイプラインなどの設定
-	PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[0],
+	PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[PipelineStateNum::NORMAL],
 		"Resources/shaders/FBXVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
-		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
+		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 	//ワイヤーフレーム
-	PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, pipelineSetM_[1],
+	PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, pipelineSetM_[PipelineStateNum::WIREFRAME],
 		"Resources/shaders/FBXVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
-		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, false);
+		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+	//シャドウマップ用
+	PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[PipelineStateNum::SHADOW],
+		"Resources/shaders/FBXShadowVS.hlsl", "",
+		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, 0);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -61,24 +65,49 @@ void ObjectFBX::SetMaterialLightMTexSkinModel(uint64_t dissolveTexHandle, uint64
 
 void ObjectFBX::DrawModelInternal(int32_t pipelineNum)
 {
-	//テクスチャを設定していなかったら
-	uint64_t dissolveTextureHandleL = dissolveTextureHandle_;
-	TextureManager::CheckTexHandle(dissolveTextureHandleL);
-	uint64_t specularMapTextureHandleL = specularMapTextureHandle_;
-	TextureManager::CheckTexHandle(specularMapTextureHandleL);
-	uint64_t normalMapTextureHandleL = normalMapTextureHandle_;
-	TextureManager::CheckTexHandle(normalMapTextureHandleL);
+	bool isShadow = true;
 
 	//モデル用
 	//ラムダ式でコマンド関数(ボーン行列もセット)
-	std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(pipelineSetM_, pipelineNum, pipelineSetM_[0].rootSignature.Get()); };
-	std::function<void()>SetMaterialTexM = [=]() {SetMaterialLightMTexSkinModel(
-		dissolveTextureHandleL, specularMapTextureHandleL, normalMapTextureHandleL); };
+	std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(pipelineSetM_, pipelineNum, pipelineSetM_[pipelineNum].rootSignature.Get()); };
+	std::function<void()>SetMaterialTexM = [=]() {
+
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(SKIN, constBuffSkin_->GetGPUVirtualAddress());
+
+		//SRVヒープの設定コマンド
+		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetDescHeapPP());
+
+		//シャドウマップ用の深度テクスチャ
+		auto srvGpuHandle = TextureManager::GetInstance().GetDescHeapP()->GetGPUDescriptorHandleForHeapStart();
+		srvGpuHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * sShadowSRVIndex_;
+		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(SHADOW_TEX, srvGpuHandle);
+
+		//行列
+		cbt_.DrawCommand(MATRIX);
+		};
+
+	//シャドウマップ用の前描画では必要ない
+	if (pipelineNum != PipelineStateNum::SHADOW)
+	{
+		isShadow = false;
+
+		//テクスチャを設定していなかったら
+		uint64_t dissolveTextureHandleL = dissolveTextureHandle_;
+		TextureManager::CheckTexHandle(dissolveTextureHandleL);
+		uint64_t specularMapTextureHandleL = specularMapTextureHandle_;
+		TextureManager::CheckTexHandle(specularMapTextureHandleL);
+		uint64_t normalMapTextureHandleL = normalMapTextureHandle_;
+		TextureManager::CheckTexHandle(normalMapTextureHandleL);
+
+		//マテリアルなどセット
+		SetMaterialTexM = [=]() {SetMaterialLightMTexSkinModel(
+			dissolveTextureHandleL, specularMapTextureHandleL, normalMapTextureHandleL); };
+	}
 
 	//メッシュのオフセットデータセット
 	GetModel()->SetPolygonOffsetData(meshOffsetData_);
 
-	model_->Draw(SetRootPipeRM, SetMaterialTexM, cbt_);
+	model_->Draw(SetRootPipeRM, SetMaterialTexM, cbt_, isShadow);
 }
 
 //-----------------------------------------------------------------------------------------
