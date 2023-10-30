@@ -11,6 +11,8 @@
 *.lo
 *.o
 # *.obj
+*.bash_history
+*.config
 
 # Precompiled Headers
 *.gch
