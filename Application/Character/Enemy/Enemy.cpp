@@ -190,8 +190,9 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj, float angleExtend)
 	damagedAddRots_.clear();
 
 	Vec3 addRot = { 0,0,0 };
-	//Spine2(仮)からの距離で回転方向を決めるため
-	Vec3 localPosFromSpine2 = nodeObj.GetLocalTrans() - ObjectFBX::GetNodeColliderObj("Spine2")->GetLocalTrans();
+	//Spine2(仮)からの距離で回転方向を決めるため(回転の逆行列をかけて元の位置関係に戻したうえで)
+	Vec3 localPosFromSpine2 = nodeObj.GetLocalTrans() * GetWorldMat()->GetRotMat().GetInverseMatrix()
+		- ObjectFBX::GetNodeColliderObj("Spine2")->GetLocalTrans() * GetWorldMat()->GetRotMat().GetInverseMatrix();
 
 	addRot.x = max(min(-localPosFromSpine2.y, PI / 6.0f), -PI / 6.0f) * angleExtend;
 	addRot.y = max(min(-localPosFromSpine2.x, PI / 6.0f), -PI / 6.0f) * angleExtend;
