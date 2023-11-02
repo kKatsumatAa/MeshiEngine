@@ -325,24 +325,37 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 
 	//04_02
 	//テクスチャサンプラーの設定
-	D3D12_STATIC_SAMPLER_DESC samplerDesc{};
-	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  //横繰り返し（タイリング）
-	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  //縦繰り返し（タイリング）
-	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  //奥行き繰り返し（タイリング）
-	samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;//ボーダーの時は黒
-	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;    //全てリニア補間
-	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;                  //ミップマップ最大値
-	samplerDesc.MinLOD = 0.0f;                               //ミップマップ最小値
-	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-	samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//ピクセルシェーダーからのみ使用可能
+	D3D12_STATIC_SAMPLER_DESC samplerDesc[2] = {};
+	//通常テクスチャの設定
+	samplerDesc[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  //横繰り返し（タイリング）
+	samplerDesc[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  //縦繰り返し（タイリング）
+	samplerDesc[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  //奥行き繰り返し（タイリング）
+	samplerDesc[0].BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;//ボーダーの時は黒
+	samplerDesc[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;    //全てリニア補間
+	samplerDesc[0].MaxLOD = D3D12_FLOAT32_MAX;                  //ミップマップ最大値
+	samplerDesc[0].MinLOD = 0.0f;                               //ミップマップ最小値
+	samplerDesc[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	samplerDesc[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//ピクセルシェーダーからのみ使用可能
+	//シャドウマップ用テクスチャの設定-------
+	samplerDesc[1] = samplerDesc[0];
+	samplerDesc[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	samplerDesc[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	samplerDesc[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	//<=だったらtrue(1.0f),それ以外は0.0f
+	samplerDesc[1].ComparisonFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	samplerDesc[1].Filter = D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;    //比較結果をバイリニア補間
+	samplerDesc[1].MaxAnisotropy = 1;    //深度傾斜を有効
+	samplerDesc[1].ShaderRegister = 1;
+	//samplerDesc[1].MipLODBias = 0.0f;
+	samplerDesc[1].MinLOD = -D3D12_FLOAT32_MAX;
 
 	// ルートシグネチャの設定
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 	rootSignatureDesc.pParameters = rootParams_;//ルートパラメータの先頭アドレス
 	rootSignatureDesc.NumParameters = _countof(rootParams_);//ルートパラメータ数
-	rootSignatureDesc.pStaticSamplers = &samplerDesc;
-	rootSignatureDesc.NumStaticSamplers = 1;
+	rootSignatureDesc.pStaticSamplers = samplerDesc;
+	rootSignatureDesc.NumStaticSamplers = 2;
 	// ルートシグネチャのシリアライズ
 	ComPtr<ID3DBlob> rootSigBlob = nullptr;
 	result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
@@ -370,7 +383,7 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 	}
 	pipelineDesc_.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 
-	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_, 
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_,
 		IID_PPV_ARGS(rootPipe.pipelineState.ReleaseAndGetAddressOf()));
 	assert(SUCCEEDED(result));
 }

@@ -152,7 +152,7 @@ void Bullet::Update()
 
 void Bullet::DrawShadow()
 {
-	DrawSphere(nullptr, nullptr, NULL, Object::PipelineStateNumPrim::NORMAL_PRIM);
+	DrawSphere(nullptr, nullptr, NULL, Object::PipelineStateNumPrim::SHADOW_PRIM);
 }
 
 void Bullet::Draw()

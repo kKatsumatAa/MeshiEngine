@@ -1,4 +1,4 @@
-#include "Basic.hlsli"
+#include "CommonHeader.hlsli"
 
 struct VSOutPutS
 {

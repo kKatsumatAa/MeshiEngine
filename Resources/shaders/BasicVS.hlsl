@@ -1,4 +1,4 @@
-#include "Basic.hlsli"
+#include "CommonHeader.hlsli"
 
 VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD,
 float4 tangent : TANGENT, float4 binormal : BINORMAL)

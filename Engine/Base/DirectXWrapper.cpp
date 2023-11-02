@@ -391,6 +391,11 @@ void DirectXWrapper::PreShadowDraw()
 		barrierDesc_.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
 		commandList_->ResourceBarrier(1, &barrierDesc_);
 	}
+	else
+	{
+		//最初はステートがWRITEになっているので
+		isFirstFrame_ = false;
+	}
 
 	auto handle = dsvHeap_->GetCPUDescriptorHandleForHeapStart();
 	handle.ptr += device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
@@ -495,8 +500,6 @@ void DirectXWrapper::PostDraw()
 	CommandReset();
 
 	assert(SUCCEEDED(result_));
-
-	isFirstFrame_ = false;
 }
 
 void DirectXWrapper::ResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState, ID3D12Resource* buff)

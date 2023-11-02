@@ -1,6 +1,4 @@
-
 #include "OBJShaderHeader.hlsli"
-
 
 PSOutput main(VSOutput input)
 {
@@ -41,41 +39,18 @@ PSOutput main(VSOutput input)
     //シャドウマップ--------------------------
     //テクスチャ座標への変換(tpos.zが深度値)
     float3 posFromLightVP = input.tpos.xyz / input.tpos.w;
-    float2 shadowUV = (posFromLightVP.xy + float2(1, -1)) * float2(0.5, -0.5);
+    float2 shadowUV = (posFromLightVP.xy + float2(1.0f, -1.0f)) * float2(0.5f, -0.5f);
     //影テクスチャの値
-    float depthFromLight = lightDepthTex.Sample(smp, shadowUV).x;
-    //ライトから見て最初の撮影結果より遠いと影になる
-    float shadowWeight = 1.0f;
-    if (depthFromLight < posFromLightVP.z - 0.001f)
-    {
-        texcolor.xyz *= 0.6f;
-    }
+    float depthFromLight = lightDepthTex.SampleCmp(
+    shadowSmp, //比較サンプラー
+    shadowUV, //uv
+    posFromLightVP.z - 0.0018f //比較対象値
+    ).x;
+    //ライトから見て最初の撮影結果より遠いと影になる(0.5~1.0fの線形補間)
+    texcolor.xyz *= (lerp(0.65f, 1.0f, clamp(depthFromLight, 0, 1.0f)));
+        
     
-  //  // ライトビュースクリーン空間でのZ値を計算する
-  //  float zInLVP = input.tpos.z / input.tpos.w;
-  //  if (zInLVP >= 0.0f && zInLVP <= 1.0f)
-  //  {
-  //      // Zの値を見て、このピクセルがこのシャドウマップに含まれているか判定
-  //      float2 shadowMapUV = input.tpos.xy / input.tpos.w;
-  //      shadowMapUV *= float2(0.5f, -0.5f);
-  //      shadowMapUV += 0.5f;
-
-		//// シャドウマップUVが範囲内か判定
-  //      if (shadowMapUV.x >= 0.0f && shadowMapUV.x <= 1.0f
-		//	&& shadowMapUV.y >= 0.0f && shadowMapUV.y <= 1.0f)
-  //      {
-		//	// シャドウマップから値をサンプリング
-  //          float shadowValue = lightDepthTex.Sample(smp, shadowMapUV).x;
-
-		//	// まずこのピクセルが遮蔽されているか調べる
-  //          if (zInLVP - 0.03f > shadowValue.r)
-  //          {
-  //              texcolor.xyz *= 0.6f;
-  //          }
-  //      }
-  //  }
-    
-    
+    //ライティング----------------------------------
 	//平行光源
     for (int i = 0; i < S_DIRLIGHT_NUM; i++)
     {

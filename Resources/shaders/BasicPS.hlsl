@@ -1,4 +1,4 @@
-#include "Basic.hlsli"
+#include "CommonHeader.hlsli"
 
 
 PSOutput main(VSOutput input)
@@ -31,15 +31,15 @@ PSOutput main(VSOutput input)
     //シャドウマップ--------------------------
     //テクスチャ座標への変換(tpos.zが深度値)
     float3 posFromLightVP = input.tpos.xyz / input.tpos.w;
-    float2 shadowUV = (posFromLightVP.xy + float2(1, -1)) * float2(0.5, -0.5);
+    float2 shadowUV = (input.tpos.xy / input.tpos.w + float2(1, -1)) * float2(0.5, -0.5);
     //影テクスチャの値
-    float depthFromLight = lightDepthTex.Sample(smp, shadowUV).x;
-    //ライトから見て最初の撮影結果より遠いと影になる
-    float shadowWeight = 1.0f;
-    if (depthFromLight < posFromLightVP.z - 0.001f)
-    {
-        texcolor.xyz *= 0.6f;
-    }
+    float depthFromLight = lightDepthTex.SampleCmpLevelZero(
+    shadowSmp, //比較サンプラー
+    shadowUV, //uv
+    posFromLightVP.z - 0.0005f //比較対象値
+    ).x;
+    //ライトから見て最初の撮影結果より遠いと影になる(0.5~1.0fの線形補間)
+    texcolor.xyz *= (lerp(0.5f, 1.0f, depthFromLight));
   
     
     //ノーマルマップが有効ならライトの計算に使う法線を算出

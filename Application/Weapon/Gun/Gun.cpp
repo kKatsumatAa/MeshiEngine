@@ -105,6 +105,11 @@ void Gun::Update()
 	Weapon::Update();
 }
 
+void Gun::DrawShadow()
+{
+	Object::DrawModel(nullptr, nullptr, nullptr, Object::PipelineStateNumObj::SHADOW_OBJ);
+}
+
 void Gun::Draw()
 {
 	Object::DrawModel(nullptr);

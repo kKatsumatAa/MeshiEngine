@@ -6,7 +6,7 @@ using namespace DirectX;
 
 //--------------------------------------------------------
 // 
-XMFLOAT4 IObject3D::sLightCameraParam_ = { 130.0f,130.0f,1.0f,150.0f };
+XMFLOAT4 IObject3D::sLightCameraParam_ = { 124.0f,91.0f,1.0f,183.0f };
 //シャドウマップ用の深度SRVの要素番号
 int32_t IObject3D::sShadowSRVIndex_;
 //ライト

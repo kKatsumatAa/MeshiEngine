@@ -6,6 +6,8 @@ Texture2D<float4> tex3 : register(t2); //2”ÔƒXƒƒbƒg‚Éİ’è‚³‚ê‚½ƒeƒNƒXƒ`ƒƒ(ƒXƒyƒ
 Texture2D<float4> tex4 : register(t3); //3”ÔƒXƒƒbƒg‚Éİ’è‚³‚ê‚½ƒeƒNƒXƒ`ƒƒ(ƒm[ƒ}ƒ‹ƒ}ƒbƒvƒ}ƒbƒvƒeƒNƒXƒ`ƒƒ)
 Texture2D<float4> lightDepthTex : register(t4); //4”ÔƒXƒƒbƒg‚Éİ’è‚³‚ê‚½ƒeƒNƒXƒ`ƒƒ(ƒVƒƒƒhƒEƒ}ƒbƒv—p‚Ìƒ‰ƒCƒg[“xƒeƒNƒXƒ`ƒƒ)
 SamplerState smp : register(s0); //0”ÔƒXƒƒbƒg‚Éİ’è‚³‚ê‚½ƒTƒ“ƒvƒ‰[
+//ƒVƒƒƒhƒEƒ}ƒbƒv—pƒTƒ“ƒvƒ‰[
+SamplerComparisonState shadowSmp : register(s1);
 
 struct PSOutput
 {
