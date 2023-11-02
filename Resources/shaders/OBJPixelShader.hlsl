@@ -32,7 +32,7 @@ PSOutput main(VSOutput input)
     if (isNormalMap)
     {
         //ローカルの法線を使わないといけない
-        lightNormal = GetNormalMapWorldNormalVec(tex4.Sample(smp, input.uv), input.tangent,
+        lightNormal = GetNormalMapWorldNormalVec(tex4.Sample(smp, input.uv*10.0f), input.tangent,
             input.binormal, input.normal, worldL);
     }
     

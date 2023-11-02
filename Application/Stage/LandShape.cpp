@@ -31,10 +31,6 @@ bool LandShape::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 	SetDissolveT(0);
 	SetDissolveTexHandle(TextureManager::GetInstance().LoadGraph("dissolveMask.png"));
 
-	//ノーマルマップ
-	SetIsNormalMap(true);
-	SetNormalMapTexHandle(TextureManager::GetInstance().LoadGraph("landShapeNormal.jpg"));
-
 	return true;
 }
 

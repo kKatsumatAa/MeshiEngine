@@ -29,7 +29,7 @@ void Enemy::EmergeInitialize()
 	{
 		lightM->SetPointLightActive(lightIndexTmp_, true);
 		lightM->SetPointLightAtten(lightIndexTmp_, { 0.977f,0.493f,0.458f });
-		lightM->SetPointLightColor(lightIndexTmp_, { 5.0f,0,0 });
+		lightM->SetPointLightColor(lightIndexTmp_, { 90.0f,-1.0f,-1.0f });
 		lightM->SetPointLightPos(lightIndexTmp_,
 			{ IObject::GetTrans().x,IObject::GetTrans().y, IObject::GetTrans().z });
 	}
@@ -88,7 +88,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	deadTimerMax_ = DEAD_TIMER_MAX_;
 
 	//model
-	model->SetMaterialExtend({ 1.0f,3.0f,140.0f });
+	model->SetMaterialExtend({ 0.03f,0.1f,50.0f });
 
 	//ディゾルブ
 	SetisDissolve(true);

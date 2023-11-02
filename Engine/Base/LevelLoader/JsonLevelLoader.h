@@ -99,7 +99,7 @@ private:
 	//角度を得る
 	Vec3 GetRot(const nlohmann::json::iterator& object);
 	//角度を取得し、それを使いベクトルを得る
-	Vec3 GetRotDir(const nlohmann::json::iterator& object, bool isCamera = false);
+	Vec3 GetRotDir(const nlohmann::json::iterator& object, bool isCamera = false, bool isLight = false);
 	//位置を得る
 	Vec3 GetTrans(const nlohmann::json::iterator& object);
 	//スケールを得る

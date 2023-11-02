@@ -215,7 +215,7 @@ Vec3 JsonLevelLoader::GetRot(const nlohmann::json::iterator& object)
 	return rot;
 }
 
-Vec3 JsonLevelLoader::GetRotDir(const nlohmann::json::iterator& object, bool isCamera)
+Vec3 JsonLevelLoader::GetRotDir(const nlohmann::json::iterator& object, bool isCamera, bool isLight)
 {
 	//角度を得る
 	WorldMat targetWorldMat;
@@ -224,6 +224,10 @@ Vec3 JsonLevelLoader::GetRotDir(const nlohmann::json::iterator& object, bool isC
 	if (isCamera)
 	{
 		targetWorldMat.rot_ = { 3.14f / 2.0f - targetWorldMat.rot_.z, targetWorldMat.rot_.y + 3.14f / 2.0f, targetWorldMat.rot_.x };
+	}
+	else if (isLight)
+	{
+		targetWorldMat.rot_ = { -targetWorldMat.rot_.x, targetWorldMat.rot_.y, targetWorldMat.rot_.z };
 	}
 
 	targetWorldMat.CalcWorldMat();
@@ -292,7 +296,7 @@ void JsonLevelLoader::LoadLightData(const nlohmann::json::iterator& object)
 	//平行移動
 	objectData->trans = GetTrans(object);
 	//ターゲット
-	objectData->dir = GetRotDir(object);
+	objectData->dir = GetRotDir(object, false, true);
 	//スケール(強さなどに使う)
 	objectData->scale = GetScale(object);
 }

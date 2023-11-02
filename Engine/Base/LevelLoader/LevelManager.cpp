@@ -273,6 +273,9 @@ void LevelManager::LoadLight(LevelData::LightData& lightData)
 
 		lightManager_->SetDirLightDir(index,
 			{ lightData.dir.x,lightData.dir.y,lightData.dir.z });
+
+		lightManager_->SetDirLightColor(index,
+			{ lightData.scale.x,lightData.scale.y,lightData.scale.z });
 	}
 	//ポイントライトなら
 	else if (lightData.fileName.find("point") != std::string::npos)
