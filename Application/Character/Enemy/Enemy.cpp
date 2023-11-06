@@ -143,7 +143,7 @@ void Enemy::Attack(const Vec3& targetPos)
 	//武器で攻撃
 	if (weapon_ != nullptr && weapon_->GetIsAlive())
 	{
-		Vec3 directionV = targetPos - weapon_->GetWorldTrans();
+		Vec3 directionV = targetPos - weapon_->GetBoneWorldTrans();
 		weapon_->Attack(directionV.GetNormalized(), 0, this, PARTICLE_SIZE_EXTEND_);
 	}
 }

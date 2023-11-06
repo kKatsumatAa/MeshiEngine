@@ -193,14 +193,9 @@ void EnemyStateHaveWeaponAndAttack::Initialize()
 
 void EnemyStateHaveWeaponAndAttack::Update()
 {
-	enemy_->CheckRayOfEyeHit(
-		(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye() - enemy_->GetWorldTrans()).GetNormalized(),
-		Enemy::S_LENGTH_MAX_, HAVE_WEAPON_ATTR_TMP_, &info_);
-
 	//アニメーションなど
 	enemy_->SetIsPlayAnimation(false);
 	enemy_->SetIsLoopAnimation(false);
-	enemy_->Attack(info_.object->GetWorldTrans());
 	enemy_->DirectionUpdate(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
 
 	//親クラス処理
@@ -261,6 +256,17 @@ void EnemyStateAttackStanceBegin::Update()
 
 	//角度を変える
 	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, t_));
+
+	//仮で構え終わったら攻撃
+	if (t_ >= 1.0f)
+	{
+		enemy_->CheckRayOfEyeHit(
+			(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye() - enemy_->GetWorldTrans()).GetNormalized(),
+			Enemy::S_LENGTH_MAX_, HAVE_WEAPON_ATTR_TMP_, &info_);
+
+		//攻撃
+		enemy_->Attack(info_.object->GetWorldTrans());
+	}
 }
 
 //------------------------

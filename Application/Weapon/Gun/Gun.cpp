@@ -58,7 +58,7 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, IObject3D* owner
 		return;
 	}
 
-	Vec3 trans = worldTrans_;
+	Vec3 trans = boneWorldTrans_;
 	if (trans.GetLength() == 0)
 	{
 		trans = GetWorldTrans();
@@ -84,7 +84,7 @@ void Gun::ChangeOwner(IObject3D* parent)
 	remainingBullets_ = BULLETS_TMP_;
 	attackCoolTime_ = 0;
 
-	worldTrans_ = { 0,0,0 };
+	boneWorldTrans_ = { 0,0,0 };
 
 	Weapon::ChangeOwner(parent);
 }

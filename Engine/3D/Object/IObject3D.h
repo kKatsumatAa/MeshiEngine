@@ -92,8 +92,8 @@ private:
 	Vec3 frontVec_ = frontVecTmp_;
 
 protected:
-	//ワールド座標
-	Vec3 worldTrans_ = { 0,0,0 };
+	//ボーンとワールド適用した座標
+	Vec3 boneWorldTrans_ = { 0,0,0 };
 
 
 public://関数---------------------------------------------------------
@@ -146,6 +146,10 @@ public:
 	void ParentFbxNode(IObject* obj, IModel* model, const std::string& nodeName);
 	//親ノードを解除
 	void ResetParentFbxNode();
+
+	//ボーンとワールド適用した座標セット
+	void SetBoneWorldTrans(const Vec3& trans) { boneWorldTrans_ = trans; }
+	const Vec3& GetBoneWorldTrans() { return boneWorldTrans_; }
 
 public:
 	//ディゾルブ画像ハンドル

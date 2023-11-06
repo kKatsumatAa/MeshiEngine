@@ -309,8 +309,8 @@ void IObject3D::MatMap(Camera* camera, Camera* lightCamera, IModel* model)
 		//親のスケール戻す
 		worldMat_->parent_->scale_ = pScale;
 
-		//ワールド座標に入れて使えるようにしておく（仮）
-		worldTrans_ = { matW.r[3].m128_f32[0],matW.r[3].m128_f32[1],matW.r[3].m128_f32[2] };
+		//ボーンワールド座標に入れて使えるようにしておく（仮）
+		boneWorldTrans_ = { matW.r[3].m128_f32[0],matW.r[3].m128_f32[1],matW.r[3].m128_f32[2] };
 	}
 	else
 	{
