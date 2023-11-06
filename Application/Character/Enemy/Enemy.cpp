@@ -43,6 +43,14 @@ void Enemy::ChangeEnemyState(std::unique_ptr<EnemyState> state)
 	state_->Initialize();
 }
 
+void Enemy::ChangeEnemyStanceState(std::unique_ptr<EnemyState> state)
+{
+	stanceState_.reset();
+	stanceState_ = std::move(state);
+	stanceState_->SetEnemy(this);
+	stanceState_->Initialize();
+}
+
 
 //--------------------------------------------------------------------------------------------------------------------------
 std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon, IModel* model)
@@ -290,6 +298,11 @@ void Enemy::Update()
 
 	//ステート
 	state_->Update();
+	//構えステート
+	if (stanceState_)
+	{
+		stanceState_->Update();
+	}
 
 	Character::Update();
 }

@@ -530,6 +530,22 @@ const std::vector<Node>& ObjectFBX::GetNodes()
 	return *nodes_;
 }
 
+Node* ObjectFBX::GetNode(const std::string& nodeName)
+{
+	if (nodes_ && nodes_->size())
+	{
+		for (auto& node : *nodes_)
+		{
+			if (node.name.find(nodeName) != std::string::npos)
+			{
+				return &node;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 XMMATRIX ObjectFBX::GetCalcSkinMat(IModel* model, int32_t index)
 {
 	//ボーン行列がおかしい！

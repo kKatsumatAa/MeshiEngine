@@ -32,4 +32,7 @@ private:
 	void SetIsValidWaveEnemy();
 	//ウェーブの敵がもういないかどうか
 	bool GetIsAliveWaveEnemy();
+
+public:
+	static void DrawImGui();
 };

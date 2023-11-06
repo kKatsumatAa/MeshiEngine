@@ -39,6 +39,32 @@ public:
 	virtual void Update() = 0;
 };
 
+//------------------------------
+//構えの親ステート
+class CharacterStanceState
+{
+public:
+	virtual void Initialize() = 0;
+	virtual void Update() = 0;
+};
+
+//攻撃構え始め
+class CharacterStateAttackStanceBegin : public CharacterStanceState
+{
+public:
+	virtual void Initialize()override = 0;
+	virtual void Update()override = 0;
+};
+
+//攻撃構え終わり
+class CharacterStateAttackStanceEnd : public CharacterStanceState
+{
+public:
+	virtual void Initialize()override = 0;
+	virtual void Update()override = 0;
+};
+
+//---------------------------
 //死亡時
 class CharacterStateDead
 {

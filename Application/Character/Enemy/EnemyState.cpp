@@ -6,6 +6,8 @@
 #include "CameraManager.h"
 #include "LevelManager.h"
 
+//---------------
+Vec3 EnemyStateAttackStance::ANGLE_MAX_ = { -0.3f,0.25f,-0.5f };
 
 
 bool EnemyState::CheckEyeRayHit()
@@ -57,12 +59,29 @@ Vec3 EnemyState::GetRayHitGunOrPlayerPos()
 	return CameraManager::GetInstance().GetCamera("playerCamera")->GetEye();
 }
 
+bool EnemyState::GetPlayerVisually()
+{
+	if (enemy_->CheckRayOfEyeHit(
+		(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye() - enemy_->GetWorldTrans()).GetNormalized(),
+		Enemy::S_LENGTH_MAX_, HAVE_WEAPON_ATTR_TMP_, &info_)
+		)
+	{
+		//プレイヤーが見えたら
+		if (info_.object->GetObjName() == "player")
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void EnemyState::ChangeState()
 {
 	//銃があれば
 	if (enemy_->GetWeapon())
 	{
-		enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeapon>());
+		enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeaponAndMove>());
 	}
 	else
 	{
@@ -125,45 +144,17 @@ void EnemyStateBareHands::Update()
 	enemy_->AllMove(GetRayHitGunOrPlayerPos());
 
 	EnemyState::Update();
-
-	//武器持ったらステート変更
-	if (enemy_->GetWeapon())
-	{
-		enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeapon>());
-	}
 }
 
-
-//武器持ってる状態-----------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------
+//武器持ってる状態の親ステート
 void EnemyStateHaveWeapon::Initialize()
 {
 }
 
 void EnemyStateHaveWeapon::Update()
 {
-	//プレイヤーの方向にレイを飛ばして
-	if (enemy_->CheckRayOfEyeHit(
-		(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye() - enemy_->GetWorldTrans()).GetNormalized(),
-		Enemy::S_LENGTH_MAX_, HAVE_WEAPON_ATTR_TMP_, &info_)
-		)
-	{
-		//プレイヤーが見えたら動かず攻撃
-		if (info_.object->GetObjName() == "player")
-		{
-			enemy_->SetIsPlayAnimation(false);
-			enemy_->SetIsLoopAnimation(false);
-			enemy_->Attack(info_.object->GetWorldTrans());
-			enemy_->DirectionUpdate(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
-		}
-		//仮）見えなければプレイヤーの方向に移動
-		else
-		{
-			enemy_->SetIsPlayAnimation(true);
-			enemy_->SetIsLoopAnimation(true);
-			enemy_->AllMove(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
-		}
-	}
-
+	//親クラス処理
 	EnemyState::Update();
 
 	//武器失ったらステート変更
@@ -171,6 +162,124 @@ void EnemyStateHaveWeapon::Update()
 	{
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
 	}
+
+	//プレイヤーの方向にレイを飛ばして
+	else if (enemy_->CheckRayOfEyeHit(
+		(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye() - enemy_->GetWorldTrans()).GetNormalized(),
+		Enemy::S_LENGTH_MAX_, HAVE_WEAPON_ATTR_TMP_, &info_))
+	{
+		//プレイヤーが見えたら動かず攻撃
+		if (info_.object->GetObjName() == "player" && !enemy_->GetIsAttacking())
+		{
+			enemy_->SetIsAttacking(true);
+			enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeaponAndAttack>());
+		}
+		//仮）見えなければプレイヤーの方向に移動
+		else if (info_.object->GetObjName() != "player" && enemy_->GetIsAttacking())
+		{
+			enemy_->SetIsAttacking(false);
+			enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeaponAndMove>());
+		}
+	}
+}
+
+//-------------------------------
+//武器持ってて攻撃中
+void EnemyStateHaveWeaponAndAttack::Initialize()
+{
+	//構え変更
+	enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateAttackStanceBegin>());
+}
+
+void EnemyStateHaveWeaponAndAttack::Update()
+{
+	enemy_->CheckRayOfEyeHit(
+		(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye() - enemy_->GetWorldTrans()).GetNormalized(),
+		Enemy::S_LENGTH_MAX_, HAVE_WEAPON_ATTR_TMP_, &info_);
+
+	//アニメーションなど
+	enemy_->SetIsPlayAnimation(false);
+	enemy_->SetIsLoopAnimation(false);
+	enemy_->Attack(info_.object->GetWorldTrans());
+	enemy_->DirectionUpdate(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
+
+	//親クラス処理
+	EnemyStateHaveWeapon::Update();
+}
+
+//--------------------------------
+//武器持ってて移動中
+void EnemyStateHaveWeaponAndMove::Initialize()
+{
+	//構え戻す
+	enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateAttackStanceEnd>());
+}
+
+void EnemyStateHaveWeaponAndMove::Update()
+{
+	enemy_->SetIsPlayAnimation(true);
+	enemy_->SetIsLoopAnimation(true);
+	enemy_->AllMove(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
+
+	//親クラス処理
+	EnemyStateHaveWeapon::Update();
+}
+
+//-----------------------------------------------------------------------------------------
+// 構え親クラス
+void EnemyStateAttackStance::Update()
+{
+	timer_ += GameVelocityManager::GetInstance().GetVelocity();
+
+	t_ = min(timer_ / TIMER_MAX_, 1.0f);
+}
+
+void EnemyStateAttackStance::DrawImgui()
+{
+	if (ImGui::TreeNode("StanceRot"))
+	{
+		ImGui::DragFloat3("rot", &ANGLE_MAX_.x);
+
+		ImGui::TreePop();
+	}
+}
+
+//------------------------
+//攻撃構え始め
+void EnemyStateAttackStanceBegin::Initialize()
+{
+	auto addRot = enemy_->GetNode(MOVE_NODE_NAME_)->addRot;
+
+	stanceBeginRot_ = { addRot.x ,addRot.y,addRot.z };
+	stanceEndRot_ = ANGLE_MAX_ - Vec3(addRot.x, addRot.y, addRot.z);
+}
+
+void EnemyStateAttackStanceBegin::Update()
+{
+	//親クラス処理
+	EnemyStateAttackStance::Update();
+
+	//角度を変える
+	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, t_));
+}
+
+//------------------------
+//攻撃構え終わり
+void EnemyStateAttackStanceEnd::Initialize()
+{
+	auto addRot = enemy_->GetNode(MOVE_NODE_NAME_)->addRot;
+
+	stanceBeginRot_ = { addRot.x ,addRot.y,addRot.z };
+	stanceEndRot_ = { 0, 0,0 };
+}
+
+void EnemyStateAttackStanceEnd::Update()
+{
+	//親クラス処理
+	EnemyStateAttackStance::Update();
+
+	//角度を戻す
+	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, t_));
 }
 
 

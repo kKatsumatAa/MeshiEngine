@@ -53,7 +53,10 @@ private:
 
 	const float DISSOLVE_POW_ = 0.3f;
 
-	const float WEAPON_FALL_VEL_EXTEND_ = 0.3f;
+	const float WEAPON_FALL_VEL_EXTEND_ = 0.05f;
+
+	//プレイヤーが視界にいるか
+	bool isAttacking_ = false;
 
 	//出現演出
 	const int32_t LIGHT_INDEX_INIT_ = -1;
@@ -65,6 +68,7 @@ private:
 
 	//ステート
 	std::unique_ptr<EnemyState> state_ = nullptr;
+	std::unique_ptr<EnemyState> stanceState_ = nullptr;
 
 public:
 	static const float S_LENGTH_MAX_;
@@ -114,6 +118,7 @@ public:
 	void OnCollision(IObject3D* obj, const CollisionInfo& info);
 
 	void ChangeEnemyState(std::unique_ptr<EnemyState> state);
+	void ChangeEnemyStanceState(std::unique_ptr<EnemyState> state);
 
 public:
 	//壁や地面のみと判定
@@ -134,4 +139,9 @@ public:
 	int32_t GetLightIndexInit() { return LIGHT_INDEX_INIT_; }
 	//被ダメージ時の加算角度
 	const std::vector<DamagedNodeAddRot>& GetDamagedAddRots() { return damagedAddRots_; }
+
+public:
+	//攻撃中か
+	void SetIsAttacking(bool isAttacking) { isAttacking_ = isAttacking; }
+	bool GetIsAttacking() { return isAttacking_; }
 };

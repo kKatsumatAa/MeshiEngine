@@ -137,6 +137,11 @@ void ObjectManager::DrawImGui()
 	if (selectObj_)
 	{
 		selectObj_->DrawImGui();
+
+		if (!selectObj_->GetIsAlive())
+		{
+			selectObj_ = nullptr;
+		}
 	}
 
 

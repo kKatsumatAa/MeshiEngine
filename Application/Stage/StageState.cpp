@@ -47,6 +47,7 @@ void StageState::DrawSprite()
 void StageState::DrawImgui()
 {
 	GameVelocityManager::GetInstance().UpdateImGui();
+	EnemyManager::GetInstance().DrawImGui();
 }
 
 

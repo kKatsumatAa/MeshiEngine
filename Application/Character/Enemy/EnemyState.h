@@ -23,7 +23,8 @@ public:
 
 	//持ち主のいない銃が見えたらその座標、なければプレイヤーの座標
 	Vec3 GetRayHitGunOrPlayerPos();
-
+	//プレイヤーが視界に入っているか
+	bool GetPlayerVisually();
 	//武器持ってるかどうかでステート変更
 	void ChangeState();
 
@@ -55,17 +56,79 @@ public:
 	void Update() override;
 };
 
-//銃持ってる
+//銃持ってる------------------
 class EnemyStateHaveWeapon :
 	public CharacterStateHaveWeapon,
 	public EnemyState
 {
+private:
+	static bool isAttacking_;
 
+public:
+	virtual void Initialize() override;
+	virtual void Update() override;
+};
+
+//銃持って撃つ
+class EnemyStateHaveWeaponAndAttack : public EnemyStateHaveWeapon
+{
 public:
 	void Initialize() override;
 	void Update() override;
 };
 
+//銃持っててプレイヤーが視界にない
+class EnemyStateHaveWeaponAndMove : public EnemyStateHaveWeapon
+{
+public:
+	void Initialize() override;
+	void Update() override;
+};
+
+//-------------------------
+//攻撃構えの親ステート
+class EnemyStateAttackStance :
+	public EnemyState
+{
+protected:
+	//最大時間
+	const float TIMER_MAX_ = 20.0f;
+	float t_ = 0;
+	//足す角度
+	static Vec3 ANGLE_MAX_;
+	const std::string MOVE_NODE_NAME_ = "RightArm";
+	//線形補間用の角度
+	Vec3 stanceEndRot_ = { 0,0,0 };
+	Vec3 stanceBeginRot_ = { 0,0,0 };
+
+public:
+	virtual void Initialize() override = 0;
+	virtual void Update() override;
+
+	static void DrawImgui();
+};
+
+//攻撃構え始め
+class EnemyStateAttackStanceBegin :
+	public EnemyStateAttackStance,
+	public CharacterStateAttackStanceBegin
+{
+public:
+	void Initialize() override;
+	void Update() override;
+};
+
+//攻撃構え終わり
+class EnemyStateAttackStanceEnd :
+	public EnemyStateAttackStance,
+	public CharacterStateAttackStanceEnd
+{
+public:
+	void Initialize() override;
+	void Update() override;
+};
+
+//----------------
 //被ダメージ始め
 class EnemyStateDamagedBegin : public EnemyState
 {

@@ -129,6 +129,8 @@ public:
 	const XMMATRIX* GetModelBones()const { return constMapSkin_->bones; }
 	//オブジェクトクラスが持ってるfbxモデルのノード
 	const std::vector<Node>& GetNodes();
+	//ノードを名前で取得
+	Node* GetNode(const std::string& nodeName);
 	//ボーンのデータ転送
 	void MappingBoneData(ModelFBX* model);
 

@@ -1,4 +1,5 @@
-﻿#include "EnemyManager.h"
+#include "EnemyManager.h"
+#include "EnemyState.h"
 #include "ObjectManager.h"
 #include "LevelManager.h"
 
@@ -93,4 +94,9 @@ bool EnemyManager::GetIsAliveWaveEnemy()
 	}
 
 	return false;
+}
+
+void EnemyManager::DrawImGui()
+{
+	EnemyStateAttackStance::DrawImgui();
 }
