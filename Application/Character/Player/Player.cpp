@@ -186,9 +186,6 @@ void Player::Update()
 
 	Character::Update();
 
-	//手のアップデート
-	handManager_->Update();
-
 	//オフ
 	isClickLeft_ = false;
 }

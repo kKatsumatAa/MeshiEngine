@@ -186,7 +186,7 @@ void Enemy::WalkToTarget(const Vec3& targetPos)
 	IObject::SetVelocity(velocity_);
 
 	//位置セット
-	IObject::SetTrans(IObject::GetTrans() + velocity_);
+	IObject::SetTrans(IObject::GetTrans() + velocity_ * animeSpeedExtend_);
 
 	//向き変更
 	DirectionUpdate(targetPos);
@@ -288,7 +288,7 @@ void Enemy::Update()
 
 	//アニメーションもゲームスピード
 	SetAnimationSpeed(min(GameVelocityManager::GetInstance().GetVelocity() * 3.0f,
-		GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_));
+		GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_) * animeSpeedExtend_);
 
 	//演出更新
 	ObjectFBX::EffectUpdate();
@@ -338,11 +338,14 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	//ダメージを受けるクールタイム
 	damageCoolTime_ = 20;
 
+	//構え解除
+	ChangeEnemyStanceState(std::make_unique<EnemyStateAttackStanceEnd>());
+
 	//武器持っていたら落とす
 	if (weapon_)
 	{
 		distanceVec.y = 0.2f;
-		FallWeapon(Vec3(-distanceVec.x, distanceVec.y, -distanceVec.z) * length);
+		FallWeapon(Vec3(-distanceVec.x, distanceVec.y, -distanceVec.z) * length * WEAPON_FALL_VEL_EXTEND_);
 	}
 }
 

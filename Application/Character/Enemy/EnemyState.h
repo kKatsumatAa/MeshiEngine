@@ -92,7 +92,7 @@ class EnemyStateAttackStance :
 {
 protected:
 	//最大時間
-	const float TIMER_MAX_ = 20.0f;
+	const float TIMER_MAX_ = 40.0f;
 	float t_ = 0;
 	//足す角度
 	static Vec3 ANGLE_MAX_;

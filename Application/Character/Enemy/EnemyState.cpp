@@ -7,7 +7,7 @@
 #include "LevelManager.h"
 
 //---------------
-Vec3 EnemyStateAttackStance::ANGLE_MAX_ = { -0.3f,0.25f,-0.5f };
+Vec3 EnemyStateAttackStance::ANGLE_MAX_ = { 0.25f,0.37f,-0.55f };
 
 
 bool EnemyState::CheckEyeRayHit()
@@ -150,6 +150,8 @@ void EnemyStateBareHands::Update()
 //武器持ってる状態の親ステート
 void EnemyStateHaveWeapon::Initialize()
 {
+	enemy_->SetIsPlayAnimation(true);
+	enemy_->SetIsLoopAnimation(true);
 }
 
 void EnemyStateHaveWeapon::Update()
@@ -157,14 +159,11 @@ void EnemyStateHaveWeapon::Update()
 	//親クラス処理
 	EnemyState::Update();
 
-	//武器失ったらステート変更
-	if (enemy_->GetWeapon() == nullptr)
-	{
-		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
-	}
+	//アニメーションなど
+	enemy_->AllMove(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
 
 	//プレイヤーの方向にレイを飛ばして
-	else if (enemy_->CheckRayOfEyeHit(
+	if (enemy_->CheckRayOfEyeHit(
 		(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye() - enemy_->GetWorldTrans()).GetNormalized(),
 		Enemy::S_LENGTH_MAX_, HAVE_WEAPON_ATTR_TMP_, &info_))
 	{
@@ -187,17 +186,13 @@ void EnemyStateHaveWeapon::Update()
 //武器持ってて攻撃中
 void EnemyStateHaveWeaponAndAttack::Initialize()
 {
+	EnemyStateHaveWeapon::Initialize();
 	//構え変更
 	enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateAttackStanceBegin>());
 }
 
 void EnemyStateHaveWeaponAndAttack::Update()
 {
-	//アニメーションなど
-	enemy_->SetIsPlayAnimation(false);
-	enemy_->SetIsLoopAnimation(false);
-	enemy_->DirectionUpdate(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
-
 	//親クラス処理
 	EnemyStateHaveWeapon::Update();
 }
@@ -206,21 +201,18 @@ void EnemyStateHaveWeaponAndAttack::Update()
 //武器持ってて移動中
 void EnemyStateHaveWeaponAndMove::Initialize()
 {
+	EnemyStateHaveWeapon::Initialize();
 	//構え戻す
 	enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateAttackStanceEnd>());
 }
 
 void EnemyStateHaveWeaponAndMove::Update()
 {
-	enemy_->SetIsPlayAnimation(true);
-	enemy_->SetIsLoopAnimation(true);
-	enemy_->AllMove(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
-
 	//親クラス処理
 	EnemyStateHaveWeapon::Update();
 }
 
-//-----------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------
 // 構え親クラス
 void EnemyStateAttackStance::Update()
 {
@@ -233,7 +225,7 @@ void EnemyStateAttackStance::DrawImgui()
 {
 	if (ImGui::TreeNode("StanceRot"))
 	{
-		ImGui::DragFloat3("rot", &ANGLE_MAX_.x);
+		ImGui::DragFloat3("rot", &ANGLE_MAX_.x, 0.05f);
 
 		ImGui::TreePop();
 	}
@@ -243,10 +235,8 @@ void EnemyStateAttackStance::DrawImgui()
 //攻撃構え始め
 void EnemyStateAttackStanceBegin::Initialize()
 {
-	auto addRot = enemy_->GetNode(MOVE_NODE_NAME_)->addRot;
-
-	stanceBeginRot_ = { addRot.x ,addRot.y,addRot.z };
-	stanceEndRot_ = ANGLE_MAX_ - Vec3(addRot.x, addRot.y, addRot.z);
+	auto nowAddRot = enemy_->GetNode(MOVE_NODE_NAME_)->addRot;
+	stanceBeginRot_ = Vec3(nowAddRot.x, nowAddRot.y, nowAddRot.z);
 }
 
 void EnemyStateAttackStanceBegin::Update()
@@ -254,8 +244,15 @@ void EnemyStateAttackStanceBegin::Update()
 	//親クラス処理
 	EnemyStateAttackStance::Update();
 
+	//今の角度から構えの角度を出す
+	auto nowNodeRot = enemy_->GetNode(MOVE_NODE_NAME_)->rotation;
+	stanceEndRot_ = ANGLE_MAX_ - Vec3(nowNodeRot.x, nowNodeRot.y, nowNodeRot.z);
+
 	//角度を変える
 	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, t_));
+
+	//アニメーションスピード徐々に
+	enemy_->SetAnimeSpeedExtend(max(1.0f - EaseIn(t_), 0.3f));
 
 	//仮で構え終わったら攻撃
 	if (t_ >= 1.0f)
@@ -273,16 +270,19 @@ void EnemyStateAttackStanceBegin::Update()
 //攻撃構え終わり
 void EnemyStateAttackStanceEnd::Initialize()
 {
-	auto addRot = enemy_->GetNode(MOVE_NODE_NAME_)->addRot;
+	auto nowRot = enemy_->GetNode(MOVE_NODE_NAME_)->addRot;
 
-	stanceBeginRot_ = { addRot.x ,addRot.y,addRot.z };
-	stanceEndRot_ = { 0, 0,0 };
+	stanceBeginRot_ = { nowRot.x ,nowRot.y,nowRot.z };
+	stanceEndRot_ = { 0,0,0 };
 }
 
 void EnemyStateAttackStanceEnd::Update()
 {
 	//親クラス処理
 	EnemyStateAttackStance::Update();
+
+	//アニメーションスピード徐々に
+	enemy_->SetAnimeSpeedExtend(EaseIn(t_));
 
 	//角度を戻す
 	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, t_));

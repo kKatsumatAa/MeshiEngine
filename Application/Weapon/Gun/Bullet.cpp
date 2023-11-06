@@ -44,7 +44,7 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 
 	SetTrans(pos);
 	//仮で銃はキャラの手前にあるので少し後ろをレイの始点にするため
-	oldPos_ = GetTrans() - directionVec;
+	oldPos_ = pos;
 
 	directionVec_ = directionVec;
 	SetScale({ scale,scale,scale });

@@ -53,7 +53,7 @@ private:
 
 	const float DISSOLVE_POW_ = 0.3f;
 
-	const float WEAPON_FALL_VEL_EXTEND_ = 0.05f;
+	const float WEAPON_FALL_VEL_EXTEND_ = 0.5f;
 
 	//プレイヤーが視界にいるか
 	bool isAttacking_ = false;
@@ -62,6 +62,9 @@ private:
 	const int32_t LIGHT_INDEX_INIT_ = -1;
 	int32_t lightIndexTmp_ = LIGHT_INDEX_INIT_;
 	DirectX::XMFLOAT3 EMERGE_COL_ = { 1.0f,0,0 };
+
+	//構えるときとかに徐々にアニメーションゆっくりにするため
+	float animeSpeedExtend_ = 1.0f;
 
 	//被攻撃時の加算角度
 	std::vector<DamagedNodeAddRot> damagedAddRots_;
@@ -144,4 +147,7 @@ public:
 	//攻撃中か
 	void SetIsAttacking(bool isAttacking) { isAttacking_ = isAttacking; }
 	bool GetIsAttacking() { return isAttacking_; }
+	//構えるときとかに徐々にゆっくりにするための変数
+	void SetAnimeSpeedExtend(float animeSpeedExtend) { animeSpeedExtend_ = animeSpeedExtend; }
+	float GetAnimeSpeedExtend() { return animeSpeedExtend_; }
 };

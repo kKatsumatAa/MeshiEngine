@@ -12,7 +12,7 @@ class Gun :
 {
 private:
 	//攻撃のクールタイム
-	const float SHOT_COOL_TIME_MAX_ = 55;
+	const float SHOT_COOL_TIME_MAX_ = 70;
 
 	const float BULLET_VELOCITY_ = 1.8f;
 
