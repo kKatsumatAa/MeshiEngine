@@ -924,9 +924,6 @@
     <None Include="Resources\shaders\PeraShaderHeader.hlsli">
       <Filter>リソース ファイル\shaders</Filter>
     </None>
-    <None Include="Resources\shaders\Basic.hlsli">
-      <Filter>リソース ファイル\shaders</Filter>
-    </None>
     <None Include="Resources\shaders\Particle.hlsli">
       <Filter>リソース ファイル\shaders</Filter>
     </None>
