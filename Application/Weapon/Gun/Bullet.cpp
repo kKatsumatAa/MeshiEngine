@@ -61,6 +61,8 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	//色セット
 	SetColor({ 0.1f,0.1f,0.1f,1.0f });
 
+	Update();
+
 	return true;
 }
 
@@ -116,7 +118,7 @@ void Bullet::Update()
 	lifeTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
 	//移動もゲームスピードをかける
-	SetTrans(GetTrans() + directionVec_ * GameVelocityManager::GetInstance().GetVelocity());
+	SetTrans(GetWorldTrans() + directionVec_ * GameVelocityManager::GetInstance().GetVelocity());
 
 	Object::Update();
 
@@ -133,7 +135,7 @@ void Bullet::Update()
 		if (CollisionManager::GetInstance()->RaycastUtil(GetTrans(), oldPos_, COLLISION_ATTR_LANDSHAPE, &info))
 		{
 			//撃った本人には当たらないように
-			if (owner_ != info.object)
+			if (owner_ != nullptr && owner_ != info.object)
 			{
 				Dead({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
 			}
