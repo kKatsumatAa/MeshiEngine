@@ -14,6 +14,7 @@ protected:
 		NORMAL,
 		WIREFRAME,
 		SHADOW,
+		HULL_DOMAIN,
 
 		COUNT//要素数
 	};

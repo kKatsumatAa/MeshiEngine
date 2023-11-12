@@ -57,36 +57,55 @@ void Object::CommonInitialize()
 		//パイプラインなどの設定
 		PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[NORMAL_OBJ],
 			"Resources/shaders/OBJVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
+			"", "", "",
 			sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 		//ワイヤーフレーム
 		PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, pipelineSetM_[WIREFRAME_OBJ],
 			"Resources/shaders/OBJVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
+			"", "", "",
 			sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 		//シャドウマップ
 		PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[SHADOW_OBJ],
 			"Resources/shaders/OBJShadowVS.hlsl", "",
+			"", "", "",
 			sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, 0);
+		//メッシュ分割
+		PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[HULL_DOMAIN_OBJ],
+			"Resources/shaders/OBJVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
+			"", "Resources/shaders/WaveHullShader.hlsl", "Resources/shaders/WaveDomainShader.hlsl",
+			sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH);
 	}
 	//primitive用
 	{
 		PipeLineSetting(D3D12_FILL_MODE_SOLID, primitivePipeLineSet_[NORMAL_PRIM],
 			"Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl",
+			"", "", "",
 			sInputLayoutPrimitive_, _countof(sInputLayoutPrimitive_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 		//ワイヤーフレーム用
 		PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, primitivePipeLineSet_[WIREFRAME_PRIM],
 			"Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl",
+			"", "", "",
 			sInputLayoutPrimitive_, _countof(sInputLayoutPrimitive_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 		//シャドウマップ
 		PipeLineSetting(D3D12_FILL_MODE_SOLID, primitivePipeLineSet_[SHADOW_PRIM],
 			"Resources/shaders/BasicShadowVS.hlsl", "",
+			"", "", "",
 			sInputLayoutPrimitive_, _countof(sInputLayoutPrimitive_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, 0);
+		//メッシュ分割
+		PipeLineSetting(D3D12_FILL_MODE_SOLID, primitivePipeLineSet_[HULL_DOMAIN_PRIM],
+			"Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl",
+			"", "Resources/shaders/WaveHullShader.hlsl", "Resources/shaders/WaveDomainShader.hlsl",
+			sInputLayoutPrimitive_, _countof(sInputLayoutPrimitive_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH);
+
 		//線
 		PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, primitivePipeLineSet_[NORMAL_LINE],
 			"Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl",
+			"", "", "",
 			sInputLayoutPrimitive_, _countof(sInputLayoutPrimitive_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
 		//線のシャドウマップ
 		PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, primitivePipeLineSet_[SHADOW_LINE],
 			"Resources/shaders/BasicShadowVS.hlsl", "",
+			"", "", "",
 			sInputLayoutPrimitive_, _countof(sInputLayoutPrimitive_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE, 0);
 	}
 }
@@ -127,7 +146,7 @@ void Object::DrawModelInternal(int32_t pipelineNum)
 
 	//ラムダ式でコマンド関数
 	std::function<void()>SetRootPipeRM = [=]() {IObject::SetRootPipe(pipelineSetM_, pipelineNum, pipelineSetM_[pipelineNum].rootSignature.Get()); };
-	std::function<void()>SetMaterialTexM = [=]() {	
+	std::function<void()>SetMaterialTexM = [=]() {
 
 		//SRVヒープの設定コマンド
 		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetDescHeapPP());
@@ -162,7 +181,14 @@ void Object::DrawModelInternal(int32_t pipelineNum)
 	//メッシュのオフセットデータセット
 	IObject3D::GetModel()->SetPolygonOffsetData(meshOffsetData_);
 
-	model_->Draw(SetRootPipeRM, SetMaterialTexM, cbt_, isShadow);
+	//プリミティブ形状
+	auto primitiveT = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	if (pipelineNum == PipelineStateNumObj::HULL_DOMAIN_OBJ)
+	{
+		primitiveT = D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
+	}
+
+	model_->Draw(primitiveT, SetRootPipeRM, SetMaterialTexM, cbt_, isShadow);
 }
 
 void Object::DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureHandle, ConstBuffTransform* constBuffTransform,
@@ -174,6 +200,14 @@ void Object::DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureH
 		(indexNum != OBJ && (pipelineNum == SHADOW_LINE || pipelineNum == SHADOW_PRIM)))
 	{
 		isShadow = true;
+	}
+
+	//プリミティブ形状
+	auto primT = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	if ((indexNum != OBJ && pipelineNum == PipelineStateNumPrim::HULL_DOMAIN_PRIM)||
+		(indexNum == OBJ && pipelineNum == PipelineStateNumObj::HULL_DOMAIN_OBJ))
+	{
+		primT = D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
 	}
 
 	//カメラがセットされてなければ使用されてるカメラを使う
@@ -216,15 +250,15 @@ void Object::DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureH
 
 	if (indexNum == TRIANGLE)
 	{
-		primitive_.TriangleDraw(SetRootPipeR, SetMaterialTex);
+		primitive_.TriangleDraw(primT, SetRootPipeR, SetMaterialTex);
 	}
 	else if (indexNum == BOX)
 	{
-		primitive_.BoxDraw(SetRootPipeR, SetMaterialTex);
+		primitive_.BoxDraw(primT, SetRootPipeR, SetMaterialTex);
 	}
 	else if (indexNum == CUBE)
 	{
-		primitive_.CubeDraw(SetRootPipeR, SetMaterialTex);
+		primitive_.CubeDraw(primT, SetRootPipeR, SetMaterialTex);
 	}
 	else if (indexNum == LINE)
 	{
@@ -232,11 +266,11 @@ void Object::DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureH
 	}
 	else if (indexNum == CIRCLE)
 	{
-		primitive_.CircleDraw(SetRootPipeR, SetMaterialTex);
+		primitive_.CircleDraw(primT, SetRootPipeR, SetMaterialTex);
 	}
 	else if (indexNum == SPHERE)
 	{
-		primitive_.SphereDraw(SetRootPipeR, SetMaterialTex);
+		primitive_.SphereDraw(primT, SetRootPipeR, SetMaterialTex);
 	}
 	else if (indexNum == OBJ)
 	{

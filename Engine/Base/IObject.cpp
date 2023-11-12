@@ -7,7 +7,6 @@ using namespace DirectX;
 
 //ルートパラメータの設定
 D3D12_ROOT_PARAMETER IObject::rootParams_[RootParamNum::count] = {};
-D3D12_GRAPHICS_PIPELINE_STATE_DESC IObject::pipelineDesc_ = {};
 D3D12_DESCRIPTOR_RANGE IObject::effectDescRange_[4] = {};
 
 //--------------------------------------------------------------------
@@ -260,68 +259,83 @@ void IObject::SetRootPipe(RootPipe* pipelineSet, int32_t pipelineNum, ID3D12Root
 //---------------------------------------------------------------------------------------------------------------------
 void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe,
 	const std::string& vSName, const std::string& pSName,
+	const std::string& gSName, const std::string& hSName, const std::string& dSName,
 	D3D12_INPUT_ELEMENT_DESC* inputLayout, uint32_t inputLCount,
 	D3D12_PRIMITIVE_TOPOLOGY_TYPE priTopoType, int32_t numRTarget, bool isSprite)
 {
 	HRESULT result = {};
 
-	rootPipe.CreateBlob(vSName.c_str(), pSName.c_str());
+	rootPipe.CreateBlob(vSName.c_str(), pSName.c_str(), gSName.c_str(), hSName.c_str(), dSName.c_str());
 
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
 	// シェーダーの設定
-	pipelineDesc_.VS.pShaderBytecode = rootPipe.vsBlob->GetBufferPointer();
-	pipelineDesc_.VS.BytecodeLength = rootPipe.vsBlob->GetBufferSize();
+	pipelineDesc.VS.pShaderBytecode = rootPipe.vsBlob->GetBufferPointer();
+	pipelineDesc.VS.BytecodeLength = rootPipe.vsBlob->GetBufferSize();
 	if (pSName.size())
 	{
-		pipelineDesc_.PS.pShaderBytecode = rootPipe.psBlob->GetBufferPointer();
-		pipelineDesc_.PS.BytecodeLength = rootPipe.psBlob->GetBufferSize();
+		pipelineDesc.PS.pShaderBytecode = rootPipe.psBlob->GetBufferPointer();
+		pipelineDesc.PS.BytecodeLength = rootPipe.psBlob->GetBufferSize();
 	}
 	else
 	{
-		pipelineDesc_.PS.pShaderBytecode = nullptr;
-		pipelineDesc_.PS.BytecodeLength = 0;
+		pipelineDesc.PS.pShaderBytecode = nullptr;
+		pipelineDesc.PS.BytecodeLength = 0;
+	}
+	//ハル
+	if (hSName.size())
+	{
+		pipelineDesc.HS.pShaderBytecode = rootPipe.hsBlob->GetBufferPointer();
+		pipelineDesc.HS.BytecodeLength = rootPipe.hsBlob->GetBufferSize();
+	}
+	//ドメイン
+	if (dSName.size())
+	{
+		pipelineDesc.DS.pShaderBytecode = rootPipe.dsBlob->GetBufferPointer();
+		pipelineDesc.DS.BytecodeLength = rootPipe.dsBlob->GetBufferSize();
 	}
 
+
 	// サンプルマスクの設定
-	pipelineDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
+	pipelineDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 
 	// ラスタライザの設定
 	if (isSprite)
 	{
-		pipelineDesc_.RasterizerState = D3D12_RASTERIZER_DESC();
-		pipelineDesc_.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+		pipelineDesc.RasterizerState = D3D12_RASTERIZER_DESC();
+		pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	}
 	else
 	{
-		pipelineDesc_.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // 背面カリング
+		pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // 背面カリング
 	}
 
-	pipelineDesc_.RasterizerState.FillMode = fillMode; // ポリゴン内塗りつぶしかどうか
-	pipelineDesc_.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
+	pipelineDesc.RasterizerState.FillMode = fillMode; // ポリゴン内塗りつぶしかどうか
+	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
 	//ブレンド
-	Blend(D3D12_BLEND_OP_ADD, false, true);
+	Blend(pipelineDesc, D3D12_BLEND_OP_ADD, false, true);
 
-	pipelineDesc_.InputLayout.pInputElementDescs = inputLayout;
-	pipelineDesc_.InputLayout.NumElements = inputLCount;
+	pipelineDesc.InputLayout.pInputElementDescs = inputLayout;
+	pipelineDesc.InputLayout.NumElements = inputLCount;
 
 	// 図形の形状設定
-	pipelineDesc_.PrimitiveTopologyType = priTopoType;
+	pipelineDesc.PrimitiveTopologyType = priTopoType;
 
 	// その他の設定
-	pipelineDesc_.NumRenderTargets = numRTarget; // 描画対象は基本3つ（ポストエフェクトの一枚目の3つ）
+	pipelineDesc.NumRenderTargets = numRTarget; // 描画対象は基本3つ（ポストエフェクトの一枚目の3つ）
 	//レンダーターゲットの数によって設定変えるため
 	for (int32_t i = 0; i < 3; i++)
 	{
 		if (numRTarget > 0)
 		{
-			pipelineDesc_.RTVFormats[i] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
+			pipelineDesc.RTVFormats[i] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
 		}
 		else
 		{
-			pipelineDesc_.RTVFormats[i] = DXGI_FORMAT_UNKNOWN;//レンダーターゲット必要なし
+			pipelineDesc.RTVFormats[i] = DXGI_FORMAT_UNKNOWN;//レンダーターゲット必要なし
 		}
 	}
-	pipelineDesc_.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
+	pipelineDesc.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
 
 	//04_02
 	//テクスチャサンプラーの設定
@@ -365,58 +379,58 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 		IID_PPV_ARGS(&rootPipe.rootSignature));
 	assert(SUCCEEDED(result));
 	// パイプラインにルートシグネチャをセット
-	pipelineDesc_.pRootSignature = rootPipe.rootSignature.Get();
+	pipelineDesc.pRootSignature = rootPipe.rootSignature.Get();
 
 	//06_01
 	//デプスステンシルステート
-	pipelineDesc_.DepthStencilState = D3D12_DEPTH_STENCIL_DESC();
-	pipelineDesc_.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+	pipelineDesc.DepthStencilState = D3D12_DEPTH_STENCIL_DESC();
+	pipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 	if (isSprite)
 	{
-		pipelineDesc_.DepthStencilState.DepthEnable = false;
-		pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		pipelineDesc.DepthStencilState.DepthEnable = false;
+		pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 	}
 	else
 	{
-		pipelineDesc_.DepthStencilState.DepthEnable = true;//深度テストを行う
-		pipelineDesc_.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
+		pipelineDesc.DepthStencilState.DepthEnable = true;//深度テストを行う
+		pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;//小さければ合格
 	}
-	pipelineDesc_.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
+	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 
-	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc_,
+	result = DirectXWrapper::GetInstance().GetDevice()->CreateGraphicsPipelineState(&pipelineDesc,
 		IID_PPV_ARGS(rootPipe.pipelineState.ReleaseAndGetAddressOf()));
 	assert(SUCCEEDED(result));
 }
 
-void IObject::Blend(const D3D12_BLEND_OP& blendMode, bool Inversion, bool Translucent)
+void IObject::Blend(D3D12_GRAPHICS_PIPELINE_STATE_DESC& pipelineDesc, const D3D12_BLEND_OP& blendMode, bool Inversion, bool Translucent)
 {
 	//共通設定
-	D3D12_RENDER_TARGET_BLEND_DESC& blendDesc = pipelineDesc_.BlendState.RenderTarget[0];
-	blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;// RBGA全てのチャンネルを描画
-	blendDesc.BlendEnable = true;//ブレンドを有効
-	blendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;//加算
-	blendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;//ソースの値を100%使う
-	blendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;//デストの値を0%使う
+	D3D12_RENDER_TARGET_BLEND_DESC& blendDescL = pipelineDesc.BlendState.RenderTarget[0];
+	blendDescL.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;// RBGA全てのチャンネルを描画
+	blendDescL.BlendEnable = true;//ブレンドを有効
+	blendDescL.BlendOpAlpha = D3D12_BLEND_OP_ADD;//加算
+	blendDescL.SrcBlendAlpha = D3D12_BLEND_ONE;//ソースの値を100%使う
+	blendDescL.DestBlendAlpha = D3D12_BLEND_ZERO;//デストの値を0%使う
 	//合成ごと
-	blendDesc.BlendOp = blendMode;
+	blendDescL.BlendOp = blendMode;
 	if (Inversion)//反転
 	{
-		blendDesc.SrcBlend = D3D12_BLEND_INV_DEST_COLOR;//1.0f-デストカラーの値
-		blendDesc.DestBlend = D3D12_BLEND_ZERO;//使わない
+		blendDescL.SrcBlend = D3D12_BLEND_INV_DEST_COLOR;//1.0f-デストカラーの値
+		blendDescL.DestBlend = D3D12_BLEND_ZERO;//使わない
 	}
 	else if (Translucent)//半透明
 	{
-		blendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;//1.0f-デストカラーの値
-		blendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;//1.0f-ソースのアルファ値
+		blendDescL.SrcBlend = D3D12_BLEND_SRC_ALPHA;//1.0f-デストカラーの値
+		blendDescL.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;//1.0f-ソースのアルファ値
 	}
 	else
 	{
-		blendDesc.SrcBlend = D3D12_BLEND_ONE;//ソースの値を100%使う
-		blendDesc.DestBlend = D3D12_BLEND_ONE;//デストの値を100%使う
+		blendDescL.SrcBlend = D3D12_BLEND_ONE;//ソースの値を100%使う
+		blendDescL.DestBlend = D3D12_BLEND_ONE;//デストの値を100%使う
 	}
 
 	//ポストエフェクトの一枚目の二つ目用に
-	pipelineDesc_.BlendState.RenderTarget[1] = blendDesc;
+	pipelineDesc.BlendState.RenderTarget[1] = blendDescL;
 }
 
 void Error(bool filed, ID3DBlob* errorBlob)

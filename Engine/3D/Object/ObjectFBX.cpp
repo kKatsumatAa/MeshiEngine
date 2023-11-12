@@ -42,15 +42,23 @@ void ObjectFBX::CommonInitialize()
 	//パイプラインなどの設定
 	PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[PipelineStateNum::NORMAL],
 		"Resources/shaders/FBXVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
+		"", "", "",
 		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 	//ワイヤーフレーム
 	PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, pipelineSetM_[PipelineStateNum::WIREFRAME],
 		"Resources/shaders/FBXVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
+		"", "", "",
 		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 	//シャドウマップ用
 	PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[PipelineStateNum::SHADOW],
 		"Resources/shaders/FBXShadowVS.hlsl", "",
+		"", "", "",
 		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, 0);
+	//メッシュ分割用
+	PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, pipelineSetM_[PipelineStateNum::HULL_DOMAIN],
+		"Resources/shaders/FBXVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
+		"", "Resources/shaders/WaveHullShader.hlsl", "Resources/shaders/WaveDomainShader.hlsl",
+		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -107,7 +115,14 @@ void ObjectFBX::DrawModelInternal(int32_t pipelineNum)
 	//メッシュのオフセットデータセット
 	GetModel()->SetPolygonOffsetData(meshOffsetData_);
 
-	model_->Draw(SetRootPipeRM, SetMaterialTexM, cbt_, isShadow);
+	//プリミティブ形状
+	auto primitiveT = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	if (pipelineNum == PipelineStateNum::HULL_DOMAIN)
+	{
+		primitiveT = D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
+	}
+
+	model_->Draw(primitiveT, SetRootPipeRM, SetMaterialTexM, cbt_, isShadow);
 }
 
 //-----------------------------------------------------------------------------------------

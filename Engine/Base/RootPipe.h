@@ -9,7 +9,9 @@ private:
 public:
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob; // ピクセルシェーダオブジェクト
-	ComPtr<ID3DBlob> gsBlob; // ピクセルシェーダオブジェクト
+	ComPtr<ID3DBlob> gsBlob; // ジオメトリシェーダオブジェクト
+	ComPtr<ID3DBlob> hsBlob; // ハルシェーダオブジェクト
+	ComPtr<ID3DBlob> dsBlob; // ドメインシェーダオブジェクト
 	ComPtr<ID3DBlob> errorBlob; // エラーオブジェクト
 
 	ComPtr<ID3D12PipelineState> pipelineState;
@@ -18,6 +20,8 @@ public:
 private:
 
 public:
-	void CreateBlob(const char* vsName, const char* psName, const char* gsName = nullptr, 
-		std::string vEPName = "main", std::string pEPName = "main", std::string gEPName = "main");
+	void CreateBlob(const char* vsName, const char* psName, const char* gsName = nullptr
+		, const char* hsName = nullptr, const char* dsName = nullptr,
+		std::string vEPName = "main", std::string pEPName = "main", std::string gEPName = "main"
+		, std::string hEPName = "main", std::string dEPName = "main");
 };

@@ -314,7 +314,7 @@ void Enemy::DrawShadow()
 
 void Enemy::Draw()
 {
-	ObjectFBX::DrawModel();
+	ObjectFBX::DrawModel(nullptr, nullptr, ObjectFBX::PipelineStateNum::HULL_DOMAIN);
 
 	//ノードごとの当たり判定描画
 	DrawNodeColliders();

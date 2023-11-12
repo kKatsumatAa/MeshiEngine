@@ -77,7 +77,7 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	/// <param name="cmdList">命令発行先コマンドリスト</param>
-	virtual void Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
+	virtual void Draw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
 		, const ConstBuffTransform& cbt, bool isShadow);
 
 	virtual void DrawImGui();

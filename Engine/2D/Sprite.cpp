@@ -58,6 +58,7 @@ void Sprite::CommonInitialize()
 	//パイプラインなどを設定
 	PipeLineSetting(D3D12_FILL_MODE_SOLID, spritePipelineSet_,
 		"Resources/shaders/SpriteVS.hlsl", "Resources/shaders/SpritePS.hlsl",
+		"", "", "",
 		sInputLayoutSprite_, _countof(sInputLayoutSprite_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, 3, true);
 }
 

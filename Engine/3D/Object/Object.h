@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "IObject3D.h"
 #include "Primitive.h"
 
@@ -27,6 +27,7 @@ protected:
 		NORMAL_OBJ,
 		WIREFRAME_OBJ,
 		SHADOW_OBJ,
+		HULL_DOMAIN_OBJ,
 
 		COUNT_O//要素数
 	};
@@ -36,6 +37,7 @@ protected:
 		NORMAL_PRIM,
 		WIREFRAME_PRIM,
 		SHADOW_PRIM,
+		HULL_DOMAIN_PRIM,
 
 		NORMAL_LINE,
 		SHADOW_LINE,
@@ -52,9 +54,9 @@ private:
 	//図形のクラス
 	static Primitive primitive_;
 	//パイプラインなどの設定
-	static RootPipe primitivePipeLineSet_[5];
+	static RootPipe primitivePipeLineSet_[PipelineStateNumPrim::COUNT_P];
 	//.objの
-	static RootPipe pipelineSetM_[3];
+	static RootPipe pipelineSetM_[PipelineStateNumObj::COUNT_O];
 
 private:
 	//描画する形状を指定されたら呼ぶ描画用関数

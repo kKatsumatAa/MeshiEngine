@@ -767,33 +767,33 @@ void Primitive::DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCou
 	DirectXWrapper::GetInstance().GetCommandList()->DrawIndexedInstanced((uint32_t)indicesCount, 1, 0, 0, 0); // 全ての頂点を使って描画
 }
 
-void Primitive::TriangleDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
+void Primitive::TriangleDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	DrawCommandPrimitive(vertBuffTriangle_.Get(), _countof(verticesTriangle_), verticesTriangle_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+	DrawCommandPrimitive(vertBuffTriangle_.Get(), _countof(verticesTriangle_), verticesTriangle_, topology,
 		vbTriangleView_, ibViewTriangle_,
 		_countof(sIndicesTriangle_),
 		setRootParam, setMaterialLightTex);
 }
 
-void Primitive::BoxDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
+void Primitive::BoxDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	DrawCommandPrimitive(vertBuffBox_.Get(), _countof(verticesBox_), verticesBox_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+	DrawCommandPrimitive(vertBuffBox_.Get(), _countof(verticesBox_), verticesBox_, topology,
 		vbBoxView_, ibViewBox_,
 		_countof(sIndicesBox_),
 		setRootParam, setMaterialLightTex);
 }
 
-void Primitive::CircleDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
+void Primitive::CircleDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	DrawCommandPrimitive(vertBuffCircle_.Get(), _countof(verticesCircle_), verticesCircle_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+	DrawCommandPrimitive(vertBuffCircle_.Get(), _countof(verticesCircle_), verticesCircle_, topology,
 		vbCircleView_, ibViewCircle_,
 		_countof(sIndicesCircle_),
 		setRootParam, setMaterialLightTex);
 }
 
-void Primitive::CubeDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
+void Primitive::CubeDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	DrawCommandPrimitive(vertBuffCube_.Get(), _countof(verticesCube_), verticesCube_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+	DrawCommandPrimitive(vertBuffCube_.Get(), _countof(verticesCube_), verticesCube_, topology,
 		vbCubeView_, ibViewCube_,
 		_countof(sIndicesCube_),
 		setRootParam, setMaterialLightTex);
@@ -807,9 +807,9 @@ void Primitive::LineDraw(const std::function<void()>& setRootParam, const std::f
 		setRootParam, setMaterialLightTex);
 }
 
-void Primitive::SphereDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
+void Primitive::SphereDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex)
 {
-	DrawCommandPrimitive(vertBuffSphere_.Get(), _countof(verticesSphere_), verticesSphere_, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+	DrawCommandPrimitive(vertBuffSphere_.Get(), _countof(verticesSphere_), verticesSphere_, topology,
 		vbViewSphere_, ibViewSphere_,
 		_countof(sIndicesSphere_),
 		setRootParam, setMaterialLightTex);

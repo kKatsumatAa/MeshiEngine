@@ -61,10 +61,6 @@ public:
 	};
 
 private:
-	// グラフィックスパイプライン設定
-	static D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc_;
-
-private:
 	//演出用デスクリプタレンジ
 	static D3D12_DESCRIPTOR_RANGE effectDescRange_[4];
 
@@ -139,11 +135,14 @@ public:
 	//パイプラインの設定
 	static void PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe,
 		const std::string& vSName, const std::string& pSName,
-		D3D12_INPUT_ELEMENT_DESC* inputLayout, uint32_t inputLCount,
-		D3D12_PRIMITIVE_TOPOLOGY_TYPE priTopoType, int32_t numRTarget = 3,
+		const std::string& gSName = "", const std::string& hSName = "", const std::string& dSName = "",
+		D3D12_INPUT_ELEMENT_DESC* inputLayout = nullptr, uint32_t inputLCount = 0,
+		D3D12_PRIMITIVE_TOPOLOGY_TYPE priTopoType = D3D12_PRIMITIVE_TOPOLOGY_TYPE::D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE,
+		int32_t numRTarget = 3,
 		bool isSprite = false);
 
-	static void Blend(const D3D12_BLEND_OP& blendMode,
+	static void Blend(D3D12_GRAPHICS_PIPELINE_STATE_DESC& blendDesc,
+		const D3D12_BLEND_OP& blendMode,
 		bool Inversion = 0, bool Translucent = 0);
 
 public:

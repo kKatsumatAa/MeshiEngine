@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include"ModelObj.h"
 
 
@@ -99,10 +99,10 @@ public:
 		const D3D12_VERTEX_BUFFER_VIEW& buffView, const D3D12_INDEX_BUFFER_VIEW& ibView, int32_t indicesCount,
 		const std::function<void()>& setRootParam,const std::function<void()>& setMaterialLightTex);
 
-	void TriangleDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
-	void BoxDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
-	void CircleDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
-	void CubeDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	void TriangleDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	void BoxDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	void CircleDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	void CubeDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
 	void LineDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
-	void SphereDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	void SphereDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
 };

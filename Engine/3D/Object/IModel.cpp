@@ -79,16 +79,15 @@ void IModel::AddMaterial(std::unique_ptr<Material> material)
 }
 
 
-void IModel::Draw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
+void IModel::Draw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
 	, const ConstBuffTransform& cbt, bool isShadow)
 {
+	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(topology);
+
 	//パイプラインなどセット
 	setRootParam();
 	//ライトなどをセット
 	setMaterialLightTex();
-
-	//メッシュの構成
-	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// 全メッシュを描画
 	for (auto& mesh : meshes_) {
