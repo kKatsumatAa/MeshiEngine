@@ -9,6 +9,15 @@ SamplerState smp : register(s0); //0番スロットに設定されたサンプラー
 //シャドウマップ用サンプラー
 SamplerComparisonState shadowSmp : register(s1);
 
+static const matrix IDENTITY_MAT =
+{
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+};
+
+
 struct PSOutput
 {
     float4 col : SV_TARGET0; //通常のレンダリング
@@ -26,6 +35,29 @@ struct VSOutput
     float3 tangent : TANGENT; //法線の接線
     float3 binormal : BINORMAL; //従法線
     float4 tpos : TPOS;//ライトビューを掛けた座標
+};
+    
+struct VSOutput2
+{
+    float4 svpos : POSITION0; //システム用頂点座標
+    float4 worldpos : POSITION1; //ワールド座標
+    float3 normal : NORMAL; //法線
+    float2 uv : TEXCOORD; //uv座標
+    float3 tangent : TANGENT; //法線の接線
+    float3 binormal : BINORMAL; //従法線
+    float4 tpos : TPOS;//ライトビューを掛けた座標
+};
+
+//頂点シェーダからピクセルシェーダーへのやり取りに使用する構造体
+struct DSOutput
+{
+    float4 svpos : SV_POSITION; //システム用頂点座標
+    float4 worldpos : POSITION; //ワールド座標
+    float3 normal : NORMAL; //法線
+    float2 uv : TEXCOORD; //uv座標
+    float3 tangent : TANGENT; //法線の接線
+    float3 binormal : BINORMAL; //従法線
+    float4 tpos : TPOS; //ライトビューを掛けた座標
 };
 
 //----------------------------------------------------------------------------------------------
@@ -121,6 +153,14 @@ cbuffer ConstBufferDataTransform : register(b1)
     float3 cameraPos; //カメラ座標（ワールド座標）
 }
 
+//メッシュの行列
+cbuffer ConstBufferDataTransformMesh : register(b2)
+{
+    matrix viewprojMesh = IDENTITY_MAT; //ビュープロジェクション行列
+    matrix worldMesh = IDENTITY_MAT; //ワールド行列
+    float3 cameraPosMesh; //カメラ座標（ワールド座標）
+}
+
 //LightManagerのConstBufferと同じ型を宣言
 cbuffer ConstBufferDataMaterial3 : register(b4)
 {
@@ -159,3 +199,11 @@ cbuffer ConstBufferEffectFlags : register(b5)
 	//時間
     uint time;
 }
+
+//メッシュ分割のウェーブ演出
+cbuffer ConstBufferEffectFlags : register(b7)
+{
+    float3 waveEpicenter; //震源地
+    float waveDistance; //波の距離
+    float2 waveThickness; //波の太さ
+};

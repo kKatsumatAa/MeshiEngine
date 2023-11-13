@@ -3,6 +3,7 @@
 #include "LightManager.h"
 #include "CameraManager.h"
 #include "ModelManager.h"
+#include "Wave.h"
 
 
 //演出用のフラグ
@@ -36,6 +37,14 @@ struct EffectOConstBuffer
 	uint32_t time = 0;
 };
 
+//メッシュ分割のウェーブ演出
+struct TessWaveEffect
+{
+	Vec3 waveEpicenter = { 0,0,0 };//震源地
+	float waveDistance = 0;//波の距離
+	Vec2 waveThickness = { 0,0 };//波の太さ
+};
+
 //3Dオブジェクトの親クラス--------------------------------------------
 class IObject3D : public IObject
 {
@@ -43,6 +52,10 @@ private:
 	//演出用バッファ
 	ComPtr <ID3D12Resource> effectFlagsBuff_;
 	EffectOConstBuffer* mapEffectFlagsBuff_;
+
+	//メッシュ分割のウェーブ演出
+	ComPtr <ID3D12Resource> tessWaveBuff_;
+	TessWaveEffect* mapTessWaveBuff_;
 
 	static XMFLOAT4 sLightCameraParam_;
 
@@ -84,6 +97,9 @@ protected:
 private:
 	//ライト
 	static LightManager* sLightManager_;
+
+protected:
+	Wave wave_;
 
 private:
 	//初期の正面ベクトル
@@ -169,6 +185,11 @@ public:
 	//シルエット
 	void SetIsSilhouette(bool is) { effectFlags_.isSilhouette = is; }
 	void SetSilhouetteColor(const Vec3& color) { effectFlags_.silhouetteColor = color; }
+
+public:
+	//メッシュ分割のウェーブ波を発生
+	void BeginWave(const Vec3& epicenter, const Vec2& thickness, float distancePow, float timer) 
+	{ wave_.BeginWave(epicenter, thickness, distancePow, timer); }
 
 public:
 	//モデルのポインタ

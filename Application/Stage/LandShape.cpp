@@ -37,6 +37,14 @@ bool LandShape::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 void LandShape::Update()
 {
 	Object::Update();
+
+	//デバッグ用で
+	if (KeyboardInput::GetInstance().KeyTrigger(DIK_T))
+	{
+		Vec3 interPos = { 0,0,0 };
+
+		wave_.BeginWave(interPos, { GetScale().y / 45.0f,GetScale().GetLength() * 1.5f }, GetScale().GetLength(), 120.0f);
+	}
 }
 
 void LandShape::DrawShadow()
@@ -46,5 +54,10 @@ void LandShape::DrawShadow()
 
 void LandShape::Draw()
 {
-	Object::DrawModel(nullptr);
+	Object::DrawModel(nullptr, nullptr, nullptr, Object::PipelineStateNumObj::HULL_DOMAIN_OBJ);
+}
+
+void LandShape::OnCollision(const CollisionInfo& info)
+{
+	info;
 }

@@ -519,6 +519,9 @@
     <ClCompile Include="Engine\Util\Counter.cpp">
       <Filter>ソース ファイル\Engine\Util</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Util\Wave.cpp">
+      <Filter>ソース ファイル\Engine\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -854,6 +857,9 @@
     <ClInclude Include="Engine\Util\Counter.h">
       <Filter>ヘッダー ファイル\Engine\Util</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Util\Wave.h">
+      <Filter>ヘッダー ファイル\Engine\Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\PeraVertexShader.hlsl">
@@ -920,6 +926,15 @@
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\WaveDomainShader.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\OBJVSTess.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\BasicVSTess.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\FBXVSTess.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
   </ItemGroup>

@@ -123,6 +123,11 @@ void IObject::CommonInitialize()
 	rootParams_[SHADOW_TEX].DescriptorTable.pDescriptorRanges = &effectDescRange_[3];//デスクリプタレンジ
 	rootParams_[SHADOW_TEX].DescriptorTable.NumDescriptorRanges = 1;//〃数
 	rootParams_[SHADOW_TEX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//定数バッファ7番（メッシュ分割のウェーブ用）
+	rootParams_[TESS_WAVE].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rootParams_[TESS_WAVE].Descriptor.ShaderRegister = 7;//定数バッファ番号(b7)
+	rootParams_[TESS_WAVE].Descriptor.RegisterSpace = 0;//デフォルト値
+	rootParams_[TESS_WAVE].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 }
 
 //-------------------------------------------------------------------------

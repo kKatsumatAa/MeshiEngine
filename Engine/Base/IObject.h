@@ -46,6 +46,7 @@ public:
 		SPECULAR_MAP,
 		NORM_MAP,
 		SHADOW_TEX,
+		TESS_WAVE,
 		//要素数
 		count
 	};

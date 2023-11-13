@@ -1,14 +1,6 @@
 
 #include "CommonHeader.hlsli"
 
-//メッシュの行列
-cbuffer ConstBufferDataTransformMesh : register(b2)
-{
-    matrix viewprojMesh; //ビュープロジェクション行列
-    matrix worldMesh; //ワールド行列
-    float3 cameraPosMesh; //カメラ座標（ワールド座標）
-}
-
 cbuffer ConstBufferDataMaterial2 : register(b3)
 {
     float3 m_ambient : packoffset(c0); //アンビエント

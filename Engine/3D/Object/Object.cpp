@@ -70,8 +70,8 @@ void Object::CommonInitialize()
 			"", "", "",
 			sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, 0);
 		//メッシュ分割
-		PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[HULL_DOMAIN_OBJ],
-			"Resources/shaders/OBJVertexShader.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
+		PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, pipelineSetM_[HULL_DOMAIN_OBJ],
+			"Resources/shaders/OBJVSTess.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
 			"", "Resources/shaders/WaveHullShader.hlsl", "Resources/shaders/WaveDomainShader.hlsl",
 			sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH);
 	}
@@ -93,7 +93,7 @@ void Object::CommonInitialize()
 			sInputLayoutPrimitive_, _countof(sInputLayoutPrimitive_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, 0);
 		//メッシュ分割
 		PipeLineSetting(D3D12_FILL_MODE_SOLID, primitivePipeLineSet_[HULL_DOMAIN_PRIM],
-			"Resources/shaders/BasicVS.hlsl", "Resources/shaders/BasicPS.hlsl",
+			"Resources/shaders/BasicVSTess.hlsl", "Resources/shaders/BasicPS.hlsl",
 			"", "Resources/shaders/WaveHullShader.hlsl", "Resources/shaders/WaveDomainShader.hlsl",
 			sInputLayoutPrimitive_, _countof(sInputLayoutPrimitive_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH);
 

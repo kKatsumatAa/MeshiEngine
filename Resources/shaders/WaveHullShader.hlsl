@@ -11,7 +11,7 @@ struct HS_CONSTANT_DATA_OUTPUT
 #define NUM_CONTROL_POINTS 3
 
 HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
-	InputPatch<VSOutput, NUM_CONTROL_POINTS> ip,
+	InputPatch<VSOutput2, NUM_CONTROL_POINTS> ip,
 	uint PatchID : SV_PrimitiveID)
 {
 	HS_CONSTANT_DATA_OUTPUT Output;
@@ -19,7 +19,7 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 	Output.EdgeTessFactor[0] = 
 		Output.EdgeTessFactor[1] = 
 		Output.EdgeTessFactor[2] = 
-		Output.InsideTessFactor = 15.0f;
+		Output.InsideTessFactor = 45.0f;
 
 	return Output;
 }
@@ -29,12 +29,12 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 [outputtopology("triangle_cw")] // メッシュの出力方法を指定する
 [outputcontrolpoints(3)] // ハルシェーダーのコントロール ポイント フェーズがコールされる回数
 [patchconstantfunc("CalcHSPatchConstants")] // 対応するハルシェーダーのパッチ定数フェーズのメイン関数
-VSOutput main(
-	InputPatch<VSOutput, NUM_CONTROL_POINTS> ip,
+VSOutput2 main(
+	InputPatch<VSOutput2, NUM_CONTROL_POINTS> ip,
 	uint i : SV_OutputControlPointID,
 	uint PatchID : SV_PrimitiveID )
 {
-    VSOutput Output;
+    VSOutput2 Output;
 
 	Output.svpos = ip[i].svpos;
 	Output.tpos = ip[i].tpos;

@@ -4,15 +4,6 @@
 
 class LandShape : public TouchableObject
 {
-private:
-
-public:
-
-
-
-private:
-
-
 public:
 	static std::unique_ptr<LandShape> Create(std::unique_ptr<WorldMat> worldMat, IModel* model);
 
@@ -22,4 +13,6 @@ public:
 
 	void DrawShadow()override;
 	void Draw()override;
+
+	void OnCollision(const CollisionInfo& info) override;
 };
