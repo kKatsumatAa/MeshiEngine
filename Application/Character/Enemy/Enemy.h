@@ -69,6 +69,11 @@ private:
 	//被攻撃時の加算角度
 	std::vector<DamagedNodeAddRot> damagedAddRots_;
 
+	//アニメーション中に地面にウェーブ出す
+	float walkWaveTimer_ = 0;
+	const float  WALK_MOVE_INTERVAL_ = 15;
+
+
 	//ステート
 	std::unique_ptr<EnemyState> state_ = nullptr;
 	std::unique_ptr<EnemyState> stanceState_ = nullptr;
@@ -93,6 +98,9 @@ private:
 	void WalkToTarget(const Vec3& targetPos);
 	//攻撃された部位ごとにノードに加算する角度を決める
 	void SetAllNodeAddRots(const IObject& nodeObj, float angleExtend = 1.0f);
+
+	//歩くときに地面に波紋
+	void WalkWaveUpdate();
 
 private:
 	//被弾時のパーティクル

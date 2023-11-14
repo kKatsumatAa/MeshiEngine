@@ -9,6 +9,7 @@
 #include "EnemyState.h"
 #include "LevelManager.h"
 #include "Bullet.h"
+#include "ObjectManager.h"
 
 using namespace DirectX;
 
@@ -190,6 +191,9 @@ void Enemy::WalkToTarget(const Vec3& targetPos)
 
 	//向き変更
 	DirectionUpdate(targetPos);
+
+	//波紋発生
+	WalkWaveUpdate();
 }
 
 //---------------------------------------------------------------------------------------------
@@ -232,6 +236,18 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj, float angleExtend)
 	}
 
 	damagedAddRots_.push_back({ "Spine2", {0,0,0},addRot });
+}
+
+void Enemy::WalkWaveUpdate()
+{
+	walkWaveTimer_ += GameVelocityManager::GetInstance().GetVelocity();
+
+	//間隔が来たらステージに波紋
+	if ((int32_t)walkWaveTimer_ % (int32_t)WALK_MOVE_INTERVAL_ == 0)
+	{
+		ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "stage")[0]->
+			BeginWave(GetTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 2.0f,GetScale().y * 2.5f }, GetScale().z * 10.0f, 60.0f);
+	}
 }
 
 //---------------------------------------------------------------------------------------------
@@ -284,7 +300,7 @@ void Enemy::BeginDamagedWave(const CollisionInfo& info, float wavePow)
 {
 	//メッシュの波
 	BeginWave({ info.inter_.m128_f32[0] ,info.inter_.m128_f32[1] ,info.inter_.m128_f32[2] },
-		{ GetScale().y / 23.0f * wavePow,GetScale().GetLength() /1.3f * wavePow }, GetScale().GetLength() * 2.0f, 480.0f / wavePow);
+		{ GetScale().y / 23.0f * wavePow,GetScale().GetLength() / 1.3f * wavePow }, GetScale().GetLength() * 2.0f, 480.0f / wavePow);
 }
 
 //----------------------------------------------------------------

@@ -185,8 +185,8 @@ public:
 
 public:
 	//メッシュ分割のウェーブ波を発生
-	void BeginWave(const Vec3& epicenter, const Vec2& thickness, float distancePow, float timer) 
-	{ waves_.BeginWave(epicenter, thickness, distancePow, timer); }
+	void BeginWave(const Vec3& epicenter, const Vec2& thickness, float distanceMax, float timer) 
+	{ waves_.BeginWave(epicenter, thickness, distanceMax, timer); }
 
 public:
 	//モデルのポインタ
