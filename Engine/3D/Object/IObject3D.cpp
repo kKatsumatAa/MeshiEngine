@@ -88,23 +88,6 @@ IObject3D::IObject3D()
 		result = effectFlagsBuff_->Map(0, nullptr, (void**)&mapEffectFlagsBuff_);//マッピング
 		assert(SUCCEEDED(result));
 	}
-	//メッシュ分割のウェーブ用
-	{
-		//ヒープ設定
-		D3D12_HEAP_PROPERTIES cbHeapProp{};
-		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
-		//リソース設定
-		D3D12_RESOURCE_DESC cbResourceDesc{};
-		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
-		//リソース設定
-		ResourceProperties(cbResourceDesc,
-			((uint32_t)sizeof(EffectOConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
-		//定数バッファの生成
-		BuffProperties(cbHeapProp, cbResourceDesc, &tessWaveBuff_);
-		//定数バッファのマッピング
-		result = tessWaveBuff_->Map(0, nullptr, (void**)&mapTessWaveBuff_);//マッピング
-		assert(SUCCEEDED(result));
-	}
 
 	//トランスフォーム行列
 	cbt_.Initialize();
@@ -187,11 +170,7 @@ void IObject3D::EffectUpdate(IObject3D* effectCopyObj)
 	}
 	//メッシュ分割のウェーブ
 	{
-		wave_.Update();
-
-		mapTessWaveBuff_->waveDistance = wave_.GetDistance();
-		mapTessWaveBuff_->waveEpicenter = wave_.GetEpicenter();
-		mapTessWaveBuff_->waveThickness = wave_.GetThickness();
+		waves_.Update();
 	}
 }
 
@@ -287,7 +266,7 @@ void IObject3D::SetMaterialLightMTex(uint64_t textureHandle, uint64_t dissolveTe
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(EFFECT, effectFlagsBuff_->GetGPUVirtualAddress());
 
 	//メッシュ分割のウェーブ
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(TESS_WAVE, tessWaveBuff_->GetGPUVirtualAddress());
+	waves_.SetBuffCmdLst(TESS_WAVE);
 }
 
 //--------------------------------------------------------------------------------

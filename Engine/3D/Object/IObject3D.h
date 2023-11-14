@@ -3,7 +3,7 @@
 #include "LightManager.h"
 #include "CameraManager.h"
 #include "ModelManager.h"
-#include "Wave.h"
+#include "Waves.h"
 
 
 //演出用のフラグ
@@ -53,10 +53,6 @@ private:
 	ComPtr <ID3D12Resource> effectFlagsBuff_;
 	EffectOConstBuffer* mapEffectFlagsBuff_;
 
-	//メッシュ分割のウェーブ演出
-	ComPtr <ID3D12Resource> tessWaveBuff_;
-	TessWaveEffect* mapTessWaveBuff_;
-
 	static XMFLOAT4 sLightCameraParam_;
 
 protected:
@@ -99,7 +95,8 @@ private:
 	static LightManager* sLightManager_;
 
 protected:
-	Wave wave_;
+	//波を管理
+	Waves waves_;
 
 private:
 	//初期の正面ベクトル
@@ -189,7 +186,7 @@ public:
 public:
 	//メッシュ分割のウェーブ波を発生
 	void BeginWave(const Vec3& epicenter, const Vec2& thickness, float distancePow, float timer) 
-	{ wave_.BeginWave(epicenter, thickness, distancePow, timer); }
+	{ waves_.BeginWave(epicenter, thickness, distancePow, timer); }
 
 public:
 	//モデルのポインタ

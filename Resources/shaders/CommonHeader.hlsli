@@ -201,9 +201,16 @@ cbuffer ConstBufferEffectFlags : register(b5)
 }
 
 //メッシュ分割のウェーブ演出
-cbuffer ConstBufferEffectFlags : register(b7)
+static const int WAVE_NUM = 10;
+struct Wave
 {
     float3 waveEpicenter; //震源地
     float waveDistance; //波の距離
     float2 waveThickness; //波の太さ
+};
+
+//メッシュ分割のウェーブ演出
+cbuffer ConstBufferWaveFlags : register(b7)
+{
+    Wave waves[WAVE_NUM];
 };

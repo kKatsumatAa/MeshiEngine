@@ -280,6 +280,13 @@ void Enemy::HPUpdate(float t)
 	ObjectFBX::SetMeshPolygonOffsetData(offsetData);
 }
 
+void Enemy::BeginDamagedWave(const CollisionInfo& info, float wavePow)
+{
+	//メッシュの波
+	BeginWave({ info.inter_.m128_f32[0] ,info.inter_.m128_f32[1] ,info.inter_.m128_f32[2] },
+		{ GetScale().y / 23.0f * wavePow,GetScale().GetLength() /1.3f * wavePow }, GetScale().GetLength() * 2.0f, 480.0f / wavePow);
+}
+
 //----------------------------------------------------------------
 void Enemy::Update()
 {
@@ -458,6 +465,9 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		auto stateChangeF2 = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDamagedBegin>()); };
 		Damaged(1, stateChangeF, stateChangeF2);
 
+		//メッシュの波
+		BeginDamagedWave(info, 0.8f);
+
 		//パーティクル
 		DamageParticle(60, 1, 1.0f, &info, obj);
 
@@ -483,6 +493,9 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		//ノードの角度を加算するため
 		SetAllNodeAddRots(*obj, 1.5f);
 
+		//メッシュの波
+		BeginDamagedWave(info, 1.7f);
+
 		//パーティクル
 		DamageParticle(100, 1, 1.3f, &info, obj, nullptr);
 	}
@@ -501,6 +514,16 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		{
 			//
 			KnockBack(info);
+
+			//ノードの角度を加算するため
+			SetAllNodeAddRots(*obj, 0.7f);
+			//ダメージステートにする
+			auto stateChangeF = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDead>()); };
+			auto stateChangeF2 = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDamagedBegin>()); };
+			Damaged(0, stateChangeF, stateChangeF2);
+
+			//メッシュの波
+			BeginDamagedWave(info, 0.5f);
 		}
 		//おいてあったら拾う
 		else

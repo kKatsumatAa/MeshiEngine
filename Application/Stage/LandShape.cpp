@@ -43,7 +43,7 @@ void LandShape::Update()
 	{
 		Vec3 interPos = { 0,0,0 };
 
-		wave_.BeginWave(interPos, { GetScale().y / 45.0f,GetScale().GetLength() * 1.5f }, GetScale().GetLength(), 120.0f);
+		BeginWave(interPos, { GetScale().y / 45.0f,GetScale().GetLength() * 1.5f }, GetScale().GetLength(), 120.0f);
 	}
 }
 

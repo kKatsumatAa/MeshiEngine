@@ -4,13 +4,19 @@
 
 float4 WavePos(float4 localPos, float3 normal, matrix world)
 {
-    return float4(mul(world, localPos).xyz + 
-    normal
-    * waveThickness.y 
-    * max(waveThickness.x - abs(
-    waveDistance - distance(
-    mul(world, localPos).xyz, waveEpicenter)), 0),
-    1.0f);
+    float maxWidth = 0;
+    
+    for (int i = 0; i < WAVE_NUM; i++)
+    {
+        maxWidth += max(waves[i].waveThickness.y * max(waves[i].waveThickness.x - abs(
+            waves[i].waveDistance - distance(mul(world, localPos).xyz, waves[i].waveEpicenter)), 0)
+            - maxWidth
+        , 0);
+    }
+    
+    
+    return float4(mul(world, localPos).xyz +
+        normal * maxWidth, 1.0f);
 }
 
 struct HS_CONSTANT_DATA_OUTPUT
@@ -48,7 +54,7 @@ DSOutput main(
     //ƒ[ƒ‹ƒhÀ•W
     Output.worldpos = float4(
 		patch[0].worldpos.xyz * domain.x + patch[1].worldpos.xyz * domain.y + patch[2].worldpos.xyz * domain.z, 1);
-    Output.worldpos = mul(worldL, Output.worldpos);
+    Output.worldpos = WavePos(Output.worldpos, Output.normal, worldL);
     //
     Output.tpos = float4(
 		patch[0].tpos.xyz * domain.x + patch[1].tpos.xyz * domain.y + patch[2].tpos.xyz * domain.z, 1);

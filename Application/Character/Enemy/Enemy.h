@@ -135,6 +135,9 @@ public:
 	//hp処理
 	void HPUpdate(float t = 1.0f);
 
+	//被ダメージ時に波発生
+	void BeginDamagedWave(const CollisionInfo& info, float wavePow);
+
 public:
 	int32_t GetWaveNum() { return waveNum_; }
 	//ライト

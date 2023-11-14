@@ -202,6 +202,12 @@
     <Filter Include="ヘッダー ファイル\Engine\Collision\3D">
       <UniqueIdentifier>{b23b46db-3fe8-4559-9c13-88ed3daa9f0f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\3D\Wave">
+      <UniqueIdentifier>{f20be6bd-9c44-453c-ab05-2db07b9d0f12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\3D\Wave">
+      <UniqueIdentifier>{37213462-ff7f-4a69-a692-75500690320e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -521,6 +527,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Util\Wave.cpp">
       <Filter>ソース ファイル\Engine\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\Wave\Waves.cpp">
+      <Filter>ソース ファイル\Engine\3D\Wave</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -859,6 +868,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Util\Wave.h">
       <Filter>ヘッダー ファイル\Engine\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\Wave\Waves.h">
+      <Filter>ヘッダー ファイル\Engine\3D\Wave</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

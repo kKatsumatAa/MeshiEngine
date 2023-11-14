@@ -20,3 +20,18 @@ void Wave::Update()
 
 	timer_++;
 }
+
+void Wave::End()
+{
+	BeginWave({ 0,0,0 }, { 0,0 }, 0, 0);
+}
+
+bool Wave::GetIsEndWave()
+{
+	if ((timer_ >= timerMax_ || thickness_.GetLength() == 0) || distance_ >= distanceMax_)
+	{
+		return true;
+	}
+
+	return false;
+}
