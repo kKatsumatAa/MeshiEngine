@@ -252,7 +252,7 @@ void EnemyStateAttackStanceBegin::Update()
 	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, t_));
 
 	//アニメーションスピード徐々に
-	enemy_->SetAnimeSpeedExtend(max(1.0f - EaseIn(t_), 0.3f));
+	enemy_->SetAnimeSpeedExtend(Lerp(1.0f, 0, EaseIn(t_)));
 
 	//仮で構え終わったら攻撃
 	if (t_ >= 1.0f)
@@ -282,7 +282,7 @@ void EnemyStateAttackStanceEnd::Update()
 	EnemyStateAttackStance::Update();
 
 	//アニメーションスピード徐々に
-	enemy_->SetAnimeSpeedExtend(EaseIn(t_));
+	enemy_->SetAnimeSpeedExtend(Lerp(0, 1.0f, EaseIn(t_)));
 
 	//角度を戻す
 	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, t_));
@@ -299,6 +299,10 @@ void EnemyStateDamagedBegin::Update()
 	//時間を加算して割合を得る
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
 	float t = min(timer_ / TIMER_MAX_, 1.0f);
+
+	//アニメーションスピード徐々に
+	enemy_->AllMove(GetRayHitGunOrPlayerPos());
+	enemy_->SetAnimeSpeedExtend(Lerp(1.0f, 0.3f, EaseIn(t)));
 
 	//割合を使用して線形補完
 	for (auto nodeAddRot : enemy_->GetDamagedAddRots())
@@ -324,6 +328,10 @@ void EnemyStateDamagedEnd::Update()
 	//時間を加算して割合を得る
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
 	float t = timer_ / TIMER_MAX_;
+
+	//アニメーションスピード徐々に
+	enemy_->AllMove(GetRayHitGunOrPlayerPos());
+	enemy_->SetAnimeSpeedExtend(Lerp(0.3f, 1.0f, EaseIn(t)));
 
 	//割合を使用して線形補完(今度は元に戻す)
 	for (auto nodeAddRot : enemy_->GetDamagedAddRots())
@@ -352,6 +360,10 @@ void EnemyStateDead::Update()
 	//時間を加算して割合を得る
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
 	float t = timer_ / enemy_->GetDeadTimerMax();
+
+	//アニメーションスピード徐々に
+	enemy_->AllMove(GetRayHitGunOrPlayerPos());
+	enemy_->SetAnimeSpeedExtend(Lerp(1.0f, 0, EaseIn(t)));
 
 	//割合を使用して線形補完
 	for (auto nodeAddRot : enemy_->GetDamagedAddRots())

@@ -229,8 +229,8 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj, float angleExtend)
 		Vec3 localPosFromLeg = nodeObj.GetLocalTrans() - ObjectFBX::GetNodeColliderObj("UpLeg")->GetLocalTrans();
 
 		Vec3 addRotLeg = { 0,0,0 };
-		addRotLeg.x = max(min(localPosFromLeg.y, PI / 8.0f), -PI / 8.0f) * angleExtend;
-		addRotLeg.y = max(min(-localPosFromLeg.x, PI / 8.0f), -PI / 8.0f) * angleExtend;
+		addRotLeg.x = max(min(localPosFromLeg.y, PI / 5.5f), -PI / 5.5f) * angleExtend;
+		addRotLeg.y = max(min(-localPosFromLeg.x, PI / 5.5f), -PI / 5.5f) * angleExtend;
 
 		damagedAddRots_.push_back({ leftOrRightStr + "Leg", {0,0,0},addRotLeg });
 	}
