@@ -87,7 +87,7 @@ bool EnemyManager::GetIsAliveWaveEnemy()
 		Enemy* enemy = TransToEnemy(obj);
 
 		//現在と同じウェーブ番号の敵がいたら
-		if (enemy->GetWaveNum() == waveNum_)
+		if (enemy->GetWaveNum() == waveNum_ && !enemy->GetIsDead())
 		{
 			return true;
 		}

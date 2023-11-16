@@ -43,8 +43,7 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	SetCollider(std::make_unique<SphereCollider>());
 
 	SetTrans(pos);
-	//仮で銃はキャラの手前にあるので少し後ろをレイの始点にするため
-	oldPos_ = pos;
+	oldPos_ = pos - directionVec.GetNormalized() * 0.01f;
 
 	directionVec_ = directionVec;
 	SetScale({ scale,scale,scale });
@@ -143,7 +142,7 @@ void Bullet::Update()
 	}
 
 	//前回の位置を記録
-	oldPos_ = GetTrans();
+	oldPos_ = GetTrans() - directionVec_.GetNormalized() * 0.01f;
 
 	//生存時間超えたら
 	if (lifeTime_ <= 0)

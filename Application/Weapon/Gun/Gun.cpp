@@ -8,6 +8,8 @@
 #include "GameVelocityManager.h"
 #include "BulletManager.h"
 #include "Character.h"
+#include "ObjectManager.h"
+#include "LevelManager.h"
 
 using namespace DirectX;
 
@@ -65,15 +67,22 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, IObject3D* owner
 	}
 
 	//発射座標(銃本体に当たらないようにする)
-	shotPos_ = { trans.x + directionVec.GetNormalized().x * GetScale().x * 1.2f,
-				 trans.y + directionVec.GetNormalized().y * GetScale().y * 1.2f,
-				 trans.z + directionVec.GetNormalized().z * GetScale().z * 1.2f };
+	shotPos_ = { trans.x + directionVec.GetNormalized().x * GetScale().x * 5.0f,
+				 trans.y + directionVec.GetNormalized().y * GetScale().y * 5.0f,
+				 trans.z + directionVec.GetNormalized().z * GetScale().z * 5.0f };
 
 	//弾うつ処理
 	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x * 0.4f, 300, owner);
 
 	//パーティクル
 	ParticleGenerate({ 4.0f,4.0f,4.0f,1.5f }, { 4.0f,4.0f,4.0f,0 }, particleSize);
+
+	//メッシュ分割のウェーブ
+	auto landShapes = ObjectManager::GetInstance().GetObjs(LevelManager::GetInstance().S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
+	for (auto landShape : landShapes)
+	{
+		landShape->BeginWave(shotPos_, Vec2(GetScale().z, GetScale().y) * 30.0f, GetScale().GetLength() * 50.0f, 140.0f);
+	}
 
 	attackCoolTime_ = SHOT_COOL_TIME_MAX_;
 	remainingBullets_ -= decreBullet;

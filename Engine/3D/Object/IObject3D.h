@@ -161,6 +161,7 @@ public:
 	void SetDissolveTexHandle(uint64_t dissolveTextureHandle) { dissolveTextureHandle_ = dissolveTextureHandle; }
 	//ディゾルブ割合
 	void SetDissolveT(float t) { effectFlags_.dissolveT = t; }
+	float GetDissolveT() { return effectFlags_.dissolveT; }
 	void SetisDissolve(bool isDissolve) { effectFlags_.isDissolve = isDissolve; }
 
 	//スペキュラマップ
@@ -177,8 +178,10 @@ public:
 
 public:
 	//メッシュ分割のウェーブ波を発生
-	void BeginWave(const Vec3& epicenter, const Vec2& thickness, float distanceMax, float timer) 
-	{ waves_.BeginWave(epicenter, thickness, distanceMax, timer); }
+	void BeginWave(const Vec3& epicenter, const Vec2& thickness, float distanceMax, float timer)
+	{
+		waves_.BeginWave(epicenter, thickness, distanceMax, timer);
+	}
 	//分割数をセット
 	void SetTessFactor(float tessFactor) { waves_.SetTessFactor(tessFactor); }
 

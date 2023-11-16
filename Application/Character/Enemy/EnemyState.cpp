@@ -353,6 +353,7 @@ void EnemyStateDead::Initialize()
 {
 	//死んだのでノードごとの当たり判定は無効に
 	enemy_->SetIsValidNodeColliders(false);
+	enemy_->SetIsDead(true);
 }
 
 void EnemyStateDead::Update()

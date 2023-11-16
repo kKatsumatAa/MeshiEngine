@@ -44,6 +44,7 @@ void LandShape::Update()
 
 	//張りぼて更新
 	landShapePapierMache_->SetWorldMatParam(*worldMat_);
+	landShapePapierMache_->SetDissolveT(GetDissolveT());
 	landShapePapierMache_->Update();
 
 	//

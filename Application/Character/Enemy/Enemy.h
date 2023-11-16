@@ -74,8 +74,10 @@ private:
 	//アニメーション中に地面にウェーブ出す
 	float walkWaveTimer_ = 0;
 	float beforeWalkTime_ = 0;
-	const float  WALK_MOVE_INTERVAL_ = 11.5f;
+	const float  WALK_MOVE_INTERVAL_ = 5.f;
 
+	//ゲーム的に死亡したか
+	bool isDead_ = false;
 
 	//ステート
 	std::unique_ptr<EnemyState> state_ = nullptr;
@@ -161,6 +163,9 @@ public:
 	//攻撃中か
 	void SetIsAttacking(bool isAttacking) { isAttacking_ = isAttacking; }
 	bool GetIsAttacking() { return isAttacking_; }
+	//ゲーム的に死亡したか
+	void SetIsDead(bool isDead) { isDead_ = isDead; }
+	bool GetIsDead() { return isDead_; }
 	//構えるときとかに徐々にゆっくりにするための変数
 	void SetAnimeSpeedExtend(float animeSpeedExtend) { animeSpeedExtend_ = animeSpeedExtend; }
 	float GetAnimeSpeedExtend() { return animeSpeedExtend_; }

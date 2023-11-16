@@ -243,7 +243,7 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj, float angleExtend)
 
 void Enemy::WalkWaveUpdate()
 {
-	walkWaveTimer_ += GameVelocityManager::GetInstance().GetVelocity();
+	walkWaveTimer_ += GameVelocityManager::GetInstance().GetVelocity() * GetAnimeSpeedExtend();
 
 	//間隔が来たらステージに波紋
 	if ((int32_t)walkWaveTimer_ % (int32_t)WALK_MOVE_INTERVAL_ == 0 && (uint32_t)beforeWalkTime_ != (uint32_t)walkWaveTimer_)
