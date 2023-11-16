@@ -37,14 +37,6 @@ struct EffectOConstBuffer
 	uint32_t time = 0;
 };
 
-//メッシュ分割のウェーブ演出
-struct TessWaveEffect
-{
-	Vec3 waveEpicenter = { 0,0,0 };//震源地
-	float waveDistance = 0;//波の距離
-	Vec2 waveThickness = { 0,0 };//波の太さ
-};
-
 //3Dオブジェクトの親クラス--------------------------------------------
 class IObject3D : public IObject
 {
@@ -187,6 +179,8 @@ public:
 	//メッシュ分割のウェーブ波を発生
 	void BeginWave(const Vec3& epicenter, const Vec2& thickness, float distanceMax, float timer) 
 	{ waves_.BeginWave(epicenter, thickness, distanceMax, timer); }
+	//分割数をセット
+	void SetTessFactor(float tessFactor) { waves_.SetTessFactor(tessFactor); }
 
 public:
 	//モデルのポインタ

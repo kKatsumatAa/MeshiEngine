@@ -92,7 +92,7 @@ void Player::DirectionUpdate()
 	Vec2 vel = MouseInput::GetInstance().GetCursorVelocity() * MOUSE_VELOCITY_TMP_;
 
 	//マウスの動きでゲームスピードを足す
-	GameVelocityManager::GetInstance().AddGameVelocity(vel.GetLength() * MOUSE_GAME_VEL_EXTEND_, "mouse");
+	//GameVelocityManager::GetInstance().AddGameVelocity(vel.GetLength() * MOUSE_GAME_VEL_EXTEND_, "mouse");
 
 	//回転
 	Vec3 rotMove = {

@@ -212,6 +212,7 @@ public:
 	WorldMat* GetParent() { return worldMat_->parent_; }
 	//ワールド行列用クラスのインスタンスを取得
 	WorldMat* GetWorldMat() { return worldMat_.get(); }
+	void SetWorldMatParam(const WorldMat& worldMat) { *(worldMat_.get()) = worldMat; }
 	//親子関係を考慮した位置をゲット
 	Vec3 GetWorldTrans()const { return worldMat_->GetWorldTrans(); }
 	//親子関係を考慮したスケールをゲット

@@ -13,6 +13,7 @@ GameVelocityManager& GameVelocityManager::GetInstance()
 void GameVelocityManager::Initialize()
 {
 	gameVelocity_ = 1.0f;
+	isInvalidAddGameVel_ = false;
 }
 
 void GameVelocityManager::AddGameVelocity(float velocity, std::string velName)
@@ -60,7 +61,7 @@ void GameVelocityManager::Update(bool isScalingPostPera)
 	if (gameVelocity_ > GAME_VELOCITY_MIN_)
 	{
 		//減らしていく
-		gameVelocity_ *= 0.93f;
+		gameVelocity_ *= 0.95f;
 		//最低スピードは保つ
 		gameVelocity_ = max(GAME_VELOCITY_MIN_, gameVelocity_);
 	}

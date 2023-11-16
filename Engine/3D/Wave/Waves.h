@@ -19,11 +19,13 @@ private:
 		DirectX::XMFLOAT3 epicenter; //震源地
 		float distance; //波の距離
 		DirectX::XMFLOAT2 thickness; //波の太さ
-		float padding[2];
+		float padding[2] = { 0 };
 	};
 
 	struct WavesBuff
 	{
+		float tessFactor = 5.0f;
+		float padding[3] = { 0 };
 		WaveBuff waves[WAVE_NUM_];
 	};
 
@@ -47,6 +49,8 @@ public:
 	//波を発生
 	void BeginWave(const Vec3& epicenter, const Vec2& thickness, float distanceMax, float timer);
 
+	//分割数
+	void SetTessFactor(float tessFactor) { mapWavesBuff_->tessFactor = tessFactor; }
 
 private:
 	//使えるウェーブの添え字を返す

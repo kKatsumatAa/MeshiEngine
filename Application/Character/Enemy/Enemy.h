@@ -27,6 +27,8 @@ private:
 	const float DAMAGED_MAX_TIME_ = 20.0f;
 	//死亡時
 	const float DEAD_TIMER_MAX_ = 60.0f;
+	//分割数
+	const float TESS_FACTOR_MAX_ = 10.0f;
 
 private:
 	Vec3 velocity_ = { 0,0,0 };
@@ -71,7 +73,8 @@ private:
 
 	//アニメーション中に地面にウェーブ出す
 	float walkWaveTimer_ = 0;
-	const float  WALK_MOVE_INTERVAL_ = 15;
+	float beforeWalkTime_ = 0;
+	const float  WALK_MOVE_INTERVAL_ = 11.5f;
 
 
 	//ステート

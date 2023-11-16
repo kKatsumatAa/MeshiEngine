@@ -129,6 +129,9 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	auto onCollF = [=](IObject3D* obj, const CollisionInfo& info) {OnCollision(obj, info); };
 	SetNodeCollidersOnCollision(onCollF);
 
+	//分割数
+	SetTessFactor(TESS_FACTOR_MAX_);
+
 	return true;
 }
 
@@ -243,10 +246,12 @@ void Enemy::WalkWaveUpdate()
 	walkWaveTimer_ += GameVelocityManager::GetInstance().GetVelocity();
 
 	//間隔が来たらステージに波紋
-	if ((int32_t)walkWaveTimer_ % (int32_t)WALK_MOVE_INTERVAL_ == 0)
+	if ((int32_t)walkWaveTimer_ % (int32_t)WALK_MOVE_INTERVAL_ == 0 && (uint32_t)beforeWalkTime_ != (uint32_t)walkWaveTimer_)
 	{
+		beforeWalkTime_ = walkWaveTimer_;
+
 		ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "stage")[0]->
-			BeginWave(GetTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 2.0f,GetScale().y * 2.5f }, GetScale().z * 10.0f, 60.0f);
+			BeginWave(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 2.0f,GetScale().y * 2.5f }, GetScale().z * 10.0f, 60.0f);
 	}
 }
 

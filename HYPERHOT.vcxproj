@@ -66,7 +66,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\LevelLoader;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D;$(ProjectDir)Engine\3D\Wave</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D;$(ProjectDir)Engine\3D\Wave;$(ProjectDir)Application\Scene;$(ProjectDir)Application\LevelLoader</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -91,7 +91,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\LevelLoader;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D;$(ProjectDir)Engine\3D\Wave</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D;$(ProjectDir)Engine\3D\Wave;$(ProjectDir)Application\Scene;$(ProjectDir)Application\LevelLoader</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -123,7 +123,20 @@
     <ClCompile Include="Application\Character\Player\PlayerUIState.cpp" />
     <ClCompile Include="Application\Effect\ClearEffect.cpp" />
     <ClCompile Include="Application\Effect\ClearEffectState.cpp" />
+    <ClCompile Include="Application\LevelLoader\JsonLevelLoader.cpp" />
+    <ClCompile Include="Application\LevelLoader\LevelManager.cpp" />
+    <ClCompile Include="Application\Scene\SceneClear.cpp" />
+    <ClCompile Include="Application\Scene\SceneFactory.cpp" />
+    <ClCompile Include="Application\Scene\SceneGame.cpp" />
+    <ClCompile Include="Application\Scene\SceneLoad.cpp" />
+    <ClCompile Include="Application\Scene\SceneManager.cpp" />
+    <ClCompile Include="Application\Scene\SceneStageSelect.cpp" />
+    <ClCompile Include="Application\Scene\SceneState.cpp" />
+    <ClCompile Include="Application\Scene\SceneTitle.cpp" />
+    <ClCompile Include="Application\Scene\SceneTransitionEffectState.cpp" />
+    <ClCompile Include="Application\Scene\SceneTransitionManager.cpp" />
     <ClCompile Include="Application\Stage\LandShape.cpp" />
+    <ClCompile Include="Application\Stage\LandShapePapierMache.cpp" />
     <ClCompile Include="Application\Stage\StageManager.cpp" />
     <ClCompile Include="Application\Stage\StageSelect.cpp" />
     <ClCompile Include="Application\Stage\StageState.cpp" />
@@ -172,8 +185,6 @@
     <ClCompile Include="Engine\Base\Frame\MyGame.cpp" />
     <ClCompile Include="Engine\Base\ImGuiManager.cpp" />
     <ClCompile Include="Engine\Base\IObject.cpp" />
-    <ClCompile Include="Engine\Base\LevelLoader\JsonLevelLoader.cpp" />
-    <ClCompile Include="Engine\Base\LevelLoader\LevelManager.cpp" />
     <ClCompile Include="Engine\Base\Matrix\ConstBuffTransform.cpp" />
     <ClCompile Include="Engine\Base\Matrix\ProjectionMat.cpp" />
     <ClCompile Include="Engine\Base\Matrix\ViewMat.cpp" />
@@ -205,16 +216,6 @@
     <ClCompile Include="Engine\PostEffect\GausianBuffer.cpp" />
     <ClCompile Include="Engine\PostEffect\PostEffectManager.cpp" />
     <ClCompile Include="Engine\PostEffect\PostPera.cpp" />
-    <ClCompile Include="Engine\Scene\SceneClear.cpp" />
-    <ClCompile Include="Engine\Scene\SceneFactory.cpp" />
-    <ClCompile Include="Engine\Scene\SceneGame.cpp" />
-    <ClCompile Include="Engine\Scene\SceneLoad.cpp" />
-    <ClCompile Include="Engine\Scene\SceneManager.cpp" />
-    <ClCompile Include="Engine\Scene\SceneState.cpp" />
-    <ClCompile Include="Engine\Scene\SceneTitle.cpp" />
-    <ClCompile Include="Engine\Scene\SceneTransitionManager.cpp" />
-    <ClCompile Include="Engine\Scene\SceneTransitionEffectState.cpp" />
-    <ClCompile Include="Engine\Scene\SceneStageSelect.cpp" />
     <ClCompile Include="Engine\Util\Counter.cpp" />
     <ClCompile Include="Engine\Util\Shake.cpp" />
     <ClCompile Include="Engine\Util\Util.cpp" />
@@ -236,7 +237,21 @@
     <ClInclude Include="Application\Character\Player\PlayerUIState.h" />
     <ClInclude Include="Application\Effect\ClearEffect.h" />
     <ClInclude Include="Application\Effect\ClearEffectState.h" />
+    <ClInclude Include="Application\LevelLoader\JsonLevelLoader.h" />
+    <ClInclude Include="Application\LevelLoader\LevelManager.h" />
+    <ClInclude Include="Application\Scene\AbstractSceneFactory.h" />
+    <ClInclude Include="Application\Scene\SceneClear.h" />
+    <ClInclude Include="Application\Scene\SceneFactory.h" />
+    <ClInclude Include="Application\Scene\SceneGame.h" />
+    <ClInclude Include="Application\Scene\SceneLoad.h" />
+    <ClInclude Include="Application\Scene\SceneManager.h" />
+    <ClInclude Include="Application\Scene\SceneStageSelect.h" />
+    <ClInclude Include="Application\Scene\SceneState.h" />
+    <ClInclude Include="Application\Scene\SceneTitle.h" />
+    <ClInclude Include="Application\Scene\SceneTransitionEffectState.h" />
+    <ClInclude Include="Application\Scene\SceneTransitionManager.h" />
     <ClInclude Include="Application\Stage\LandShape.h" />
+    <ClInclude Include="Application\Stage\LandShapePapierMache.h" />
     <ClInclude Include="Application\Stage\StageManager.h" />
     <ClInclude Include="Application\Stage\StageSelect.h" />
     <ClInclude Include="Application\Stage\StageState.h" />
@@ -285,8 +300,6 @@
     <ClInclude Include="Engine\Base\Frame\MyGame.h" />
     <ClInclude Include="Engine\Base\ImGuiManager.h" />
     <ClInclude Include="Engine\Base\IObject.h" />
-    <ClInclude Include="Engine\Base\LevelLoader\JsonLevelLoader.h" />
-    <ClInclude Include="Engine\Base\LevelLoader\LevelManager.h" />
     <ClInclude Include="Engine\Base\Matrix\ConstBuffTransform.h" />
     <ClInclude Include="Engine\Base\Matrix\ProjectionMat.h" />
     <ClInclude Include="Engine\Base\Matrix\ViewMat.h" />
@@ -320,17 +333,6 @@
     <ClInclude Include="Engine\PostEffect\GausianBuffer.h" />
     <ClInclude Include="Engine\PostEffect\PostEffectManager.h" />
     <ClInclude Include="Engine\PostEffect\PostPera.h" />
-    <ClInclude Include="Engine\Scene\AbstractSceneFactory.h" />
-    <ClInclude Include="Engine\Scene\SceneClear.h" />
-    <ClInclude Include="Engine\Scene\SceneFactory.h" />
-    <ClInclude Include="Engine\Scene\SceneGame.h" />
-    <ClInclude Include="Engine\Scene\SceneLoad.h" />
-    <ClInclude Include="Engine\Scene\SceneManager.h" />
-    <ClInclude Include="Engine\Scene\SceneState.h" />
-    <ClInclude Include="Engine\Scene\SceneTitle.h" />
-    <ClInclude Include="Engine\Scene\SceneTransitionManager.h" />
-    <ClInclude Include="Engine\Scene\SceneTransitionEffectState.h" />
-    <ClInclude Include="Engine\Scene\SceneStageSelect.h" />
     <ClInclude Include="Engine\Util\Counter.h" />
     <ClInclude Include="Engine\Util\Shake.h" />
     <ClInclude Include="Engine\Util\Util.h" />

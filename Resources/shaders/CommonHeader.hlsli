@@ -212,5 +212,6 @@ struct Wave
 //メッシュ分割のウェーブ演出
 cbuffer ConstBufferWaveFlags : register(b7)
 {
+    float tessFactor; //分割数
     Wave waves[WAVE_NUM];
 };
