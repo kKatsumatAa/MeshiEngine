@@ -1,4 +1,4 @@
-﻿#include "PlayerUI.h"
+#include "PlayerUI.h"
 #include "PlayerUIState.h"
 
 
@@ -18,6 +18,7 @@ void PlayerUI::ChangeState(const std::string& name)
 
 	state_.reset();
 	state_ = std::move(PlayerUIState::GetState(name));
+	state_->SetPlayerUI(this);
 	state_->Initialize();
 
 	oldStateName = name;
@@ -29,6 +30,8 @@ void PlayerUI::Initialize()
 	TextureManager::LoadGraph("punchReticle.png");
 	TextureManager::LoadGraph("gunReticle.png");
 	TextureManager::LoadGraph("pickUpReticle.png");
+
+	pos_ = { WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f, WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f };
 
 	ChangeState("NORMAL");
 }

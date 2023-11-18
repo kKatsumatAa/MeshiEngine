@@ -68,7 +68,7 @@ void PlayerStateBareHands::Update()
 			{
 				Weapon* weapon = dynamic_cast<Weapon*>(info_.object);
 				//武器拾う
-				Vec3 localPos = { -player_->GetScale().x ,-player_->GetScale().y / 2.0f ,-player_->GetScale().z * 2.0f };
+				Vec3 localPos = player_->GetWeaponPosTmp();
 				weapon->SetRot({ 0,0,0 });
 				player_->PickUpWeapon(weapon, &localPos);
 
@@ -143,8 +143,18 @@ void PlayerStateHaveWeapon::Update()
 				}
 			}
 
+			Vec3 targetDir = player_->GetFrontVec();
+			//レイを飛ばしてターゲットまでのベクトル取得
+			RaycastHit info;
+			if (player_->CheckRayOfEyeHit(player_->GetFrontVec(), 10000, COLLISION_ATTR_ALL ^ COLLISION_ATTR_ALLIES, &info))
+			{
+				targetDir = Vec3(info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2]) - (
+					player_->GetWeapon()->GetWorldTrans());
+				targetDir.Normalized();
+			}
+
 			//攻撃
-			player_->GetWeapon()->Attack(player_->GetFrontVec(), 1, player_, PARTICLE_SIZE_EXTEND_);
+			player_->GetWeapon()->Attack(targetDir, 1, player_, PARTICLE_SIZE_EXTEND_);
 			//ゲームスピード加算
 			GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
 		}

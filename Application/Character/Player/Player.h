@@ -14,6 +14,9 @@ class PlayerState;
 class Player :
 	public Character
 {
+public:
+	const Vec3 WEAPON_POS_EXTEND_ = { -1.0f,-0.5f,-2.0f };
+
 private:
 	const float DEAD_TIMER_MAX_ = 70.0f;
 
@@ -75,6 +78,10 @@ private:
 	//倒されたあとに呼び出す
 	void Dead(const CollisionInfo& info);
 
+private:
+	//uiの位置更新
+	void UpdateUI();
+
 public:
 	void SetIsAttacking(bool is) { isAttacking_ = is; }
 	void SetIsTarget(bool is) { isTarget_ = is; }
@@ -108,6 +115,8 @@ public:
 public:
 	void SetIsClickLeft(bool isClickLeft) { isClickLeft_ = isClickLeft; }
 	bool GetIsClickLeft() { return isClickLeft_; }
+
+	Vec3 GetWeaponPosTmp();
 
 	const Vec3& GetBulletOwnerEnemyPos() { return bulletOwnerEnemyPos_; }
 };

@@ -1,4 +1,4 @@
-﻿#include "PlayerUIState.h"
+#include "PlayerUIState.h"
 #include "PlayerUI.h"
 
 
@@ -29,7 +29,7 @@ std::unique_ptr<PlayerUIState> PlayerUIState::GetState(const std::string& name)
 //-------------------------------------------------------------
 void PlayerUIState::Initialize()
 {
-	scale_ = SCALE_MAX_;
+	playerUI_->SetScale(SCALE_MAX_);
 
 	reticleSprite_.SetColor(color_);
 }
@@ -38,15 +38,15 @@ void PlayerUIState::Update()
 {
 	float t = min((float)timer_ / (float)TIMER_MAX_, 1.0f);
 
-	scale_ = LerpVec3({ SCALE_MAX_,0,0 }, { 1.0f,0,0 }, EaseInOutBack(t)).x;
+	playerUI_->SetScale(LerpVec3({ SCALE_MAX_,0,0 }, { 1.0f,0,0 }, EaseInOutBack(t)).x);
 
 	timer_++;
 }
 
 void PlayerUIState::DrawSprite()
 {
-	reticleSprite_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
-	reticleSprite_.SetScale({ scale_,scale_ ,1.0f });
+	reticleSprite_.SetTrans({ playerUI_->GetPos().x,playerUI_->GetPos().y,0 });
+	reticleSprite_.SetScale({ playerUI_->GetScale() * playerUI_->GetScale2(), playerUI_->GetScale() * playerUI_->GetScale2() ,1.0f });
 	reticleSprite_.SetRot({ 0,0 ,angle_ });
 
 	reticleSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });

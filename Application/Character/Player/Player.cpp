@@ -9,6 +9,8 @@
 #include "PlayerAttackState.h"
 #include "PlayerState.h"
 #include "Bullet.h"
+#include "PlayerUI.h"
+#include "PlayerUIState.h"
 
 
 using namespace DirectX;
@@ -120,6 +122,15 @@ void Player::DirectionUpdate()
 	rightVec_ = upVec_.Cross(frontVec_);
 }
 
+Vec3 Player::GetWeaponPosTmp()
+{
+	return {
+		GetScale().x * WEAPON_POS_EXTEND_.x ,
+					GetScale().y * WEAPON_POS_EXTEND_.y ,
+					GetScale().z * WEAPON_POS_EXTEND_.z
+	};
+}
+
 void Player::Move()
 {
 	//キー入力
@@ -184,6 +195,9 @@ void Player::Update()
 	//素手や銃などのステート
 	state_->Update();
 
+	//uiの位置
+	UpdateUI();
+
 	Character::Update();
 
 	//オフ
@@ -216,6 +230,19 @@ void Player::Dead(const CollisionInfo& info)
 
 	//ステートを変更
 	ChangePlayerState(std::make_unique<PlayerStateDeadEffect>());
+}
+
+void Player::UpdateUI()
+{
+	Vec3 targetDir = GetFrontVec();
+	//レイを飛ばしてターゲットの位置を取得
+	RaycastHit info;
+	if (CheckRayOfEyeHit(GetFrontVec(), 10000, COLLISION_ATTR_ALL ^ COLLISION_ATTR_ALLIES, &info))
+	{
+		targetDir = Vec3(info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2]) - GetTrans();
+	}
+	float scale = Lerp(0.2f,1.5f, max(1.0f - (targetDir.GetLength() / (GetScale().GetLength() * 35.0f)), 0));
+	PlayerUI::GetInstance().SetScale2(scale);
 }
 
 void Player::ThrowWeapon()

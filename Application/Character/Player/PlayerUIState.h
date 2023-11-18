@@ -2,11 +2,14 @@
 #include"Sprite.h"
 
 
-class PlayerState;
+class PlayerUI;
 
 class PlayerUIState
 {
 protected:
+	//
+	PlayerUI* playerUI_ = nullptr;
+
 	//スプライト用
 	Sprite reticleSprite_;
 	uint64_t reticleTexHandle_;
@@ -14,7 +17,6 @@ protected:
 	//演出用
 	float timer_ = 0;
 	const float TIMER_MAX_ = 10;
-	float scale_ = 1.0f;
 	const float SCALE_MAX_ = 1.5f;
 	Vec4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 	float angle_ = 0;
@@ -30,6 +32,8 @@ public:
 public:
 	virtual void SetColor(const Vec4& color) { color_ = color; }
 	virtual void SetAngle(float angle) { angle_ = angle; }
+
+	void SetPlayerUI(PlayerUI* playerUI) { playerUI_ = playerUI; }
 };
 
 
