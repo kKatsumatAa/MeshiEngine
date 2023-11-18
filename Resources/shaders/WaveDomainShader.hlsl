@@ -8,9 +8,16 @@ float4 WavePos(float4 localPos, float3 normal, matrix world)
     
     for (int i = 0; i < WAVE_NUM; i++)
     {
-        maxWidth += max(waves[i].waveThickness.y * max(waves[i].waveThickness.x - abs(
-            waves[i].waveDistance - distance(mul(world, localPos).xyz, waves[i].waveEpicenter)), 0)
-            - maxWidth
+        maxWidth += max(waves[i].waveThickness.y * 
+            max(
+                max(waves[i].waveThickness.x -
+                    abs(
+                        waves[i].waveDistance -
+                        distance(mul(world, localPos).xyz, waves[i].waveEpicenter
+                        )
+                    ),
+                0)
+            - maxWidth, 0)
         , 0);
     }
     

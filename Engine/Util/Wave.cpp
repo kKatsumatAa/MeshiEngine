@@ -9,6 +9,8 @@ void Wave::BeginWave(const Vec3& epicenter, const Vec2& thickness, float distanc
 	epicenter_ = epicenter;
 	thicknessMax_ = thickness;
 	distanceMax_ = distanceMax;
+
+	Update();
 }
 
 void Wave::Update()
@@ -28,7 +30,7 @@ void Wave::End()
 
 bool Wave::GetIsEndWave()
 {
-	if ((timer_ >= timerMax_ || thickness_.GetLength() == 0) || distance_ >= distanceMax_)
+	if (timer_ >= timerMax_)
 	{
 		return true;
 	}
