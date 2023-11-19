@@ -24,9 +24,10 @@ private:
 	const int8_t HP_TMP_ = 1;
 
 	const float VELOCITY_TMP_ = 0.6f;
-	const float ANGLE_VEL_EXTEND_ = 0.003f;
-	//マウスでのゲームスピード加算倍率
-	const float MOUSE_GAME_VEL_EXTEND_ = 0.001f;
+	//const float ANGLE_VEL_EXTEND_ = 0.003f;
+	//マウスでのカメラ回転減衰
+	const float MOUSE_GAME_VEL_ATTEN_ = 0.7f;
+	Vec2 mouseVel_ = { 0,0 };
 
 	Vec3 cameraRot_ = { 0,0,0 };
 
@@ -46,7 +47,7 @@ private:
 	const float ATTACK_LENGTH_ = 11.0f;
 
 	//マウスのカメラ移動スピード
-	const float MOUSE_VELOCITY_TMP_ = 0.5f;
+	const float MOUSE_VELOCITY_TMP_ = 0.0005f;
 	//移動によるゲームスピード加算の倍率
 	const float MOVE_ADD_VEL_EXTEND_ = 0.052f;
 

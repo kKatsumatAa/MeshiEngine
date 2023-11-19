@@ -91,15 +91,13 @@ void Player::ChangePlayerState(std::unique_ptr<PlayerState> state)
 void Player::DirectionUpdate()
 {
 	//マウスの動きでカメラ角度変更
-	Vec2 vel = MouseInput::GetInstance().GetCursorVelocity() * MOUSE_VELOCITY_TMP_;
-
-	//マウスの動きでゲームスピードを足す
-	//GameVelocityManager::GetInstance().AddGameVelocity(vel.GetLength() * MOUSE_GAME_VEL_EXTEND_, "mouse");
+	mouseVel_ += MouseInput::GetInstance().GetCursorVelocity() * MOUSE_VELOCITY_TMP_;
+	mouseVel_ *= MOUSE_GAME_VEL_ATTEN_;
 
 	//回転
 	Vec3 rotMove = {
-		-vel.y * ANGLE_VEL_EXTEND_,
-		vel.x * ANGLE_VEL_EXTEND_,
+		-mouseVel_.y ,
+		mouseVel_.x,
 		0
 	};
 	//角度を足す
@@ -235,13 +233,19 @@ void Player::Dead(const CollisionInfo& info)
 void Player::UpdateUI()
 {
 	Vec3 targetDir = GetFrontVec();
-	//レイを飛ばしてターゲットの位置を取得
+	float scale = 1.0f;
+	//レイを飛ばしてターゲットまでの距離を計算、uiの大きさを変える
 	RaycastHit info;
 	if (CheckRayOfEyeHit(GetFrontVec(), 10000, COLLISION_ATTR_ALL ^ COLLISION_ATTR_ALLIES, &info))
 	{
 		targetDir = Vec3(info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2]) - GetTrans();
+
+		if (info.object->GetObjName().find("enemy") != std::string::npos)
+		{
+			scale = 2.0f;
+		}
 	}
-	float scale = Lerp(0.2f,1.5f, max(1.0f - (targetDir.GetLength() / (GetScale().GetLength() * 35.0f)), 0));
+	scale = min(Lerp(0.2f, 1.5f, max(1.0f - (targetDir.GetLength() / (GetScale().GetLength() * 35.0f)), 0)) * scale, 1.5f);
 	PlayerUI::GetInstance().SetScale2(scale);
 }
 
