@@ -208,6 +208,18 @@
     <Filter Include="ソース ファイル\Engine\3D\Wave">
       <UniqueIdentifier>{37213462-ff7f-4a69-a692-75500690320e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Application\Scene">
+      <UniqueIdentifier>{743c60f1-beb7-420d-ae1a-8e002ce09958}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\LevelLoader">
+      <UniqueIdentifier>{1c79ff7b-acfa-4b79-95f8-a8f3dbeae16d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\Scene">
+      <UniqueIdentifier>{56cebdbe-712b-48d7-89a1-84682e723f3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\LevelLoader">
+      <UniqueIdentifier>{ffb14021-f2df-4079-bfc0-845338f82073}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -279,24 +291,6 @@
     <ClCompile Include="Engine\3D\Object\Primitive.cpp">
       <Filter>ソース ファイル\Engine\3D\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\SceneFactory.cpp">
-      <Filter>ソース ファイル\Engine\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Scene\SceneGame.cpp">
-      <Filter>ソース ファイル\Engine\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Scene\SceneLoad.cpp">
-      <Filter>ソース ファイル\Engine\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Scene\SceneManager.cpp">
-      <Filter>ソース ファイル\Engine\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Scene\SceneState.cpp">
-      <Filter>ソース ファイル\Engine\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Scene\SceneTitle.cpp">
-      <Filter>ソース ファイル\Engine\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Audio\Sound.cpp">
       <Filter>ソース ファイル\Engine\Audio</Filter>
     </ClCompile>
@@ -357,9 +351,6 @@
     <ClCompile Include="Engine\Input\MouseInput.cpp">
       <Filter>ソース ファイル\Engine\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\SceneClear.cpp">
-      <Filter>ソース ファイル\Engine\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Base\RootPipe.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
@@ -368,12 +359,6 @@
     </ClCompile>
     <ClCompile Include="Engine\PostEffect\PostEffectManager.cpp">
       <Filter>ソース ファイル\Engine\PostEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Scene\SceneTransitionManager.cpp">
-      <Filter>ソース ファイル\Engine\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Scene\SceneTransitionEffectState.cpp">
-      <Filter>ソース ファイル\Engine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Application\Character\Character.cpp">
       <Filter>ソース ファイル\Application\Character</Filter>
@@ -453,9 +438,6 @@
     <ClCompile Include="Application\Stage\StageSelect.cpp">
       <Filter>ソース ファイル\Application\Stage</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\SceneStageSelect.cpp">
-      <Filter>ソース ファイル\Engine\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Application\Character\Enemy\EnemyManager.cpp">
       <Filter>ソース ファイル\Application\Character\Enemy</Filter>
     </ClCompile>
@@ -485,12 +467,6 @@
     </ClCompile>
     <ClCompile Include="Engine\Base\Matrix\WorldMat.cpp">
       <Filter>ソース ファイル\Engine\Base\Matrix</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Base\LevelLoader\JsonLevelLoader.cpp">
-      <Filter>ソース ファイル\Engine\Base\LevelLoader</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Base\LevelLoader\LevelManager.cpp">
-      <Filter>ソース ファイル\Engine\Base\LevelLoader</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Base\Matrix\ConstBuffTransform.cpp">
       <Filter>ソース ファイル\Engine\Base\Matrix</Filter>
@@ -530,6 +506,45 @@
     </ClCompile>
     <ClCompile Include="Engine\3D\Wave\Waves.cpp">
       <Filter>ソース ファイル\Engine\3D\Wave</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Scene\SceneTransitionManager.cpp">
+      <Filter>ソース ファイル\Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Scene\SceneClear.cpp">
+      <Filter>ソース ファイル\Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Scene\SceneFactory.cpp">
+      <Filter>ソース ファイル\Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Scene\SceneGame.cpp">
+      <Filter>ソース ファイル\Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Scene\SceneLoad.cpp">
+      <Filter>ソース ファイル\Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Scene\SceneManager.cpp">
+      <Filter>ソース ファイル\Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Scene\SceneStageSelect.cpp">
+      <Filter>ソース ファイル\Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Scene\SceneState.cpp">
+      <Filter>ソース ファイル\Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Scene\SceneTitle.cpp">
+      <Filter>ソース ファイル\Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Scene\SceneTransitionEffectState.cpp">
+      <Filter>ソース ファイル\Application\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\LevelLoader\LevelManager.cpp">
+      <Filter>ソース ファイル\Application\LevelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\LevelLoader\JsonLevelLoader.cpp">
+      <Filter>ソース ファイル\Application\LevelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Stage\LandShapePapierMache.cpp">
+      <Filter>ソース ファイル\Application\Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -598,27 +613,6 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Object\Primitive.h">
       <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Scene\AbstractSceneFactory.h">
-      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Scene\SceneFactory.h">
-      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Scene\SceneGame.h">
-      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Scene\SceneLoad.h">
-      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Scene\SceneManager.h">
-      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Scene\SceneState.h">
-      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Scene\SceneTitle.h">
-      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Audio\Sound.h">
       <Filter>ヘッダー ファイル\Engine\Audio</Filter>
@@ -689,9 +683,6 @@
     <ClInclude Include="Engine\Input\MouseInput.h">
       <Filter>ヘッダー ファイル\Engine\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Scene\SceneClear.h">
-      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Base\RootPipe.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
     </ClInclude>
@@ -706,12 +697,6 @@
     </ClInclude>
     <ClInclude Include="Engine\PostEffect\PostEffectManager.h">
       <Filter>ヘッダー ファイル\Engine\PostEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Scene\SceneTransitionManager.h">
-      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Scene\SceneTransitionEffectState.h">
-      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Application\Character\Character.h">
       <Filter>ヘッダー ファイル\Application\Character</Filter>
@@ -791,9 +776,6 @@
     <ClInclude Include="Application\Stage\StageSelect.h">
       <Filter>ヘッダー ファイル\Application\Stage</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Scene\SceneStageSelect.h">
-      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Application\Character\Enemy\EnemyManager.h">
       <Filter>ヘッダー ファイル\Application\Character\Enemy</Filter>
     </ClInclude>
@@ -823,12 +805,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Base\Matrix\WorldMat.h">
       <Filter>ヘッダー ファイル\Engine\Base\Matrix</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Base\LevelLoader\JsonLevelLoader.h">
-      <Filter>ヘッダー ファイル\Engine\Base\LevelLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Base\LevelLoader\LevelManager.h">
-      <Filter>ヘッダー ファイル\Engine\Base\LevelLoader</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Base\Matrix\ConstBuffTransform.h">
       <Filter>ヘッダー ファイル\Engine\Base\Matrix</Filter>
@@ -871,6 +847,48 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\Wave\Waves.h">
       <Filter>ヘッダー ファイル\Engine\3D\Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Scene\SceneTransitionManager.h">
+      <Filter>ヘッダー ファイル\Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Scene\SceneClear.h">
+      <Filter>ヘッダー ファイル\Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Scene\SceneFactory.h">
+      <Filter>ヘッダー ファイル\Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Scene\SceneGame.h">
+      <Filter>ヘッダー ファイル\Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Scene\SceneLoad.h">
+      <Filter>ヘッダー ファイル\Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Scene\SceneManager.h">
+      <Filter>ヘッダー ファイル\Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Scene\SceneStageSelect.h">
+      <Filter>ヘッダー ファイル\Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Scene\SceneState.h">
+      <Filter>ヘッダー ファイル\Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Scene\SceneTitle.h">
+      <Filter>ヘッダー ファイル\Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Scene\SceneTransitionEffectState.h">
+      <Filter>ヘッダー ファイル\Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Scene\AbstractSceneFactory.h">
+      <Filter>ヘッダー ファイル\Application\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\LevelLoader\LevelManager.h">
+      <Filter>ヘッダー ファイル\Application\LevelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\LevelLoader\JsonLevelLoader.h">
+      <Filter>ヘッダー ファイル\Application\LevelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Stage\LandShapePapierMache.h">
+      <Filter>ヘッダー ファイル\Application\Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

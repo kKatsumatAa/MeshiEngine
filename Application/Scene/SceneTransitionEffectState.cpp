@@ -54,7 +54,7 @@ void TransitionEffectBeginState::Initialize()
 
 	//ブルーム
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = true;
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.bloomPow = PostPera::S_BLOOM_MAX_POW_ / 2.0f;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.bloomPow = PostPera::S_BLOOM_MAX_POW_ / 3.0f;
 
 #ifdef _DEBUG
 
