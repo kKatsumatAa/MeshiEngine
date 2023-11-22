@@ -81,7 +81,7 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, IObject3D* owner
 	auto landShapes = ObjectManager::GetInstance().GetObjs(LevelManager::GetInstance().S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
 	for (auto landShape : landShapes)
 	{
-		landShape->BeginWave(shotPos_, Vec2(GetScale().z, GetScale().y) * 30.0f, GetScale().GetLength() * 90.0f, 540.0f);
+		landShape->BeginWave(shotPos_, Vec2(GetScale().z, GetScale().y) * 10.0f, GetScale().GetLength() * 90.0f, 540.0f);
 	}
 
 	attackCoolTime_ = SHOT_COOL_TIME_MAX_;

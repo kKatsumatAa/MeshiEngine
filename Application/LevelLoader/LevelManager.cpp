@@ -196,6 +196,15 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 		return;
 	}
 
+	//3Dオブジェクトを生成
+	std::unique_ptr <IObject3D> newObj = {};
+	//自分の子（武器）
+	Weapon* childWeapon = GetChildWeapon(objData);
+
+	//地形オブジェクトとして使うか
+	CheckLandShapeObject(objData, isLandShape_);
+
+
 	IModel* model = nullptr;
 	//ファイル名から登録済みモデルを検索
 	//(enemyはオブジェ、メッシュごとに演出させたいので別々のインスタンスとして読み込む)
@@ -207,14 +216,6 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 	{
 		model = ModelManager::GetInstance().LoadModel(objData.fileName);
 	}
-
-	//3Dオブジェクトを生成
-	std::unique_ptr <IObject3D> newObj = {};
-	//自分の子（武器）
-	Weapon* childWeapon = GetChildWeapon(objData);
-
-	//地形オブジェクトとして使うか
-	CheckLandShapeObject(objData, isLandShape_);
 
 	//プレイヤーの場合
 	if (objData.fileName == "player")

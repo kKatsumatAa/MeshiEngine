@@ -32,6 +32,8 @@ bool LandShapePapierMache::Initialize(WorldMat* worldMat, IModel* model)
 	SetDissolveT(0);
 	SetDissolveTexHandle(TextureManager::GetInstance().LoadGraph("dissolveMask.png"));
 
+	model->SetMaterialExtend({ 0.45f, 0.4f, 5.0f });
+
 	return true;
 }
 
