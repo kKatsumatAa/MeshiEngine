@@ -689,6 +689,14 @@ void PostPera::ImGuiUpdate(int32_t num)
 		ImGui::SliderFloat("FocusDepth", &effectFlags_.focusDepth, 0, 2.0f);
 		ImGui::SliderFloat("NFocusWidth", &effectFlags_.nFocusWidth, 0, 2.0f);
 		ImGui::SliderFloat("focusDiffPow", &effectFlags_.focusDiffPow, 0, 2.0f);
+		ImGui::SliderInt("Sea", (int*)&effectFlags_.isSea, 0, 1);
+		ImGui::DragFloat3("SeaCameraPos", &effectFlags_.seaCameraPos.x);
+		ImGui::DragFloat3("SeaDirRot", &effectFlags_.seaDirRot.x, 0.0001f);
+		ImGui::DragFloat("Resoulution", &effectFlags_.resoulution, 0.05f);
+		ImGui::DragFloat3("seaDirRotExt", &effectFlags_.seaDirRotExtend.x, 0.01f);
+		ImGui::DragFloat3("seaColor", &effectFlags_.seaCol.x, 0.05f);
+		ImGui::ColorEdit3("skyColor", &effectFlags_.seaSkyCol.x);
+		ImGui::DragFloat("seaTimeExtend", &effectFlags_.seaTimerExtend, 0.05f);
 		ImGui::ColorEdit4("color", &effectFlags_.color.x);
 
 		ImGui::TreePop();
@@ -828,6 +836,7 @@ void PostPera::Draw2()
 	//マップ
 	MappingVertexBuff(p2Vertices_, _countof(p2Vertices_), pera2Extend_, pera2VB_.Get());
 
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(peraRS_.Get());
 	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(peraPipeline2_.Get());
 	//ヒープをセット
 	SetHeapAllBuffView(true);
@@ -1035,7 +1044,10 @@ void PostPera::DrawToPostpera(const std::function<void()>& f, bool isFirstPostPe
 		PreDraw(isFirstPostPera);
 
 		//ペラにオブジェクトなど描画させる
-		f();
+		if (f)
+		{
+			f();
+		}
 
 		//スプライト
 		if (spriteDrawF)

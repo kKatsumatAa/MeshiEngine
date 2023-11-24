@@ -196,6 +196,8 @@ cbuffer ConstBufferEffectFlags : register(b5)
     uint isSilhouette;
     //シルエット色
     float3 silhouetteColor;
+    //海
+    uint isSea;
 	//時間
     uint time;
 }

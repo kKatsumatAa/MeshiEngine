@@ -991,5 +991,8 @@
     <None Include="Resources\shaders\ParticleCommon.hlsli">
       <Filter>リソース ファイル\shaders</Filter>
     </None>
+    <None Include="Resources\shaders\SeaHeader.hlsli">
+      <Filter>リソース ファイル\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

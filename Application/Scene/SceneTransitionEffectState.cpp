@@ -23,7 +23,7 @@ void TransitionEffectNothingState::Initialize()
 	Sound::GetInstance().StopWave(SceneTransitionManager::TRANSITION_SOUND_NAME_);
 
 	//２つ目をノイズ
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isNoise = false;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isNoise = false;
 
 	//演出フラグオフ
 	sceneTransitionManager_->SetIsDoingEffect(false);
@@ -47,18 +47,18 @@ void TransitionEffectBeginState::Initialize()
 	Sound::GetInstance().PlayWave(SceneTransitionManager::TRANSITION_SOUND_NAME_, true);
 
 	//二つ目ノイズ
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isNoise = true;
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.noisePow = 1.0f;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isNoise = true;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.noisePow = 1.0f;
 	//三つ目に描画されたもの（２枚目まで）を湾曲
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
+	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.isBarrelCurve = true;
 
 	//ブルーム
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = true;
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.bloomPow = PostPera::S_BLOOM_MAX_POW_ / 10.0f;
+	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.isBloom = true;
+	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.bloomPow = PostPera::S_BLOOM_MAX_POW_ / 10.0f;
 
 #ifdef _DEBUG
 
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = false;
+	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.isBloom = false;
 
 #endif // debug
 }
@@ -68,9 +68,9 @@ void TransitionEffectBeginState::Update()
 	SceneTransitionEffectState::Update();
 
 	//湾曲を徐々につよく
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = EaseInOutBack(GetTimerT(timer_, TIMER_MAX_));
+	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.barrelCurvePow = EaseInOutBack(GetTimerT(timer_, TIMER_MAX_));
 	//2枚目の画面の大きさを徐々に小さく
-	PostEffectManager::GetInstance().GetPostEffect2()->SetPera2Extend(LerpVec3(
+	PostEffectManager::GetInstance().GetPostEffect3()->SetPera2Extend(LerpVec3(
 		{ 1.0f ,0,0 }, { PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 },
 		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x);
 
@@ -122,14 +122,14 @@ void TransitionEffectEndState::Update()
 	SceneTransitionEffectState::Update();
 
 	//湾曲を徐々に弱く
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = 1.0f - EaseIn(GetTimerT(timer_, TIMER_MAX_ / 2));
+	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.barrelCurvePow = 1.0f - EaseIn(GetTimerT(timer_, TIMER_MAX_ / 2));
 	//2つ目の2枚目の画面の大きさを徐々に大きく
-	PostEffectManager::GetInstance().GetPostEffect2()->SetPera2Extend(LerpVec3(
+	PostEffectManager::GetInstance().GetPostEffect3()->SetPera2Extend(LerpVec3(
 		{ PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 }, { 1.0f ,0,0 },
 		EaseIn(GetTimerT(timer_, TIMER_MAX_ / 2))).x);
 
 	//ノイズを徐々に
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.noisePow = 1.0f - EaseIn(GetTimerT(timer_, TIMER_MAX_));
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.noisePow = 1.0f - EaseIn(GetTimerT(timer_, TIMER_MAX_));
 
 	//時間が終わったら
 	if (GetIsTimeOver(timer_, TIMER_MAX_))

@@ -18,9 +18,9 @@ void SceneStageSelect::Initialize()
 	sceneM_->StopWaveAllScene();
 
 	//ポストエフェクト
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = true;
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.barrelCurvePow = 0.7f;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isScanningLine = true;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = 0.7f;
 
 	//カーソルui
 	CursorUI::GetInstance().Initialize();
@@ -28,6 +28,11 @@ void SceneStageSelect::Initialize()
 	StageSelect::GetInstance().Initialize();
 	//ゲームスピード
 	GameVelocityManager::GetInstance().Initialize();
+
+	//海
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos = { 0,10.0f,0 };
+	//強さ
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = 1.0f;
 }
 
 void SceneStageSelect::Update()
@@ -40,7 +45,7 @@ void SceneStageSelect::Update()
 	//シーン遷移
 	if (StageSelect::GetInstance().GetIsSelected())
 	{
-		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = false;
+		PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isScanningLine = false;
 
 		sceneM_->SetNextScene("GAME");
 	}

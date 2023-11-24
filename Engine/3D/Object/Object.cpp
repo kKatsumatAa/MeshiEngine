@@ -147,20 +147,11 @@ void Object::DrawModelInternal(int32_t pipelineNum)
 	//ラムダ式でコマンド関数
 	std::function<void()>SetRootPipeRM = [=]() {IObject::SetRootPipe(pipelineSetM_, pipelineNum, pipelineSetM_[pipelineNum].rootSignature.Get()); };
 	std::function<void()>SetMaterialTexM = [=]() {
-
-		//SRVヒープの設定コマンド
-		DirectXWrapper::GetInstance().GetCommandList()->SetDescriptorHeaps(1, TextureManager::GetDescHeapPP());
-
-		//シャドウマップ用の深度テクスチャ
-		auto srvGpuHandle = TextureManager::GetInstance().GetDescHeapP()->GetGPUDescriptorHandleForHeapStart();
-		srvGpuHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * sShadowSRVIndex_;
-		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(SHADOW_TEX, srvGpuHandle);
-
 		//行列
 		cbt_.DrawCommand(MATRIX);
-		};
+	};
 
-	//シャドウマップ用の前描画では必要ない
+	//シャドウマップ用の前描画じゃなかったら
 	if (pipelineNum != PipelineStateNumObj::SHADOW_OBJ)
 	{
 		isShadow = false;

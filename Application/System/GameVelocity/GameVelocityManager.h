@@ -31,7 +31,7 @@ public:
 public:
 	void Initialize();
 
-	void Update(bool isScalingPostPera);
+	void Update();
 
 	void AddGameVelocity(float velocity, std::string velName = "NULL");
 

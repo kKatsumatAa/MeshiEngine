@@ -46,6 +46,11 @@ void MyGame::Update()
 
 void MyGame::Draw()
 {
+	//背景
+	{
+		PostEffectManager::GetInstance().PreBackGroundDraw();
+	}
+
 	//シャドウマップ用
 	{
 		DirectXWrapper::GetInstance().PreShadowDraw();

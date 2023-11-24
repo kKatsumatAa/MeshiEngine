@@ -40,23 +40,18 @@ float GameVelocityManager::GetVelocity()
 	return gameVelocity_;
 }
 
-void GameVelocityManager::Update(bool isScalingPostPera)
+void GameVelocityManager::Update()
 {
 	//（三つ目に描画されたものを）スピードでラジアルブラーの強さ変える
 	if ((1.0f - gameVelocity_ / GAME_VELOCITY_MAX_) * 0.6f >= 0)
 	{
-		PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isRadialBlur = true;
-		PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.radialPow = (1.0f - gameVelocity_ / GAME_VELOCITY_MAX_) * 0.6f;
+		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isRadialBlur = true;
+		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.radialPow = (1.0f - gameVelocity_ / GAME_VELOCITY_MAX_) * 0.6f;
 	}
 	else
 	{
-		PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isRadialBlur = false;
+		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isRadialBlur = false;
 	}
-
-	isScalingPostPera;
-	//1つ目の色も
-	Vec3 col = LerpVec3(VEL_COL_MIN_, { 1.0f,1.0f,1.0f }, EaseOut(gameVelocity_));
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.color = { col.x,col.y,col.z,1.0f };
 
 	if (gameVelocity_ > GAME_VELOCITY_MIN_)
 	{

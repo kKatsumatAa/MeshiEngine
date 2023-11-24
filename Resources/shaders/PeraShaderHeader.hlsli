@@ -1,6 +1,5 @@
 
 
-
 cbuffer ConstBufferEffectFlags : register(b0)
 {
     //色
@@ -60,6 +59,22 @@ cbuffer ConstBufferEffectFlags : register(b0)
     float nFocusWidth;
 	//フォーカスのスムースステップの幅の上限
     float focusDiffPow;
+    //海
+    unsigned int isSea;
+    //解像度
+    float resoulution;
+    //方向z
+    float3 seaDirRot;
+    //位置
+    float3 seaCameraPos;
+    //角度の倍率
+    float3 seaDirRotExtend;
+	//空の色
+    float3 seaSkyCol;
+    //波の速さ
+    float seaTimeExtend;
+	// 海の色
+    float3 seaCol;
 	//時間
     uint time;
 }
@@ -185,7 +200,7 @@ float4 Gaussian2(Texture2D<float4> tex, SamplerState smp, float2 uv)
 float4 GaussianAngle(Texture2D<float4> tex, SamplerState smp, float angle, float2 uv)
 {
     float totalWeight = 0, sigma = 0.005, stepWidth = 0.001;
-    float4 color = float4(0, 0, 0, 0);
+    float4 colorL = float4(0, 0, 0, 0);
     float2 pickUV = float2(0, 0); //色を取得する座標
     float pickRange = 0.06; //ガウス関数式でいうシグマ
     float angleDeg = angle;
@@ -198,11 +213,11 @@ float4 GaussianAngle(Texture2D<float4> tex, SamplerState smp, float angle, float
         pickUV = uv + float2(x, y);
 
         float weight = GaussianTmp(uv, pickUV, pickRange); //自作のガウス関数で計算
-        color += tex.Sample(smp, pickUV) * weight; //取得する色にweightをかける
+        colorL += tex.Sample(smp, pickUV) * weight; //取得する色にweightをかける
         totalWeight += weight; //掛けるweightの合計値を控える
     }
-    color = color / totalWeight; //足し合わせた色をweightの合計値で割る
-    return color;
+    colorL = colorL / totalWeight; //足し合わせた色をweightの合計値で割る
+    return colorL;
 }
 
 float4 GetRadialBlur(Texture2D<float4> tex, SamplerState smp, float2 center, float2 uv, float2 pixLength, float m_BlurPower)

@@ -18,15 +18,19 @@ void SceneTitle::Initialize()
 	sceneM_->StopWaveAllScene();
 
 	//ポストエフェクト
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = true;
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = true;
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.barrelCurvePow = 0.7f;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isScanningLine = true;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = 0.7f;
 	//ブルーム
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = true;
+	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.isBloom = true;
 #ifdef _DEBUG
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = false;
+	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.isBloom = false;
 #endif // _DEBUG
 
+	//海
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isSea = true;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCol = { 6.0f,0.6f,0.1f };
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaSkyCol = { 0,0,0 };
 
 	//カーソルui
 	CursorUI::GetInstance().Initialize();
@@ -46,7 +50,7 @@ void SceneTitle::Update()
 	//シーン遷移
 	if (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || KeyboardInput::GetInstance().KeyTrigger(DIK_R))
 	{
-		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isScanningLine = false;
+		PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isScanningLine = false;
 
 		sceneM_->SetNextScene("STAGESELECT");
 	}

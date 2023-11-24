@@ -265,6 +265,11 @@ void IObject3D::SetMaterialLightMTex(uint64_t textureHandle, uint64_t dissolveTe
 	//演出フラグ
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(EFFECT, effectFlagsBuff_->GetGPUVirtualAddress());
 
+	//シャドウマップ用の深度テクスチャ
+	srvGpuHandle = TextureManager::GetInstance().GetDescHeapP()->GetGPUDescriptorHandleForHeapStart();
+	srvGpuHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * sShadowSRVIndex_;
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(SHADOW_TEX, srvGpuHandle);
+
 	//メッシュ分割のウェーブ
 	waves_.SetBuffCmdLst(TESS_WAVE);
 }
@@ -405,6 +410,7 @@ void IObject3D::DrawImGui(std::function<void()> imguiF)
 			ImGui::Checkbox("isSilhouette", (bool*)&effectFlags_.isSilhouette);
 			ImGui::ColorEdit3("silhouetteColor", &effectFlags_.silhouetteColor.x);
 			ImGui::Checkbox("isSpecularMap", (bool*)&effectFlags_.isSpecularMap);
+			ImGui::Checkbox("isSea", (bool*)&effectFlags_.isSea);
 
 			ImGui::TreePop();
 		}

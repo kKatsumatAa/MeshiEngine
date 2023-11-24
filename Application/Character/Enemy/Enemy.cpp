@@ -254,8 +254,12 @@ void Enemy::WalkWaveUpdate()
 	{
 		beforeWalkTime_ = walkWaveTimer_;
 
-		ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "stage")[0]->
-			BeginWave(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 3.0f,GetScale().y * 3.5f }, GetScale().z * 20.0f, 280.0f);
+		if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "stage").size())
+		{
+			auto stage = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "stage")[0];
+
+			stage->BeginWave(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 3.0f,GetScale().y * 3.5f }, GetScale().z * 20.0f, 280.0f);
+		}
 	}
 }
 

@@ -242,6 +242,9 @@ void IObject::DrawImGui(std::function<void()>imguiF)
 		ImGui::TreePop();
 	}
 
+	//色
+	ImGui::ColorEdit4("color", &constMapMaterial_->color.x);
+
 	//派生クラスごとの
 	if (imguiF)
 	{

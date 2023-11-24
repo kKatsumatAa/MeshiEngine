@@ -25,12 +25,11 @@ void SceneGame::Initialize()
 	ParticleManager::GetInstance()->ClearParticles();
 
 	//ポストエフェクト
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBarrelCurve = false;
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBloom = true;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = false;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = true;
 #ifdef _DEBUG
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBloom = false;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = false;
 #endif // _DEBUG
-
 }
 
 void SceneGame::Update()
@@ -45,7 +44,7 @@ void SceneGame::Update()
 	StageManager::GetInstance().Update();
 
 	//ゲームスピード
-	GameVelocityManager::GetInstance().Update(true);
+	GameVelocityManager::GetInstance().Update();
 
 	//シーン遷移
 	if (StageManager::GetInstance().GetIsGameOver())
@@ -54,7 +53,7 @@ void SceneGame::Update()
 	}
 	else if (StageManager::GetInstance().GetIsGameClear() || KeyboardInput::GetInstance().KeyTrigger(DIK_ESCAPE))
 	{
-		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isBloom = false;
+		PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = false;
 		ParticleManager::GetInstance()->ClearParticles();
 		sceneM_->SetNextScene("STAGESELECT");
 	}

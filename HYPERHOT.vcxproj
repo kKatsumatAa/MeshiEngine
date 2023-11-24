@@ -506,6 +506,7 @@
     <None Include="Resources\shaders\ParticleCommon.hlsli" />
     <None Include="Resources\shaders\ParticleLight.hlsli" />
     <None Include="Resources\shaders\PeraShaderHeader.hlsli" />
+    <None Include="Resources\shaders\SeaHeader.hlsli" />
     <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

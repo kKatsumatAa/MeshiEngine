@@ -68,6 +68,13 @@ void LandShape::Update()
 	SetTessFactor(5.0f + (1.0f - changeVel_ + 0.01f) * TESS_FACTOR_MAX_);
 }
 
+void LandShape::DrawImGui(std::function<void()> imguiF)
+{
+	auto f = [=]() { ImGui::DragFloat3("effectEndColor", &endColor.x, 0.05f); };
+
+	IObject3D::DrawImGui(f);
+}
+
 void LandShape::DrawShadow()
 {
 	Object::DrawModel(nullptr, nullptr, nullptr, Object::PipelineStateNumObj::SHADOW_OBJ);
@@ -78,7 +85,7 @@ void LandShape::Draw()
 	//張りぼて描画
 	landShapePapierMache_->Draw(changeVel_);
 
-	SetColor({ 1.0f,1.0f,1.0f,Lerp(1.0f,-0.1f,EaseInOut(changeVel_)) });
+	SetColor({ endColor.x,endColor.y,endColor.z,Lerp(0.75f,-0.1f,EaseInOut(changeVel_)) });
 	if (GetColor().w >= 0.0f)
 	{
 		Object::DrawModel(nullptr, nullptr, nullptr, Object::PipelineStateNumObj::HULL_DOMAIN_OBJ);

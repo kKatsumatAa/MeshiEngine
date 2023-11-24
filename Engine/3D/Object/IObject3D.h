@@ -33,6 +33,8 @@ struct EffectOConstBuffer
 	//---
 	//シルエットの色
 	Vec3 silhouetteColor = { 1.0f,0,0 };
+	uint32_t isSea = false;
+	//--
 	//時間
 	uint32_t time = 0;
 };

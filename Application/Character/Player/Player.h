@@ -24,7 +24,6 @@ private:
 	const int8_t HP_TMP_ = 1;
 
 	const float VELOCITY_TMP_ = 0.6f;
-	//const float ANGLE_VEL_EXTEND_ = 0.003f;
 	//マウスでのカメラ回転減衰
 	const float MOUSE_GAME_VEL_ATTEN_ = 0.7f;
 	Vec2 mouseVel_ = { 0,0 };
@@ -50,6 +49,11 @@ private:
 	const float MOUSE_VELOCITY_TMP_ = 0.0005f;
 	//移動によるゲームスピード加算の倍率
 	const float MOVE_ADD_VEL_EXTEND_ = 0.052f;
+
+	//海からの初期距離
+	const float SEA_DICTANCE_TMP_ = 120.0f;
+	Vec3 seaDistance_ = { 0,SEA_DICTANCE_TMP_,0 };
+	const float LAVA_APPROACH_TIME_ = 10.0f * 60.0f / SEA_DICTANCE_TMP_;
 
 	//手のマネージャークラス
 	std::unique_ptr<PlayerHandManager> handManager_ = nullptr;

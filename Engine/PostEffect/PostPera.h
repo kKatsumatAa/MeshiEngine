@@ -4,6 +4,7 @@
 #include <functional>
 #include "Vec4.h"
 #include "Vec2.h"
+#include "Vec3.h"
 
 
 
@@ -52,6 +53,7 @@ private:
 	{
 		//色
 		Vec4 color = { 1.0f,1.0f,1.0f,1.0f };
+		//---
 		//課題用マルチテクスチャ組み合わせ
 		uint32_t isMultiTex = false;
 		//ぼかし
@@ -60,6 +62,7 @@ private:
 		uint32_t isGaussian2 = false;
 		//ラジアルブラー
 		uint32_t isRadialBlur = false;
+		//---
 		//ラジアル強さ
 		float radialPow = 1.0f;
 		//エンボス
@@ -68,6 +71,7 @@ private:
 		uint32_t isSharpness = false;
 		//諧調
 		uint32_t isGradation = false;
+		//---
 		//アウトライン
 		uint32_t isOutLine = false;
 		//ビネット
@@ -75,6 +79,7 @@ private:
 		//樽状湾曲
 		uint32_t isBarrelCurve = false;
 		float barrelCurvePow = 1.0f;
+		//---
 		//走査線
 		uint32_t isScanningLine = false;
 		//グレースケール
@@ -82,6 +87,7 @@ private:
 		float grayScalePow = 1.0f;
 		//ガラスフィルター
 		uint32_t isGlassFilter = false;
+		//---
 		//モザイク
 		uint32_t isMosaic = false;
 		//ネガポジ
@@ -89,6 +95,7 @@ private:
 		//RGBずらし
 		uint32_t isRGBShift = false;
 		float RGBShiftPow = 0.05f;
+		//---
 		//ブルーム
 		uint32_t isBloom = false;
 		//クロスフィルタ
@@ -97,6 +104,7 @@ private:
 		float bloomPow = PostPera::S_BLOOM_POW_;
 		//ノイズ
 		uint32_t isNoise = false;
+		//---
 		//ノイズ強さ
 		float noisePow = 1.0f;
 		//被写界深度
@@ -105,8 +113,30 @@ private:
 		float focusDepth = 0.05f;
 		//フォーカスのスムースステップの幅の下限
 		float nFocusWidth = 0.005f;
+		//---
 		//フォーカスのスムースステップの幅の上限
 		float focusDiffPow = 0.01f;
+		//海
+		uint32_t isSea = false;
+		float resoulution = 0.0015f;
+		float pad = 0;
+		//---
+		Vec3 seaDirRot = { 0,0,0 };
+		float pad2 = 0;
+		//---
+		Vec3 seaCameraPos = { 0,10.0f,0 };
+		float pad3 = 0;
+		//---
+		//カメラ回転の倍率
+		Vec3 seaDirRotExtend = {0.57f,0.18f,1.0f};
+		float pad4 = 0;
+		//---
+		//空の色
+		Vec3 seaSkyCol = { 0.05f,0.1f,0.05f };
+		float seaTimerExtend = 1.0f;
+		//---
+		// 海の色
+		Vec3 seaCol = { 0.1f,0.3f,0.1f };
 		//時間
 		uint32_t time = 0;
 	};

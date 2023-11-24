@@ -1,4 +1,4 @@
-#include"PeraShaderHeader.hlsli"
+#include"SeaHeader.hlsli"
 
 SamplerState smp : register(s0);
 
@@ -269,7 +269,12 @@ PSOutput PS(Output input) : SV_TARGET
             output.highLumi = output.highLumi * float4(1, 1, 1, 1) * 1 - step(0.3, l);
         }
     }
-
+    
+    if(isSea)
+    {
+        output.color = mainImage(input.uv);
+    }
+    
 //êFà·Ç¢
     output.color2 = float4(1.0f - RGBA.r, 1.0f - RGBA.g, 1.0f - RGBA.b, 1.0f);
     
