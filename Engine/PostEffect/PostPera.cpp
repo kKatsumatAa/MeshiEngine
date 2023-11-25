@@ -671,7 +671,7 @@ void PostPera::ImGuiUpdate(int32_t num)
 		ImGui::SliderInt("GlassFilter", (int*)&effectFlags_.isGlassFilter, 0, 1);
 		ImGui::SliderInt("ScanningLine", (int*)&effectFlags_.isScanningLine, 0, 1);
 		ImGui::SliderInt("BarrelCurve", (int*)&effectFlags_.isBarrelCurve, 0, 1);
-		ImGui::SliderFloat("BarrelCurvePow", &effectFlags_.barrelCurvePow, 0, 1.0f);;
+		ImGui::SliderFloat("BarrelCurvePow", &effectFlags_.barrelCurvePow, 0, 1.0f);
 		ImGui::SliderInt("Gradation", (int*)&effectFlags_.isGradation, 0, 1);
 		ImGui::SliderInt("Outline", (int*)&effectFlags_.isOutLine, 0, 1);
 		ImGui::SliderInt("Sharpness", (int*)&effectFlags_.isSharpness, 0, 1);

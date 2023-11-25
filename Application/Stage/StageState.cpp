@@ -24,6 +24,9 @@ void StageState::Update()
 
 	//プレイヤーui
 	PlayerUI::GetInstance().Update();
+
+	//海
+	StageManager::GetInstance().ApproachLava();
 }
 
 void StageState::DrawShadow()

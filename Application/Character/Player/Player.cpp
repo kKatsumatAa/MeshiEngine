@@ -79,9 +79,6 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 		ChangePlayerState(std::make_unique<PlayerStateHaveWeapon>());
 	}
 
-	//海用
-	seaDistance_ = { 0,SEA_DICTANCE_TMP_,0 };
-
 	return true;
 }
 
@@ -119,14 +116,6 @@ void Player::DirectionUpdate()
 
 	//海用の
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = cameraRot_;
-	//位置
-	float slowParam = 1.0f - GameVelocityManager::GetInstance().GetVelocity();
-	seaDistance_ -= Vec3(0, slowParam, 0) / LAVA_APPROACH_TIME_;
-	seaDistance_.y = max(seaDistance_.y, -GetScale().y * 2.0f);
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos =
-		CameraManager::GetInstance().GetCamera()->GetEye() + seaDistance_;
-	//強さ
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = 2.5f * (1.0f - seaDistance_.y / SEA_DICTANCE_TMP_);
 
 	//角度
 	SetRot(cameraRot_);

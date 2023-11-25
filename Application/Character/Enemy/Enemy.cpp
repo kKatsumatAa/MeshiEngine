@@ -554,11 +554,6 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 			//メッシュの波
 			BeginDamagedWave(info, 0.5f);
 		}
-		//おいてあったら拾う
-		else
-		{
-			PickUpWeapon(gun);
-		}
 	}
 	//敵同士で当たったらめり込まないようにする
 	else if (info.object_->GetObjName().find("enemy") != std::string::npos)

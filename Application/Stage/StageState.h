@@ -8,7 +8,6 @@ class StageState
 protected:
 	int32_t timer_ = 0;
 
-
 public:
 	virtual ~StageState() { ; }
 

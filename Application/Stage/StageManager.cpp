@@ -1,5 +1,6 @@
 #include "StageManager.h"
 #include "StageState.h"
+#include "PostEffectManager.h"
 
 
 StageManager& StageManager::GetInstance()
@@ -44,6 +45,9 @@ void StageManager::Initialize()
 	isClear_ = false;
 	isGameOver_ = false;
 
+	//海用
+	seaDistance_ = { 0,SEA_DICTANCE_TMP_,0 };
+
 	//
 	ChangeState("BEGINING");
 
@@ -51,6 +55,24 @@ void StageManager::Initialize()
 	Update();
 }
 
+
+void StageManager::ApproachLava()
+{
+	//位置
+	float slowParam = 1.0f - GameVelocityManager::GetInstance().GetVelocity();
+	if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player").size())
+	{
+		auto player = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player")[0];
+		//距離を減らしていく
+		seaDistance_ -= Vec3(0, slowParam, 0) / StageManager::GetInstance().LAVA_APPROACH_TIME_;
+		seaDistance_.y = max(seaDistance_.y, -player->GetScale().y * 2.0f);
+	}
+	//使用されてるカメラに距離を足して海までの距離とする
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos =
+		CameraManager::GetInstance().GetCamera()->GetEye() + seaDistance_;
+	//強さも変える
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = 2.5f * (1.0f - seaDistance_.y / SEA_DICTANCE_TMP_);
+}
 
 void StageManager::ChangeState(const std::string& name)
 {

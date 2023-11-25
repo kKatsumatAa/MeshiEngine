@@ -50,11 +50,6 @@ private:
 	//移動によるゲームスピード加算の倍率
 	const float MOVE_ADD_VEL_EXTEND_ = 0.052f;
 
-	//海からの初期距離
-	const float SEA_DICTANCE_TMP_ = 120.0f;
-	Vec3 seaDistance_ = { 0,SEA_DICTANCE_TMP_,0 };
-	const float LAVA_APPROACH_TIME_ = 10.0f * 60.0f / SEA_DICTANCE_TMP_;
-
 	//手のマネージャークラス
 	std::unique_ptr<PlayerHandManager> handManager_ = nullptr;
 

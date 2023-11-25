@@ -99,7 +99,7 @@ void PostEffectManager::BeforeDraw(std::function<void()> drawSceneF, const std::
 
 void PostEffectManager::DrawDisplay()
 {
-	postPera_[2]->Draw2();
+	postPera_[3]->Draw2();
 
 	//深度バッファ
 	DirectXWrapper::GetInstance().ResourceBarrier(

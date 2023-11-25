@@ -28,6 +28,13 @@ private:
 	bool isGameOver_ = false;
 
 public:
+	//海からの初期距離
+	const float SEA_DICTANCE_TMP_ = 120.0f;
+	const float LAVA_APPROACH_TIME_ = 20.0f * 60.0f / SEA_DICTANCE_TMP_;
+private:
+	Vec3 seaDistance_ = { 0,SEA_DICTANCE_TMP_,0 };
+
+public:
 
 
 private:
@@ -58,6 +65,11 @@ public:
 	//ステージゲームオーバー
 	void SetIsGameOver(bool isGameOver) { isGameOver_ = isGameOver; }
 	bool GetIsGameOver() { return isGameOver_; }
+
+public:
+	const Vec3& GetSeaDistance() { return seaDistance_; }
+	void SetSeaDistance(const Vec3& seaDistance) { seaDistance_ = seaDistance; }
+	void ApproachLava();
 
 public:
 	//ステート変更
