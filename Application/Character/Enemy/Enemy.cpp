@@ -390,7 +390,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	//武器持っていたら落とす
 	if (weapon_)
 	{
-		distanceVec.y = 0.2f;
+		distanceVec.y = 0.4f;
 		FallWeapon(Vec3(-distanceVec.x, distanceVec.y, -distanceVec.z) * length * WEAPON_FALL_VEL_EXTEND_);
 	}
 }
@@ -551,9 +551,6 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		//投げられているときのみ
 		if (gun->GetIsThrowing() && gun->GetFallVelocity().GetLength() != 0)
 		{
-			//
-			KnockBack(info);
-
 			//ノードの角度を加算するため
 			SetAllNodeAddRots(*obj, 0.7f);
 			//ダメージステートにする
