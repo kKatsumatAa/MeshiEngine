@@ -58,7 +58,7 @@ private:
 
 	const float DISSOLVE_POW_ = 0.3f;
 
-	const float WEAPON_FALL_VEL_EXTEND_ = 0.5f;
+	const float WEAPON_FALL_VEL_EXTEND_ = 0.01f;
 
 	//プレイヤーが視界にいるか
 	bool isAttacking_ = false;

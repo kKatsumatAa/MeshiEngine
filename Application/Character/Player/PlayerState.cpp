@@ -200,3 +200,32 @@ void PlayerStateDeadEffect::Update()
 
 	timer_++;
 }
+
+
+//-----------------------------------------------------------------------------------------
+//死亡演出2(マグマで)
+void PlayerStateDeadEffect2::Initialize()
+{
+	beginRot_ = player_->GetCameraRot();
+}
+
+void PlayerStateDeadEffect2::Update()
+{
+	t_ = (float)timer_ / player_->GetDeadTimerMax();
+
+	//ゆっくりにする
+	GameVelocityManager::GetInstance().SetIsInvalidAddGameVel(true);
+
+	Vec3 rot = LerpVec3(beginRot_, { endRotX_,beginRot_.y,beginRot_.z }, EaseInOutBack(t_));
+	//正面ベクトルを回転、そのベクトルをカメラのターゲットに使う
+	player_->RotateFrontVec(rot);
+	player_->UpdateUseCameraTarget();
+
+	//演出終わったら生存フラグオフ
+	if (timer_ >= player_->GetDeadTimerMax())
+	{
+		player_->SetIsAlive(false);
+	}
+
+	timer_++;
+}

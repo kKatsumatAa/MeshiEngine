@@ -63,3 +63,17 @@ public:
 	void Initialize() override;
 	void Update() override;
 };
+
+//死亡演出2(マグマで)
+class PlayerStateDeadEffect2 :
+	public PlayerState,
+	public CharacterStateDead
+{
+private:
+	Vec3 beginRot_ = Vec3(0,0,0);
+	const float endRotX_ = -PI / 2.0f;
+
+public:
+	void Initialize() override;
+	void Update() override;
+};

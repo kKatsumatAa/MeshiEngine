@@ -371,7 +371,7 @@ void Enemy::Draw()
 void Enemy::KnockBack(const CollisionInfo& info)
 {
 	//長さ
-	float length = (info.object_->GetScale().z + IObject::GetScale().z);
+	float length = (info.object_->GetTrans() - IObject::GetTrans()).GetLength();
 	//距離のベクトル
 	Vec3 distanceVec = IObject::GetTrans() - info.object_->GetWorldTrans();
 	//仮

@@ -78,6 +78,10 @@ public:
 private:
 	//倒されたあとに呼び出す
 	void Dead(const CollisionInfo& info);
+	//溶岩で死んだか
+	void UpdateLavaDead();
+	//溶岩で死んだら
+	void DeadLava();
 
 private:
 	//uiの位置更新
@@ -91,6 +95,8 @@ public:
 	bool GetIsCanAttack() { return isTarget_; }
 
 	float GetAttackLength() { return ATTACK_LENGTH_; }
+
+	const Vec3& GetCameraRot() { return cameraRot_; }
 
 	//手のマネージャー
 	PlayerHandManager* GetHandManager() { return handManager_.get(); }
@@ -112,6 +118,10 @@ public:
 	void Move();
 	//向きを変える
 	void DirectionUpdate();
+	//正面ベクトルを回転
+	void RotateFrontVec(const Vec3& rot);
+	//正面ベクトルを使ってカメラのターゲットを設定
+	void UpdateUseCameraTarget();
 
 public:
 	void SetIsClickLeft(bool isClickLeft) { isClickLeft_ = isClickLeft; }

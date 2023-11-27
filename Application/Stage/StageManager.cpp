@@ -132,5 +132,9 @@ void StageManager::DrawSprite()
 
 void StageManager::DrawImGui()
 {
+	ImGui::Begin("stage");
+	ImGui::DragFloat("seaDistance", &seaDistance_.y, 0.5f);
+	ImGui::End();
+
 	state_->DrawImgui();
 }

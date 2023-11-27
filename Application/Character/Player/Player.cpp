@@ -12,6 +12,8 @@
 #include "PlayerUI.h"
 #include "PlayerUIState.h"
 #include "PostEffectManager.h"
+#include "ObjectManager.h"
+#include "LevelManager.h"
 
 
 using namespace DirectX;
@@ -107,15 +109,8 @@ void Player::DirectionUpdate()
 	cameraRot_.x = (min(cameraRot_.x, PI / 2.0f * 0.9f));
 	cameraRot_.x = (max(cameraRot_.x, -PI / 2.0f * 0.9f));
 
-	frontVec_ = GetFrontVecTmp();
-	//回転
-	frontVec_ = GetTurnVec3UseQuaternionAndRot(frontVec_, cameraRot_);
-
-	//正面ベクトルセット
-	SetFrontVec(frontVec_);
-
-	//海用の
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = cameraRot_;
+	//正面ベクトルを回転
+	RotateFrontVec(cameraRot_);
 
 	//角度
 	SetRot(cameraRot_);
@@ -123,6 +118,26 @@ void Player::DirectionUpdate()
 
 	//カメラの右方向ベクトルを出す
 	rightVec_ = upVec_.Cross(frontVec_);
+}
+
+void Player::RotateFrontVec(const Vec3& rot)
+{
+	frontVec_ = GetFrontVecTmp();
+	//回転
+	frontVec_ = GetTurnVec3UseQuaternionAndRot(frontVec_, rot);
+
+	//正面ベクトルセット
+	SetFrontVec(frontVec_);
+
+	//海用の
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = rot;
+}
+
+void Player::UpdateUseCameraTarget()
+{
+	auto camera = CameraManager::GetInstance().GetCamera();
+	//カメラの注視点に回転したベクトルセット
+	camera->SetTarget(GetTrans() + frontVec_);
 }
 
 Vec3 Player::GetWeaponPosTmp()
@@ -187,19 +202,16 @@ void Player::Move()
 	camera->SetEye(GetTrans());
 
 	//カメラの注視点に回転したベクトルセット
-	camera->SetTarget(GetTrans() + frontVec_);
-
-	//一定の位置に行ったら死亡
-	if (GetTrans().y <= GetScale().y * DEAD_MIN_POS_EXTEND_)
-	{
-		isAlive_ = false;
-	}
+	UpdateUseCameraTarget();
 }
 
 void Player::Update()
 {
 	//クリックか外部で左クリック処理したいときにフラグ立てる
 	isClickLeft_ = (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || isClickLeft_);
+
+	//溶岩で死んだか
+	UpdateLavaDead();
 
 	//素手や銃などのステート
 	state_->Update();
@@ -227,7 +239,7 @@ void Player::Draw()
 void Player::Dead(const CollisionInfo& info)
 {
 	//海用の
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = cameraRot_;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = {0,0,0};
 
 	//hpが0になったら
 	isDead_ = true;
@@ -244,10 +256,35 @@ void Player::Dead(const CollisionInfo& info)
 	ChangePlayerState(std::make_unique<PlayerStateDeadEffect>());
 }
 
+void Player::UpdateLavaDead()
+{
+	auto landShapes = ObjectManager::GetInstance().GetObjs(
+		LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
+
+	if (landShapes.size() <= 0)
+	{
+		DeadLava();
+	}
+}
+
+void Player::DeadLava()
+{
+	if (!isDead_)
+	{
+		isDead_ = true;
+		//手を削除
+		handManager_->DeleteHands();
+		//溶岩で死んだときの演出
+		ChangePlayerState(std::make_unique<PlayerStateDeadEffect2>());
+	}
+}
+
 void Player::UpdateUI()
 {
 	Vec3 targetDir = GetFrontVec();
 	float scale = 1.0f;
+	bool isTargetEnemy = false;
+
 	//レイを飛ばしてターゲットまでの距離を計算、uiの大きさを変える
 	RaycastHit info;
 	if (CheckRayOfEyeHit(GetFrontVec(), 10000, COLLISION_ATTR_ALL ^ COLLISION_ATTR_ALLIES, &info))
@@ -256,10 +293,14 @@ void Player::UpdateUI()
 
 		if (info.object->GetObjName().find("enemy") != std::string::npos)
 		{
-			scale = 2.0f;
+			isTargetEnemy = true;
 		}
 	}
 	scale = min(Lerp(0.2f, 1.5f, max(1.0f - (targetDir.GetLength() / (GetScale().GetLength() * 35.0f)), 0)) * scale, 1.5f);
+	if (isTargetEnemy)
+	{
+		scale = max(scale, 0.8f);
+	}
 	PlayerUI::GetInstance().SetScale2(scale);
 }
 
