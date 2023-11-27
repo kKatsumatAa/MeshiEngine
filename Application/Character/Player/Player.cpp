@@ -203,6 +203,12 @@ void Player::Move()
 
 	//カメラの注視点に回転したベクトルセット
 	UpdateUseCameraTarget();
+
+	//一定以上落ちたら
+	if (GetTrans().y < GetScale().y * DEAD_MIN_POS_EXTEND_)
+	{
+		DeadLava();
+	}
 }
 
 void Player::Update()
