@@ -226,6 +226,9 @@ void Player::Draw()
 
 void Player::Dead(const CollisionInfo& info)
 {
+	//海用の
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = cameraRot_;
+
 	//hpが0になったら
 	isDead_ = true;
 
