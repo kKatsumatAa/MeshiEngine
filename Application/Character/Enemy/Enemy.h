@@ -38,6 +38,9 @@ private:
 	//ウェーブ番号
 	int32_t waveNum_ = -1;
 
+	//出現時のクールタイム
+	float coolTime_ = 0;
+
 	//向きをプレイヤーに向けるためのクォータニオン
 	Quaternion directionQua_;
 	//回転の時間
@@ -93,7 +96,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon,
+	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, Weapon* weapon,
 		IModel* model);
 
 private:
@@ -120,7 +123,7 @@ public:
 	~Enemy();
 
 public:
-	bool Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon, IModel* model);
+	bool Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, Weapon* weapon, IModel* model);
 
 	void EmergeInitialize();
 
@@ -153,6 +156,8 @@ public:
 
 public:
 	int32_t GetWaveNum() { return waveNum_; }
+	float GetCoolTime() { return coolTime_; }
+	void DecrementCoolTime();
 	//ライト
 	int32_t GetLightIndexTmp() { return lightIndexTmp_; }
 	int32_t GetLightIndexInit() { return LIGHT_INDEX_INIT_; }

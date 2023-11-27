@@ -34,6 +34,28 @@ void Enemy::EmergeInitialize()
 		lightM->SetPointLightPos(lightIndexTmp_,
 			{ IObject::GetTrans().x,IObject::GetTrans().y, IObject::GetTrans().z });
 	}
+
+	//ディゾルブ
+	SetisDissolve(true);
+	SetDissolveT(1.0f);
+	//ディゾルブ画像
+	uint64_t handle;
+	handle = TextureManager::LoadGraph("dissolveMask.png");
+	SetDissolveTexHandle(handle);
+
+	//演出更新
+	ObjectFBX::EffectUpdate();
+
+	//fbx前提
+	ModelFBX* modelFbx = dynamic_cast<ModelFBX*>(GetModel());
+	//ノードごとの当たり判定
+	InitializeNodeColliders(modelFbx, 14.0f, COLLISION_ATTR_ENEMYS);
+	//ボーンの当たり判定時に処理させる
+	auto onCollF = [=](IObject3D* obj, const CollisionInfo& info) {OnCollision(obj, info); };
+	SetNodeCollidersOnCollision(onCollF);
+
+	//ステート変更
+	ChangeEnemyState(std::make_unique<EnemyStateEmergeEffect>());
 }
 
 void Enemy::ChangeEnemyState(std::unique_ptr<EnemyState> state)
@@ -54,7 +76,7 @@ void Enemy::ChangeEnemyStanceState(std::unique_ptr<EnemyState> state)
 
 
 //--------------------------------------------------------------------------------------------------------------------------
-std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon, IModel* model)
+std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, Weapon* weapon, IModel* model)
 {
 	std::unique_ptr<Enemy> instance = std::make_unique<Enemy>();
 	if (instance.get() == nullptr)
@@ -63,7 +85,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t
 	}
 
 	//初期化
-	if (!instance->Initialize(std::move(worldMat), waveNum, weapon, model))
+	if (!instance->Initialize(std::move(worldMat), waveNum, coolTime, weapon, model))
 	{
 		assert(0);
 	}
@@ -71,7 +93,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t
 	return std::move(instance);
 }
 
-bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weapon* weapon, IModel* model)
+bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, Weapon* weapon, IModel* model)
 {
 	if (!ObjectFBX::Initialize(std::move(worldMat)))
 	{
@@ -92,23 +114,13 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 	oldHP_ = hp_;
 
 	waveNum_ = waveNum;
+	coolTime_ = (float)coolTime;
 
 	//死亡時のタイマー上限
 	deadTimerMax_ = DEAD_TIMER_MAX_;
 
 	//model
 	model->SetMaterialExtend({ 0.03f,0.1f,50.0f });
-
-	//ディゾルブ
-	SetisDissolve(true);
-	SetDissolveT(1.0f);
-	//ディゾルブ画像
-	uint64_t handle;
-	handle = TextureManager::LoadGraph("dissolveMask.png");
-	SetDissolveTexHandle(handle);
-
-	//ステート変更
-	ChangeEnemyState(std::make_unique<EnemyStateEmergeEffect>());
 
 	//アニメーション開始
 	PlayAnimation(true);
@@ -118,16 +130,6 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, Weap
 
 	//モデル
 	SetModel(model);
-
-	//演出更新
-	ObjectFBX::EffectUpdate();
-	//fbx前提
-	ModelFBX* modelFbx = dynamic_cast<ModelFBX*>(model);
-	//ノードごとの当たり判定
-	InitializeNodeColliders(modelFbx, 14.0f, COLLISION_ATTR_ENEMYS);
-	//ボーンの当たり判定時に処理させる
-	auto onCollF = [=](IObject3D* obj, const CollisionInfo& info) {OnCollision(obj, info); };
-	SetNodeCollidersOnCollision(onCollF);
 
 	//分割数
 	SetTessFactor(TESS_FACTOR_MAX_);
@@ -316,6 +318,11 @@ void Enemy::BeginDamagedWave(const CollisionInfo& info, float wavePow)
 		{ GetScale().y / 23.0f * wavePow,GetScale().GetLength() / 1.3f * wavePow }, GetScale().GetLength() * 2.0f, 480.0f / wavePow);
 }
 
+void Enemy::DecrementCoolTime()
+{
+	coolTime_ = max(coolTime_ - GameVelocityManager::GetInstance().GetVelocity(), 0);
+}
+
 //----------------------------------------------------------------
 void Enemy::Update()
 {
@@ -333,7 +340,10 @@ void Enemy::Update()
 	UpdateNodeColliders();
 
 	//ステート
-	state_->Update();
+	if (state_)
+	{
+		state_->Update();
+	}
 	//構えステート
 	if (stanceState_)
 	{

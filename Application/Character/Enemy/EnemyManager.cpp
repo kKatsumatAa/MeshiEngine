@@ -12,12 +12,12 @@ EnemyManager& EnemyManager::GetInstance()
 
 void EnemyManager::Initialize()
 {
-	waveNum_ = 1;
+	waveNum_ = 0;
 
 	//敵のウェーブの番号で判断して無効にする
 	SetIsValidOtherWaveEnemy();
-	//新しいウェーブの敵の有効フラグをオン
-	SetIsValidWaveEnemy();
+
+	waveNum_++;
 }
 
 void EnemyManager::Update()
@@ -26,9 +26,26 @@ void EnemyManager::Update()
 	if (GetEnemys().size() && !GetIsAliveWaveEnemy())
 	{
 		waveNum_++;
+	}
 
-		//新しいウェーブの敵の有効フラグをオン
-		SetIsValidWaveEnemy();
+	//クールタイム更新
+	UpdateWaveEnemyCoolTime();
+
+	//新しいウェーブの敵の有効フラグをオン
+	SetIsValidWaveEnemy();
+}
+
+void EnemyManager::UpdateWaveEnemyCoolTime()
+{
+	//敵のウェーブの番号で判断してクールタイム更新
+	for (auto obj : GetEnemys())
+	{
+		Enemy* enemy = TransToEnemy(obj);
+
+		if (enemy->GetWaveNum() == waveNum_)
+		{
+			enemy->DecrementCoolTime();
+		}
 	}
 }
 
@@ -71,7 +88,8 @@ void EnemyManager::SetIsValidWaveEnemy()
 	{
 		Enemy* enemy = TransToEnemy(obj);
 
-		if (enemy->GetWaveNum() == waveNum_)
+		if (enemy->GetWaveNum() == waveNum_ && !enemy->GetIsValidDraw()
+			&& enemy->GetCoolTime() <= 0)
 		{
 			enemy->SetIsValid(true);
 			//出現演出のイニシャライズ
@@ -91,6 +109,30 @@ bool EnemyManager::GetIsAliveWaveEnemy()
 		{
 			return true;
 		}
+	}
+
+	return false;
+}
+
+bool EnemyManager::GetIsAllEnemyDead()
+{
+	int32_t deadEnemiesNum = 0;
+
+	for (auto obj : GetEnemys())
+	{
+		Enemy* enemy = TransToEnemy(obj);
+
+		//敵が死んでいたらカウント
+		if (enemy->GetIsDead())
+		{
+			deadEnemiesNum++;
+		}
+	}
+
+	//敵がいないか、全員死んでいたら
+	if (GetEnemys().size() <= 0 || deadEnemiesNum == GetEnemys().size())
+	{
+		return true;
 	}
 
 	return false;

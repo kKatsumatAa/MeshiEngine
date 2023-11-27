@@ -47,6 +47,8 @@ struct LevelData
 		ObjectData* childData;
 		//ウェーブ番号
 		int32_t waveNum = -1;
+		//クールタイム
+		float coolTime = 0;
 		//親ノード名
 		ParentNodeData parentNodeData;
 	};

@@ -188,6 +188,12 @@ void Player::Move()
 
 	//カメラの注視点に回転したベクトルセット
 	camera->SetTarget(GetTrans() + frontVec_);
+
+	//一定の位置に行ったら死亡
+	if (GetTrans().y <= GetScale().y * DEAD_MIN_POS_EXTEND_)
+	{
+		isAlive_ = false;
+	}
 }
 
 void Player::Update()

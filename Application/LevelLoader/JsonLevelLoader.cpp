@@ -119,6 +119,13 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 		objectData->waveNum = std::stoi(numStr);
 	}
 
+	//クールタイム
+	if (object->contains("cool_time"))
+	{
+		std::string numStr = (*object)["cool_time"];
+		objectData->coolTime = std::stof(numStr) * 60.0f;
+	}
+
 	//親ノード
 	if (object->contains("parent_node"))
 	{

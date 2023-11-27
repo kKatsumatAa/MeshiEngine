@@ -47,6 +47,7 @@ void StageManager::Initialize()
 
 	//海用
 	seaDistance_ = { 0,SEA_DICTANCE_TMP_,0 };
+	seaMaxAfterTime_ = SEA_MAX_AFTER_TIME_;
 
 	//
 	ChangeState("BEGINING");
@@ -71,7 +72,35 @@ void StageManager::ApproachLava()
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos =
 		CameraManager::GetInstance().GetCamera()->GetEye() + seaDistance_;
 	//強さも変える
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = 2.5f * (1.0f - seaDistance_.y / SEA_DICTANCE_TMP_);
+	float t = 1.0f - seaDistance_.y / SEA_DICTANCE_TMP_;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = 2.0f * t;
+
+	if (t >= 1.0f)
+	{
+		AfterLavaMaxUpdate();
+	}
+}
+
+void StageManager::AfterLavaMaxUpdate()
+{
+	seaMaxAfterTime_ = max(--seaMaxAfterTime_, 0);
+
+	float t = 1.0f - (float)seaMaxAfterTime_ / (float)SEA_DICTANCE_TMP_;
+
+	//ステージや壁等のオブジェクト取得
+	auto stages = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
+
+	//徐々にディゾルブ
+	for (auto landShape : stages)
+	{
+		landShape->SetDissolveT(EaseIn(t));
+
+		//時間終わったら消す
+		if (t >= 0.8f)
+		{
+			landShape->SetIsAlive(false);
+		}
+	}
 }
 
 void StageManager::ChangeState(const std::string& name)

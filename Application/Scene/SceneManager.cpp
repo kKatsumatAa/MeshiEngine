@@ -51,7 +51,8 @@ void SceneManager::ChangeScene()
 				DirectXWrapper::GetInstance().UpLoadTexture();
 				//更新処理
 				UpdateInternal();
-			});
+			}
+		);
 	}
 }
 

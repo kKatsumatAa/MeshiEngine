@@ -262,7 +262,10 @@ void EnemyStateAttackStanceBegin::Update()
 			Enemy::S_LENGTH_MAX_, HAVE_WEAPON_ATTR_TMP_, &info_);
 
 		//攻撃
-		enemy_->Attack(info_.object->GetWorldTrans());
+		if (info_.object)
+		{
+			enemy_->Attack(info_.object->GetWorldTrans());
+		}
 	}
 }
 

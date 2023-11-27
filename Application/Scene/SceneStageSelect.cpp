@@ -33,6 +33,8 @@ void SceneStageSelect::Initialize()
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos = { 0,10.0f,0 };
 	//強さ
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = 1.0f;
+	//角度
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = {0,0,0};
 }
 
 void SceneStageSelect::Update()

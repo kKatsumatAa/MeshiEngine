@@ -33,6 +33,9 @@ public:
 	const float LAVA_APPROACH_TIME_ = 20.0f * 60.0f / SEA_DICTANCE_TMP_;
 private:
 	Vec3 seaDistance_ = { 0,SEA_DICTANCE_TMP_,0 };
+	//溶岩が最大まで来た後の残り時間
+	const int32_t SEA_MAX_AFTER_TIME_ = 60;
+	int32_t seaMaxAfterTime_ = SEA_MAX_AFTER_TIME_;
 
 public:
 
@@ -69,7 +72,12 @@ public:
 public:
 	const Vec3& GetSeaDistance() { return seaDistance_; }
 	void SetSeaDistance(const Vec3& seaDistance) { seaDistance_ = seaDistance; }
+
+public:
+	//溶岩が迫る処理
 	void ApproachLava();
+	//溶岩が最大まで来てその後のカウントダウン
+	void AfterLavaMaxUpdate();
 
 public:
 	//ステート変更

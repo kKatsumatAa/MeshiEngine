@@ -5,7 +5,7 @@
 class EnemyManager final
 {
 private:
-	int32_t waveNum_ = 1;
+	int32_t waveNum_ = 0;
 
 private:
 	EnemyManager() { ; }
@@ -32,6 +32,12 @@ private:
 	void SetIsValidWaveEnemy();
 	//ウェーブの敵がもういないかどうか
 	bool GetIsAliveWaveEnemy();
+	//ウェーブ中の敵のクールタイムを減らす
+	void UpdateWaveEnemyCoolTime();
+
+public:
+	//ゲームクリアかどうか
+	bool GetIsAllEnemyDead();
 
 public:
 	static void DrawImGui();

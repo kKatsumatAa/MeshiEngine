@@ -19,6 +19,7 @@ public:
 
 private:
 	const float DEAD_TIMER_MAX_ = 70.0f;
+	float const DEAD_MIN_POS_EXTEND_ = -4.0f;
 
 private:
 	const int8_t HP_TMP_ = 1;

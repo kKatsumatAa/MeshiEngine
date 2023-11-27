@@ -3,6 +3,7 @@
 #include "MouseInput.h"
 #include "PlayerUI.h"
 #include "PostEffectManager.h"
+#include "EnemyManager.h"
 
 
 //共通の処理
@@ -26,7 +27,10 @@ void StageState::Update()
 	PlayerUI::GetInstance().Update();
 
 	//海
-	StageManager::GetInstance().ApproachLava();
+	if (!EnemyManager::GetInstance().GetIsAllEnemyDead())
+	{
+		StageManager::GetInstance().ApproachLava();
+	}
 }
 
 void StageState::DrawShadow()
@@ -144,12 +148,12 @@ void StageStateBattle::Update()
 	Tutorial::GetInstance().Update();
 
 	//ゲームオーバー
-	if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_ALLIES).size() <= 0)
+	if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player").size() <= 0)
 	{
 		StageManager::GetInstance().ChangeState("GAMEOVER");
 	}
 	//ゲームクリア
-	else if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "enemy").size() <= 0)
+	else if (EnemyManager::GetInstance().GetIsAllEnemyDead())
 	{
 		//ゲームスピードの加算無効
 		GameVelocityManager::GetInstance().SetIsInvalidAddGameVel(true);
@@ -223,7 +227,7 @@ void StageStateDead::Update()
 	}
 
 	//一定時間たったらフラグ立てる
-	if (timer_ >= EFFECT_TIMER_MAX_)
+	if (timer_ >= EFFECT_TIMER_MAX_ || objs.size() <= 0)
 	{
 		StageManager::GetInstance().SetIsGameOver(true);
 	}
