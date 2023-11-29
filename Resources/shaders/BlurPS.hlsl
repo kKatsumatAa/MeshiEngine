@@ -1,8 +1,5 @@
 #include"PeraShaderHeader.hlsli"
 
-//サンプラー
-SamplerState smp : register(s0);
-
 //クロスフィルタ用に二枚+被写界深度用
 struct PSOutput
 {

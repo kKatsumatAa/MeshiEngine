@@ -1,7 +1,5 @@
 #include"PeraShaderHeader.hlsli"
 
-SamplerState smp : register(s0);
-
 float4 PS2(Output input) : SV_TARGET
 {
 	// シェーディングによる色で描画

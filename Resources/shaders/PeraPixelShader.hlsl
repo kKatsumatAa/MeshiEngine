@@ -1,7 +1,5 @@
 #include"SeaHeader.hlsli"
 
-SamplerState smp : register(s0);
-
 //‚‹P“x‚Æ’Êí
 struct PSOutput
 {

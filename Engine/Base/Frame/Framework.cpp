@@ -30,7 +30,7 @@ void Framework::Initialize()
 	Sprite::CommonInitialize();
 
 	//ポストエフェクト
-	PostEffectManager::GetInstance().Initialize("Resources/image/normalImage.jpg");
+	PostEffectManager::GetInstance().Initialize("Resources/image/lava.jpg");
 
 	//キーボード入力初期化
 	KeyboardInput::GetInstance();

@@ -91,6 +91,7 @@ struct Output
     float2 uv : TEXCOORD;
 };
 
+SamplerState smp : register(s0);
 //一枚目の一つ目(通常カラー)
 Texture2D<float4> tex0 : register(t0);
 //一枚目の二つ目(違うカラー（法線←まだ）)
