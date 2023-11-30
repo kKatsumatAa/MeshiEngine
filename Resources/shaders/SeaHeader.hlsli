@@ -335,7 +335,7 @@ float4 mainImage(float2 fragCoord)
     
     if(isSeaImageEffect)
     {
-        colorL *= float4(effectTex.Sample(smp, abs(frac(float2(-dist.x - time * 0.1, -dist.z) / 7.0))).rgb * 3.0f, 1.0f);
+        colorL *= max(float4(effectTex.Sample(smp, abs(frac(float2(-dist.x - time * 0.1, -dist.z) / 7.0))).rgb * 3.0f, 1.0f),0.01);
     }
     
     // post
