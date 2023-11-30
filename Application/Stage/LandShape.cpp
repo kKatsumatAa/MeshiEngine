@@ -32,8 +32,10 @@ bool LandShape::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 	SetDissolveT(0);
 	SetDissolveTexHandle(TextureManager::GetInstance().LoadGraph("dissolveMask.png"));
 
-	//張りぼて作成
-	landShapePapierMache_ = LandShapePapierMache::Create(worldMat_.get(), model);
+	//分割数
+	SetTessFactor(TESS_FACTOR_MAX_);
+
+	SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
 	return true;
 }
@@ -41,38 +43,11 @@ bool LandShape::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 void LandShape::Update()
 {
 	Object::Update();
-
-	//張りぼて更新
-	landShapePapierMache_->SetWorldMatParam(*worldMat_);
-	landShapePapierMache_->SetDissolveT(GetDissolveT());
-	landShapePapierMache_->Update();
-
-	//
-	float gameVel = GameVelocityManager::GetInstance().GetVelocity();
-	float gameVelMin = GameVelocityManager::GetInstance().GAME_VELOCITY_MIN_;
-	float t = timer_ / TIMER_MAX_;
-	if (gameVel > GameVelocityManager::GetInstance().GAME_VELOCITY_MIN_)
-	{
-		timer_++;
-	}
-	else if (gameVel == gameVelMin && changeVel_ > gameVelMin)
-	{
-		timer_--;
-	}
-	timer_ = min(max(timer_, 0), TIMER_MAX_);
-
-	changeVel_ = Lerp(gameVelMin, 1.0f, t);
-	changeVel_ = min(max(changeVel_, 0), 1.0f);
-
-	//分割数
-	SetTessFactor(5.0f + (1.0f - changeVel_ + 0.01f) * TESS_FACTOR_MAX_);
 }
 
 void LandShape::DrawImGui(std::function<void()> imguiF)
 {
-	auto f = [=]() { ImGui::DragFloat3("effectEndColor", &endColor.x, 0.05f); };
-
-	IObject3D::DrawImGui(f);
+	IObject3D::DrawImGui();
 }
 
 void LandShape::DrawShadow()
@@ -82,12 +57,5 @@ void LandShape::DrawShadow()
 
 void LandShape::Draw()
 {
-	//張りぼて描画
-	landShapePapierMache_->Draw(changeVel_);
-
-	SetColor({ endColor.x,endColor.y,endColor.z,Lerp(0.75f,-0.1f,EaseInOut(changeVel_)) });
-	if (GetColor().w >= 0.0f)
-	{
-		Object::DrawModel(nullptr, nullptr, nullptr, Object::PipelineStateNumObj::HULL_DOMAIN_OBJ);
-	}
+	Object::DrawModel(nullptr, nullptr, nullptr, Object::PipelineStateNumObj::HULL_DOMAIN_OBJ);
 }

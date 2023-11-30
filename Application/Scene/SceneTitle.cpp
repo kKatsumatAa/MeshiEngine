@@ -31,8 +31,9 @@ void SceneTitle::Initialize()
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isSea = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isSeaImageEffect = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCol = { 6.0f,0.6f,0.1f };
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos = { 0,43.0f,0 };
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaSkyCol = { 0,0,0 };
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { -PI / 16.0f,0,0 };
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { -0.5f,0,0 };
 
 	//カーソルui
 	CursorUI::GetInstance().Initialize();

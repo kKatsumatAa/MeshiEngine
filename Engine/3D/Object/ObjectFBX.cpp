@@ -55,7 +55,7 @@ void ObjectFBX::CommonInitialize()
 		"", "", "",
 		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, 0);
 	//メッシュ分割用
-	PipeLineSetting(D3D12_FILL_MODE_WIREFRAME, pipelineSetM_[PipelineStateNum::HULL_DOMAIN],
+	PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[PipelineStateNum::HULL_DOMAIN],
 		"Resources/shaders/FBXVSTess.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
 		"", "Resources/shaders/WaveHullShader.hlsl", "Resources/shaders/WaveDomainShader.hlsl",
 		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH);

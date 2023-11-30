@@ -26,11 +26,6 @@ void StageState::Update()
 	//プレイヤーui
 	PlayerUI::GetInstance().Update();
 
-	//海
-	if (!EnemyManager::GetInstance().GetIsAllEnemyDead())
-	{
-		StageManager::GetInstance().ApproachLava();
-	}
 }
 
 void StageState::DrawShadow()

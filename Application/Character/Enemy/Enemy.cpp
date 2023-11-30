@@ -256,11 +256,9 @@ void Enemy::WalkWaveUpdate()
 	{
 		beforeWalkTime_ = walkWaveTimer_;
 
-		if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "stage").size())
+		for (auto landShape : ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE))
 		{
-			auto stage = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "stage")[0];
-
-			stage->BeginWave(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 3.0f,GetScale().y * 3.5f }, GetScale().z * 20.0f, 280.0f);
+			landShape->BeginWave(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 2.0f,GetScale().y * 0.2f }, GetScale().z * 20.0f, 280.0f);
 		}
 	}
 }
@@ -315,7 +313,7 @@ void Enemy::BeginDamagedWave(const CollisionInfo& info, float wavePow)
 {
 	//メッシュの波
 	BeginWave({ info.inter_.m128_f32[0] ,info.inter_.m128_f32[1] ,info.inter_.m128_f32[2] },
-		{ GetScale().y / 23.0f * wavePow,GetScale().GetLength() / 1.3f * wavePow }, GetScale().GetLength() * 2.0f, 480.0f / wavePow);
+		{ GetScale().y / 23.0f * wavePow,GetScale().GetLength() / 12.3f * wavePow }, GetScale().GetLength() * 2.0f, 480.0f / wavePow);
 }
 
 void Enemy::DecrementCoolTime()

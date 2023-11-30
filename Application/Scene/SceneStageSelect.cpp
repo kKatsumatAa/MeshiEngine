@@ -30,11 +30,9 @@ void SceneStageSelect::Initialize()
 	GameVelocityManager::GetInstance().Initialize();
 
 	//海
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos = { 0,10.0f,0 };
-	//強さ
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = 1.0f;
-	//角度
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { -PI / 16.0f, 0, 0 };
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos = { 0,43.0f,0 };
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { -0.5f,0,0 };
 }
 
 void SceneStageSelect::Update()
