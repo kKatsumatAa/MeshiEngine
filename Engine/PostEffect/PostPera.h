@@ -118,8 +118,8 @@ private:
 		float focusDiffPow = 0.01f;
 		//海
 		uint32_t isSea = false;
+		uint32_t isSeaImageEffect = false;
 		float resoulution = 0.0015f;
-		float pad = 0;
 		//---
 		Vec3 seaDirRot = { 0,0,0 };
 		float pad2 = 0;

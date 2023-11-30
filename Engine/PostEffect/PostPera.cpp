@@ -690,6 +690,7 @@ void PostPera::ImGuiUpdate(int32_t num)
 		ImGui::SliderFloat("NFocusWidth", &effectFlags_.nFocusWidth, 0, 2.0f);
 		ImGui::SliderFloat("focusDiffPow", &effectFlags_.focusDiffPow, 0, 2.0f);
 		ImGui::SliderInt("Sea", (int*)&effectFlags_.isSea, 0, 1);
+		ImGui::SliderInt("SeaImageEffect", (int*)&effectFlags_.isSeaImageEffect, 0, 1);
 		ImGui::DragFloat3("SeaCameraPos", &effectFlags_.seaCameraPos.x);
 		ImGui::DragFloat3("SeaDirRot", &effectFlags_.seaDirRot.x, 0.0001f);
 		ImGui::DragFloat("Resoulution", &effectFlags_.resoulution, 0.05f);

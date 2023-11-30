@@ -61,6 +61,8 @@ cbuffer ConstBufferEffectFlags : register(b0)
     float focusDiffPow;
     //ŠC
     unsigned int isSea;
+    //ŠC‚Ì‰æ‘œ‚ğg‚Á‚½‰‰o
+    unsigned int isSeaImageEffect;
     //‰ğ‘œ“x
     float resoulution;
     //•ûŒüz

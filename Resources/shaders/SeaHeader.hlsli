@@ -331,9 +331,12 @@ float4 mainImage(float2 fragCoord)
 
     
     //仮でガラスフィルター用の画像を使って溶岩表現
-    colorL = float4(colorL, 1.0f) 
-    * float4(effectTex.Sample(smp, abs(frac(float2(-dist.x - time * 0.1, -dist.z) / 7.0))).rgb * 3.0f, 1.0f)
-    ;
+    colorL = float4(colorL, 1.0f);
+    
+    if(isSeaImageEffect)
+    {
+        colorL *= float4(effectTex.Sample(smp, abs(frac(float2(-dist.x - time * 0.1, -dist.z) / 7.0))).rgb * 3.0f, 1.0f);
+    }
     
     // post
     return float4(colorL, 1.0);

@@ -73,7 +73,7 @@ void StageManager::ApproachLava()
 		CameraManager::GetInstance().GetCamera()->GetEye() + seaDistance_;
 	//強さも変える
 	float t = 1.0f - seaDistance_.y / SEA_DICTANCE_TMP_;
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = 1.5f * t;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = 1.2f * t;
 
 	if (t >= 1.0f)
 	{
