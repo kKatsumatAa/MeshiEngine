@@ -377,17 +377,10 @@ void Enemy::Draw()
 //----------------------------------------------------------------------------------
 void Enemy::KnockBack(const CollisionInfo& info)
 {
-	//長さ
-	float length = (info.object_->GetTrans() - IObject::GetTrans()).GetLength();
 	//距離のベクトル
-	Vec3 distanceVec = IObject::GetTrans() - info.object_->GetWorldTrans();
-	//仮
+	Vec3 distanceVec = -info.object_->GetVelocity();
 	distanceVec.y = 0;
-	velocity_.y = 0;
-	distanceVec.Normalized();
-	//ノックバック
-	velocity_ += distanceVec * length * KNOCK_BACK_POW_;
-	IObject::SetVelocity(velocity_);
+
 	//ダメージを受けるクールタイム
 	damageCoolTime_ = 20;
 
@@ -397,8 +390,9 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	//武器持っていたら落とす
 	if (weapon_)
 	{
-		distanceVec.y = 0.4f;
-		FallWeapon(Vec3(-distanceVec.x, distanceVec.y, -distanceVec.z) * length * WEAPON_FALL_VEL_EXTEND_);
+		distanceVec.Normalized();
+		distanceVec.y += 0.4f;
+		FallWeapon(Vec3(distanceVec.x, distanceVec.y, distanceVec.z) * WEAPON_FALL_VEL_EXTEND_);
 	}
 }
 
@@ -554,6 +548,9 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		{
 			return;
 		}
+
+		//ノックバック
+		KnockBack(info);
 
 		//投げられているときのみ
 		if (gun->GetIsThrowing() && gun->GetFallVelocity().GetLength() != 0)

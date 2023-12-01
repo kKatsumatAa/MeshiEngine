@@ -1,4 +1,4 @@
-﻿#include "Weapon.h"
+#include "Weapon.h"
 #include "GameVelocityManager.h"
 #include "CollisionManager.h"
 #include "ParticleManager.h"
@@ -14,20 +14,23 @@ void Weapon::NoParentMove()
 
 		const float FRAME_VEL_EXTEND_REM = 1.0f - FRAME_VEL_EXTEND_;
 
-		//クールタイムもゲームスピードをかける
-		SetTrans(GetTrans() + fallVec_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
+		//ゲームスピードをかける
+		float frameVelExtend = powf(GameVelocityManager::GetInstance().GetVelocity(), 2);
+		velocity_ = fallVec_ * frameVelExtend;
 
-		SetRot(GetRot() + fallVec_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2));
+		SetTrans(GetTrans() + velocity_);
+
+		SetRot(GetRot() + fallVec_ * frameVelExtend);
 
 		//だんだん弱く
-		fallVec_.x *= (FRAME_VEL_EXTEND_ + FRAME_VEL_EXTEND_REM * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
+		fallVec_.x *= (FRAME_VEL_EXTEND_ + FRAME_VEL_EXTEND_REM * (1.0f - frameVelExtend));
 
 		//重力
-		float gravity = GRAVITY_TMP_ * powf(GameVelocityManager::GetInstance().GetVelocity(), 2);
+		float gravity = GRAVITY_TMP_ * frameVelExtend;
 		fallVec_.y = max(fallVec_.y - gravity, -GRAVITY_MAX_);
 
 		//だんだん弱く
-		fallVec_.z *= (FRAME_VEL_EXTEND_ + FRAME_VEL_EXTEND_REM * (1.0f - powf(GameVelocityManager::GetInstance().GetVelocity(), 2)));
+		fallVec_.z *= (FRAME_VEL_EXTEND_ + FRAME_VEL_EXTEND_REM * (1.0f - frameVelExtend));
 
 
 		//前回の位置から今の位置のベクトルをレイとして判定

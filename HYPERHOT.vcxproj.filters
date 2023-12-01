@@ -67,9 +67,6 @@
     <Filter Include="ソース ファイル\Engine\Scene">
       <UniqueIdentifier>{dd270947-13f5-4f3f-9d03-5763cc3647af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Engine\Scene">
-      <UniqueIdentifier>{1478e915-9b0a-475b-9753-33737f16668b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Engine\Audio">
       <UniqueIdentifier>{4cdde516-1e76-4c35-812b-2d165886155d}</UniqueIdentifier>
     </Filter>

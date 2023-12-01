@@ -203,7 +203,7 @@ cbuffer ConstBufferEffectFlags : register(b5)
 }
 
 //メッシュ分割のウェーブ演出
-static const int WAVE_NUM = 10;
+static const int WAVE_NUM = 20;
 struct Wave
 {
     float3 waveEpicenter; //震源地

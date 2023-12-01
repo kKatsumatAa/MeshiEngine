@@ -115,11 +115,12 @@ void Bullet::BallisticsUpdate()
 
 void Bullet::Update()
 {
-	//クールタイムもゲームスピードをかける
+	//ゲームスピードをかける
 	lifeTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
 
 	//移動もゲームスピードをかける
-	SetTrans(GetWorldTrans() + directionVec_ * GameVelocityManager::GetInstance().GetVelocity());
+	velocity_ = directionVec_ * GameVelocityManager::GetInstance().GetVelocity();
+	SetTrans(GetWorldTrans() + velocity_);
 
 	Object::Update();
 
@@ -139,8 +140,10 @@ void Bullet::Update()
 			if (owner_ != nullptr && owner_ != info.object)
 			{
 				//ステージに波紋
-				BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 8.0f, GetScale().GetLength() * 100.0f, 30.0f);
-
+				if (info.collider->GetAttribute() == COLLISION_ATTR_LANDSHAPE)
+				{
+					BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 8.0f, GetScale().GetLength() * 100.0f, 30.0f);
+				}
 				Dead({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
 			}
 		}
@@ -150,9 +153,9 @@ void Bullet::Update()
 	oldPos_ = GetTrans() - directionVec_.GetNormalized() * 0.01f;
 
 	//メッシュ分割のウェーブ
-	if ((int)lifeTime_ % 15 == 0)
+	if ((int)lifeTime_ % 30 == 0)
 	{
-		BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 12.0f, GetScale().GetLength() * 30.0f, 15.0f);
+		BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 12.0f, GetScale().GetLength() * 40.0f, 25.0f);
 	}
 
 	//生存時間超えたら
