@@ -42,6 +42,10 @@ float GameVelocityManager::GetVelocity()
 
 void GameVelocityManager::Update()
 {
+	//スピードで徐々に色変える
+	Vec3 col = LerpVec3({ 1.0f,1.0f,1.0f }, VEL_COL_MIN_, EaseInOut(1.0f - gameVelocity_));
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.color = { col.x,col.y,col.z,1.0f };
+
 	//（三つ目に描画されたものを）スピードでラジアルブラーの強さ変える
 	if ((1.0f - gameVelocity_ / GAME_VELOCITY_MAX_) * 0.6f >= 0)
 	{
