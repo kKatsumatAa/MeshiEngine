@@ -74,6 +74,11 @@ void Object::CommonInitialize()
 			"Resources/shaders/OBJVSTess.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
 			"", "Resources/shaders/WaveHullShader.hlsl", "Resources/shaders/WaveDomainShader.hlsl",
 			sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH);
+		//シャドウマップメッシュ分割
+		PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[SHADOW_HULL_DOMAIN_OBJ],
+			"Resources/shaders/OBJShadowVSTess.hlsl", "",
+			"", "Resources/shaders/WaveShadowHS.hlsl", "Resources/shaders/WaveShadowDS.hlsl",
+			sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH, 0);
 	}
 	//primitive用
 	{
@@ -149,10 +154,15 @@ void Object::DrawModelInternal(int32_t pipelineNum)
 	std::function<void()>SetMaterialTexM = [=]() {
 		//行列
 		cbt_.DrawCommand(MATRIX);
+		//メッシュ分割だったら
+		if (pipelineNum == PipelineStateNumObj::SHADOW_HULL_DOMAIN_OBJ)
+		{
+			waves_.SetBuffCmdLst(TESS_WAVE);
+		}
 	};
 
 	//シャドウマップ用の前描画じゃなかったら
-	if (pipelineNum != PipelineStateNumObj::SHADOW_OBJ)
+	if (pipelineNum != PipelineStateNumObj::SHADOW_OBJ && pipelineNum != PipelineStateNumObj::SHADOW_HULL_DOMAIN_OBJ)
 	{
 		isShadow = false;
 
@@ -174,7 +184,7 @@ void Object::DrawModelInternal(int32_t pipelineNum)
 
 	//プリミティブ形状
 	auto primitiveT = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	if (pipelineNum == PipelineStateNumObj::HULL_DOMAIN_OBJ)
+	if (pipelineNum == PipelineStateNumObj::HULL_DOMAIN_OBJ || pipelineNum == PipelineStateNumObj::SHADOW_HULL_DOMAIN_OBJ)
 	{
 		primitiveT = D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
 	}
@@ -195,8 +205,7 @@ void Object::DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureH
 
 	//プリミティブ形状
 	auto primT = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	if ((indexNum != OBJ && pipelineNum == PipelineStateNumPrim::HULL_DOMAIN_PRIM)||
-		(indexNum == OBJ && pipelineNum == PipelineStateNumObj::HULL_DOMAIN_OBJ))
+	if (indexNum != OBJ && pipelineNum == PipelineStateNumPrim::HULL_DOMAIN_PRIM)
 	{
 		primT = D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
 	}

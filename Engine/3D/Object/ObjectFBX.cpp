@@ -59,6 +59,11 @@ void ObjectFBX::CommonInitialize()
 		"Resources/shaders/FBXVSTess.hlsl", "Resources/shaders/OBJPixelShader.hlsl",
 		"", "Resources/shaders/WaveHullShader.hlsl", "Resources/shaders/WaveDomainShader.hlsl",
 		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH);
+	//シャドウマップメッシュ分割
+	PipeLineSetting(D3D12_FILL_MODE_SOLID, pipelineSetM_[PipelineStateNum::SHADOW_HULL_DOMAIN],
+		"Resources/shaders/FBXShadowVSTess.hlsl", "",
+		"", "Resources/shaders/WaveShadowHS.hlsl", "Resources/shaders/WaveShadowDS.hlsl",
+		sInputLayoutM_, _countof(sInputLayoutM_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH, 0);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -84,10 +89,16 @@ void ObjectFBX::DrawModelInternal(int32_t pipelineNum)
 
 		//行列
 		cbt_.DrawCommand(MATRIX);
-		};
+
+		//メッシュ分割だったら
+		if (pipelineNum == PipelineStateNum::SHADOW_HULL_DOMAIN)
+		{
+			waves_.SetBuffCmdLst(TESS_WAVE);
+		}
+	};
 
 	//シャドウマップ用の前描画では必要ない
-	if (pipelineNum != PipelineStateNum::SHADOW)
+	if (pipelineNum != PipelineStateNum::SHADOW && pipelineNum != PipelineStateNum::SHADOW_HULL_DOMAIN)
 	{
 		isShadow = false;
 
@@ -109,7 +120,7 @@ void ObjectFBX::DrawModelInternal(int32_t pipelineNum)
 
 	//プリミティブ形状
 	auto primitiveT = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	if (pipelineNum == PipelineStateNum::HULL_DOMAIN)
+	if (pipelineNum == PipelineStateNum::HULL_DOMAIN || pipelineNum == PipelineStateNum::SHADOW_HULL_DOMAIN)
 	{
 		primitiveT = D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
 	}

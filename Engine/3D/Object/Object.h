@@ -28,6 +28,7 @@ protected:
 		WIREFRAME_OBJ,
 		SHADOW_OBJ,
 		HULL_DOMAIN_OBJ,
+		SHADOW_HULL_DOMAIN_OBJ,
 
 		COUNT_O//要素数
 	};

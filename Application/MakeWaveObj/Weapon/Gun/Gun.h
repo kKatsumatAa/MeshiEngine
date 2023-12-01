@@ -5,6 +5,7 @@
 #include "PlaneCollider.h"
 #include "Weapon.h"
 #include "ParticleManager.h"
+#include "MakeWaveObj.h"
 
 
 class Gun :

@@ -8,6 +8,8 @@
 #include "GameVelocityManager.h"
 #include "CollisionManager.h"
 #include "ModelManager.h"
+#include "ObjectManager.h"
+#include "LevelManager.h"
 
 using namespace DirectX;
 
@@ -136,6 +138,9 @@ void Bullet::Update()
 			//撃った本人には当たらないように
 			if (owner_ != nullptr && owner_ != info.object)
 			{
+				//ステージに波紋
+				BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 8.0f, GetScale().GetLength() * 100.0f, 30.0f);
+
 				Dead({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
 			}
 		}
@@ -143,6 +148,12 @@ void Bullet::Update()
 
 	//前回の位置を記録
 	oldPos_ = GetTrans() - directionVec_.GetNormalized() * 0.01f;
+
+	//メッシュ分割のウェーブ
+	if ((int)lifeTime_ % 15 == 0)
+	{
+		BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 12.0f, GetScale().GetLength() * 30.0f, 15.0f);
+	}
 
 	//生存時間超えたら
 	if (lifeTime_ <= 0)

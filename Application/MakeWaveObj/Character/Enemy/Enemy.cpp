@@ -10,6 +10,7 @@
 #include "LevelManager.h"
 #include "Bullet.h"
 #include "ObjectManager.h"
+#include "Util.h"
 
 using namespace DirectX;
 
@@ -137,9 +138,9 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, floa
 	return true;
 }
 
-void Enemy::AllMove(const Vec3& targetPos)
+void Enemy::AllMove(const Vec3& targetPos, bool isWave)
 {
-	WalkToTarget(targetPos);
+	WalkToTarget(targetPos, isWave);
 
 	CollisionWallAndFloor();
 }
@@ -154,7 +155,7 @@ void Enemy::Attack(const Vec3& targetPos)
 	}
 }
 
-void Enemy::WalkToTarget(const Vec3& targetPos)
+void Enemy::WalkToTarget(const Vec3& targetPos, bool isWave)
 {
 	//動けなかったら飛ばす
 	if (isCantMove)
@@ -198,7 +199,10 @@ void Enemy::WalkToTarget(const Vec3& targetPos)
 	DirectionUpdate(targetPos);
 
 	//波紋発生
-	WalkWaveUpdate();
+	if (isWave)
+	{
+		WalkWaveUpdate();
+	}
 }
 
 //---------------------------------------------------------------------------------------------
@@ -254,12 +258,9 @@ void Enemy::WalkWaveUpdate()
 	//間隔が来たらステージに波紋
 	if ((int32_t)walkWaveTimer_ % (int32_t)WALK_MOVE_INTERVAL_ == 0 && (uint32_t)beforeWalkTime_ != (uint32_t)walkWaveTimer_)
 	{
+		BeginWaveStage(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 2.0f,GetScale().y * 0.2f }, GetScale().z * 20.0f, 280.0f);
+		//間隔をあけるため
 		beforeWalkTime_ = walkWaveTimer_;
-
-		for (auto landShape : ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE))
-		{
-			landShape->BeginWave(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 2.0f,GetScale().y * 0.2f }, GetScale().z * 20.0f, 280.0f);
-		}
 	}
 }
 
@@ -311,9 +312,17 @@ void Enemy::HPUpdate(float t)
 
 void Enemy::BeginDamagedWave(const CollisionInfo& info, float wavePow)
 {
-	//メッシュの波
-	BeginWave({ info.inter_.m128_f32[0] ,info.inter_.m128_f32[1] ,info.inter_.m128_f32[2] },
-		{ GetScale().y / 23.0f * wavePow,GetScale().GetLength() / 12.3f * wavePow }, GetScale().GetLength() * 2.0f, 480.0f / wavePow);
+	Vec3 pos = { info.inter_.m128_f32[0] ,info.inter_.m128_f32[1] ,info.inter_.m128_f32[2] };
+
+	//自分にメッシュの波
+	for (int i = 0; i < 3; i++)
+	{
+		BeginWave(pos, { GetScale().y / 23.0f * wavePow,GetScale().GetLength() / 12.3f * wavePow },
+			GetScale().GetLength() * 2.0f , 140.0f / wavePow * GetRand(1.0f, 2.0f));
+	}
+	//ステージに波紋
+	BeginWaveStage(pos, { GetScale().y / 10.0f * wavePow,GetScale().GetLength() * 1.5f * wavePow },
+		GetScale().GetLength() * 3.0f, 30.0f);
 }
 
 void Enemy::DecrementCoolTime()
@@ -353,7 +362,7 @@ void Enemy::Update()
 
 void Enemy::DrawShadow()
 {
-	ObjectFBX::DrawModel(nullptr, nullptr, ObjectFBX::PipelineStateNum::SHADOW);
+	ObjectFBX::DrawModel(nullptr, nullptr, ObjectFBX::PipelineStateNum::SHADOW_HULL_DOMAIN);
 }
 
 void Enemy::Draw()

@@ -106,36 +106,6 @@
     <Filter Include="ヘッダー ファイル\Engine\PostEffect">
       <UniqueIdentifier>{06310e1f-70bb-4773-8867-d21016d4fdad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Application\Character">
-      <UniqueIdentifier>{203ceeb8-626e-4f6e-9671-3b464cdb538c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Application\Character\Player">
-      <UniqueIdentifier>{2cc1ec89-1401-408e-8f6b-45f0b22636d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Application\Character">
-      <UniqueIdentifier>{07f3b572-bdbe-4902-8443-b43bb448406a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Application\Character\Player">
-      <UniqueIdentifier>{9adbaad1-1568-4ac3-b015-9f8fcc47fed3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Application\Character\Enemy">
-      <UniqueIdentifier>{79b3f594-abf3-4815-b810-37360f4540eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Application\Character\Enemy">
-      <UniqueIdentifier>{fb9301f5-c476-436f-a5a1-7b2ee46966a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Application\Weapon">
-      <UniqueIdentifier>{3fc90253-c0d7-4e82-a2ec-62c3f2c4ad5d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Application\Weapon\Gun">
-      <UniqueIdentifier>{23509c09-0a50-457e-a93b-0b32a62ecbb3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Application\Weapon">
-      <UniqueIdentifier>{12bb3a41-b07c-41a8-bf29-7b25c6fc201b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Application\Weapon\Gun">
-      <UniqueIdentifier>{3bb1bcce-5a4f-4efb-8497-2f87cee59ba5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Application\System">
       <UniqueIdentifier>{6def36e3-01d1-4baf-877b-70851430c130}</UniqueIdentifier>
     </Filter>
@@ -219,6 +189,42 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\Application\LevelLoader">
       <UniqueIdentifier>{ffb14021-f2df-4079-bfc0-845338f82073}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\MakeWaveObj">
+      <UniqueIdentifier>{1241b7fe-6371-413c-ad79-d241ea4d6745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\MakeWaveObj\Weapon">
+      <UniqueIdentifier>{12bb3a41-b07c-41a8-bf29-7b25c6fc201b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\MakeWaveObj\Weapon\Gun">
+      <UniqueIdentifier>{3bb1bcce-5a4f-4efb-8497-2f87cee59ba5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\MakeWaveObj\Character">
+      <UniqueIdentifier>{07f3b572-bdbe-4902-8443-b43bb448406a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\MakeWaveObj\Character\Player">
+      <UniqueIdentifier>{9adbaad1-1568-4ac3-b015-9f8fcc47fed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\MakeWaveObj\Character\Enemy">
+      <UniqueIdentifier>{79b3f594-abf3-4815-b810-37360f4540eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\MakeWaveObj">
+      <UniqueIdentifier>{c86621d7-339d-41e8-8273-05756cf0af89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\MakeWaveObj\Weapon">
+      <UniqueIdentifier>{3fc90253-c0d7-4e82-a2ec-62c3f2c4ad5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\MakeWaveObj\Weapon\Gun">
+      <UniqueIdentifier>{23509c09-0a50-457e-a93b-0b32a62ecbb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\MakeWaveObj\Character">
+      <UniqueIdentifier>{203ceeb8-626e-4f6e-9671-3b464cdb538c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\MakeWaveObj\Character\Player">
+      <UniqueIdentifier>{2cc1ec89-1401-408e-8f6b-45f0b22636d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Application\MakeWaveObj\Character\Enemy">
+      <UniqueIdentifier>{fb9301f5-c476-436f-a5a1-7b2ee46966a3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -360,39 +366,6 @@
     <ClCompile Include="Engine\PostEffect\PostEffectManager.cpp">
       <Filter>ソース ファイル\Engine\PostEffect</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Character\Character.cpp">
-      <Filter>ソース ファイル\Application\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Character\Player\Player.cpp">
-      <Filter>ソース ファイル\Application\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Character\Player\PlayerAttackState.cpp">
-      <Filter>ソース ファイル\Application\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Character\Player\PlayerHand.cpp">
-      <Filter>ソース ファイル\Application\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Character\Player\PlayerHandManager.cpp">
-      <Filter>ソース ファイル\Application\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Character\Player\PlayerState.cpp">
-      <Filter>ソース ファイル\Application\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Character\Enemy\Enemy.cpp">
-      <Filter>ソース ファイル\Application\Character\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Weapon\Weapon.cpp">
-      <Filter>ソース ファイル\Application\Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Weapon\Gun\Bullet.cpp">
-      <Filter>ソース ファイル\Application\Weapon\Gun</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Weapon\Gun\BulletManager.cpp">
-      <Filter>ソース ファイル\Application\Weapon\Gun</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Weapon\Gun\Gun.cpp">
-      <Filter>ソース ファイル\Application\Weapon\Gun</Filter>
-    </ClCompile>
     <ClCompile Include="Application\Effect\ClearEffect.cpp">
       <Filter>ソース ファイル\Application\Effect</Filter>
     </ClCompile>
@@ -417,12 +390,6 @@
     <ClCompile Include="Application\System\Tutorial\TutorialState.cpp">
       <Filter>ソース ファイル\Application\System\Tutorial</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Character\Player\PlayerUI.cpp">
-      <Filter>ソース ファイル\Application\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Character\Player\PlayerUIState.cpp">
-      <Filter>ソース ファイル\Application\Character\Player</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3D\Object\IModel.cpp">
       <Filter>ソース ファイル\Engine\3D\Object</Filter>
     </ClCompile>
@@ -437,15 +404,6 @@
     </ClCompile>
     <ClCompile Include="Application\Stage\StageSelect.cpp">
       <Filter>ソース ファイル\Application\Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Character\Enemy\EnemyManager.cpp">
-      <Filter>ソース ファイル\Application\Character\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Character\Enemy\EnemyState.cpp">
-      <Filter>ソース ファイル\Application\Character\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Character\CharacterState.cpp">
-      <Filter>ソース ファイル\Application\Character</Filter>
     </ClCompile>
     <ClCompile Include="Engine\2D\Camera2D.cpp">
       <Filter>ソース ファイル\Engine\2D</Filter>
@@ -545,6 +503,57 @@
     </ClCompile>
     <ClCompile Include="Application\Stage\LandShapePapierMache.cpp">
       <Filter>ソース ファイル\Application\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\MakeWaveObj.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Weapon\Gun\Bullet.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Weapon\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Weapon\Gun\BulletManager.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Weapon\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Weapon\Gun\Gun.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Weapon\Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Weapon\Weapon.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Enemy\Enemy.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Enemy\EnemyManager.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Enemy\EnemyState.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\Player.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerAttackState.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerHand.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerHandManager.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerState.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerUI.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerUIState.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Character.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\CharacterState.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -698,39 +707,6 @@
     <ClInclude Include="Engine\PostEffect\PostEffectManager.h">
       <Filter>ヘッダー ファイル\Engine\PostEffect</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Character\Character.h">
-      <Filter>ヘッダー ファイル\Application\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Character\Player\Player.h">
-      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Character\Player\PlayerAttackState.h">
-      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Character\Player\PlayerHand.h">
-      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Character\Player\PlayerHandManager.h">
-      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Character\Player\PlayerState.h">
-      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Character\Enemy\Enemy.h">
-      <Filter>ヘッダー ファイル\Application\Character\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Weapon\Weapon.h">
-      <Filter>ヘッダー ファイル\Application\Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Weapon\Gun\Bullet.h">
-      <Filter>ヘッダー ファイル\Application\Weapon\Gun</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Weapon\Gun\BulletManager.h">
-      <Filter>ヘッダー ファイル\Application\Weapon\Gun</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Weapon\Gun\Gun.h">
-      <Filter>ヘッダー ファイル\Application\Weapon\Gun</Filter>
-    </ClInclude>
     <ClInclude Include="Application\Effect\ClearEffect.h">
       <Filter>ヘッダー ファイル\Application\Effect</Filter>
     </ClInclude>
@@ -755,12 +731,6 @@
     <ClInclude Include="Application\Stage\StageState.h">
       <Filter>ヘッダー ファイル\Application\Stage</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Character\Player\PlayerUI.h">
-      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Character\Player\PlayerUIState.h">
-      <Filter>ヘッダー ファイル\Application\Character\Player</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\3D\Object\IModel.h">
       <Filter>ヘッダー ファイル\Engine\3D\Object</Filter>
     </ClInclude>
@@ -775,15 +745,6 @@
     </ClInclude>
     <ClInclude Include="Application\Stage\StageSelect.h">
       <Filter>ヘッダー ファイル\Application\Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Character\Enemy\EnemyManager.h">
-      <Filter>ヘッダー ファイル\Application\Character\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Character\Enemy\EnemyState.h">
-      <Filter>ヘッダー ファイル\Application\Character\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Character\CharacterState.h">
-      <Filter>ヘッダー ファイル\Application\Character</Filter>
     </ClInclude>
     <ClInclude Include="Engine\2D\Camera2D.h">
       <Filter>ヘッダー ファイル\Engine\2D</Filter>
@@ -890,6 +851,57 @@
     <ClInclude Include="Application\Stage\LandShapePapierMache.h">
       <Filter>ヘッダー ファイル\Application\Stage</Filter>
     </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\MakeWaveObj.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Enemy\Enemy.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Enemy\EnemyManager.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Enemy\EnemyState.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\Player.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerAttackState.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerHand.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerHandManager.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerState.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerUI.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerUIState.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Character.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\CharacterState.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Weapon\Gun\Bullet.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Weapon\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Weapon\Gun\BulletManager.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Weapon\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Weapon\Gun\Gun.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Weapon\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Weapon\Weapon.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\PeraVertexShader.hlsl">
@@ -965,6 +977,18 @@
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\FBXVSTess.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\WaveShadowHS.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\WaveShadowDS.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\OBJShadowVSTess.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\FBXShadowVSTess.hlsl">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
   </ItemGroup>

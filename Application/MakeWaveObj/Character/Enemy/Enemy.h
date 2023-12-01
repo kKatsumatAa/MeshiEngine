@@ -103,7 +103,7 @@ private:
 	//銃をノックバックして落とす
 	void KnockBack(const CollisionInfo& info);
 	//ターゲットに向かって動く処理のみ
-	void WalkToTarget(const Vec3& targetPos);
+	void WalkToTarget(const Vec3& targetPos, bool isWave = true);
 	//攻撃された部位ごとにノードに加算する角度を決める
 	void SetAllNodeAddRots(const IObject& nodeObj, float angleExtend = 1.0f);
 
@@ -143,7 +143,7 @@ public:
 	//壁や地面のみと判定
 	void CollisionWallAndFloor();
 	//移動
-	void AllMove(const Vec3& targetPos);
+	void AllMove(const Vec3& targetPos, bool isWave = true);
 	//攻撃
 	void Attack(const Vec3& targetPos);
 	//向きを変更

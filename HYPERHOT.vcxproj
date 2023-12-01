@@ -66,7 +66,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D;$(ProjectDir)Engine\3D\Wave;$(ProjectDir)Application\Scene;$(ProjectDir)Application\LevelLoader</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\MakeWaveObj\Character;$(ProjectDir)Application\MakeWaveObj\Character\Player;$(ProjectDir)Application\MakeWaveObj\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\MakeWaveObj\Weapon;$(ProjectDir)Application\MakeWaveObj\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D;$(ProjectDir)Engine\3D\Wave;$(ProjectDir)Application\Scene;$(ProjectDir)Application\LevelLoader;$(ProjectDir)Application\MakeWaveObj</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -91,7 +91,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\Character;$(ProjectDir)Application\Character\Player;$(ProjectDir)Application\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\Weapon;$(ProjectDir)Application\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D;$(ProjectDir)Engine\3D\Wave;$(ProjectDir)Application\Scene;$(ProjectDir)Application\LevelLoader</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\MakeWaveObj\Character;$(ProjectDir)Application\MakeWaveObj\Character\Player;$(ProjectDir)Application\MakeWaveObj\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\MakeWaveObj\Weapon;$(ProjectDir)Application\MakeWaveObj\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D;$(ProjectDir)Engine\3D\Wave;$(ProjectDir)Application\Scene;$(ProjectDir)Application\LevelLoader;$(ProjectDir)Application\MakeWaveObj</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -109,22 +109,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Application\Character\Character.cpp" />
-    <ClCompile Include="Application\Character\CharacterState.cpp" />
-    <ClCompile Include="Application\Character\Enemy\Enemy.cpp" />
-    <ClCompile Include="Application\Character\Enemy\EnemyManager.cpp" />
-    <ClCompile Include="Application\Character\Enemy\EnemyState.cpp" />
-    <ClCompile Include="Application\Character\Player\Player.cpp" />
-    <ClCompile Include="Application\Character\Player\PlayerAttackState.cpp" />
-    <ClCompile Include="Application\Character\Player\PlayerHand.cpp" />
-    <ClCompile Include="Application\Character\Player\PlayerHandManager.cpp" />
-    <ClCompile Include="Application\Character\Player\PlayerState.cpp" />
-    <ClCompile Include="Application\Character\Player\PlayerUI.cpp" />
-    <ClCompile Include="Application\Character\Player\PlayerUIState.cpp" />
     <ClCompile Include="Application\Effect\ClearEffect.cpp" />
     <ClCompile Include="Application\Effect\ClearEffectState.cpp" />
     <ClCompile Include="Application\LevelLoader\JsonLevelLoader.cpp" />
     <ClCompile Include="Application\LevelLoader\LevelManager.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\Character.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\CharacterState.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\Enemy\Enemy.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\Enemy\EnemyManager.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\Enemy\EnemyState.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\Player.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerAttackState.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerHand.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerHandManager.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerState.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerUI.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerUIState.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\MakeWaveObj.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Weapon\Gun\Bullet.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Weapon\Gun\BulletManager.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Weapon\Gun\Gun.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Weapon\Weapon.cpp" />
     <ClCompile Include="Application\Scene\SceneClear.cpp" />
     <ClCompile Include="Application\Scene\SceneFactory.cpp" />
     <ClCompile Include="Application\Scene\SceneGame.cpp" />
@@ -145,10 +150,6 @@
     <ClCompile Include="Application\System\Tutorial\TutorialState.cpp" />
     <ClCompile Include="Application\UI\CursorUI.cpp" />
     <ClCompile Include="Application\UI\TitleUI.cpp" />
-    <ClCompile Include="Application\Weapon\Gun\Bullet.cpp" />
-    <ClCompile Include="Application\Weapon\Gun\BulletManager.cpp" />
-    <ClCompile Include="Application\Weapon\Gun\Gun.cpp" />
-    <ClCompile Include="Application\Weapon\Weapon.cpp" />
     <ClCompile Include="Engine\2D\Camera2D.cpp" />
     <ClCompile Include="Engine\2D\DebugText.cpp" />
     <ClCompile Include="Engine\2D\DrawIntNumImage.cpp" />
@@ -223,22 +224,27 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\Character\Character.h" />
-    <ClInclude Include="Application\Character\CharacterState.h" />
-    <ClInclude Include="Application\Character\Enemy\Enemy.h" />
-    <ClInclude Include="Application\Character\Enemy\EnemyManager.h" />
-    <ClInclude Include="Application\Character\Enemy\EnemyState.h" />
-    <ClInclude Include="Application\Character\Player\Player.h" />
-    <ClInclude Include="Application\Character\Player\PlayerAttackState.h" />
-    <ClInclude Include="Application\Character\Player\PlayerHand.h" />
-    <ClInclude Include="Application\Character\Player\PlayerHandManager.h" />
-    <ClInclude Include="Application\Character\Player\PlayerState.h" />
-    <ClInclude Include="Application\Character\Player\PlayerUI.h" />
-    <ClInclude Include="Application\Character\Player\PlayerUIState.h" />
     <ClInclude Include="Application\Effect\ClearEffect.h" />
     <ClInclude Include="Application\Effect\ClearEffectState.h" />
     <ClInclude Include="Application\LevelLoader\JsonLevelLoader.h" />
     <ClInclude Include="Application\LevelLoader\LevelManager.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\Character.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\CharacterState.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\Enemy\Enemy.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\Enemy\EnemyManager.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\Enemy\EnemyState.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\Player.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerAttackState.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerHand.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerHandManager.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerState.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerUI.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerUIState.h" />
+    <ClInclude Include="Application\MakeWaveObj\MakeWaveObj.h" />
+    <ClInclude Include="Application\MakeWaveObj\Weapon\Gun\Bullet.h" />
+    <ClInclude Include="Application\MakeWaveObj\Weapon\Gun\BulletManager.h" />
+    <ClInclude Include="Application\MakeWaveObj\Weapon\Gun\Gun.h" />
+    <ClInclude Include="Application\MakeWaveObj\Weapon\Weapon.h" />
     <ClInclude Include="Application\Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Application\Scene\SceneClear.h" />
     <ClInclude Include="Application\Scene\SceneFactory.h" />
@@ -260,10 +266,6 @@
     <ClInclude Include="Application\System\Tutorial\TutorialState.h" />
     <ClInclude Include="Application\UI\CursorUI.h" />
     <ClInclude Include="Application\UI\TitleUI.h" />
-    <ClInclude Include="Application\Weapon\Gun\Bullet.h" />
-    <ClInclude Include="Application\Weapon\Gun\BulletManager.h" />
-    <ClInclude Include="Application\Weapon\Gun\Gun.h" />
-    <ClInclude Include="Application\Weapon\Weapon.h" />
     <ClInclude Include="Engine\2D\Camera2D.h" />
     <ClInclude Include="Engine\2D\DebugText.h" />
     <ClInclude Include="Engine\2D\DrawIntNumImage.h" />
@@ -377,6 +379,12 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\FBXShadowVSTess.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Resources\shaders\FBXVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
@@ -384,6 +392,12 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\shaders\FBXVSTess.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\OBJShadowVSTess.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -495,6 +509,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\WaveShadowDS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Domain</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Domain</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\WaveShadowHS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Hull</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Hull</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>

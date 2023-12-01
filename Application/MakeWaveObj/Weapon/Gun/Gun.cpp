@@ -77,12 +77,8 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, IObject3D* owner
 	//パーティクル
 	ParticleGenerate({ 4.0f,4.0f,4.0f,1.5f }, { 4.0f,4.0f,4.0f,0 }, particleSize);
 
-	//メッシュ分割のウェーブ
-	auto landShapes = ObjectManager::GetInstance().GetObjs(LevelManager::GetInstance().S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
-	for (auto landShape : landShapes)
-	{
-		landShape->BeginWave(shotPos_, Vec2(GetScale().z, GetScale().y) * 10.0f, GetScale().GetLength() * 90.0f, 540.0f);
-	}
+	//ステージに波紋
+	BeginWaveStage(shotPos_, Vec2(GetScale().z, GetScale().y) * 9.0f, GetScale().GetLength() * 300.0f, 120.0f);
 
 	attackCoolTime_ = SHOT_COOL_TIME_MAX_;
 	remainingBullets_ -= decreBullet;
@@ -147,6 +143,14 @@ void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float
 void Gun::OnLandShape(const Vec3& interPos)
 {
 	SetIsAlive(false);
+
+	//ステージに波紋
+	float waveLength = GetScale().GetLength();
+	for (int i = 0; i < 3; i++)
+	{
+		BeginWaveStage(GetTrans(), Vec2(waveLength, waveLength) * 1.5f,
+			waveLength * 3.0f * GetRand(1.0f, 2.0f), 30.0f);
+	}
 
 	//パーティクル
 	for (int32_t i = 0; i < 20; ++i)

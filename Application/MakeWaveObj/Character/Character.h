@@ -4,9 +4,10 @@
 #include"CollisionManager.h"
 #include"Counter.h"
 #include<functional>
+#include "MakeWaveObj.h"
 
 
-class Character : public ObjectFBX
+class Character : public ObjectFBX, public IMakeWaveObj
 {
 protected:
 	//武器

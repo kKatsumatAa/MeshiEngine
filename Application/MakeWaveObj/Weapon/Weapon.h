@@ -3,10 +3,11 @@
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
+#include "MakeWaveObj.h"
 
 
 class Weapon :
-	public Object
+	public Object, public IMakeWaveObj
 {
 protected:
 	//フレームごとの倍率

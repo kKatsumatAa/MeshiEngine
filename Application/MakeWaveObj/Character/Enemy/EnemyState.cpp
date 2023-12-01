@@ -366,7 +366,7 @@ void EnemyStateDead::Update()
 	float t = timer_ / enemy_->GetDeadTimerMax();
 
 	//アニメーションスピード徐々に
-	enemy_->AllMove(GetRayHitGunOrPlayerPos());
+	enemy_->AllMove(GetRayHitGunOrPlayerPos(), false);
 	enemy_->SetAnimeSpeedExtend(Lerp(1.0f, 0, EaseIn(t)));
 
 	//割合を使用して線形補完

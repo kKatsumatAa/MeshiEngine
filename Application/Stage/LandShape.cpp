@@ -52,7 +52,7 @@ void LandShape::DrawImGui(std::function<void()> imguiF)
 
 void LandShape::DrawShadow()
 {
-	Object::DrawModel(nullptr, nullptr, nullptr, Object::PipelineStateNumObj::SHADOW_OBJ);
+	Object::DrawModel(nullptr, nullptr, nullptr, Object::PipelineStateNumObj::SHADOW_HULL_DOMAIN_OBJ);
 }
 
 void LandShape::Draw()

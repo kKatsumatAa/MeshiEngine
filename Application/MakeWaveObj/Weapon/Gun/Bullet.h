@@ -3,10 +3,11 @@
 #include "SphereCollider.h"
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
+#include "MakeWaveObj.h"
 
 
 class Bullet :
-	public Object
+	public Object, public IMakeWaveObj
 {
 private:
 	//生存時間
