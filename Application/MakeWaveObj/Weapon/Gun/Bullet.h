@@ -40,6 +40,7 @@ public:
 
 private:
 	void Dead(const Vec3& interPos);
+	void Dead(const CollisionInfo& info);
 
 	//弾道用のオブジェクトの位置など
 	void BallisticsUpdate();

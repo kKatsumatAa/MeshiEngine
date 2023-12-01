@@ -249,16 +249,19 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj, float angleExtend)
 
 void Enemy::WalkWaveUpdate()
 {
-	walkWaveTimer_ += GameVelocityManager::GetInstance().GetVelocity() * GetAnimeSpeedExtend();
-	if (walkWaveTimer_ >= WALK_MOVE_INTERVAL_ * 50.0f)
+	float gameVel = GameVelocityManager::GetInstance().GetVelocity() * GetAnimeSpeedExtend();
+
+	walkWaveTimer_ += gameVel;
+	if (walkWaveTimer_ >= WALK_MOVE_INTERVAL_ * 500.0f)
 	{
 		walkWaveTimer_ = 0;
 	}
 
 	//間隔が来たらステージに波紋
-	if ((int32_t)walkWaveTimer_ % (int32_t)WALK_MOVE_INTERVAL_ == 0 && (uint32_t)beforeWalkTime_ != (uint32_t)walkWaveTimer_)
+	if ((int32_t)walkWaveTimer_ % (int32_t)WALK_MOVE_INTERVAL_ == 0
+		&& walkWaveTimer_ - beforeWalkTime_ >= WALK_MOVE_INTERVAL_)
 	{
-		BeginWaveStage(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 2.0f,GetScale().y * 0.2f }, GetScale().z * 20.0f, 280.0f);
+		BeginWaveStage(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 2.0f,GetScale().y * 0.2f }, GetScale().z * 20.0f, 100.0f);
 		//間隔をあけるため
 		beforeWalkTime_ = walkWaveTimer_;
 	}
@@ -318,10 +321,10 @@ void Enemy::BeginDamagedWave(const CollisionInfo& info, float wavePow)
 	for (int i = 0; i < 3; i++)
 	{
 		BeginWave(pos, { GetScale().y / 23.0f * wavePow,GetScale().GetLength() / 12.3f * wavePow },
-			GetScale().GetLength() * 2.0f , 140.0f / wavePow * GetRand(1.0f, 2.0f));
+			GetScale().GetLength() * 2.0f, 140.0f / wavePow * GetRand(1.0f, 2.0f));
 	}
 	//ステージに波紋
-	BeginWaveStage(pos, { GetScale().y / 10.0f * wavePow,GetScale().GetLength() * 1.5f * wavePow },
+	BeginWaveStage(pos, { GetScale().y / 10.0f * wavePow,GetScale().GetLength() * 1.1f * wavePow },
 		GetScale().GetLength() * 3.0f, 30.0f);
 }
 
@@ -534,7 +537,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		SetAllNodeAddRots(*obj, 1.5f);
 
 		//メッシュの波
-		BeginDamagedWave(info, 1.7f);
+		BeginDamagedWave(info, 1.3f);
 
 		//パーティクル
 		DamageParticle(100, 1, 1.3f, &info, obj, nullptr);

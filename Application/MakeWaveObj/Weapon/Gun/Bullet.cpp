@@ -86,6 +86,17 @@ void Bullet::Dead(const Vec3& interPos)
 	}
 }
 
+void Bullet::Dead(const CollisionInfo& info)
+{
+	//ステージに波紋
+	if (info.collider_->GetAttribute() & COLLISION_ATTR_LANDSHAPE)
+	{
+		BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 35.0f, GetScale().GetLength() * 50.0f, 40.0f);
+	}
+
+	Dead({ info.inter_.m128_f32[0],info.inter_.m128_f32[1] ,info.inter_.m128_f32[2] });
+}
+
 void Bullet::BallisticsUpdate()
 {
 	ballisticsObj_.SetIsSilhouette(true);
@@ -116,7 +127,7 @@ void Bullet::BallisticsUpdate()
 void Bullet::Update()
 {
 	//ゲームスピードをかける
-	lifeTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
+	lifeTime_ -= 1.0f;
 
 	//移動もゲームスピードをかける
 	velocity_ = directionVec_ * GameVelocityManager::GetInstance().GetVelocity();
@@ -139,11 +150,6 @@ void Bullet::Update()
 			//撃った本人には当たらないように
 			if (owner_ != nullptr && owner_ != info.object)
 			{
-				//ステージに波紋
-				if (info.collider->GetAttribute() == COLLISION_ATTR_LANDSHAPE)
-				{
-					BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 8.0f, GetScale().GetLength() * 100.0f, 30.0f);
-				}
 				Dead({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
 			}
 		}
@@ -153,15 +159,9 @@ void Bullet::Update()
 	oldPos_ = GetTrans() - directionVec_.GetNormalized() * 0.01f;
 
 	//メッシュ分割のウェーブ
-	if ((int)lifeTime_ % 30 == 0)
+	if ((int32_t)lifeTime_ % 20 == 0)
 	{
-		BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 12.0f, GetScale().GetLength() * 40.0f, 25.0f);
-	}
-
-	//生存時間超えたら
-	if (lifeTime_ <= 0)
-	{
-		SetIsAlive(false);
+		BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 5.0f, GetScale().GetLength() * 80.0f, 20.0f);
 	}
 }
 
@@ -187,6 +187,6 @@ void Bullet::OnCollision(const CollisionInfo& info)
 	//撃った本人には当たらないように
 	if (owner_ != info.object_ && info.object_->GetObjName().find("enemy") == std::string::npos)
 	{
-		Dead({ info.inter_.m128_f32[0],info.inter_.m128_f32[1], info.inter_.m128_f32[2] });
+		Dead(info);
 	}
 }

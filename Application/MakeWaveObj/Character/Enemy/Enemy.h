@@ -77,7 +77,7 @@ private:
 	//アニメーション中に地面にウェーブ出す
 	float walkWaveTimer_ = 0;
 	float beforeWalkTime_ = 0;
-	const float  WALK_MOVE_INTERVAL_ = 5.f;
+	const float  WALK_MOVE_INTERVAL_ = 20.f;
 
 	//ゲーム的に死亡したか
 	bool isDead_ = false;
