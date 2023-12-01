@@ -32,7 +32,10 @@ void SceneStageSelect::Initialize()
 	//海
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = 1.0f;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos = { 0,43.0f,0 };
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { -0.5f,0,0 };
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { -0.2f,0.5f,0 };
+
+	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.color = { 1.0f,1.0f,1.0f,1.0f };
+
 }
 
 void SceneStageSelect::Update()

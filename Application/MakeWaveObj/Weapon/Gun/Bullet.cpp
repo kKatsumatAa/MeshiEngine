@@ -67,9 +67,15 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	return true;
 }
 
-void Bullet::Dead(const Vec3& interPos)
+void Bullet::Dead(const Vec3& interPos, uint64_t attr)
 {
 	SetIsAlive(false);
+
+	if (attr & COLLISION_ATTR_LANDSHAPE)
+	{
+		//ステージに波紋
+		BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 35.0f, GetScale().GetLength() * 50.0f, 40.0f);
+	}
 
 	//パーティクル
 	for (int32_t i = 0; i < 20; ++i)
@@ -88,13 +94,7 @@ void Bullet::Dead(const Vec3& interPos)
 
 void Bullet::Dead(const CollisionInfo& info)
 {
-	//ステージに波紋
-	if (info.collider_->GetAttribute() & COLLISION_ATTR_LANDSHAPE)
-	{
-		BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 35.0f, GetScale().GetLength() * 50.0f, 40.0f);
-	}
-
-	Dead({ info.inter_.m128_f32[0],info.inter_.m128_f32[1] ,info.inter_.m128_f32[2] });
+	Dead({ info.inter_.m128_f32[0],info.inter_.m128_f32[1] ,info.inter_.m128_f32[2] }, info.collider_->GetAttribute());
 }
 
 void Bullet::BallisticsUpdate()
@@ -150,7 +150,7 @@ void Bullet::Update()
 			//撃った本人には当たらないように
 			if (owner_ != nullptr && owner_ != info.object)
 			{
-				Dead({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] });
+				Dead({ info.inter.m128_f32[0],info.inter.m128_f32[1], info.inter.m128_f32[2] }, info.collider->GetAttribute());
 			}
 		}
 	}

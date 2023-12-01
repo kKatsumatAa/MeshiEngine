@@ -465,16 +465,10 @@
     <ClCompile Include="Application\Scene\SceneTransitionManager.cpp">
       <Filter>ソース ファイル\Application\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Scene\SceneClear.cpp">
-      <Filter>ソース ファイル\Application\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Application\Scene\SceneFactory.cpp">
       <Filter>ソース ファイル\Application\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Application\Scene\SceneGame.cpp">
-      <Filter>ソース ファイル\Application\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Scene\SceneLoad.cpp">
       <Filter>ソース ファイル\Application\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Application\Scene\SceneManager.cpp">
@@ -809,16 +803,10 @@
     <ClInclude Include="Application\Scene\SceneTransitionManager.h">
       <Filter>ヘッダー ファイル\Application\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Scene\SceneClear.h">
-      <Filter>ヘッダー ファイル\Application\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Application\Scene\SceneFactory.h">
       <Filter>ヘッダー ファイル\Application\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Application\Scene\SceneGame.h">
-      <Filter>ヘッダー ファイル\Application\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Scene\SceneLoad.h">
       <Filter>ヘッダー ファイル\Application\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Application\Scene\SceneManager.h">

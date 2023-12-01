@@ -39,7 +39,7 @@ public:
 	static std::unique_ptr<Bullet> Create(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, IObject* owner);
 
 private:
-	void Dead(const Vec3& interPos);
+	void Dead(const Vec3& interPos, uint64_t attr);
 	void Dead(const CollisionInfo& info);
 
 	//弾道用のオブジェクトの位置など
