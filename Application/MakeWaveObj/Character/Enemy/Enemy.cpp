@@ -261,7 +261,7 @@ void Enemy::WalkWaveUpdate()
 	if ((int32_t)walkWaveTimer_ % (int32_t)WALK_MOVE_INTERVAL_ == 0
 		&& walkWaveTimer_ - beforeWalkTime_ >= WALK_MOVE_INTERVAL_)
 	{
-		BeginWaveStage(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 2.0f,GetScale().y * 0.2f }, GetScale().z * 20.0f, 100.0f);
+		BeginWaveStage(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 2.0f,GetScale().y * 0.2f }, GetScale().z * 20.0f, 130.0f);
 		//間隔をあけるため
 		beforeWalkTime_ = walkWaveTimer_;
 	}
@@ -320,7 +320,7 @@ void Enemy::BeginDamagedWave(const CollisionInfo& info, float wavePow)
 	//自分にメッシュの波
 	for (int i = 0; i < 3; i++)
 	{
-		BeginWave(pos, { GetScale().y / 23.0f * wavePow,GetScale().GetLength() / 12.3f * wavePow },
+		BeginWave(pos, { GetScale().y / 15.0f * wavePow,GetScale().GetLength() / 15.3f * wavePow },
 			GetScale().GetLength() * 2.0f, 140.0f / wavePow * GetRand(1.0f, 2.0f));
 	}
 	//ステージに波紋
