@@ -64,9 +64,6 @@
     <Filter Include="ヘッダー ファイル\Engine\3D\Object">
       <UniqueIdentifier>{ee02baa3-93dd-4849-ad11-c68ab855a503}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Engine\Scene">
-      <UniqueIdentifier>{dd270947-13f5-4f3f-9d03-5763cc3647af}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Engine\Audio">
       <UniqueIdentifier>{4cdde516-1e76-4c35-812b-2d165886155d}</UniqueIdentifier>
     </Filter>

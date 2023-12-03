@@ -519,7 +519,7 @@ void ObjectFBX::CalcNodeMatBoneMatInternal(ModelFBX* model)
 	if (animeData.isPlay_)
 	{
 		//アニメーションのアップデート
-		BlendAnimationUpdate();
+		AnimationUpdate();
 	}
 	//ノードの行列更新
 	UpdateFBXNodeMat();
@@ -566,7 +566,6 @@ Node* ObjectFBX::GetNode(const std::string& nodeName)
 
 XMMATRIX ObjectFBX::GetCalcSkinMat(IModel* model, int32_t index)
 {
-	//ボーン行列がおかしい！
 	if (!(model && model->GetIsFbx()))
 	{
 		return XMMatrixIdentity();

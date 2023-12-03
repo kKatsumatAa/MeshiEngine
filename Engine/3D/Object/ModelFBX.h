@@ -72,7 +72,7 @@ private:
 	std::vector<DirectX::XMMATRIX> offsetTransforms_;
 	//ボーンのノードのインデックス
 	std::vector<uint64_t> boneNodeIndices_;
-	std::vector<Animation>	animationClips_;
+	std::vector<Animation>	animationDatas_;
 
 private:
 	//モデル名
@@ -102,9 +102,12 @@ public:
 
 	uint64_t GetBoneIndex(const std::string& name) const;
 
+	//アニメーションの番号を取得
+	uint32_t GetAnimIndex(const std::string& animName);
+
 
 	std::vector<DirectX::XMMATRIX>& GetOffsetTransforms() { return offsetTransforms_; }
 	std::vector<uint64_t>& GetBoneNodeIndices() { return boneNodeIndices_; }
-	std::vector<Animation>& GetAnimations() { return animationClips_; }
+	std::vector<Animation>& GetAnimations() { return animationDatas_; }
 };
 

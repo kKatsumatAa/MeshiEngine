@@ -85,7 +85,16 @@ public:
 /// <param name="src">元となるFBX行列</param>
 	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
 
+
+	void AddAnimationModel(ModelFBX* addToModel, const std::string& animeFbxName);
+
 private:
+	//フルパスをゲット
+	std::string GetFullPath(const std::string& name);
+
+	//fbxシーンにインポート
+	void FbxSceneImport(const std::string& fbxFullPath, FbxScene* fbxScene);
+
 	//グローバルトランスフォーム計算
 	void CalcGlobalTransform(const FbxNode& fbxNode, Node& node, Node* parent, float scaleExtend = 1.0f);
 

@@ -46,24 +46,12 @@ std::unique_ptr<ModelFBX> FbxLoader::LoadModelFromFile(const string& modelName, 
 	//スムージングするかどうか
 	isSmoothing_ = smoothing;
 
-	//モデルと同じ名前のフォルダから読み込む
-	const string DIRECTORY_PATH = S_BASE_DIRECTORY_ + modelName + "/";
-	//拡張子.fbxを付加
-	const string FILE_NAME = modelName + ".fbx";
 	//フルパス
-	const string FULL_PATH = DIRECTORY_PATH + FILE_NAME;
-
-	//ファイル名を指定してfbxファイルを読み込む
-	if (!fbxImporter_->Initialize(FULL_PATH.c_str(), -1, fbxManager_->GetIOSettings()))
-	{
-		assert(0);
-	}
+	const std::string FULL_PATH = GetFullPath(modelName);
 
 	//シーン生成
 	FbxScene* fbxScene = FbxScene::Create(fbxManager_, "fbxScene");
-
-	//ファイルからロードしたfbxの情報をシーンにインポート
-	fbxImporter_->Import(fbxScene);
+	FbxSceneImport(FULL_PATH, fbxScene);
 
 	//モデル生成
 	std::unique_ptr<ModelFBX> model = std::make_unique<ModelFBX>();
@@ -85,6 +73,30 @@ std::unique_ptr<ModelFBX> FbxLoader::LoadModelFromFile(const string& modelName, 
 
 	//所有権渡す
 	return std::move(model);
+}
+
+std::string FbxLoader::GetFullPath(const std::string& name)
+{
+	//モデルと同じ名前のフォルダから読み込む
+	const string DIRECTORY_PATH = S_BASE_DIRECTORY_ + name + "/";
+	//拡張子.fbxを付加
+	const string FILE_NAME = name + ".fbx";
+	//フルパス
+	const string FULL_PATH = DIRECTORY_PATH + FILE_NAME;
+
+	return std::string(FULL_PATH);
+}
+
+void FbxLoader::FbxSceneImport(const std::string& fbxFullPath, FbxScene* fbxScene)
+{
+	//ファイル名を指定してfbxファイルを読み込む
+	if (!fbxImporter_->Initialize(fbxFullPath.c_str(), -1, fbxManager_->GetIOSettings()))
+	{
+		assert(0);
+	}
+
+	//ファイルからロードしたfbxの情報をシーンにインポート
+	fbxImporter_->Import(fbxScene);
 }
 
 void FbxLoader::CalcGlobalTransform(const FbxNode& fbxNode, Node& node, Node* parent, float scaleExtend)
@@ -355,7 +367,7 @@ void FbxLoader::LoadAnimation(ModelFBX* model, FbxScene* fbxScene)
 	size_t nodeCount = model->GetNodes()->size();
 	std::vector<FbxNode*> fbxNodes;
 	fbxNodes.resize(nodeCount);
-	//ノード一つ一つのポインタを保存
+	//ノード一つ一つのポインタを保存(モデルのノードとsceneのノードが一致してる前提)
 	for (size_t i = 0; i < nodeCount; i++)
 	{
 		fbxNodes[i] = fbxScene->FindNodeByName(model->nodes_[i].name.c_str());
@@ -369,9 +381,9 @@ void FbxLoader::LoadAnimation(ModelFBX* model, FbxScene* fbxScene)
 	for (int32_t i = 0; i < ANIMATION_COUNT; i++)
 	{
 		//要素追加
-		model->animationClips_.emplace_back();
+		model->animationDatas_.emplace_back();
 		//参照
-		ModelFBX::Animation& animationData = model->animationClips_.back();
+		ModelFBX::Animation& animationData = model->animationDatas_.back();
 		//アニメーション名をモデルの変数に保存
 		animationData.name = animationNames[i]->Buffer();
 
@@ -661,4 +673,16 @@ void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& s
 			dst->r[i].m128_f32[j] = (float)src.Get(i, j);
 		}
 	}
+}
+
+void FbxLoader::AddAnimationModel(ModelFBX* addToModel, const std::string& animeFbxName)
+{
+	//フルパス
+	const std::string FULL_PATH = GetFullPath(animeFbxName);
+
+	//シーン生成
+	FbxScene* fbxScene = FbxScene::Create(fbxManager_, "fbxScene");
+	FbxSceneImport(FULL_PATH, fbxScene);
+
+	LoadAnimation(addToModel, fbxScene);
 }

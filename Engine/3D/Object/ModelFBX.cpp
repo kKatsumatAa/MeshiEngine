@@ -40,6 +40,22 @@ uint64_t ModelFBX::GetBoneIndex(const std::string& name) const
 	return 0;
 }
 
+uint32_t ModelFBX::GetAnimIndex(const std::string& animName)
+{
+	uint32_t count = 0;
+	for (auto animData : animationDatas_)
+	{
+		if (animData.name == animName)
+		{
+			return count;
+		}
+
+		count++;
+	}
+
+	return (uint32_t) - 1;
+}
+
 void ModelFBX::Initialize()
 {
 	isFbx_ = true;

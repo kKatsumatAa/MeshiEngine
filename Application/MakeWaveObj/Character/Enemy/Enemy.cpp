@@ -11,6 +11,7 @@
 #include "Bullet.h"
 #include "ObjectManager.h"
 #include "Util.h"
+#include "FbxLoader.h"
 
 using namespace DirectX;
 
@@ -123,14 +124,18 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, floa
 	//model
 	model->SetMaterialExtend({ 0.03f,0.1f,50.0f });
 
-	//アニメーション開始
-	PlayAnimation(true);
-
 	//色
 	SetColor({ 3.0f,0,0,1.0f });
 
+	//アニメーション追加
+	auto modelFbx = dynamic_cast<ModelFBX*>(model);
+	FbxLoader::GetInstance()->AddAnimationModel(modelFbx, "punch");
+
 	//モデル
-	SetModel(model);
+	SetModel(modelFbx);
+
+	//アニメーション開始
+	PlayAnimation(true, 1);
 
 	//分割数
 	SetTessFactor(TESS_FACTOR_MAX_);
