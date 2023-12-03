@@ -245,7 +245,7 @@ void Player::Draw()
 void Player::Dead(const CollisionInfo& info)
 {
 	//海用の
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = {0,0,0};
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { 0,0,0 };
 
 	//hpが0になったら
 	isDead_ = true;
@@ -328,5 +328,20 @@ void Player::OnCollision(const CollisionInfo& info)
 	{
 		//ダメージ
 		Damaged(hp_, [=]() { Dead(info); });
+	}
+	//敵に当たったら
+	else if (info.collider_->GetAttribute() & COLLISION_ATTR_ENEMYS)
+	{
+		////長さ
+		float length = (info.object_->GetWorldScale().x);
+		//距離のベクトル
+		Vec3 distanceVec = IObject3D::GetWorldTrans() - info.object_->GetWorldTrans();
+		//仮でyは動かさない
+		distanceVec.y = 0;
+		distanceVec.Normalized();
+
+		//めり込まないように位置セット(半径＋半径の長さをベクトルの方向を使って足す)
+		Vec3 ansPosE = GetTrans() + distanceVec * length * 1.00f;
+		IObject3D::SetTrans(ansPosE);
 	}
 }

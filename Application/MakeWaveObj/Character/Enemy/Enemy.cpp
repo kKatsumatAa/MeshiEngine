@@ -477,28 +477,9 @@ void Enemy::OnCollision(const CollisionInfo& info)
 
 void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 {
-	//プレイヤーに当たったら
-	if (info.object_->GetObjName() == "player")
-	{
-		////長さ
-		float length = (info.object_->GetScale().x + obj->GetWorldScale().x);
-		//距離のベクトル
-		Vec3 distanceVec = IObject3D::GetWorldTrans() - info.object_->GetTrans();
-		//仮でyは動かさない
-		distanceVec.y = 0;
-		distanceVec.Normalized();
 
-		//めり込まないように位置セット(半径＋半径の長さをベクトルの方向を使って足す)
-		Vec3 ansPosE = info.object_->GetTrans() + distanceVec * length * 1.001f;
-		IObject3D::SetTrans(ansPosE);
-
-		IObject::SetVelocity({ 0,0,0 });
-
-		//動けないようにする
-		isCantMove = true;
-	}
 	//プレイヤーの攻撃との判定
-	else if (info.object_->GetObjName().find("hand") != std::string::npos)
+	if (info.object_->GetObjName().find("hand") != std::string::npos)
 	{
 		//ノックバック
 		KnockBack(info);

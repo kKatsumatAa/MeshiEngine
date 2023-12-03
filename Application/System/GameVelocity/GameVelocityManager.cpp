@@ -14,6 +14,9 @@ void GameVelocityManager::Initialize()
 {
 	gameVelocity_ = 1.0f;
 	isInvalidAddGameVel_ = false;
+
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isRadialBlur = false;
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.color = { 1.0f,1.0f,1.0f,1.0f };
 }
 
 void GameVelocityManager::AddGameVelocity(float velocity, std::string velName)
