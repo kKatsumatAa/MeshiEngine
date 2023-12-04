@@ -213,11 +213,6 @@ void Player::Move()
 
 void Player::Update()
 {
-	if (isDead_)
-	{
-		return;
-	}
-
 	//クリックか外部で左クリック処理したいときにフラグ立てる
 	isClickLeft_ = (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || isClickLeft_);
 

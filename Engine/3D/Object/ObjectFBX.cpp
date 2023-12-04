@@ -636,7 +636,6 @@ void ObjectFBX::SetModel(IModel* model)
 	{
 		ModelFBX* modelL = dynamic_cast<ModelFBX*>(model);
 
-		animeDatas_.clear();
 		animeDatas_.resize(modelL->GetAnimations().size());
 
 		//仮でノードのポインタ渡す

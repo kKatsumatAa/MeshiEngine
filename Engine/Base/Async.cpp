@@ -29,7 +29,7 @@ void Async::StartAsyncFunction(const std::function<void()>& p)
 {
 	isLoading_ = true;
 	//非同期処理スタート
-	loadFunc_ = std::async(std::launch::async, [=] { return AsyncLoad(p); });
+	loadFunc_ = std::async(std::launch::async, [=] { AsyncLoad(p); });
 }
 
 void Async::EndThread()
