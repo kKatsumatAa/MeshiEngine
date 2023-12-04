@@ -177,7 +177,7 @@ void PlayerStateHaveWeapon::Update()
 //死亡演出
 void PlayerStateDeadEffect::Initialize()
 {
-	targetPos_ = player_->GetBulletOwnerEnemyPos();
+	targetPos_ = player_->GetPosOfEnemyAttack();
 	dir_ = (targetPos_ - player_->GetWorldTrans()).GetNormalized();
 
 	Camera* camera = CameraManager::GetInstance().GetCamera("playerCamera");

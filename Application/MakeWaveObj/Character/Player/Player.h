@@ -21,6 +21,8 @@ private:
 	const float DEAD_TIMER_MAX_ = 70.0f;
 	float const DEAD_MIN_POS_EXTEND_ = -4.0f;
 
+	const float SCALE_EXTEND_ = 1.35f;
+
 private:
 	const int8_t HP_TMP_ = 1;
 
@@ -57,11 +59,6 @@ private:
 	//状態のステート
 	std::unique_ptr<PlayerState> state_ = nullptr;
 
-	bool isDead_ = false;
-
-	//銃を撃った敵の座標
-	Vec3 bulletOwnerEnemyPos_ = { 0,0,0 };
-
 	const float FALL_VEL_POW_ = 2.0f;
 
 public:
@@ -77,7 +74,7 @@ public:
 
 private:
 	//倒されたあとに呼び出す
-	void Dead(const CollisionInfo& info);
+	void Dead()override;
 	//溶岩で死んだか
 	void UpdateLavaDead();
 	//溶岩で死んだら
@@ -128,7 +125,5 @@ public:
 	bool GetIsClickLeft() { return isClickLeft_; }
 
 	Vec3 GetWeaponPosTmp();
-
-	const Vec3& GetBulletOwnerEnemyPos() { return bulletOwnerEnemyPos_; }
 };
 

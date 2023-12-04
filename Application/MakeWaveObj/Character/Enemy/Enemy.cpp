@@ -272,6 +272,11 @@ void Enemy::WalkWaveUpdate()
 	}
 }
 
+void Enemy::Dead()
+{
+	ChangeEnemyState(std::make_unique<EnemyStateDead>());
+}
+
 //---------------------------------------------------------------------------------------------
 void Enemy::CollisionWallAndFloor()
 {
@@ -509,7 +514,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		KnockBack(info);
 
 		//hp減らす
-		auto stateChangeF = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDead>()); };
+		auto stateChangeF = [=]() { Dead(); };
 		auto stateChangeF2 = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDamagedBegin>()); };
 		Damaged(1, stateChangeF, stateChangeF2);
 
@@ -535,7 +540,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		KnockBack(info);
 
 		//今のhp分ダメージ受けて倒れる
-		auto stateChangeF = [=]() {ChangeEnemyState(std::make_unique<EnemyStateDead>()); };
+		auto stateChangeF = [=]() { Dead(); };
 		Damaged(hp_, stateChangeF);
 
 		//ノードの角度を加算するため
@@ -566,7 +571,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 			//ノードの角度を加算するため
 			SetAllNodeAddRots(*obj, 0.7f);
 			//ダメージステートにする
-			auto stateChangeF = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDead>()); };
+			auto stateChangeF = [=]() { Dead(); };
 			auto stateChangeF2 = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDamagedBegin>()); };
 			Damaged(0, stateChangeF, stateChangeF2);
 
@@ -599,5 +604,17 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		SetVelocity((GetVelocity() + distanceVec.GetNormalized() * addLength * (1.0f - myLengthRatio)) * 0.63f);
 		//衝突後の相手のスピードベクトルは[現在のスピードベクトル]+[このインスタンスから相手へのベクトル]*[このインスタンスの長さの割合]
 		info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * 0.63f);
+	}
+	//素手攻撃中にプレイヤーに当たったら
+	else if (GetAnimData(AnimationNum::PUNCH).isPlay_
+		&& info.object_->GetObjName() == "player")
+	{
+		//キャラクターのvirtual関数で死亡処理
+		auto player = dynamic_cast<Character*>(info.object_);
+		if (!player->GetIsDead())
+		{
+			player->SetPosOfEnemyAttack(GetTrans());
+			player->Damaged(HP_TMP_, [=]() {player->Dead(); });
+		}
 	}
 }

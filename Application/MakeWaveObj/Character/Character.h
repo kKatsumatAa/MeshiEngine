@@ -35,10 +35,16 @@ protected:
 	//死亡時のタイマー上限
 	float deadTimerMax_ = 0;
 
+	//ゲーム上で死亡したか（演出用）
+	bool isDead_ = false;
+
 	//カウンター
 	Counter counter_;
 
-protected:
+	//攻撃してきた敵の位置
+	Vec3 posOfEnemyAttack_ = { 0,0,0 };
+
+public:
 	/// <summary>
 	/// ダメージ受ける処理
 	/// </summary>
@@ -58,6 +64,17 @@ public:
 	//武器
 	Weapon* GetWeapon() { return weapon_; }
 	void SetWeapon(Weapon* weapon) { weapon_ = weapon; }
+
+	//hp
+	int8_t GetHP() { return hp_; }
+
+	//死亡フラグ
+	bool GetIsDead() { return isDead_; }
+	void SetIsDead(bool isDead) { isDead_ = isDead; }
+
+	//攻撃してきた敵の位置を保存
+	void SetPosOfEnemyAttack(const Vec3& pos) { posOfEnemyAttack_ = pos; }
+	const Vec3& GetPosOfEnemyAttack() { return posOfEnemyAttack_; }
 
 	//武器拾う
 	virtual void PickUpWeapon(Weapon* weapon, Vec3* localPos = nullptr);
@@ -79,4 +96,8 @@ public:
 	float GetDeadTimerMax() { return deadTimerMax_; }
 
 	uint64_t GetCount() { return counter_.GetCount(); }
+
+public:
+	//倒されたあとに呼び出す
+	virtual void Dead() = 0;
 };

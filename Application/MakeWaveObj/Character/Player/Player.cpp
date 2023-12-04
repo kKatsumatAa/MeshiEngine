@@ -49,6 +49,8 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 
 	//カメラの位置と合わせる
 	SetTrans(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye());
+	//スケール
+	SetScale({ SCALE_EXTEND_, SCALE_EXTEND_ ,SCALE_EXTEND_ });
 
 	//手
 	handManager_.reset();
@@ -216,9 +218,6 @@ void Player::Update()
 	//クリックか外部で左クリック処理したいときにフラグ立てる
 	isClickLeft_ = (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || isClickLeft_);
 
-	//溶岩で死んだか
-	UpdateLavaDead();
-
 	//素手や銃などのステート
 	state_->Update();
 
@@ -242,7 +241,7 @@ void Player::Draw()
 	handManager_->Draw();
 }
 
-void Player::Dead(const CollisionInfo& info)
+void Player::Dead()
 {
 	//海用の
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { 0,0,0 };
@@ -252,11 +251,6 @@ void Player::Dead(const CollisionInfo& info)
 
 	//手を削除
 	handManager_->DeleteHands();
-
-	Bullet* bullet = dynamic_cast<Bullet*>(info.object_);
-
-	//演出用に弾撃った敵の位置保存
-	bulletOwnerEnemyPos_ = bullet->GetOwnerPos();
 
 	//ステートを変更
 	ChangePlayerState(std::make_unique<PlayerStateDeadEffect>());
@@ -326,8 +320,11 @@ void Player::OnCollision(const CollisionInfo& info)
 	//弾に当たったらダメージ
 	if (info.object_->GetObjName() == "bullet")
 	{
+		Bullet* bullet = dynamic_cast<Bullet*>(info.object_);
+		//演出用に弾撃った敵の位置保存
+		posOfEnemyAttack_ = bullet->GetOwnerPos();
 		//ダメージ
-		Damaged(hp_, [=]() { Dead(info); });
+		Damaged(hp_, [=]() { Dead(); });
 	}
 	//敵に当たったら
 	else if (info.collider_->GetAttribute() & COLLISION_ATTR_ENEMYS)

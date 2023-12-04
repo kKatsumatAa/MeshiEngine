@@ -685,4 +685,6 @@ void FbxLoader::AddAnimationModel(ModelFBX* addToModel, const std::string& anime
 	FbxSceneImport(FULL_PATH, fbxScene);
 
 	LoadAnimation(addToModel, fbxScene);
+
+	fbxScene->Destroy();
 }

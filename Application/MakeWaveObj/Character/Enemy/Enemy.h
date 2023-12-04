@@ -68,7 +68,7 @@ private:
 
 	const float WEAPON_FALL_VEL_EXTEND_ = 1.5f;
 
-	const float PLAYER_DISTANCE_EXTEND_ = 1.5f;
+	const float PLAYER_DISTANCE_EXTEND_ = 0.8f;
 
 	//プレイヤーが視界にいるか
 	bool isAttacking_ = false;
@@ -120,6 +120,9 @@ private:
 	//歩くときに地面に波紋
 	void WalkWaveUpdate();
 
+	//倒されたあとに呼び出す
+	void Dead()override;
+
 private:
 	//被弾時のパーティクル
 	void DamageParticle(int32_t particleNum, uint64_t interval, float vecPow = 1.0f, const CollisionInfo* info = nullptr, IObject3D* obj = nullptr, Vec3* pos = nullptr,
@@ -165,6 +168,7 @@ public:
 	void BeginDamagedWave(const CollisionInfo& info, float wavePow);
 
 public:
+	//プレイヤーが一定範囲内にいるか
 	bool GetPlayerIsWithinRange();
 
 public:
