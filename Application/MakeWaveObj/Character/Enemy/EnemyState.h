@@ -45,7 +45,7 @@ public:
 	void Update() override;
 };
 
-//素手状態
+//素手状態-----------------------------------------------
 class EnemyStateBareHands :
 	public CharacterStateBareHands,
 	public EnemyState
@@ -56,7 +56,50 @@ public:
 	void Update() override;
 };
 
-//銃持ってる------------------
+//素手攻撃状態始め
+class EnemyStateBareHandsAttackBegin :
+	public CharacterStateBareHands,
+	public EnemyState
+{
+private:
+	const float TIME_ = 20.0f;
+	float t_ = 0;
+
+public:
+	void Initialize() override;
+	void Update() override;
+};
+
+
+//素手攻撃状態
+class EnemyStateBareHandsAttack :
+	public CharacterStateBareHands,
+	public EnemyState
+{
+private:
+	const float ATTACK_TIME_ = 45.0f;
+	float t_ = 0;
+
+public:
+	void Initialize() override;
+	void Update() override;
+};
+
+//素手攻撃おわり
+class EnemyStateBareHandsAttackEnd :
+	public CharacterStateBareHands,
+	public EnemyState
+{
+private:
+	const float TIME_ = 20.0f;
+	float t_ = 0;
+
+public:
+	void Initialize() override;
+	void Update() override;
+};
+
+//銃持ってる-------------------------------------------
 class EnemyStateHaveWeapon :
 	public CharacterStateHaveWeapon,
 	public EnemyState

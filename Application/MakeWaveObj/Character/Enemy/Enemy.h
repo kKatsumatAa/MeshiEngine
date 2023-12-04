@@ -13,6 +13,14 @@ class Enemy :
 	public Character
 {
 public:
+	//アニメーションの番号
+	enum AnimationNum
+	{
+		WALK,
+		PUNCH
+	};
+
+public:
 	//ダメージ時のノードに加算する角度
 	struct DamagedNodeAddRot
 	{
@@ -59,6 +67,8 @@ private:
 	const float DISSOLVE_POW_ = 0.3f;
 
 	const float WEAPON_FALL_VEL_EXTEND_ = 1.5f;
+
+	const float PLAYER_DISTANCE_EXTEND_ = 1.5f;
 
 	//プレイヤーが視界にいるか
 	bool isAttacking_ = false;
@@ -153,6 +163,9 @@ public:
 
 	//被ダメージ時に波発生
 	void BeginDamagedWave(const CollisionInfo& info, float wavePow);
+
+public:
+	bool GetPlayerIsWithinRange();
 
 public:
 	int32_t GetWaveNum() { return waveNum_; }

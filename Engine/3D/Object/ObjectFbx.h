@@ -117,16 +117,17 @@ public:
 
 public:
 	//アニメーション開始
-	void PlayAnimation(bool isLoop, int32_t animeIndex = 0);
-	void PlayReverseAnimation(bool isLoop, int32_t animeIndex = 0);
+	void PlayAnimation(bool isLoop, int32_t animeIndex = 0, bool isResetCurrentTime = true);
+	void PlayReverseAnimation(bool isLoop, int32_t animeIndex = 0, bool isResetCurrentTime = true);
 	//アニメーションフラグ
 	void SetIsPlayAnimation(bool isPlay, int32_t animeIndex = 0) { animeDatas_[animeIndex].isPlay_ = isPlay; }
 	void SetIsLoopAnimation(bool isLoop, int32_t animeIndex = 0) { animeDatas_[animeIndex].isLoop_ = isLoop; }
 	void SetIsReverseAnimation(bool isReverse, int32_t animeIndex = 0) { animeDatas_[animeIndex].isReverse_ = isReverse; }
 	//アニメーションスピード
-	void SetAnimationSpeed(float speed) {
-		animeDatas_[animeIndex_].animationSpeed_ = speed;
+	void SetAnimationSpeed(float speed, uint32_t animeIndex) {
+		animeDatas_[animeIndex].animationSpeed_ = speed;
 	}
+	void SetAnimationSpeed(float speed);
 	//ボーンを得る
 	const XMMATRIX* GetModelBones()const { return constMapSkin_->bones; }
 	//オブジェクトクラスが持ってるfbxモデルのノード
@@ -138,11 +139,11 @@ public:
 
 public:
 	//ノードの行列をアニメーションに合わせて変更
-	void BlendAnimationUpdate();
+	void BlendAnimationUpdate(uint32_t startIndex, uint32_t endIndex, float rate);
 	//fbxのノードの行列更新
 	void UpdateFBXNodeMat();
 	//アニメーションのアップデート
-	void AnimationUpdate();
+	void AnimationUpdate(uint32_t animeIndex = 0);
 
 public:
 	//ノードの足す角度をセット
@@ -151,7 +152,7 @@ public:
 private:
 	//アニメーション開始
 	void PlayAnimationInternal(int32_t animeIndex,
-		bool isLoop = false, bool isReverse = false);
+		bool isLoop = false, bool isReverse = false, bool isResetCurrentTime = true);
 	//アニメーションリセット
 	void AnimationReset(int32_t animeIndex);
 
@@ -160,4 +161,7 @@ private:
 	//ボーンの行列を計算
 	XMMATRIX GetCalcSkinMat(IModel* model, int32_t index);
 
+public:
+	//アニメーションのフラグ等を取得
+	const AnimationData& GetAnimData(uint32_t index);
 };

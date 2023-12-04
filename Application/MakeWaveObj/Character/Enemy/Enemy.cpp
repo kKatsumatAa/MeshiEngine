@@ -135,7 +135,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, floa
 	SetModel(modelFbx);
 
 	//アニメーション開始
-	PlayAnimation(true, 1);
+	PlayAnimation(true, WALK);
 
 	//分割数
 	SetTessFactor(TESS_FACTOR_MAX_);
@@ -182,7 +182,7 @@ void Enemy::WalkToTarget(const Vec3& targetPos, bool isWave)
 	{
 		directionVec_ = targetPos - IObject::GetTrans();
 		//ある程度近づいたら止まる
-		if (directionVec_.GetLength() < IObject::GetScale().GetLength() * 1.5f)
+		if (GetPlayerIsWithinRange())
 		{
 			velocity_ = { 0,0,0 };
 		}
@@ -333,6 +333,24 @@ void Enemy::BeginDamagedWave(const CollisionInfo& info, float wavePow)
 		GetScale().GetLength() * 3.0f, 30.0f);
 }
 
+bool Enemy::GetPlayerIsWithinRange()
+{
+	auto players = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player");
+
+	for (auto player : players)
+	{
+		Vec3 distanceV = player->GetTrans() - GetTrans();
+
+		//一定の範囲内にいるか
+		if (distanceV.GetLength() < IObject::GetScale().GetLength() * PLAYER_DISTANCE_EXTEND_)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void Enemy::DecrementCoolTime()
 {
 	coolTime_ = max(coolTime_ - GameVelocityManager::GetInstance().GetVelocity(), 0);
@@ -365,6 +383,7 @@ void Enemy::Update()
 		stanceState_->Update();
 	}
 
+	//親クラスの処理
 	Character::Update();
 }
 

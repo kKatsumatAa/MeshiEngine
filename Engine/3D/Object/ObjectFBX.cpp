@@ -95,7 +95,7 @@ void ObjectFBX::DrawModelInternal(int32_t pipelineNum)
 		{
 			waves_.SetBuffCmdLst(TESS_WAVE);
 		}
-	};
+		};
 
 	//シャドウマップ用の前描画では必要ない
 	if (pipelineNum != PipelineStateNum::SHADOW && pipelineNum != PipelineStateNum::SHADOW_HULL_DOMAIN)
@@ -129,7 +129,7 @@ void ObjectFBX::DrawModelInternal(int32_t pipelineNum)
 }
 
 //-----------------------------------------------------------------------------------------
-void ObjectFBX::BlendAnimationUpdate()
+void ObjectFBX::BlendAnimationUpdate(uint32_t startIndex, uint32_t endIndex, float rate)
 {
 	if (!model_ || !model_->GetIsFbx())
 	{
@@ -138,8 +138,8 @@ void ObjectFBX::BlendAnimationUpdate()
 
 	ModelFBX* model = dynamic_cast<ModelFBX*>(model_);
 
-	const int32_t START_INDEX = 0;//とりあえず一番目のアニメーションのみ
-	const int32_t END_INDEX = 0;//とりあえず一番目のアニメーションのみ
+	const int32_t START_INDEX = startIndex;//今のアニメ―ション
+	const int32_t END_INDEX = endIndex;//最終的なアニメーション
 
 	//補間前のアニメーション
 	const std::vector<ModelFBX::Animation>& ANIMATIONS =
@@ -180,7 +180,7 @@ void ObjectFBX::BlendAnimationUpdate()
 			//計算済みとする
 			isStartCalc = true;
 			//キーフレーム間の割合を計算
-			float rate = (float)((animeDatas_[START_INDEX].currentTime_ - START_KEY_FRAME0.seconds) /
+			float lrate = (float)((animeDatas_[START_INDEX].currentTime_ - START_KEY_FRAME0.seconds) /
 				(START_KEY_FRAME1.seconds - START_KEY_FRAME0.seconds));
 
 			//ノード全てに適用
@@ -200,9 +200,9 @@ void ObjectFBX::BlendAnimationUpdate()
 				XMVECTOR translate0 = DirectX::XMLoadFloat3(&key0.trans);
 
 				//線形補完でパラメータ取得する
-				startScales.push_back(DirectX::XMVectorLerp(scale0, scale1, rate));
-				startRotates.push_back(DirectX::XMQuaternionSlerp(rotate0, rotate1, rate));
-				startTranslates.push_back(DirectX::XMVectorLerp(translate0, translate1, rate));
+				startScales.push_back(DirectX::XMVectorLerp(scale0, scale1, lrate));
+				startRotates.push_back(DirectX::XMQuaternionSlerp(rotate0, rotate1, lrate));
+				startTranslates.push_back(DirectX::XMVectorLerp(translate0, translate1, lrate));
 			}
 			//パラメータ取得したので抜ける
 			break;
@@ -235,7 +235,7 @@ void ObjectFBX::BlendAnimationUpdate()
 		{
 			isEndCalc = true;
 			//キーフレーム間の割合
-			float rate = (float)((animeDatas_[END_INDEX].currentTime_ - endKeyframe0.seconds) /
+			float lrate = (float)((animeDatas_[END_INDEX].currentTime_ - endKeyframe0.seconds) /
 				(endKeyframe1.seconds - endKeyframe0.seconds));
 
 			int32_t nodeCount = static_cast<int32_t>(nodes_->size());
@@ -252,9 +252,9 @@ void ObjectFBX::BlendAnimationUpdate()
 				DirectX::XMVECTOR rotate0 = DirectX::XMLoadFloat4(&key0.rotate);
 				DirectX::XMVECTOR Translate0 = DirectX::XMLoadFloat3(&key0.trans);
 
-				endScales.push_back(DirectX::XMVectorLerp(Scale0, Scale1, rate));
-				endRotates.push_back(DirectX::XMQuaternionSlerp(rotate0, rotate1, rate));
-				endTranslates.push_back(DirectX::XMVectorLerp(Translate0, Translate1, rate));
+				endScales.push_back(DirectX::XMVectorLerp(Scale0, Scale1, lrate));
+				endRotates.push_back(DirectX::XMQuaternionSlerp(rotate0, rotate1, lrate));
+				endTranslates.push_back(DirectX::XMVectorLerp(Translate0, Translate1, lrate));
 			}
 			break;
 		}
@@ -265,24 +265,22 @@ void ObjectFBX::BlendAnimationUpdate()
 		return;
 	}
 
-	//補間//ここでノードのパラメータ変えてる（rateで）→それをフレームごとに行列にしてる
+	//ここでノードのパラメータを線形補間（rateで）
 	int32_t nodeCount = static_cast<int32_t>(startScales.size());
-	//仮で
-	float rateL = 0.5f;
 	for (int32_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
 	{
 		DirectX::XMVECTOR Scale =
 			DirectX::XMVectorLerp(
 				startScales[nodeIndex],
-				endScales[nodeIndex], rateL);
+				endScales[nodeIndex], rate);
 		DirectX::XMVECTOR rotate =
 			DirectX::XMQuaternionSlerp(
 				startRotates[nodeIndex],
-				endRotates[nodeIndex], rateL);
+				endRotates[nodeIndex], rate);
 		DirectX::XMVECTOR Translate =
 			DirectX::XMVectorLerp(
 				startTranslates[nodeIndex],
-				endTranslates[nodeIndex], rateL);
+				endTranslates[nodeIndex], rate);
 
 		//線形補完したパラメータを取得
 		Node& node = (*nodes_)[nodeIndex];
@@ -292,7 +290,7 @@ void ObjectFBX::BlendAnimationUpdate()
 	}
 }
 
-void ObjectFBX::AnimationUpdate()
+void ObjectFBX::AnimationUpdate(uint32_t animeIndex)
 {
 	if (!model_ || !model_->GetIsFbx())
 	{
@@ -300,7 +298,7 @@ void ObjectFBX::AnimationUpdate()
 	}
 
 	//キーフレーム（対応した全ノードを所持）の配列を取得
-	const std::vector<ModelFBX::Keyframe>& KEY_FRAMES = dynamic_cast<ModelFBX*>(model_)->GetAnimations()[animeIndex_].keyframes;
+	const std::vector<ModelFBX::Keyframe>& KEY_FRAMES = dynamic_cast<ModelFBX*>(model_)->GetAnimations()[animeIndex].keyframes;
 	int32_t keyCount = static_cast<int32_t>(KEY_FRAMES.size());
 	for (int32_t i = 0; i < keyCount - 1; i++)
 	{
@@ -309,11 +307,11 @@ void ObjectFBX::AnimationUpdate()
 		const ModelFBX::Keyframe& KEY_FRAME1 = KEY_FRAMES[i + 1];
 
 		//補間前計算(インデックスのキーフレームと,その次のキーフレームの間かどうか)
-		if (animeDatas_[animeIndex_].currentTime_ >= KEY_FRAME0.seconds &&
-			animeDatas_[animeIndex_].currentTime_ < KEY_FRAME1.seconds)
+		if (animeDatas_[animeIndex].currentTime_ >= KEY_FRAME0.seconds &&
+			animeDatas_[animeIndex].currentTime_ < KEY_FRAME1.seconds)
 		{
 			//キーフレーム間の割合を計算
-			float rate = (float)((animeDatas_[animeIndex_].currentTime_ - KEY_FRAME0.seconds) /
+			float rate = (float)((animeDatas_[animeIndex].currentTime_ - KEY_FRAME0.seconds) /
 				(KEY_FRAME1.seconds - KEY_FRAME0.seconds));
 
 			//オブジェクトクラスが持っているノード全てに適用
@@ -409,17 +407,20 @@ void ObjectFBX::UpdateFBXNodeMat()
 
 //-------------------------------------------------------------------------------------
 void ObjectFBX::PlayAnimationInternal(int32_t animeIndex,
-	bool isLoop, bool isReverse)
+	bool isLoop, bool isReverse, bool isResetCurrentTime)
 {
 	if (!(model_ && model_->GetIsFbx()))
 	{
 		return;
 	}
 
-	animeIndex_ = animeIndex;
-
 	//アニメーションのリセット
-	AnimationReset(animeIndex);
+	if (isResetCurrentTime)
+	{
+		AnimationReset(animeIndex);
+	}
+
+	animeIndex_ = animeIndex;
 
 	//再生中状態
 	animeDatas_[animeIndex].isPlay_ = true;
@@ -455,20 +456,19 @@ IObject3D* ObjectFBX::GetNodeColliderObj(const std::string& nodeName)
 	return nodeColliders_.GetColliderObj(nodeName);
 }
 
-void ObjectFBX::PlayAnimation(bool isLoop, int32_t animeIndex)
+void ObjectFBX::PlayAnimation(bool isLoop, int32_t animeIndex, bool isResetCurrentTime)
 {
-	PlayAnimationInternal(animeIndex, isLoop);
+	PlayAnimationInternal(animeIndex, isLoop, false, isResetCurrentTime);
 }
 
-void ObjectFBX::PlayReverseAnimation(bool isLoop, int32_t animeIndex)
+void ObjectFBX::PlayReverseAnimation(bool isLoop, int32_t animeIndex, bool isResetCurrentTime)
 {
-	PlayAnimationInternal(animeIndex, isLoop, true);
+	PlayAnimationInternal(animeIndex, isLoop, true, isResetCurrentTime);
 }
 
 //---------------------------------------------------------------------------
 void ObjectFBX::CalcNodeMatBoneMatInternal(ModelFBX* model)
 {
-	//とりあえず一番のアニメ　仮
 	auto anime = model->GetAnimations()[animeIndex_];
 
 	AnimationData& animeData = animeDatas_[animeIndex_];
@@ -519,7 +519,7 @@ void ObjectFBX::CalcNodeMatBoneMatInternal(ModelFBX* model)
 	if (animeData.isPlay_)
 	{
 		//アニメーションのアップデート
-		AnimationUpdate();
+		AnimationUpdate(animeIndex_);
 	}
 	//ノードの行列更新
 	UpdateFBXNodeMat();
@@ -540,6 +540,14 @@ void ObjectFBX::MappingBoneData(ModelFBX* model)
 		constMapSkin_->bones[i] = GetCalcSkinMat(model_, i);
 	}
 	constBuffSkin_->Unmap(0, nullptr);
+}
+
+void ObjectFBX::SetAnimationSpeed(float speed)
+{
+	for (auto& animeData : animeDatas_)
+	{
+		animeData.animationSpeed_ = speed;
+	}
 }
 
 //---------------------------------------------------------------------------
@@ -588,6 +596,11 @@ XMMATRIX ObjectFBX::GetCalcSkinMat(IModel* model, int32_t index)
 	return boneTransform;
 }
 
+const ObjectFBX::AnimationData& ObjectFBX::GetAnimData(uint32_t index)
+{
+	return animeDatas_[index];
+}
+
 //------------------------------------------------------------------------------------------
 void ObjectFBX::Update()
 {
@@ -603,20 +616,23 @@ void ObjectFBX::DrawImGui(std::function<void()> imguiF)
 
 		if (model_ && model_->GetIsFbx())
 		{
-			AnimationData animeData = animeDatas_[animeIndex_];
-			ModelFBX::Animation anime;
-
-			anime = dynamic_cast<ModelFBX*>(model_)->GetAnimations()[animeIndex_];
-
-			//ノードごとの当たり判定描画
-			ImGui::Checkbox("isValidNodeCollidersDraw", &isValidNodeCollidersDraw_);
-
-			ImGui::Checkbox("isPlay", &animeData.isPlay_);
-			ImGui::Checkbox("isLoop", &animeData.isLoop_);
-			ImGui::Checkbox("isReverse", &animeData.isReverse_);
-			if (animeData.currentTime_ - anime.startTime > 0 && anime.endTime - anime.startTime > 0)
+			for (int i = 0; i < animeDatas_.size(); i++)
 			{
-				ImGui::Text("animationTimeRatio: %.2f", (animeData.currentTime_ - anime.startTime) / (anime.endTime - anime.startTime));
+				AnimationData animeData = animeDatas_[i];
+				ModelFBX::Animation anime;
+
+				anime = dynamic_cast<ModelFBX*>(model_)->GetAnimations()[i];
+
+				//ノードごとの当たり判定描画
+				ImGui::Checkbox("isValidNodeCollidersDraw", &isValidNodeCollidersDraw_);
+
+				ImGui::Checkbox("isPlay", &animeData.isPlay_);
+				ImGui::Checkbox("isLoop", &animeData.isLoop_);
+				ImGui::Checkbox("isReverse", &animeData.isReverse_);
+				if (animeData.currentTime_ - anime.startTime > 0 && anime.endTime - anime.startTime > 0)
+				{
+					ImGui::Text("animationTimeRatio: %.2f", (animeData.currentTime_ - anime.startTime) / (anime.endTime - anime.startTime));
+				}
 			}
 		}
 		};

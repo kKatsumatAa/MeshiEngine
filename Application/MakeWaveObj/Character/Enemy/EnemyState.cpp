@@ -135,8 +135,8 @@ void EnemyStateEmergeEffect::Update()
 //素手状態-----------------------------------------------------------------------
 void EnemyStateBareHands::Initialize()
 {
-	enemy_->SetIsPlayAnimation(true);
-	enemy_->SetIsLoopAnimation(true);
+	//歩き
+	enemy_->PlayAnimation(true, Enemy::AnimationNum::WALK, false);
 }
 
 void EnemyStateBareHands::Update()
@@ -144,7 +144,78 @@ void EnemyStateBareHands::Update()
 	enemy_->AllMove(GetRayHitGunOrPlayerPos());
 
 	EnemyState::Update();
+
+	//素手で一定範囲にplayerがいたら
+	if (enemy_->GetPlayerIsWithinRange())
+	{
+		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHandsAttackBegin>());
+	}
 }
+
+//------------------------------------------------
+//素手攻撃始め
+void EnemyStateBareHandsAttackBegin::Initialize()
+{
+	//歩くのをやめる
+	enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::WALK);
+}
+
+void EnemyStateBareHandsAttackBegin::Update()
+{
+	timer_ += GameVelocityManager::GetInstance().GetVelocity();
+
+	t_ = min(timer_, TIME_) / TIME_;
+
+	//アニメーションをブレンド（歩き→殴る）
+	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::WALK, Enemy::AnimationNum::PUNCH, t_);
+
+	if (timer_ >= TIME_)
+	{
+		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHandsAttack>());
+	}
+}
+
+//------------------------------------------------
+//素手で攻撃中
+void EnemyStateBareHandsAttack::Initialize()
+{
+	//殴るの開始
+	enemy_->PlayAnimation(false, Enemy::AnimationNum::PUNCH);
+}
+
+void EnemyStateBareHandsAttack::Update()
+{
+	timer_ += enemy_->GetAnimeSpeedExtend();
+
+	if (!enemy_->GetAnimData(Enemy::AnimationNum::PUNCH).isPlay_)
+	{
+		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHandsAttackEnd>());
+	}
+}
+
+//-------------------------------------------------
+//素手で攻撃終わり
+void EnemyStateBareHandsAttackEnd::Initialize()
+{
+	//殴るのおわり
+	enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::PUNCH);
+}
+
+void EnemyStateBareHandsAttackEnd::Update()
+{
+	timer_ += GameVelocityManager::GetInstance().GetVelocity();
+
+	t_ = min(timer_, TIME_) / TIME_;
+
+	//アニメーションをブレンド（殴る→歩き）
+	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::PUNCH, Enemy::AnimationNum::WALK, t_);
+
+	if (timer_ >= TIME_)
+	{
+		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
+	}
+}
+
 
 //---------------------------------------------------------------------------------------------
 //武器持ってる状態の親ステート
