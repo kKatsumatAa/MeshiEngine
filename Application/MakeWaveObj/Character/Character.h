@@ -46,6 +46,8 @@ protected:
 	//攻撃してきた敵の位置
 	Vec3 posOfEnemyAttack_ = { 0,0,0 };
 
+	float shotPosExtend_ = 0;
+
 public:
 	/// <summary>
 	/// ダメージ受ける処理
@@ -84,7 +86,7 @@ public:
 	//武器拾う
 	virtual void PickUpWeapon(Weapon* weapon, Vec3* localPos = nullptr);
 	//武器落とす、投げる
-	virtual void FallWeapon(const Vec3& directionVec, Vec3* localPos = nullptr);
+	virtual void FallWeapon(const Vec3& directionVec, Vec3* localPos = nullptr, bool isUpdatePos = true);
 
 	//地面と壁との判定
 	virtual void OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool isJump = false, std::function<void()>f = nullptr);

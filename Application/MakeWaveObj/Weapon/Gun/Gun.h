@@ -24,6 +24,9 @@ private:
 	//発射位置
 	Vec3 shotPos_ = { 0,0,0 };
 
+	//発射位置の倍率
+	float shotPosExtend_ = 5.0f;
+
 public:
 	/// <summary>
 	/// オブジェクト生成
@@ -51,10 +54,14 @@ public:
 	//持ち主変更
 	void ChangeOwner(IObject3D* parent) override;
 
-	//
+	//弾数
 	int32_t GetBulletNum() { return remainingBullets_; }
 	//クールタイムの終わりまでの割合(0~1.0f)
 	float GetAttackCoolTimeRatio() override;
+
+	//発射位置の倍率
+	void SetShotPosExtend(float extend) { shotPosExtend_ = extend; }
+
 
 public:
 

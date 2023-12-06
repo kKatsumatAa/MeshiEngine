@@ -67,9 +67,9 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, IObject3D* owner
 	}
 
 	//発射座標(銃本体に当たらないようにする)
-	shotPos_ = { trans.x + directionVec.GetNormalized().x * GetScale().x * 5.0f,
-				 trans.y + directionVec.GetNormalized().y * GetScale().y * 5.0f,
-				 trans.z + directionVec.GetNormalized().z * GetScale().z * 5.0f };
+	shotPos_ = { trans.x + directionVec.GetNormalized().x * GetScale().x * shotPosExtend_,
+				 trans.y + directionVec.GetNormalized().y * GetScale().y * shotPosExtend_,
+				 trans.z + directionVec.GetNormalized().z * GetScale().z * shotPosExtend_ };
 
 	//弾うつ処理
 	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x * 0.4f, 300, owner);

@@ -16,6 +16,8 @@ class Player :
 {
 public:
 	const Vec3 WEAPON_POS_EXTEND_ = { -1.0f,-0.5f,-2.0f };
+	//銃の弾の発射位置の倍率
+	const float SHOT_POS_EXTEND_ = 1.5f;
 
 private:
 	const float DEAD_TIMER_MAX_ = 70.0f;

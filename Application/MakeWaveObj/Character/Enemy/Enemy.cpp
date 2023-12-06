@@ -103,6 +103,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, floa
 	}
 
 
+	shotPosExtend_ = SHOT_POS_EXTEND_;
 	if (weapon)
 	{
 		weapon_ = weapon;

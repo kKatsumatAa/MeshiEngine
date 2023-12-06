@@ -29,6 +29,9 @@ public:
 		Vec3 addRotEnd = { 0,0,0 };
 	};
 
+public:
+	const float SHOT_POS_EXTEND_ = 5.0f;
+
 private:
 	const float PARTICLE_SIZE_EXTEND_ = 2.0f;
 	//被ダメージ時のよろめき時間

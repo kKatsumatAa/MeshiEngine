@@ -1,4 +1,5 @@
 #include "Character.h"
+#include "Gun.h"
 
 using namespace DirectX;
 
@@ -20,7 +21,7 @@ void Character::Damaged(int8_t damage, std::function<void()> deadFunc, std::func
 	{
 		deadFunc();
 	}
-	else if(notDeadFunc)
+	else if (notDeadFunc)
 	{
 		notDeadFunc();
 	}
@@ -95,6 +96,13 @@ void Character::DrawImGui(std::function<void()> imguiF)
 
 void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 {
+	//銃なら弾を撃つ位置の倍率
+	if (weapon->GetObjName() == "gun")
+	{
+		auto gun = dynamic_cast<Gun*>(weapon);
+		gun->SetShotPosExtend(shotPosExtend_);
+	}
+
 	SetWeapon(weapon);
 
 	//シルエット解除
@@ -108,7 +116,7 @@ void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 	weapon_->ChangeOwner(this);
 }
 
-void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
+void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos, bool isUpdatePos)
 {
 	//武器持ってたら
 	if (weapon_)
@@ -119,7 +127,10 @@ void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos)
 		}
 
 		//移動
-		GetWeapon()->SetTrans(GetWeapon()->GetTrans() + directionVec);
+		if (isUpdatePos)
+		{
+			GetWeapon()->SetTrans(GetWeapon()->GetTrans() + directionVec);
+		}
 		//親ノードをなくす
 		weapon_->ResetParentFbxNode();
 		//親などをnull

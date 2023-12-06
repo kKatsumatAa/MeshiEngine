@@ -66,6 +66,8 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	//死亡時のタイマー上限
 	deadTimerMax_ = DEAD_TIMER_MAX_;
 
+	shotPosExtend_ = SHOT_POS_EXTEND_;
+
 	if (weapon)
 	{
 		weapon_ = weapon;
@@ -338,7 +340,8 @@ void Player::UpdateUI()
 void Player::ThrowWeapon()
 {
 	//武器投げる
-	FallWeapon(GetFrontTargetVec(COLLISION_ATTR_ENEMYS).GetNormalized() * FALL_VEL_POW_ + Vec3(0, 0.2f, 0));
+	FallWeapon(GetFrontTargetVec(COLLISION_ATTR_ENEMYS).GetNormalized() * FALL_VEL_POW_ + Vec3(0, 0.2f, 0),
+		nullptr, false);
 
 	//ゲームスピード加算
 	GameVelocityManager::GetInstance().AddGameVelocity(0.9f);
