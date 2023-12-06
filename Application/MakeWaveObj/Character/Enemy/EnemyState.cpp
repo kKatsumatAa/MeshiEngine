@@ -169,6 +169,8 @@ void EnemyStateBareHandsAttackBegin::Update()
 	//アニメーションをブレンド（歩き→殴る）
 	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::WALK, Enemy::AnimationNum::PUNCH, t_);
 
+	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
+
 	if (timer_ >= TIME_)
 	{
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHandsAttack>());
@@ -186,6 +188,8 @@ void EnemyStateBareHandsAttack::Initialize()
 void EnemyStateBareHandsAttack::Update()
 {
 	timer_ += enemy_->GetAnimeSpeedExtend();
+
+	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
 
 	if (!enemy_->GetAnimData(Enemy::AnimationNum::PUNCH).isPlay_)
 	{
@@ -206,6 +210,8 @@ void EnemyStateBareHandsAttackEnd::Update()
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
 
 	t_ = min(timer_, TIME_) / TIME_;
+
+	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
 
 	//アニメーションをブレンド（殴る→歩き）
 	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::PUNCH, Enemy::AnimationNum::WALK, t_);

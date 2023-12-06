@@ -23,6 +23,8 @@ private:
 
 	const float SCALE_EXTEND_ = 1.35f;
 
+	const float HEIGHT_FROM_GROUND_ = 4.5f;
+
 private:
 	const int8_t HP_TMP_ = 1;
 
@@ -79,6 +81,8 @@ private:
 	void UpdateLavaDead();
 	//溶岩で死んだら
 	void DeadLava();
+	//殴られたら
+	void Punched(const CollisionInfo& info, IObject3D* nodeObj = nullptr)override;
 
 private:
 	//uiの位置更新
@@ -125,5 +129,8 @@ public:
 	bool GetIsClickLeft() { return isClickLeft_; }
 
 	Vec3 GetWeaponPosTmp();
+
+	//正面ベクトルから飛ばしたレイのターゲットまでのベクトル(正規化なし)
+	Vec3 GetFrontTargetVec(uint16_t colAttr);
 };
 

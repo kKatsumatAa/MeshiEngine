@@ -356,6 +356,36 @@ bool Enemy::GetPlayerIsWithinRange()
 	return false;
 }
 
+void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
+{
+	//プレイヤーの攻撃との判定(コライダーがnullptrの場合のみ処理→狙った敵以外は処理させない)
+	if (info.object_->GetObjName().find("hand") != std::string::npos &&
+		info.collider_ == nullptr)
+	{
+		if (damageCoolTime_ > 0.0f)
+		{
+			return;
+		}
+
+		//ノックバック
+		KnockBack(info);
+
+		//hp減らす
+		auto stateChangeF = [=]() { Dead(); };
+		auto stateChangeF2 = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDamagedBegin>()); };
+		Damaged(1, stateChangeF, stateChangeF2);
+
+		//メッシュの波
+		BeginDamagedWave(info, 0.8f);
+
+		//パーティクル
+		DamageParticle(60, 1, 1.0f, &info);
+
+		//ノードの角度を加算するため
+		SetAllNodeAddRots(*nodeObj);
+	}
+}
+
 void Enemy::DecrementCoolTime()
 {
 	coolTime_ = max(coolTime_ - GameVelocityManager::GetInstance().GetVelocity(), 0);
@@ -506,29 +536,11 @@ void Enemy::OnCollision(const CollisionInfo& info)
 
 void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 {
+	//殴られたら
+	Punched(info, obj);
 
-	//プレイヤーの攻撃との判定
-	if (info.object_->GetObjName().find("hand") != std::string::npos)
-	{
-		//ノックバック
-		KnockBack(info);
-
-		//hp減らす
-		auto stateChangeF = [=]() { Dead(); };
-		auto stateChangeF2 = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDamagedBegin>()); };
-		Damaged(1, stateChangeF, stateChangeF2);
-
-		//メッシュの波
-		BeginDamagedWave(info, 0.8f);
-
-		//パーティクル
-		DamageParticle(60, 1, 1.0f, &info, obj);
-
-		//ノードの角度を加算するため
-		SetAllNodeAddRots(*obj);
-	}
 	//弾に当たったら
-	else if (info.object_->GetObjName() == "bullet")
+	if (info.object_->GetObjName() == "bullet")
 	{
 		//弾を撃った本人だったら
 		if (this == dynamic_cast<Bullet*>(info.object_)->GetOwner())
@@ -606,15 +618,14 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * 0.63f);
 	}
 	//素手攻撃中にプレイヤーに当たったら
-	else if (GetAnimData(AnimationNum::PUNCH).isPlay_
-		&& info.object_->GetObjName() == "player")
+	else if (GetAnimData(AnimationNum::PUNCH).isPlay_ && info.object_->GetObjName() == "player")
 	{
 		//キャラクターのvirtual関数で死亡処理
 		auto player = dynamic_cast<Character*>(info.object_);
 		if (!player->GetIsDead())
 		{
-			player->SetPosOfEnemyAttack(GetTrans());
-			player->Damaged(HP_TMP_, [=]() {player->Dead(); });
+			CollisionInfo linfo = CollisionInfo(this, GetCollider(), info.inter_);
+			player->Punched(linfo);
 		}
 	}
 }

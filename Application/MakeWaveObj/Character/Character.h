@@ -37,6 +37,8 @@ protected:
 
 	//ゲーム上で死亡したか（演出用）
 	bool isDead_ = false;
+	//殴られたか
+	bool isPunched_ = false;
 
 	//カウンター
 	Counter counter_;
@@ -72,6 +74,9 @@ public:
 	bool GetIsDead() { return isDead_; }
 	void SetIsDead(bool isDead) { isDead_ = isDead; }
 
+	//殴られたか
+	void SetIsPunched(bool isPunched) { isPunched_ = isPunched; }
+
 	//攻撃してきた敵の位置を保存
 	void SetPosOfEnemyAttack(const Vec3& pos) { posOfEnemyAttack_ = pos; }
 	const Vec3& GetPosOfEnemyAttack() { return posOfEnemyAttack_; }
@@ -100,4 +105,6 @@ public:
 public:
 	//倒されたあとに呼び出す
 	virtual void Dead() = 0;
+	//殴られたら
+	virtual void Punched(const CollisionInfo& info, IObject3D* nodeObj = nullptr) = 0;
 };

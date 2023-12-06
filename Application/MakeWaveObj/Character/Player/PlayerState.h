@@ -50,7 +50,7 @@ public:
 };
 
 //死亡演出
-class PlayerStateDeadEffect : 
+class PlayerStateDeadEffect :
 	public PlayerState,
 	public CharacterStateDead
 {
@@ -70,8 +70,25 @@ class PlayerStateDeadEffect2 :
 	public CharacterStateDead
 {
 private:
-	Vec3 beginRot_ = Vec3(0,0,0);
+	Vec3 beginRot_ = Vec3(0, 0, 0);
 	const float endRotX_ = -PI / 2.0f;
+
+public:
+	void Initialize() override;
+	void Update() override;
+};
+
+//死亡演出3(パンチで)
+class PlayerStateDeadEffectPunched :
+	public PlayerState,
+	public CharacterStateDead
+{
+private:
+	Vec3 beginRot_ = Vec3(0, 0, 0);
+	const float endRotX_ = -PI / 2.0f;
+	Vec3 beginPos_ = Vec3(0, 0, 0);
+	const float LENGTH_MAX_ = 5.0f;
+	Vec3 dir_;
 
 public:
 	void Initialize() override;

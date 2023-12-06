@@ -198,7 +198,9 @@ public:
 	void CalcFrontVec();
 	const Vec3& GetFrontVecTmp() { return frontVecTmp_; }
 	inline void SetFrontVecTmp(const Vec3& vec) { frontVecTmp_ = vec; }
-	inline void SetFrontVec(const Vec3& vec) { frontVec_ = vec; }
+	inline void SetFrontVec(const Vec3& vec) {
+		frontVec_ = vec; 
+	}
 
 public:
 	//メッシュのオフセット用

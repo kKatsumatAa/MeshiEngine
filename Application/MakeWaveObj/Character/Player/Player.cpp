@@ -137,7 +137,7 @@ void Player::RotateFrontVec(const Vec3& rot)
 
 void Player::UpdateUseCameraTarget()
 {
-	auto camera = CameraManager::GetInstance().GetCamera();
+	auto camera = CameraManager::GetInstance().GetCamera("playerCamera");
 	//カメラの注視点に回転したベクトルセット
 	camera->SetTarget(GetTrans() + frontVec_);
 }
@@ -149,6 +149,20 @@ Vec3 Player::GetWeaponPosTmp()
 					GetScale().y * WEAPON_POS_EXTEND_.y ,
 					GetScale().z * WEAPON_POS_EXTEND_.z
 	};
+}
+
+Vec3 Player::GetFrontTargetVec(uint16_t colAttr)
+{
+	Vec3 ansVec = { 0,0,0 };
+
+	RaycastHit info;
+	if (CheckRayOfEyeHit(GetFrontVec(), 10000, colAttr, &info))
+	{
+		ansVec = Vec3(info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2]) - (
+			GetWeapon()->GetWorldTrans());
+	}
+
+	return ansVec;
 }
 
 void Player::Move()
@@ -195,7 +209,7 @@ void Player::Move()
 
 	//地面との判定
 	std::function<void()>gameSpeedAddFunc = [=]() {GameVelocityManager::GetInstance().AddGameVelocity(1.0f); };
-	OnGroundAndWallUpdate(4.0f, GameVelocityManager::GetInstance().GetVelocity(), KeyboardInput::GetInstance().KeyPush(DIK_SPACE), gameSpeedAddFunc);
+	OnGroundAndWallUpdate(HEIGHT_FROM_GROUND_, GameVelocityManager::GetInstance().GetVelocity(), KeyboardInput::GetInstance().KeyPush(DIK_SPACE), gameSpeedAddFunc);
 
 	//コライダー更新
 	ObjectFBX::WorldMatColliderUpdate();
@@ -253,7 +267,14 @@ void Player::Dead()
 	handManager_->DeleteHands();
 
 	//ステートを変更
-	ChangePlayerState(std::make_unique<PlayerStateDeadEffect>());
+	if (isPunched_)
+	{
+		ChangePlayerState(std::make_unique<PlayerStateDeadEffectPunched>());
+	}
+	else
+	{
+		ChangePlayerState(std::make_unique<PlayerStateDeadEffect>());
+	}
 }
 
 void Player::UpdateLavaDead()
@@ -276,6 +297,16 @@ void Player::DeadLava()
 		handManager_->DeleteHands();
 		//溶岩で死んだときの演出
 		ChangePlayerState(std::make_unique<PlayerStateDeadEffect2>());
+	}
+}
+
+void Player::Punched(const CollisionInfo& info, IObject3D* nodeObj)
+{
+	if (nodeObj == nullptr)
+	{
+		SetPosOfEnemyAttack(info.object_->GetWorldTrans());
+		SetIsPunched(true);
+		Damaged(HP_TMP_, [=]() {Dead(); });
 	}
 }
 
@@ -306,7 +337,8 @@ void Player::UpdateUI()
 
 void Player::ThrowWeapon()
 {
-	FallWeapon(GetFrontVec() * FALL_VEL_POW_ + Vec3(0, 0.2f, 0));
+	//武器投げる
+	FallWeapon(GetFrontTargetVec(COLLISION_ATTR_ENEMYS).GetNormalized() * FALL_VEL_POW_ + Vec3(0, 0.2f, 0));
 
 	//ゲームスピード加算
 	GameVelocityManager::GetInstance().AddGameVelocity(0.9f);
@@ -327,18 +359,20 @@ void Player::OnCollision(const CollisionInfo& info)
 		Damaged(hp_, [=]() { Dead(); });
 	}
 	//敵に当たったら
-	else if (info.collider_->GetAttribute() & COLLISION_ATTR_ENEMYS)
+	else if (info.collider_->GetAttribute() & COLLISION_ATTR_ENEMYS &&
+		!isDead_)
 	{
 		////長さ
-		float length = (info.object_->GetWorldScale().x);
+		float length = (info.object_->GetWorldScale().GetLength() + GetScale().GetLength());
 		//距離のベクトル
-		Vec3 distanceVec = IObject3D::GetWorldTrans() - info.object_->GetWorldTrans();
+		Vec3 infoPos = info.object_->GetWorldTrans();
+		Vec3 distanceVec = IObject3D::GetWorldTrans() - infoPos;
 		//仮でyは動かさない
 		distanceVec.y = 0;
 		distanceVec.Normalized();
 
 		//めり込まないように位置セット(半径＋半径の長さをベクトルの方向を使って足す)
-		Vec3 ansPosE = GetTrans() + distanceVec * length * 1.00f;
+		Vec3 ansPosE = infoPos + distanceVec * length * 1.00f;
 		IObject3D::SetTrans(ansPosE);
 	}
 }

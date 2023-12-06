@@ -54,7 +54,7 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 			if (info.collider)
 			{
 				//当たり判定呼び出し処理で、プレイヤーの位置等を使い、敵に攻撃被弾時の処理をさせるため
-				c_ = CollisionInfo(playerHand, playerHand->GetCollider(), info.inter);
+				c_ = CollisionInfo(playerHand, nullptr, info.inter);
 				info.collider->OnCollision(c_);
 
 				//カメラシェイク

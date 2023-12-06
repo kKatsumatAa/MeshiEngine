@@ -6,6 +6,7 @@
 #include "PlayerUIState.h"
 #include "ObjectManager.h"
 #include "CameraManager.h"
+#include "LevelManager.h"
 
 
 
@@ -145,13 +146,7 @@ void PlayerStateHaveWeapon::Update()
 
 			Vec3 targetDir = player_->GetFrontVec();
 			//レイを飛ばしてターゲットまでのベクトル取得
-			RaycastHit info;
-			if (player_->CheckRayOfEyeHit(player_->GetFrontVec(), 10000, COLLISION_ATTR_ALL ^ COLLISION_ATTR_ALLIES, &info))
-			{
-				targetDir = Vec3(info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2]) - (
-					player_->GetWeapon()->GetWorldTrans());
-				targetDir.Normalized();
-			}
+			targetDir = player_->GetFrontTargetVec(COLLISION_ATTR_ALL ^ COLLISION_ATTR_ALLIES);
 
 			//攻撃
 			player_->GetWeapon()->Attack(targetDir, 1, player_, PARTICLE_SIZE_EXTEND_);
@@ -220,6 +215,54 @@ void PlayerStateDeadEffect2::Update()
 	//正面ベクトルを回転、そのベクトルをカメラのターゲットに使う
 	player_->RotateFrontVec(rot);
 	player_->UpdateUseCameraTarget();
+
+	//演出終わったら生存フラグオフ
+	if (timer_ >= player_->GetDeadTimerMax())
+	{
+		player_->SetIsAlive(false);
+	}
+
+	timer_++;
+}
+
+
+//--------------------------------------------------------------------------------------
+//殴られて死んだら
+void PlayerStateDeadEffectPunched::Initialize()
+{
+	beginRot_ = player_->GetCameraRot();
+	beginPos_ = player_->GetTrans();
+
+	dir_ = (player_->GetPosOfEnemyAttack() - beginPos_).GetNormalized();
+	player_->SetFrontVec(dir_);
+
+	CameraManager::GetInstance().GetCamera("playerCamera")->SetTarget(player_->GetPosOfEnemyAttack());
+	CameraManager::GetInstance().GetCamera("playerCamera")->CameraShake(10, 0.8f);
+}
+
+void PlayerStateDeadEffectPunched::Update()
+{
+	t_ = (float)timer_ / player_->GetDeadTimerMax();
+
+	//ゆっくりにする
+	GameVelocityManager::GetInstance().SetIsInvalidAddGameVel(true);
+
+	auto enemies = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "enemy");
+	for (auto& enemy : enemies)
+	{
+		auto enemyl = dynamic_cast<Character*>(enemy);
+		enemyl->SetAnimationSpeed(GameVelocityManager::GetInstance().GAME_VELOCITY_MIN_);
+	}
+
+	//位置
+	player_->SetTrans(LerpVec3(beginPos_, Vec3(beginPos_.x, -player_->GetScale().y, beginPos_.z) + Vec3(-dir_.x, 0, -dir_.z), EaseInOutBack(t_)));
+
+	//正面ベクトルを変更
+	player_->SetFrontVec((player_->GetFrontVec() + Vec3{ 0, 0.05f, 0 }).GetNormalized());
+	//正面ベクトルを回転、そのベクトルをカメラのターゲットに使う
+	auto camera = CameraManager::GetInstance().GetCamera("playerCamera");
+	camera->SetTarget(player_->GetTrans() + player_->GetFrontVec());
+	camera->SetEye(player_->GetTrans());
 
 	//演出終わったら生存フラグオフ
 	if (timer_ >= player_->GetDeadTimerMax())

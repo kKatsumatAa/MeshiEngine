@@ -171,6 +171,9 @@ public:
 	//プレイヤーが一定範囲内にいるか
 	bool GetPlayerIsWithinRange();
 
+	//殴られたら
+	void Punched(const CollisionInfo& info, IObject3D* nodeObj = nullptr)override;
+
 public:
 	int32_t GetWaveNum() { return waveNum_; }
 	float GetCoolTime() { return coolTime_; }

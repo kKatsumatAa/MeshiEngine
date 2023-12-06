@@ -1,4 +1,4 @@
-﻿#include "PlayerHand.h"
+#include "PlayerHand.h"
 #include "PlayerAttackState.h"
 #include "Player.h"
 
@@ -40,7 +40,7 @@ bool PlayerHand::Initialize(Player* player, const Vec3& transTmp, bool isRight, 
 	//親子関係
 	SetParent(player_);
 	//仮でスケール
-	SetScale({ 0.5f,0.5f,2.5f });
+	SetScale(Vec3{ 0.5f,0.5f,2.5f });
 	//攻撃状態変更
 	ChangeAttackState(std::make_unique<PlayerAttackStateNone>());
 

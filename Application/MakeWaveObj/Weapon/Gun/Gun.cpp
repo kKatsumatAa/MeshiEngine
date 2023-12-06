@@ -75,7 +75,7 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, IObject3D* owner
 	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x * 0.4f, 300, owner);
 
 	//パーティクル
-	ParticleGenerate({ 4.0f,4.0f,4.0f,1.5f }, { 4.0f,4.0f,4.0f,0 }, particleSize);
+	ParticleGenerate({ 4.0f,4.0f,4.0f,1.1f }, { 4.0f,4.0f,4.0f,0 }, particleSize);
 
 	//ステージに波紋
 	BeginWaveStage(shotPos_, Vec2(GetScale().z, GetScale().y) * 9.0f, GetScale().GetLength() * 300.0f, 120.0f);
@@ -134,7 +134,7 @@ void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float
 
 		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 2.0f);
 
-		ParticleManager::GetInstance()->Add(20, shotPos_, vel * 0.5f, { 0,0,0 }, scale * particleSize, 0, sColor, eColor,
+		ParticleManager::GetInstance()->Add(10, shotPos_, vel * 0.5f, { 0,0,0 }, scale * particleSize, 0, sColor, eColor,
 			blendNum);
 	}
 
