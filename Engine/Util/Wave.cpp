@@ -10,17 +10,17 @@ void Wave::BeginWave(const Vec3& epicenter, const Vec2& thickness, float distanc
 	thicknessMax_ = thickness;
 	distanceMax_ = distanceMax;
 
-	Update();
+	Update(1.0f);
 }
 
-void Wave::Update()
+void Wave::Update(float speed)
 {
 	float t = min(timer_ / timerMax_, 1.0f);
 
 	thickness_ = LerpVec2(thicknessMax_, { 0,0 }, EaseOut(t));
 	distance_ = Lerp(0, distanceMax_, EaseOut(t));
 
-	timer_++;
+	timer_ += speed;
 }
 
 void Wave::End()

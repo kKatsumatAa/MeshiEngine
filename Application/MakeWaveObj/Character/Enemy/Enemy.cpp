@@ -331,8 +331,8 @@ void Enemy::BeginDamagedWave(const CollisionInfo& info, float wavePow)
 	//自分にメッシュの波
 	for (int i = 0; i < 3; i++)
 	{
-		BeginWave(pos, { GetScale().y / 15.0f * wavePow,GetScale().GetLength() / 15.3f * wavePow },
-			GetScale().GetLength() * 2.0f, 140.0f / wavePow * GetRand(1.0f, 2.0f));
+		BeginWave(pos, { GetScale().y / 25.0f * wavePow,GetScale().GetLength() / 15.3f * wavePow },
+			GetScale().GetLength() * 2.0f, 30.0f / wavePow * GetRand(1.0f, 2.0f));
 	}
 	//ステージに波紋
 	BeginWaveStage(pos, { GetScale().y / 10.0f * wavePow,GetScale().GetLength() * 1.1f * wavePow },
@@ -407,6 +407,9 @@ void Enemy::Update()
 
 	//ノードごとの当たり判定
 	UpdateNodeColliders();
+
+	//メッシュ波
+	waves_.Update(GameVelocityManager::GetInstance().GetVelocity());
 
 	//ステート
 	if (state_)

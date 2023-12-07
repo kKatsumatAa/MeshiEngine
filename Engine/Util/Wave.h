@@ -30,7 +30,7 @@ public:
 	//波を発生
 	void BeginWave(const Vec3& epicenter, const Vec2& thickness, float distanceMax, float timer);
 	//更新
-	void Update();
+	void Update(float speed);
 	//終わり
 	void End();
 

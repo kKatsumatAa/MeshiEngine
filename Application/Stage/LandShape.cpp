@@ -43,6 +43,9 @@ bool LandShape::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 void LandShape::Update()
 {
 	Object::Update();
+
+	//メッシュ波
+	waves_.Update(GameVelocityManager::GetInstance().GetVelocity());
 }
 
 void LandShape::DrawImGui(std::function<void()> imguiF)

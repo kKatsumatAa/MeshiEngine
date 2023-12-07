@@ -24,11 +24,11 @@ void Waves::SetBuffCmdLst(int32_t rootParamIndex)
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(rootParamIndex, wavesBuff_->GetGPUVirtualAddress());
 }
 
-void Waves::Update()
+void Waves::Update(float speed)
 {
 	for (auto& wave : waves_)
 	{
-		wave.Update();
+		wave.Update(speed);
 
 		if (wave.GetIsEndWave())
 		{

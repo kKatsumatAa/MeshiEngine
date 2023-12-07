@@ -168,10 +168,6 @@ void IObject3D::EffectUpdate(IObject3D* effectCopyObj)
 	{
 		*mapEffectFlagsBuff_ = effectFlags_;
 	}
-	//メッシュ分割のウェーブ
-	{
-		waves_.Update();
-	}
 }
 
 void IObject3D::Update()
@@ -337,7 +333,7 @@ void IObject3D::MatMap(Camera* camera, Camera* lightCamera, IModel* model)
 	cbt_.SetViewProjMat(camera->GetViewMat() * camera->GetProjMat());
 	//ライトから見える範囲(左右:-20~20, 上下:-20~20, 奥行:1~100)
 	cbt_.SetLightViewProjMat(lightCamera->GetViewMat()
-		* XMMatrixOrthographicLH(sLightCameraParam_.x+0.1f, sLightCameraParam_.y + 0.1f, sLightCameraParam_.z, sLightCameraParam_.w));//全てのものが同じ大きさで計算するので平行投影
+		* XMMatrixOrthographicLH(sLightCameraParam_.x + 0.1f, sLightCameraParam_.y + 0.1f, sLightCameraParam_.z, sLightCameraParam_.w));//全てのものが同じ大きさで計算するので平行投影
 	cbt_.SetCameraPos(camera->GetEye());
 }
 
