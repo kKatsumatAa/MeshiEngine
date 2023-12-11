@@ -9,7 +9,9 @@
 
 
 class PlayerAttackState;
+class PlayerReplayState;
 class PlayerState;
+class Replay;
 
 class Player :
 	public Character
@@ -26,6 +28,12 @@ private:
 	const float SCALE_EXTEND_ = 1.35f;
 
 	const float HEIGHT_FROM_GROUND_ = 4.5f;
+
+private:
+	//リプレイのポインタ
+	Replay* replay_ = nullptr;
+	//リプレイのステートによって変わる処理の関数
+	std::function<void()>replayStateF_ = NULL;
 
 private:
 	const int8_t HP_TMP_ = 1;
@@ -48,6 +56,8 @@ private:
 
 	//左クリックしたか
 	bool isClickLeft_ = false;
+	//右クリック
+	bool isClickRight_ = false;
 
 	//攻撃が届く距離
 	const float ATTACK_LENGTH_ = 11.0f;
@@ -60,8 +70,10 @@ private:
 	//手のマネージャークラス
 	std::unique_ptr<PlayerHandManager> handManager_ = nullptr;
 
-	//状態のステート
-	std::unique_ptr<PlayerState> state_ = nullptr;
+	//リプレイ状態のステート
+	std::unique_ptr<PlayerReplayState> replayState_ = nullptr;
+	//素手か武器を持っているか等のステート
+	std::unique_ptr<PlayerState>playerState_ = nullptr;
 
 	const float FALL_VEL_POW_ = 2.0f;
 
@@ -89,6 +101,12 @@ private:
 private:
 	//uiの位置更新
 	void UpdateUI();
+	//マウスのクリックでプレイヤーのアクションをするかどうかをセット
+	void UpdatePlayerActionFromMouse();
+
+public:
+	//セットされたリプレイのポインタ
+	Replay* GetReplay() { return replay_; }
 
 public:
 	void SetIsAttacking(bool is) { isAttacking_ = is; }
@@ -104,6 +122,11 @@ public:
 	//手のマネージャー
 	PlayerHandManager* GetHandManager() { return handManager_.get(); }
 
+	//リプレイ
+	void SetReplay(Replay* replay) { replay_ = replay; }
+	//リプレイのステートの初期化
+	void InitializeReplayState();
+
 public:
 	bool Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon);
 
@@ -111,7 +134,13 @@ public:
 
 	void Draw() override;
 
+public:
+	//リプレイのステートを変更
+	void ChangePlayerReplayState(std::unique_ptr<PlayerReplayState> state);
+	void ChangeToReplayingState();
+	//素手などのステートを変更
 	void ChangePlayerState(std::unique_ptr<PlayerState> state);
+	PlayerState* GetPlayerState() { return playerState_.get(); }
 
 	void OnCollision(const CollisionInfo& info) override;
 
@@ -127,12 +156,23 @@ public:
 	void UpdateUseCameraTarget();
 
 public:
-	void SetIsClickLeft(bool isClickLeft) { isClickLeft_ = isClickLeft; }
+	//方向の更新の計算などの処理
+	void DirectionUpdateCalcPart(const Vec2& mouseVec);
+	//移動の計算などの処理
+	void MoveCalcPart(bool leftKey, bool rightKey, bool upKey, bool downKey, bool spaceKey);
+
+public:
 	bool GetIsClickLeft() { return isClickLeft_; }
+	void SetIsClickLeft(bool isClickLeft) { isClickLeft_= isClickLeft; }
+	bool GetIsClickRight() { return isClickRight_; }
+	void SetIsClickRight(bool isClickRight) { isClickRight_ = isClickRight; }
 
 	Vec3 GetWeaponPosTmp();
 
 	//正面ベクトルから飛ばしたレイのターゲットまでのベクトル(正規化なし)
 	Vec3 GetFrontTargetVec(uint16_t colAttr);
+
+public:
+	void SetReplayStateF(std::function<void()>f) { replayStateF_ = f; }
 };
 

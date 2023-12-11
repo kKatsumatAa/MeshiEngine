@@ -220,6 +220,12 @@
     <Filter Include="ソース ファイル\Application\MakeWaveObj\Character\Enemy">
       <UniqueIdentifier>{fb9301f5-c476-436f-a5a1-7b2ee46966a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Application\System\RePlay">
+      <UniqueIdentifier>{efe7f670-8afa-4c14-abb3-832b3fb1327d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\System\RePlay">
+      <UniqueIdentifier>{b8cd5050-ec7a-44ff-b963-ebe6bd4dcc3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -542,6 +548,12 @@
     </ClCompile>
     <ClCompile Include="Application\MakeWaveObj\Character\CharacterState.cpp">
       <Filter>ソース ファイル\Application\MakeWaveObj\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\System\RePlay\Replay.cpp">
+      <Filter>ソース ファイル\Application\System\RePlay</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerReplayState.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -883,6 +895,12 @@
     </ClInclude>
     <ClInclude Include="Application\MakeWaveObj\Weapon\Weapon.h">
       <Filter>ヘッダー ファイル\Application\MakeWaveObj\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\System\RePlay\Replay.h">
+      <Filter>ヘッダー ファイル\Application\System\RePlay</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerReplayState.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,7 @@
 #include "PlayerUI.h"
 #include "PlayerUIState.h"
 #include "EnemyManager.h"
+#include "Replay.h"
 
 
 class StageState;
@@ -26,6 +27,9 @@ private:
 	//ステージクリアしたか
 	bool isClear_ = false;
 	bool isGameOver_ = false;
+
+	//リプレイ
+	Replay* replay_ = nullptr;
 
 public:
 	//海からの初期距離
@@ -55,7 +59,8 @@ private:
 
 public:
 	//ステージ読み込み
-	void LoadStage(int32_t stageIndex);
+	void LoadStage(int32_t stageIndex, Replay* replay);
+	void LoadStage(Replay* replay);
 
 	//ステージ番号
 	void SetStageNum(int32_t stageNum) { stageNum_ = stageNum; }
@@ -80,9 +85,12 @@ public:
 	void AfterLavaMaxUpdate();
 
 public:
+	Replay* GetReplay() { return replay_; }
+
+public:
 	//ステート変更
 	void ChangeState(const std::string& name);
-	
+
 public:
 	void Update();
 	void DrawShadow();

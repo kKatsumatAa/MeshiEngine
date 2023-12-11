@@ -14,11 +14,14 @@ protected:
 
 protected:
 	Player* player_ = nullptr;
+	//共通の移動などの処理
+	std::function<void()>commonUpdateF_;
 
 public:
 	virtual ~PlayerState() { ; }
 
 	void SetPlayer(Player* player) { player_ = player; }
+	void SetCommonUpdateF(const std::function<void()>& f) { commonUpdateF_ = f; }
 
 	bool CheckEyeRayHit()override;
 

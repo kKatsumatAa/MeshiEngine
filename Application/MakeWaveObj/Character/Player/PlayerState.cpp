@@ -34,11 +34,10 @@ bool PlayerState::CheckEyeRayHit()
 
 void PlayerState::Update()
 {
-	//カメラの向き変更
-	player_->DirectionUpdate();
-
-	//移動
-	player_->Move();
+	if (commonUpdateF_)
+	{
+		commonUpdateF_();
+	}
 }
 
 
@@ -154,7 +153,7 @@ void PlayerStateHaveWeapon::Update()
 			GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
 		}
 		//右クリックで武器投げる
-		else if (MouseInput::GetInstance().GetTriggerClick(CLICK_RIGHT))
+		else if (player_->GetIsClickRight())
 		{
 			player_->ThrowWeapon();
 		}

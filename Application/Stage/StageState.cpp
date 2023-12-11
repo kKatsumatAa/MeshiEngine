@@ -4,6 +4,8 @@
 #include "PlayerUI.h"
 #include "PostEffectManager.h"
 #include "EnemyManager.h"
+#include "Player.h"
+#include "PlayerReplayState.h"
 
 
 //共通の処理
@@ -256,6 +258,13 @@ void StageStateClear::Initialize()
 
 	//クリア演出
 	ClearEffect::GetInstance().BeginClearEffect();
+
+	//リプレイ始める
+	StageManager::GetInstance().LoadStage(StageManager::GetInstance().GetReplay());
+	auto players = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player");
+	auto player = dynamic_cast<Player*>(players[0]);
+	player->ChangeToReplayingState();
+	player->InitializeReplayState();
 }
 
 void StageStateClear::Update()

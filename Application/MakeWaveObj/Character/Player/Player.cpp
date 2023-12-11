@@ -14,6 +14,8 @@
 #include "PostEffectManager.h"
 #include "ObjectManager.h"
 #include "LevelManager.h"
+#include "Replay.h"
+#include "PlayerReplayState.h"
 
 
 using namespace DirectX;
@@ -84,22 +86,60 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	{
 		ChangePlayerState(std::make_unique<PlayerStateHaveWeapon>());
 	}
+	//リプレイのステート
+	ChangePlayerReplayState(std::make_unique<PlayerReplayStateSavingData>());
 
 	return true;
 }
 
+
+//---------------------------------------------------------------------------------
+void Player::ChangePlayerReplayState(std::unique_ptr<PlayerReplayState> state)
+{
+	replayState_.reset();
+	replayState_ = std::move(state);
+	replayState_->SetPlayer(this);
+}
+
+void Player::InitializeReplayState()
+{
+	replayState_->Initialize();
+
+	//リプレイのステートの更新処理をセット
+	playerState_->SetCommonUpdateF(replayStateF_);
+}
+
+void Player::ChangeToReplayingState()
+{
+	ChangePlayerReplayState(std::make_unique<PlayerReplayStateReplaying>());
+}
+
 void Player::ChangePlayerState(std::unique_ptr<PlayerState> state)
 {
-	state_.reset();
-	state_ = std::move(state);
-	state_->SetPlayer(this);
-	state_->Initialize();
+	playerState_.reset();
+	playerState_ = std::move(state);
+	playerState_->SetPlayer(this);
+	playerState_->Initialize();
+
+	//リプレイのステートの更新処理をセット
+	playerState_->SetCommonUpdateF(replayStateF_);
 }
+
+//--------------------------------------------------------------------------------
 
 void Player::DirectionUpdate()
 {
+	//実際の計算
+	DirectionUpdateCalcPart(MouseInput::GetInstance().GetCursorVelocity());
+
+	//リプレイのデータ保存
+	replay_->SetMouseCursorVel(MouseInput::GetInstance().GetCursorVelocity());
+}
+
+void Player::DirectionUpdateCalcPart(const Vec2& mouseVec)
+{
 	//マウスの動きでカメラ角度変更
-	mouseVel_ += MouseInput::GetInstance().GetCursorVelocity() * MOUSE_VELOCITY_TMP_;
+	mouseVel_ += mouseVec * MOUSE_VELOCITY_TMP_;
 	mouseVel_ *= MOUSE_GAME_VEL_ATTEN_;
 
 	//回転
@@ -118,7 +158,6 @@ void Player::DirectionUpdate()
 
 	//角度
 	SetRot(cameraRot_);
-
 
 	//カメラの右方向ベクトルを出す
 	rightVec_ = upVec_.Cross(frontVec_);
@@ -172,36 +211,55 @@ void Player::Move()
 	//キー入力
 	KeyboardInput* input = &KeyboardInput::GetInstance();
 
+	bool leftKey = input->KeyPush(DIK_LEFTARROW) || input->KeyPush(DIK_A);
+	bool rightKey = input->KeyPush(DIK_RIGHTARROW) || input->KeyPush(DIK_D);
+	bool upKey = input->KeyPush(DIK_UPARROW) || input->KeyPush(DIK_W);
+	bool downKey = input->KeyPush(DIK_DOWNARROW) || input->KeyPush(DIK_S);
+	bool spaceKey = input->KeyPush(DIK_SPACE);
+
+	//実際に計算など
+	MoveCalcPart(leftKey, rightKey, upKey, downKey, spaceKey);
+
+	//リプレイのデータ保存
+	replay_->SetLeftKey(leftKey);
+	replay_->SetRightKey(rightKey);
+	replay_->SetUpKey(upKey);
+	replay_->SetDownKey(downKey);
+	replay_->SetSpaceKey(spaceKey);
+}
+
+void Player::MoveCalcPart(bool leftKey, bool rightKey, bool upKey, bool downKey, bool spaceKey)
+{
 	//カメラ取得（借りてるだけ）
 	Camera* camera = CameraManager::GetInstance().GetCamera("playerCamera");
 
 	Vec3 velocity = { 0,0,0 };
 	//向いてる方向に移動
-	if (input->KeyPush(DIK_UPARROW) || input->KeyPush(DIK_W) || PadInput::GetInstance().GetLeftStickTilt().y < 0)
+	if (upKey)
 	{
 		velocity += { frontVec_.x, 0, frontVec_.z };
 	}
-	if (input->KeyPush(DIK_DOWNARROW) || input->KeyPush(DIK_S) || PadInput::GetInstance().GetLeftStickTilt().y > 0)
+	if (downKey)
 	{
 		velocity += { -frontVec_.x, 0, -frontVec_.z };
 	}
-	if (input->KeyPush(DIK_LEFTARROW) || input->KeyPush(DIK_A) || PadInput::GetInstance().GetLeftStickTilt().y < 0)
+	if (leftKey)
 	{
 		velocity += { -rightVec_.x, 0, -rightVec_.z };
 	}
-	if (input->KeyPush(DIK_RIGHTARROW) || input->KeyPush(DIK_D) || PadInput::GetInstance().GetLeftStickTilt().y > 0)
+	if (rightKey)
 	{
 		velocity += { rightVec_.x, 0, rightVec_.z };
 	}
 
 	//ゲームスピードを移動で足す(ジャンプ中でスペース押してなければ)
-	if (!(!isOnGround_ && KeyboardInput::GetInstance().KeyPush(DIK_SPACE)))
+	if (!(!isOnGround_ && spaceKey))
 	{
 		GameVelocityManager::GetInstance().AddGameVelocity(velocity.GetLength() * MOVE_ADD_VEL_EXTEND_);
 	}
 
 	//ジャンプ中でスペース押しっぱなしだったら
-	if (!isOnGround_ && KeyboardInput::GetInstance().KeyPush(DIK_SPACE) && velocity.GetLength())
+	if (!isOnGround_ && spaceKey && velocity.GetLength())
 	{
 		GameVelocityManager::GetInstance().AddGameVelocity(-0.001f);
 	}
@@ -211,7 +269,7 @@ void Player::Move()
 
 	//地面との判定
 	std::function<void()>gameSpeedAddFunc = [=]() {GameVelocityManager::GetInstance().AddGameVelocity(1.0f); };
-	OnGroundAndWallUpdate(HEIGHT_FROM_GROUND_, GameVelocityManager::GetInstance().GetVelocity(), KeyboardInput::GetInstance().KeyPush(DIK_SPACE), gameSpeedAddFunc);
+	OnGroundAndWallUpdate(HEIGHT_FROM_GROUND_, GameVelocityManager::GetInstance().GetVelocity(), spaceKey, gameSpeedAddFunc);
 
 	//コライダー更新
 	ObjectFBX::WorldMatColliderUpdate();
@@ -229,21 +287,19 @@ void Player::Move()
 	}
 }
 
+
 void Player::Update()
 {
-	//クリックか外部で左クリック処理したいときにフラグ立てる
-	isClickLeft_ = (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT) || isClickLeft_);
-
-	//素手や銃などのステート
-	state_->Update();
+	//マウスでアクションのフラグをセット
+	UpdatePlayerActionFromMouse();
 
 	//uiの位置
 	UpdateUI();
 
 	Character::Update();
 
-	//オフ
-	isClickLeft_ = false;
+	//素手や銃などのステート
+	playerState_->Update();
 }
 
 void Player::Draw()
@@ -335,6 +391,17 @@ void Player::UpdateUI()
 		scale = max(scale, 0.8f);
 	}
 	PlayerUI::GetInstance().SetScale2(scale);
+}
+
+void Player::UpdatePlayerActionFromMouse()
+{
+	//クリックか外部で左クリック処理したいときにフラグ立てる
+	isClickLeft_ = (MouseInput::GetInstance().GetTriggerClick(CLICK_LEFT));
+	isClickRight_ = (MouseInput::GetInstance().GetTriggerClick(CLICK_RIGHT));
+
+	//リプレイのデータ
+	replay_->SetIsLeftClickTrigger(isClickLeft_);
+	replay_->SetIsRightClickTrigger(isClickRight_);
 }
 
 void Player::ThrowWeapon()

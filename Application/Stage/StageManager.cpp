@@ -1,6 +1,7 @@
 #include "StageManager.h"
 #include "StageState.h"
 #include "PostEffectManager.h"
+#include "Player.h"
 
 
 StageManager& StageManager::GetInstance()
@@ -9,7 +10,7 @@ StageManager& StageManager::GetInstance()
 	return sInst;
 }
 
-void StageManager::LoadStage(int32_t stageIndex)
+void StageManager::LoadStage(int32_t stageIndex, Replay* replay)
 {
 	//プレイヤーui
 	PlayerUI::GetInstance().Initialize();
@@ -23,8 +24,16 @@ void StageManager::LoadStage(int32_t stageIndex)
 	//チュートリアルも読み込み
 	Tutorial::GetInstance().LoadTutorialData(stageIndex);
 
+	//リプレイ
+	replay_ = replay;
+
 	//初期化
 	StageManager::Initialize();
+}
+
+void StageManager::LoadStage(Replay* replay)
+{
+	LoadStage(stageNum_, replay);
 }
 
 void StageManager::Initialize()
@@ -49,8 +58,15 @@ void StageManager::Initialize()
 	seaDistance_ = { 0,SEA_DICTANCE_TMP_,0 };
 	seaMaxAfterTime_ = SEA_MAX_AFTER_TIME_;
 
-	//
+	//ステート
 	ChangeState("BEGINING");
+
+	//プレイヤー
+	auto players = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player");
+	auto player = dynamic_cast<Player*>(players[0]);
+	//リプレイをセットしたり
+	player->SetReplay(replay_);
+	player->InitializeReplayState();
 
 	//更新
 	Update();
