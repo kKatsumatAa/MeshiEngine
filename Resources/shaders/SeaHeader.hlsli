@@ -63,14 +63,14 @@ float noiseS(float2 p)
     // +---+---+
     // | c | d |
     // +---+---+
-    //整数部分を使ってグリッドを決定
+    //座標の上下左右の値を取得
     float a = hash(i + float2(0.0, 0.0));
     float b = hash(i + float2(1.0, 0.0));
     float c = hash(i + float2(0.0, 1.0));
     float d = hash(i + float2(1.0, 1.0));
     
     // u = -2.0f^3 + 3.0f^2
-    //小数部分でグリッドを補完
+    //小数部分でそれを補間
     float2 u = f * f * (3.0 - 2.0 * f);
 
     // Interpolate grid parameters with x and y.
@@ -111,7 +111,7 @@ float3 getSkyColor(float3 e)
 // Get sea wave octave.
 float sea_octave(float2 uv, float choppy)
 {
-    //ノイズを加算
+    //若干ノイズを加算
     uv += noiseS(uv);
     //波を表現するためにsin,cos
     float2 wv = 1.0 - abs(sin(uv));
@@ -210,7 +210,7 @@ float3 getSeaColor(float3 p, float3 n, float3 l, float3 eye, float3 dist)
     float3 reflected = getSkyColor(reflect(eye, n));
     float3 refracted = SEA_BASE + diffuse(n, l, 80.0) * SEA_WATER_COLOR * 0.12;
 
-    //線形補間
+    //フレネルで線形補間
     float3 colorL = lerp(refracted, reflected, fresnel);
 
     //減衰
