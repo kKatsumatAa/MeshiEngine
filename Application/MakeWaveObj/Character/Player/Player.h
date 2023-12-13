@@ -159,11 +159,11 @@ public:
 	//方向の更新の計算などの処理
 	void DirectionUpdateCalcPart(const Vec2& mouseVec);
 	//移動の計算などの処理
-	void MoveCalcPart(bool leftKey, bool rightKey, bool upKey, bool downKey, bool spaceKey);
+	void MoveCalcPart(bool leftKey, bool rightKey, bool upKey, bool downKey, bool spaceKey, float moveVelRatio = 1.0f);
 
 public:
 	bool GetIsClickLeft() { return isClickLeft_; }
-	void SetIsClickLeft(bool isClickLeft) { isClickLeft_= isClickLeft; }
+	void SetIsClickLeft(bool isClickLeft) { isClickLeft_ = isClickLeft; }
 	bool GetIsClickRight() { return isClickRight_; }
 	void SetIsClickRight(bool isClickRight) { isClickRight_ = isClickRight; }
 

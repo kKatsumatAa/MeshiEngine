@@ -218,7 +218,7 @@ void Player::Move()
 	bool spaceKey = input->KeyPush(DIK_SPACE);
 
 	//実際に計算など
-	MoveCalcPart(leftKey, rightKey, upKey, downKey, spaceKey);
+	MoveCalcPart(leftKey, rightKey, upKey, downKey, spaceKey, GameVelocityManager::GetInstance().GetVelocity());
 
 	//リプレイのデータ保存
 	replay_->SetLeftKey(leftKey);
@@ -228,7 +228,7 @@ void Player::Move()
 	replay_->SetSpaceKey(spaceKey);
 }
 
-void Player::MoveCalcPart(bool leftKey, bool rightKey, bool upKey, bool downKey, bool spaceKey)
+void Player::MoveCalcPart(bool leftKey, bool rightKey, bool upKey, bool downKey, bool spaceKey, float moveVelRatio)
 {
 	//カメラ取得（借りてるだけ）
 	Camera* camera = CameraManager::GetInstance().GetCamera("playerCamera");
@@ -265,7 +265,7 @@ void Player::MoveCalcPart(bool leftKey, bool rightKey, bool upKey, bool downKey,
 	}
 
 	//位置セット(ゲームスピードをかける)
-	SetTrans(GetTrans() + velocity * VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity());
+	SetTrans(GetTrans() + velocity * VELOCITY_TMP_ * moveVelRatio);
 
 	//地面との判定
 	std::function<void()>gameSpeedAddFunc = [=]() {GameVelocityManager::GetInstance().AddGameVelocity(1.0f); };

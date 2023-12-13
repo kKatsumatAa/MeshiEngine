@@ -20,14 +20,14 @@ void PlayerReplayState::Initialize()
 
 void PlayerReplayStateSavingData::Unique()
 {
+	//ゲームのスピード保存
+	player_->GetReplay()->SetGameVel(GameVelocityManager::GetInstance().GetVelocity());
+
 	//カメラの向き変更
 	player_->DirectionUpdate();
 
 	//移動
 	player_->Move();
-
-	//ゲームのスピード保存
-	player_->GetReplay()->SetGameVel(GameVelocityManager::GetInstance().GetVelocity());
 
 	//リプレイの保存フレームを次に
 	player_->GetReplay()->NextFrame();
@@ -48,27 +48,23 @@ void PlayerReplayStateSavingData::Initialize()
 void PlayerReplayStateReplaying::Unique()
 {
 	//リプレイデータ
-	Replay* replay = player_->GetReplay();
-	ReplayData data = replay->GetNormalTimeTotalData();
+	auto f = [=](const ReplayData& data)
+		{
+			//クリック
+			player_->SetIsClickLeft(data.isLeftClickTrigger);
+			player_->SetIsClickRight(data.isRightClickTrigger);
+			//リプレイデータのベクトルなどを使う
+			player_->DirectionUpdateCalcPart(data.mouseCursorVel);
+			player_->MoveCalcPart(data.leftKey, data.rightKey, data.upKey, data.downKey, data.spaceKey, data.gameVel);
+		};
 
-	//クリック
-	player_->SetIsClickLeft(data.isLeftClickTrigger);
-	player_->SetIsClickRight(data.isRightClickTrigger);
-
-	//リプレイデータのベクトルなどを使う
-	player_->DirectionUpdateCalcPart(data.mouseCursorVel);
-	player_->MoveCalcPart(data.leftKey, data.rightKey, data.upKey, data.downKey, data.spaceKey);
-
-	//終わりまで行ったらフレームをリセット
-	if (!replay->AddReplayDataCount())
-	{
-		replay->ResetReplayDataCount();
-	}
+	player_->GetReplay()->UpdateWhile1Frame(f);
 }
 
 void PlayerReplayStateReplaying::Initialize()
 {
-
+	GameVelocityManager::GetInstance().SetIsNormalTime(true);
+	GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
 
 	PlayerReplayState::Initialize();
 }

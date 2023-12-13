@@ -2,6 +2,7 @@
 #include"Vec2.h"
 #include<vector>
 #include<memory>
+#include<functional>
 
 //保存するデータ
 struct ReplayData
@@ -34,11 +35,16 @@ private:
 	ReplayData normalTimeTotalReplayData_;
 
 	int32_t replayDataCount_ = 0;
+	//次のフレームに繰り越す速度
+	float carryOverVel_ = 0;
 
 public:
 	void Initialize();
 	//次のフレームの保存に移る
 	void NextFrame();
+
+	//合計で1.0fフレームになるように更新処理をする
+	void UpdateWhile1Frame(std::function<void(const ReplayData& replay)>updateF);
 
 	//時間を1.0に直したときの行動取得
 	const ReplayData& GetNormalTimeTotalData();

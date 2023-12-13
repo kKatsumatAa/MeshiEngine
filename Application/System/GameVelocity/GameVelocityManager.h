@@ -8,6 +8,8 @@ private:
 	float gameVelocity_ = 0;
 	//ゲームスピードの加算無効
 	bool isInvalidAddGameVel_ = false;
+	//1.0f固定になる
+	bool isNormalTime_ = false;
 	//色
 	const Vec3 VEL_COL_MIN_ = { 0.4f,0.7f,0.9f };
 
@@ -42,4 +44,6 @@ public:
 public:
 	void SetIsInvalidAddGameVel(bool is) { isInvalidAddGameVel_ = is; }
 	bool GetIsInvalidAddGameVel() { return isInvalidAddGameVel_; }
+	void SetIsNormalTime(bool is) { isNormalTime_ = is; }
+	bool GetIsNormalTime() { return isNormalTime_; }
 };

@@ -14,6 +14,7 @@ void GameVelocityManager::Initialize()
 {
 	gameVelocity_ = 1.0f;
 	isInvalidAddGameVel_ = false;
+	isNormalTime_ = false;
 
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isRadialBlur = false;
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.color = { 1.0f,1.0f,1.0f,1.0f };
@@ -60,7 +61,7 @@ void GameVelocityManager::Update()
 		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isRadialBlur = false;
 	}
 
-	if (gameVelocity_ > GAME_VELOCITY_MIN_)
+	if (gameVelocity_ > GAME_VELOCITY_MIN_ && !isNormalTime_)
 	{
 		//減らしていく
 		gameVelocity_ *= 0.95f;
