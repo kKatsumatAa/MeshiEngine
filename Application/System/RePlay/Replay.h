@@ -68,6 +68,10 @@ public:
 	void SetGameVel(float gameVel) { rePlayDatas_.back()->gameVel = gameVel; }
 
 public:
+	//リプレイが終わりまで再生されたか
+	bool GetReplayEnd() { return rePlayDatas_.size() <= replayDataCount_; }
+
+public:
 	//リプレイデータのカウント進める
 	bool AddReplayDataCount();
 	//リプレイデータのカウントリセット

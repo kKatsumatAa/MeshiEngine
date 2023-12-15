@@ -1,4 +1,4 @@
-﻿#include "ModelManager.h"
+#include "ModelManager.h"
 #include "FbxLoader.h"
 #include <sstream>
 
@@ -13,7 +13,7 @@ ModelManager& ModelManager::GetInstance()
 	return sInst;
 }
 
-void ModelManager::Finalize()
+void ModelManager::ClearModels()
 {
 	nameAndModels_.clear();
 	nameAndModelFBXs_.clear();

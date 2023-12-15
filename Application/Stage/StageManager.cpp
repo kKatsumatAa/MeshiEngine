@@ -10,7 +10,7 @@ StageManager& StageManager::GetInstance()
 	return sInst;
 }
 
-void StageManager::LoadStage(int32_t stageIndex, Replay* replay)
+void StageManager::LoadStage(int32_t stageIndex, Replay* replay, const std::string& stateName)
 {
 	//プレイヤーui
 	PlayerUI::GetInstance().Initialize();
@@ -21,6 +21,8 @@ void StageManager::LoadStage(int32_t stageIndex, Replay* replay)
 	LevelManager::GetInstance().StaticInitialize();
 	LevelManager::GetInstance().LoadLevelData(stageIndex);
 
+	stageNum_ = stageIndex;
+
 	//チュートリアルも読み込み
 	Tutorial::GetInstance().LoadTutorialData(stageIndex);
 
@@ -28,15 +30,15 @@ void StageManager::LoadStage(int32_t stageIndex, Replay* replay)
 	replay_ = replay;
 
 	//初期化
-	StageManager::Initialize();
+	StageManager::Initialize(stateName);
 }
 
-void StageManager::LoadStage(Replay* replay)
+void StageManager::LoadStage(Replay* replay, const std::string& stateName)
 {
-	LoadStage(stageNum_, replay);
+	LoadStage(stageNum_, replay, stateName);
 }
 
-void StageManager::Initialize()
+void StageManager::Initialize(const std::string& stateName)
 {
 	//カメラをセット
 	CameraManager::GetInstance().SetUsingCamera("playerCamera");
@@ -59,7 +61,7 @@ void StageManager::Initialize()
 	seaMaxAfterTime_ = SEA_MAX_AFTER_TIME_;
 
 	//ステート
-	ChangeState("BEGINING");
+	ChangeState(stateName);
 
 	//プレイヤー
 	auto players = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player");
@@ -121,9 +123,12 @@ void StageManager::AfterLavaMaxUpdate()
 
 void StageManager::ChangeState(const std::string& name)
 {
-	state_.reset();
-	state_ = std::move(StageState::GetState(name));
-	state_->Initialize();
+	if (name.size())
+	{
+		state_.reset();
+		state_ = std::move(StageState::GetState(name));
+		state_->Initialize();
+	}
 }
 
 void StageManager::Update()

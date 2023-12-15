@@ -31,7 +31,7 @@ public:
 	static ModelManager& GetInstance();
 
 	//後始末
-	void Finalize();
+	void ClearModels();
 
 	/// <summary>
 	///fbxでもobjでも読み込み（fbxの場合は "xxx.fbx"とする）

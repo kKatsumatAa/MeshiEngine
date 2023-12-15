@@ -55,12 +55,12 @@ public:
 	static StageManager& GetInstance();
 
 private:
-	void Initialize();
+	void Initialize(const std::string& stateName);
 
 public:
 	//ステージ読み込み
-	void LoadStage(int32_t stageIndex, Replay* replay);
-	void LoadStage(Replay* replay);
+	void LoadStage(int32_t stageIndex, Replay* replay, const std::string& stateName = "BEGINING");
+	void LoadStage(Replay* replay, const std::string& stateName = "BEGINING");
 
 	//ステージ番号
 	void SetStageNum(int32_t stageNum) { stageNum_ = stageNum; }

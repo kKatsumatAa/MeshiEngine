@@ -335,8 +335,8 @@ void Enemy::BeginDamagedWave(const CollisionInfo& info, float wavePow)
 			GetScale().GetLength() * 2.0f, 30.0f / wavePow * GetRand(1.0f, 2.0f));
 	}
 	//ステージに波紋
-	BeginWaveStage(pos, { GetScale().y / 10.0f * wavePow,GetScale().GetLength() * 1.1f * wavePow },
-		GetScale().GetLength() * 3.0f, 30.0f);
+	BeginWaveStage(pos, { GetScale().y / 5.5f * wavePow,GetScale().GetLength() * 0.9f * wavePow },
+		GetScale().GetLength() * 8.0f, 30.0f);
 }
 
 bool Enemy::GetPlayerIsWithinRange()
@@ -377,7 +377,7 @@ void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 		Damaged(1, stateChangeF, stateChangeF2);
 
 		//メッシュの波
-		BeginDamagedWave(info, 0.8f);
+		BeginDamagedWave(info, 1.8f);
 
 		//パーティクル
 		DamageParticle(60, 1, 1.0f, &info);
@@ -563,7 +563,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		SetAllNodeAddRots(*obj, 1.5f);
 
 		//メッシュの波
-		BeginDamagedWave(info, 1.3f);
+		BeginDamagedWave(info, 0.8f);
 
 		//パーティクル
 		DamageParticle(100, 1, 1.3f, &info, obj, nullptr);
@@ -592,7 +592,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 			Damaged(0, stateChangeF, stateChangeF2);
 
 			//メッシュの波
-			BeginDamagedWave(info, 0.5f);
+			BeginDamagedWave(info, 0.2f);
 		}
 	}
 	//敵同士で当たったらめり込まないようにする

@@ -680,11 +680,8 @@ void FbxLoader::AddAnimationModel(ModelFBX* addToModel, const std::string& anime
 	//フルパス
 	const std::string FULL_PATH = GetFullPath(animeFbxName);
 
-	//シーン生成
-	FbxScene* fbxScene = FbxScene::Create(fbxManager_, "fbxScene");
-	FbxSceneImport(FULL_PATH, fbxScene);
+	//シーンにインポート
+	FbxSceneImport(FULL_PATH, addToModel->fbxScene_);
 
-	LoadAnimation(addToModel, fbxScene);
-
-	fbxScene->Destroy();
+	LoadAnimation(addToModel, addToModel->fbxScene_);
 }

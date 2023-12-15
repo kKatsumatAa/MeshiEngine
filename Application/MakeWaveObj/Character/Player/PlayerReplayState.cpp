@@ -48,23 +48,26 @@ void PlayerReplayStateSavingData::Initialize()
 void PlayerReplayStateReplaying::Unique()
 {
 	//リプレイデータ
-	auto f = [=](const ReplayData& data)
-		{
-			//クリック
-			player_->SetIsClickLeft(data.isLeftClickTrigger);
-			player_->SetIsClickRight(data.isRightClickTrigger);
-			//リプレイデータのベクトルなどを使う
-			player_->DirectionUpdateCalcPart(data.mouseCursorVel);
-			player_->MoveCalcPart(data.leftKey, data.rightKey, data.upKey, data.downKey, data.spaceKey, data.gameVel);
-		};
+	Replay* replay = player_->GetReplay();
 
-	player_->GetReplay()->UpdateWhile1Frame(f);
+	ReplayData data = replay->GetNormalTimeTotalData();
+
+	//クリック
+	player_->SetIsClickLeft(data.isLeftClickTrigger);
+	player_->SetIsClickRight(data.isRightClickTrigger);
+
+	//リプレイデータのベクトルなどを使う
+	player_->DirectionUpdateCalcPart(data.mouseCursorVel);
+	player_->MoveCalcPart(data.leftKey, data.rightKey, data.upKey, data.downKey, data.spaceKey,
+		data.gameVel);
+
+	//データ要素番号を次へ
+	replay->AddReplayDataCount();
 }
 
 void PlayerReplayStateReplaying::Initialize()
 {
-	GameVelocityManager::GetInstance().SetIsNormalTime(true);
-	GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
+
 
 	PlayerReplayState::Initialize();
 }

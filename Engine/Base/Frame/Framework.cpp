@@ -64,7 +64,7 @@ void Framework::Initialize()
 void Framework::Finalize()
 {
 	//モデル全てを解放
-	ModelManager::GetInstance().Finalize();
+	ModelManager::GetInstance().ClearModels();
 
 	//FBX
 	FbxLoader::GetInstance()->Finalize();

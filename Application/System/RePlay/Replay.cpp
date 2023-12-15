@@ -76,7 +76,7 @@ bool Replay::AddReplayDataCount()
 {
 	replayDataCount_++;
 
-	if (replayDataCount_ >= rePlayDatas_.size())
+	if (GetReplayEnd())
 	{
 		return false;
 	}

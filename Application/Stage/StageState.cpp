@@ -259,12 +259,14 @@ void StageStateClear::Initialize()
 	//クリア演出
 	ClearEffect::GetInstance().BeginClearEffect();
 
-	//リプレイ始める
-	StageManager::GetInstance().LoadStage(StageManager::GetInstance().GetReplay());
+	//リプレイ始める(ステートはクリア後のままにするためステート名はなし)
+	StageManager::GetInstance().LoadStage(StageManager::GetInstance().GetReplay(), "");
 	auto players = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player");
 	auto player = dynamic_cast<Player*>(players[0]);
 	player->ChangeToReplayingState();
 	player->InitializeReplayState();
+
+	StageManager::GetInstance().GetReplay()->ResetReplayDataCount();
 }
 
 void StageStateClear::Update()
@@ -282,6 +284,12 @@ void StageStateClear::Update()
 	}
 
 	timer_ = min(timer_ + 1, CLEAR_COOL_TIME_MAX_);
+
+	//リプレイが最後まで再生されたら
+	if (StageManager::GetInstance().GetReplay()->GetReplayEnd())
+	{
+		StageManager::GetInstance().ChangeState("CLEAR");
+	}
 }
 
 void StageStateClear::DrawShadow()
