@@ -30,10 +30,6 @@ void SceneGame::Initialize()
 
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = false;
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = true;
-#ifdef _DEBUG
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = false;
-#endif // _DEBUG
 }
 
 void SceneGame::Update()
@@ -57,7 +53,6 @@ void SceneGame::Update()
 	}
 	else if (StageManager::GetInstance().GetIsGameClear() || KeyboardInput::GetInstance().KeyTrigger(DIK_ESCAPE))
 	{
-		PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBloom = false;
 		ParticleManager::GetInstance()->ClearParticles();
 		sceneM_->SetNextScene("STAGESELECT");
 	}

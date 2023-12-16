@@ -57,7 +57,7 @@ public:
 	virtual void Damaged(int8_t damage, std::function<void()> deadFunc, std::function<void()> notDeadFunc = NULL);
 
 public:
-	virtual ~Character() { ; }
+	virtual ~Character();
 
 public:
 	virtual void Update();

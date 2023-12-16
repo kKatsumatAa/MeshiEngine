@@ -78,7 +78,7 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, IObject3D* owner
 	ParticleGenerate({ 4.0f,4.0f,4.0f,1.1f }, { 4.0f,4.0f,4.0f,0 }, particleSize);
 
 	//ステージに波紋
-	BeginWaveStage(shotPos_, Vec2(GetScale().z, GetScale().y) * 9.0f, GetScale().GetLength() * 300.0f, 120.0f);
+	BeginWaveStage(shotPos_, Vec2(GetScale().z, GetScale().y) * 9.0f, GetScale().GetLength() * 300.0f, 55.0f);
 
 	attackCoolTime_ = SHOT_COOL_TIME_MAX_;
 	remainingBullets_ -= decreBullet;

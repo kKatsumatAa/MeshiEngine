@@ -16,7 +16,12 @@ ModelManager& ModelManager::GetInstance()
 void ModelManager::ClearModels()
 {
 	nameAndModels_.clear();
-	nameAndModelFBXs_.clear();
+
+	if (nameAndModelFBXs_.size())
+	{
+		nameAndModelFBXs_.clear();
+	}
+
 	sameNameOtherModels_.clear();
 }
 

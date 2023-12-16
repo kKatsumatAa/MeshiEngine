@@ -5,6 +5,11 @@
 #include "Character.h"
 
 
+Weapon::~Weapon()
+{
+	TerminateParent();
+}
+
 void Weapon::NoParentMove()
 {
 	if (GetParent() == nullptr && isThrowing_)
@@ -72,13 +77,15 @@ void Weapon::ChangeOwner(IObject3D* parent)
 
 void Weapon::Update()
 {
-	//消えたら親を解除
-	if (!GetIsAlive() && owner_)
+	Object::Update();
+}
+
+void Weapon::TerminateParent()
+{
+	if (owner_)
 	{
 		Character* chara = dynamic_cast<Character*>(owner_);
 		owner_ = nullptr;
 		chara->FallWeapon({ 0,0,0 });
 	}
-
-	Object::Update();
 }

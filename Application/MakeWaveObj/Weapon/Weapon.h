@@ -37,7 +37,7 @@ protected:
 
 public:
 	Weapon() { ; }
-	virtual ~Weapon() { ; }
+	virtual ~Weapon();
 
 protected:
 	//地形と当たった時に呼び出す
@@ -88,5 +88,9 @@ public:
 public:
 	//古い座標の更新
 	void OldPosUpdate() { oldPos_ = GetWorldTrans(); }
+
+protected:
+	//親を解除
+	void TerminateParent();
 };
 

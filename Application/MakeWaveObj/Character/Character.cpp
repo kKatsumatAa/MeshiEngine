@@ -27,6 +27,13 @@ void Character::Damaged(int8_t damage, std::function<void()> deadFunc, std::func
 	}
 }
 
+Character::~Character()
+{
+	//死んだら武器落とす
+	//（unique_ptrでobjectManagerで管理してるので、worldMat_のparent_がおかしなことになるため）
+	FallWeapon({ 0,0,0 });
+}
+
 void Character::Update()
 {
 	//カウント増やす
