@@ -11,7 +11,10 @@ const std::string ModelFBX::S_TYPE_DIRECTORY_ = "fbx/";
 ModelFBX::~ModelFBX()
 {
 	//fbxシーンの解放（FBXLoaderのFinalize()の前じゃないとエラー出る）
-	fbxScene_->Destroy();
+	if (fbxScene_)
+	{
+		fbxScene_->Destroy();
+	}
 }
 
 const Node* ModelFBX::GetNode(const std::string& name)

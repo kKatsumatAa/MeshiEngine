@@ -17,12 +17,17 @@ void ModelManager::ClearModels()
 {
 	nameAndModels_.clear();
 
+	ClearFbxModels();
+
+	sameNameOtherModels_.clear();
+}
+
+void ModelManager::ClearFbxModels()
+{
 	if (nameAndModelFBXs_.size())
 	{
 		nameAndModelFBXs_.clear();
 	}
-
-	sameNameOtherModels_.clear();
 }
 
 IModel* ModelManager::LoadModel(const std::string& fileName, bool smoothing, bool sameNameOtherModel)

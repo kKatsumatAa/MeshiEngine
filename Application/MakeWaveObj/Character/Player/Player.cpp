@@ -269,7 +269,7 @@ void Player::MoveCalcPart(bool leftKey, bool rightKey, bool upKey, bool downKey,
 
 	//地面との判定
 	std::function<void()>gameSpeedAddFunc = [=]() {GameVelocityManager::GetInstance().AddGameVelocity(1.0f); };
-	OnGroundAndWallUpdate(HEIGHT_FROM_GROUND_, GameVelocityManager::GetInstance().GetVelocity(), spaceKey, gameSpeedAddFunc);
+	OnGroundAndWallUpdate(HEIGHT_FROM_GROUND_, moveVelRatio, spaceKey, gameSpeedAddFunc);
 
 	//コライダー更新
 	ObjectFBX::WorldMatColliderUpdate();

@@ -31,6 +31,11 @@ public:
 
 public:
 	const float SHOT_POS_EXTEND_ = 5.0f;
+	//武器を持つノード
+	const std::string WEAPON_PARENT_NODE_NAME_ = "RightHand";
+	//武器の角度
+	const Vec3 WEAPON_ROT_ = { PI / 2.0f,PI / 2.0f,0 };
+
 
 private:
 	const float PARTICLE_SIZE_EXTEND_ = 2.0f;

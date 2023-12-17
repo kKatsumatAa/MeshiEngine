@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include"ModelObj.h"
 #include"ModelFBX.h"
 
@@ -32,6 +32,9 @@ public:
 
 	//後始末
 	void ClearModels();
+
+	//fbx後始末
+	void ClearFbxModels();
 
 	/// <summary>
 	///fbxでもobjでも読み込み（fbxの場合は "xxx.fbx"とする）

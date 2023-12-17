@@ -36,7 +36,6 @@ void LevelManager::LoadLevelData(int32_t fileIndex)
 	//オブジェクト、カメラをクリア
 	ObjectManager::GetInstance().ClearAllObj();
 	CameraManager::GetInstance().Initialize();
-	ModelManager::GetInstance().ClearModels();
 	lightManager_->InitializeActive();
 
 	//レベルデータからカメラを取得

@@ -335,7 +335,7 @@ void Enemy::BeginDamagedWave(const CollisionInfo& info, float wavePow)
 			GetScale().GetLength() * 2.0f, 45.0f / wavePow * GetRand(1.0f, 2.0f));
 	}
 	//ステージに波紋
-	BeginWaveStage(pos, { GetScale().y  * wavePow,GetScale().GetLength() * 0.8f * wavePow },
+	BeginWaveStage(pos, { GetScale().y * wavePow,GetScale().GetLength() * 0.8f * wavePow },
 		GetScale().GetLength() * 12.0f, 30.0f);
 }
 
@@ -593,6 +593,17 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 
 			//メッシュの波
 			BeginDamagedWave(info, 0.2f);
+		}
+		else
+		{
+			//武器拾う
+			Vec3 lPos = { 0,0,0 };
+			gun->SetRot(WEAPON_ROT_);
+			PickUpWeapon(gun, &lPos);
+			//武器の親ノード設定
+			gun->ParentFbxNode(this, model_, WEAPON_PARENT_NODE_NAME_);
+
+			state_->ChangeState();
 		}
 	}
 	//敵同士で当たったらめり込まないようにする
