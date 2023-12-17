@@ -35,6 +35,9 @@ void SceneStageSelect::Initialize()
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { -0.2f,0.5f,0 };
 
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.color = { 1.0f,1.0f,1.0f,1.0f };
+
+	//モデル解放
+	ModelManager::GetInstance().ClearModels();
 }
 
 void SceneStageSelect::Update()

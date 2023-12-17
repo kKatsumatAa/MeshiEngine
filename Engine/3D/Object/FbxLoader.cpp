@@ -677,11 +677,17 @@ void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& s
 
 void FbxLoader::AddAnimationModel(ModelFBX* addToModel, const std::string& animeFbxName)
 {
+	//シーン
+	FbxScene* fbxScene = FbxScene::Create(fbxManager_, "fbxScene");
+
 	//フルパス
 	const std::string FULL_PATH = GetFullPath(animeFbxName);
 
 	//シーンにインポート
-	FbxSceneImport(FULL_PATH, addToModel->fbxScene_);
+	FbxSceneImport(FULL_PATH, fbxScene);
+	//アニメーション
+	LoadAnimation(addToModel, fbxScene);
 
-	LoadAnimation(addToModel, addToModel->fbxScene_);
+	//削除
+	fbxScene->Destroy();
 }
