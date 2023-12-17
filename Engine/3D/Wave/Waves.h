@@ -12,7 +12,7 @@ private://エイリアス
 
 private:
 	//最大数
-	static const int32_t WAVE_NUM_ = 20;
+	static const int32_t WAVE_NUM_ = 30;
 
 	struct WaveBuff
 	{
