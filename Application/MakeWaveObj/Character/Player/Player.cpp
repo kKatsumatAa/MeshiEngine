@@ -23,6 +23,13 @@ using namespace DirectX;
 
 Player::~Player()
 {
+	//死んだら武器落とす
+	//（unique_ptrでobjectManagerで管理してるので、worldMat_のparent_がおかしなことになるため）
+	if (weapon_)
+	{
+		weapon_->SetRot({ 0,PI,0 });
+	}
+	FallWeapon({ 0,-3.0f,0 }, nullptr, false);
 }
 
 std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
@@ -315,9 +322,6 @@ void Player::Draw()
 
 void Player::Dead()
 {
-	//海用の
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { 0,0,0 };
-
 	//hpが0になったら
 	isDead_ = true;
 
@@ -331,6 +335,8 @@ void Player::Dead()
 	}
 	else
 	{
+		//海用の
+		PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { 0,0,0 };
 		ChangePlayerState(std::make_unique<PlayerStateDeadEffect>());
 	}
 }

@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
+#include "PostEffectManager.h"
 #include "PlayerUI.h"
 #include "PlayerUIState.h"
 #include "ObjectManager.h"
@@ -258,6 +259,8 @@ void PlayerStateDeadEffectPunched::Update()
 
 	//正面ベクトルを変更
 	player_->SetFrontVec((player_->GetFrontVec() + Vec3{ 0, 0.05f, 0 }).GetNormalized());
+	//仮で海用のカメラ角度
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { player_->GetFrontVec().y,0,0 };
 	//正面ベクトルを回転、そのベクトルをカメラのターゲットに使う
 	auto camera = CameraManager::GetInstance().GetCamera("playerCamera");
 	camera->SetTarget(player_->GetTrans() + player_->GetFrontVec());

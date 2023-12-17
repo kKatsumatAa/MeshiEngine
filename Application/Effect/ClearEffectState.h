@@ -44,7 +44,7 @@ public:
 //攻撃していない
 class ClearEffectStateHyper : public ClearEffectState
 {
-	const float VOLUME_TMP_ = 2.0f;
+	const float VOLUME_TMP_ = 0.7f;
 	const std::string SOUND_NAME_ = "hyper.wav";
 
 public:
@@ -57,7 +57,7 @@ public:
 class ClearEffectStateHot : public ClearEffectState
 {
 private:
-	const float VOLUME_TMP = 2.0f;
+	const float VOLUME_TMP = 0.7f;
 	const std::string SOUND_NAME_ = "hot.wav";
 
 public:

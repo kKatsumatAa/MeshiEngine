@@ -44,7 +44,7 @@ void TransitionEffectNothingState::Draw()
 void TransitionEffectBeginState::Initialize()
 {
 	//音流す
-	Sound::GetInstance().PlayWave(SceneTransitionManager::TRANSITION_SOUND_NAME_, true);
+	Sound::GetInstance().PlayWave(SceneTransitionManager::TRANSITION_SOUND_NAME_, 0.7f);
 
 	//二つ目ノイズ
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isNoise = true;

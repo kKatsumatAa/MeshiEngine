@@ -35,6 +35,9 @@ void PlayerReplayStateSavingData::Unique()
 
 void PlayerReplayStateSavingData::Initialize()
 {
+	//リプレイの保存フレームを次に
+	player_->GetReplay()->NextFrame();
+
 	PlayerReplayState::Initialize();
 }
 

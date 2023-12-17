@@ -31,7 +31,7 @@ Character::~Character()
 {
 	//死んだら武器落とす
 	//（unique_ptrでobjectManagerで管理してるので、worldMat_のparent_がおかしなことになるため）
-	FallWeapon({ 0,0,0 });
+	FallWeapon({ 0,0,0 }, nullptr, false);
 }
 
 void Character::Update()
@@ -148,8 +148,11 @@ void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos, bool isUpda
 
 		//更新
 		GetWeapon()->SetFallVec(directionVec);
-		weapon_->OldPosUpdate();
-		weapon_->Update();
+		if (isUpdatePos)
+		{
+			weapon_->OldPosUpdate();
+			weapon_->Update();
+		}
 
 		SetWeapon(nullptr);
 	}

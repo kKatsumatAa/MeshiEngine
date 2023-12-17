@@ -10,8 +10,6 @@ void Replay::Initialize()
 		rePlayDatas_.clear();
 	}
 	replayDataCount_ = 0;
-
-	NextFrame();
 }
 
 void Replay::NextFrame()
