@@ -66,7 +66,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\MakeWaveObj\Character;$(ProjectDir)Application\MakeWaveObj\Character\Player;$(ProjectDir)Application\MakeWaveObj\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\MakeWaveObj\Weapon;$(ProjectDir)Application\MakeWaveObj\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D;$(ProjectDir)Engine\3D\Wave;$(ProjectDir)Application\Scene;$(ProjectDir)Application\LevelLoader;$(ProjectDir)Application\MakeWaveObj;$(ProjectDir)Application\System\Replay</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\MakeWaveObj\Character;$(ProjectDir)Application\MakeWaveObj\Character\Player;$(ProjectDir)Application\MakeWaveObj\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\MakeWaveObj\Weapon;$(ProjectDir)Application\MakeWaveObj\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D;$(ProjectDir)Engine\3D\Wave;$(ProjectDir)Application\Scene;$(ProjectDir)Application\LevelLoader;$(ProjectDir)Application\MakeWaveObj;$(ProjectDir)Application\System\Replay;$(ProjectDir)Application\Base</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -91,7 +91,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\MakeWaveObj\Character;$(ProjectDir)Application\MakeWaveObj\Character\Player;$(ProjectDir)Application\MakeWaveObj\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\MakeWaveObj\Weapon;$(ProjectDir)Application\MakeWaveObj\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D;$(ProjectDir)Engine\3D\Wave;$(ProjectDir)Application\Scene;$(ProjectDir)Application\LevelLoader;$(ProjectDir)Application\MakeWaveObj;$(ProjectDir)Application\System\Replay</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Collision;$(ProjectDir)External;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Util;$(ProjectDir)Engine\3D\Light;$(ProjectDir)Application\MakeWaveObj\Character;$(ProjectDir)Application\MakeWaveObj\Character\Player;$(ProjectDir)Application\MakeWaveObj\Character\Enemy;$(ProjectDir)Application;$(ProjectDir)Application\MakeWaveObj\Weapon;$(ProjectDir)Application\MakeWaveObj\Weapon\Gun;$(ProjectDir)Application\Stage;$(ProjectDir)Application\System\GameVelocity;$(ProjectDir)Application\System\Tutorial;$(ProjectDir)Application\Effect;$(ProjectDir)Application\UI;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\3D\Object;$(ProjectDir)Engine\3D\Camera;$(ProjectDir)Engine\Base\Matrix;$(ProjectDir)Engine\Base\Frame;$(ProjectDir)Engine\Collision\2D;$(ProjectDir)Engine\Collision\3D;$(ProjectDir)Engine\3D\Wave;$(ProjectDir)Application\Scene;$(ProjectDir)Application\LevelLoader;$(ProjectDir)Application\MakeWaveObj;$(ProjectDir)Application\System\Replay;$(ProjectDir)Application\Base</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -109,6 +109,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application\Base\MyGame.cpp" />
     <ClCompile Include="Application\Effect\ClearEffect.cpp" />
     <ClCompile Include="Application\Effect\ClearEffectState.cpp" />
     <ClCompile Include="Application\LevelLoader\JsonLevelLoader.cpp" />
@@ -183,7 +184,6 @@
     <ClCompile Include="Engine\Base\Async.cpp" />
     <ClCompile Include="Engine\Base\DirectXWrapper.cpp" />
     <ClCompile Include="Engine\Base\Frame\Framework.cpp" />
-    <ClCompile Include="Engine\Base\Frame\MyGame.cpp" />
     <ClCompile Include="Engine\Base\ImGuiManager.cpp" />
     <ClCompile Include="Engine\Base\IObject.cpp" />
     <ClCompile Include="Engine\Base\Matrix\ConstBuffTransform.cpp" />
@@ -224,6 +224,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\Base\MyGame.h" />
     <ClInclude Include="Application\Effect\ClearEffect.h" />
     <ClInclude Include="Application\Effect\ClearEffectState.h" />
     <ClInclude Include="Application\LevelLoader\JsonLevelLoader.h" />
@@ -299,7 +300,6 @@
     <ClInclude Include="Engine\Base\Async.h" />
     <ClInclude Include="Engine\Base\DirectXWrapper.h" />
     <ClInclude Include="Engine\Base\Frame\Framework.h" />
-    <ClInclude Include="Engine\Base\Frame\MyGame.h" />
     <ClInclude Include="Engine\Base\ImGuiManager.h" />
     <ClInclude Include="Engine\Base\IObject.h" />
     <ClInclude Include="Engine\Base\Matrix\ConstBuffTransform.h" />
