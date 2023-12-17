@@ -79,8 +79,6 @@ private:
 	std::string name_;
 	//ノード配列
 	std::vector<Node> nodes_;
-	//FBXシーン
-	FbxScene* fbxScene_ = nullptr;
 
 
 	//関数---------------------------------
@@ -97,8 +95,6 @@ public:
 	std::vector<Node>* GetNodes() { return &nodes_; }
 	//ノードを名前で指定して取得
 	const Node* GetNode(const std::string& name);
-
-	FbxScene* GetFbxScene() { return fbxScene_; }
 
 	uint64_t GetBoneIndex(const std::string& name) const;
 

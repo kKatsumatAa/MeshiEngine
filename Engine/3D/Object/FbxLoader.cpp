@@ -65,8 +65,8 @@ std::unique_ptr<ModelFBX> FbxLoader::LoadModelFromFile(const string& modelName, 
 	//アニメーション
 	LoadAnimation(model.get(), fbxScene);
 
-	//fbxシーンをモデルに持たせて、モデルごとに解放
-	model->fbxScene_ = fbxScene;
+	//fbxシーンを解放
+	fbxScene->Destroy();
 
 	//初期化
 	model->Initialize();

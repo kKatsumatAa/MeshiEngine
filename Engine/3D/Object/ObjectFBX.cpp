@@ -440,12 +440,11 @@ void ObjectFBX::AnimationReset(int32_t animeIndex)
 	//子クラスに変換
 	ModelFBX* model = dynamic_cast<ModelFBX*>(model_);
 
-	//アニメーションが1つしかない前提
-	FbxScene* fbxScene = model->GetFbxScene();
-	//アニメーション取得
-	FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(animeIndex);
-	//アニメーションなかったら
-	if (animStack == nullptr) { return; }
+	//アニメーションが何もなかったら
+	if (model->GetAnimations().size() == 0)
+	{
+		return;
+	}
 
 	//開始時間取得
 	animeDatas_[animeIndex].currentTime_ = dynamic_cast<ModelFBX*>(model_)->GetAnimations()[animeIndex].startTime;
