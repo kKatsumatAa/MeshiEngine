@@ -1,4 +1,4 @@
-﻿#include "Quaternion.h"
+#include "Quaternion.h"
 #include <math.h>
 
 Quaternion Quaternion::GetMultiply(const Quaternion& rhs) const
@@ -63,10 +63,11 @@ Quaternion Quaternion::GetInverse() const
 
 
 //----------
-Quaternion Quaternion::MakeAxisAngle(const Vec3& axis, float angle)
+Quaternion Quaternion::MakeAxisAngle(const Vec3& axis, float angle, const Vec3& useAxis)
 {
 	Quaternion ans;
 	Vec3 axis_ = axis;
+	axis_ = { axis_.x * useAxis.x,axis_.y * useAxis.y, axis_.z * useAxis.z };
 	axis_.Normalized();
 
 	float rad = sinf(angle / 2);
@@ -80,30 +81,19 @@ Quaternion Quaternion::MakeAxisAngle(const Vec3& axis, float angle)
 	return Quaternion(ans);
 }
 
-Quaternion Quaternion::DirectionToDirection(const Vec3& u, const Vec3& v, float dotRimitMin)
+Quaternion Quaternion::DirectionToDirection(const Vec3& u, const Vec3& v, const Vec3& useAxis)
 {
-	Vec3 U = u;
-	Vec3 V = v;
-
-	//向かせたい向きが真逆の時はy成分はゼロにして回させる
-	float dot = Vec3(U.x, U.y, U.z).Dot(Vec3(V.x, V.y, V.z));
-	if (dot <= dotRimitMin)
-	{
-		U = { U.x,0,U.z };
-		V = { V.x,0,V.z };
-	}
-
 	//uとvを正規化して内積を求める
-	dot = U.GetNormalized().Dot(V.GetNormalized());
+	float dot = u.GetNormalized().Dot(v.GetNormalized());
 	//u,vの外積をとる(回転軸を出す)
-	Vec3 cross = U.GetNormalized().Cross(V.GetNormalized());
+	Vec3 cross = u.GetNormalized().Cross(v.GetNormalized());
 	//軸は単位ベクトルである必要があるので正規化
 	//uとvが単位ベクトルあっても、外積が単位ベクトルとは限らないのでここの正規化は必須
 	Vec3 axis = cross.GetNormalized();
 	//単位ベクトルで内積をとっているのでacosで角度を求める
 	float theta = acosf(dot);
 	//axisとthetaで任意軸回転を作って返す
-	return MakeAxisAngle(axis, theta);
+	return MakeAxisAngle(axis, theta, useAxis);
 }
 
 Vec3 Quaternion::GetRotateVector(const Vec3& vector) const

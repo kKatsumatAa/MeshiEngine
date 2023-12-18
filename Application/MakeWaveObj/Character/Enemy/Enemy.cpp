@@ -294,7 +294,7 @@ void Enemy::DirectionUpdate(const Vec3& targetPos)
 	Vec3 pDVTmp = directionVec_.GetNormalized();
 
 	//正面ベクトルからターゲットの方向ベクトルへの回転クォータニオン
-	Quaternion q = Quaternion::DirectionToDirection(fVTmp, pDVTmp, 0.0f);
+	Quaternion q = Quaternion::DirectionToDirection(fVTmp, pDVTmp, { 0,1.0f,0 });
 	//回転後のベクトル
 	fVTmp = q.GetRotateVector(fVTmp);
 	//正面ベクトルセット

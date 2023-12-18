@@ -111,7 +111,7 @@ void Bullet::BallisticsUpdate()
 	ballisticsObj_.SetFrontVecTmp({ 0,0,1.0f });
 
 	//弾が向かってる方向に回転させるクォータニオン
-	Quaternion directionQ = Quaternion::DirectionToDirection(ballisticsObj_.GetFrontVecTmp(), GetFrontVec(), -1.0f);
+	Quaternion directionQ = Quaternion::DirectionToDirection(ballisticsObj_.GetFrontVecTmp(), GetFrontVec());
 
 	//行列をそのまま使う
 	ballisticsObj_.SetIsUseQuaternionMatRot(true);

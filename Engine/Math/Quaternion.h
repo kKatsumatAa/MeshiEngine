@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include"M4.h"
 
 //クォータニオン
@@ -49,10 +49,10 @@ public://静的メンバ関数
 	static Quaternion GetIdentityQuaternion();
 
 	//任意軸回転を表すクォータニオンを返す
-	static Quaternion MakeAxisAngle(const Vec3& axis, float angle);
+	static Quaternion MakeAxisAngle(const Vec3& axis, float angle, const Vec3& useAxis = { 1.0f,1.0f,1.0f });
 
 	//uからvへの回転を生成
-	static Quaternion DirectionToDirection(const Vec3& u, const Vec3& v, float dotRimitMin = -0.5f);
+	static Quaternion DirectionToDirection(const Vec3& u, const Vec3& v, const Vec3& useAxis = { 1.0f,1.0f,1.0f });
 
 
 public://オバロ演算子
