@@ -44,7 +44,7 @@ private:
 	//死亡時
 	const float DEAD_TIMER_MAX_ = 60.0f;
 	//分割数
-	const float TESS_FACTOR_MAX_ = 10.0f;
+	const float TESS_FACTOR_MAX_ = 20.0f;
 
 private:
 	Vec3 velocity_ = { 0,0,0 };
@@ -76,7 +76,7 @@ private:
 
 	const float WEAPON_FALL_VEL_EXTEND_ = 1.5f;
 
-	const float PLAYER_DISTANCE_EXTEND_ = 0.8f;
+	const float PLAYER_DISTANCE_EXTEND_ = 0.9f;
 
 	//プレイヤーが視界にいるか
 	bool isAttacking_ = false;

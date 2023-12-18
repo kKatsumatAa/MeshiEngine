@@ -9,7 +9,7 @@ private:
 	std::unique_ptr<LandShapePapierMache>landShapePapierMache_ = nullptr;
 
 	//分割数
-	const float TESS_FACTOR_MAX_ = 61.0f;
+	const float TESS_FACTOR_MAX_ = 71.0f;
 
 
 public:

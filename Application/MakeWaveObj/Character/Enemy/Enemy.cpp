@@ -146,9 +146,9 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, floa
 
 void Enemy::AllMove(const Vec3& targetPos, bool isWave)
 {
-	WalkToTarget(targetPos, isWave);
-
 	CollisionWallAndFloor();
+
+	WalkToTarget(targetPos, isWave);
 }
 
 void Enemy::Attack(const Vec3& targetPos)
