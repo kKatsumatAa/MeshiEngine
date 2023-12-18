@@ -78,8 +78,13 @@ bool EnemyState::GetPlayerVisually()
 
 void EnemyState::ChangeState()
 {
+	//素手で殴ってたら素手殴りの終わりに遷移
+	if (enemy_->GetIsBareAttack())
+	{
+		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHandsAttackEnd>());
+	}
 	//銃があれば
-	if (enemy_->GetWeapon())
+	else if (enemy_->GetWeapon())
 	{
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeaponAndMove>());
 	}
@@ -156,6 +161,9 @@ void EnemyStateBareHands::Update()
 //素手攻撃始め
 void EnemyStateBareHandsAttackBegin::Initialize()
 {
+	//素手殴りフラグ
+	enemy_->SetIsBareAttack(true);
+
 	//歩くのをやめる
 	enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::WALK);
 }
@@ -218,6 +226,8 @@ void EnemyStateBareHandsAttackEnd::Update()
 
 	if (timer_ >= TIME_)
 	{
+		enemy_->SetIsBareAttack(false);
+
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
 	}
 }
@@ -372,6 +382,8 @@ void EnemyStateAttackStanceEnd::Update()
 //被ダメージ始め---------------------------------------------------------------------------
 void EnemyStateDamagedBegin::Initialize()
 {
+	//殴るアニメの停止
+	enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::PUNCH);
 }
 
 void EnemyStateDamagedBegin::Update()
@@ -380,8 +392,16 @@ void EnemyStateDamagedBegin::Update()
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
 	float t = min(timer_ / TIMER_MAX_, 1.0f);
 
+	//殴ってる途中だったら歩かせない
+	if (enemy_->GetIsBareAttack())
+	{
+		enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
+	}
+	else
+	{
+		enemy_->AllMove(GetRayHitGunOrPlayerPos());
+	}
 	//アニメーションスピード徐々に
-	enemy_->AllMove(GetRayHitGunOrPlayerPos());
 	enemy_->SetAnimeSpeedExtend(Lerp(1.0f, 0.3f, EaseIn(t)));
 
 	//割合を使用して線形補完
@@ -409,8 +429,17 @@ void EnemyStateDamagedEnd::Update()
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
 	float t = timer_ / TIMER_MAX_;
 
+	//殴ってる途中だったら歩かせない
+	if (enemy_->GetIsBareAttack())
+	{
+		enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
+	}
+	else
+	{
+		enemy_->AllMove(GetRayHitGunOrPlayerPos());
+	}
+
 	//アニメーションスピード徐々に
-	enemy_->AllMove(GetRayHitGunOrPlayerPos());
 	enemy_->SetAnimeSpeedExtend(Lerp(0.3f, 1.0f, EaseIn(t)));
 
 	//割合を使用して線形補完(今度は元に戻す)

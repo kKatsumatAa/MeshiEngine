@@ -16,6 +16,9 @@ protected:
 	int8_t hp_ = 0;
 	int8_t oldHP_ = 0;
 
+	//殴ってる途中か
+	bool isBareAttack_ = false;
+
 	//地面と当たっているか
 	bool isOnGround_ = false;
 
@@ -75,6 +78,10 @@ public:
 	//死亡フラグ
 	bool GetIsDead() { return isDead_; }
 	void SetIsDead(bool isDead) { isDead_ = isDead; }
+
+	//素手で攻撃中か
+	bool GetIsBareAttack() { return isBareAttack_; }
+	void SetIsBareAttack(bool isBareAttack) { isBareAttack_ = isBareAttack; }
 
 	//殴られたか
 	void SetIsPunched(bool isPunched) { isPunched_ = isPunched; }
