@@ -1,17 +1,20 @@
 # MeshiEngine
 ![ロゴ](https://github.com/kKatsumatAa/TextureRipo/blob/master/image/walter.png "ロゴ")
 
-| レベルエディター |
-| ----------- |
-| ![レベルエディタ](https://github.com/kKatsumatAa/TextureRipo/blob/master/image/levelEditor.png "レベルエディタ") 
-| ブレンダーでレベルデータを編集、出力。そのデータをエンジンに読み込むことでゲームに反映。 |
-| ![レベルエディタ2](https://github.com/kKatsumatAa/TextureRipo/blob/master/image/levelEditor2.png "レベルエディタ2") |
-| ファイル名を指定することでエンジン側でモデルデータも読み込み。コライダーのタイプ（球など）、判定属性も設定できるように。 |
+|使用している外部ライブラリ|  
+|ImGui|  
+|DirectXTex|  
+|FbxSDK|  
 
 | デバッグ機能 |
 | ----------- |
 | ![デバッグ機能](https://github.com/kKatsumatAa/TextureRipo/blob/master/image/objManager.png "デバッグ機能") 
 | ObjectManagerにオブジェクトを登録することで、クリックしてパラメータの変更等も可能。 |
+
+| Fbxのモデルのボーンごとに当たり判定を置く |
+| ----------- |
+| ![デバッグ機能](https://github.com/kKatsumatAa/TextureRipo/blob/master/image/boneCollider.png "デバッグ機能") 
+| 属性がボーンのノードであれば当たり判定を自動で置くことができます。 |
 
 | ポストエフェクト |
 | -------------- |
