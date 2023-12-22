@@ -1,10 +1,13 @@
-﻿#pragma once
+/*
+* @file PointLight.h
+* @brief 点光源
+*/
+
+#pragma once
 #include<DirectXMath.h>
 #include <wrl.h>
 
-/// <summary>
-/// 点光源
-/// </summary>
+
 class PointLight
 {
 private://エイリアス

@@ -1,10 +1,12 @@
-﻿#pragma once
+/*
+* @file SpotLight.h
+* @brief スポットライト
+*/
 
+#pragma once
 #include<DirectXMath.h>
 
-/// <summary>
-/// スポットライト
-/// </summary>
+
 class SpotLight
 {
 private://エイリアス

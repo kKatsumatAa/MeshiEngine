@@ -1,8 +1,12 @@
+/*
+* @file CameraManager.h
+* @brief カメラを配列で管理（取得したり追加）
+*/
+
 #pragma once
 #include"Camera.h"
 #include"Camera2D.h"
 #include"WorldMat.h"
-
 
 
 class CameraManager

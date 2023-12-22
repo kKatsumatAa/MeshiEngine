@@ -1,11 +1,13 @@
-﻿#pragma once
+/*
+* @file DirLight.h
+* @brief 方向ライト
+*/
+
+#pragma once
 #include<DirectXMath.h>
 #include <wrl.h>
 
 
-/// <summary>
-/// 照明(様々なライトを作るときはポリモーフィズムで継承するといい)
-/// </summary>
 class DirLight
 {
 private://エイリアス

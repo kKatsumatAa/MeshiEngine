@@ -1,3 +1,8 @@
+/*
+* @file Camera.h
+* @brief 3d用のカメラ
+*/
+
 #pragma once
 #include"ViewMat.h"
 #include"ProjectionMat.h"

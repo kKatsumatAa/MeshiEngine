@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file SpriteCommon.h
+* @brief スプライトの共通部分
+*/
+
+#pragma once
 #include"ConstBuffTransform.h"
 #include "ViewMat.h"
 #include "ProjectionMat.h"
@@ -21,11 +26,3 @@ struct VertexSprite
 	DirectX::XMFLOAT3 pos;//xyz座標
 	DirectX::XMFLOAT2 uv;//uv座標
 };
-
-class SpriteCommon
-{
-private:
-
-public:
-};
-

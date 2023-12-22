@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file TextureManager.h
+* @brief 画像を読み込んだり管理
+*/
+
+#pragma once
 #include "DirectXWrapper.h"
 #include <map>
 

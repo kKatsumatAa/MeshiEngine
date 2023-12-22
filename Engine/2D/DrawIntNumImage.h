@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file DrawIntNumImage.h
+* @brief 数字を画像を使って画面に表示
+*/
+
+#pragma once
 #include"Sprite.h"
 
 class DrawIntNumImage

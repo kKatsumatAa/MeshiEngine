@@ -1,7 +1,11 @@
-﻿#pragma once
+/*
+* @file DebugText.h
+* @brief デバッグ用の文字画像の処理
+*/
+
+#pragma once
 #include"Sprite.h"
 
-//
 class DebugText
 {
 private://エイリアス

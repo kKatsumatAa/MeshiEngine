@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file LightManager.h
+* @brief ライト全部を管理（方向、ポイント、スポット等）
+*/
+
+#pragma once
 #include "DirectXWrapper.h"
 #include "PointLight.h"
 #include "DirLight.h"

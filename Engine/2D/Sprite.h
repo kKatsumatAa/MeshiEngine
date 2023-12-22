@@ -1,3 +1,8 @@
+/*
+* @file Sprite.h
+* @brief 画像を表示
+*/
+
 #pragma once
 #include"IObject.h"
 #include"SpriteCommon.h"

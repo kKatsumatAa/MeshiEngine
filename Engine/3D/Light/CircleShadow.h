@@ -1,10 +1,12 @@
-﻿#pragma once
+/*
+* @file CircleShadow.h
+* @brief 丸影
+*/
+
+#pragma once
 #include<DirectXMath.h>
 
 
-/// <summary>
-/// 丸影
-/// </summary>
 class CircleShadow
 {
 private://エイリアス
