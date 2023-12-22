@@ -1,3 +1,8 @@
+/*
+* @file Waves.h
+* @brief 複数の波紋を管理
+*/
+
 #pragma once
 #include"Wave.h"
 #include "DirectXWrapper.h"

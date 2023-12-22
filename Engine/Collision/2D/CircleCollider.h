@@ -1,5 +1,9 @@
-#pragma once
+/*
+* @file CircleCollider.h
+* @brief 円のコライダー
+*/
 
+#pragma once
 #include "BaseCollider.h"
 #include "CollisionPrimitive.h"
 

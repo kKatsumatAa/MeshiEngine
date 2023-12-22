@@ -1,3 +1,8 @@
+/*
+* @file MouseInput.h
+* @brief マウスの入力
+*/
+
 #pragma once
 #include"Input.h"
 #include"Util.h"

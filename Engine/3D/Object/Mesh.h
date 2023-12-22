@@ -1,3 +1,8 @@
+/*
+* @file Mesh.h
+* @brief モデルなどを構成するメッシュ
+*/
+
 #pragma once
 #include <Windows.h>
 #include <wrl.h>

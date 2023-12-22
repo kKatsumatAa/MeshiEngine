@@ -1,5 +1,9 @@
-#pragma once
+/*
+* @file FbxLoader.h
+* @brief fbxのモデルを読み込む
+*/
 
+#pragma once
 #include "fbxsdk.h"
 #include "DirectXWrapper.h"
 #include <string>

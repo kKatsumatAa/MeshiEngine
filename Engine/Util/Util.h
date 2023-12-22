@@ -1,5 +1,9 @@
-#pragma once
+/*
+* @file Util.h
+* @brief 便利な機能詰め合わせ
+*/
 
+#pragma once
 #include "Vec3.h"
 #include "Vec2.h"
 #include "Vec4.h"

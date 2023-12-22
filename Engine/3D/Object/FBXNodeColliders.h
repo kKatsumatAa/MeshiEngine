@@ -1,3 +1,8 @@
+/*
+* @file FBXNodeCollider.h
+* @brief fbxのノードごとにコライダーを配置できる
+*/
+
 #pragma once
 #include"Object.h"
 

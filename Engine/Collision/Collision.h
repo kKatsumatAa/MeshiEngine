@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file Collision.h
+* @brief コライダー同士の判定
+*/
+
+#pragma once
 #include "CollisionPrimitive.h"
 
 /// <summary>

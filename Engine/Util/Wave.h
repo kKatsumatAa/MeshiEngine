@@ -1,3 +1,8 @@
+/*
+* @file Wave.h
+* @brief 波紋
+*/
+
 #pragma once
 #include"Vec2.h"
 #include"Vec3.h"

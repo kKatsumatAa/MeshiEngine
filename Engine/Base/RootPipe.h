@@ -1,3 +1,8 @@
+/*
+* @file RootPipe.h
+* @brief ルートパラメータ、パイプライン系の処理
+*/
+
 #pragma once
 #include"DirectXWrapper.h"
 

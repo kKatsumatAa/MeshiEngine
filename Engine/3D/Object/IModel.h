@@ -1,3 +1,8 @@
+/*
+* @file IModel.h
+* @brief モデル基底クラス
+*/
+
 #pragma once
 #include <string>
 #include <vector>

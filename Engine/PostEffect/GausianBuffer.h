@@ -1,3 +1,8 @@
+/*
+* @file GaussianBuffer.h
+* @brief ガウシアンブラー用のバッファ
+*/
+
 #pragma once
 #include <dxgi1_6.h>
 #include <vector>

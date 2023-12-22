@@ -1,5 +1,10 @@
-#pragma once
+/*
+* @file PlaneCollider.h
+* @brief 面コライダー
+*/
 
+
+#pragma once
 #include "BaseCollider.h"
 #include "CollisionPrimitive.h"
 

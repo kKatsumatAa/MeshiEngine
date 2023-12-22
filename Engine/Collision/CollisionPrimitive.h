@@ -1,8 +1,9 @@
-#pragma once
-///<summary>
-/// 当たり判定プリミティブ
-/// </summary>
+/*
+* @file CollisionPrimitive.h
+* @brief 当たり判定プリミティブ
+*/
 
+#pragma once
 #include<DirectXMath.h>
 #include"Vec2.h"
 #include"Vec3.h"

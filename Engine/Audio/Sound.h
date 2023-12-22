@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file Sound.h
+* @brief waveの音データを追加したり再生
+*/
+
+#pragma once
 #include<xaudio2.h>
 #include<cassert>
 #include <fstream>

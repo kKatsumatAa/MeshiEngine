@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file ImGuiManager.h
+* @brief ImGuiの処理を管理
+*/
+
+#pragma once
 #include<imgui.h>
 #include"TextureManager.h"
 

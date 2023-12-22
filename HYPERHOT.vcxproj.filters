@@ -226,6 +226,9 @@
     <Filter Include="ヘッダー ファイル\Application\Base">
       <UniqueIdentifier>{c9766bd9-6acc-4d15-af00-e6e1c6fec7b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Engine\Scene">
+      <UniqueIdentifier>{e0d5b687-27ba-4bdd-bd69-2d193fc74d99}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -899,8 +902,8 @@
     <ClInclude Include="Application\Base\MyGame.h">
       <Filter>ヘッダー ファイル\Application\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Scene\AbstractSceneFactory.h">
-      <Filter>ヘッダー ファイル\Application\Scene</Filter>
+    <ClInclude Include="Engine\Scene\AbstractSceneFactory.h">
+      <Filter>ヘッダー ファイル\Engine\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

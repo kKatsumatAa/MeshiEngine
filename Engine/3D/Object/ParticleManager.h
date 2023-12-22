@@ -1,5 +1,9 @@
-#pragma once
+/*
+* @file ParticleManager.h
+* @brief パーティクルを管理（追加、削除、更新等）する
+*/
 
+#pragma once
 #include <Windows.h>
 #include <wrl.h>
 #include <d3d12.h>

@@ -1,3 +1,8 @@
+/*
+* @file WorldMat.h
+* @brief ワールド行列
+*/
+
 #pragma once
 #include "Util.h"
 

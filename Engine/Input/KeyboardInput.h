@@ -1,3 +1,8 @@
+/*
+* @file KeyboardInput.h
+* @brief キーボードの入力
+*/
+
 #pragma once
 #include"Input.h"
 

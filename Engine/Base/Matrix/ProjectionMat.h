@@ -1,3 +1,8 @@
+/*
+* @file ProjectionMat.h
+* @brief プロジェクション行列
+*/
+
 #pragma once
 #include "WindowsApp.h"
 

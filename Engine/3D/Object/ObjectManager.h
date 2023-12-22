@@ -1,3 +1,8 @@
+/*
+* @file ObjectManager.h
+* @brief オブジェクトを管理（登録、削除）するクラス（更新、描画）
+*/
+
 #pragma once
 #include"IObject3D.h"
 

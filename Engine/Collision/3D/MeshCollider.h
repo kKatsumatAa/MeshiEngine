@@ -1,5 +1,9 @@
-#pragma once
+/*
+* @file MeshCollider.h
+* @brief メッシュコライダー
+*/
 
+#pragma once
 #include "BaseCollider.h"
 #include "CollisionPrimitive.h"
 

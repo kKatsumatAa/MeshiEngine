@@ -1,3 +1,8 @@
+/*
+* @file DirectXWrapper.h
+* @brief DirectX関連の処理
+*/
+
 #pragma once
 #include "GausianBuffer.h"
 #include <array>

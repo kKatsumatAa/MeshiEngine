@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file ModelObj.h
+* @brief .objのモデル
+*/
+
+#pragma once
 #include"IModel.h"
 
 

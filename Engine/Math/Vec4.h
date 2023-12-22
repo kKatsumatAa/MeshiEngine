@@ -1,3 +1,8 @@
+/*
+* @file Vec4.h
+* @brief 四次元ベクトル
+*/
+
 #pragma once
 #include<DirectXMath.h>
 

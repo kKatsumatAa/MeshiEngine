@@ -1,3 +1,8 @@
+/*
+* @file WindowsApp.h
+* @brief Windows系の処理
+*/
+
 #pragma once
 #include <Windows.h>
 #include <d3d12.h>

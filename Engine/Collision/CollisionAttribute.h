@@ -1,3 +1,8 @@
+/*
+* @file CollisionAttribute.h
+* @brief 判定の属性
+*/
+
 #pragma once
 #include<memory>
 

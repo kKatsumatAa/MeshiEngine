@@ -1,3 +1,8 @@
+/*
+* @file IObject3D.h
+* @brief 3dオブジェクト基底クラス
+*/
+
 #pragma once
 #include"IObject.h"
 #include "LightManager.h"

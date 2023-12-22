@@ -1,3 +1,8 @@
+/*
+* @file ObjectFBX.h
+* @brief fbxのオブジェクトクラス
+*/
+
 #pragma once
 #include"IObject3D.h"
 #include <FbxLoader.h>

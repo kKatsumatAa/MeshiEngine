@@ -1,8 +1,11 @@
-#pragma once
+/*
+* @file RectangleCollider.h
+* @brief 矩形のコライダー
+*/
 
+#pragma once
 #include "BaseCollider.h"
 #include "CollisionPrimitive.h"
-
 #include <DirectXMath.h>
 
 /// <summary>

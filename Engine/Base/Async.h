@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file Async.h
+* @brief 非同期処理
+*/
+
+#pragma once
 #include<thread>
 #include<mutex>
 #include<functional>

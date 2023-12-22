@@ -1,3 +1,8 @@
+/*
+* @file CollisionInfo.h
+* @brief 衝突相手の情報
+*/
+
 #pragma once
 #include "CollisionAttribute.h"
 

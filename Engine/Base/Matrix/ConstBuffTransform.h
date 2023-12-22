@@ -1,3 +1,8 @@
+/*
+* @file ConstBuffTransform.h
+* @brief アフィン変換用の行列のcbuff等のセット
+*/
+
 #pragma once
 #include"TextureManager.h"
 #include<memory>

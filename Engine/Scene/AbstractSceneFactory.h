@@ -4,7 +4,6 @@
 */
 
 #pragma once
-
 #include "SceneState.h"
 #include <string>
 #include <memory>

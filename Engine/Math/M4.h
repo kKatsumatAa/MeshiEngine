@@ -1,3 +1,8 @@
+/*
+* @file M4.h
+* @brief 4x4の行列
+*/
+
 #pragma once
 #include"Vec3.h"
 

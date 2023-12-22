@@ -1,3 +1,8 @@
+/*
+* @file Primitive.h
+* @brief モデルを使ってない単純な図形
+*/
+
 #pragma once
 #include"ModelObj.h"
 

@@ -1,3 +1,8 @@
+/*
+* @file BaseCollider.h
+* @brief コライダーの基底クラス
+*/
+
 #pragma once
 #include "CollisionTypes.h"
 #include "CollisionInfo.h"

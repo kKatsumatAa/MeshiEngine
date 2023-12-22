@@ -1,3 +1,8 @@
+/*
+* @file Vec2.h
+* @brief 二次元ベクトル
+*/
+
 #pragma once
 
 #pragma warning(push)

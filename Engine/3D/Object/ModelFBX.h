@@ -1,3 +1,8 @@
+/*
+* @file ModelFBX.h
+* @brief Fbxのモデル
+*/
+
 #pragma once
 #include"IModel.h"
 #include"Vec3.h"

@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file FrameWork.h
+* @brief フレームワーク
+*/
+
+#pragma once
 #include"SceneManager.h"
 #include"DebugText.h"
 #include"FbxLoader.h"

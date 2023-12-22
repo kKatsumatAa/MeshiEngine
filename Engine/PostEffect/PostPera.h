@@ -1,3 +1,8 @@
+/*
+* @file PostPera.h
+* @brief ポストエフェクト一回分
+*/
+
 #pragma once
 #include"TextureManager.h"
 #include "DirectXWrapper.h"
@@ -5,8 +10,6 @@
 #include "Vec4.h"
 #include "Vec2.h"
 #include "Vec3.h"
-
-
 
 
 struct PeraVertex

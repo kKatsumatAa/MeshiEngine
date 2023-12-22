@@ -1,3 +1,8 @@
+/*
+* @file ViewMat.h
+* @brief ビュー行列
+*/
+
 #pragma once
 #include "Vec3.h"
 

@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file Shake.h
+* @brief シェイクの処理
+*/
+
+#pragma once
 #include"Util.h"
 #include<random>
 

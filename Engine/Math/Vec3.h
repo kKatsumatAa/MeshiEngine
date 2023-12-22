@@ -1,3 +1,8 @@
+/*
+* @file Vec3.h
+* @brief 三次元ベクトル
+*/
+
 #pragma once
 #include"Vec2.h"
 

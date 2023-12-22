@@ -1,3 +1,8 @@
+/*
+* @file PadInput.h
+* @brief ゲームパッドの入力
+*/
+
 #pragma once
 #include"Input.h"
 #include"Util.h"

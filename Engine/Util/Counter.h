@@ -1,3 +1,8 @@
+/*
+* @file Counter.h
+* @brief カウントするクラス
+*/
+
 #pragma once
 #include<memory>
 

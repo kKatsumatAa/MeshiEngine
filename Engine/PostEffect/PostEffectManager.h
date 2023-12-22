@@ -1,3 +1,8 @@
+/*
+* @file PostEffectManager.h
+* @brief 複数のポストエフェクトを管理
+*/
+
 #pragma once
 #include"PostPera.h"
 

@@ -1,3 +1,8 @@
+/*
+* @file Quaternion.h
+* @brief クォータニオン
+*/
+
 #pragma once
 #include"M4.h"
 

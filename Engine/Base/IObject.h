@@ -1,3 +1,8 @@
+/*
+* @file IObject.h
+* @brief オブジェクトの基底クラス
+*/
+
 #pragma once
 #include "Util.h"
 #include"CollisionInfo.h"

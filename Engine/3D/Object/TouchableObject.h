@@ -1,3 +1,8 @@
+/*
+* @file TouchableObject.h
+* @brief メッシュコライダーを使ったオブジェクト
+*/
+
 #pragma once
 #include "Object.h"
 

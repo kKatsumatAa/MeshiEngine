@@ -1,5 +1,9 @@
-#pragma once
+/*
+* @file CollisionManager.h
+* @brief コライダーを管理（追加等）
+*/
 
+#pragma once
 #include<forward_list>
 #include"CollisionPrimitive.h"
 #include"RaycastHit.h"

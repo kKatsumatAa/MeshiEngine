@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file CollisionTypes.h
+* @brief コライダーの形
+*/
+
+#pragma once
 
 /// <summary>
 /// 衝突判定用関連の型定義
@@ -20,5 +25,5 @@ enum CollisionShapeType
 	//2D
 	COLLISIONSHAPE_CIRCLE,//円
 
-	COLLISIONSHAPE_RECTANGLE,//円
+	COLLISIONSHAPE_RECTANGLE,//矩形
 };

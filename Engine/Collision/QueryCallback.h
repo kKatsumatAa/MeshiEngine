@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file QueryCallback.h
+* @brief クエリーコールバック
+*/
+
+#pragma once
 #include<DirectXMath.h>
 
 class IObject3D;

@@ -1,3 +1,8 @@
+/*
+* @file Object.h
+* @brief .objのオブジェクトクラス
+*/
+
 #pragma once
 #include "IObject3D.h"
 #include "Primitive.h"

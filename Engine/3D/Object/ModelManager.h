@@ -1,3 +1,8 @@
+/*
+* @file ModelManager.h
+* @brief モデルのデータ（fbx、obj）を管理
+*/
+
 #pragma once
 #include"ModelObj.h"
 #include"ModelFBX.h"
