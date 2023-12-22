@@ -1,3 +1,8 @@
+/*
+* @file StageSelect.h
+* @brief ステージセレクトの見た目や処理
+*/
+
 #pragma once
 #include"Util.h"
 #include"DebugText.h"

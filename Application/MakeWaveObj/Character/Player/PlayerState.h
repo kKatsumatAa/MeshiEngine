@@ -1,10 +1,14 @@
+/*
+* @file PlayerState.h
+* @brief プレイヤー自体の状態（素手か、銃持ってるか、死亡演出中かなど）
+*/
+
 #pragma once
 #include"CollisionManager.h"
 #include"CharacterState.h"
 
-
+//プレイヤーの前方宣言
 class Player;
-
 
 //素手か、銃を持ってるか等のステート
 class PlayerState : public CharacterState

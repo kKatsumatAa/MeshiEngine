@@ -1,3 +1,8 @@
+/*
+* @file GameVelocityManager.h
+* @brief ゲーム全体のスピードを管理
+*/
+
 #pragma once
 #include<string>
 #include"Vec3.h"

@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file SceneTransitionManager.h
+* @brief シーン遷移演出を管理
+*/
+
+#pragma once
 #include"PostEffectManager.h"
 #include"Async.h"
 

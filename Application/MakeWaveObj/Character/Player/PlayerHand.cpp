@@ -1,5 +1,5 @@
 #include "PlayerHand.h"
-#include "PlayerAttackState.h"
+#include "PlayerHandState.h"
 #include "Player.h"
 
 
@@ -42,7 +42,7 @@ bool PlayerHand::Initialize(Player* player, const Vec3& transTmp, bool isRight, 
 	//仮でスケール
 	SetScale(Vec3{ 0.5f,0.5f,2.5f });
 	//攻撃状態変更
-	ChangeAttackState(std::make_unique<PlayerAttackStateNone>());
+	ChangeAttackState(std::make_unique<PlayerHandStateNone>());
 
 	//右手かどうか
 	isRight_ = isRight;
@@ -72,7 +72,7 @@ void PlayerHand::Draw()
 	DrawCube3D();
 }
 
-void PlayerHand::ChangeAttackState(std::unique_ptr<PlayerAttackState> state)
+void PlayerHand::ChangeAttackState(std::unique_ptr<PlayerHandState> state)
 {
 	attackState_.reset();
 	//所有権ごと渡す

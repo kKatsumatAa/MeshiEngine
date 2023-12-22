@@ -1,3 +1,8 @@
+/*
+* @file SceneTitle.h
+* @brief タイトルシーン
+*/
+
 #pragma once
 #include"SceneState.h"
 #include"Object.h"

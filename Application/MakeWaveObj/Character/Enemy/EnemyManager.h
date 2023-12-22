@@ -1,3 +1,8 @@
+/*
+* @file EnemyManager.h
+* @brief 敵のウェーブなどを管理し、出現させたり（更新などはObjectManagerの方で）
+*/
+
 #pragma once
 #include"Enemy.h"
 

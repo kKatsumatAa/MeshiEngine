@@ -1,3 +1,8 @@
+/*
+* @file ClearEffectState.h
+* @brief クリア後の演出の状態
+*/
+
 #pragma once
 #include"Util.h"
 #include"Sprite.h"

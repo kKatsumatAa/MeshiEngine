@@ -1,3 +1,13 @@
+/*
+* @file Tutorial.h
+* @brief チュートリアルの画像や処理
+*/
+
+/*
+* @file Tutorial.h
+* @brief チュートリアルの画像や処理
+*/
+
 #pragma once
 #include<memory>
 #include<list>

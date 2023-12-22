@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file MyGame.h
+* @brief 作品ごとに異なるゲーム内の処理
+*/
+
+#pragma once
 #include"Framework.h"
 
 

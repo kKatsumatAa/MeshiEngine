@@ -1,3 +1,8 @@
+/*
+* @file LandShape.h
+* @brief 地形オブジェクト
+*/
+
 #pragma once
 #include"TouchableObject.h"
 #include"LandShapePapierMache.h"

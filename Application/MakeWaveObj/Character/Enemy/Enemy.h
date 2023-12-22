@@ -1,3 +1,8 @@
+/*
+* @file Enemy.h
+* @brief 敵（fbx）
+*/
+
 #pragma once
 #include "ObjectFBX.h"
 #include "SphereCollider.h"

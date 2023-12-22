@@ -1,3 +1,8 @@
+/*
+* @file CursorUI.h
+* @brief タイトルやセレクトにあるカーソル
+*/
+
 #pragma once
 #include"Sprite.h"
 

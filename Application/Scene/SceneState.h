@@ -1,6 +1,12 @@
+/*
+* @file SceneState.h
+* @brief シーンの状態基底クラス
+*/
+
 #pragma once
 #include"PostPera.h"
 
+//シーンマネージャーの前方宣言
 class SceneManager;
 
 class SceneState

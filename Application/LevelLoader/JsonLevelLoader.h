@@ -1,3 +1,8 @@
+/*
+* @file JsonLevelLoader.h
+* @brief Jsonファイルからレベルの情報を読み込む
+*/
+
 #pragma once
 #include <string>
 #include <fstream>

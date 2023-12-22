@@ -1,3 +1,8 @@
+/*
+* @file BulletManager.h
+* @brief 銃の弾丸を一気に管理（更新、削除等）
+*/
+
 #pragma once
 #include"Bullet.h"
 

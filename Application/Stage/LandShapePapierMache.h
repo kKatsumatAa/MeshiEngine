@@ -1,3 +1,8 @@
+/*
+* @file LandShapePapierMache.h
+* @brief 見た目だけの地形オブジェクト
+*/
+
 #pragma once
 #include"Object.h"
 

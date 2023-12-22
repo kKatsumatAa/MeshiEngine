@@ -1,3 +1,8 @@
+/*
+* @file StageState.h
+* @brief ステージの状態（戦闘時かクリア後か等）
+*/
+
 #pragma once
 #include"Util.h"
 

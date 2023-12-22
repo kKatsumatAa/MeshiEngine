@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file AbstructSceneFactory.h
+* @brief シーンファクトリ―の基底クラス
+*/
+
+#pragma once
 
 #include "SceneState.h"
 #include <string>

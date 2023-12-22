@@ -1,7 +1,12 @@
+/*
+* @file PlayerUIState.h
+* @brief プレイヤーのレティクルの状態(プレイヤーの状態で変化)
+*/
+
 #pragma once
 #include"Sprite.h"
 
-
+//前方宣言
 class PlayerUI;
 
 class PlayerUIState

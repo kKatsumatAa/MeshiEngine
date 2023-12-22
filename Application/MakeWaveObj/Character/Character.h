@@ -1,3 +1,8 @@
+/*
+* @file Character.h
+* @brief キャラクター全体の基底クラス（プレイヤーと敵の親クラス）
+*/
+
 #pragma once
 #include"ObjectFBX.h"
 #include"Weapon.h"

@@ -1,3 +1,8 @@
+/*
+* @file Replay.h
+* @brief リプレイするためのデータや再生
+*/
+
 #pragma once
 #include"Vec2.h"
 #include<vector>

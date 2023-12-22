@@ -1,3 +1,8 @@
+/*
+* @file TitleUI.h
+* @brief タイトルのUI
+*/
+
 #pragma once
 #include"Sprite.h"
 

@@ -522,7 +522,7 @@
     <ClCompile Include="Application\MakeWaveObj\Character\Player\Player.cpp">
       <Filter>ソース ファイル\Application\MakeWaveObj\Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerAttackState.cpp">
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerHandState.cpp">
       <Filter>ソース ファイル\Application\MakeWaveObj\Character\Player</Filter>
     </ClCompile>
     <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerHand.cpp">
@@ -830,9 +830,6 @@
     <ClInclude Include="Application\Scene\SceneTransitionEffectState.h">
       <Filter>ヘッダー ファイル\Application\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Scene\AbstractSceneFactory.h">
-      <Filter>ヘッダー ファイル\Application\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Application\LevelLoader\LevelManager.h">
       <Filter>ヘッダー ファイル\Application\LevelLoader</Filter>
     </ClInclude>
@@ -857,7 +854,7 @@
     <ClInclude Include="Application\MakeWaveObj\Character\Player\Player.h">
       <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerAttackState.h">
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerHandState.h">
       <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Player</Filter>
     </ClInclude>
     <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerHand.h">
@@ -901,6 +898,9 @@
     </ClInclude>
     <ClInclude Include="Application\Base\MyGame.h">
       <Filter>ヘッダー ファイル\Application\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Scene\AbstractSceneFactory.h">
+      <Filter>ヘッダー ファイル\Application\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

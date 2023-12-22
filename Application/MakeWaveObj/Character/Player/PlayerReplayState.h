@@ -1,3 +1,8 @@
+/*
+* @file PlayerReplayState.h
+* @brief プレイヤーのリプレイ状態（保存か再生しているか）
+*/
+
 #pragma once
 #include"PlayerState.h"
 

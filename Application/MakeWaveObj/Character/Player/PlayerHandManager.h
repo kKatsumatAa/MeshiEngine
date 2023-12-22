@@ -1,3 +1,8 @@
+/*
+* @file PlayerHandManager.h
+* @brief プレイヤーの腕のどちらかを使うかなどを管理
+*/
+
 #pragma once
 #include "PlayerHand.h"
 #include "CollisionManager.h"

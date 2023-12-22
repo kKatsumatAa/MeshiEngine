@@ -1,3 +1,8 @@
+/*
+* @file PlayerHandState.h
+* @brief プレイヤーの腕の状態
+*/
+
 #pragma once
 #include"Util.h"
 #include<functional>
@@ -5,7 +10,7 @@
 
 class PlayerHand;
 
-class PlayerAttackState
+class PlayerHandState
 {
 protected:
 	//状態を使うインスタンスポインタ
@@ -19,7 +24,7 @@ protected:
 	std::function<void(PlayerHand*)> enemyDamageFunc_ = nullptr;
 
 public:
-	virtual ~PlayerAttackState();
+	virtual ~PlayerHandState();
 
 	void SetEnemyDamageFunc(std::function<void(PlayerHand*)> f) { enemyDamageFunc_ = f; }
 
@@ -31,7 +36,7 @@ public:
 };
 
 //攻撃していない
-class PlayerAttackStateNone : public PlayerAttackState
+class PlayerHandStateNone : public PlayerHandState
 {
 private:
 	const int32_t TIMER_MAX_ = 20;
@@ -43,7 +48,7 @@ public:
 };
 
 //攻撃中
-class PlayerAttackStateDoing : public PlayerAttackState
+class PlayerHandStateDoing : public PlayerHandState
 {
 private:
 	const int32_t TIMER_MAX_ = 5;
@@ -55,7 +60,7 @@ public:
 };
 
 //攻撃中２
-class PlayerAttackStateDoing2 : public PlayerAttackState
+class PlayerHandStateDoing2 : public PlayerHandState
 {
 private:
 	const int32_t TIMER_MAX_ = 11;

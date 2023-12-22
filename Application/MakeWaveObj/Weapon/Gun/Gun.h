@@ -1,3 +1,8 @@
+/*
+* @file Gun.h
+* @brief 銃の処理
+*/
+
 #pragma once
 #include "Object.h"
 #include "SphereCollider.h"

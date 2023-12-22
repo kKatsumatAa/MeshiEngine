@@ -1,9 +1,13 @@
+/*
+* @file CharacterState.h
+* @brief キャラクター全体の状態の基底クラスを宣言
+*/
+
 #pragma once
 #include"CollisionManager.h"
 
-
+//キャラクタークラスの前方宣言
 class Character;
-
 
 //素手か、銃を持ってるか等のステート
 class CharacterState

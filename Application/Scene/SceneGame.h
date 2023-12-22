@@ -1,3 +1,8 @@
+/*
+* @file SceneGame.h
+* @brief ゲームシーンの処理
+*/
+
 #pragma once
 #include"SceneState.h"
 #include"PostPera.h"

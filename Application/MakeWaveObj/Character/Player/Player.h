@@ -1,3 +1,8 @@
+/*
+* @file Player.h
+* @brief プレイヤーの処理
+*/
+
 #pragma once
 #include "Object.h"
 #include "SphereCollider.h"
@@ -8,7 +13,7 @@
 #include "Character.h"
 
 
-class PlayerAttackState;
+class PlayerHandState;
 class PlayerReplayState;
 class PlayerState;
 class Replay;

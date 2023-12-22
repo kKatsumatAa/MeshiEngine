@@ -1,4 +1,9 @@
-﻿#pragma once
+/*
+* @file SceneFactory.h
+* @brief ゲーム固有のシーンファクトリー
+*/
+
+#pragma once
 #include "AbstractSceneFactory.h"
 #include "SceneTitle.h"
 #include "SceneGame.h"

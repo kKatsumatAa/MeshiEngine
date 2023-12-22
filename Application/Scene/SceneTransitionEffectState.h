@@ -1,3 +1,8 @@
+/*
+* @file SceneTransitionEffectState.h
+* @brief シーン遷移時の演出の状態
+*/
+
 #pragma once
 #include"PostEffectManager.h"
 

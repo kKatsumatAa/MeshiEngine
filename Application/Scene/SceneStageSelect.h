@@ -1,3 +1,8 @@
+/*
+* @file SceneStageSelect.h
+* @brief ステージセレクトのシーン
+*/
+
 #pragma once
 #include"SceneState.h"
 #include"Object.h"

@@ -1,15 +1,20 @@
+/*
+* @file PlayerHand.h
+* @brief プレイヤーの腕
+*/
+
 #pragma once
 #include"Object.h"
 
 class Player;
-class PlayerAttackState;
+class PlayerHandState;
 
 
 class PlayerHand : public Object
 {
 private:
 	bool isAttacking_ = false;
-	std::unique_ptr<PlayerAttackState> attackState_ = nullptr;
+	std::unique_ptr<PlayerHandState> attackState_ = nullptr;
 	Player* player_ = nullptr;
 
 	//敵の衝突点までの距離
@@ -46,7 +51,7 @@ public:
 	bool GetIsRight() { return isRight_; }
 
 	//ステート
-	PlayerAttackState* GetAttackState() { return attackState_.get(); }
+	PlayerHandState* GetAttackState() { return attackState_.get(); }
 
 
 public:
@@ -59,5 +64,5 @@ public:
 
 
 	//攻撃のステート変更
-	void ChangeAttackState(std::unique_ptr<PlayerAttackState> state);
+	void ChangeAttackState(std::unique_ptr<PlayerHandState> state);
 };

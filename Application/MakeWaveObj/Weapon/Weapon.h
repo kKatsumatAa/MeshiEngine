@@ -1,3 +1,8 @@
+/*
+* @file Weapon.h
+* @brief 武器全体の基底クラス（銃）
+*/
+
 #pragma once
 #include "Object.h"
 #include "SphereCollider.h"

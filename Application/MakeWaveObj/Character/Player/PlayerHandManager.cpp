@@ -3,7 +3,7 @@
 #include "CollisionManager.h"
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
-#include "PlayerAttackState.h"
+#include "PlayerHandState.h"
 #include "CollisionAttribute.h"
 #include "ObjectManager.h"
 #include "CameraManager.h"
@@ -45,7 +45,7 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 		hand->SetColliderIsValid(true);
 
 		//ステート変更
-		hand->ChangeAttackState(std::make_unique<PlayerAttackStateDoing>());
+		hand->ChangeAttackState(std::make_unique<PlayerHandStateDoing>());
 
 		//ステート内で呼び出す
 		std::function<void(PlayerHand*)>f = [=](PlayerHand* playerHand) {

@@ -1,19 +1,19 @@
-#include "PlayerAttackState.h"
+#include "PlayerHandState.h"
 #include "CollisionManager.h"
 #include "PlayerHand.h"
 #include "Player.h"
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
 
-Vec3 PlayerAttackState::rotTmp_ = { 0,0,0 };
+Vec3 PlayerHandState::rotTmp_ = { 0,0,0 };
 
 
-PlayerAttackState::~PlayerAttackState()
+PlayerHandState::~PlayerHandState()
 {
 }
 
 //何もしない---------------------------------------------------------------
-void PlayerAttackStateNone::Initialize()
+void PlayerHandStateNone::Initialize()
 {
 	//動いてない場合は判定とらない
 	if (playerHand_->GetCollider())
@@ -22,18 +22,18 @@ void PlayerAttackStateNone::Initialize()
 	}
 }
 
-void PlayerAttackStateNone::Update()
+void PlayerHandStateNone::Update()
 {
 
 }
 
-void PlayerAttackStateNone::Draw()
+void PlayerHandStateNone::Draw()
 {
 }
 
 
 //攻撃1---------------------------------------------------------------
-void PlayerAttackStateDoing::Initialize()
+void PlayerHandStateDoing::Initialize()
 {
 	playerHand_->SetIsAttacking(true);
 
@@ -56,7 +56,7 @@ void PlayerAttackStateDoing::Initialize()
 	rotTmp_ = { GetRand(-PI / 8.0f,PI / 4.0f) ,rotTmp_.y / 2.0f,GetRand(-PI,PI) / 2.0f };
 }
 
-void PlayerAttackStateDoing::Update()
+void PlayerHandStateDoing::Update()
 {
 	float t = min((float)timer_ / (float)TIMER_MAX_, 1.0f);
 
@@ -85,22 +85,22 @@ void PlayerAttackStateDoing::Update()
 		//スピードをなくす
 		playerHand_->SetVelocity({ 0,0,0 });
 
-		playerHand_->ChangeAttackState(std::make_unique<PlayerAttackStateDoing2>());
+		playerHand_->ChangeAttackState(std::make_unique<PlayerHandStateDoing2>());
 	}
 
 }
 
-void PlayerAttackStateDoing::Draw()
+void PlayerHandStateDoing::Draw()
 {
 }
 
 
 //攻撃2（戻す）---------------------------------------------------------------
-void PlayerAttackStateDoing2::Initialize()
+void PlayerHandStateDoing2::Initialize()
 {
 }
 
-void PlayerAttackStateDoing2::Update()
+void PlayerHandStateDoing2::Update()
 {
 	float t = (float)timer_ / (float)TIMER_MAX_;
 
@@ -120,10 +120,10 @@ void PlayerAttackStateDoing2::Update()
 	{
 		playerHand_->SetIsAttacking(false);
 
-		playerHand_->ChangeAttackState(std::make_unique<PlayerAttackStateNone>());
+		playerHand_->ChangeAttackState(std::make_unique<PlayerHandStateNone>());
 	}
 }
 
-void PlayerAttackStateDoing2::Draw()
+void PlayerHandStateDoing2::Draw()
 {
 }

@@ -1,3 +1,8 @@
+/*
+* @file StageManager.h
+* @brief ステージ内のものを管理（ステージ読み込んだりクリアしたかとか）
+*/
+
 #pragma once
 #include"LevelManager.h"
 #include "JsonLevelLoader.h"

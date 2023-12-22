@@ -120,7 +120,7 @@
     <ClCompile Include="Application\MakeWaveObj\Character\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Application\MakeWaveObj\Character\Enemy\EnemyState.cpp" />
     <ClCompile Include="Application\MakeWaveObj\Character\Player\Player.cpp" />
-    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerAttackState.cpp" />
+    <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerHandState.cpp" />
     <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerHand.cpp" />
     <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerHandManager.cpp" />
     <ClCompile Include="Application\MakeWaveObj\Character\Player\PlayerReplayState.cpp" />
@@ -235,7 +235,7 @@
     <ClInclude Include="Application\MakeWaveObj\Character\Enemy\EnemyManager.h" />
     <ClInclude Include="Application\MakeWaveObj\Character\Enemy\EnemyState.h" />
     <ClInclude Include="Application\MakeWaveObj\Character\Player\Player.h" />
-    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerAttackState.h" />
+    <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerHandState.h" />
     <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerHand.h" />
     <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerHandManager.h" />
     <ClInclude Include="Application\MakeWaveObj\Character\Player\PlayerReplayState.h" />

@@ -1,3 +1,8 @@
+/*
+* @file TutorialState.h
+* @brief チュートリアルの状態
+*/
+
 #pragma once
 #include"Sprite.h"
 

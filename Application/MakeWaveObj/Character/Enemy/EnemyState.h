@@ -1,3 +1,8 @@
+/*
+* @file EnemyState.h
+* @brief 敵のステート（殴りか、銃持ってるか、死んでる演出中かなど）
+*/
+
 #pragma once
 #include"CollisionManager.h"
 #include"CharacterState.h"

@@ -1,7 +1,12 @@
+/*
+* @file PlayerUI.h
+* @brief プレイヤーのレティクル処理
+*/
+
 #pragma once
 #include"Object.h"
 
-
+//プレイヤーのレティクルの状態の前方宣言
 class PlayerUIState;
 
 class PlayerUI final

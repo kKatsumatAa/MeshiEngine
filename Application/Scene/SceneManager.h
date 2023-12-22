@@ -1,3 +1,8 @@
+/*
+* @file SceneManager.h
+* @brief シーンを管理
+*/
+
 #pragma once
 #include"Collision.h"
 #include"DebugText.h"

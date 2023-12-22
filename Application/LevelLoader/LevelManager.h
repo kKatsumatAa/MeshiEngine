@@ -1,3 +1,8 @@
+/*
+* @file LevelManager.h
+* @brief jsonで読み込んだレベルデータを使ってゲーム内で使うモデルやインスタンスを生成したり
+*/
+
 #pragma once
 #include"JsonLevelLoader.h"
 #include"IObject3D.h"

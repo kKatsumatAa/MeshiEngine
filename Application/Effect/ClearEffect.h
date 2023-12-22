@@ -1,9 +1,15 @@
+/*
+* @file ClearEffect.h
+* @brief ステージのクリア後の演出
+*/
+
 #pragma once
 #include"Sprite.h"
 
-
+//ステートの前方宣言
 class ClearEffectState;
 
+//クリア演出
 class ClearEffect final
 {
 private:
