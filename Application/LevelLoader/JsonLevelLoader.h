@@ -99,7 +99,9 @@ public:
 	std::unique_ptr<LevelData> levelData_ = nullptr;
 
 private:
+	//コンストラクタ
 	JsonLevelLoader() { ; }
+	//デストラクタ
 	~JsonLevelLoader() { ; }
 
 private:
@@ -112,22 +114,42 @@ private:
 	//スケールを得る
 	Vec3 GetScale(const nlohmann::json::iterator& object);
 
-
 public:
 	//コピーコンストラクタ禁止
 	JsonLevelLoader& operator=(const JsonLevelLoader& inst) = delete;
+	//コピーコンストラクタ禁止
 	JsonLevelLoader(const JsonLevelLoader& inst) = delete;
 
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns>スタティックインスタンス</returns>
 	static JsonLevelLoader& Getinstance();
+
+	//初期化
 	void Initialize();
 
-	//jsonファイル読み込み
+	/// <summary>
+	/// jsonファイル読み込み
+	/// </summary>
+	/// <param name="fileName">ファイル名</param>
 	void LoadJsonFile(const std::string& fileName);
 
-	//再帰的に子供を読み込み(オブジェクトデータ)
+	/// <summary>
+	/// 再帰的に子データを読み込み(オブジェクトデータ)
+	/// </summary>
+	/// <param name="object">jsonオブジェクトイテレータ</param>
+	/// <param name="parent">親ワールド行列のポインタ</param>
 	void LoadRecursiveChildrenData(const nlohmann::json::iterator& object, WorldMat* parent = nullptr);
-	//カメラのデータ読み込み
+	
+	/// <summary>
+	/// カメラデータ読み込み
+	/// </summary>
+	/// <param name="object">jsonオブジェクトイテレータ</param>
 	void LoadCameraData(const nlohmann::json::iterator& object);
-	//ライトのデータ読み込み
+	/// <summary>
+	/// ライトデータ読み込み
+	/// </summary>
+	/// <param name="object">jsonオブジェクトイテレータ</param>
 	void LoadLightData(const nlohmann::json::iterator& object);
 };

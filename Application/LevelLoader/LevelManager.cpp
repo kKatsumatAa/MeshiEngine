@@ -24,10 +24,6 @@ LevelManager& LevelManager::GetInstance()
 	return sInst;
 }
 
-void LevelManager::StaticInitialize()
-{
-}
-
 void LevelManager::LoadLevelData(int32_t fileIndex)
 {
 	//json読み込み

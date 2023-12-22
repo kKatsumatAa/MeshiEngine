@@ -20,10 +20,13 @@ protected:
 	const uint16_t HAVE_WEAPON_ATTR_TMP_ = COLLISION_ATTR_ALLIES | COLLISION_ATTR_LANDSHAPE;
 
 public:
+	//デストラクタ
 	virtual ~EnemyState() { ; }
 
+	//敵のポインタセット
 	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
 
+	//正面ベクトル方向に何かあるか
 	bool CheckEyeRayHit()override;
 
 	//持ち主のいない銃が見えたらその座標、なければプレイヤーの座標
@@ -34,8 +37,8 @@ public:
 	void ChangeState();
 
 public:
+	//更新
 	virtual void Update();
-
 };
 
 //出現演出
@@ -46,7 +49,9 @@ private:
 	const float EMERGE_TIMER_MAX_ = 60;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -57,7 +62,9 @@ class EnemyStateBareHands :
 {
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -71,7 +78,9 @@ private:
 	float t_ = 0;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -86,7 +95,9 @@ private:
 	float t_ = 0;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -100,7 +111,9 @@ private:
 	float t_ = 0;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -113,7 +126,9 @@ private:
 	static bool isAttacking_;
 
 public:
+	//初期化
 	virtual void Initialize() override;
+	//更新
 	virtual void Update() override;
 };
 
@@ -121,7 +136,9 @@ public:
 class EnemyStateHaveWeaponAndAttack : public EnemyStateHaveWeapon
 {
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -129,7 +146,9 @@ public:
 class EnemyStateHaveWeaponAndMove : public EnemyStateHaveWeapon
 {
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -150,9 +169,11 @@ protected:
 	Vec3 stanceBeginRot_ = { 0,0,0 };
 
 public:
+	//初期化
 	virtual void Initialize() override = 0;
+	//更新
 	virtual void Update() override;
-
+	//ImGui描画
 	static void DrawImgui();
 };
 
@@ -162,7 +183,9 @@ class EnemyStateAttackStanceBegin :
 	public CharacterStateAttackStanceBegin
 {
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -172,7 +195,9 @@ class EnemyStateAttackStanceEnd :
 	public CharacterStateAttackStanceEnd
 {
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -185,7 +210,9 @@ private:
 	const float TIMER_MAX_ = 20.0f;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -197,7 +224,9 @@ private:
 	const float TIMER_MAX_ = 20.0f;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -211,6 +240,8 @@ private:
 	const uint64_t PARTICLE_INTERVAL_ = 10;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };

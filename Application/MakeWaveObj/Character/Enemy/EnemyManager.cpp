@@ -44,7 +44,7 @@ void EnemyManager::UpdateWaveEnemyCoolTime()
 
 		if (enemy->GetWaveNum() == waveNum_)
 		{
-			enemy->DecrementCoolTime();
+			enemy->DecrementEmergeCoolTime();
 		}
 	}
 }
@@ -89,7 +89,7 @@ void EnemyManager::SetIsValidWaveEnemy()
 		Enemy* enemy = TransToEnemy(obj);
 
 		if (enemy->GetWaveNum() == waveNum_ && !enemy->GetIsValidDraw()
-			&& enemy->GetCoolTime() <= 0)
+			&& enemy->GetEmergeCoolTime() <= 0)
 		{
 			enemy->SetIsValid(true);
 			//出現演出のイニシャライズ

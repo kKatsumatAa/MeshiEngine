@@ -1,11 +1,12 @@
-﻿#include "ClearEffectState.h"
+#include "ClearEffectState.h"
 #include "ClearEffect.h"
 
 
-void ClearEffectState::SpriteUpdate(const std::string& soundName, const std::string& name)
+void ClearEffectState::SpriteUpdate(const std::string& soundName, const std::string& nextStateName)
 {
 	t_ = min((float)timer_ / (float)TIMER_MAX_, 1.0f);
 
+	//線形補間
 	scale_ = LerpVec3({ MAX_SCALE_,0,0 }, { 1.0f,0,0 }, EaseIn(t_)).x;
 
 	alpha_ = t_;
@@ -16,7 +17,7 @@ void ClearEffectState::SpriteUpdate(const std::string& soundName, const std::str
 	if (!Sound::GetInstance().CheckPlayingWave(soundName) && t_ >= 1.0f)
 	{
 		Sound::GetInstance().StopWave(soundName);
-		clearEffect_->ChangeState(std::move(GetState(name)));
+		clearEffect_->ChangeState(std::move(GetState(nextStateName)));
 	}
 	else
 	{

@@ -60,7 +60,7 @@ private:
 	int32_t waveNum_ = -1;
 
 	//出現時のクールタイム
-	float coolTime_ = 0;
+	float emergeCoolTime_ = 0;
 
 	//向きをプレイヤーに向けるためのクォータニオン
 	Quaternion directionQua_;
@@ -146,23 +146,27 @@ public:
 	void DeadNodesParticle(int32_t particleNum, uint64_t interval);
 
 public:
+	//デストラクタ
 	~Enemy();
 
 public:
+	//初期化
 	bool Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, Weapon* weapon, IModel* model);
-
+	//出現時の初期化処理
 	void EmergeInitialize();
-
+	//更新
 	void Update() override;
-
+	//影用の深度描画
 	void DrawShadow()override;
+	//描画
 	void Draw()override;
-
+	//衝突時の処理
 	void OnCollision(const CollisionInfo& info) override;
 	//当たり判定時の処理を行う
 	void OnCollision(IObject3D* obj, const CollisionInfo& info);
-
+	//状態変更
 	void ChangeEnemyState(std::unique_ptr<EnemyState> state);
+	//構えの状態変更
 	void ChangeEnemyStanceState(std::unique_ptr<EnemyState> state);
 
 public:
@@ -176,35 +180,40 @@ public:
 	void DirectionUpdate(const Vec3& targetPos);
 	//hp処理
 	void HPUpdate(float t = 1.0f);
-
 	//被ダメージ時に波発生
 	void BeginDamagedWave(const CollisionInfo& info, float wavePow);
 
 public:
 	//プレイヤーが一定範囲内にいるか
 	bool GetPlayerIsWithinRange();
-
 	//殴られたら
 	void Punched(const CollisionInfo& info, IObject3D* nodeObj = nullptr)override;
 
 public:
+	//出現するウェーブ番号取得
 	int32_t GetWaveNum() { return waveNum_; }
-	float GetCoolTime() { return coolTime_; }
-	void DecrementCoolTime();
-	//ライト
+	//出現のクールタイム取得
+	float GetEmergeCoolTime() { return emergeCoolTime_; }
+	//出現のクールタイム減らす
+	void DecrementEmergeCoolTime();
+	//ライトのインデックス取得
 	int32_t GetLightIndexTmp() { return lightIndexTmp_; }
+	//ライトのインデックスの初期値を取得（初期値は使わせないように）
 	int32_t GetLightIndexInit() { return LIGHT_INDEX_INIT_; }
 	//被ダメージ時の加算角度
 	const std::vector<DamagedNodeAddRot>& GetDamagedAddRots() { return damagedAddRots_; }
 
 public:
-	//攻撃中か
+	//攻撃中かをセット
 	void SetIsAttacking(bool isAttacking) { isAttacking_ = isAttacking; }
+	//攻撃中かを取得
 	bool GetIsAttacking() { return isAttacking_; }
-	//ゲーム的に死亡したか
+	//ゲーム的に死亡したかをセット
 	void SetIsDead(bool isDead) { isDead_ = isDead; }
+	//ゲーム的に死亡したかを取得
 	bool GetIsDead() { return isDead_; }
-	//構えるときとかに徐々にゆっくりにするための変数
+	//構えるときとかに徐々にゆっくりにするための変数セット
 	void SetAnimeSpeedExtend(float animeSpeedExtend) { animeSpeedExtend_ = animeSpeedExtend; }
+	//構えるときとかに徐々にゆっくりにするための変数取得
 	float GetAnimeSpeedExtend() { return animeSpeedExtend_; }
 };

@@ -117,7 +117,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, floa
 	oldHP_ = hp_;
 
 	waveNum_ = waveNum;
-	coolTime_ = (float)coolTime;
+	emergeCoolTime_ = (float)coolTime;
 
 	//死亡時のタイマー上限
 	deadTimerMax_ = DEAD_TIMER_MAX_;
@@ -391,9 +391,9 @@ void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 	}
 }
 
-void Enemy::DecrementCoolTime()
+void Enemy::DecrementEmergeCoolTime()
 {
-	coolTime_ = max(coolTime_ - GameVelocityManager::GetInstance().GetVelocity(), 0);
+	emergeCoolTime_ = max(emergeCoolTime_ - GameVelocityManager::GetInstance().GetVelocity(), 0);
 }
 
 //----------------------------------------------------------------

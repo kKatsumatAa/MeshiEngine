@@ -36,17 +36,22 @@ public:
 
 
 private://関数
+	//コンストラクタ
 	LevelManager() { ; }
+	//デストラクタ
 	~LevelManager();
 
 public:
 	//コピーコンストラクタ禁止
 	LevelManager(const LevelManager& other) = delete;
+	//コピーコンストラクタ禁止
 	LevelManager& operator=(const LevelManager& other) = delete;
 
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns>スタティックインスタンス</returns>
 	static LevelManager& GetInstance();
-
-	void StaticInitialize();
 
 	/// <summary>
 	///JsonLevelLoaderで読み込んだ内容を実際にエンジン上で読み込む
@@ -54,16 +59,30 @@ public:
 	/// <param name="fileIndex">ファイルの後につく数字</param>
 	void LoadLevelData(int32_t fileIndex);
 
-	//ファイル名によってクラス生成
+	/// <summary>
+	/// ファイル名によってクラス生成
+	/// </summary>
+	/// <param name="objData">オブジェクトを構成するためのデータ</param>
 	void LoadObj(LevelData::ObjectData& objData);
-	//ライトを生成設定
+	/// <summary>
+	/// ライトを生成設定
+	/// </summary>
+	/// <param name="lightData">オブジェクトを構成するためのデータ</param>
 	void LoadLight(LevelData::LightData& lightData);
 
 private://ゲームオリジナル
-	//武器のポインタ返す
+	/// <summary>
+	/// 武器のポインタ返す
+	/// </summary>
+	/// <param name="objData">武器の親のオブジェクトデータ</param>
+	/// <returns>武器インスタンスのポインタ</returns>
 	Weapon* GetChildWeapon(LevelData::ObjectData& objData);
 
-	//地形オブジェクトとして使うかチェック
+	/// <summary>
+	/// 地形オブジェクトとして使うかチェック
+	/// </summary>
+	/// <param name="objData">オブジェクトを構成するデータ</param>
+	/// <param name="isLandShape">変更するbool変数</param>
 	void CheckLandShapeObject(const LevelData::ObjectData& objData, bool& isLandShape);
 
 private:
@@ -77,6 +96,8 @@ private:
 		, IObject3D* child);
 
 public:
+	//ライトマネージャのポインタをセット
 	void SetLightManager(LightManager* lightManager) { lightManager_ = lightManager; }
+	//セットされてるライトマネージャのポインタ取得
 	LightManager* GetLightManager() { return lightManager_; }
 };

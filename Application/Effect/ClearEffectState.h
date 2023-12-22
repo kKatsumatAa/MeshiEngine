@@ -30,19 +30,39 @@ protected:
 	Sprite texSprite_;
 
 protected:
-	virtual void SpriteUpdate(const std::string& soundName, const std::string& name);
+	/// <summary>
+	/// スプライトの更新処理
+	/// </summary>
+	/// <param name="soundName">音声の名前</param>
+	/// <param name="nextStateName">次のステート名</param>
+	virtual void SpriteUpdate(const std::string& soundName, const std::string& nextStateName);
+
+	//スプライトの描画
 	virtual void SpriteDraw();
 
 public:
+	//デストラクタ
 	virtual ~ClearEffectState() { ; }
 
+	/// <summary>
+	/// クリア演出インスタンスのポインターセット
+	/// </summary>
+	/// <param name="clearEffect">クリア演出ポインター</param>
 	void SetClearEffect(ClearEffect* clearEffect) { clearEffect_ = clearEffect; }
 
+	//初期化
 	virtual void Initialize() = 0;
+	//更新
 	virtual void Update() = 0;
+	//描画
 	virtual void Draw() = 0;
 
 public:
+	/// <summary>
+	/// 名前でステートを取得
+	/// </summary>
+	/// <param name="name">ステート名</param>
+	/// <returns>ステートのインスタンス</returns>
 	static std::unique_ptr<ClearEffectState> GetState(const std::string& name);
 };
 
@@ -53,8 +73,11 @@ class ClearEffectStateHyper : public ClearEffectState
 	const std::string SOUND_NAME_ = "hyper.wav";
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
+	//描画
 	void Draw() override;
 };
 
@@ -66,7 +89,10 @@ private:
 	const std::string SOUND_NAME_ = "hot.wav";
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
+	//描画
 	void Draw() override;
 };

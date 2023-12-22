@@ -10,17 +10,14 @@
 //ゲーム全体
 class MyGame : public Framework
 {
-private:
-
-
 public:
 	//初期化
 	void Initialize() override;
 
-	//終了
+	//終了処理
 	void Finalize() override;
 
-	//毎フレーム更新
+	//更新処理
 	void Update() override;
 
 	//描画
