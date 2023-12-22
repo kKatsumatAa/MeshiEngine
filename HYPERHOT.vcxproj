@@ -247,7 +247,6 @@
     <ClInclude Include="Application\MakeWaveObj\Weapon\Gun\BulletManager.h" />
     <ClInclude Include="Application\MakeWaveObj\Weapon\Gun\Gun.h" />
     <ClInclude Include="Application\MakeWaveObj\Weapon\Weapon.h" />
-    <ClInclude Include="Application\Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Application\Scene\SceneFactory.h" />
     <ClInclude Include="Application\Scene\SceneGame.h" />
     <ClInclude Include="Application\Scene\SceneManager.h" />
@@ -335,6 +334,7 @@
     <ClInclude Include="Engine\PostEffect\GausianBuffer.h" />
     <ClInclude Include="Engine\PostEffect\PostEffectManager.h" />
     <ClInclude Include="Engine\PostEffect\PostPera.h" />
+    <ClInclude Include="Engine\Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Engine\Util\Counter.h" />
     <ClInclude Include="Engine\Util\Shake.h" />
     <ClInclude Include="Engine\Util\Util.h" />
