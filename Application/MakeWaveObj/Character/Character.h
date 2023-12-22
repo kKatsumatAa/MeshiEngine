@@ -40,8 +40,8 @@ protected:
 	//ダメージ受けるかどうか(デバッグ用)
 	bool isValidDamage_ = true;
 
-	//死亡時のタイマー上限
-	float deadTimerMax_ = 0;
+	//死亡演出のタイマー上限
+	float deadEffectTimerMax_ = 0;
 
 	//ゲーム上で死亡したか（演出用）
 	bool isDead_ = false;
@@ -65,34 +65,40 @@ public:
 	virtual void Damaged(int8_t damage, std::function<void()> deadFunc, std::function<void()> notDeadFunc = NULL);
 
 public:
+	//デストラクタ
 	virtual ~Character();
 
 public:
+	//更新
 	virtual void Update();
-
+	//ImGuiの描画
 	void DrawImGui(std::function<void()>imguiF = NULL)override;
 
 public:
-	//武器
+	//武器のポインタ取得
 	Weapon* GetWeapon() { return weapon_; }
+	//武器のポインタセット
 	void SetWeapon(Weapon* weapon) { weapon_ = weapon; }
 
-	//hp
+	//hp取得
 	int8_t GetHP() { return hp_; }
 
-	//死亡フラグ
+	//死亡フラグ取得
 	bool GetIsDead() { return isDead_; }
+	//死亡フラグセット
 	void SetIsDead(bool isDead) { isDead_ = isDead; }
 
-	//素手で攻撃中か
+	//素手で攻撃中か取得
 	bool GetIsBareAttack() { return isBareAttack_; }
+	//素手で攻撃中かセット
 	void SetIsBareAttack(bool isBareAttack) { isBareAttack_ = isBareAttack; }
 
-	//殴られたか
+	//殴られたかセット
 	void SetIsPunched(bool isPunched) { isPunched_ = isPunched; }
 
-	//攻撃してきた敵の位置を保存
+	//攻撃してきた敵の位置をセット
 	void SetPosOfEnemyAttack(const Vec3& pos) { posOfEnemyAttack_ = pos; }
+	//攻撃してきた敵の位置を取得
 	const Vec3& GetPosOfEnemyAttack() { return posOfEnemyAttack_; }
 
 	//武器拾う
@@ -106,19 +112,21 @@ public:
 	//クエリコールバック
 	virtual void QueryCallBackUpdate();
 
+	//更新等の有効フラグセット
 	void SetIsValid(bool isValid)override;
 
 	//みている方向に何かあったら
 	bool CheckRayOfEyeHit(const Vec3& dir, float length, uint16_t attr, RaycastHit* info = nullptr);
 
 public:
-	float GetDeadTimerMax() { return deadTimerMax_; }
-
+	//死亡演出のタイマー上限取得
+	float GetDeadEffectTimerMax() { return deadEffectTimerMax_; }
+	//カウント取得
 	uint64_t GetCount() { return counter_.GetCount(); }
 
 public:
 	//倒されたあとに呼び出す
 	virtual void Dead() = 0;
-	//殴られたら
+	//殴られた時の処理
 	virtual void Punched(const CollisionInfo& info, IObject3D* nodeObj = nullptr) = 0;
 };

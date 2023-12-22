@@ -73,7 +73,7 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	cameraRot_ = GetRot();
 
 	//死亡時のタイマー上限
-	deadTimerMax_ = DEAD_TIMER_MAX_;
+	deadEffectTimerMax_ = DEAD_TIMER_MAX_;
 
 	shotPosExtend_ = SHOT_POS_EXTEND_;
 
@@ -396,7 +396,7 @@ void Player::UpdateUI()
 	{
 		scale = max(scale, 0.8f);
 	}
-	PlayerUI::GetInstance().SetScale2(scale);
+	PlayerUI::GetInstance().SetScaleRatio(scale);
 }
 
 void Player::UpdatePlayerActionFromMouse()

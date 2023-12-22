@@ -32,22 +32,32 @@ private:
 	bool isCanAttack_ = false;
 
 public:
+	//プレイヤーポインタセット
 	void SetPlayer(Player* player) { player_ = player; }
+	//プレイヤーポインタ取得
 	Player* GetPlayer() { return player_; }
 
+	//攻撃中かセット
 	void SetIsAttacking(bool is) { isAttacking_ = is; }
+	//攻撃中か取得
 	bool GetIsAttacking() { return isAttacking_; }
 	
+	//攻撃できるかセット
 	void SetIsCanAttack(bool is) { isCanAttack_ = is; }
+	//攻撃できるか取得
 	bool GetIsCanAttack() { return isCanAttack_; }
 
-	//敵の衝突点までの距離
+	//敵の衝突点までの距離セット
 	void SetInterLength(float length) { interLength_ = length; }
+	//敵の衝突点までの距離取得
 	float GetInterLength() { return interLength_; }
 
+	//攻撃時の加算する位置セット
 	void SetAddTrans(const Vec3& addTrans) { addTrans_ = addTrans; }
+	//攻撃時の加算する位置取得
 	const Vec3& GetAddTrans() { return addTrans_; }
 
+	//右腕かどうか
 	bool GetIsRight() { return isRight_; }
 
 	//ステート
@@ -55,14 +65,16 @@ public:
 
 
 public:
+	//インスタンス生成処理
 	static std::unique_ptr<PlayerHand> Create(Player* player, const Vec3& transTmp,bool isRight, const std::string& objName);
+	//初期化
 	bool Initialize(Player* player, const Vec3& transTmp,bool isRight, const std::string& objName);
-
+	//更新
 	void Update()override;
-
+	//描画
 	void Draw()override;
 
-
+public:
 	//攻撃のステート変更
 	void ChangeAttackState(std::unique_ptr<PlayerHandState> state);
 };

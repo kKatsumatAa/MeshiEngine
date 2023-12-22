@@ -18,7 +18,6 @@ void StageManager::LoadStage(int32_t stageIndex, Replay* replay, const std::stri
 	//json
 	JsonLevelLoader::Getinstance().Initialize();
 	//レベルマネージャー
-	LevelManager::GetInstance().StaticInitialize();
 	LevelManager::GetInstance().LoadLevelData(stageIndex);
 
 	stageNum_ = stageIndex;

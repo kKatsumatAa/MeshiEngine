@@ -46,7 +46,7 @@ void PlayerUIState::Update()
 void PlayerUIState::DrawSprite()
 {
 	reticleSprite_.SetTrans({ playerUI_->GetPos().x,playerUI_->GetPos().y,0 });
-	reticleSprite_.SetScale({ playerUI_->GetScale() * playerUI_->GetScale2(), playerUI_->GetScale() * playerUI_->GetScale2() ,1.0f });
+	reticleSprite_.SetScale({ playerUI_->GetScale() * playerUI_->GetScaleRatio(), playerUI_->GetScale() * playerUI_->GetScaleRatio() ,1.0f });
 	reticleSprite_.SetRot({ 0,0 ,angle_ });
 
 	reticleSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });

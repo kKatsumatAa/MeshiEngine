@@ -13,6 +13,7 @@
 
 bool PlayerState::CheckEyeRayHit()
 {
+	//正面ベクトルに何かあるか
 	bool isRayHit = player_->CheckRayOfEyeHit(player_->GetFrontVec(),
 		player_->GetAttackLength(), COLLISION_ATTR_ENEMYS | COLLISION_ATTR_ITEMS, &info_);
 
@@ -183,12 +184,12 @@ void PlayerStateDeadEffect::Update()
 {
 	Camera* camera = CameraManager::GetInstance().GetCamera("playerCamera");
 
-	t_ = (float)timer_ / player_->GetDeadTimerMax();
+	t_ = (float)timer_ / player_->GetDeadEffectTimerMax();
 
 	camera->SetEye(LerpVec3(targetPos_ - (dir_ * LENGTH_MIN_), player_->GetWorldTrans(), EaseInOut(t_)));
 
 	//演出終わったら生存フラグオフ
-	if (timer_ >= player_->GetDeadTimerMax())
+	if (timer_ >= player_->GetDeadEffectTimerMax())
 	{
 		player_->SetIsAlive(false);
 	}
@@ -206,7 +207,7 @@ void PlayerStateDeadEffect2::Initialize()
 
 void PlayerStateDeadEffect2::Update()
 {
-	t_ = (float)timer_ / player_->GetDeadTimerMax();
+	t_ = (float)timer_ / player_->GetDeadEffectTimerMax();
 
 	//ゆっくりにする
 	GameVelocityManager::GetInstance().SetIsInvalidAddGameVel(true);
@@ -217,7 +218,7 @@ void PlayerStateDeadEffect2::Update()
 	player_->UpdateUseCameraTarget();
 
 	//演出終わったら生存フラグオフ
-	if (timer_ >= player_->GetDeadTimerMax())
+	if (timer_ >= player_->GetDeadEffectTimerMax())
 	{
 		player_->SetIsAlive(false);
 	}
@@ -242,7 +243,7 @@ void PlayerStateDeadEffectPunched::Initialize()
 
 void PlayerStateDeadEffectPunched::Update()
 {
-	t_ = (float)timer_ / player_->GetDeadTimerMax();
+	t_ = (float)timer_ / player_->GetDeadEffectTimerMax();
 
 	//ゆっくりにする
 	GameVelocityManager::GetInstance().SetIsInvalidAddGameVel(true);
@@ -267,7 +268,7 @@ void PlayerStateDeadEffectPunched::Update()
 	camera->SetEye(player_->GetTrans());
 
 	//演出終わったら生存フラグオフ
-	if (timer_ >= player_->GetDeadTimerMax())
+	if (timer_ >= player_->GetDeadEffectTimerMax())
 	{
 		player_->SetIsAlive(false);
 	}

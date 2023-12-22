@@ -27,17 +27,24 @@ protected:
 	float angle_ = 0;
 
 public:
+	//名前でステート取得
 	static std::unique_ptr<PlayerUIState> GetState(const std::string& name);
 
 public:
+	//初期化
 	virtual void Initialize();
+	//更新
 	virtual void Update();
+	//スプライト描画
 	virtual void DrawSprite();
 
 public:
+	//色をセット
 	virtual void SetColor(const Vec4& color) { color_ = color; }
+	//角度をセット
 	virtual void SetAngle(float angle) { angle_ = angle; }
 
+	//プレイヤーのUIのポインタをセット
 	void SetPlayerUI(PlayerUI* playerUI) { playerUI_ = playerUI; }
 };
 
@@ -45,43 +52,47 @@ public:
 //通常
 class PlayerUIStateNomal : public PlayerUIState
 {
-private:
-
 public:
+	//初期化
 	virtual void Initialize();
+	//更新
 	virtual void Update();
+	//スプライト描画
 	virtual void DrawSprite();
 };
 
 //殴る
 class PlayerUIStatePunch : public PlayerUIState
 {
-private:
-
 public:
+	//初期化
 	virtual void Initialize();
+	//更新
 	virtual void Update();
+	//スプライト描画
 	virtual void DrawSprite();
 };
 
 //銃
 class PlayerUIStateGun : public PlayerUIState
 {
-private:
-
 public:
+	//初期化
 	virtual void Initialize();
+	//更新
 	virtual void Update();
+	//スプライト描画
 	virtual void DrawSprite();
 };
 
 //拾う
 class PlayerUIStatePickUp : public PlayerUIState
 {
-private:
-
 public:
+	//初期化
 	virtual void Initialize();
+	//更新
 	virtual void Update();
+	//スプライト描画
 	virtual void DrawSprite();
 };

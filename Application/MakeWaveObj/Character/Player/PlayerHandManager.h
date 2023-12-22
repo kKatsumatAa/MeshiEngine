@@ -27,10 +27,9 @@ private:
 	Vec3 leftHandLocalPos = { 2.0f,-1.0f,-1.0f };
 	Vec3 rightHandLocalPos = { -2.0f,-1.0f,-1.0f };
 
-public:
-
 
 private:
+	//腕の攻撃
 	void HandAttack(PlayerHand* hand, const RaycastHit& info);
 
 	//どちらかの手が攻撃中じゃなかったら
@@ -43,14 +42,19 @@ public:
 	void Attack(RaycastHit info);
 
 public:
+	//コンストラクタ
 	PlayerHandManager() { ; }
+	//デストラクタ
 	~PlayerHandManager() { ; }
 
+	//初期化
 	void Initialize(Player* player);
-
+	//更新
 	void Update();
-
+	//描画
 	void Draw();
 
+public:
+	//両手を解放
 	void DeleteHands();
 };

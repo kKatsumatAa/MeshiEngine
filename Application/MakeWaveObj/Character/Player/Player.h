@@ -83,6 +83,7 @@ private:
 	const float FALL_VEL_POW_ = 2.0f;
 
 public:
+	//デストラクタ
 	~Player();
 
 public:
@@ -114,42 +115,51 @@ public:
 	Replay* GetReplay() { return replay_; }
 
 public:
+	//攻撃中かセット
 	void SetIsAttacking(bool is) { isAttacking_ = is; }
+	//ターゲット中かセット
 	void SetIsTarget(bool is) { isTarget_ = is; }
 
+	//攻撃中か取得
 	bool GetIsAttacking() { return isAttacking_; }
+	//攻撃できるか取得
 	bool GetIsCanAttack() { return isTarget_; }
-
+	//攻撃の長さ取得
 	float GetAttackLength() { return ATTACK_LENGTH_; }
-
+	//カメラの角度取得
 	const Vec3& GetCameraRot() { return cameraRot_; }
 
-	//手のマネージャー
+	//手のマネージャー取得
 	PlayerHandManager* GetHandManager() { return handManager_.get(); }
 
-	//リプレイ
+	//リプレイポインタセット
 	void SetReplay(Replay* replay) { replay_ = replay; }
 	//リプレイのステートの初期化
 	void InitializeReplayState();
 
 public:
+	//初期化
 	bool Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon);
-
+	//更新
 	void Update() override;
-
+	//描画
 	void Draw() override;
 
 public:
 	//リプレイのステートを変更
 	void ChangePlayerReplayState(std::unique_ptr<PlayerReplayState> state);
+	//リプレイ再生状態に変更する
 	void ChangeToReplayingState();
 	//素手などのステートを変更
 	void ChangePlayerState(std::unique_ptr<PlayerState> state);
+	//プレイヤーステート取得
 	PlayerState* GetPlayerState() { return playerState_.get(); }
 
+	//衝突時の処理
 	void OnCollision(const CollisionInfo& info) override;
 
 public:
+	//武器を投げる
 	void ThrowWeapon();
 	//移動
 	void Move();
@@ -167,17 +177,23 @@ public:
 	void MoveCalcPart(bool leftKey, bool rightKey, bool upKey, bool downKey, bool spaceKey, float moveVelRatio = 1.0f);
 
 public:
+	//左クリックアクションするか取得
 	bool GetIsClickLeft() { return isClickLeft_; }
+	//左クリックアクションするかセット
 	void SetIsClickLeft(bool isClickLeft) { isClickLeft_ = isClickLeft; }
+	//右クリックアクションするか取得
 	bool GetIsClickRight() { return isClickRight_; }
+	//右クリックアクションするか取得
 	void SetIsClickRight(bool isClickRight) { isClickRight_ = isClickRight; }
 
+	//武器のローカル座標取得
 	Vec3 GetWeaponPosTmp();
 
 	//正面ベクトルから飛ばしたレイのターゲットまでのベクトル(正規化なし)
 	Vec3 GetFrontTargetVec(uint16_t colAttr);
 
 public:
+	//リプレイの状態でする処理をセット
 	void SetReplayStateF(std::function<void()>f) { replayStateF_ = f; }
 };
 

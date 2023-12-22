@@ -120,7 +120,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, floa
 	emergeCoolTime_ = (float)coolTime;
 
 	//死亡時のタイマー上限
-	deadTimerMax_ = DEAD_TIMER_MAX_;
+	deadEffectTimerMax_ = DEAD_TIMER_MAX_;
 
 	//model
 	model->SetMaterialExtend({ 0.03f,0.1f,50.0f });

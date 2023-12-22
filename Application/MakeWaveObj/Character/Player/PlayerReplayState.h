@@ -16,12 +16,15 @@ protected:
 	Player* player_ = nullptr;
 
 public:
+	//デストラクタ
 	virtual ~PlayerReplayState() { ; }
 
+	//プレイヤーポインタセット
 	void SetPlayer(Player* player) { player_ = player; }
-
+	
+	//初期化
 	virtual void Initialize();
-
+	//更新
 	virtual void Unique() = 0;
 };
 
@@ -30,8 +33,10 @@ public:
 class PlayerReplayStateSavingData : public PlayerReplayState
 {
 private:
+	//ステート固有の処理
 	void Unique()override;
 public:
+	//初期化
 	void Initialize()override;
 };
 
@@ -39,7 +44,9 @@ public:
 class PlayerReplayStateReplaying : public PlayerReplayState
 {
 private:
+	//ステート固有の処理
 	void Unique()override;
 public:
+	//初期化
 	void Initialize()override;
 };

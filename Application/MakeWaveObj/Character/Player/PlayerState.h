@@ -22,14 +22,19 @@ protected:
 	std::function<void()>commonUpdateF_;
 
 public:
+	//デストラクタ
 	virtual ~PlayerState() { ; }
 
+	//プレイヤーポインタセット
 	void SetPlayer(Player* player) { player_ = player; }
+	//共通処理関数のセット
 	void SetCommonUpdateF(const std::function<void()>& f) { commonUpdateF_ = f; }
-
+	//正面ベクトルに何かあった時の処理
 	bool CheckEyeRayHit()override;
 
+	//初期化
 	virtual void Initialize()override = 0;
+	//更新
 	virtual void Update()override;
 };
 
@@ -39,9 +44,10 @@ class PlayerStateBareHands :
 	public CharacterStateBareHands
 
 {
-
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -50,9 +56,10 @@ class PlayerStateHaveWeapon :
 	public PlayerState,
 	public CharacterStateHaveWeapon
 {
-
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -67,7 +74,9 @@ private:
 	const float LENGTH_MIN_ = 5.0f;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -81,7 +90,9 @@ private:
 	const float endRotX_ = -PI / 2.0f;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };
 
@@ -98,6 +109,8 @@ private:
 	Vec3 dir_;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
 };

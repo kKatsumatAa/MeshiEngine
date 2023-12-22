@@ -469,7 +469,7 @@ void EnemyStateDead::Update()
 {
 	//時間を加算して割合を得る
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
-	float t = timer_ / enemy_->GetDeadTimerMax();
+	float t = timer_ / enemy_->GetDeadEffectTimerMax();
 
 	//アニメーションスピード徐々に
 	enemy_->AllMove(GetRayHitGunOrPlayerPos(), false);
