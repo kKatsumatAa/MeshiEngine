@@ -36,9 +36,12 @@ private:
 	int32_t spriteIndex_ = 0;
 
 public:
+	//描画文字セット
 	void Print(const std::string& text, float x, float y, int32_t variable = 114514, float scale = 1.0f);
+	//描画文字セット（float）
 	void Printf(const std::string& text, float x, float y, float variable = 114514.0f, float scale = 1.0f);
 
+	//全て描画
 	void DrawAll(uint64_t texhandle, Camera2D* camera);
 };
 

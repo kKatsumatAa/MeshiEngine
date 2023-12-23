@@ -11,7 +11,7 @@ const std::string TextureManager::sDirectoryPath_ = "Resources/image/";
 
 const std::string TextureManager::S_DEFAULT_TEX_FILE_NAME_ = "white.png";
 
-int32_t TextureManager::sCount_ = 0;
+int32_t TextureManager::sSRVCount_ = 0;
 //リソース設定
 D3D12_RESOURCE_DESC TextureManager::sResDesc_;
 //設定をもとにSRV用デスクリプタヒープを生成
@@ -79,7 +79,7 @@ void TextureManager::Initialize()
 uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	D3D12_SHADER_RESOURCE_VIEW_DESC* srvDesc, D3D12_CPU_DESCRIPTOR_HANDLE* srvHandle)
 {
-	assert(sCount_ <= S_SRV_COUNT_ - 1);
+	assert(sSRVCount_ <= S_SRV_COUNT_ - 1);
 
 	HRESULT result = {};
 
@@ -87,7 +87,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	ID3D12Resource** texBuffL = texBuff;
 	if (texBuffL == nullptr)
 	{
-		texBuffL = &sTexBuff_[sCount_];
+		texBuffL = &sTexBuff_[sSRVCount_];
 	}
 
 	//読み込まれているかどうか
@@ -270,7 +270,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 		{
 			//SRVヒープの先頭ハンドルを取得
 			sSrvHandle_ = sSrvHeap_->GetCPUDescriptorHandleForHeapStart();
-			sSrvHandle_.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(sSrvHeapDesc_.Type) * sCount_;
+			sSrvHandle_.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(sSrvHeapDesc_.Type) * sSRVCount_;
 
 			srvDescL.Format = uploadResDesc.Format;
 			srvDescL.Shader4ComponentMapping =
@@ -285,7 +285,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 			D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = sSrvHeap_->GetGPUDescriptorHandleForHeapStart();
 			textureHandle = srvGpuHandle.ptr +
 				(DirectXWrapper::GetInstance().GetDevice()->
-					GetDescriptorHandleIncrementSize(TextureManager::GetInstance().sSrvHeapDesc_.Type) * sCount_);
+					GetDescriptorHandleIncrementSize(TextureManager::GetInstance().sSrvHeapDesc_.Type) * sSRVCount_);
 		}
 
 		//ハンドルのさす位置にシェーダーリソースビュー作成
@@ -294,7 +294,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 		if (texBuff == nullptr)
 		{
 			//バッファ用のカウント
-			sCount_++;
+			sSRVCount_++;
 		}
 
 		{

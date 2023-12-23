@@ -46,10 +46,11 @@ private:
 
 
 public:
+	//初期化
 	void Initialize(uint64_t texhandle);
-
+	//数字をセット
 	void SetNum(int32_t num,const Vec2& pos, const Vec2& sizeUV, const Vec2& numImageSize, float scale, const Vec4& color = { 1.0f,1.0f,1.0f,1.0f });
-
+	//描画
 	void Draw(Camera2D* camera);
 };
 

@@ -44,31 +44,51 @@ private:
 	int32_t zoomTimer_ = 0;
 
 public:
+	//初期化
 	void Initialize();
+	//更新
 	void Update();
 
 private:
+	//見える範囲の更新
 	void VisiableUpdate();
+	//行列更新
 	void MatrixUpdate();
+	//追尾更新
 	void FollowUpdate();
+	//拡大更新
 	void ZoomUpdate();
 
 public:
+	//位置セット
 	void SetPos(const Vec2& pos) { pos_ = pos; }
+	//拡大セット
 	void SetZoom(const Vec2& zoom) { zoom_ = zoom; }
+	//見える範囲セット
 	void SetVisiableArea(const Vec4& visiableArea) { visiableArea_ = visiableArea; }
+	//角度セット
 	void SetRot(float rot) { rot_ = rot; }
 
+	//位置取得
 	const Vec2& GetPos() { return pos_; }
+	//拡大取得
 	const Vec2& GetZoom() { return zoom_; }
+	//見える範囲取得
 	const Vec4& GetVisiableArea() { return visiableArea_; }
+	//角度取得
 	float GetRot() { return rot_; }
+	//追尾してるか取得
 	float GetIsFollow() { return isFollow_; }
+	//カメラ行列取得
 	const DirectX::XMMATRIX& GetCameraMatrix() { return cameraMatrix_; }
 
 public:
+	//シェイク開始
 	void BeginShake(uint32_t time, float maxLength);
+	//追尾開始
 	void BeginFollow(float maxLength);
+	//追尾終わり
 	void EndFollow();
+	//拡大開始
 	void BeginZoom(float endZoomPow, int32_t time);
 };

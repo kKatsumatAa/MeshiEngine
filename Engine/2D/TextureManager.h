@@ -18,7 +18,8 @@ private:
 	//格納先
 	static const std::string sDirectoryPath_;
 
-	static int32_t sCount_;
+	//srvのカウント
+	static int32_t sSRVCount_;
 
 	//テクスチャデータの連想配列
 	static std::map < std::string, uint64_t> sTextureDatas_;
@@ -54,31 +55,46 @@ private:
 public:
 	//コピーコンストラクタを無効
 	TextureManager(const TextureManager& obj) = delete;
-	//代入演算子も
+	//代入演算子も無効
 	TextureManager& operator=(const TextureManager& obj) = delete;
 
+	//インスタンス取得
 	static TextureManager& GetInstance();
 
+public:
 	//デスクリプタヒープ初期化
 	static void InitializeDescriptorHeap();
+	//初期化
 	static void Initialize();
+
+public:
+	//画像の読み込み
 	static uint64_t LoadGraph(const char* name, ID3D12Resource** texBuff = nullptr,
 		D3D12_SHADER_RESOURCE_VIEW_DESC* srvDesc = nullptr, D3D12_CPU_DESCRIPTOR_HANDLE* srvHandle = nullptr);
-
-	static void AddSRVHandleCount() { sCount_++; }
 
 	//テクスチャハンドルが何も入ってなかったら白い画像のハンドル入れる
 	static void CheckTexHandle(uint64_t& texHandle);
 
 public:
+	//デスクリプタヒープのポインタのポインタ取得
 	static ID3D12DescriptorHeap** GetDescHeapPP() { return sSrvHeap_.GetAddressOf(); }
+	//デスクリプタヒープのポインタ取得
 	static ID3D12DescriptorHeap* GetDescHeapP() { return sSrvHeap_.Get(); }
+	//デスクリプタの設定のポインタ取得
 	static D3D12_DESCRIPTOR_RANGE* GetDescRange() { return &sDescriptorRange_; }
+	//白画像のハンドル取得
 	static uint64_t GetWhiteTexHandle() { return sWhiteTexHandle_; }
-	static int32_t GetSRVCount() { return sCount_; }
+	//テクスチャバッファ取得
 	static ComPtr<ID3D12Resource>* GetTexBuff() { return sTexBuff_; }
+	//リソース設定取得
 	static const D3D12_RESOURCE_DESC& GetResDesc() { return sResDesc_; }
+	//デスクリプタヒープの設定取得
 	static const D3D12_DESCRIPTOR_HEAP_DESC & GetHeapDesc() { return sSrvHeapDesc_; }
 
+public:
+	//SRVのカウントを取得
+	static int32_t GetSRVCount() { return sSRVCount_; }
+	//SRVのカウントを加算
+	static void AddSRVHandleCount() { sSRVCount_++; }
 };
 

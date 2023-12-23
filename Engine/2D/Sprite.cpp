@@ -81,7 +81,7 @@ void Sprite::Draw()
 	DrawBoxSprite(nullptr, { 0.5f,0.5f });
 }
 
-void Sprite::SpriteDraw()
+void Sprite::SpriteDrawCommand()
 {
 	HRESULT result = {};
 
@@ -190,7 +190,7 @@ void Sprite::DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 	CalcAndSetMat(cbt, worldMat, camera);
 
 	//描画
-	SpriteDraw();
+	SpriteDrawCommand();
 }
 
 void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
@@ -263,7 +263,7 @@ void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& s
 	CalcAndSetMat(cbt, worldMat, camera);
 
 	//描画
-	SpriteDraw();
+	SpriteDrawCommand();
 }
 
 //--------------------------------------------------------

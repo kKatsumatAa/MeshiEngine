@@ -62,7 +62,9 @@ private:
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};
 
 public:
+	//デストラクタ
 	virtual ~Sprite();
+	//コンストラクタ
 	Sprite();
 
 public:
@@ -72,35 +74,42 @@ public:
 	void Initialize(std::unique_ptr<WorldMat> worldMat = nullptr);
 
 public:
+	//更新
 	virtual void Update()override;
+	//描画
 	virtual void Draw()override;
 private:
 	//描画コマンドなど
-	void SpriteDraw();
+	void SpriteDrawCommand();
 
 private:
+	//位置などセットして描画(内部処理)
 	void DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 		uint64_t textureHandle, const Vec2& ancorUV,
 		bool isReverseX, bool isReverseY, const Vec3& rotation,
 		ConstBuffTransform* cbt);
 
+	//切り抜いて描画（内部処理）
 	void UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& scale, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 		uint64_t textureHandle, bool isPosLeftTop,
 		bool isReverseX, bool isReverseY, const Vec3& rotation, ConstBuffTransform* cbt);
 
 public:
+	//スプライト描画
 	void DrawBoxSprite(Camera2D* camera
 		, const Vec2& ancorUV = { 0,0 }, bool isReverseX = false, bool isReverseY = false);
-
+	//スプライト描画（切り抜き）
 	void DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, const XMFLOAT2& UVlength,
 		bool isPosLeftTop = true,
 		bool isReverseX = false, bool isReverseY = false);
 
 public:
+	//画像のハンドルセット
 	void SetTexHandle(uint64_t texHandle) { texHandle_ = texHandle; }
 
 private:
+	//カメラから行列を取得
 	DirectX::XMMATRIX GetCameraMatrix(Camera2D* camera);
-
+	//ワールド行列やカメラ行列を計算しセット
 	void CalcAndSetMat(ConstBuffTransform* cbt, WorldMat& worldMat, Camera2D* camera);
 };
