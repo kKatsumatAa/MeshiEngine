@@ -32,35 +32,6 @@ public://サブクラス
 		float pad2;
 	};
 
-
-public://メンバ関数
-	inline void SetDir(const XMVECTOR& dir) { dir_ = DirectX::XMVector3Normalize(dir); }
-	inline const XMVECTOR& GetDir() { return dir_; }
-
-	inline void SetCasterPos(const XMFLOAT3& casterPos) { casterPos_ = casterPos; }
-	inline const XMFLOAT3& GetCasterPos() { return casterPos_; }
-
-	inline void SetDistanceCasterLight(float distanceCasterLight) { distanceCasterLight_ = distanceCasterLight; }
-	inline float GetDistanceCasterLight() { return distanceCasterLight_; }
-
-	inline void SetAtten(const XMFLOAT3& atten) { atten_ = atten; }
-	inline const XMFLOAT3& GetAtten() { return atten_; }
-
-	inline void SetFactorAngleCos(const XMFLOAT2& FactorAngleCos) {
-		factorAngleCos_.x = cosf(DirectX::XMConvertToRadians(FactorAngleCos.x));
-		factorAngleCos_.y = cosf(DirectX::XMConvertToRadians(FactorAngleCos.y));
-	};
-	inline const XMFLOAT2& GetFactorAngleCos() {
-		return factorAngleCos_;
-	};
-
-	inline void SetLightActive(bool active) {
-		active_ = active;
-	};
-	inline bool GetLightActive() {
-		return active_;
-	};
-
 private://メンバ変数
 	//方向（単位ベクトル）
 	XMVECTOR dir_ = { 1.0f,0,0 };
@@ -74,5 +45,46 @@ private://メンバ変数
 	XMFLOAT2 factorAngleCos_ = { 0.2f,0.5f };
 	//有効フラグ
 	bool active_ = false;
+
+
+public://メンバ関数
+	//方向セット
+	inline void SetDir(const XMVECTOR& dir) { dir_ = DirectX::XMVector3Normalize(dir); }
+	//方向取得
+	inline const XMVECTOR& GetDir() { return dir_; }
+
+	//キャスター座標セット
+	inline void SetCasterPos(const XMFLOAT3& casterPos) { casterPos_ = casterPos; }
+	//キャスター座標取得
+	inline const XMFLOAT3& GetCasterPos() { return casterPos_; }
+
+	//キャスターとライトの距離セット
+	inline void SetDistanceCasterLight(float distanceCasterLight) { distanceCasterLight_ = distanceCasterLight; }
+	//キャスターとライトの距離取得
+	inline float GetDistanceCasterLight() { return distanceCasterLight_; }
+
+	//減衰セット
+	inline void SetAtten(const XMFLOAT3& atten) { atten_ = atten; }
+	//減衰取得
+	inline const XMFLOAT3& GetAtten() { return atten_; }
+
+	//減衰角度セット
+	inline void SetFactorAngleCos(const XMFLOAT2& FactorAngleCos) {
+		factorAngleCos_.x = cosf(DirectX::XMConvertToRadians(FactorAngleCos.x));
+		factorAngleCos_.y = cosf(DirectX::XMConvertToRadians(FactorAngleCos.y));
+	};
+	//減衰角度取得
+	inline const XMFLOAT2& GetFactorAngleCos() {
+		return factorAngleCos_;
+	};
+
+	//ライトのアクティブセット
+	inline void SetLightActive(bool active) {
+		active_ = active;
+	};
+	//ライトのアクティブ取得
+	inline bool GetLightActive() {
+		return active_;
+	};
 };
 

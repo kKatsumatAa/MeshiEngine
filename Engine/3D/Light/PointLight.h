@@ -45,15 +45,24 @@ private://メンバ変数
 
 
 public://メンバ関数
+	//位置セット
 	void SetLightPos(const XMFLOAT3& lightpos) { lightpos_ = lightpos; }
+	//位置取得
 	const XMFLOAT3& GetLightPos() { return lightpos_; }
+	//色セット
 	void SetLightColor(const XMFLOAT3& lightcolor) { lightcolor_ = lightcolor; }
+	//色取得
 	const XMFLOAT3& GetLightColor() { return lightcolor_; }
+	//減衰セット
 	void SetLightAtten(const XMFLOAT3& lightatten) { lightatten_ = lightatten; }
+	//減衰取得
 	const XMFLOAT3& GetLightAtten() { return lightatten_; }
+	//アクティブセット
 	void SetActive(bool active) { active_ = active; }
+	//アクティブ取得
 	bool GetActive() { return active_; }
 
+	//ImGuiの描画
 	void DrawImGui(int32_t index);
 };
 

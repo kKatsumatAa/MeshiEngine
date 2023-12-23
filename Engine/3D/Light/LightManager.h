@@ -94,8 +94,9 @@ public://静的メンバ関数
 	static void StaticInitialize();
 
 public:
+	//初期化
 	void Initialize();
-
+	//ライトのアクティブ初期化
 	void InitializeActive();
 
 	/// <summary>
@@ -109,7 +110,7 @@ public:
 	/// <param name="rootParamaterIndex"></param>
 	void Draw(uint32_t rootParamaterIndex);
 
-	//
+	//ImGuiの描画
 	void DrawImGui();
 
 	/// <summary>
@@ -122,9 +123,9 @@ public:
 	/// </summary>
 	/// <param name="color">ライト色</param>
 	void SetAmbientColor(const XMFLOAT3& color);
-
+	//拡散反射の色セット
 	void SetDiffuseColor(const XMFLOAT3& color);
-
+	//鏡面反射の色セット
 	void SetSpecularColor(const XMFLOAT3& color);
 
 	/// <summary>
@@ -132,6 +133,7 @@ public:
 	/// </summary>
 	static std::unique_ptr<LightManager> Create();
 
+public://平行光源
 	/// <summary>
 		/// 平行光源の有効フラグをセット
 		/// </summary>
@@ -153,40 +155,50 @@ public:
 	/// <param name="lightcolor">ライト色</param>
 	void SetDirLightColor(int32_t index, const XMFLOAT3& lightcolor);
 
-	///ポイントライト用
+public://ポイントライト
+	///ポイントライトのアクティブセット
 	void SetPointLightActive(int32_t index, bool active);
+	///ポイントライトの位置セット
 	void SetPointLightPos(int32_t index, const XMFLOAT3& pos);
+	///ポイントライトの色セット
 	void SetPointLightColor(int32_t index, const XMFLOAT3& color);
+	///ポイントライトの減衰セット
 	void SetPointLightAtten(int32_t index, const XMFLOAT3& atten);
 
-	///スポットライト用
+public://スポットライト
+	//スポットライトのアクティブセット
 	void SetSpotLightActive(int32_t index, bool active);
-	//ライトの方向をセット
+	//スポットライトの方向をセット
 	void SetSpotLightDir(int32_t index, const XMVECTOR& lightdir);
+	//スポットライトの位置をセット
 	void SetSpotLightPos(int32_t index, const XMFLOAT3& lightpos);
+	//スポットライトの色をセット
 	void SetSpotLightColor(int32_t index, const XMFLOAT3& lightcolor);
-	//減衰係数をセット
+	//スポットライトの減衰をセット
 	void SetSpotLightAtten(int32_t index, const XMFLOAT3& lightAtten);
-	//減衰開始、終了角度
+	//スポットライトの減衰開始、終了角度セット
 	void SetSpotLightFactorAngle(int32_t index, const XMFLOAT2& lightFactorAngle);
 
-	///丸影用
+public://丸影
+	///丸影のアクティブセット
 	void SetCircleShadowActive(int32_t index, bool active);
 	//影の発生元のオブジェクトの座標
 	void SetCircleShadowCasterPos(int32_t index, const XMFLOAT3& casterPos);
-	//ライトの方向をセット
+	//丸影のライトの方向をセット
 	void SetCircleShadowDir(int32_t index, const XMVECTOR& lightdir);
 	//影からライトまでの距離
 	void SetCircleShadowDistanceCasterLight(int32_t index, float distanceCasterLight);
-	//減衰係数をセット
+	//丸影の減衰係数をセット
 	void SetCircleShadowAtten(int32_t index, const XMFLOAT3& lightAtten);
-	//減衰開始、終了角度
+	//丸影の減衰開始、終了角度セット
 	void SetCircleShadowFactorAngle(int32_t index, const XMFLOAT2& lightFactorAngle);
 
 public:
-	//使用されてないポイントライトのインデックス
+	//このインデックスの方向ライトが使用されているか
 	bool GetDoNotUseDirLightIndex(int32_t& index);
+	//このインデックスのポイントライトが使用されているか
 	bool GetDoNotUsePointLightIndex(int32_t& index);
+	//このインデックスのスポットライトが使用されているか
 	bool GetDoNotUseSpotLightIndex(int32_t& index);
 };
 

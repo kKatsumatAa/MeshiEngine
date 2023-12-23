@@ -77,7 +77,7 @@ public:
 	/// <returns>有効フラグ</returns>
 	inline bool GetActive() { return active_; }
 
-	//
+	//ImGuiの描画
 	void DrawImGui(int32_t index);
 };
 

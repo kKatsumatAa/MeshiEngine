@@ -35,7 +35,9 @@ public:
 	Camera* afterCamera_ = nullptr;
 
 private://関数
+	//コンストラクタ
 	CameraManager();
+	//デストラクタ
 	~CameraManager();
 
 private:
@@ -43,36 +45,47 @@ private:
 	void ChangeCamera();
 
 public:
+	//コピーコンストラクタ禁止
 	CameraManager(const CameraManager& other) = delete;
+	//コピーコンストラクタ禁止
 	CameraManager& operator=(const CameraManager& other) = delete;
 
+	//インスタンス取得
 	static CameraManager& GetInstance() { static CameraManager sInst; return sInst; }
 
+public:
+	//初期化
 	void Initialize();
-
+	//更新
 	void Update();
-
+	//ImGuiの描画
 	void ImguiUpdate();
 
 public:
-	//カメラを新たに追加する
+	//カメラを新たに追加する(3D)
 	void AddCamera(const std::string& cameraName);
+	//カメラを新たに追加する(2D)
 	void AddCamera2D(const std::string& cameraName);
+
 	//名前を指定してカメラを取得
 	Camera* GetCamera(const std::string& cameraName);
 	//usingCameraにセットされてるカメラ取得
 	Camera* GetCamera();
 	//usingLightCameraにセットされてるカメラ取得
 	Camera* GetUsingLightCamera();
-	//名前を指定してカメラを取得
+	//名前を指定してカメラを取得(2D)
 	Camera2D* GetCamera2D(const std::string& cameraName);
-	//usingCameraにセットされてるカメラ取得
+	//usingCameraにセットされてるカメラ取得(2D)
 	Camera2D* GetCamera2D();
-	//カメラを使用しているカメラにセット
+
+	//使用するカメラにセット
 	void SetUsingCamera(const std::string& cameraName);
+	//シャドウマップ用のライトとして使うカメラをセット
 	void SetUsingLightCamera(const std::string& cameraName);
+	//使用カメラにセット（2D）
 	void SetUsingCamera2D(const std::string& cameraName);
 
 public:
+	//デバッグ用のカメラを使用してるか
 	bool GetIsDebugCamera() { return isDebugCamera_; }
 };

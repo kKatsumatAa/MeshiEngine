@@ -22,6 +22,24 @@ protected: // エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+protected: // メンバ変数
+	Shake shake_;
+
+	// ビルボード行列
+	XMMATRIX matBillboard_ = DirectX::XMMatrixIdentity();
+	// Y軸回りビルボード行列
+	XMMATRIX matBillboardY_ = DirectX::XMMatrixIdentity();
+	//合成
+	XMMATRIX matViewProjection_ = DirectX::XMMatrixIdentity();
+	// ビュー行列ダーティフラグ
+	bool viewDirty_ = false;
+	// 射影行列ダーティフラグ
+	bool projectionDirty_ = false;
+
+private:
+	ViewMat viewMat_;
+	ProjectionMat projectionMat_;
+
 public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
@@ -35,6 +53,7 @@ public: // メンバ関数
 	/// </summary>
 	virtual ~Camera() = default;
 
+	//初期化
 	virtual void Initialize();
 
 	/// <summary>
@@ -113,9 +132,10 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="move">移動量</param>
 	void MoveEyeVector(const Vec3& move);
+	//ベクトルによる視点移動(XMVECTOR使用)
 	void MoveEyeVector(const XMVECTOR& move);
 
-	//
+	//カメラをシェイク
 	void CameraShake(int32_t time, float length);
 
 	/// <summary>
@@ -123,30 +143,17 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="move">移動量</param>
 	void MoveVector(const Vec3& move);
+	//ベクトルによる移動(XMVECTOR使用)
 	void MoveVector(const XMVECTOR& move);
 
-protected: // メンバ変数
-	Shake shake_;
-
-	// ビルボード行列
-	XMMATRIX matBillboard_ = DirectX::XMMatrixIdentity();
-	// Y軸回りビルボード行列
-	XMMATRIX matBillboardY_ = DirectX::XMMatrixIdentity();
-	//合成
-	XMMATRIX matViewProjection_ = DirectX::XMMatrixIdentity();
-	// ビュー行列ダーティフラグ
-	bool viewDirty_ = false;
-	// 射影行列ダーティフラグ
-	bool projectionDirty_ = false;
-
-private:
-	ViewMat viewMat_;
-	ProjectionMat projectionMat_;
-
 public:
+	//ビュー行列取得
 	const XMMATRIX& GetViewMat()const { return viewMat_.matView_; }
+	//プロジェクション行列取得
 	const XMMATRIX& GetProjMat()const { return projectionMat_.matProjection_; }
+	//ビルボード行列取得
 	const XMMATRIX& GetBillboardMat()const { return matBillboard_; }
+	//Y軸ビルボード行列取得
 	const XMMATRIX& GetBillboardMatY()const { return matBillboardY_; }
 };
 
