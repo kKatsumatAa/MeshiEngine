@@ -36,6 +36,21 @@ private:
 	//カーソル位置
 	Vec2 cursorPos_ = {};
 
+public:
+	//コピーコンストラクタを無効
+	MouseInput(const MouseInput& obj) = delete;
+	//代入演算子も無効
+	MouseInput& operator=(const MouseInput& obj) = delete;
+
+	//インスタンス取得
+	static MouseInput& GetInstance();
+
+private:
+	//コンストラクタ
+	MouseInput();
+	//デストラクタ
+	~MouseInput() { ; }
+
 private:
 	//接続されているか調べる(デバイス生成したりする)
 	void MouseConnectSearch();
@@ -44,30 +59,17 @@ private:
 	//デバイス削除
 	void DeleteDevice();
 
-	MouseInput();
-
-	~MouseInput() { ; }
-
 public:
-	//コピーコンストラクタを無効
-	MouseInput(const MouseInput& obj) = delete;
-	//代入演算子も
-	MouseInput& operator=(const MouseInput& obj) = delete;
-
-
-	static MouseInput& GetInstance();
-
+	//デバイス作成
 	void CreateDevice(LPCDIDEVICEINSTANCE ipddi);
-
+	//更新
 	void Update();
-
+	//終了処理
 	void Finalize();
 
 public://ゲッター
-
 	//ジョイスティックが傾けられているか
 	bool GetMouseActive();
-
 
 	//クリックされているか
 	bool GetClick(byte click);

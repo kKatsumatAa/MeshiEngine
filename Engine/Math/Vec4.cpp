@@ -1,4 +1,4 @@
-﻿#include "Vec4.h"
+#include "Vec4.h"
 
 float Vec4::GetLength() const
 {
@@ -36,14 +36,9 @@ float Vec4::Dot(const Vec4& other)const
 //--------------------------------------------------------------
 
 
-Vec4 Vec4::operator+(const Vec4& other)
+Vec4 Vec4::operator+()const
 {
-	Vec4 v = *this;
-	v.x += other.x;
-	v.y += other.y;
-	v.z += other.z;
-
-	return Vec4(v);
+	return *this;
 }
 
 Vec4& Vec4::operator+=(const Vec4& other)
@@ -55,14 +50,9 @@ Vec4& Vec4::operator+=(const Vec4& other)
 	return *this;
 }
 
-Vec4 Vec4::operator-(const Vec4& other)
+Vec4 Vec4::operator-()const
 {
-	Vec4 v = *this;
-	v.x -= other.x;
-	v.y -= other.y;
-	v.z -= other.z;
-
-	return Vec4(v);
+	return Vec4(-x,-y,-z,-w);
 }
 
 Vec4& Vec4::operator-=(const Vec4& other)
@@ -118,29 +108,29 @@ Vec4& Vec4::operator/=(float other)
 const Vec4 operator+(const Vec4& v1, const Vec4& v2)
 {
 	Vec4 temp(v1);
-	return temp + v2;
+	return temp += v2;
 }
 
 const Vec4 operator-(const Vec4& v1, const Vec4& v2)
 {
 	Vec4 temp(v1);
-	return temp - v2;
+	return temp -= v2;
 }
 
 const Vec4 operator*(const Vec4& v, float s)
 {
 	Vec4 temp(v);
-	return temp * s;
+	return temp *= s;
 }
 
 const Vec4 operator*(float s, const Vec4& v)
 {
 	Vec4 temp(v);
-	return temp * s;
+	return temp *= s;
 }
 
 const Vec4 operator/(const Vec4& v, float s)
 {
 	Vec4 temp(v);
-	return temp / s;
+	return temp /= s;
 }

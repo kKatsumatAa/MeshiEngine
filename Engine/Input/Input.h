@@ -22,21 +22,25 @@ private:
 	ComPtr<IDirectInput8> directInput_ = nullptr;
 
 private:
+	//コンストラクタ
 	Input();
 
 public:
 	//コピーコンストラクタを無効
 	Input(const Input& obj) = delete;
-	//代入演算子も
+	//代入演算子も無効
 	Input& operator=(const Input& obj) = delete;
 
-	void Finalize();
-
+	//インスタンス取得
 	static Input& GetInstance();
 
+public:
+	//終了処理
+	void Finalize();
+	//更新
 	void Update();
 
-
+	//DirectInputを取得
 	IDirectInput8* GetDirectInput() { return directInput_.Get(); }
 };
 

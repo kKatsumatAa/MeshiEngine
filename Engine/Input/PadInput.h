@@ -47,13 +47,6 @@ private:
 
 	bool isActive_ = false;
 
-private:
-	//接続されているか調べる(デバイス生成したりする)
-	void PadConnectSearch();
-
-	PadInput();
-
-	~PadInput() { ; }
 
 public:
 	//コピーコンストラクタを無効
@@ -61,26 +54,40 @@ public:
 	//代入演算子も
 	PadInput& operator=(const PadInput& obj) = delete;
 
-
+	//インスタンス取得
 	static PadInput& GetInstance();
 
+private:
+	//コンストラクタ
+	PadInput();
+	//デストラクタ
+	~PadInput() { ; }
+
+private:
+	//接続されているか調べる(デバイス生成したりする)
+	void PadConnectSearch();
+
+public:
+	//デバイス作成
 	void CreateDevice(LPCDIDEVICEINSTANCE ipddi);
-
+	//更新
 	void Update();
-
+	//終了処理
 	void Finalize();
 
 public://ゲッター
-
 	//ジョイスティックが傾けられているか
 	bool GetJoyStickActive();
-	//ジョイスティックがどのくらい倒されているか(0.0~1.0f)
+	//左ジョイスティックがどのくらい倒されているか(0.0~1.0f)
 	Vec2 GetLeftStickTilt();
+	//右ジョイスティックがどのくらい倒されているか(0.0~1.0f)
 	Vec2 GetRightStickTilt();
 
 	//ボタンが押されているか
 	bool GetPushButton(BYTE button);
+	//ボタンが押された瞬間か
 	bool GetTriggerButton(BYTE button);
+	//ボタンが離された瞬間か
 	bool GetReleaseTrigger(BYTE button);
 };
 
