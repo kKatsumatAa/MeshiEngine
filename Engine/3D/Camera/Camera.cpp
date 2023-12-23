@@ -168,7 +168,7 @@ void Camera::MoveEyeVector(const XMVECTOR& move)
 
 void Camera::CameraShake(int32_t time, float length)
 {
-	shake_.SetShake(time, length);
+	shake_.BeginShake(time, length);
 }
 
 void Camera::MoveVector(const Vec3& move)

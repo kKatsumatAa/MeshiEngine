@@ -728,6 +728,7 @@ void PostPera::Draw()
 //1.5枚目
 void PostPera::DrawShrinkTextureForBlur()
 {
+	//ブルームなどぼかす処理をしないなら
 	if (!effectFlags_.isBloom && !effectFlags_.isCrossFilter && !effectFlags_.isDepthField)
 	{
 		return;

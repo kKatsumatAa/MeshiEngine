@@ -23,18 +23,26 @@ private:
 	std::function<void()>backGroundF = NULL;
 
 private:
+	//コンストラクタ
 	PostEffectManager() { ; }
+	//デストラクタ
 	~PostEffectManager() { ; }
 
 public:
+	//コピーコンストラクタ禁止
 	PostEffectManager& operator=(const PostEffectManager& inst) = delete;
+	//コピーコンストラクタ禁止
 	PostEffectManager(const PostEffectManager& inst) = delete;
 
+	//インスタンス取得
 	static PostEffectManager& GetInstance();
 
 public:
+	//初期化
 	void Initialize(const char* normalTexHandle);
+	//更新
 	void Update();
+	//ImGuiの描画
 	void ImGuiUpdate();
 	//背景用の事前描画
 	void PreBackGroundDraw();
@@ -44,8 +52,12 @@ public:
 	void DrawDisplay();
 
 public:
+	//1つ目のポストペラを取得
 	PostPera* GetPostEffect1() { return postPera_[0].get(); }
+	//2つ目のポストペラを取得
 	PostPera* GetPostEffect2() { return postPera_[1].get(); }
+	//3つ目のポストペラを取得
 	PostPera* GetPostEffect3() { return postPera_[2].get(); }
+	//4つ目のポストペラを取得
 	PostPera* GetPostEffect4() { return postPera_[3].get(); }
 };

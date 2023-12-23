@@ -15,8 +15,9 @@ private:
 	//カウント上限
 	uint64_t countMax_ = 0;
 
+
 public:
-	//加算
+	//カウント加算
 	void AddCount(uint64_t addCount = 1) { count_ += addCount; }
 	//リセット
 	void ResetCount() { count_ = 0; }

@@ -20,20 +20,27 @@ private:
 	int32_t   lifeTimerTmp_ = 0;
 	float t_ = 0.0f;
 
+
+public:
+	//初期化
+	void Initialize();
+	//更新
+	void Update();
+
 private:
-	float GetRandomShakeInternal(float min, float max);
-	void SetRandomLength(float length);
+	//ランダムな数値取得
+	float GetRandom(float min, float max);
+	//シェイクの幅セット
+	void SetShakeLength(float length);
+	//シェイク時間セット
 	void SetLifeTime(int32_t time);
 
 public:
-	void SetShake(int32_t time, float length);
+	//シェイク始める
+	void BeginShake(int32_t time, float length);
+	//シェイクの大きさ取得
 	float GetShake();
-
+	//シェイクしているか取得
 	bool GetIsShaking();
-
-	void Initialize();
-
-	void Update();
-
 };
 

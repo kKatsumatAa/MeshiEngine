@@ -66,6 +66,7 @@ void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w)
 		{0,0,0,0}
 	};
 
+	//掛け算
 	for (int32_t i = 0; i < 4; i++)
 	{
 		for (int32_t j = 0; j < 4; j++)
@@ -76,6 +77,7 @@ void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w)
 
 	v = { v4[1][0],v4[1][1] ,v4[1][2] };
 
+	//ある数でベクトルを割る
 	if (w == true && v4[1][3] != 0)
 	{
 		v /= v4[1][3];

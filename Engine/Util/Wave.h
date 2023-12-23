@@ -21,14 +21,17 @@ private:
 	float timerMax_ = 0;
 
 public:
-	//震源地
+	//震源地セット
 	void SetEpicenter(const Vec3& pos) { epicenter_ = pos; }
+	//震源地取得
 	const Vec3& GetEpicenter() { return epicenter_; }
-	//波の太さ
+	//波の太さセット
 	void SetThickness(const Vec2& thickness) { thickness_ = thickness; }
+	//波の太さ取得
 	const Vec2& GetThickness() { return thickness_; }
-	//波の震源地からの距離
+	//波の震源地からの距離セット
 	void SetDistance(float distance) { distance_ = distance; }
+	//波の震源地からの距離取得
 	float GetDistance() { return distance_; }
 
 public:
@@ -36,9 +39,10 @@ public:
 	void BeginWave(const Vec3& epicenter, const Vec2& thickness, float distanceMax, float timer);
 	//更新
 	void Update(float speed);
-	//終わり
+	//波終わり
 	void End();
 
 public:
+	//ウェーブが終わったどうか
 	bool GetIsEndWave();
 };

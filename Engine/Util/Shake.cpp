@@ -1,6 +1,6 @@
-﻿#include "Shake.h"
+#include "Shake.h"
 
-float Shake::GetRandomShakeInternal(float min, float max)
+float Shake::GetRandom(float min, float max)
 {
 	std::uniform_real_distribution<float> random(min, max);
 	//乱数生成器
@@ -9,7 +9,7 @@ float Shake::GetRandomShakeInternal(float min, float max)
 	return random(engine);
 }
 
-void Shake::SetRandomLength(float length)
+void Shake::SetShakeLength(float length)
 {
 	shakeLength_ = length;
 }
@@ -20,19 +20,19 @@ void Shake::SetLifeTime(int32_t time)
 	lifeTimerTmp_ = time;
 }
 
-void Shake::SetShake(int32_t time, float length)
+void Shake::BeginShake(int32_t time, float length)
 {
-
+	//新たにシェイク始める時、今のシェイクより長い時間なら
 	if (time > lifeTimer_)
 	{
 		SetLifeTime(time);
-		SetRandomLength(length);
+		SetShakeLength(length);
 	}
 }
 
 float Shake::GetShake()
 {
-	return  GetRandomShakeInternal(-shakeLength_ * t_, shakeLength_ * t_);
+	return  GetRandom(-shakeLength_ * t_, shakeLength_ * t_);
 }
 
 bool Shake::GetIsShaking()

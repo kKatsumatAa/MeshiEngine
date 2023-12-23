@@ -131,7 +131,7 @@ private:
 		float pad3 = 0;
 		//---
 		//カメラ回転の倍率
-		Vec3 seaDirRotExtend = {0.57f,0.18f,1.0f};
+		Vec3 seaDirRotExtend = { 0.57f,0.18f,1.0f };
 		float pad4 = 0;
 		//---
 		//空の色
@@ -227,58 +227,72 @@ private://関数
 	void CreateVertexBuff(PeraVertex* vertex, int32_t vertexCount, ID3D12Resource** vB, D3D12_VERTEX_BUFFER_VIEW* vBV);
 	//頂点バッファマッピング
 	void MappingVertexBuff(PeraVertex* vertex, int32_t vertexCount, float peraExtend, ID3D12Resource* vB);
-
+	//RTVや演出用のバッファを生成
 	void InitializeBuffRTV(const char* normalImageFileName);
+	//パイプラインステート、ルートパラメータの設定
 	void GenerateRSPL();
+	//ガラスフィルター用のバッファ生成
 	void GlassFilterBuffGenerate(const char* fileName);
 	//ガラス用のバッファとビュー作成
 	bool CreateEffectBufferAndView(const char* fileName);
 	//ブルーム用のバッファ作成
 	bool CreateBloomBuffer(const D3D12_RESOURCE_DESC& resDesc,
 		const D3D12_HEAP_PROPERTIES& heapProp, D3D12_CLEAR_VALUE clearValue);
+	//ブルーム用のバッファビューを生成
 	bool CreateBloomBuffView();
 	//被写界深度用バッファ作成
 	bool CreateDofBuffer(const D3D12_RESOURCE_DESC& resDesc,
 		const D3D12_HEAP_PROPERTIES& heapProp, D3D12_CLEAR_VALUE clearValue);
-	//被写界深度用SRV
+	//被写界深度用SRV生成
 	bool CreateDofSRV();
-
-	//深度値テクスチャ用SRV
+	//深度値テクスチャ用SRV生成
 	bool CreateDepthTexBuffAndSRV();
 
-	//一枚目に描画
-	void PreDraw(bool isFirstPostPera);
-	void PostDraw();
+public:
+	//初期化
+	void Initialize(const char* normalImageFileName);
+	//更新
+	void Update();
+	//ImGuiの描画
+	void ImGuiUpdate(int32_t num);
 
-	//二枚目に描画
-	void PreDraw2();
-	void PostDraw2();
-	//二回目のエフェクトかける
-	void Draw();
-
+private:
 	//ヒープとヒープ上に作ったバッファビュー等をセット
 	void SetHeapAllBuffView(bool isPost2 = false, bool isPost1 = false);
 
+private://一枚目に描画----------------------------------
+	//一枚目への描画の前処理
+	void PreDraw(bool isFirstPostPera);
+	//一枚目への描画の後処理
+	void PostDraw();
 public:
-	void Initialize(const char* normalImageFileName);
-
-	void Update();
-	void ImGuiUpdate(int32_t num);
-
-	//二回目のエフェクトかける用の描画
-	void DrawToBlurAll();
-
-	//縮小バッファ書き込み
-	void DrawShrinkTextureForBlur();
-
-	//エフェクトかけ終わって実際に描画する
-	void Draw2();
-
-	//一枚目と二枚目を描画する(引数の描画関数を一枚目に描画)
+	//一枚目への描画(引数の描画関数を一枚目に描画)
 	void DrawToPostpera(const std::function<void()>& f, bool isFirstPostPera = false, const std::function<void()>& drawSpriteF = nullptr);
 
+public://ぼかす用のペラに描画---------------------------
+	//ブルームや被写界深度などぼかす用のペラに書き込み
+	void DrawShrinkTextureForBlur();
+
+private://二枚目に描画-----------------------------------
+	//二枚目への描画の前処理
+	void PreDraw2();
+	//二枚目への描画の後処理
+	void PostDraw2();
 public:
+	//二枚目への描画処理まとめ
+	void DrawToBlurAll();
+
+public:
+	//一枚目を描画
+	void Draw();
+	//エフェクトかけ終わって二枚目を実際に描画する
+	void Draw2();
+
+public:
+	//一枚目の大きさセット
 	void SetPera1Extend(float extend) { pera1Extend_ = extend; }
+	//ブラー用ペラの大きさセット
 	void SetPeraGExtend(float extend) { peraGExtend_ = extend; }
+	//二枚目の大きさセット
 	void SetPera2Extend(float extend) { pera2Extend_ = extend; }
 };

@@ -90,7 +90,7 @@ void Camera2D::ZoomUpdate()
 //----------------------------------------------------------
 void Camera2D::BeginShake(uint32_t time, float maxLength)
 {
-	shake_.SetShake(time, maxLength);
+	shake_.BeginShake(time, maxLength);
 }
 
 void Camera2D::BeginFollow(float maxLength)
