@@ -44,8 +44,9 @@ private:
 	Wave waves_[WAVE_NUM_];
 
 public:
+	//コンストラクタ
 	Waves();
-
+	//バッファの描画コマンド
 	void SetBuffCmdLst(int32_t rootParamIndex);
 
 public:
@@ -54,7 +55,7 @@ public:
 	//波を発生
 	void BeginWave(const Vec3& epicenter, const Vec2& thickness, float distanceMax, float timer);
 
-	//分割数
+	//分割数セット
 	void SetTessFactor(float tessFactor) { mapWavesBuff_->tessFactor = tessFactor; }
 
 private:
