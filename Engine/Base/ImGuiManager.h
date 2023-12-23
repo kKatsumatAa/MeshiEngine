@@ -10,9 +10,6 @@
 //ImGuiの管理
 class ImGuiManager
 {
-private:
-
-
 public:
 	/// <summary>
 	/// 初期化

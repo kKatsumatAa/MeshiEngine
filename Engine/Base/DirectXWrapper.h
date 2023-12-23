@@ -70,19 +70,28 @@ private:
 	std::list<ComPtr<ID3D12Resource>> texUploadBuff_;
 
 private:
+	//コンストラクタ
 	DirectXWrapper();
+	//デストラクタ
 	~DirectXWrapper();
 
-	//初期化系
+	//デバイス初期化
 	void InitializeDevice();
+	//コマンド初期化
 	void InitializeCommand();
+	//スワップチェーン初期化
 	void InitializeSwapchain();
+	//レンダーターゲット初期化
 	void InitializeRendertargetView();
+	//深度バッファ初期化
 	void InitializeDepthBuffer();
+	//フェンス初期化
 	void InitializeFence();
 
 	//FPS固定初期化
 	void InitializeFixFPS();
+
+private:
 	//FPS固定更新
 	void UpdateFixFPS();
 
@@ -91,8 +100,8 @@ private:
 		ID3D12GraphicsCommandList** texCommandList);
 
 public:
+	//初期化
 	void Initialize();
-
 
 	//コピーコンストラクタを無効
 	DirectXWrapper(const DirectXWrapper& obj) = delete;
@@ -102,53 +111,69 @@ public:
 	//関数
 	static DirectXWrapper& GetInstance();
 
+	//コマンドのリセット
 	void CommandReset();
-
-	void DrawInitialize();
 
 	//テクスチャを描画とは別のコマンドリストでアップするコマンド
 	void UpLoadTexture();
 
-	//実際に描画
+	//影用の深度描画の前の処理
 	void PreShadowDraw();
+	//影用の深度描画の後の処理
 	void PostShadowDraw();
-	
-	//実際に描画
+
+	//描画の前の処理
 	void PreDraw();
+	//描画の後の処理
 	void PostDraw();
 
 	//リソースバリア
 	void ResourceBarrier(D3D12_RESOURCE_STATES beforeState,
 		D3D12_RESOURCE_STATES afterState, ID3D12Resource* buff);
 
-	//getter
+public:
+	//デバイスの取得
 	ID3D12Device* GetDevice() const { return device_.Get(); }
+	//コマンドリスト取得
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
+	//テクスチャ用のコマンドリスト取得
 	ID3D12GraphicsCommandList* GetTexCommandList() const { return texCommandList_.Get(); }
+	//コマンドキュー取得
 	ID3D12CommandQueue* GetCommandQueue()const { return commandQueue_.Get(); }
+	//fenceValueを取得
 	uint64_t& GetFenceVal() { return fenceVal_; }
+	//フェンス取得
 	ID3D12Fence* GetFence() { return fence_.Get(); }
+	//RTVのヒープ取得
 	ID3D12DescriptorHeap* GetRtvheap() { return rtvHeap_.Get(); }
+	//クリアカラー取得
 	float* GetClearColor() { return clearColor_; }
+	//バックバッファの配列取得
 	std::vector< ComPtr <ID3D12Resource>>& GetBackBuffer() { return backBuffers_; }
+	//DSVのヒープ取得
 	ID3D12DescriptorHeap* GetDSVHeap() { return dsvHeap_.Get(); }
+	//深度バッファ取得
 	ID3D12Resource* GetDepthBuff() { return depthBuff_.Get(); }
+	//シャドウマップ用の深度バッファ取得
 	ID3D12Resource* GetLightDepthBuff() { return lightDepthBuff_.Get(); }
+	//テクスチャのアップロード用のバッファのポインタのポインタ取得
 	ID3D12Resource** GetTexUploadBuffPP() { return texUploadBuff_.back().GetAddressOf(); }
+	//テクスチャのアップロード用のバッファのポインタ取得
 	ID3D12Resource* GetTexUploadBuffP() { return texUploadBuff_.back().Get(); }
+	//テクスチャのアップロード用のバッファのemplace_back()
 	void EmplaceBackUploadBuff() { texUploadBuff_.emplace_back(); }
 
 	//バックバッファの数を取得
 	size_t GetBackBufferCount() const { return backBuffers_.size(); }
 
-	//クリアカラー
+	//クリアカラーセット
 	void SetClearColor(float clearColor[4]);
 };
 //画像のロード（引数にバッファ設定）
 void LoadPictureFromFile(const char* fileName, Microsoft::WRL::ComPtr<ID3D12Resource>& texBuff);
-
+//リソースの設定
 void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, uint32_t size);
-
+//バッファの設定
 void BuffProperties(D3D12_HEAP_PROPERTIES& heap, D3D12_RESOURCE_DESC& resource,
 	ID3D12Resource** buff);
 

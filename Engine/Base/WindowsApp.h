@@ -21,15 +21,6 @@ private:
 	WNDCLASSEX wndclassEX_;
 	HWND hwnd_;
 
-
-	//ウインドウプロシージャ(const &にするとエラー出る)
-	static LRESULT WindowProc(HWND hwnd, uint32_t msg, WPARAM wparam, LPARAM lparam);
-
-	WindowsApp();
-
-	~WindowsApp() { ; }
-
-
 public:
 	//ウィンドウサイズ
 	static const float WINDOW_WIDTH_;
@@ -39,23 +30,37 @@ public:
 	D3D12_VIEWPORT viewport_;
 
 
+public:
 	//コピーコンストラクタを無効
 	WindowsApp(const WindowsApp& obj) = delete;
 	//代入演算子も
 	WindowsApp& operator=(const WindowsApp& obj) = delete;
 
+	//インスタンス取得
 	static WindowsApp& GetInstance();
 
+public:
+	//ウインドウプロシージャ(const &にするとエラー出る)
+	static LRESULT WindowProc(HWND hwnd, uint32_t msg, WPARAM wparam, LPARAM lparam);
+
+	//コンストラクタ
+	WindowsApp();
+	//デストラクタ
+	~WindowsApp() { ; }
+
+public:
 	//(const &にするとエラー出る)
 	bool MessegeRoop(MSG msg);
 
+	//UnregisterClassのラッパー関数
 	void UnregisterClassA()
 	{
 		UnregisterClass(wndclassEX_.lpszClassName, wndclassEX_.hInstance);
 	}
 
-	//getter
+	//WNDCLASSEXを取得
 	const WNDCLASSEX& GetWndclassEX() { return wndclassEX_; }
+	//hwnd取得
 	const HWND& Gethwnd() { return hwnd_; }
 };
 

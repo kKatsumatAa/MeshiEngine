@@ -114,7 +114,7 @@ void WorldMat::CalcAllTreeMat()
 	if (parent_ != nullptr)
 	{
 		//親の行列も計算(重いかも)
-		SetParentWorld(parent_);
+		CalcParentWorld(parent_);
 		//親の行列を自分の行列にかけていく
 		RecursiveCalcParentMat(parent_, matWorld_);
 	}
@@ -133,7 +133,7 @@ M4 WorldMat::GetOnlyParentALLTreeMat()
 	return M4::NORMAL_M;
 }
 
-void WorldMat::SetParentWorld(WorldMat* parent)
+void WorldMat::CalcParentWorld(WorldMat* parent)
 {
 	//親の行列計算
 	parent->CalcWorldMat();
@@ -141,7 +141,7 @@ void WorldMat::SetParentWorld(WorldMat* parent)
 	//親に親があったら
 	if (parent->parent_)
 	{
-		SetParentWorld(parent->parent_);
+		CalcParentWorld(parent->parent_);
 	}
 }
 

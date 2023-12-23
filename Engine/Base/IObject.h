@@ -109,7 +109,9 @@ protected:
 
 	//関数------------------------------------------------------------------------------
 public:
+	//デストラクタ
 	virtual ~IObject();
+	//コンストラクタ
 	IObject();
 
 protected:
@@ -121,8 +123,9 @@ public:
 	static void CommonInitialize();
 
 public:
+	//更新
 	virtual void Update();
-
+	//描画
 	virtual void Draw() = 0;
 
 public:
@@ -147,6 +150,7 @@ public:
 		int32_t numRTarget = 3,
 		bool isSprite = false);
 
+	//ブレンドの設定
 	static void Blend(D3D12_GRAPHICS_PIPELINE_STATE_DESC& blendDesc,
 		const D3D12_BLEND_OP& blendMode,
 		bool Inversion = 0, bool Translucent = 0);
@@ -158,62 +162,88 @@ public:
 public:
 	//インスタンスの種類を得る
 	ObjectInstanceType GetObjInsType() { return objInsType_; }
-	//2Dか3Dか
 
 public:
-	//生きてるか
+	//生きてるかセット
 	void SetIsAlive(bool isAlive);
+	//生きてるか取得
 	bool GetIsAlive() { return isAlive_; }
 
-	//描画、更新するかどうか
+	//描画、更新するかどうかセット
 	virtual void SetIsValid(bool isValid);
+	//更新するかどうかセット
 	void SetIsValidUpdate(bool isvalid) { isValidUpdate_ = isvalid; }
+	//描画するかどうかセット
 	void SetIsValidDraw(bool isvalid) { isValidDraw_ = isvalid; }
 
+	//更新するかどうか取得
 	bool GetIsValidUpdate() { return isValidUpdate_; }
+	//描画するかどうか取得
 	bool GetIsValidDraw() { return isValidDraw_; }
 
-	//スピード（当たり判定に使う）
+	//スピード（当たり判定に使う）セット
 	void SetVelocity(const Vec3& vec) { velocity_ = vec; }
+	//スピード（当たり判定に使う）取得
 	const Vec3& GetVelocity() { return velocity_; }
 
-	//インスタンスの番号
+	//インスタンスの番号セット
 	void SetInstanceNum(int32_t instanceNum) { instanceNum_ = instanceNum; }
+	//インスタンスの番号取得
 	int32_t GetInstanceNum() { return instanceNum_; }
 
-
 public:
-	//位置
+	//位置セット
 	void SetTrans(const Vec3& pos) { worldMat_->trans_ = pos; }
+	//X位置セット
 	void SetTransX(float pos) { worldMat_->trans_.x = pos; }
+	//Y位置セット
 	void SetTransY(float pos) { worldMat_->trans_.y = pos; }
+	//Z位置セット
 	void SetTransZ(float pos) { worldMat_->trans_.z = pos; }
+	//位置取得
 	Vec3 GetTrans()const { return worldMat_->trans_; }
+	//ローカル座標セット
 	void SetLocalTrans(const Vec3& pos) { worldMat_->localTrans_ = pos; }
+	//ローカル座標取得
 	Vec3 GetLocalTrans()const { return worldMat_->localTrans_; }
-	//スケール
+	//スケールセット
 	void SetScale(const Vec3& scale) { worldMat_->scale_ = scale; }
+	//Xスケールセット
 	void SetScaleX(float scale) { worldMat_->scale_.x = scale; }
+	//Yスケールセット
 	void SetScaleY(float scale) { worldMat_->scale_.y = scale; }
+	//Zスケールセット
 	void SetScaleZ(float scale) { worldMat_->scale_.z = scale; }
+	//スケール取得
 	const Vec3& GetScale()const { return worldMat_->scale_; }
-	//回転
+	//角度セット
 	void SetRot(const Vec3& rot) {
 		worldMat_->rot_ = rot;
 	}
+	//X角度セット
 	void SetRotX(float rot) { worldMat_->rot_.x = rot; }
+	//Y角度セット
 	void SetRotY(float rot) { worldMat_->rot_.y = rot; }
+	//Z角度セット
 	void SetRotZ(float rot) { worldMat_->rot_.z = rot; }
+	//角度取得
 	const Vec3& GetRot()const { return worldMat_->rot_; }
-	//行列を更新
+
+	//親と自分の行列を更新
 	void SetLocalParentMat(const M4& mat) { worldMat_->SetLocalParentMat(mat); }
+	//ワールド行列更新
 	void CalcWorldMat() { worldMat_->CalcWorldMat(); }
+	//回転行列更新
 	void CalcRotMat() { worldMat_->CalcRotMat(); }
+	//トランス行列更新
 	void CalcTransMat() { worldMat_->CalcTransMat(); }
+	//スケール行列更新
 	void CalcScaleMat() { worldMat_->CalcScaleMat(); }
-	//親
+	//親のworldMatセット
 	void SetParent(IObject* obj) { worldMat_->parent_ = obj->GetWorldMat(); }
+	//親のworldMatセット（worldMatで）
 	void SetParent(WorldMat* worldMat) { worldMat_->parent_ = worldMat; }
+	//親のworldMat取得
 	WorldMat* GetParent() { return worldMat_->parent_; }
 	//ワールド行列用クラスのインスタンスを取得
 	WorldMat* GetWorldMat() { return worldMat_.get(); }
@@ -225,14 +255,17 @@ public:
 	//ワールド行列の取得
 	const M4& GetMatWorld() { return worldMat_->matWorld_; }
 
-	//クォータニオン系
+	//クォータニオン取得
 	Quaternion GetQuaternion() { return worldMat_->GetQuaternion(); }
+	//クォータニオンの行列を使うかセット
 	void SetIsUseQuaternionMatRot(bool is) { worldMat_->SetIsUseQuaMatRot(is); }
+	//クォータニオンの行列を使うか取得
 	void SetMatRot(const M4& m) { worldMat_->SetRotMat(m); }
 
 public:
-	//オブジェクト名前
+	//オブジェクト名前セット
 	void SetObjName(std::string objName) { objName_ = objName; }
+	//オブジェクト名前取得
 	const std::string& GetObjName()const { return objName_; }
 
 	//コライダー
@@ -247,7 +280,6 @@ public:
 	void SetColor(const Vec4& color) { constMapMaterial_->color = color; }
 	//色を返す
 	const Vec4& GetColor() { return constMapMaterial_->color; }
-
 };
-
+//エラー処理
 void Error(bool filed, ID3DBlob* errorBlob);

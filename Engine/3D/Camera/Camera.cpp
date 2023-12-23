@@ -139,7 +139,7 @@ void Camera::UpdateViewMatrix()
 void Camera::UpdateProjectionMatrix()
 {
 	// 透視投影による射影行列の生成
-	projectionMat_.SetMat();
+	projectionMat_.CalcMat();
 }
 
 void Camera::MoveEyeVector(const Vec3& move)

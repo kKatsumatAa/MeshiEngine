@@ -1,4 +1,4 @@
-﻿#include "ProjectionMat.h"
+#include "ProjectionMat.h"
 
 using namespace DirectX;
 
@@ -7,16 +7,16 @@ ProjectionMat::ProjectionMat():
 	nearPos_(0.1f), farPos_(10000.0f), aspect_({ WindowsApp::GetInstance().WINDOW_WIDTH_ , WindowsApp::GetInstance().WINDOW_HEIGHT_ }),
 	fovY_(XMConvertToRadians(45.0f))
 {
-	SetMat();
+	CalcMat();
 }
 
 ProjectionMat::ProjectionMat(float nearPos, float farPos, float aspectX, float aspectY, float fovY):
 	nearPos_(nearPos), farPos_(farPos),aspect_({aspectX,aspectY}),fovY_(fovY)
 {
-	SetMat();
+	CalcMat();
 }
 
-void ProjectionMat::SetMat()
+void ProjectionMat::CalcMat()
 {
 	matProjection_ = XMMatrixPerspectiveFovLH(
 		fovY_,//fovY

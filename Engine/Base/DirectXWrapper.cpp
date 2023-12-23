@@ -343,11 +343,6 @@ void DirectXWrapper::CommandReset()
 	assert(SUCCEEDED(result_));
 }
 
-void DirectXWrapper::DrawInitialize()
-{
-
-}
-
 void DirectXWrapper::UpLoadTexture()
 {
 	// 命令のクローズ

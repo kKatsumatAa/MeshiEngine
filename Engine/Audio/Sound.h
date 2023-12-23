@@ -71,15 +71,27 @@ private:
 	static std::string sDirectoryPath_;
 
 
+public://シングルトン
+	//コピーコンストラクタを無効
+	Sound(const Sound& obj) = delete;
+	//代入演算子も無効
+	Sound& operator=(const Sound& obj) = delete;
+
+	//インスタンス取得
+	static Sound& GetInstance();
+
 private:
+	//コンストラクタ
 	Sound();
+	//デストラクタ
 	~Sound();
 
 private:
+	//名前でサウンドデータを取得
 	SoundData* GetSoundData(const std::string& name);
 
 public://メンバ関数
-
+	//初期化
 	static void Initialize(const std::string& directoryPath = "Resources/sound/");
 
 	/// <summary>
@@ -105,20 +117,11 @@ public://メンバ関数
 	/// <param name="Loop">ループ再生</param>
 	void PlayWave(const std::string& filename, float volume = 1.0f, bool Loop = false);
 
+	//音声停止
 	void StopWave(const std::string& filename);
 
 	//再生止まったか
 	bool CheckPlayingWave(const std::string& name);
-
-
-public://シングルトン
-	//コピーコンストラクタを無効
-	Sound(const Sound& obj) = delete;
-	//代入演算子も
-	Sound& operator=(const Sound& obj) = delete;
-
-	//関数
-	static Sound& GetInstance();
 };
 
 

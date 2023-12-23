@@ -38,19 +38,30 @@ private://描画用
 	ConstBufferDataTransform* constMapTransform_ = nullptr;//定数バッファのマッピング用ポインタ
 
 public:
+	//コンストラクタ
 	ConstBuffTransform() { ; }
+	//デストラクタ
 	~ConstBuffTransform() { ; }
 
+	//初期化
 	void Initialize();
+	//描画コマンド
 	void DrawCommand(int32_t index);
 
 public:
+	//ビュープロジェクション行列セット
 	void SetViewProjMat(const XMMATRIX& mat) { constMapTransform_->viewproj = mat; }
+	//ライトのビュープロジェクション行列セット
 	void SetLightViewProjMat(const XMMATRIX& mat) { constMapTransform_->lightCamera = mat; }
+	//ワールド行列セット
 	void SetWorldMat(const XMMATRIX& mat) { constMapTransform_->world = mat; }
+	//カメラ位置セット
 	void SetCameraPos(const Vec3& pos) { constMapTransform_->cameraPos = pos; }
 
+	//ワールド行列取得
 	const XMMATRIX& GetWorldMat() const { return constMapTransform_->world; }
+	//ビュープロジェクション行列取得
 	const XMMATRIX& GetViewProjMat()const { return constMapTransform_->viewproj; }
+	//カメラ位置取得
 	const Vec3& GetCameraPos()const { return constMapTransform_->cameraPos; }
 };

@@ -23,8 +23,11 @@ public:
 	XMFLOAT2 aspect_;
 	float fovY_;
 
-	//
+public:
+	//コンストラクタ
 	ProjectionMat();
+	//コンストラクタ(引数アリ)
 	ProjectionMat(float nearPos, float farPos, float aspectX, float aspectY, float fovY);
-	void SetMat();
+	//行列計算
+	void CalcMat();
 };

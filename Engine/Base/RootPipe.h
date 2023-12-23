@@ -22,9 +22,9 @@ public:
 	ComPtr<ID3D12PipelineState> pipelineState;
 	ComPtr<ID3D12RootSignature> rootSignature;
 
-private:
 
 public:
+	//シェーダーのBrobの設定
 	void CreateBlob(const char* vsName, const char* psName, const char* gsName = nullptr
 		, const char* hsName = nullptr, const char* dsName = nullptr,
 		std::string vEPName = "main", std::string pEPName = "main", std::string gEPName = "main"

@@ -23,8 +23,9 @@ private:
 	void AsyncLoad(std::function<void()> p);
 
 public:
-	//非同期処理をしているか
+	//非同期処理をしているか取得
 	bool GetIsLoading();
+	//非同期処理をしているかセット
 	void SetIsLoading(bool isLoading) { isLoading_ = isLoading; }
 
 	//非同期が終わった瞬間か
