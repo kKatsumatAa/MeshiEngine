@@ -109,12 +109,15 @@ protected:
 
 
 public://関数---------------------------------------------------------
+	//デストラクタ
 	virtual ~IObject3D() override;
+	//コンストラクタ
 	IObject3D();
 
 public:
+	//共通の初期化
 	static void CommonInitialize();
-
+	//初期化
 	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat = nullptr, IModel* model = nullptr);
 
 private:
@@ -136,9 +139,9 @@ public:
 
 	//演出系のアップデート
 	void EffectUpdate(IObject3D* effectCopyObj = nullptr);
-	//imgui
+	//imgui描画
 	virtual void DrawImGui(std::function<void()>imguiF = NULL)override;
-
+	//staticなImGuiの描画
 	static void StaticDrawImGui();
 
 protected:
@@ -161,26 +164,32 @@ public:
 
 	//ボーンとワールド適用した座標セット
 	void SetBoneWorldTrans(const Vec3& trans) { boneWorldTrans_ = trans; }
+	//ボーンとワールド適用した座標取得
 	const Vec3& GetBoneWorldTrans() { return boneWorldTrans_; }
 
 public:
 	//ディゾルブ画像ハンドル
 	void SetDissolveTexHandle(uint64_t dissolveTextureHandle) { dissolveTextureHandle_ = dissolveTextureHandle; }
-	//ディゾルブ割合
+	//ディゾルブ割合セット
 	void SetDissolveT(float t) { effectFlags_.dissolveT = t; }
+	//ディゾルブ割合取得
 	float GetDissolveT() { return effectFlags_.dissolveT; }
+	//ディゾルブするかセット
 	void SetisDissolve(bool isDissolve) { effectFlags_.isDissolve = isDissolve; }
 
-	//スペキュラマップ
+	//スペキュラマップするかセット
 	void SetIsSpecularMap(bool isSpecularMap) { effectFlags_.isSpecularMap = isSpecularMap; }
+	//スペキュラマップの画像ハンドルセット
 	void SetSpecularMapTexHandle(uint64_t specularMapTextureHandle) { specularMapTextureHandle_ = specularMapTextureHandle; }
 
-	//ノーマルマップ
+	//ノーマルマップするかセット
 	void SetIsNormalMap(bool isNormalMap) { effectFlags_.isNormalMap = isNormalMap; }
+	//ノーマルマップの画像ハンドルセット
 	void SetNormalMapTexHandle(uint64_t normalMapTextureHandle) { normalMapTextureHandle_ = normalMapTextureHandle; }
 
-	//シルエット
+	//シルエットするかセット
 	void SetIsSilhouette(bool is) { effectFlags_.isSilhouette = is; }
+	//シルエットの色セット
 	void SetSilhouetteColor(const Vec3& color) { effectFlags_.silhouetteColor = color; }
 
 public:
@@ -193,19 +202,24 @@ public:
 	void SetTessFactor(float tessFactor) { waves_.SetTessFactor(tessFactor); }
 
 public:
-	//モデルのポインタ
+	//モデルのポインタセット
 	virtual void SetModel(IModel* model);
+	//モデルのポインタ取得
 	IModel* GetModel() { return model_; }
 
-	//正面ベクトル
-	//オブジェクトの角度で回転させた正面ベクトルをゲット
+	//正面ベクトル取得
 	const Vec3& GetFrontVec();
+	//正面ベクトルを角度で回転
 	void CalcFrontVec();
-	const Vec3& GetFrontVecTmp() { return frontVecTmp_; }
-	inline void SetFrontVecTmp(const Vec3& vec) { frontVecTmp_ = vec; }
+	//正面ベクトルセット
 	inline void SetFrontVec(const Vec3& vec) {
 		frontVec_ = vec;
 	}
+
+	//最初の正面ベクトル取得
+	const Vec3& GetFrontVecTmp() { return frontVecTmp_; }
+	//最初の正面ベクトルセット
+	inline void SetFrontVecTmp(const Vec3& vec) { frontVecTmp_ = vec; }
 
 public:
 	//メッシュのオフセット用

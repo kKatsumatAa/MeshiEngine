@@ -82,126 +82,9 @@ public://サブクラス
 		float interval = 0;//実行間隔
 	};
 
-public: // 静的メンバ関数
-
-	/// <summary>
-	/// 静的初期化
-	/// </summary>
-	/// <param name="device">デバイス</param>
-	static void StaticInitialize(ID3D12Device* device);
-
 private: // 静的メンバ変数
 	// デバイス
 	static ID3D12Device* sDevice_;
-
-public: // メンバ関数
-	Mesh();
-
-	//頂点マッピング
-	void MappingVertices(std::vector<VertexPosNormalUvSkin>* vertices = nullptr);
-
-	/// <summary>
-	/// 名前を取得
-	/// </summary>
-	/// <returns>名前</returns>
-	const std::string& GetName() { return name_; }
-
-	/// <summary>
-	/// 名前をセット
-	/// </summary>
-	/// <param name="name_">名前</param>
-	void SetName(const std::string& name);
-
-	/// <summary>
-	/// 頂点データの追加
-	/// </summary>
-	/// <param name="vertex">頂点データ</param>
-	void AddVertex(const VertexPosNormalUvSkin& vertex);
-
-	/// <summary>
-	/// 頂点インデックスの追加
-	/// </summary>
-	/// <param name="index">インデックス</param>
-	void AddIndex(uint16_t index);
-
-	void PopIndex();
-
-	/// <summary>
-	/// 頂点データの数を取得
-	/// </summary>
-	/// <returns>頂点データの数</returns>
-	inline size_t GetVertexCount() { return vertices_.size(); }
-
-	/// <summary>
-	/// エッジ平滑化データの追加
-	/// </summary>
-	/// <param name="indexPosition">座標インデックス</param>
-	/// <param name="indexVertex">頂点インデックス</param>
-	void AddSmoothData(uint16_t indexPosition, uint16_t indexVertex);
-
-
-	/// <summary>
-	/// 平滑化された頂点法線の計算
-	/// </summary>
-	void CalculateSmoothedVertexNormals();
-
-	//メッシュの接線を計算
-	void CalculateTangent();
-
-	/// <summary>
-	/// マテリアルの取得
-	/// </summary>
-	/// <returns>マテリアル</returns>
-	Material* GetMaterial() { return material_; }
-
-	/// <summary>
-	/// マテリアルの割り当て
-	/// </summary>
-	/// <param name="material">マテリアル</param>
-	void SetMaterial(Material* material);
-
-	/// <summary>
-	/// バッファの生成
-	/// </summary>
-	void CreateBuffers();
-
-	//行列の情報を転送
-	void SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt);
-
-	//加算座標を頂点座標に足す
-	void SendingVetices();
-
-
-	/// <summary>
-	/// 頂点バッファ取得
-	/// </summary>
-	/// <returns>頂点バッファ</returns>
-	const D3D12_VERTEX_BUFFER_VIEW& GetVBView() { return vbView_; }
-
-	/// <summary>
-	/// インデックスバッファ取得
-	/// </summary>
-	/// <returns>インデックスバッファ</returns>
-	const D3D12_INDEX_BUFFER_VIEW& GetIBView() { return ibView_; }
-
-	/// <summary>
-	/// 描画
-	/// </summary>
-	/// <param name="cmdList">命令発行先コマンドリスト</param>
-	void Draw(Vec3 materialExtend, const ConstBuffTransform& cbt, bool isShadow);
-
-public:
-	/// <summary>
-	/// 頂点配列を取得
-	/// </summary>
-	/// <returns></returns>
-	inline const std::vector<VertexPosNormalUvSkin>& GetVertices() { return vertices_; }
-
-	/// <summary>
-	/// インデックス配列を取得
-	/// </summary>
-	/// <returns></returns>
-	inline const std::vector<unsigned short>& GetIndices() { return indices_; }
 
 private: // メンバ変数
 	// 名前
@@ -237,20 +120,142 @@ private: // メンバ変数
 
 	PolygonOffset polygonOffsetData_;
 
+public: // 静的メンバ関数
+
+	/// <summary>
+	/// 静的初期化
+	/// </summary>
+	/// <param name="device">デバイス</param>
+	static void StaticInitialize(ID3D12Device* device);
+
+public: // メンバ関数
+	//コンストラクタ
+	Mesh();
+
+	//頂点マッピング
+	void MappingVertices(std::vector<VertexPosNormalUvSkin>* vertices = nullptr);
+
+	/// <summary>
+	/// 名前を取得
+	/// </summary>
+	/// <returns>名前</returns>
+	const std::string& GetName() { return name_; }
+
+	/// <summary>
+	/// 名前をセット
+	/// </summary>
+	/// <param name="name_">名前</param>
+	void SetName(const std::string& name);
+
+	/// <summary>
+	/// 頂点データの追加
+	/// </summary>
+	/// <param name="vertex">頂点データ</param>
+	void AddVertex(const VertexPosNormalUvSkin& vertex);
+
+	/// <summary>
+	/// 頂点インデックスの追加
+	/// </summary>
+	/// <param name="index">インデックス</param>
+	void AddIndex(uint16_t index);
+
+	//インデックスを要素の後ろから削除
+	void PopIndex();
+
+	/// <summary>
+	/// 頂点データの数を取得
+	/// </summary>
+	/// <returns>頂点データの数</returns>
+	inline size_t GetVertexCount() { return vertices_.size(); }
+
+	/// <summary>
+	/// エッジ平滑化データの追加
+	/// </summary>
+	/// <param name="indexPosition">座標インデックス</param>
+	/// <param name="indexVertex">頂点インデックス</param>
+	void AddSmoothData(uint16_t indexPosition, uint16_t indexVertex);
+
+
+	/// <summary>
+	/// 平滑化された頂点法線の計算
+	/// </summary>
+	void CalculateSmoothedVertexNormals();
+
+	//メッシュの接線を計算
+	void CalculateTangent();
+
+public:
+	/// <summary>
+	/// マテリアルの取得
+	/// </summary>
+	/// <returns>マテリアル</returns>
+	Material* GetMaterial() { return material_; }
+
+	/// <summary>
+	/// マテリアルの割り当て
+	/// </summary>
+	/// <param name="material">マテリアル</param>
+	void SetMaterial(Material* material);
+
+	/// <summary>
+	/// バッファの生成
+	/// </summary>
+	void CreateBuffers();
+
+	//行列の情報を転送
+	void SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt);
+
+	//加算座標を頂点座標に足す
+	void SendingVetices();
+
+	/// <summary>
+	/// 頂点バッファ取得
+	/// </summary>
+	/// <returns>頂点バッファ</returns>
+	const D3D12_VERTEX_BUFFER_VIEW& GetVBView() { return vbView_; }
+
+	/// <summary>
+	/// インデックスバッファ取得
+	/// </summary>
+	/// <returns>インデックスバッファ</returns>
+	const D3D12_INDEX_BUFFER_VIEW& GetIBView() { return ibView_; }
+
+	/// <summary>
+/// 頂点配列を取得
+/// </summary>
+/// <returns></returns>
+	inline const std::vector<VertexPosNormalUvSkin>& GetVertices() { return vertices_; }
+
+	/// <summary>
+	/// インデックス配列を取得
+	/// </summary>
+	/// <returns></returns>
+	inline const std::vector<unsigned short>& GetIndices() { return indices_; }
+
+public:
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name="cmdList">命令発行先コマンドリスト</param>
+	void Draw(Vec3 materialExtend, const ConstBuffTransform& cbt, bool isShadow);
+
 public:
 	//getter
-//モデルの変形行列を取得
+	//モデルの変形行列を取得
 	const XMMATRIX& GetMeshFBXTransform() { return meshNode_->globalTransform; }
-
+	//メッシュノードのポインタ取得
 	const Node& GetMeshNode() { return *meshNode_; }
 
 	//setter
+	//メッシュノードのポインタセット
 	void SetMeshNode(Node* node) { meshNode_ = node; }
 
 	//getter
 	//ポリゴン数を取得
 	int32_t GetPolygonCount() { return (int32_t)indices_.size() / 3; }
+	//ポリゴンの法線取得
 	Vec3 GetPolygonNormal(int32_t index);
-	//メッシュの加算座標をランダムで出す
+
+	//メッシュのオフセットデータをセット
 	void SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData);
 };

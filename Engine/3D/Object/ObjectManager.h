@@ -18,21 +18,32 @@ private:
 
 
 private:
+	//コンストラクタ
 	ObjectManager() { ; }
+	//デストラクタ
 	~ObjectManager() { ; }
 
 public:
+	//コピーコンストラクタ禁止
 	ObjectManager& operator=(const ObjectManager& inst) = delete;
+	//コピーコンストラクタ禁止
 	ObjectManager(const ObjectManager& inst) = delete;
 
+	//インスタンス取得
 	static ObjectManager& GetInstance();
 
 public:
+	//初期化
 	void Initialize();
+	//更新
 	void Update();
+	//影用の深度描画
 	void DrawShadow();
+	//描画
 	void Draw();
+	//ImGuiの描画
 	void DrawImGui();
+	//ほかの処理の後でする更新
 	void PostUpdate();
 
 public:
@@ -42,7 +53,7 @@ public:
 private:
 	//グループがあるか調べる
 	bool FindObjGroup(const std::string& name);
-
+	//オブジェクトのまとまりを名前で取得
 	std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator
 		GetObjGroup(const std::string& name);
 
@@ -72,9 +83,9 @@ public:
 	std::vector<IObject3D*> GetObjs(const std::string& groupName, const std::string& name);
 	//判定属性を指定してオブジェのポイントを配列で返す
 	std::vector<IObject3D*> GetObjs(const std::string& groupName, uint16_t attribute);
-	//グループ全部
+	//グループ全部オブジェクト取得
 	std::vector<IObject3D*>GetObjs(const std::string& groupName);
-	//全部(条件なく)
+	//全部オブジェクト取得(条件なく)
 	std::vector<IObject3D*>GetObjs();
 
 	//objクリア

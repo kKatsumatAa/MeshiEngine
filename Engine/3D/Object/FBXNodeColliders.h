@@ -21,10 +21,13 @@ public:
 		IObject3D* parentObj_ = nullptr;
 
 	public:
+		//どれかのコライダーが衝突したときに呼び出す処理をセット
 		void SetOnCollFunc(const std::function<void(IObject3D* obj, const CollisionInfo& info)>f) { onCollFunc_ = f; }
+		//親オブジェクトをセット
 		void SetParentObj(IObject3D* parentObj) { parentObj_ = parentObj; }
 
 	public:
+		//衝突したときの処理
 		void OnCollision(const CollisionInfo& info)override;
 	};
 
@@ -39,7 +42,9 @@ private:
 	IObject3D* parentObj_ = nullptr;
 
 public://関数------------
+	//更新
 	void Update(WorldMat* worldMat);
+	//描画
 	void Draw();
 
 public:

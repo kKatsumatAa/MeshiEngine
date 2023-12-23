@@ -89,7 +89,7 @@ public:
 /// <param name="src">元となるFBX行列</param>
 	static void ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src);
 
-
+	//モデルに別fbxのアニメーションを追加
 	void AddAnimationModel(ModelFBX* addToModel, const std::string& animeFbxName);
 
 private:

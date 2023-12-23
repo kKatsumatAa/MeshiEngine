@@ -56,10 +56,13 @@ protected:
 
 
 public:
+	//コンストラクタ
 	IModel() { ; }
+	//デストラクタ
 	virtual ~IModel();
 
 protected:
+	//materialにテクスチャを読み込む
 	virtual void LoadTexturesInternal(const std::string& directoryPath);
 
 	/// <summary>
@@ -73,6 +76,7 @@ public:
 	/// </summary>
 	void AddMaterial(std::unique_ptr<Material> material);
 
+	//テクスチャ読み込み
 	virtual void LoadTextures() = 0;
 
 public: // メンバ関数
@@ -85,6 +89,7 @@ public: // メンバ関数
 	virtual void Draw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
 		, const ConstBuffTransform& cbt, bool isShadow);
 
+	//ImGuiの描画
 	virtual void DrawImGui();
 
 public:
@@ -94,12 +99,15 @@ public:
 	/// <returns></returns>
 	inline const std::vector<std::unique_ptr<Mesh>>& GetMeshes() { return meshes_; }
 
-	//fbxか
+public:
+	//fbxモデルか
 	bool GetIsFbx() { return isFbx_; }
 
-	//スケールの倍率
+	//スケールの倍率取得
 	float GetScaleExtend()const { return scaleExtend_; }
+	//マテリアルの倍率取得
 	Vec3 GetMaterialExtend() { return materialExtend_; }
+	//マテリアルの倍率セット
 	void SetMaterialExtend(const Vec3& materialExtend) { materialExtend_ = materialExtend; }
 	//ポリゴンの座標に加算する座標を計算するための情報をセット
 	void SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData);

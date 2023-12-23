@@ -72,44 +72,45 @@ private:
 public:
 	//コンストラクタ
 	Object();
-
 	//デストラクタ
 	virtual ~Object();
 
 public:
-	//優先して最初の方に初期化
+	//共通初期化(優先して最初の方に)
 	static void CommonInitialize();
-
+	//更新
 	virtual void Update()override;
-
-	void DrawModelInternal(int32_t pipelineNum)override;
-
+	//描画
 	virtual void Draw()override;
+
+private:
+	//モデル描画内部処理
+	void DrawModelInternal(int32_t pipelineNum)override;
 
 private:
 	//シャドウマップ用に事前に描画
 	void PreDrawShadow()override;
 
 public:
+	//三角形描画
 	void DrawTriangle(Camera* camera = nullptr, Camera* lightCamera = nullptr,
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
-
+	//四角形描画
 	void DrawBox(Camera* camera = nullptr, Camera* lightCamera = nullptr,
-
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
-
+	//立方体描画
 	void DrawCube3D(Camera* camera = nullptr, Camera* lightCamera = nullptr,
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
-
+	//線描画
 	void DrawLine(Camera* camera = nullptr, Camera* lightCamera = nullptr,
 		uint64_t textureHandle = NULL);
-
+	//円描画
 	void DrawCircle(Camera* camera = nullptr, Camera* lightCamera = nullptr,
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
-
+	//球描画
 	void DrawSphere(Camera* camera = nullptr, Camera* lightCamera = nullptr,
 		uint64_t textureHandle = NULL, int32_t pipelineNum = 0);
-
+	//モデル描画
 	void DrawModel(IModel* model, Camera* camera = nullptr, Camera* lightCamera = nullptr,
 		int32_t pipelineNum = 0);
 };

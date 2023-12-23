@@ -89,14 +89,20 @@ private:
 
 
 public:
-	//初期化系
+	//初期化
 	void Initialize();
 
+	//三角形初期化
 	void InitializeTriangle();
+	//四角形初期化
 	void InitializeBox();
+	//円初期化
 	void InitializeCircle();
+	//立方体初期化
 	void InitializeCube();
+	//線初期化
 	void InitializeLine();
+	//球初期化
 	void InitializeSphere();
 
 	//Drawに必要なコマンド
@@ -104,10 +110,17 @@ public:
 		const D3D12_VERTEX_BUFFER_VIEW& buffView, const D3D12_INDEX_BUFFER_VIEW& ibView, int32_t indicesCount,
 		const std::function<void()>& setRootParam,const std::function<void()>& setMaterialLightTex);
 
+public:
+	//三角形描画
 	void TriangleDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	//四角形描画
 	void BoxDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	//円描画
 	void CircleDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	//立方体描画
 	void CubeDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	//線描画
 	void LineDraw(const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
+	//球描画
 	void SphereDraw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
 };

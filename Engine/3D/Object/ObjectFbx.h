@@ -73,7 +73,9 @@ private://fbxモデル系
 	std::vector<Node>* nodes_ = nullptr;
 
 public://関数
+	//コンストラクタ
 	ObjectFBX();
+	//デストラクタ
 	virtual ~ObjectFBX();
 
 public:
@@ -88,16 +90,19 @@ private:
 	void DrawModelInternal(int32_t pipelineNum)override;
 
 public:
+	//更新
 	virtual void Update()override;
-	//imgui
+	//imgui描画
 	void DrawImGui(std::function<void()>imguiF = NULL)override;
 
 public:
+	//モデルのポインタセット
 	void SetModel(IModel* model)override;
 
 public:
-	//ノードごとの当たり判定を描画するかどうか
+	//ノードごとの当たり判定を描画するかどうかセット
 	void SetIsValidNodeCollidersDraw(bool isValid) { isValidNodeCollidersDraw_ = isValid; }
+	//ノードごとの当たり判定を描画するかどうか取得
 	bool GetIsValidNodeCollidersDraw() { return isValidNodeCollidersDraw_; }
 
 	//ノードごとの当たり判定の判定処理をセット
@@ -123,23 +128,27 @@ public:
 public:
 	//アニメーション開始
 	void PlayAnimation(bool isLoop, int32_t animeIndex = 0, bool isResetCurrentTime = true);
+	//反転アニメーション開始
 	void PlayReverseAnimation(bool isLoop, int32_t animeIndex = 0, bool isResetCurrentTime = true);
-	//アニメーションフラグ
+	//アニメーションフラグセット
 	void SetIsPlayAnimation(bool isPlay, int32_t animeIndex = 0) { animeDatas_[animeIndex].isPlay_ = isPlay; }
+	//ループアニメーションフラグセット
 	void SetIsLoopAnimation(bool isLoop, int32_t animeIndex = 0) { animeDatas_[animeIndex].isLoop_ = isLoop; }
+	//反転アニメーションフラグセット
 	void SetIsReverseAnimation(bool isReverse, int32_t animeIndex = 0) { animeDatas_[animeIndex].isReverse_ = isReverse; }
-	//アニメーションスピード
+	//アニメーションスピードセット
 	void SetAnimationSpeed(float speed, uint32_t animeIndex) {
 		animeDatas_[animeIndex].animationSpeed_ = speed;
 	}
+	//アニメーションスピードセット
 	void SetAnimationSpeed(float speed);
-	//ボーンを得る
+	//ボーン行列を得る
 	const XMMATRIX* GetModelBones()const { return constMapSkin_->bones; }
-	//オブジェクトクラスが持ってるfbxモデルのノード
+	//オブジェクトクラスが持ってるfbxモデルのノードを取得
 	const std::vector<Node>& GetNodes();
 	//ノードを名前で取得
 	Node* GetNode(const std::string& nodeName);
-	//ボーンのデータ転送
+	//ボーンのデータマッピング
 	void MappingBoneData(ModelFBX* model);
 
 public:

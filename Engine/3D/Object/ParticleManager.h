@@ -124,7 +124,40 @@ private: // 定数
 	//ライトマネージャ
 	LightManager* lightManager_ = nullptr;
 
+private: // メンバ変数
+	//ルートシグネチャ等
+	RootPipe rootPipe[BLEND_NUM::NUM_COUNT];
+	// 頂点バッファ
+	ComPtr<ID3D12Resource> vertBuff_[BLEND_NUM::NUM_COUNT];
+	// 頂点バッファビュー
+	D3D12_VERTEX_BUFFER_VIEW vbView_[BLEND_NUM::NUM_COUNT];
+	// 定数バッファ
+	ComPtr<ID3D12Resource> viewBillConstBuff_;
+	ComPtr<ID3D12Resource> cameraPosBuff_;
+	// パーティクル配列の配列
+	std::vector< std::forward_list<Particle>> particlesArray_;
+	//
+	ViewMat* view_ = nullptr;
+	ProjectionMat* projection_ = nullptr;
+
+public:
+	uint64_t texHandle_ = NULL;
+
+
+private:
+	//コンストラクタ
+	ParticleManager();
+	//デストラクタ
+	~ParticleManager();
+
+public:
+	//コピーコンストラクタ禁止
+	ParticleManager(const ParticleManager&) = delete;
+	//コピーコンストラクタ禁止
+	ParticleManager& operator=(const ParticleManager&) = delete;
+
 public:// 静的メンバ関数
+	//インスタンス取得
 	static ParticleManager* GetInstance();
 
 private:
@@ -174,6 +207,7 @@ public:
 	void GenerateRandomParticle(int32_t num, int32_t lifeTime, float vecPower, Vec3 position, float start_scale, float end_scale
 		, const XMFLOAT4& start_color = { 1.0f,1.0f,1.0f,1.0f }, const XMFLOAT4& end_color = { 1.0f,1.0f,1.0f,1.0f });
 
+	//パーティクルを解放
 	void ClearParticles();
 
 public:
@@ -186,38 +220,8 @@ public:
 	//スペキュラセット
 	void SetSpecular(const Vec3& specular) { material_->specular_ = { specular.x,specular.y,specular.z }; }
 
-
 private:
 	//ライトやマテリアルをセットする
 	void SetMaterialLight();
-
-
-private: // メンバ変数
-	//ルートシグネチャ等
-	RootPipe rootPipe[BLEND_NUM::NUM_COUNT];
-	// 頂点バッファ
-	ComPtr<ID3D12Resource> vertBuff_[BLEND_NUM::NUM_COUNT];
-	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView_[BLEND_NUM::NUM_COUNT];
-	// 定数バッファ
-	ComPtr<ID3D12Resource> viewBillConstBuff_;
-	ComPtr<ID3D12Resource> cameraPosBuff_;
-	// パーティクル配列の配列
-	std::vector< std::forward_list<Particle>> particlesArray_;
-	//
-	ViewMat* view_ = nullptr;
-	ProjectionMat* projection_ = nullptr;
-
-public:
-	uint64_t texHandle_ = NULL;
-
-
-private:
-	ParticleManager();
-	~ParticleManager();
-
-public:
-	ParticleManager(const ParticleManager&) = delete;
-	ParticleManager& operator=(const ParticleManager&) = delete;
 };
 

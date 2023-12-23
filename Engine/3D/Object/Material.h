@@ -66,7 +66,13 @@ public:
 	std::string textureFilename_;	// テクスチャファイル名
 	uint64_t textureHandle_;//画像ハンドル
 
+private:
+	// 定数バッファ
+	ComPtr<ID3D12Resource> constBuff_;
+
+
 public:
+	//デストラクタ
 	~Material();
 	// コンストラクタ
 	Material() {
@@ -95,10 +101,6 @@ public:
 	/// 更新
 	/// </summary>
 	void Update();
-
-private:
-	// 定数バッファ
-	ComPtr<ID3D12Resource> constBuff_;
 
 private:
 	/// <summary>

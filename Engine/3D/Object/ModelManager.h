@@ -17,28 +17,33 @@ private:
 	//同じ名前の別のインスタンス
 	std::vector<std::unique_ptr<IModel>>sameNameOtherModels_;
 
-public:
-
 
 private:
+	//コンストラクタ
 	ModelManager() { ; }
+	//デストラクタ
 	~ModelManager();
 
 private:
-
+	//.objのモデル読み込み
 	ModelObj* LoadModelObj(const std::string& fileName, bool smoothing = false, bool sameNameOtherModel = false);
+	//fbxのモデル読み込み
 	ModelFBX* LoadModelFBX(const std::string& fileName, bool smoothing = false, bool sameNameOtherModel = false);
 
 public:
+	//コピーコンストラクタ禁止
 	ModelManager& operator=(const ModelManager& inst) = delete;
+	//コピーコンストラクタ禁止
 	ModelManager(const ModelManager& inst) = delete;
 
+	//インスタンス取得
 	static ModelManager& GetInstance();
 
-	//後始末
+public:
+	//モデルデータ後始末
 	void ClearModels();
 
-	//fbx後始末
+	//fbxモデルデータ後始末
 	void ClearFbxModels();
 
 	/// <summary>

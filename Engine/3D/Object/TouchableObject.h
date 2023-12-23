@@ -11,6 +11,7 @@ class TouchableObject :
 	public Object
 {
 public:
+	//デストラクタ
 	virtual ~TouchableObject() { ; }
 
 	/// <summary>

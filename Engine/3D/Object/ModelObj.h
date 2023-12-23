@@ -38,6 +38,7 @@ private:
 	void InitializeInternal(const std::string& folderName, bool smoothing);
 
 public:
+	//マテリアル読み込み
 	void LoadMaterial(const std::string& directoryPath, const std::string& filename);
 
 public://静的メンバ関数
