@@ -17,28 +17,41 @@ class BaseCollider;
 class CollisionManager
 {
 private:
-	CollisionManager() = default;
-	~CollisionManager() = default;
-
-private:
 	//コライダーのリスト(3D)
 	std::forward_list<BaseCollider*> colliders3D_;
 	//コライダーのリスト(2D)
 	std::forward_list<BaseCollider*> colliders2D_;
 
 
-
 public://静的メンバ関数
+	//コピーコンストラクタ禁止
 	CollisionManager(const CollisionManager&) = delete;
+	//コピーコンストラクタ禁止
 	CollisionManager& operator=(const CollisionManager&) = delete;
 
+	//インスタンス取得
 	static CollisionManager* GetInstance();
 
 private:
+	//コンストラクタ
+	CollisionManager() = default;
+	//デストラクタ
+	~CollisionManager() = default;
+
+private:
+	//3d全てのコライダー同士の判定調べる
 	void CheckAllCollision3D();
+	//2d全てのコライダー同士の判定調べる
 	void CheckAllCollision2D();
 
 public://関数
+	//初期化
+	void Initialize();
+
+	//全てのコライダー同士の判定を調べる
+	void CheckAllCollisions();
+
+public:
 	/// <summary>
 	/// コライダーの追加
 	/// </summary>
@@ -90,9 +103,5 @@ public://関数
 	/// <param name="callBack"></param>
 	/// <param name="attribute"></param>
 	void QuerySphere(const Sphere& sphere, QueryCallback* callBack, uint16_t attribute = (uint16_t)0xffff);
-
-	void CheckAllCollisions();
-
-	void Initialize();
 };
 

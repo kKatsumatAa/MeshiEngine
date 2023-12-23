@@ -93,9 +93,5 @@ public://2D
 	/// <returns></returns>
 	static bool CheckCircle2Circle(const Circle& circle, const Circle& circle2,
 		DirectX::XMVECTOR* inter = nullptr, DirectX::XMVECTOR* reject = nullptr);
-
-
-	//static bool CheckRectangle2Rectangle(const MyRectangle& rectangle, const MyRectangle& rectangle2,
-	//	DirectX::XMVECTOR* inter = nullptr, DirectX::XMVECTOR* reject = nullptr);
 };
 

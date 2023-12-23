@@ -17,6 +17,7 @@ private: // エイリアス
 	// DirectX::を省略
 	using XMVECTOR = DirectX::XMVECTOR;
 public:
+	//コンストラクタ
 	RectangleCollider(Vec2 leftUp = { -1.0f,-1.0f },
 		Vec2 leftDown = { -1.0f,1.0f },
 		Vec2 rightUp = { 1.0f,-1.0f },

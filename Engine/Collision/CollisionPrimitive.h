@@ -14,12 +14,14 @@
 struct Sphere
 {
 public:
-	virtual ~Sphere() { ; }
-
 	//中心座標
 	DirectX::XMVECTOR center = { 0,0,0,1 };
 	//半径
 	float iRadius = 1.0f;
+
+public:
+	//デストラクタ
+	virtual ~Sphere() { ; }
 };
 
 /// <summary>
@@ -28,13 +30,14 @@ public:
 struct Plane
 {
 public:
-	virtual ~Plane() { ; }
-
-public:
 	//法線ベクトル
 	DirectX::XMVECTOR iNormal = { 0,1,0,0 };
 	//原点(0,0,0)からの距離
 	float iDistance = 0.0f;
+
+public:
+	//デストラクタ
+	virtual ~Plane() { ; }
 };
 
 /// <summary>
@@ -50,6 +53,7 @@ struct Triangle
 	DirectX::XMVECTOR iNormal;
 
 public:
+	//デストラクタ
 	virtual ~Triangle() { ; }
 
 	/// <summary>
@@ -64,31 +68,32 @@ public:
 struct Ray
 {
 public:
-	virtual ~Ray() { ; }
-
-public:
 	//視点座標
 	DirectX::XMVECTOR start = { 0,0,0,1.0f };
 	//方向
 	DirectX::XMVECTOR dir = { 1.0f,0,0,0 };
+
+public:
+	//デストラクタ
+	virtual ~Ray() { ; }
 };
 
 
-// 2D
-
+// 2D------------------------------------------------------------------------
 /// <summary>
 /// 円
 /// </summary>
 struct Circle
 {
 public:
-	virtual ~Circle() { ; }
-
-public:
 	//中心座標
 	Vec2 center = { 0,0 };
 	//半径
 	float iRadius = 1.0f;
+
+public:
+	//デストラクタ
+	virtual ~Circle() { ; }
 };
 
 /// <summary>
@@ -97,14 +102,15 @@ public:
 struct MyRectangle
 {
 public:
-	virtual ~MyRectangle() { ; }
-
-public:
 	//各頂点
 	Vec2 iLeftUp = { -1.0f,-1.0f };
 	Vec2 iLeftDown = { -1.0f,1.0f };
 	Vec2 iRightUp = { 1.0f,-1.0f };
 	Vec2 iRightDown = { 1.0f,1.0f };
+
+public:
+	//デストラクタ
+	virtual ~MyRectangle() { ; }
 };
 
 

@@ -18,6 +18,7 @@ private: // エイリアス
 	// DirectX::を省略
 	using XMVECTOR = DirectX::XMVECTOR;
 public:
+	//コンストラクタ
 	CircleCollider(const Vec2 center = { 0,0 }, float radius = 1.0f)
 	{
 		Circle::center = center;
@@ -34,7 +35,9 @@ public:
 	/// </summary>
 	void Update() override;
 
+	//半径セット
 	inline void SetRadius(float radius) { Circle::iRadius = radius; }
+	//半径取得
 	inline float GetRadius() { return Circle::iRadius; }
 };
 

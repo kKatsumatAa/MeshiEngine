@@ -14,7 +14,13 @@
 class MeshCollider :
 	public BaseCollider
 {
+private:
+	std::vector<Triangle> triangles_;
+	// ワールド行列の逆行列
+	DirectX::XMMATRIX invMatWorld_;
+
 public:
+	//コンストラクタ
 	MeshCollider()
 	{
 		// メッシュ形状をセット
@@ -48,10 +54,5 @@ public:
 	/// <param name="inter">交点（出力用）</param>
 	/// <returns>交差しているか否か</returns>
 	bool CheckCollisionRay(const Ray& ray, float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
-
-private:
-	std::vector<Triangle> triangles_;
-	// ワールド行列の逆行列
-	DirectX::XMMATRIX invMatWorld_;
 };
 

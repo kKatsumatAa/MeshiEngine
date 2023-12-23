@@ -21,22 +21,25 @@ class BaseCollider;
 struct CollisionInfo
 {
 public:
-	CollisionInfo() { ; }
-	~CollisionInfo() { ; }
-
-
-public:
-	CollisionInfo(IObject* object, BaseCollider* collider, const DirectX::XMVECTOR& inter) {
-		object_ = object;
-		collider_ = collider;
-		inter_ = inter;
-	}
-
 	// 衝突相手のオブジェクト
 	IObject* object_ = nullptr;
 	// 衝突相手のコライダー
 	BaseCollider* collider_ = nullptr;
 	// 衝突点
 	DirectX::XMVECTOR inter_;
+
+public:
+	//コンストラクタ
+	CollisionInfo() { ; }
+	//デストラクタ
+	~CollisionInfo() { ; }
+
+public:
+	//コンストラクタ（引数アリ）
+	CollisionInfo(IObject* object, BaseCollider* collider, const DirectX::XMVECTOR& inter) {
+		object_ = object;
+		collider_ = collider;
+		inter_ = inter;
+	}
 };
 
