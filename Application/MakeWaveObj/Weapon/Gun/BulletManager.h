@@ -14,22 +14,31 @@ private:
 
 
 private:
+	//コンストラクタ
 	BulletManager() { ; }
+	//デストラクタ
 	~BulletManager() { ; }
 
 public:
+	//コピーコンストラクタ禁止
 	BulletManager& operator=(const BulletManager& obj) = delete;
+	//コピーコンストラクタ禁止
 	BulletManager(const BulletManager& obj) = delete;
 
+	//インスタンス取得
 	static BulletManager& GetInstance();
 
 public:
+	//初期化
 	void Initialize();
-
-	void CreateBullet(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, IObject* owner);
-
+	//更新
 	void Update();
-
+	//影用の深度描画
 	void DrawShadow();
+	//描画
 	void Draw();
+
+public:
+	//弾丸の生成
+	void CreateBullet(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, IObject* owner);
 };

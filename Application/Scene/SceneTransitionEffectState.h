@@ -22,12 +22,15 @@ protected:
 	//演出の画面サイズ倍率
 	const float WINDOW_SIZE_EXTEND_ = 0.8f;
 
-
 public:
+	//デストラクタ
 	virtual ~SceneTransitionEffectState() { ; }
 
+	//初期化
 	virtual void Initialize() = 0;
+	//更新
 	virtual void Update();
+	//描画
 	virtual void Draw() = 0;
 
 	//時間の経過割合
@@ -48,8 +51,11 @@ private:
 	const int32_t TIMER_MAX_ = 30;
 
 public:
+	//初期化
 	void Initialize()override;
+	//更新
 	void Update()override;
+	//描画
 	void Draw()override;
 };
 
@@ -60,8 +66,11 @@ private:
 	const int32_t TIMER_MAX_ = 25;
 
 public:
+	//初期化
 	void Initialize()override;
+	//更新
 	void Update()override;
+	//描画
 	void Draw()override;
 };
 
@@ -72,8 +81,11 @@ private:
 	const int32_t TIMER_MAX_ = 20;
 
 public:
+	//初期化
 	void Initialize()override;
+	//更新
 	void Update()override;
+	//描画
 	void Draw()override;
 };
 
@@ -84,7 +96,10 @@ private:
 	const int32_t TIMER_MAX_ = 25;
 
 public:
+	//初期化
 	void Initialize()override;
+	//更新
 	void Update()override;
+	//描画
 	void Draw()override;
 };

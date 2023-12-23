@@ -51,15 +51,19 @@ private:
 	bool isEscapingGame_ = false;
 
 private:
+	//デストラクタ
 	~SceneManager();
+	//コンストラクタ
 	SceneManager() { ; }
 
 public:
-	static SceneManager& GetInstance() { static SceneManager sInst; return sInst; }
 	//コピーコンストラクタを無効
 	SceneManager(const SceneManager& obj) = delete;
-	//代入演算子も
+	//コピーコンストラクタを無効
 	SceneManager& operator=(const SceneManager& obj) = delete;
+
+	//インスタンス取得
+	static SceneManager& GetInstance() { static SceneManager sInst; return sInst; }
 
 	//シーンステート変更
 	void ChangeScene();
@@ -71,21 +75,30 @@ public:
 	//シーンファクトリーのセッター
 	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
 
+	//初期化
 	void Initialize();
+	//更新
 	void Update();
+	//影用の深度描画
 	void DrawShadow();
+	//描画
 	void Draw();
+	//スプライト描画
 	void DrawSprite();
-
+	//ImGuiの描画
 	void DrawImgui();
 
+public:
+	//全てのwave音声停止
 	void StopWaveAllScene();
 
 private:
+	//内部更新
 	void UpdateInternal();
 
 public:
+	//ゲームを終了するフラグセット
 	void SetIsEscapingGame(bool is) { isEscapingGame_ = is; }
+	//ゲームを終了するフラグ取得
 	bool GetIsEscapingGame() { return isEscapingGame_; }
-
 };

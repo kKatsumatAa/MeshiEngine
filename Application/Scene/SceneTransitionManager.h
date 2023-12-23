@@ -32,26 +32,35 @@ public:
 
 
 private:
+	//コンストラクタ
 	SceneTransitionManager() { ; }
+	//デストラクタ
 	~SceneTransitionManager() { ; }
 
 public:
+	//コピーコンストラクタ禁止
 	SceneTransitionManager& operator=(const SceneTransitionManager& inst) = delete;
+	//コピーコンストラクタ禁止
 	SceneTransitionManager(const SceneTransitionManager& inst) = delete;
+
 	//インスタンス取得
 	static SceneTransitionManager& GetInstance();
 
 public:
+	//初期化
 	void Initialize();
+	//更新
 	void Update();
+	//描画
 	void Draw();
 
+	//演出ステート変更
 	void ChangeEffectState(std::unique_ptr<SceneTransitionEffectState> state);
 
-private:
-
 public:
+	//演出しているかセット
 	void SetIsDoingEffect(bool isDoingEffect) { isDoingEffect_ = isDoingEffect; }
+	//演出しているか取得
 	bool GetIsDoingEffect() { return isDoingEffect_; }
 
 	//読み込み中か
@@ -59,6 +68,7 @@ public:
 	//シーン遷移演出中か(演出全体)
 	bool GetIsDoingLoadEffect() { return isDoingEffect_; }
 
+public:
 	//シーン遷移演出開始
 	void BeginSceneTransition(const std::function<void()>& loadFunc);
 

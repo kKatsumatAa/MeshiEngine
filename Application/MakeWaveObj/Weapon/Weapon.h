@@ -9,6 +9,7 @@
 #include "TriangleCollider.h"
 #include "PlaneCollider.h"
 #include "MakeWaveObj.h"
+#include "ParticleManager.h"
 
 
 class Weapon :
@@ -51,7 +52,9 @@ protected:
 	//所有者がいないときに飛んでいく
 	virtual void NoParentMove();
 
-	virtual void ParticleGenerate() = 0;
+	//パーティクル生成
+	virtual void ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float particleSize = 1.0f
+		, ParticleManager::BLEND_NUM blendNum = ParticleManager::BLEND_NUM::TRIANGLE) = 0;
 
 public:
 	//攻撃
