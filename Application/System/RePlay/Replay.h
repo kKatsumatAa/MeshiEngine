@@ -44,6 +44,7 @@ private:
 	float carryOverVel_ = 0;
 
 public:
+	//初期化
 	void Initialize();
 	//次のフレームの保存に移る
 	void NextFrame();
@@ -55,21 +56,25 @@ public:
 	const ReplayData& GetNormalTimeTotalData();
 
 public:
-	//キー（移動系）
+	//右キーをセット
 	void SetRightKey(bool rightKey) { rePlayDatas_.back()->rightKey = rightKey; }
+	//左キーをセット
 	void SetLeftKey(bool leftKey) { rePlayDatas_.back()->leftKey = leftKey; }
+	//上キーをセット
 	void SetUpKey(bool upKey) { rePlayDatas_.back()->upKey = upKey; }
+	//下キーをセット
 	void SetDownKey(bool downKey) { rePlayDatas_.back()->downKey = downKey; }
-
+	//スペースキーをセット
 	void SetSpaceKey(bool spaceKey) { rePlayDatas_.back()->spaceKey = spaceKey; }
 
-	//マウス(移動量)
+	//マウス(移動量)をセット
 	void SetMouseCursorVel(const Vec2& cameraVel) { rePlayDatas_.back()->mouseCursorVel = cameraVel; }
-	//(クリック)
+	//左クリックをセット
 	void SetIsLeftClickTrigger(bool isLeftClickTrigger) { rePlayDatas_.back()->isLeftClickTrigger = isLeftClickTrigger; }
+	//右クリックをセット
 	void SetIsRightClickTrigger(bool isRightClickTrigger) { rePlayDatas_.back()->isRightClickTrigger = isRightClickTrigger; }
 
-	//その時点のゲーム中のスピード
+	//その時点のゲーム中のスピードをセット
 	void SetGameVel(float gameVel) { rePlayDatas_.back()->gameVel = gameVel; }
 
 public:

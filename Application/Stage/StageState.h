@@ -14,13 +14,20 @@ protected:
 	int32_t timer_ = 0;
 
 public:
+	//デストラクタ
 	virtual ~StageState() { ; }
 
+	//初期化
 	virtual void Initialize();
+	//更新
 	virtual void Update();
+	//影用の深度描画
 	virtual void DrawShadow();
+	//描画
 	virtual void Draw();
+	//スプライト描画
 	virtual void DrawSprite();
+	//ImGuiの描画
 	virtual void DrawImgui();
 
 public:
@@ -36,10 +43,15 @@ protected:
 	const float EFFECT_TIMER_MAX_ = 45;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
+	//影用の深度描画
 	void DrawShadow() override;
+	//描画
 	void Draw() override;
+	//スプライト描画
 	void DrawSprite() override;
 };
 
@@ -53,10 +65,15 @@ protected:
 	const float GAME_OVER_COOL_TIMER_ = 60;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
+	//影用の深度描画
 	void DrawShadow() override;
+	//描画
 	void Draw() override;
+	//スプライト描画
 	void DrawSprite() override;
 };
 
@@ -68,10 +85,15 @@ private:
 	const float EFFECT_TIMER_MAX_ = 40;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
+	//影用の深度描画
 	void DrawShadow() override;
+	//描画
 	void Draw() override;
+	//スプライト描画
 	void DrawSprite() override;
 };
 
@@ -83,9 +105,14 @@ private:
 	const int32_t CLEAR_COOL_TIME_MAX_ = 20;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
+	//影用の深度描画
 	void DrawShadow() override;
+	//描画
 	void Draw() override;
+	//スプライト描画
 	void DrawSprite() override;
 };

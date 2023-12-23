@@ -27,20 +27,29 @@ public:
 
 
 private:
+	//コンストラクタ
 	CursorUI() { ; }
+	//デストラクタ
 	~CursorUI() { ; }
 
 public:
+	//コピーコンストラクタ禁止
 	CursorUI& operator=(const CursorUI& inst) = delete;
+	//コピーコンストラクタ禁止
 	CursorUI(const CursorUI& inst) = delete;
 
+	//インスタンス取得
 	static CursorUI& GetInstance();
 
 public:
+	//初期化
 	void Initialize();
+	//更新
 	void Update();
+	//描画
 	void Draw();
 
 public:
+	//カーソル位置取得
 	const Vec2& GetCursorPos() { return cursorPos_; }
 };

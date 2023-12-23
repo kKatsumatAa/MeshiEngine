@@ -26,29 +26,43 @@ public:
 	const float MOUSE_VEL_MAX_ = GAME_VELOCITY_MAX_ / 7.0f;
 
 private:
+	//コンストラクタ
 	GameVelocityManager() { ; }
+	//デストラクタ
 	~GameVelocityManager() { ; }
 
 public:
+	//コピーコンストラクタ禁止
 	GameVelocityManager(const GameVelocityManager& other) = delete;
+	//コピーコンストラクタ禁止
 	GameVelocityManager& operator=(const GameVelocityManager& other) = delete;
 
+	//インスタンス取得
 	static GameVelocityManager& GetInstance();
 
 public:
+	//初期化
 	void Initialize();
-
+	//更新
 	void Update();
 
+public:
+	//ゲームスピードを加算
 	void AddGameVelocity(float velocity, std::string velName = "NULL");
-
+	//ゲームスピード取得
 	float GetVelocity();
 
+public:
+	//ImGuiの描画
 	void UpdateImGui();
 
 public:
+	//ゲームスピードの加算無効をセット
 	void SetIsInvalidAddGameVel(bool is) { isInvalidAddGameVel_ = is; }
+	//ゲームスピードの加算無効を取得
 	bool GetIsInvalidAddGameVel() { return isInvalidAddGameVel_; }
+	//ゲームスピード1.0固定をセット
 	void SetIsNormalTime(bool is) { isNormalTime_ = is; }
+	//ゲームスピード1.0固定を取得
 	bool GetIsNormalTime() { return isNormalTime_; }
 };

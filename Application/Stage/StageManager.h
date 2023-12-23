@@ -46,17 +46,19 @@ private:
 	const int32_t SEA_MAX_AFTER_TIME_ = 60;
 	int32_t seaMaxAfterTime_ = SEA_MAX_AFTER_TIME_;
 
-public:
-
-
 private:
+	//コンストラクタ
 	StageManager() { ; }
+	//デストラクタ
 	~StageManager() { ; }
 
 public:
+	//コピーコンストラクタ禁止
 	StageManager& operator=(const StageManager& inst) = delete;
+	//コピーコンストラクタ禁止
 	StageManager(const StageManager& inst) = delete;
 
+	//インスタンス取得
 	static StageManager& GetInstance();
 
 private:
@@ -65,22 +67,28 @@ private:
 public:
 	//ステージ読み込み
 	void LoadStage(int32_t stageIndex, Replay* replay, const std::string& stateName = "BEGINING");
+	//ステージ読み込み(現在のステージを再読み込み)
 	void LoadStage(Replay* replay, const std::string& stateName = "BEGINING");
 
-	//ステージ番号
+	//ステージ番号セット
 	void SetStageNum(int32_t stageNum) { stageNum_ = stageNum; }
+	//ステージ番号取得
 	int32_t GetStageNum() { return stageNum_; }
 
-	//ステージクリアしたか
+	//ステージクリアしたかセット
 	void SetIsClear(bool isClear) { isClear_ = isClear; }
+	//ステージクリアしたか取得
 	bool GetIsGameClear() { return isClear_; }
 
-	//ステージゲームオーバー
+	//ステージゲームオーバーかセット
 	void SetIsGameOver(bool isGameOver) { isGameOver_ = isGameOver; }
+	//ステージゲームオーバーか取得
 	bool GetIsGameOver() { return isGameOver_; }
 
 public:
+	//海までの距離取得
 	const Vec3& GetSeaDistance() { return seaDistance_; }
+	//海までの距離セット
 	void SetSeaDistance(const Vec3& seaDistance) { seaDistance_ = seaDistance; }
 
 public:
@@ -90,6 +98,7 @@ public:
 	void AfterLavaMaxUpdate();
 
 public:
+	//リプレイのポインタ取得
 	Replay* GetReplay() { return replay_; }
 
 public:
@@ -97,9 +106,14 @@ public:
 	void ChangeState(const std::string& name);
 
 public:
+	//更新
 	void Update();
+	//影用の深度描画
 	void DrawShadow();
+	//描画
 	void Draw();
+	//ImGuiの描画
 	void DrawImGui();
+	//スプライト描画
 	void DrawSprite();
 };

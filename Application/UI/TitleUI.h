@@ -20,17 +20,25 @@ private:
 
 
 private:
+	//コンストラクタ
 	TitleUI() { ; }
+	//デストラクタ
 	~TitleUI() { ; }
 
 public:
+	//コピーコンストラクタ禁止
 	TitleUI& operator=(const TitleUI& inst) = delete;
+	//コピーコンストラクタ禁止
 	TitleUI(const TitleUI& inst) = delete;
 
+	//インスタンス取得
 	static TitleUI& GetInstance();
 
 public:
+	//初期化
 	void Initialize();
+	//更新
 	void Update();
+	//スプライト描画
 	void DrawSprite();
 };

@@ -38,13 +38,18 @@ private:
 	uint64_t debugTextHandle_;
 
 private:
+	//コンストラクタ
 	StageSelect() { ; }
+	//デストラクタ
 	~StageSelect() { ; }
 
 public:
+	//コピーコンストラクタ禁止
 	StageSelect& operator=(const StageSelect& inst) = delete;
+	//コピーコンストラクタ禁止
 	StageSelect(const StageSelect& inst) = delete;
 
+	//インスタンス取得
 	static StageSelect& GetInstance();
 
 private:
@@ -52,15 +57,20 @@ private:
 	void LoadStageNames();
 
 public:
-	void Initialize(
-	);
+	//初期化
+	void Initialize();
+	//更新
 	void Update();
+	//描画
 	void Draw();
+	//スプライト描画
 	void DrawSprite();
 
 public:
+	//ステージ選択済みか
 	bool GetIsSelected() { return isSelected_; }
+	//選択したステージの名前
 	const std::string& GetSelectStageName() { return selectStageName_; }
+	//選択したステージの番号
 	int32_t GetSelectStageIndex() { return selectStageIndex_; }
-
 };

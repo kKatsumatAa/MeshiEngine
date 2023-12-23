@@ -42,14 +42,20 @@ protected:
 
 
 public:
+	//デストラクタ
 	virtual ~TutorialState() { ; }
 
 public:
+	//チュートリアルのポインタセット
 	void SetTutorial(Tutorial* tutorial) { tutorial_ = tutorial; }
 
+	//名前でステートを取得
 	static std::unique_ptr<TutorialState>GetState(const std::string& name);
 
+public:
+	//共通の更新
 	virtual void CommonUpdate();
+	//共通のスプライト描画
 	virtual void CommonSpriteDraw();
 
 	//条件達成後の演出
@@ -57,8 +63,12 @@ public:
 	//最初の演出処理
 	virtual bool BeginingUpdate(const int32_t TIMER_MAX);
 
+public:
+	//初期化
 	virtual void Initialize() = 0;
+	//更新
 	virtual void Update() = 0;
+	//描画
 	virtual void Draw() = 0;
 };
 
@@ -66,35 +76,36 @@ public:
 //何もない
 class TutorialStateNone : public TutorialState
 {
-private:
-
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
+	//描画
 	void Draw() override;
 };
 
 //基本操作説明
 class TutorialStateOperation : public TutorialState
 {
-private:
-
-
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
+	//描画
 	void Draw() override;
 };
 
 //ゲームスピードの説明
 class TutorialStateGameSpeed : public TutorialState
 {
-private:
-	
-
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
+	//描画
 	void Draw() override;
 };
 
@@ -106,7 +117,10 @@ private:
 	bool isPushedRightClick = false;
 
 public:
+	//初期化
 	void Initialize() override;
+	//更新
 	void Update() override;
+	//描画
 	void Draw() override;
 };
