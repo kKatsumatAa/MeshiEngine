@@ -14,6 +14,7 @@
 #include "FbxLoader.h"
 
 using namespace DirectX;
+using namespace Constant;
 
 
 const float Enemy::S_LENGTH_MAX_ = 10000;
@@ -31,15 +32,15 @@ void Enemy::EmergeInitialize()
 	if (lightM->GetDoNotUsePointLightIndex(lightIndexTmp_))
 	{
 		lightM->SetPointLightActive(lightIndexTmp_, true);
-		lightM->SetPointLightAtten(lightIndexTmp_, { 0.977f,0.493f,0.458f });
-		lightM->SetPointLightColor(lightIndexTmp_, { 90.0f,-1.0f,-1.0f });
+		lightM->SetPointLightAtten(lightIndexTmp_, POINT_LIGHT_ATTEN_);
+		lightM->SetPointLightColor(lightIndexTmp_, POINT_LIGHT_COLOR_);
 		lightM->SetPointLightPos(lightIndexTmp_,
 			{ IObject::GetTrans().x,IObject::GetTrans().y, IObject::GetTrans().z });
 	}
 
 	//ディゾルブ
 	SetisDissolve(true);
-	SetDissolveT(1.0f);
+	SetDissolveT(INIT_DISSOLVE_RATE_);
 	//ディゾルブ画像
 	uint64_t handle;
 	handle = TextureManager::LoadGraph("dissolveMask.png");
@@ -51,7 +52,7 @@ void Enemy::EmergeInitialize()
 	//fbx前提
 	ModelFBX* modelFbx = dynamic_cast<ModelFBX*>(GetModel());
 	//ノードごとの当たり判定
-	InitializeNodeColliders(modelFbx, 14.0f, COLLISION_ATTR_ENEMYS);
+	InitializeNodeColliders(modelFbx, NODE_COLLIDER_SCALE_, COLLISION_ATTR_ENEMYS);
 	//ボーンの当たり判定時に処理させる
 	auto onCollF = [=](IObject3D* obj, const CollisionInfo& info) {OnCollision(obj, info); };
 	SetNodeCollidersOnCollision(onCollF);
@@ -89,7 +90,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t
 	//初期化
 	if (!instance->Initialize(std::move(worldMat), waveNum, coolTime, weapon, model))
 	{
-		assert(0);
+		assert(false);
 	}
 
 	return std::move(instance);
@@ -107,7 +108,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, floa
 	if (weapon)
 	{
 		weapon_ = weapon;
-		weapon_->SetScale(weapon_->GetScale() * 2.0f);
+		weapon_->SetScale(weapon_->GetScale() * WEAPON_SCALE_RATE_);
 		//武器を諸々設定
 		PickUpWeapon(weapon_);
 	}
@@ -123,10 +124,10 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, floa
 	deadEffectTimerMax_ = DEAD_TIMER_MAX_;
 
 	//model
-	model->SetMaterialExtend({ 0.03f,0.1f,50.0f });
+	model->SetMaterialExtend(MODEL_MATERIAL_RATE_);
 
 	//色
-	SetColor({ 3.0f,0,0,1.0f });
+	SetColor(COLOR_);
 
 	//アニメーション追加
 	auto modelFbx = dynamic_cast<ModelFBX*>(model);
@@ -157,7 +158,7 @@ void Enemy::Attack(const Vec3& targetPos)
 	if (weapon_ != nullptr && weapon_->GetIsAlive())
 	{
 		Vec3 directionV = targetPos - weapon_->GetBoneWorldTrans();
-		weapon_->Attack(directionV.GetNormalized(), 0, this, PARTICLE_SIZE_EXTEND_);
+		weapon_->Attack(directionV.GetNormalized(), CONSUM_BULLET_NUM_, this, PARTICLE_SIZE_EXTEND_);
 	}
 }
 
@@ -171,29 +172,29 @@ void Enemy::WalkToTarget(const Vec3& targetPos, bool isWave)
 	}
 
 	//正規化
-	directionVec_.y = 0;
+	directionVec_.y = DIR_Y_TMP_;
 	directionVec_.Normalized();
 
 	//現在のスピードに方向ベクトル足し、ゲームスピードをかける
-	velocity_ = GetVelocity() + directionVec_ * VELOCITY_TMP_ * GameVelocityManager::GetInstance().GetVelocity();
+	velocity_ = GetVelocity() + directionVec_ * VELOCITY_RATE_ * GameVelocityManager::GetInstance().GetVelocity();
 	//スピードの上限は超えないように
 	float length = velocity_.GetLength();
 	//スピードがプラスになってたら
-	if (velocity_.Dot(directionVec_) >= 0)
+	if (velocity_.Dot(directionVec_) >= END_VEL_OF_DAMAGE_COOL_)
 	{
 		directionVec_ = targetPos - IObject::GetTrans();
 		//ある程度近づいたら止まる
 		if (GetPlayerIsWithinRange())
 		{
-			velocity_ = { 0,0,0 };
+			velocity_ = INIT_VELOCITY_;
 		}
 		directionVec_.Normalized();
 
 		//ダメージのクールリセット
-		damageCoolTime_ = 0;
+		damageCoolTime_ = INIT_DAMAGE_COOL_TIME_;
 	}
 	//スピードの上限超えない
-	velocity_ = velocity_.GetNormalized() * min(fabsf(length), GameVelocityManager::GetInstance().GetVelocity() * VELOCITY_TMP_ / 1.5f);
+	velocity_ = velocity_.GetNormalized() * min(fabsf(length), GameVelocityManager::GetInstance().GetVelocity() * VELOCITY_RATE_);
 
 	//当たり判定用にセット
 	IObject::SetVelocity(velocity_);
@@ -216,13 +217,13 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj, float angleExtend)
 {
 	damagedAddRots_.clear();
 
-	Vec3 addRot = { 0,0,0 };
+	Vec3 addRot = INIT_NODE_ADD_ROT_;
 	//Spine2(仮)からの距離で回転方向を決めるため(回転の逆行列をかけて元の位置関係に戻したうえで)
 	Vec3 localPosFromSpine2 = nodeObj.GetLocalTrans() * GetWorldMat()->GetRotMat().GetInverseMatrix()
 		- ObjectFBX::GetNodeColliderObj("Spine2")->GetLocalTrans() * GetWorldMat()->GetRotMat().GetInverseMatrix();
 
-	addRot.x = max(min(-localPosFromSpine2.y, PI / 6.0f), -PI / 6.0f) * angleExtend;
-	addRot.y = max(min(-localPosFromSpine2.x, PI / 6.0f), -PI / 6.0f) * angleExtend;
+	addRot.x = max(min(-localPosFromSpine2.y, PI * NODE_ADD_ROT_RATE_), -PI * NODE_ADD_ROT_RATE_) * angleExtend;
+	addRot.y = max(min(-localPosFromSpine2.x, PI * NODE_ADD_ROT_RATE_), -PI * NODE_ADD_ROT_RATE_) * angleExtend;
 
 	//右か左か
 	std::string leftOrRightStr = "";
@@ -243,14 +244,14 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj, float angleExtend)
 		//Spine2(仮)からの距離で回転方向を決めるため
 		Vec3 localPosFromLeg = nodeObj.GetLocalTrans() - ObjectFBX::GetNodeColliderObj("UpLeg")->GetLocalTrans();
 
-		Vec3 addRotLeg = { 0,0,0 };
-		addRotLeg.x = max(min(localPosFromLeg.y, PI / 5.5f), -PI / 5.5f) * angleExtend;
-		addRotLeg.y = max(min(-localPosFromLeg.x, PI / 5.5f), -PI / 5.5f) * angleExtend;
+		Vec3 addRotLeg = INIT_NODE_ADD_ROT_;
+		addRotLeg.x = max(min(localPosFromLeg.y, PI * LEG_ADD_ROT_RATE_), -PI * LEG_ADD_ROT_RATE_) * angleExtend;
+		addRotLeg.y = max(min(-localPosFromLeg.x, PI * LEG_ADD_ROT_RATE_), -PI * LEG_ADD_ROT_RATE_) * angleExtend;
 
-		damagedAddRots_.push_back({ leftOrRightStr + "Leg", {0,0,0},addRotLeg });
+		damagedAddRots_.push_back({ leftOrRightStr + "Leg", INIT_NODE_ADD_ROT_, addRotLeg });
 	}
 
-	damagedAddRots_.push_back({ "Spine2", {0,0,0},addRot });
+	damagedAddRots_.push_back({ "Spine2", INIT_NODE_ADD_ROT_, addRot });
 }
 
 void Enemy::WalkWaveUpdate()
@@ -258,16 +259,13 @@ void Enemy::WalkWaveUpdate()
 	float gameVel = GameVelocityManager::GetInstance().GetVelocity() * GetAnimeSpeedExtend();
 
 	walkWaveTimer_ += gameVel;
-	if (walkWaveTimer_ >= WALK_MOVE_INTERVAL_ * 500.0f)
-	{
-		walkWaveTimer_ = 0;
-	}
 
 	//間隔が来たらステージに波紋
 	if ((int32_t)walkWaveTimer_ % (int32_t)WALK_MOVE_INTERVAL_ == 0
 		&& walkWaveTimer_ - beforeWalkTime_ >= WALK_MOVE_INTERVAL_)
 	{
-		BeginWaveStage(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z / 2.0f,GetScale().y * 0.2f }, GetScale().z * 20.0f, 130.0f);
+		BeginWaveStage(GetWorldTrans() - Vec3(0, GetScale().y, 0), { GetScale().z * STAGE_WAVE_WIDTH_RATE_, GetScale().y * STAGE_WAVE_HEIGHT_RATE_ },
+			GetScale().z * STAGE_WAVE_DISTANCE_RATE_, STAGE_WAVE_TIME_);
 		//間隔をあけるため
 		beforeWalkTime_ = walkWaveTimer_;
 	}
@@ -294,7 +292,7 @@ void Enemy::DirectionUpdate(const Vec3& targetPos)
 	Vec3 pDVTmp = directionVec_.GetNormalized();
 
 	//正面ベクトルからターゲットの方向ベクトルへの回転クォータニオン
-	Quaternion q = Quaternion::DirectionToDirection(fVTmp, pDVTmp, { 0,1.0f,0 });
+	Quaternion q = Quaternion::DirectionToDirection(fVTmp, pDVTmp, USE_QUATERNION_AXIS_);
 	//回転後のベクトル
 	fVTmp = q.GetRotateVector(fVTmp);
 	//正面ベクトルセット
@@ -309,18 +307,19 @@ void Enemy::HPUpdate(float t)
 {
 	//ディゾルブ強すぎると敵が見えなくなるので
 	float lDissolvePow = DISSOLVE_POW_;
-	if (hp_ <= 0.0f)
+	if (hp_ <= 0)
 	{
-		lDissolvePow = Lerp(DISSOLVE_POW_, 1.0f, EaseOut(t));
+		lDissolvePow = Lerp(DISSOLVE_POW_, RATE_MAX_, EaseOut(t));
 	}
 	//hpによってディゾルブ(減った後のhpとの線形補完)
-	IObject3D::SetDissolveT((1.0f - Lerp((float)oldHP_, (float)hp_, t) / (float)HP_TMP_) * lDissolvePow);
+	IObject3D::SetDissolveT((RATE_MAX_ - Lerp((float)oldHP_, (float)hp_, t) / (float)HP_TMP_) * lDissolvePow);
 
-	//ポリゴンごとに動くように
+	//ポリゴンごとに法線方向動くように
 	Mesh::PolygonOffset offsetData;
-	offsetData.interval = GetRand(15.0f, 35.0f) * (1.0f - GameVelocityManager::GetInstance().GetVelocity() * 1.1f);
-	offsetData.length = GetRand(-IObject::GetScale().x, IObject::GetScale().x) * 1.3f;
-	offsetData.ratio = (1.0f - (float)hp_ / (float)HP_TMP_);
+	offsetData.interval = GetRand(MESH_OFFSET_INTERVAL_MIN_, MESH_OFFSET_INTERVAL_MAX_)
+		* (GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_ - GameVelocityManager::GetInstance().GetVelocity());
+	offsetData.length = GetRand(-IObject::GetScale().x, IObject::GetScale().x) * MESH_OFFSET_LENGTH_RATE_;
+	offsetData.ratio = (RATE_MAX_ - (float)hp_ / (float)HP_TMP_);
 	ObjectFBX::SetMeshPolygonOffsetData(offsetData);
 }
 
@@ -329,17 +328,21 @@ void Enemy::BeginDamagedWave(const CollisionInfo& info, float wavePow)
 	Vec3 pos = { info.inter_.m128_f32[0] ,info.inter_.m128_f32[1] ,info.inter_.m128_f32[2] };
 
 	//自分にメッシュの波
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < MY_WAVE_NUM_; i++)
 	{
-		BeginWave(pos, { GetScale().y / 20.0f * wavePow,GetScale().GetLength() / 18.0f * wavePow },
-			GetScale().GetLength() * 2.0f, 45.0f / wavePow * GetRand(1.0f, 2.0f));
+		BeginWave(pos,
+			{ GetScale().y * DAMAGE_MY_WAVE_WIDTH_RATE_ * wavePow, GetScale().GetLength() * DAMAGE_MY_WAVE_HEIGHT_RATE_ * wavePow },
+			GetScale().GetLength() * DAMAGE_MY_WAVE_DISTANCE_RATE_,
+			DAMAGE_MY_WAVE_TIME_ / wavePow * GetRand(DAMAGE_MY_WAVE_TIME_RATE_MIN_, DAMAGE_MY_WAVE_TIME_RATE_MAX_));
 	}
 
 	//ステージに波紋
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < STAGE_WAVE_NUM_; i++)
 	{
-		BeginWaveStage(pos, { GetScale().y * wavePow,GetScale().GetLength() * wavePow },
-			GetScale().GetLength() * 12.0f, 15.0f * GetRand(0.5f, 2.0f));
+		BeginWaveStage(pos,
+			{ GetScale().y * DAMAGE_STAGE_WAVE_WIDTH_RATE_ * wavePow,GetScale().GetLength() * DAMAGE_STAGE_WAVE_HEIGHT_RATE_ * wavePow },
+			GetScale().GetLength() * DAMAGE_STAGE_WAVE_DISTANCE_RATE_,
+			DAMAGE_STAGE_WAVE_TIME_ * GetRand(DAMAGE_STAGE_WAVE_TIME_RATE_MIN_, DAMAGE_STAGE_WAVE_TIME_RATE_MAX_));
 	}
 }
 
@@ -381,10 +384,10 @@ void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 		Damaged(1, stateChangeF, stateChangeF2);
 
 		//メッシュの波
-		BeginDamagedWave(info, 1.4f);
+		BeginDamagedWave(info, PUNCHED_WAVE_RATE_);
 
 		//パーティクル
-		DamageParticle(60, 1, 1.0f, &info);
+		DamageParticle(PUNCHED_PARTICLE_NUM_, 1, 1.0f, &info);
 
 		//ノードの角度を加算するため
 		SetAllNodeAddRots(*nodeObj);
@@ -400,10 +403,10 @@ void Enemy::DecrementEmergeCoolTime()
 void Enemy::Update()
 {
 	//ダメージ受けるクールタイムもゲームスピードをかける
-	damageCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
+	damageCoolTime_ -= GameVelocityManager::GetInstance().GetVelocity();
 
 	//アニメーションもゲームスピード
-	SetAnimationSpeed(min(GameVelocityManager::GetInstance().GetVelocity() * 3.0f,
+	SetAnimationSpeed(min(GameVelocityManager::GetInstance().GetVelocity() * ANIMATION_SPEED_RATE_,
 		GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_) * animeSpeedExtend_);
 
 	//演出更新
@@ -452,7 +455,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	distanceVec.y = 0;
 
 	//ダメージを受けるクールタイム
-	damageCoolTime_ = 20;
+	damageCoolTime_ = DAMAGE_COOL_TIME_TMP_;
 
 	//構え解除
 	ChangeEnemyStanceState(std::make_unique<EnemyStateAttackStanceEnd>());
@@ -461,7 +464,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	if (weapon_)
 	{
 		distanceVec.Normalized();
-		distanceVec.y += 0.4f;
+		distanceVec.y += THROW_WEAPON_VEC_Y_;
 		FallWeapon(Vec3(distanceVec.x, distanceVec.y, distanceVec.z) * WEAPON_FALL_VEL_EXTEND_);
 	}
 }
@@ -501,7 +504,7 @@ void Enemy::DamageParticle(int32_t particleNum, uint64_t interval, float vecPow,
 
 		posL += addPos;
 
-		const int32_t LIFE_TIME = 20;
+		const int16_t LIFE_TIME = PARTICLE_LIFE_TIME_;
 
 		//相手の速度も使う
 		Vec3 infoVec = { 0,0,0 };
@@ -510,18 +513,20 @@ void Enemy::DamageParticle(int32_t particleNum, uint64_t interval, float vecPow,
 			infoVec = info->object_->GetVelocity().GetNormalized();
 		}
 
-		const float ADD_VEC = IObject::GetScale().y / 16.0f;
+		const float ADD_VEC = IObject::GetScale().y * PARTICLE_VEL_RATE_;
 
-		Vec3 vel = Vec3(infoVec.x * GetRand(-0.1f, 1.0f) + GetRand(-ADD_VEC, ADD_VEC) * vecPow,
-			infoVec.y * GetRand(-0.1f, 1.0f) + GetRand(-ADD_VEC, ADD_VEC) * vecPow,
-			infoVec.z * GetRand(-0.1f, 1.0f) + GetRand(-ADD_VEC, ADD_VEC) * vecPow);
+		Vec3 vel = Vec3(infoVec.x * GetRand(PARTICLE_VEL_RATE_MIN_, PARTICLE_VEL_RATE_MAX_) + GetRand(-ADD_VEC, ADD_VEC) * vecPow,
+			infoVec.y * GetRand(PARTICLE_VEL_RATE_MIN_, PARTICLE_VEL_RATE_MAX_) + GetRand(-ADD_VEC, ADD_VEC) * vecPow,
+			infoVec.z * GetRand(PARTICLE_VEL_RATE_MIN_, PARTICLE_VEL_RATE_MAX_) + GetRand(-ADD_VEC, ADD_VEC) * vecPow);
 
-		float scale = scaleTmp / 30.0f;
+		float scale = scaleTmp * PARTICLE_SCALE_RATE_;
 		float scale2 = 0;
 
-		ParticleManager::GetInstance()->Add(LIFE_TIME, posL, vel, { 0,-0.0002f,0 }, scale, scale2, { 3.0f,0.02f,0.02f,0.95f }, { 3.0f,0.02f,0.02f,0.95f },
+		//パーティクル生成
+		ParticleManager::GetInstance()->Add(LIFE_TIME, posL, vel, PARTICLE_ACCEL_, scale, scale2,
+			PARTICLE_START_COLOR_, PARTICLE_END_COLOR_,
 			ParticleManager::BLEND_NUM::CRYSTAL,
-			PI * 4.0f, -PI * 4.0f);
+			PARTICLE_START_ROT_, PARTICLE_END_ROT_);
 	}
 }
 
@@ -532,7 +537,7 @@ void Enemy::DeadNodesParticle(int32_t particleNum, uint64_t interval)
 		//ノードのワールド座標（親オブジェクトの行列も反映）
 		Vec3 posL = node->GetLocalTrans();
 
-		DamageParticle(particleNum, interval, 0.3f, nullptr, nullptr, &posL);
+		DamageParticle(particleNum, interval, DEAD_PARTICLE_VEL_RATE_, nullptr, nullptr, &posL);
 	}
 }
 
@@ -564,13 +569,13 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		Damaged(hp_, stateChangeF);
 
 		//ノードの角度を加算するため
-		SetAllNodeAddRots(*obj, 1.5f);
+		SetAllNodeAddRots(*obj, SHOOTED_NODE_ADD_ROT_RATE_);
 
 		//メッシュの波
-		BeginDamagedWave(info, 0.9f);
+		BeginDamagedWave(info, SHOOTED_WAVE_RATE_);
 
 		//パーティクル
-		DamageParticle(100, 1, 1.3f, &info, obj, nullptr);
+		DamageParticle(SHOOTED_PARTICLE_NUM_, 1, SHOOTED_PARTICLE_VEL_RATE_, &info, obj, nullptr);
 	}
 	//銃に当たったら
 	else if (info.object_->GetObjName() == "gun")
@@ -589,14 +594,14 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		if (gun->GetIsThrowing() && gun->GetFallVelocity().GetLength() != 0)
 		{
 			//ノードの角度を加算するため
-			SetAllNodeAddRots(*obj, 0.7f);
+			SetAllNodeAddRots(*obj, HIT_WEAPON_NODE_ADD_ROT_RATE_);
 			//ダメージステートにする
 			auto stateChangeF = [=]() { Dead(); };
 			auto stateChangeF2 = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDamagedBegin>()); };
 			Damaged(0, stateChangeF, stateChangeF2);
 
 			//メッシュの波
-			BeginDamagedWave(info, 0.2f);
+			BeginDamagedWave(info, HIT_WEAPON_WAVE_RATE_);
 		}
 		else
 		{
@@ -621,7 +626,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		distanceVec.y = 0;
 		distanceVec.Normalized();
 		//位置セット(半径＋半径の長さをベクトルの方向を使って足す)
-		IObject::SetTrans(info.object_->GetTrans() + distanceVec * length * 1.001f);
+		IObject::SetTrans(info.object_->GetTrans() + distanceVec * length * PUSH_BACK_LENGTH_RATE_);
 
 		//ｙは動かないようにする
 		IObject::SetVelocity({ IObject::GetVelocity().x,0,IObject::GetVelocity().z });
@@ -632,9 +637,9 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		float myLengthRatio = GetVelocity().GetLength() / addLength;
 
 		//衝突後の自分のスピードベクトルは[現在のスピードベクトル]+[相手から自分へのベクトル]*[相手の長さの割合]
-		SetVelocity((GetVelocity() + distanceVec.GetNormalized() * addLength * (1.0f - myLengthRatio)) * 0.63f);
+		SetVelocity((GetVelocity() + distanceVec.GetNormalized() * addLength * (1.0f - myLengthRatio)) * PUSH_BACK_VEL_RATE_);
 		//衝突後の相手のスピードベクトルは[現在のスピードベクトル]+[このインスタンスから相手へのベクトル]*[このインスタンスの長さの割合]
-		info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * 0.63f);
+		info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * PUSH_BACK_VEL_RATE_);
 	}
 	//素手攻撃中にプレイヤーに当たったら
 	else if (GetAnimData(AnimationNum::PUNCH).isPlay_ && info.object_->GetObjName() == "player")

@@ -35,12 +35,100 @@ public:
 	};
 
 public:
-	const float SHOT_POS_EXTEND_ = 5.0f;
-	//武器を持つノード
-	const std::string WEAPON_PARENT_NODE_NAME_ = "RightHand";
-	//武器の角度
+	//武器
 	const Vec3 WEAPON_ROT_ = { PI / 2.0f,PI / 2.0f,0 };
+	const float SHOT_POS_EXTEND_ = 5.0f;
+	const float THROW_WEAPON_VEC_Y_ = 0.4f;
+	//消費する弾
+	const int8_t CONSUM_BULLET_NUM_ = 0;
+	//ライト
+	const XMFLOAT3 POINT_LIGHT_ATTEN_ = { 0.977f,0.493f,0.458f };
+	const XMFLOAT3 POINT_LIGHT_COLOR_ = { 90.0f,-1.0f,-1.0f };
+	//倍率
+	const float INIT_DISSOLVE_RATE_ = 1.0f;
+	const float WEAPON_SCALE_RATE_ = 2.0f;
+	const Vec3 MODEL_MATERIAL_RATE_ = { 0.03f,0.1f,50.0f };
+	const float VELOCITY_RATE_ = 0.45f / 1.5f;
+	const float RATE_MAX_ = 1.0f;
+	//色
+	const Vec4 COLOR_ = { 3.0f,0,0,1.0f };
+	//初期値
+	const Vec3 INIT_VELOCITY_ = { 0,0,0 };
+	const float INIT_DAMAGE_COOL_TIME_ = 0;
+	//殴られたときなどに上に移動しないように
+	const float DIR_Y_TMP_ = 0;
+	//ダメージのクールタイムが終わる速度
+	const float END_VEL_OF_DAMAGE_COOL_ = 0;
+	//回転の時に使う軸
+	const Vec3 USE_QUATERNION_AXIS_ = { 0,1.0f,0 };
+	//アニメーション
+	const float ANIMATION_SPEED_RATE_ = 3.0f;
+	//押し戻し
+	const float PUSH_BACK_VEL_RATE_ = 0.63f;
+	const float PUSH_BACK_LENGTH_RATE_ = 1.001f;
 
+public:
+	//パーティクル
+	const int16_t PARTICLE_LIFE_TIME_ = 20;
+	const float PARTICLE_SCALE_RATE_ = 1.0f / 30.0f;
+	const float PARTICLE_VEL_RATE_ = 1.0f / 16.0f;
+	const Vec3 PARTICLE_ACCEL_ = { 0,-0.0002f,0 };
+	const XMFLOAT4 PARTICLE_START_COLOR_ = { 3.0f,0.02f,0.02f,0.95f };
+	const XMFLOAT4 PARTICLE_END_COLOR_ = { 3.0f,0.02f,0.02f,0.95f };
+	const float PARTICLE_START_ROT_ = PI * 4.0f;
+	const float PARTICLE_END_ROT_ = -PI * 4.0f;
+	const int8_t PUNCHED_PARTICLE_NUM_ = 60;
+	const float PARTICLE_VEL_RATE_MIN_ = -0.1f;
+	const float PARTICLE_VEL_RATE_MAX_ = 1.0f;
+	//種類別
+	const int8_t SHOOTED_PARTICLE_NUM_ = 100;
+	const float SHOOTED_PARTICLE_VEL_RATE_ = 1.3f;
+	const float DEAD_PARTICLE_VEL_RATE_ = 0.35f;
+
+public://ノード
+	const std::string WEAPON_PARENT_NODE_NAME_ = "RightHand";
+	const float NODE_COLLIDER_SCALE_ = 14.0f;
+	const Vec3 INIT_NODE_ADD_ROT_ = { 0,0,0 };
+	const float NODE_ADD_ROT_RATE_ = 1.0f / 6.0f;
+	const float LEG_ADD_ROT_RATE_ = 1.0f / 5.5f;
+	//種類別
+	const float PUNCHED_NODE_ADD_ROT_RATE_ = 1.0f;
+	const float SHOOTED_NODE_ADD_ROT_RATE_ = 1.5f;
+	const float HIT_WEAPON_NODE_ADD_ROT_RATE_ = 0.7f;
+
+public:
+	//メッシュのオフセット
+	const float MESH_OFFSET_INTERVAL_MIN_ = 20.0f;
+	const float MESH_OFFSET_INTERVAL_MAX_ = 45.0f;
+	const float MESH_OFFSET_LENGTH_RATE_ = 1.3f;
+
+public://波紋
+	//ステージの波紋
+	const float STAGE_WAVE_WIDTH_RATE_ = 0.5f;
+	const float STAGE_WAVE_HEIGHT_RATE_ = 0.2f;
+	const float STAGE_WAVE_DISTANCE_RATE_ = 20.0f;
+	const float STAGE_WAVE_TIME_ = 130.0f;
+	//ダメージを受けたときのステージの波紋
+	const float DAMAGE_STAGE_WAVE_WIDTH_RATE_ = 1.0f;
+	const float DAMAGE_STAGE_WAVE_HEIGHT_RATE_ = 1.0f;
+	const float DAMAGE_STAGE_WAVE_DISTANCE_RATE_ = 12.0f;
+	const float DAMAGE_STAGE_WAVE_TIME_ = 22.0f;
+	const float DAMAGE_STAGE_WAVE_TIME_RATE_MIN_ = 0.5f;
+	const float DAMAGE_STAGE_WAVE_TIME_RATE_MAX_ = 2.0f;
+	//ダメージを受けたときの自分の波紋
+	const float DAMAGE_MY_WAVE_WIDTH_RATE_ = 1.0f / 20.0f;
+	const float DAMAGE_MY_WAVE_HEIGHT_RATE_ = 1.0f / 18.0f;
+	const float DAMAGE_MY_WAVE_DISTANCE_RATE_ = 2.0f;
+	const float DAMAGE_MY_WAVE_TIME_ = 45.0f;
+	const float DAMAGE_MY_WAVE_TIME_RATE_MIN_ = 1.0f;
+	const float DAMAGE_MY_WAVE_TIME_RATE_MAX_ = 2.0f;
+	//種類別倍率
+	const float PUNCHED_WAVE_RATE_ = 1.4f;
+	const float SHOOTED_WAVE_RATE_ = 0.9f;
+	const float HIT_WEAPON_WAVE_RATE_ = 0.35f;
+
+	const int8_t STAGE_WAVE_NUM_ = 2;
+	const int8_t MY_WAVE_NUM_ = 3;
 
 private:
 	const float PARTICLE_SIZE_EXTEND_ = 2.0f;
@@ -53,7 +141,6 @@ private:
 
 private:
 	Vec3 velocity_ = { 0,0,0 };
-	const float VELOCITY_TMP_ = 0.45f;
 	bool isCantMove = false;
 
 	//ウェーブ番号
@@ -70,6 +157,7 @@ private:
 
 	Vec3 directionVec_;
 
+	const float DAMAGE_COOL_TIME_TMP_ = 20.0f;
 	float damageCoolTime_ = 0;
 	float velocityLength_ = 0;
 
@@ -100,7 +188,7 @@ private:
 	//アニメーション中に地面にウェーブ出す
 	float walkWaveTimer_ = 0;
 	float beforeWalkTime_ = 0;
-	const float  WALK_MOVE_INTERVAL_ = 20.f;
+	const float  WALK_MOVE_INTERVAL_ = 20.0f;
 
 	//ゲーム的に死亡したか
 	bool isDead_ = false;
