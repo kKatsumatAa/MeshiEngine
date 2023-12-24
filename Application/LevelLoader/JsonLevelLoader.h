@@ -94,6 +94,17 @@ private:
 	static const std::string S_DEFAULT_BASE_DIRECTORY_;
 	static const std::string S_EXTENSION_;
 
+private:
+	const int8_t INIT_ATTRIBUTE_ = 0;
+	const int8_t JUDGE_ZERO_ = 0;
+	const int8_t NODE_PARENT_ADVANCE_ = -2;
+
+	const int8_t AFFINE_INDEX_X_ = 1;
+	const int8_t AFFINE_INDEX_Y_ = 2;
+	const int8_t AFFINE_INDEX_Z_ = 0;
+
+	const Vec3 FRONT_DIR_ = { 0,0,1.0f };
+
 public:
 	//レベルデータ
 	std::unique_ptr<LevelData> levelData_ = nullptr;

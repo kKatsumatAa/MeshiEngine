@@ -13,6 +13,10 @@ class ClearEffectState;
 class ClearEffect final
 {
 private:
+	//クリア条件の現在の敵の数
+	const int16_t NUM_ENEMY_OF_CLEAR_ = 0;
+
+private:
 	//ステート
 	std::unique_ptr<ClearEffectState> state_ = nullptr;
 	//エフェクト中か

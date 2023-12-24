@@ -4,17 +4,17 @@
 
 void ClearEffectState::SpriteUpdate(const std::string& soundName, const std::string& nextStateName)
 {
-	t_ = min((float)timer_ / (float)TIMER_MAX_, 1.0f);
+	t_ = min((float)timer_ / (float)TIMER_MAX_, RATE_MAX_);
 
 	//線形補間
-	scale_ = LerpVec3({ MAX_SCALE_,0,0 }, { 1.0f,0,0 }, EaseIn(t_)).x;
+	scale_ = Lerp(MAX_SCALE_, NORMAL_SCALE_, EaseIn(t_));
 
 	alpha_ = t_;
 
 	timer_ = min(timer_, TIMER_MAX_);
 
 	//制限時間過ぎて、音も終わったら
-	if (!Sound::GetInstance().CheckPlayingWave(soundName) && t_ >= 1.0f)
+	if (!Sound::GetInstance().CheckPlayingWave(soundName) && t_ >= RATE_MAX_)
 	{
 		Sound::GetInstance().StopWave(soundName);
 		clearEffect_->ChangeState(std::move(GetState(nextStateName)));
@@ -27,10 +27,11 @@ void ClearEffectState::SpriteUpdate(const std::string& soundName, const std::str
 
 void ClearEffectState::SpriteDraw()
 {
-	texSprite_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
-	texSprite_.SetScale({ scale_,scale_ ,1.0f });
-
-	texSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
+	//位置などセット
+	texSprite_.SetTrans(SPRITE_TRANS_);
+	texSprite_.SetScale({ scale_,scale_ ,NORMAL_SCALE_ });
+	//描画
+	texSprite_.DrawBoxSprite(nullptr, SPRITE_ANCOR_UV_);
 }
 
 std::unique_ptr<ClearEffectState> ClearEffectState::GetState(const std::string& name)
@@ -60,7 +61,7 @@ void ClearEffectStateHyper::Initialize()
 
 	//セット
 	texSprite_.SetTexHandle(texHandle_);
-	texSprite_.SetColor({ 2.0f,2.0f ,2.0f ,1.0f });
+	texSprite_.SetColor(SPRITE_COLOR_);
 }
 
 void ClearEffectStateHyper::Update()
@@ -85,7 +86,7 @@ void ClearEffectStateHot::Initialize()
 
 	//セット
 	texSprite_.SetTexHandle(texHandle_);
-	texSprite_.SetColor({ 2.0f,2.0f ,2.0f ,1.0f });
+	texSprite_.SetColor(SPRITE_COLOR_);
 }
 
 void ClearEffectStateHot::Update()

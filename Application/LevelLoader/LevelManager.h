@@ -20,6 +20,8 @@ private://変数
 
 	const std::string FILE_NAME_ = "level";
 
+	const int8_t INIT_INDEX_ = -1;
+
 private:
 	LightManager* lightManager_ = nullptr;
 	float ambientColor_[3] = { 1,1,1 };

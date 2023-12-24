@@ -11,6 +11,15 @@
 #include "Quaternion.h"
 #include"TextureManager.h"
 
+namespace Constant
+{
+	//0
+	static const float ZERO = 0;
+	//0.5
+	static const float HALF = 0.5f;
+	//2.0
+	static const float TWICE = 2.0f;
+}
 
 //自作
 //vec4とm4の掛け算をして代入
@@ -119,7 +128,7 @@ std::string ExtractFileName(const std::string& path);
 float SmoothStep(float min, float max, float v);
 
 //クランプ
-float Clamp(float v,float min, float max);
+float Clamp(float v, float min, float max);
 
 //ランダム
 float GetRand(float min, float max);

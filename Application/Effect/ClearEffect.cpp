@@ -1,4 +1,4 @@
-﻿#include "ClearEffect.h"
+#include "ClearEffect.h"
 #include "ClearEffectState.h"
 #include "LevelManager.h"
 
@@ -48,7 +48,7 @@ void ClearEffect::Update()
 {
 	//クリア演出開始
 	if (!GetIsEffect() && 
-		ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_ENEMYS).size() <= 0)
+		ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_ENEMYS).size() <= NUM_ENEMY_OF_CLEAR_)
 	{
 		BeginClearEffect();
 	}

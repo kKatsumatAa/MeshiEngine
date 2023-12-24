@@ -55,14 +55,12 @@ void LevelManager::LoadLevelData(int32_t fileIndex)
 	//レベルデータからライトを取得
 	for (auto& lightData : JsonLevelLoader::Getinstance().levelData_->lights)
 	{
-		//
 		LoadLight(*lightData.get());
 	}
 
 	//レベルデータからオブジェクトを生成、配置
 	for (auto& objData : JsonLevelLoader::Getinstance().levelData_->objects)
 	{
-		//
 		LoadObj(*objData.get());
 	}
 }
@@ -260,7 +258,7 @@ void LevelManager::LoadObj(LevelData::ObjectData& objData)
 
 void LevelManager::LoadLight(LevelData::LightData& lightData)
 {
-	int32_t index = -1;
+	int32_t index = INIT_INDEX_;
 
 	//方向ライトなら
 	if (lightData.fileName.find("dir") != std::string::npos)

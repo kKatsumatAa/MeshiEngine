@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 
+using namespace Constant;
+
 const std::string JsonLevelLoader::S_DEFAULT_BASE_DIRECTORY_ = "Resources/Level/levelData/";
 const std::string JsonLevelLoader::S_EXTENSION_ = ".json";
 
@@ -35,7 +37,7 @@ void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 	//ファイルオープン失敗をチェック
 	if (file.fail())
 	{
-		assert(0);
+		assert(false);
 	}
 
 	//JSON文字列から解凍したデータ
@@ -52,10 +54,8 @@ void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 	//"name_"を文字列として取得
 	std::string name = deserialized["name"].get<std::string>();
 	//正しいレベルデータファイルかチェック
-	assert(name.compare("scene") == 0);
+	assert(name.compare("scene") == JUDGE_ZERO_);
 
-	//レベルデータ格納用インスタンスを生成
-	//level
 
 	//"objects"の全オブジェクトを走査
 	for (nlohmann::json::iterator object = deserialized["objects"].begin(); object != deserialized["objects"].end(); object++)
@@ -67,20 +67,20 @@ void JsonLevelLoader::LoadJsonFile(const std::string& fileName)
 
 		//種類ごとの処理
 		//Mesh
-		if (type.compare("MESH") == 0)
+		if (type.compare("MESH") == JUDGE_ZERO_)
 		{
 			//再帰的
 			LoadRecursiveChildrenData(object);
 		}
 
 		//Camera
-		if (type.compare("CAMERA") == 0)
+		if (type.compare("CAMERA") == JUDGE_ZERO_)
 		{
 			LoadCameraData(object);
 		}
 
 		//ライト
-		if (type.compare("LIGHT") == 0)
+		if (type.compare("LIGHT") == JUDGE_ZERO_)
 		{
 			LoadLightData(object);
 		}
@@ -123,7 +123,7 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 	if (object->contains("cool_time"))
 	{
 		std::string numStr = (*object)["cool_time"];
-		objectData->coolTime = std::stof(numStr) * 60.0f;
+		objectData->coolTime = std::stof(numStr) * DirectXWrapper::GetInstance().FPS_;
 	}
 
 	//親ノード
@@ -155,7 +155,7 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 		std::istringstream line_stream(line);
 		// ','区切りで行の先頭文字列を取得
 		std::string key;
-		uint16_t attribute = 0;
+		uint16_t attribute = INIT_ATTRIBUTE_;
 		while (std::getline(line_stream, key, ','))
 		{
 			if (key == "ALLIES")
@@ -178,20 +178,20 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 		objectData->colliderData.attribute = attribute;
 
 		//中心位置
-		objectData->colliderData.center.x = (float)collider["center"][1];
-		objectData->colliderData.center.y = (float)collider["center"][2];
-		objectData->colliderData.center.z = -(float)collider["center"][0];
+		objectData->colliderData.center.x = (float)collider["center"][AFFINE_INDEX_X_];
+		objectData->colliderData.center.y = (float)collider["center"][AFFINE_INDEX_Y_];
+		objectData->colliderData.center.z = -(float)collider["center"][AFFINE_INDEX_Z_];
 		//スケール
-		objectData->colliderData.size.x = (float)collider["size"][1];
-		objectData->colliderData.size.y = (float)collider["size"][2];
-		objectData->colliderData.size.z = (float)collider["size"][0];
+		objectData->colliderData.size.x = (float)collider["size"][AFFINE_INDEX_X_];
+		objectData->colliderData.size.y = (float)collider["size"][AFFINE_INDEX_Y_];
+		objectData->colliderData.size.z = (float)collider["size"][AFFINE_INDEX_Z_];
 	}
 
 	//親がいたら、おやに自分のデータ入れる
 	if (parent)
 	{
 		auto itr = levelData_->objects.end();
-		std::advance(itr, -2);//endは何もなく、その一個前が今の自分が入ってるので二回戻す
+		std::advance(itr, NODE_PARENT_ADVANCE_);//endは何もなく、その一個前が今の自分が入ってるので二回戻す
 		itr->get()->childData = objectData.get();
 	}
 
@@ -214,10 +214,11 @@ Vec3 JsonLevelLoader::GetRot(const nlohmann::json::iterator& object)
 	//トランスフォームのパラメータ読み込み
 	nlohmann::json transform = (*object)["transform"];
 
+	//マイナスしたり入れ替えることでDirectXに合わせる
 	Vec3 rot = {
-			AngletoRadi(-(float)transform["rotation"][1]),
-			AngletoRadi(-(float)transform["rotation"][2]),
-			AngletoRadi((float)transform["rotation"][0])
+			AngletoRadi(-(float)transform["rotation"][AFFINE_INDEX_X_]),
+			AngletoRadi(-(float)transform["rotation"][AFFINE_INDEX_Y_]),
+			AngletoRadi((float)transform["rotation"][AFFINE_INDEX_Z_])
 	};
 	return rot;
 }
@@ -230,7 +231,7 @@ Vec3 JsonLevelLoader::GetRotDir(const nlohmann::json::iterator& object, bool isC
 
 	if (isCamera)
 	{
-		targetWorldMat.rot_ = { 3.14f / 2.0f - targetWorldMat.rot_.z, targetWorldMat.rot_.y + 3.14f / 2.0f, targetWorldMat.rot_.x };
+		targetWorldMat.rot_ = { PI * HALF - targetWorldMat.rot_.z, targetWorldMat.rot_.y + PI * HALF, targetWorldMat.rot_.x };
 	}
 	else if (isLight)
 	{
@@ -239,9 +240,9 @@ Vec3 JsonLevelLoader::GetRotDir(const nlohmann::json::iterator& object, bool isC
 
 	targetWorldMat.CalcWorldMat();
 	//奥に向かうベクトルをターゲットの元とする
-	Vec3 dir = { 0,0,1.0f };
+	Vec3 dir = FRONT_DIR_;
 	//読み込んだ角度でターゲットを回転
-	Vec3xM4(dir, targetWorldMat.matWorld_, 0);
+	Vec3xM4(dir, targetWorldMat.matWorld_, false);
 
 
 	return dir.GetNormalized();
@@ -252,7 +253,7 @@ Vec3 JsonLevelLoader::GetTrans(const nlohmann::json::iterator& object)
 	//トランスフォームのパラメータ読み込み
 	nlohmann::json transform = (*object)["transform"];
 
-	return { (float)transform["translation"][1], (float)transform["translation"][2], -(float)transform["translation"][0] };
+	return { (float)transform["translation"][AFFINE_INDEX_X_], (float)transform["translation"][AFFINE_INDEX_Y_], -(float)transform["translation"][AFFINE_INDEX_Z_] };
 }
 
 Vec3 JsonLevelLoader::GetScale(const nlohmann::json::iterator& object)
@@ -260,7 +261,7 @@ Vec3 JsonLevelLoader::GetScale(const nlohmann::json::iterator& object)
 	//トランスフォームのパラメータ読み込み
 	nlohmann::json transform = (*object)["transform"];
 
-	return{ (float)transform["scaling"][1],	(float)transform["scaling"][2],(float)transform["scaling"][0] };
+	return{ (float)transform["scaling"][AFFINE_INDEX_X_],	(float)transform["scaling"][AFFINE_INDEX_Y_],(float)transform["scaling"][AFFINE_INDEX_Z_] };
 }
 
 //-------------------------------------------------------------------------------

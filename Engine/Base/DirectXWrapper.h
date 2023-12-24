@@ -19,6 +19,9 @@ private:
 	const uint64_t SHADOW_DIFINITION_ = 1280;
 	bool isFirstFrame_ = true;
 
+public:
+	const float FPS_ = 60.0f;
+
 private:
 	//成果物系
 	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
