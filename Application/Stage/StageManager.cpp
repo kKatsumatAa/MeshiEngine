@@ -110,7 +110,7 @@ void StageManager::AfterLavaMaxUpdate()
 	//徐々にディゾルブ
 	for (auto landShape : stages)
 	{
-		landShape->SetDissolveT(EaseIn(t));
+		landShape->SetDissolveRate(EaseIn(t));
 
 		//時間終わったら消す
 		if (t >= 0.8f)

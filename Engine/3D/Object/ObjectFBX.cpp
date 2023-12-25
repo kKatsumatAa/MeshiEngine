@@ -6,6 +6,8 @@ using namespace DirectX;
 //------------------------------------------
 //パイプラインなどの設定
 RootPipe ObjectFBX::pipelineSetM_[COUNT];
+//通常のアニメーションスピード
+const float ObjectFBX::NORMAL_ANIM_SPEED_ = 1.0f;
 
 //--------------------------------------------------------------------------------------
 ObjectFBX::~ObjectFBX()

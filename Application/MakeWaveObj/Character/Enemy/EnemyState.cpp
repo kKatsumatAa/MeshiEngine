@@ -6,6 +6,8 @@
 #include "CameraManager.h"
 #include "LevelManager.h"
 
+using namespace Constant;
+
 //---------------
 Vec3 EnemyStateAttackStance::ANGLE_MAX_ = { 0.25f,0.37f,-0.55f };
 
@@ -115,7 +117,7 @@ void EnemyStateEmergeEffect::Update()
 
 	//ディゾルブ
 	float t = timer_ / EMERGE_TIMER_MAX_;
-	enemy_->SetDissolveT(LerpVec3({ 1.0f,0,0 }, { 0,0,0 }, EaseIn(t)).x);
+	enemy_->SetDissolveRate(Lerp(IObject3D::DISSOLVE_RATE_MAX_, 0, EaseIn(t)));
 
 	if (timer_ >= EMERGE_TIMER_MAX_)
 	{
@@ -300,6 +302,7 @@ void EnemyStateHaveWeaponAndMove::Update()
 }
 
 //-------------------------------------------------------------------------------------------------------
+const float EnemyStateAttackStance::ANGLE_IMGUI_DRAG_SPEED_ = 0.05f;
 // 構え親クラス
 void EnemyStateAttackStance::Update()
 {
@@ -312,7 +315,7 @@ void EnemyStateAttackStance::DrawImgui()
 {
 	if (ImGui::TreeNode("StanceRot"))
 	{
-		ImGui::DragFloat3("rot", &ANGLE_MAX_.x, 0.05f);
+		ImGui::DragFloat3("rot", &ANGLE_MAX_.x, ANGLE_IMGUI_DRAG_SPEED_);
 
 		ImGui::TreePop();
 	}
@@ -339,7 +342,7 @@ void EnemyStateAttackStanceBegin::Update()
 	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, t_));
 
 	//アニメーションスピード徐々に
-	enemy_->SetAnimeSpeedExtend(Lerp(1.0f, 0, EaseIn(t_)));
+	enemy_->SetAnimeSpeedExtend(Lerp(ObjectFBX::NORMAL_ANIM_SPEED_, 0, EaseIn(t_)));
 
 	//仮で構え終わったら攻撃
 	if (t_ >= 1.0f)
@@ -372,7 +375,7 @@ void EnemyStateAttackStanceEnd::Update()
 	EnemyStateAttackStance::Update();
 
 	//アニメーションスピード徐々に
-	enemy_->SetAnimeSpeedExtend(Lerp(0, 1.0f, EaseIn(t_)));
+	enemy_->SetAnimeSpeedExtend(Lerp(0, ObjectFBX::NORMAL_ANIM_SPEED_, EaseIn(t_)));
 
 	//角度を戻す
 	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, t_));
@@ -402,7 +405,7 @@ void EnemyStateDamagedBegin::Update()
 		enemy_->AllMove(GetRayHitGunOrPlayerPos());
 	}
 	//アニメーションスピード徐々に
-	enemy_->SetAnimeSpeedExtend(Lerp(1.0f, 0.3f, EaseIn(t)));
+	enemy_->SetAnimeSpeedExtend(Lerp(ObjectFBX::NORMAL_ANIM_SPEED_, DAMAGED_ANIME_SPEED_RATE_, EaseIn(t)));
 
 	//割合を使用して線形補完
 	for (auto nodeAddRot : enemy_->GetDamagedAddRots())
@@ -440,7 +443,7 @@ void EnemyStateDamagedEnd::Update()
 	}
 
 	//アニメーションスピード徐々に
-	enemy_->SetAnimeSpeedExtend(Lerp(0.3f, 1.0f, EaseIn(t)));
+	enemy_->SetAnimeSpeedExtend(Lerp(DAMAGED_ANIME_SPEED_RATE_, ObjectFBX::NORMAL_ANIM_SPEED_, EaseIn(t)));
 
 	//割合を使用して線形補完(今度は元に戻す)
 	for (auto nodeAddRot : enemy_->GetDamagedAddRots())
@@ -473,7 +476,7 @@ void EnemyStateDead::Update()
 
 	//アニメーションスピード徐々に
 	enemy_->AllMove(GetRayHitGunOrPlayerPos(), false);
-	enemy_->SetAnimeSpeedExtend(Lerp(1.0f, 0, EaseIn(t)));
+	enemy_->SetAnimeSpeedExtend(Lerp(ObjectFBX::NORMAL_ANIM_SPEED_, 0, EaseIn(t)));
 
 	//割合を使用して線形補完
 	for (auto nodeAddRot : enemy_->GetDamagedAddRots())
@@ -483,8 +486,8 @@ void EnemyStateDead::Update()
 
 	enemy_->HPUpdate(t);
 
-	//ノードの位置からパーティクルだす
-	enemy_->DeadNodesParticle((uint64_t)(10.0f * t), (uint64_t)(Lerp((float)PARTICLE_INTERVAL_ * 2.0f, (float)PARTICLE_INTERVAL_, EaseIn(t))));
+	//ノードの位置からパーティクルだす(徐々に数減らしたり)
+	enemy_->DeadNodesParticle((uint64_t)(DEAD_PARTICLE_NUM_ * t), (uint64_t)(Lerp((float)PARTICLE_INTERVAL_ * TWICE, (float)PARTICLE_INTERVAL_, EaseIn(t))));
 
 	//終わったら生きてるフラグオフ
 	if (t >= 1.0f)

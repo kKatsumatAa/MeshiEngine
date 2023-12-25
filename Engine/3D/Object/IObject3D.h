@@ -62,6 +62,9 @@ protected:
 	//シャドウマップ用の深度SRVの要素番号
 	static int32_t sShadowSRVIndex_;
 
+public:
+	static const float DISSOLVE_RATE_MAX_;
+
 protected:
 	//モデルの有効フラグ
 	bool isValidModel_ = true;
@@ -171,7 +174,7 @@ public:
 	//ディゾルブ画像ハンドル
 	void SetDissolveTexHandle(uint64_t dissolveTextureHandle) { dissolveTextureHandle_ = dissolveTextureHandle; }
 	//ディゾルブ割合セット
-	void SetDissolveT(float t) { effectFlags_.dissolveT = t; }
+	void SetDissolveRate(float t) { effectFlags_.dissolveT = t; }
 	//ディゾルブ割合取得
 	float GetDissolveT() { return effectFlags_.dissolveT; }
 	//ディゾルブするかセット

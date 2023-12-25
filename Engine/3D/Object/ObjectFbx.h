@@ -50,6 +50,8 @@ public:
 		float animationSpeed_ = 1.0f;
 	};
 
+	static const float NORMAL_ANIM_SPEED_;
+
 private:
 	//パイプラインなどの設定
 	static RootPipe pipelineSetM_[COUNT];

@@ -40,7 +40,7 @@ void Enemy::EmergeInitialize()
 
 	//ディゾルブ
 	SetisDissolve(true);
-	SetDissolveT(INIT_DISSOLVE_RATE_);
+	SetDissolveRate(INIT_DISSOLVE_RATE_);
 	//ディゾルブ画像
 	uint64_t handle;
 	handle = TextureManager::LoadGraph("dissolveMask.png");
@@ -312,7 +312,7 @@ void Enemy::HPUpdate(float t)
 		lDissolvePow = Lerp(DISSOLVE_POW_, RATE_MAX_, EaseOut(t));
 	}
 	//hpによってディゾルブ(減った後のhpとの線形補完)
-	IObject3D::SetDissolveT((RATE_MAX_ - Lerp((float)oldHP_, (float)hp_, t) / (float)HP_TMP_) * lDissolvePow);
+	IObject3D::SetDissolveRate((RATE_MAX_ - Lerp((float)oldHP_, (float)hp_, t) / (float)HP_TMP_) * lDissolvePow);
 
 	//ポリゴンごとに法線方向動くように
 	Mesh::PolygonOffset offsetData;

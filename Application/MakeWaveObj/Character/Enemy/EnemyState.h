@@ -14,6 +14,9 @@ class Enemy;
 class EnemyState : public CharacterState
 {
 protected:
+	const float DAMAGED_ANIME_SPEED_RATE_ = 0.3f;
+
+protected:
 	Enemy* enemy_ = nullptr;
 
 	const uint16_t BARE_HANDS_ATTR_TMP_ = COLLISION_ATTR_ITEMS | COLLISION_ATTR_LANDSHAPE;
@@ -158,6 +161,8 @@ class EnemyStateAttackStance :
 	public EnemyState
 {
 protected:
+	//imguiの角度のドラッグスピード
+	static const float ANGLE_IMGUI_DRAG_SPEED_;
 	//最大時間
 	const float TIMER_MAX_ = 40.0f;
 	float t_ = 0;
@@ -238,6 +243,7 @@ class EnemyStateDead :
 private:
 	float timer_ = 0;
 	const uint64_t PARTICLE_INTERVAL_ = 10;
+	const float DEAD_PARTICLE_NUM_ = 10.0f;
 
 public:
 	//初期化

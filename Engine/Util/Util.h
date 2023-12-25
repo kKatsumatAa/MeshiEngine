@@ -19,6 +19,8 @@ namespace Constant
 	static const float HALF = 0.5f;
 	//2.0
 	static const float TWICE = 2.0f;
+	//1.0f
+	static const float RATE_MAX_ = 1.0f;
 }
 
 //自作
