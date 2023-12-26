@@ -57,6 +57,9 @@ class PlayerStateHaveWeapon :
 	public CharacterStateHaveWeapon
 {
 public:
+	const float SHOOT_ROT_MAX_ = PI / 4.0f;
+
+public:
 	//初期化
 	void Initialize() override;
 	//更新

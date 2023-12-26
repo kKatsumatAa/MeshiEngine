@@ -12,6 +12,10 @@ class PlayerHand;
 
 class PlayerHandState
 {
+public:
+	const float ATTACK_HAND_ROT_MIN_ = -PI / 8.0f;
+	const float ATTACK_HAND_ROT_MAX_ = PI / 4.0f;
+
 protected:
 	//状態を使うインスタンスポインタ
 	PlayerHand* playerHand_ = nullptr;

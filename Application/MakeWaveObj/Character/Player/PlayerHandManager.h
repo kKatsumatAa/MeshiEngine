@@ -12,6 +12,11 @@
 
 class PlayerHandManager
 {
+public:
+	const Vec3 LOCAL_POS_TMP_ = { 2.0f,-1.0f,1.0f };
+	const float PUNCH_CAMERA_SHAKE_LENGTH_ = 1.05f;
+	const int8_t PUNCH_CAMERA_SHAKE_TIME_ = 5;
+
 private:
 	PlayerHand* handR_ = nullptr;
 	PlayerHand* handL_ = nullptr;

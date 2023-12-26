@@ -12,6 +12,9 @@ class PlayerHandState;
 
 class PlayerHand : public Object
 {
+public:
+	const Vec3 SCALE_ = { 0.5f,0.5f,2.5f };
+
 private:
 	bool isAttacking_ = false;
 	std::unique_ptr<PlayerHandState> attackState_ = nullptr;
@@ -41,7 +44,7 @@ public:
 	void SetIsAttacking(bool is) { isAttacking_ = is; }
 	//攻撃中か取得
 	bool GetIsAttacking() { return isAttacking_; }
-	
+
 	//攻撃できるかセット
 	void SetIsCanAttack(bool is) { isCanAttack_ = is; }
 	//攻撃できるか取得
@@ -66,9 +69,9 @@ public:
 
 public:
 	//インスタンス生成処理
-	static std::unique_ptr<PlayerHand> Create(Player* player, const Vec3& transTmp,bool isRight, const std::string& objName);
+	static std::unique_ptr<PlayerHand> Create(Player* player, const Vec3& transTmp, bool isRight, const std::string& objName);
 	//初期化
-	bool Initialize(Player* player, const Vec3& transTmp,bool isRight, const std::string& objName);
+	bool Initialize(Player* player, const Vec3& transTmp, bool isRight, const std::string& objName);
 	//更新
 	void Update()override;
 	//描画

@@ -11,6 +11,9 @@ class PlayerUI;
 
 class PlayerUIState
 {
+public:
+	const Vec2 SPRITE_ANCOR_UV_ = { 0.5f,0.5f };
+
 protected:
 	//
 	PlayerUI* playerUI_ = nullptr;

@@ -27,9 +27,10 @@ Player::~Player()
 	//（unique_ptrでobjectManagerで管理してるので、worldMat_のparent_がおかしなことになるため）
 	if (weapon_)
 	{
+		//落とすときの角度
 		weapon_->SetRot({ 0,PI,0 });
 	}
-	FallWeapon({ 0,-3.0f,0 }, nullptr, false);
+	FallWeapon(DEAD_WEAPON_FALL_VEC_, nullptr, false);
 }
 
 std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
@@ -43,7 +44,7 @@ std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Weapo
 	//初期化
 	if (!instance->Initialize(std::move(worldMat), weapon))
 	{
-		assert(0);
+		assert(false);
 	}
 
 	return std::move(instance);
@@ -157,8 +158,8 @@ void Player::DirectionUpdateCalcPart(const Vec2& mouseVec)
 	};
 	//角度を足す
 	cameraRot_ = (cameraRot_ + rotMove);
-	cameraRot_.x = (min(cameraRot_.x, PI / 2.0f * 0.9f));
-	cameraRot_.x = (max(cameraRot_.x, -PI / 2.0f * 0.9f));
+	cameraRot_.x = (min(cameraRot_.x, CAMERA_ROT_RIMIT_));
+	cameraRot_.x = (max(cameraRot_.x, -CAMERA_ROT_RIMIT_));
 
 	//正面ベクトルを回転
 	RotateFrontVec(cameraRot_);
@@ -204,7 +205,7 @@ Vec3 Player::GetFrontTargetVec(uint16_t colAttr)
 	Vec3 ansVec = { 0,0,0 };
 
 	RaycastHit info;
-	if (CheckRayOfEyeHit(GetFrontVec(), 10000, colAttr, &info))
+	if (CheckRayOfEyeHit(GetFrontVec(), EYE_RAY_LENGTH_, colAttr, &info))
 	{
 		ansVec = Vec3(info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2]) - (
 			GetWeapon()->GetWorldTrans());
@@ -268,14 +269,14 @@ void Player::MoveCalcPart(bool leftKey, bool rightKey, bool upKey, bool downKey,
 	//ジャンプ中でスペース押しっぱなしだったら
 	if (!isOnGround_ && spaceKey && velocity.GetLength())
 	{
-		GameVelocityManager::GetInstance().AddGameVelocity(-0.001f);
+		GameVelocityManager::GetInstance().AddGameVelocity(JUMPING_ADD_GAME_VEL_);
 	}
 
 	//位置セット(ゲームスピードをかける)
 	SetTrans(GetTrans() + velocity * VELOCITY_TMP_ * moveVelRatio);
 
 	//地面との判定
-	std::function<void()>gameSpeedAddFunc = [=]() {GameVelocityManager::GetInstance().AddGameVelocity(1.0f); };
+	std::function<void()>gameSpeedAddFunc = [=]() {GameVelocityManager::GetInstance().AddGameVelocity(GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_); };
 	OnGroundAndWallUpdate(HEIGHT_FROM_GROUND_, moveVelRatio, spaceKey, gameSpeedAddFunc);
 
 	//コライダー更新
@@ -382,7 +383,7 @@ void Player::UpdateUI()
 
 	//レイを飛ばしてターゲットまでの距離を計算、uiの大きさを変える
 	RaycastHit info;
-	if (CheckRayOfEyeHit(GetFrontVec(), 10000, COLLISION_ATTR_ALL ^ COLLISION_ATTR_ALLIES, &info))
+	if (CheckRayOfEyeHit(GetFrontVec(), EYE_RAY_LENGTH_, COLLISION_ATTR_ALL ^ COLLISION_ATTR_ALLIES, &info))
 	{
 		targetDir = Vec3(info.inter.m128_f32[0], info.inter.m128_f32[1], info.inter.m128_f32[2]) - GetTrans();
 
@@ -391,10 +392,16 @@ void Player::UpdateUI()
 			isTargetEnemy = true;
 		}
 	}
-	scale = min(Lerp(0.2f, 1.5f, max(1.0f - (targetDir.GetLength() / (GetScale().GetLength() * 35.0f)), 0)) * scale, 1.5f);
+
+	//距離でレティクルの大きさ
+	scale = min(Lerp(RETICLE_SIZE_MIN_, RETICLE_SIZE_MAX_,
+		max(1.0f - (targetDir.GetLength() / (GetScale().GetLength() * RETICLE_LENGTH_MAX_)), 0)) * scale,
+		RETICLE_SIZE_MAX_);
+
+	//レイの先が敵だったら小さくなりすぎないように
 	if (isTargetEnemy)
 	{
-		scale = max(scale, 0.8f);
+		scale = max(scale, RAY_HIT_ENEMY_RETICLE_SIZE_MIN_);
 	}
 	PlayerUI::GetInstance().SetScaleRatio(scale);
 }
@@ -413,7 +420,7 @@ void Player::UpdatePlayerActionFromMouse()
 void Player::ThrowWeapon()
 {
 	//武器投げる
-	FallWeapon(GetFrontTargetVec(COLLISION_ATTR_ENEMYS).GetNormalized() * FALL_VEL_POW_ + Vec3(0, 0.2f, 0),
+	FallWeapon(GetFrontTargetVec(COLLISION_ATTR_ENEMYS).GetNormalized() * FALL_VEL_POW_ + THROW_WEAPON_VEC_,
 		nullptr, false);
 
 	//ゲームスピード加算
@@ -448,7 +455,7 @@ void Player::OnCollision(const CollisionInfo& info)
 		distanceVec.Normalized();
 
 		//めり込まないように位置セット(半径＋半径の長さをベクトルの方向を使って足す)
-		Vec3 ansPosE = infoPos + distanceVec * length * 1.00f;
+		Vec3 ansPosE = infoPos + distanceVec * length;
 		IObject3D::SetTrans(ansPosE);
 	}
 }

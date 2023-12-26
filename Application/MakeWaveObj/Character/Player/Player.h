@@ -26,6 +26,18 @@ public:
 	//銃の弾の発射位置の倍率
 	const float SHOT_POS_EXTEND_ = 1.5f;
 
+	const Vec3 DEAD_WEAPON_FALL_VEC_ = { 0,-3.0f,0 };
+	const float CAMERA_ROT_RIMIT_ = PI / 2.0f * 0.9f;
+	const float EYE_RAY_LENGTH_ = 10000.0f;
+	const float JUMPING_ADD_GAME_VEL_ = -0.001f;
+public://ui系
+	const float RETICLE_SIZE_MIN_ = 0.2f;
+	const float RETICLE_SIZE_MAX_ = 1.5f;
+	const float RETICLE_LENGTH_MAX_ = 50.0f;
+	const float RAY_HIT_ENEMY_RETICLE_SIZE_MIN_ = 0.8f;
+public://武器
+	const Vec3 THROW_WEAPON_VEC_ = { 0,0.2f,0 };
+
 private:
 	const float DEAD_TIMER_MAX_ = 70.0f;
 	float const DEAD_MIN_POS_EXTEND_ = -4.0f;

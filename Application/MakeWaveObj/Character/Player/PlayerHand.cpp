@@ -14,7 +14,7 @@ std::unique_ptr<PlayerHand> PlayerHand::Create(Player* player, const Vec3& trans
 	//初期化
 	if (!instance->Initialize(player, transTmp, isRight, objName))
 	{
-		assert(0);
+		assert(false);
 	}
 
 	return std::move(instance);
@@ -40,7 +40,7 @@ bool PlayerHand::Initialize(Player* player, const Vec3& transTmp, bool isRight, 
 	//親子関係
 	SetParent(player_);
 	//仮でスケール
-	SetScale(Vec3{ 0.5f,0.5f,2.5f });
+	SetScale(SCALE_);
 	//攻撃状態変更
 	ChangeAttackState(std::make_unique<PlayerHandStateNone>());
 

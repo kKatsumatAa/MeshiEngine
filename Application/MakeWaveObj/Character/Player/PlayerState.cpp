@@ -127,8 +127,8 @@ void PlayerStateHaveWeapon::Update()
 			//クールタイムでUI回転
 			PlayerUI::GetInstance().SetAngle(-PI * 2.0f * player_->GetWeapon()->GetAttackCoolTimeRatio());
 			//銃角度
-			player_->GetWeapon()->SetRotX(LerpVec3({ PI / 4.0f,0,0 }, { 0,0,0 },
-				EaseInOutBack(player_->GetWeapon()->GetAttackCoolTimeRatio())).x);
+			player_->GetWeapon()->SetRotX(Lerp(SHOOT_ROT_MAX_, 0,
+				EaseInOutBack(player_->GetWeapon()->GetAttackCoolTimeRatio())));
 		}
 
 		//クリックで攻撃

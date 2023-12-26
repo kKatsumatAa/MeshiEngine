@@ -53,7 +53,7 @@ void PlayerHandStateDoing::Initialize()
 		rotTmp_.y = PI;
 	}
 	//ランダムに角度
-	rotTmp_ = { GetRand(-PI / 8.0f,PI / 4.0f) ,rotTmp_.y / 2.0f,GetRand(-PI,PI) / 2.0f };
+	rotTmp_ = { GetRand(ATTACK_HAND_ROT_MIN_,ATTACK_HAND_ROT_MAX_) ,rotTmp_.y / 2.0f,GetRand(-PI,PI) / 2.0f };
 }
 
 void PlayerHandStateDoing::Update()
@@ -71,10 +71,10 @@ void PlayerHandStateDoing::Update()
 	//スピードをセット(ベクトルをプレイヤー本体角度で回転させて)
 	Vec3 rotatedVec = addTrans;
 	playerHand_->GetPlayer()->GetWorldMat()->CalcRotMat();
-	playerHand_->SetVelocity(GetVec3xM4(addTrans, playerHand_->GetPlayer()->GetWorldMat()->GetRotMat(),0));
+	playerHand_->SetVelocity(GetVec3xM4(addTrans, playerHand_->GetPlayer()->GetWorldMat()->GetRotMat(), 0));
 
 	//時間経過もゲームスピードをかける
-	timer_ += 1.0f * GameVelocityManager::GetInstance().GetVelocity();
+	timer_ += GameVelocityManager::GetInstance().GetVelocity();
 
 	//ステート変更
 	if (t >= 1.0f)

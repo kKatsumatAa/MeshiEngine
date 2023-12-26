@@ -49,7 +49,7 @@ void PlayerUIState::DrawSprite()
 	reticleSprite_.SetScale({ playerUI_->GetScale() * playerUI_->GetScaleRatio(), playerUI_->GetScale() * playerUI_->GetScaleRatio() ,1.0f });
 	reticleSprite_.SetRot({ 0,0 ,angle_ });
 
-	reticleSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
+	reticleSprite_.DrawBoxSprite(nullptr, SPRITE_ANCOR_UV_);
 }
 
 

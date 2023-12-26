@@ -15,13 +15,11 @@ void PlayerHandManager::Initialize(Player* player)
 	player_ = player;
 
 	//位置(ローカル座標をセット)
-	Vec3 playerPos = player->GetTrans();
-	Vec3 distance = { 1.0f,1.0f,1.0f };
 	//生成（仮）
 	ObjectManager::GetInstance().AddObject(OBJ_GROUP_NAME_,
-		std::move(PlayerHand::Create(player, { -distance.x * 2.0f,0 - distance.y,distance.z }, true, HAND_R_NAME_)));
+		std::move(PlayerHand::Create(player, { -LOCAL_POS_TMP_.x,LOCAL_POS_TMP_.y,LOCAL_POS_TMP_.z }, true, HAND_R_NAME_)));
 	ObjectManager::GetInstance().AddObject(OBJ_GROUP_NAME_,
-		std::move(PlayerHand::Create(player, { +distance.x * 2.0f,0 - distance.y,distance.z }, false, HAND_L_NAME_)));
+		std::move(PlayerHand::Create(player, { LOCAL_POS_TMP_.x,LOCAL_POS_TMP_.y,LOCAL_POS_TMP_.z }, false, HAND_L_NAME_)));
 
 	handL_ = dynamic_cast<PlayerHand*>(*ObjectManager::GetInstance().GetObjs(OBJ_GROUP_NAME_, HAND_L_NAME_).begin());
 	handR_ = dynamic_cast<PlayerHand*>(*ObjectManager::GetInstance().GetObjs(OBJ_GROUP_NAME_, HAND_R_NAME_).begin());
@@ -58,12 +56,12 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 				info.collider->OnCollision(c_);
 
 				//カメラシェイク
-				CameraManager::GetInstance().GetCamera("playerCamera")->CameraShake(5, 1.05f);
+				CameraManager::GetInstance().GetCamera("playerCamera")->CameraShake(PUNCH_CAMERA_SHAKE_TIME_, PUNCH_CAMERA_SHAKE_LENGTH_);
 
 				//一回当たったらもう呼び出さないようにするため
 				playerHand->SetColliderIsValid(false);
 			}
-		};
+			};
 
 		//敵の被弾処理セット
 		hand->GetAttackState()->SetEnemyDamageFunc(f);
