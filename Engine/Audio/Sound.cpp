@@ -40,13 +40,13 @@ void Sound::Initialize(const std::string& directoryPath)
 	// XAudioエンジンのインスタンスを生成
 	result = XAudio2Create(&sXAudio2_, 0, XAUDIO2_DEFAULT_PROCESSOR);
 	if FAILED(result) {
-		assert(0);
+		assert(false);
 	}
 
 	// マスターボイスを生成
 	result = sXAudio2_->CreateMasteringVoice(&sMasterVoice_);
 	if FAILED(result) {
-		assert(0);
+		assert(false);
 	}
 }
 
@@ -70,12 +70,12 @@ void Sound::LoadWave(const std::string& filename, bool isConvert)
 	//fileがRiffかチェック(先頭四文字をチェック)
 	if (strncmp(riff.chunk.id, "RIFF", 4) != 0)
 	{
-		assert(0);
+		assert(false);
 	}
 	//タイプがWAVEかチェック
 	if (strncmp(riff.type, "WAVE", 4) != 0)
 	{
-		assert(0);
+		assert(false);
 	}
 	//元データがmp3だと×！（拡張子を変えてもダメ⇒コンバータで変換）
 
@@ -86,7 +86,7 @@ void Sound::LoadWave(const std::string& filename, bool isConvert)
 	file.read((char*)&format, sizeof(ChunkHeader));
 	if (strncmp(format.chunk.id, "fmt ", 4) != 0)//"fmt "最後半角スペース！！！
 	{
-		assert(0);
+		assert(false);
 	}
 
 	//チャンク本体の読み込み
@@ -123,7 +123,7 @@ void Sound::LoadWave(const std::string& filename, bool isConvert)
 	//本物のデータチャンク
 	if (strncmp(data.id, "data", 4 != 0))
 	{
-		assert(0);
+		assert(false);
 	}
 
 	//returnするための音声データ

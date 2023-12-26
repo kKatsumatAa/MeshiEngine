@@ -44,7 +44,7 @@ void Tutorial::LoadTutorialData(int32_t fileIndex)
 	file.open(fullPath);
 	// ファイルオープン失敗をチェック
 	if (file.fail()) {
-		assert(0);
+		assert(false);
 	}
 
 	// 1行ずつ読み込む

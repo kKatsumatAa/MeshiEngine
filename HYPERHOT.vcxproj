@@ -115,7 +115,6 @@
     <ClCompile Include="Application\LevelLoader\JsonLevelLoader.cpp" />
     <ClCompile Include="Application\LevelLoader\LevelManager.cpp" />
     <ClCompile Include="Application\MakeWaveObj\Character\Character.cpp" />
-    <ClCompile Include="Application\MakeWaveObj\Character\CharacterState.cpp" />
     <ClCompile Include="Application\MakeWaveObj\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Application\MakeWaveObj\Character\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Application\MakeWaveObj\Character\Enemy\EnemyState.cpp" />

@@ -546,9 +546,6 @@
     <ClCompile Include="Application\MakeWaveObj\Character\Character.cpp">
       <Filter>ソース ファイル\Application\MakeWaveObj\Character</Filter>
     </ClCompile>
-    <ClCompile Include="Application\MakeWaveObj\Character\CharacterState.cpp">
-      <Filter>ソース ファイル\Application\MakeWaveObj\Character</Filter>
-    </ClCompile>
     <ClCompile Include="Application\System\RePlay\Replay.cpp">
       <Filter>ソース ファイル\Application\System\RePlay</Filter>
     </ClCompile>

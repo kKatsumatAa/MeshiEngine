@@ -16,7 +16,7 @@ std::unique_ptr<TouchableObject> TouchableObject::Create(
 	// 初期化
 	if (!instance->Initialize(std::move(worldMat), model)) {
 		instance.reset();
-		assert(0);
+		assert(false);
 	}
 
 	return instance;

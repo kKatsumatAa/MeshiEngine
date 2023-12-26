@@ -13,7 +13,7 @@ std::unique_ptr<LandShape> LandShape::Create(std::unique_ptr<WorldMat> worldMat,
 	// 初期化
 	if (!instance->Initialize(std::move(worldMat), model)) {
 		instance.reset();
-		assert(0);
+		assert(false);
 	}
 
 	return instance;

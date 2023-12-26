@@ -25,7 +25,7 @@ std::unique_ptr<Gun> Gun::Create(std::unique_ptr<WorldMat> worldMat, IModel* mod
 	//初期化
 	if (!instance->Initialize(std::move(worldMat), model))
 	{
-		assert(0);
+		assert(false);
 	}
 
 	return std::move(instance);
@@ -44,7 +44,7 @@ bool Gun::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 	}
 
 	//アンビエントなどの倍率
-	model->SetMaterialExtend({ 1.0f,100.0f,5000.0f });
+	model->SetMaterialExtend(MATERIAL_EXTEND_);
 
 	//ローカル座標
 	localPos_ = GetTrans();
@@ -72,14 +72,16 @@ void Gun::Attack(const Vec3& directionVec, int32_t decreBullet, IObject3D* owner
 				 trans.z + directionVec.GetNormalized().z * GetScale().z * shotPosExtend_ };
 
 	//弾うつ処理
-	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x * 0.4f, 300, owner);
+	BulletManager::GetInstance().CreateBullet(shotPos_, directionVec.GetNormalized() * BULLET_VELOCITY_, GetScale().x * BULLET_SCALE_RATE_, BULLET_LIFE_TIME_, owner);
 
 	//パーティクル
-	ParticleGenerate({ 4.0f,4.0f,4.0f,1.1f }, { 4.0f,4.0f,4.0f,0 }, particleSize);
+	ParticleGenerate(SHOOT_PARTICLE_START_COLOR_, SHOOT_PARTICLE_END_COLOR_, particleSize);
 
 	//ステージに波紋
-	BeginWaveStage(shotPos_, Vec2(GetScale().z, GetScale().y) * 9.0f, GetScale().GetLength() * 300.0f, 40.0f);
-	BeginWaveStage(shotPos_, Vec2(GetScale().z, GetScale().y) * 7.5f, GetScale().GetLength() * 300.0f, 47.0f);
+	BeginWaveStage(shotPos_, Vec2(GetScale().z, GetScale().y) * SHOOT_STAGE_WAVE_THICK_EXTEND_RATE_1_, GetScale().GetLength() * SHOOT_STAGE_WAVE_DISTANCE_RATE_,
+		SHOOT_STAGE_WAVE_TIME_1_);
+	BeginWaveStage(shotPos_, Vec2(GetScale().z, GetScale().y) * SHOOT_STAGE_WAVE_THICK_EXTEND_RATE_2_, GetScale().GetLength() * SHOOT_STAGE_WAVE_DISTANCE_RATE_,
+		SHOOT_STAGE_WAVE_TIME_2_);
 
 	attackCoolTime_ = SHOT_COOL_TIME_MAX_;
 	remainingBullets_ -= decreBullet;
@@ -106,7 +108,7 @@ void Gun::Update()
 	}
 
 	//クールタイムもゲームスピードをかける
-	attackCoolTime_ -= 1.0f * GameVelocityManager::GetInstance().GetVelocity();
+	attackCoolTime_ -= GameVelocityManager::GetInstance().GetVelocity();
 
 	Weapon::Update();
 }
@@ -126,19 +128,18 @@ void Gun::Draw()
 void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float particleSize, ParticleManager::BLEND_NUM blendNum)
 {
 	//パーティクル
-	for (int32_t i = 0; i < 50; ++i)
+	for (int32_t i = 0; i < PARTICLE_NUM_; ++i)
 	{
 		Vec3 vel{};
-		vel.x = GetRand(-0.5f, 0.5f);
-		vel.y = GetRand(-0.5f, 0.5f);
-		vel.z = GetRand(-0.5f, 0.5f);
+		vel.x = GetRand(PARTICLE_VEL_MIN_, PARTICLE_VEL_MAX_);
+		vel.y = GetRand(PARTICLE_VEL_MIN_, PARTICLE_VEL_MAX_);
+		vel.z = GetRand(PARTICLE_VEL_MIN_, PARTICLE_VEL_MAX_);
 
 		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 2.0f);
 
-		ParticleManager::GetInstance()->Add(10, shotPos_, vel * 0.5f, { 0,0,0 }, scale * particleSize, 0, sColor, eColor,
+		ParticleManager::GetInstance()->Add(PARTICLE_LIFE_TIME_, shotPos_, vel * PARTICLE_VEL_RATE_, { 0,0,0 }, scale * particleSize, 0, sColor, eColor,
 			blendNum);
 	}
-
 }
 
 void Gun::OnLandShape(const Vec3& interPos)
@@ -147,23 +148,23 @@ void Gun::OnLandShape(const Vec3& interPos)
 
 	//ステージに波紋
 	float waveLength = GetScale().GetLength();
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < ON_STAGE_WAVE_NUM_; i++)
 	{
-		BeginWaveStage(GetTrans(), Vec2(waveLength, waveLength) * 1.5f,
-			waveLength * 3.0f * GetRand(1.0f, 2.0f), 30.0f);
+		BeginWaveStage(GetTrans(), Vec2(waveLength, waveLength) * ON_STAGE_WAVE_THICK_EXTEND_RATE_,
+			waveLength * GetRand(ON_STAGE_WAVE_DISTANCE_RATE_MIN_, ON_STAGE_WAVE_DISTANCE_RATE_MAX_), ON_STAGE_WAVE_TIME_);
 	}
 
 	//パーティクル
-	for (int32_t i = 0; i < 20; ++i)
+	for (int32_t i = 0; i < ON_STAGE_PARTICLE_NUM_; ++i)
 	{
 		Vec3 vel{};
-		vel.x = GetRand(-0.2f, 0.2f);
-		vel.y = GetRand(-0.2f, 0.2f);
-		vel.z = GetRand(-0.2f, 0.2f);
+		vel.x = GetRand(ON_STAGE_PARTICLE_VEL_MIN_, ON_STAGE_PARTICLE_VEL_MAX_);
+		vel.y = GetRand(ON_STAGE_PARTICLE_VEL_MIN_, ON_STAGE_PARTICLE_VEL_MAX_);
+		vel.z = GetRand(ON_STAGE_PARTICLE_VEL_MIN_, ON_STAGE_PARTICLE_VEL_MAX_);
 
-		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 4.0f);
+		float scale = GetRand(GetScale().x * ON_STAGE_PARTICLE_SCALE_RATE_MIN_, GetScale().x * ON_STAGE_PARTICLE_SCALE_RATE_MAX_);
 
-		ParticleManager::GetInstance()->Add(30, interPos, vel, { 0,0,0 }, scale, 0, { 0.001f,0.001f,0.01f,1.5f }, { 0.1f,0.1f,0.1f,1.0f },
+		ParticleManager::GetInstance()->Add(ON_STAGE_PARTICLE_LIFE_TIME_, interPos, vel, { 0,0,0 }, scale, 0, ON_STAGE_PARTICLE_START_COLOR_, ON_STAGE_PARTICLE_END_COLOR_,
 			ParticleManager::BLEND_NUM::CRYSTAL);
 	}
 }

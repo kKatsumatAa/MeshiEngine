@@ -20,7 +20,7 @@ void Weapon::NoParentMove()
 		const float FRAME_VEL_EXTEND_REM = 1.0f - FRAME_VEL_EXTEND_;
 
 		//ゲームスピードをかける
-		float frameVelExtend = powf(GameVelocityManager::GetInstance().GetVelocity(), 2);
+		float frameVelExtend = powf(GameVelocityManager::GetInstance().GetVelocity(), 2.0f);
 		velocity_ = fallVec_ * frameVelExtend;
 
 		SetTrans(GetTrans() + velocity_);

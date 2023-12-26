@@ -92,7 +92,7 @@ void FbxLoader::FbxSceneImport(const std::string& fbxFullPath, FbxScene* fbxScen
 	//ファイル名を指定してfbxファイルを読み込む
 	if (!fbxImporter_->Initialize(fbxFullPath.c_str(), -1, fbxManager_->GetIOSettings()))
 	{
-		assert(0);
+		assert(false);
 	}
 
 	//ファイルからロードしたfbxの情報をシーンにインポート

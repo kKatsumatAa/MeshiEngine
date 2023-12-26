@@ -50,7 +50,7 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 	file.open(DIRECTORY_PATH + FILE_NAME);
 	// ファイルオープン失敗をチェック
 	if (file.fail()) {
-		assert(0);
+		assert(false);
 	}
 
 	name_ = folderName;
@@ -248,7 +248,7 @@ void ModelObj::LoadMaterial(const std::string& directoryPath, const std::string&
 	file.open(directoryPath + filename);
 	// ファイルオープン失敗をチェック
 	if (file.fail()) {
-		assert(0);
+		assert(false);
 	}
 
 	std::unique_ptr<Material> material;

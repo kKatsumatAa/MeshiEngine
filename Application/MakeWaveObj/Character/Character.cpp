@@ -48,7 +48,7 @@ void Character::Update()
 		if (!GetIsAlive())
 		{
 			GetWeapon()->SetIsAlive(false);
-			FallWeapon({ 0,-1.0f,0 });
+			FallWeapon(WEAPON_FALL_VEC_);
 		}
 	}
 
@@ -195,14 +195,14 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 	ray.start = { GetWorldTrans().x,GetWorldTrans().y, GetWorldTrans().z };
 	//上端
 	ray.start.m128_f32[1] += LengthY;
-	ray.dir = { 0,-1.0f,0 };
+	ray.dir = ON_GROUND_RAY_VEC_;
 	RaycastHit info;
 
 	//接地状態
 	if (isOnGround_)
 	{
 		//スムーズに坂を下るための吸着処理(少し長めにすることで)
-		const float adsDistance = LengthY * 0.2f;
+		const float adsDistance = LengthY * ADS_DISTANCE_RATE_;
 		//接地を維持
 		if (CollisionManager::GetInstance()->Raycast(
 			ray, COLLISION_ATTR_LANDSHAPE, &info, LengthY * 2.0f + adsDistance))

@@ -25,7 +25,7 @@ std::unique_ptr<Bullet> Bullet::Create(const Vec3& pos, const Vec3& directionVec
 	//初期化
 	if (!instance->Initialize(pos, directionVec, scale, lifeTime, owner))
 	{
-		assert(0);
+		assert(false);
 	}
 
 	return std::move(instance);
@@ -45,7 +45,7 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	SetCollider(std::make_unique<SphereCollider>());
 
 	SetTrans(pos);
-	oldPos_ = pos - directionVec.GetNormalized() * 0.01f;
+	oldPos_ = pos - directionVec.GetNormalized() * OLD_POS_OFFSET_RATE_;
 
 	directionVec_ = directionVec;
 	SetScale({ scale,scale,scale });
@@ -60,7 +60,7 @@ bool Bullet::Initialize(const Vec3& pos, const Vec3& directionVec, float scale, 
 	ballisticsObj_.SetModel(ModelManager::GetInstance().LoadModel("ballistics"));
 
 	//色セット
-	SetColor({ 0.1f,0.1f,0.1f,1.0f });
+	SetColor(COLOR_);
 
 	Update();
 
@@ -74,20 +74,20 @@ void Bullet::Dead(const Vec3& interPos, uint64_t attr)
 	if (attr & COLLISION_ATTR_LANDSHAPE)
 	{
 		//ステージに波紋
-		BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 35.0f, GetScale().GetLength() * 50.0f, 40.0f);
+		BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * DEAD_STAGE_WAVE_EXTEND_RATE_, GetScale().GetLength() * DEAD_STAGE_WAVE_DISTANCE_RATE_, DEAD_STAGE_WAVE_TIME_);
 	}
 
 	//パーティクル
-	for (int32_t i = 0; i < 20; ++i)
+	for (int32_t i = 0; i < DEAD_PARTICLE_NUM_; ++i)
 	{
 		Vec3 vel{};
-		vel.x = GetRand(-0.2f, 0.2f);
-		vel.y = GetRand(-0.2f, 0.2f);
-		vel.z = GetRand(-0.2f, 0.2f);
+		vel.x = GetRand(DEAD_PARTICLE_VEC_MIN_, DEAD_PARTICLE_VEC_MAX_);
+		vel.y = GetRand(DEAD_PARTICLE_VEC_MIN_, DEAD_PARTICLE_VEC_MAX_);
+		vel.z = GetRand(DEAD_PARTICLE_VEC_MIN_, DEAD_PARTICLE_VEC_MAX_);
 
-		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * 4.0f);
+		float scale = GetRand(GetScale().x / 2.0f, GetScale().x * DEAD_PARTICLE_SCALE_RATE_MAX_);
 
-		ParticleManager::GetInstance()->Add(30, interPos, vel, { 0,0,0 }, scale, 0, { 0,0,0,1.5f }, { 0,0,0,0.0f },
+		ParticleManager::GetInstance()->Add(DEAD_PARTICLE_TIME_, interPos, vel, { 0,0,0 }, scale, 0, DEAD_PARTICLE_COLOR_, { 0,0,0,0.0f },
 			ParticleManager::BLEND_NUM::TRIANGLE);
 	}
 }
@@ -108,7 +108,7 @@ void Bullet::BallisticsUpdate()
 	ballisticsObj_.SetScale({ GetScale().x, GetScale().y,ballisticsLength });
 
 	//正面の基ベクトルはｚ軸の奥
-	ballisticsObj_.SetFrontVecTmp({ 0,0,1.0f });
+	ballisticsObj_.SetFrontVecTmp(BALLISTICS_TEMP_FRONT_VEC_);
 
 	//弾が向かってる方向に回転させるクォータニオン
 	Quaternion directionQ = Quaternion::DirectionToDirection(ballisticsObj_.GetFrontVecTmp(), GetFrontVec());
@@ -156,12 +156,12 @@ void Bullet::Update()
 	}
 
 	//前回の位置を記録
-	oldPos_ = GetTrans() - directionVec_.GetNormalized() * 0.01f;
+	oldPos_ = GetTrans() - directionVec_.GetNormalized() * OLD_POS_OFFSET_RATE_;
 
 	//メッシュ分割のウェーブ
-	if ((int32_t)lifeTime_ % 20 == 0)
+	if ((int32_t)lifeTime_ % STAGE_WAVE_INTERVAL_ == 0)
 	{
-		BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * 5.0f, GetScale().GetLength() * 80.0f, 20.0f);
+		BeginWaveStage(GetTrans(), Vec2(GetScale().z, GetScale().y) * STAGE_WAVE_THICK_EXTEND_RATE_, GetScale().GetLength() * STAGE_WAVE_DISTANCE_RATE_, STAGE_WAVE_TIME_);
 	}
 }
 

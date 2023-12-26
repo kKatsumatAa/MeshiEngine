@@ -13,7 +13,7 @@ std::unique_ptr<LandShapePapierMache> LandShapePapierMache::Create(WorldMat* wor
 	// 初期化
 	if (!instance->Initialize(worldMat, model)) {
 		instance.reset();
-		assert(0);
+		assert(false);
 	}
 
 	return instance;

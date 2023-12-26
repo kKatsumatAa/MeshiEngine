@@ -454,6 +454,6 @@ void Error(bool filed, ID3DBlob* errorBlob)
 		error += "\n";
 		// エラー内容を出力ウィンドウに表示
 		OutputDebugStringA(error.c_str());
-		assert(0);
+		assert(false);
 	}
 }

@@ -351,7 +351,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 	// ルートシグネチャの生成
 	result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootPipe[ADD].rootSignature));
 	if (FAILED(result)) {
-		assert(0);
+		assert(false);
 	}
 
 	gpipeline.pRootSignature = rootPipe[ADD].rootSignature.Get();
@@ -368,7 +368,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 		result = DirectXWrapper::GetInstance().GetDevice()->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 			IID_PPV_ARGS(rootPipe[SUB].rootSignature.GetAddressOf()));
 		if (FAILED(result)) {
-			assert(0);
+			assert(false);
 		}
 		gpipeline.pRootSignature = rootPipe[SUB].rootSignature.Get();
 		// 減算ブレンディング
@@ -392,7 +392,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 			IID_PPV_ARGS(rootPipe[TRIANGLE].rootSignature.GetAddressOf()));
 		gpipeline.pRootSignature = rootPipe[TRIANGLE].rootSignature.Get();
 		if (FAILED(result)) {
-			assert(0);
+			assert(false);
 		}
 		blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
 		blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
@@ -416,7 +416,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 			IID_PPV_ARGS(rootPipe[CRYSTAL].rootSignature.GetAddressOf()));
 		gpipeline.pRootSignature = rootPipe[CRYSTAL].rootSignature.Get();
 		if (FAILED(result)) {
-			assert(0);
+			assert(false);
 		}
 		blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
 		blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
@@ -428,7 +428,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 	}
 
 	if (FAILED(result)) {
-		assert(0);
+		assert(false);
 	}
 }
 

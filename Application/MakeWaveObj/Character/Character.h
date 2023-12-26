@@ -14,6 +14,11 @@
 
 class Character : public ObjectFBX, public IMakeWaveObj
 {
+public:
+	const Vec3 WEAPON_FALL_VEC_ = { 0,-1.0f,0 };
+	const XMVECTOR ON_GROUND_RAY_VEC_ = { 0,-1.0f,0 };
+	const float ADS_DISTANCE_RATE_ = 0.2f;
+
 protected:
 	//武器
 	Weapon* weapon_ = nullptr;
