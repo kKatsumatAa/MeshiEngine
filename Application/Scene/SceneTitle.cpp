@@ -20,7 +20,7 @@ void SceneTitle::Initialize()
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isScanningLine = true;
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = 0.7f;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = POST_BARREL_POW_;
 	//ブルーム
 	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.isBloom = true;
 #ifdef _DEBUG
@@ -30,10 +30,10 @@ void SceneTitle::Initialize()
 	//海
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isSea = true;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.isSeaImageEffect = true;
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCol = { 6.0f,0.6f,0.1f };
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos = { 0,43.0f,0 };
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaSkyCol = { 0,0,0 };
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { -0.5f,0,0 };
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCol = POST_SEA_COLOR_;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos = POST_SEA_CAMERA_POS_;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaSkyCol = POST_SKY_COLOR_;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = POST_SEA_CAMERA_ROT_;
 
 	//カーソルui
 	CursorUI::GetInstance().Initialize();

@@ -44,17 +44,17 @@ void TransitionEffectNothingState::Draw()
 void TransitionEffectBeginState::Initialize()
 {
 	//音流す
-	Sound::GetInstance().PlayWave(SceneTransitionManager::TRANSITION_SOUND_NAME_, 0.7f);
+	Sound::GetInstance().PlayWave(SceneTransitionManager::TRANSITION_SOUND_NAME_, PLAY_SOUND_VOL_);
 
 	//二つ目ノイズ
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isNoise = true;
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.noisePow = 1.0f;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.noisePow = POST_NOISE_POW_;
 	//三つ目に描画されたもの（２枚目まで）を湾曲
 	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.isBarrelCurve = true;
 
 	//ブルーム
 	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.isBloom = true;
-	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.bloomPow = PostPera::S_BLOOM_MAX_POW_ / 10.0f;
+	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.bloomPow = PostPera::S_BLOOM_MAX_POW_ * POST_BLOOM_POW_RATE_;
 
 #ifdef _DEBUG
 
@@ -70,9 +70,9 @@ void TransitionEffectBeginState::Update()
 	//湾曲を徐々につよく
 	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.barrelCurvePow = EaseInOutBack(GetTimerT(timer_, TIMER_MAX_));
 	//2枚目の画面の大きさを徐々に小さく
-	PostEffectManager::GetInstance().GetPostEffect3()->SetPera2Extend(LerpVec3(
-		{ 1.0f ,0,0 }, { PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 },
-		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))).x);
+	PostEffectManager::GetInstance().GetPostEffect3()->SetPera2Extend(Lerp(
+		POST_PERA_SIZE_MAX_, PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,
+		EaseInOutBack(GetTimerT(timer_, TIMER_MAX_))));
 
 	//時間が終わったら
 	if (GetIsTimeOver(timer_, TIMER_MAX_))
@@ -124,9 +124,9 @@ void TransitionEffectEndState::Update()
 	//湾曲を徐々に弱く
 	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.barrelCurvePow = 1.0f - EaseIn(GetTimerT(timer_, TIMER_MAX_ / 2));
 	//2つ目の2枚目の画面の大きさを徐々に大きく
-	PostEffectManager::GetInstance().GetPostEffect3()->SetPera2Extend(LerpVec3(
-		{ PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_,0,0 }, { 1.0f ,0,0 },
-		EaseIn(GetTimerT(timer_, TIMER_MAX_ / 2))).x);
+	PostEffectManager::GetInstance().GetPostEffect3()->SetPera2Extend(Lerp(
+		PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_, POST_PERA_SIZE_MAX_,
+		EaseIn(GetTimerT(timer_, TIMER_MAX_ / 2))));
 
 	//ノイズを徐々に
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.noisePow = 1.0f - EaseIn(GetTimerT(timer_, TIMER_MAX_));

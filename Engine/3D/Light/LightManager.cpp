@@ -1,4 +1,4 @@
-﻿#include "LightManager.h"
+#include "LightManager.h"
 #include "ImGuiManager.h"
 
 ID3D12Device* LightManager::sDevice_ = nullptr;
@@ -224,6 +224,15 @@ void LightManager::DrawImGui()
 		{
 			spotLights_[i].DrawImGui(i);
 		}
+	}
+
+	if (ImGui::TreeNode("LightColor"))
+	{
+		ImGui::DragFloat3("ambientColor", &ambientColor_.x,IMGUI_COLOR_DRAG_SPEED_);
+		ImGui::DragFloat3("diffuseColor", &diffuseColor_.x, IMGUI_COLOR_DRAG_SPEED_);
+		ImGui::DragFloat3("specularColor", &specularColor_.x, IMGUI_COLOR_DRAG_SPEED_);
+
+		ImGui::TreePop();
 	}
 
 	ImGui::End();

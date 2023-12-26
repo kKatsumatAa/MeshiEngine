@@ -195,7 +195,7 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 	ray.start = { GetWorldTrans().x,GetWorldTrans().y, GetWorldTrans().z };
 	//上端
 	ray.start.m128_f32[1] += LengthY;
-	ray.dir = ON_GROUND_RAY_VEC_;
+	ray.dir = { ON_GROUND_RAY_VEC_ .x,ON_GROUND_RAY_VEC_.y ,ON_GROUND_RAY_VEC_.z };
 	RaycastHit info;
 
 	//接地状態

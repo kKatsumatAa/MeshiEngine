@@ -41,10 +41,6 @@ private:
 	//ライト
 	std::unique_ptr<LightManager> lightManager_;
 
-	float ambientColor_[3] = { 1,1,1 };
-	float diffuseColor_[3] = { 1,1,1 };
-	float specularColor_[3] = { 1,1,1 };
-
 	std::unique_ptr<Camera> camera_;
 
 	//ゲームが終了したか

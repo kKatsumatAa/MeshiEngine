@@ -14,6 +14,9 @@ class SceneTransitionManager;
 class SceneTransitionEffectState
 {
 protected:
+	const float POST_PERA_SIZE_MAX_ = 1.0f;
+
+protected:
 	int32_t timer_ = 0;
 	SceneTransitionManager* sceneTransitionManager_ = nullptr;
 	//読み込み用関数
@@ -62,6 +65,11 @@ public:
 //演出はじめ
 class TransitionEffectBeginState : public SceneTransitionEffectState
 {
+private:
+	const float POST_NOISE_POW_ = 1.0f;
+	const float PLAY_SOUND_VOL_ = 0.7f;
+	const float POST_BLOOM_POW_RATE_ = 0.1f;
+
 private:
 	const int32_t TIMER_MAX_ = 25;
 

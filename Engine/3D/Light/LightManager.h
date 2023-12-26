@@ -41,6 +41,9 @@ private://定数
 private://静的メンバ変数
 	static ID3D12Device* sDevice_;
 
+public:
+	const float IMGUI_COLOR_DRAG_SPEED_ = 0.1f;
+
 private://メンバ変数
 	//定数バッファ
 	ComPtr<ID3D12Resource> constBuff_;

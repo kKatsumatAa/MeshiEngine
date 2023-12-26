@@ -113,7 +113,7 @@ struct DirLight
     uint active; //有効か
 };
 
-
+//スポット
 static const int S_SPOTLIGHT_NUM = 3;
 struct SpotLight
 {

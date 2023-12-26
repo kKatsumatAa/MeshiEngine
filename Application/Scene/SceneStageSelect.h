@@ -9,7 +9,11 @@
 
 class SceneStageSelect : public SceneState
 {
-private:
+public:
+	const float POST_BARREL_POW_ = 0.7f;
+	const Vec4 POST_SCREEN_COLOR_ = { 1.0f,1.0f,1.0f,1.0f };
+	const Vec3 POST_SEA_CAMERA_POS_ = { 0,43.0f,0 };
+	const Vec3 POST_SEA_CAMERA_ROT_ = { -0.2f,0.5f,0 };
 
 public:
 	//終了処理

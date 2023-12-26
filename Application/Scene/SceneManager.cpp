@@ -82,8 +82,6 @@ void SceneManager::Initialize()
 
 	//インスタンス生成
 	lightManager_ = std::move(LightManager::Create());
-	//ライト色を設定
-	lightManager_->SetDirLightColor(0, { 0.6f,0.6f,0.6f });
 	//3Dオブジェクトにライトをセット(全体で一つを共有)
 	IObject3D::SetLight(lightManager_.get());
 	//レベルマネージャーにも
@@ -109,10 +107,6 @@ void SceneManager::Update()
 		UpdateInternal();
 		state_->Update();
 	}
-
-	lightManager_->SetAmbientColor({ ambientColor_[0],ambientColor_[1], ambientColor_[2] });
-	lightManager_->SetDiffuseColor({ diffuseColor_[0],diffuseColor_[1], diffuseColor_[2] });
-	lightManager_->SetSpecularColor({ specularColor_[0],specularColor_[1], specularColor_[2] });
 
 	lightManager_->Update();
 }
@@ -155,14 +149,6 @@ void SceneManager::DrawSprite()
 
 void SceneManager::DrawImgui()
 {
-	ImGui::Begin("LightColor");
-
-	ImGui::SliderFloat3("ambientColor", ambientColor_, 0, 1.0f);
-	ImGui::SliderFloat3("diffuseColor", diffuseColor_, 0, 1.0f);
-	ImGui::SliderFloat3("specularColor", specularColor_, 0, 10.0f);
-
-	ImGui::End();
-
 	//ロードしてなければ
 	if (!SceneTransitionManager::GetInstance().GetIsLoadingOnly() && state_)
 	{

@@ -20,7 +20,7 @@ void SceneStageSelect::Initialize()
 	//ポストエフェクト
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isScanningLine = true;
 	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.isBarrelCurve = true;
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = 0.7f;
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.barrelCurvePow = POST_BARREL_POW_;
 
 	//カーソルui
 	CursorUI::GetInstance().Initialize();
@@ -30,11 +30,10 @@ void SceneStageSelect::Initialize()
 	GameVelocityManager::GetInstance().Initialize();
 
 	//海
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = 1.0f;
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos = { 0,43.0f,0 };
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { -0.2f,0.5f,0 };
-
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.color = { 1.0f,1.0f,1.0f,1.0f };
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos = POST_SEA_CAMERA_POS_;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = POST_SEA_CAMERA_ROT_;
+	//画面の色
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.color = POST_SCREEN_COLOR_;
 
 	//モデル解放
 	ModelManager::GetInstance().ClearModels();
