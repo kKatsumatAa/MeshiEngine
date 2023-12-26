@@ -278,6 +278,7 @@ void LightManager::SetPointLightActive(int32_t index, bool active)
 {
 	assert(0 <= index && index < S_POINT_LIGHT_NUM_);
 	pointLights_[index].SetActive(active);
+	dirty_ = true;
 }
 
 void LightManager::SetPointLightPos(int32_t index, const XMFLOAT3& pos)
@@ -310,6 +311,7 @@ void LightManager::SetSpotLightActive(int32_t index, bool active)
 	assert(0 <= index && index < S_SPOT_LIGHT_NUM_);
 
 	spotLights_[index].SetActive(active);
+	dirty_ = true;
 }
 
 void LightManager::SetSpotLightDir(int32_t index, const XMVECTOR& lightdir)
@@ -359,6 +361,7 @@ void LightManager::SetCircleShadowActive(int32_t index, bool active)
 	assert(0 <= index && index < S_CIRCLE_SHADOW_NUM_);
 
 	circleShadows_[index].SetLightActive(active);
+	dirty_ = true;
 }
 
 void LightManager::SetCircleShadowCasterPos(int32_t index, const XMFLOAT3& casterPos)

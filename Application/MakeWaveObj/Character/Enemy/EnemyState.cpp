@@ -119,14 +119,13 @@ void EnemyStateEmergeEffect::Update()
 	float t = timer_ / EMERGE_TIMER_MAX_;
 	enemy_->SetDissolveRate(Lerp(IObject3D::DISSOLVE_RATE_MAX_, 0, EaseIn(t)));
 
+	//ライトの色
+	enemy_->SetEmergeLight(EaseIn(t));
+
 	if (timer_ >= EMERGE_TIMER_MAX_)
 	{
 		//ライトの使用オフ
-		LightManager* lightM = LevelManager::GetInstance().GetLightManager();
-		if (enemy_->GetLightIndexTmp() != enemy_->GetLightIndexInit())
-		{
-			lightM->SetPointLightActive(enemy_->GetLightIndexTmp(), false);
-		}
+		enemy_->InactiveEmergeLight();
 
 		enemy_->SetColliderIsValid(true);
 

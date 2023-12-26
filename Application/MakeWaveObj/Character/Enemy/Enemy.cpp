@@ -22,6 +22,7 @@ const float Enemy::S_LENGTH_MAX_ = 10000;
 
 Enemy::~Enemy()
 {
+	InactiveEmergeLight();
 }
 
 void Enemy::EmergeInitialize()
@@ -397,6 +398,26 @@ void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 void Enemy::DecrementEmergeCoolTime()
 {
 	emergeCoolTime_ = max(emergeCoolTime_ - GameVelocityManager::GetInstance().GetVelocity(), 0);
+}
+
+void Enemy::InactiveEmergeLight()
+{
+	LightManager* lightM = LevelManager::GetInstance().GetLightManager();
+	if (GetLightIndexTmp() != GetLightIndexInit())
+	{
+		lightM->SetPointLightActive(GetLightIndexTmp(), false);
+	}
+}
+
+void Enemy::SetEmergeLight(float rate)
+{
+	LightManager* lightM = LevelManager::GetInstance().GetLightManager();
+	if (GetLightIndexTmp() != GetLightIndexInit())
+	{
+		Vec3 color = LerpVec3({ POINT_LIGHT_COLOR_.x,POINT_LIGHT_COLOR_.y,POINT_LIGHT_COLOR_.z }, { 0,0,0 }, rate);
+
+		lightM->SetPointLightColor(GetLightIndexTmp(), { color.x,color.y ,color.z });
+	}
 }
 
 //----------------------------------------------------------------

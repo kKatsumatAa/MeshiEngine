@@ -66,7 +66,6 @@ public:
 	//押し戻し
 	const float PUSH_BACK_VEL_RATE_ = 0.63f;
 	const float PUSH_BACK_LENGTH_RATE_ = 1.001f;
-
 public:
 	//パーティクル
 	const int16_t PARTICLE_LIFE_TIME_ = 20;
@@ -84,7 +83,6 @@ public:
 	const int8_t SHOOTED_PARTICLE_NUM_ = 100;
 	const float SHOOTED_PARTICLE_VEL_RATE_ = 1.3f;
 	const float DEAD_PARTICLE_VEL_RATE_ = 0.35f;
-
 public://ノード
 	const std::string WEAPON_PARENT_NODE_NAME_ = "RightHand";
 	const float NODE_COLLIDER_SCALE_ = 14.0f;
@@ -95,13 +93,11 @@ public://ノード
 	const float PUNCHED_NODE_ADD_ROT_RATE_ = 1.0f;
 	const float SHOOTED_NODE_ADD_ROT_RATE_ = 1.5f;
 	const float HIT_WEAPON_NODE_ADD_ROT_RATE_ = 0.7f;
-
 public:
 	//メッシュのオフセット
 	const float MESH_OFFSET_INTERVAL_MIN_ = 20.0f;
 	const float MESH_OFFSET_INTERVAL_MAX_ = 45.0f;
 	const float MESH_OFFSET_LENGTH_RATE_ = 1.3f;
-
 public://波紋
 	//ステージの波紋
 	const float STAGE_WAVE_WIDTH_RATE_ = 0.5f;
@@ -126,10 +122,9 @@ public://波紋
 	const float PUNCHED_WAVE_RATE_ = 1.4f;
 	const float SHOOTED_WAVE_RATE_ = 0.9f;
 	const float HIT_WEAPON_WAVE_RATE_ = 0.35f;
-
+	//波紋数
 	const int8_t STAGE_WAVE_NUM_ = 2;
 	const int8_t MY_WAVE_NUM_ = 3;
-
 private:
 	const float PARTICLE_SIZE_EXTEND_ = 2.0f;
 	//被ダメージ時のよろめき時間
@@ -290,6 +285,12 @@ public:
 	int32_t GetLightIndexInit() { return LIGHT_INDEX_INIT_; }
 	//被ダメージ時の加算角度
 	const std::vector<DamagedNodeAddRot>& GetDamagedAddRots() { return damagedAddRots_; }
+
+public:
+	//出現時のライトを非アクティブに
+	void InactiveEmergeLight();
+	//出現時の使用ライトの色
+	void SetEmergeLight(float rate);
 
 public:
 	//攻撃中かをセット
