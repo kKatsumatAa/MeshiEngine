@@ -89,10 +89,10 @@ void StageManager::ApproachLava()
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaCameraPos =
 		CameraManager::GetInstance().GetCamera()->GetEye() + seaDistance_;
 	//強さも変える
-	float t = 1.0f - seaDistance_.y / SEA_DICTANCE_TMP_;
+	float t = SEA_DISTANCE_RATIO_MAX_ - seaDistance_.y / SEA_DICTANCE_TMP_;
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = POST_SEA_TIME_EXTEND_RATE_ * t;
 
-	if (t >= 1.0f)
+	if (t >= SEA_DISTANCE_RATIO_MAX_)
 	{
 		AfterLavaMaxUpdate();
 	}
@@ -102,7 +102,7 @@ void StageManager::AfterLavaMaxUpdate()
 {
 	seaMaxAfterTime_ = max(--seaMaxAfterTime_, 0);
 
-	float t = 1.0f - (float)seaMaxAfterTime_ / (float)SEA_DICTANCE_TMP_;
+	float t = SEA_AFTER_TIME_RATIO_MAX_ - (float)seaMaxAfterTime_ / (float)SEA_MAX_AFTER_TIME_;
 
 	//ステージや壁等のオブジェクト取得
 	auto stages = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
@@ -113,7 +113,7 @@ void StageManager::AfterLavaMaxUpdate()
 		landShape->SetDissolveRatio(EaseIn(t));
 
 		//時間終わったら消す
-		if (t >= 0.8f)
+		if (t >= ERASE_LAND_SHAPE_SEA_TIME_RATIO_)
 		{
 			landShape->SetIsAlive(false);
 		}
@@ -153,7 +153,7 @@ void StageManager::DrawSprite()
 void StageManager::DrawImGui()
 {
 	ImGui::Begin("stage");
-	ImGui::DragFloat("seaDistance", &seaDistance_.y, 0.5f);
+	ImGui::DragFloat("seaDistance", &seaDistance_.y, IMGUI_SEA_DIST_DRAG_SPEED_);
 	ImGui::End();
 
 	state_->DrawImgui();

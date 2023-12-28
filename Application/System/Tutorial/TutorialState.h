@@ -12,8 +12,15 @@ class Tutorial;
 class TutorialState
 {
 public:
+	const Vec3 SPRITE_POS_ = { WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 };
 	const Vec3 SPRITE_COLOR_ = { 2.0f,2.0f,2.0f };
 	const Vec2 SPRITE_ANCOR_UV_ = { 0.5f,0.5f };
+	const float TIMER_RATE_MAX_ = 1.0f;
+	const float MAX_SCALE_ = 1.5f;
+	const float NORMAL_SCALE_ = 1.0f;
+	//演出の時間制限
+	const int32_t BEGINING_TIMER_MAX_ = 10;
+	const int32_t ENDING_TIMER_MAX_ = 10;
 
 protected:
 	Tutorial* tutorial_;
@@ -28,17 +35,12 @@ protected:
 	float t_ = 0;
 
 	float scale_ = 0;
-	const float MAX_SCALE_ = 1.5f;
 
 	float alpha_ = 0.0f;
 
 	//画像
 	uint64_t texHandle_ = NULL;
 	Sprite texSprite_;
-
-	//演出の時間制限
-	const int32_t BEGINING_TIMER_MAX_ = 10;
-	const int32_t ENDING_TIMER_MAX_ = 10;
 
 	//条件達成率
 	float rate_ = 0;

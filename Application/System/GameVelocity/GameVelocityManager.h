@@ -18,6 +18,12 @@ public:
 	const float VEL_RADIAL_BLUR_RATE_ = 0.6f;
 	const float GAME_VEL_DECTREMENT_ = 0.95f;
 
+	const float GAME_VELOCITY_MAX_ = 1.0f;
+	const float GAME_VELOCITY_MIN_ = 0.03f;
+
+	//マウスのみの最大速度
+	const float MOUSE_VEL_MAX_ = GAME_VELOCITY_MAX_ / 7.0f;
+
 private:
 	float gameVelocity_ = 0;
 	//ゲームスピードの加算無効
@@ -25,12 +31,6 @@ private:
 	//1.0f固定になる
 	bool isNormalTime_ = false;
 
-public:
-	const float GAME_VELOCITY_MAX_ = 1.0f;
-	const float GAME_VELOCITY_MIN_ = 0.03f;
-
-	//マウスのみの最大速度
-	const float MOUSE_VEL_MAX_ = GAME_VELOCITY_MAX_ / 7.0f;
 
 private:
 	//コンストラクタ

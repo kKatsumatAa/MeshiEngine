@@ -58,14 +58,14 @@ void TutorialState::CommonUpdate()
 
 bool TutorialState::BeginingUpdate(const int32_t TIMER_MAX)
 {
-	t_ = min((float)beginingTimer_ / (float)TIMER_MAX, 1.0f);
+	t_ = min((float)beginingTimer_ / (float)TIMER_MAX, TIMER_RATE_MAX_);
 
-	scale_ = Lerp(MAX_SCALE_, 1.0f, EaseIn(t_));
+	scale_ = Lerp(MAX_SCALE_, NORMAL_SCALE_, EaseIn(t_));
 
 	alpha_ = t_;
 
 	//制限時間過ぎたら
-	if (t_ >= 1.0f)
+	if (t_ >= TIMER_RATE_MAX_)
 	{
 		return true;
 	}
@@ -77,14 +77,14 @@ bool TutorialState::BeginingUpdate(const int32_t TIMER_MAX)
 
 bool TutorialState::EndingUpdate(const int32_t TIMER_MAX)
 {
-	t_ = min((float)endingTimer_ / (float)TIMER_MAX, 1.0f);
+	t_ = min((float)endingTimer_ / (float)TIMER_MAX, TIMER_RATE_MAX_);
 
-	scale_ = Lerp(1.0f, MAX_SCALE_, EaseIn(t_));
+	scale_ = Lerp(NORMAL_SCALE_, MAX_SCALE_, EaseIn(t_));
 
-	alpha_ = 1.0f - t_;
+	alpha_ = TIMER_RATE_MAX_ - t_;
 
 	//制限時間過ぎたら
-	if (t_ >= 1.0f)
+	if (t_ >= TIMER_RATE_MAX_)
 	{
 		return true;
 	}
@@ -96,8 +96,8 @@ bool TutorialState::EndingUpdate(const int32_t TIMER_MAX)
 
 void TutorialState::CommonSpriteDraw()
 {
-	texSprite_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
-	texSprite_.SetScale({ scale_,scale_ ,1.0f });
+	texSprite_.SetTrans(SPRITE_POS_);
+	texSprite_.SetScale({ scale_,scale_ ,NORMAL_SCALE_ });
 	texSprite_.SetColor({ SPRITE_COLOR_.x,SPRITE_COLOR_.y,SPRITE_COLOR_.z,alpha_ });
 
 	texSprite_.DrawBoxSprite(nullptr, SPRITE_ANCOR_UV_);

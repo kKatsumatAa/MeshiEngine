@@ -283,7 +283,7 @@ void StageStateClear::Update()
 		StageManager::GetInstance().SetIsClear(true);
 	}
 
-	timer_ = min(timer_ + 1, CLEAR_COOL_TIME_MAX_);
+	timer_ = min(++timer_, CLEAR_COOL_TIME_MAX_);
 
 	//リプレイが最後まで再生されたら
 	if (StageManager::GetInstance().GetReplay()->GetReplayEnd())

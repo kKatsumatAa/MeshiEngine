@@ -102,6 +102,10 @@ class TransitionEffectEndState : public SceneTransitionEffectState
 {
 private:
 	const int32_t TIMER_MAX_ = 25;
+	const int32_t PERA_EXTEND_TIMER_MAX_ = TIMER_MAX_ / 2;
+	const int32_t BARREL_TIMER_MAX_ = TIMER_MAX_ / 2;
+	const float NOISE_POW_RATIO_MAX_ = 1.0f;
+	const float BARREL_POW_RATIO_MAX_ = 1.0f;
 
 public:
 	//初期化

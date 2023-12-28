@@ -1,6 +1,7 @@
 #include "Replay.h"
 #include"MouseInput.h"
 #include"KeyboardInput.h"
+#include"GameVelocityManager.h"
 
 
 void Replay::Initialize()
@@ -28,11 +29,11 @@ void Replay::UpdateWhile1Frame(std::function<void(const ReplayData& replay)>upda
 
 		//超過分
 		float overVel = 0;
-		//合計が1.0fを超えていたら
-		if (totalSpeed + replayData->gameVel > 1.0f)
+		//合計が1.0f(通常のスピード)を超えていたら
+		if (totalSpeed + replayData->gameVel > GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_)
 		{
 			//残りを今回使う量に
-			float useVel = 1.0f - totalSpeed;
+			float useVel = GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_ - totalSpeed;
 			//超過分
 			overVel = replayData->gameVel - useVel;
 			//使う量だけ

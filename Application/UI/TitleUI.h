@@ -13,6 +13,10 @@ public:
 	const Vec4 SPRITE_COLOR_ = { 3.0f,3.0f,3.0f,1.0f };
 	const Vec2 SPRITE_ANCOR_UV_ = { 0.5f,0.5f };
 
+	const Vec3 SPRITE_POS_ = { WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 };
+	const float NORMAL_SCALE_ = 1.0f;
+	const float TIME_RATIO_MAX_ = 1.0f;
+
 private:
 	float t_ = 0;
 	int32_t timer_ = 0;

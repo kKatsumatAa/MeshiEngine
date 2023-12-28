@@ -31,6 +31,11 @@ public:
 	const float LAVA_APPROACH_TIME_ = 20.0f * 60.0f / SEA_DICTANCE_TMP_;
 	const float POST_SEA_TIME_EXTEND_RATE_ = 1.2f;
 	const int32_t SEA_MAX_AFTER_TIME_ = 60;
+	const float SEA_DISTANCE_RATIO_MAX_ = 1.0f;
+	const float SEA_AFTER_TIME_RATIO_MAX_ = 1.0f;
+	//海の時間で地形を削除する時間の割合
+	const float ERASE_LAND_SHAPE_SEA_TIME_RATIO_ = 0.8f;
+	const float IMGUI_SEA_DIST_DRAG_SPEED_ = 0.5f;
 private:
 	int32_t stageNum_ = 1;
 	std::unique_ptr<StageState> state_ = nullptr;

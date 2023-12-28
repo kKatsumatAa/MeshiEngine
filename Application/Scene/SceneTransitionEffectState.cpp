@@ -122,14 +122,14 @@ void TransitionEffectEndState::Update()
 	SceneTransitionEffectState::Update();
 
 	//湾曲を徐々に弱く
-	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.barrelCurvePow = 1.0f - EaseIn(GetTimerT(timer_, TIMER_MAX_ / 2));
+	PostEffectManager::GetInstance().GetPostEffect4()->effectFlags_.barrelCurvePow = BARREL_POW_RATIO_MAX_ - EaseIn(GetTimerT(timer_, BARREL_TIMER_MAX_));
 	//2つ目の2枚目の画面の大きさを徐々に大きく
 	PostEffectManager::GetInstance().GetPostEffect3()->SetPera2Extend(Lerp(
 		PostEffectManager::GetInstance().DISPLAY_SIZE_MIN_ * WINDOW_SIZE_EXTEND_, POST_PERA_SIZE_MAX_,
-		EaseIn(GetTimerT(timer_, TIMER_MAX_ / 2))));
+		EaseIn(GetTimerT(timer_, PERA_EXTEND_TIMER_MAX_))));
 
 	//ノイズを徐々に
-	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.noisePow = 1.0f - EaseIn(GetTimerT(timer_, TIMER_MAX_));
+	PostEffectManager::GetInstance().GetPostEffect3()->effectFlags_.noisePow = NOISE_POW_RATIO_MAX_ - EaseIn(GetTimerT(timer_, TIMER_MAX_));
 
 	//時間が終わったら
 	if (GetIsTimeOver(timer_, TIMER_MAX_))

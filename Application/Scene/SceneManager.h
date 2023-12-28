@@ -33,8 +33,6 @@ private:
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 private:
-	uint64_t texhandle_[10];
-
 	//数字の画像
 	uint64_t textureNumHundle_[12];
 

@@ -23,10 +23,10 @@ private:
 	//次のステートの名前
 	std::list<std::string> nextStateNames_;
 
+public:
 	//フォルダ名
 	const std::string FOLDER_NAME_ = "Resources/tutorialData/";
 	const std::string FILE_NAME_ = "tutorial";
-
 
 private:
 	//コンストラクタ

@@ -29,24 +29,25 @@ void CursorUI::Update()
 	}
 	else
 	{
-		alpha_ = 1.0f;
+		alpha_ = NORMAL_ALPHA_;
 	}
 
 	//カーソルの位置を画面内に収める
-	cursorPos_.x = Clamp(MouseInput::GetInstance().GetCurcorPos().x, cursorSize_.x * 2.0f, WindowsApp::WINDOW_WIDTH_ - cursorSize_.x * 2.0f);
+	cursorPos_.x = Clamp(MouseInput::GetInstance().GetCurcorPos().x, cursorSize_.x * CLAMP_CURSOR_POS_SIZE_RATE_, 
+		WindowsApp::WINDOW_WIDTH_ - cursorSize_.x * CLAMP_CURSOR_POS_SIZE_RATE_);
 	cursorPos_.y = Clamp(MouseInput::GetInstance().GetCurcorPos().y, 0, WindowsApp::WINDOW_HEIGHT_ - cursorSize_.y);
 
 
 	//描画するときのカーソル位置
-	drawPos_.x = (float)((cursorSize_.x / 2.0f) + (int32_t)cursorPos_.x / (int32_t)cursorSize_.x * (int32_t)cursorSize_.x);
-	drawPos_.y = (float)((cursorSize_.y / 2.0f) + (int32_t)cursorPos_.y / (int32_t)cursorSize_.y * (int32_t)cursorSize_.y);
+	drawPos_.x = (float)((cursorSize_.x * DRAW_POS_ADD_SIZE_RATE_) + (int32_t)cursorPos_.x / (int32_t)cursorSize_.x * (int32_t)cursorSize_.x);
+	drawPos_.y = (float)((cursorSize_.y * DRAW_POS_ADD_SIZE_RATE_) + (int32_t)cursorPos_.y / (int32_t)cursorSize_.y * (int32_t)cursorSize_.y);
 }
 
 void CursorUI::Draw()
 {
 	//位置などをセット
 	texSprite_.SetTrans({ drawPos_,0 });
-	texSprite_.SetScale({ cursorSize_.x,cursorSize_.y,1.0f });
+	texSprite_.SetScale({ cursorSize_.x,cursorSize_.y,SPRITE_NORMAL_SCALE_ });
 	texSprite_.SetColor({ SPRITE_COLOR_.x,SPRITE_COLOR_.y,SPRITE_COLOR_.z,alpha_ });
 	//描画
 	texSprite_.DrawBoxSprite(nullptr, SPRITE_ANCOR_UV_);
