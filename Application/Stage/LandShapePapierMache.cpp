@@ -32,7 +32,7 @@ bool LandShapePapierMache::Initialize(WorldMat* worldMat, IModel* model)
 	SetDissolveRate(0);
 	SetDissolveTexHandle(TextureManager::GetInstance().LoadGraph("dissolveMask.png"));
 
-	model->SetMaterialExtend({ 0.45f, 0.4f, 5.0f });
+	model->SetMaterialExtend(MODEL_MATERIAL_EXTEND_);
 
 	return true;
 }
@@ -40,7 +40,8 @@ bool LandShapePapierMache::Initialize(WorldMat* worldMat, IModel* model)
 void LandShapePapierMache::Draw(float vel)
 {
 	//見た目だけで判定などはない
-	SetColor({ 1.0f,1.0f,1.0f,Lerp(-0.3f,1.0f,EaseIn(vel)) });
+	SetColor({ COLOR_RGB_.x,COLOR_RGB_.y,COLOR_RGB_.z, Lerp(COLOR_A_MIN_,COLOR_A_MAX_,EaseIn(vel)) });
+	//軽量化するために不透明度が一定以上の時
 	if (GetColor().w >= 0.0f)
 	{
 		Object::DrawModel(nullptr, nullptr, nullptr, Object::PipelineStateNumObj::NORMAL_OBJ);

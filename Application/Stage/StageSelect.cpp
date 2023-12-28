@@ -1,4 +1,4 @@
-﻿#include "StageSelect.h"
+#include "StageSelect.h"
 #include "MouseInput.h"
 #include "CursorUI.h"
 
@@ -26,10 +26,10 @@ void StageSelect::Initialize()
 
 	//ステージ名の枠の大きさ
 	nameWidthHeight_ = { CursorUI::cursorSize_.x * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y };
-	namesLeftUpPos_ = { CursorUI::cursorSize_.x * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y * 4.0f };
+	namesLeftUpPos_ = { CursorUI::cursorSize_.x * nameFrameWidthExtend_ ,CursorUI::cursorSize_.y * STAGE_NAME_LEFT_UP_RATE_ };
 
 	//色
-	selectBox_.SetColor({ 8.0f,0,0,1.0f });
+	selectBox_.SetColor(SELECT_BOX_COLOR_);
 
 	LoadStageNames();
 }
@@ -49,13 +49,13 @@ void StageSelect::Update()
 		for (auto stageName : stageNames_)
 		{
 			//当たっていれば選んだ名前,番号を保存
-			if (CollisionBox(namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y* (float)count},//左上
-				namesLeftUpPos_ + Vec2{nameWidthHeight_.x, nameWidthHeight_.y* (float)(count + 1)},//右下
-				cursorPos + Vec2{0, scrollValue_},
-				cursorPos + Vec2{0, scrollValue_}))
+			if (CollisionBox(namesLeftUpPos_ + Vec2{ 0, nameWidthHeight_.y * (float)count },//左上
+				namesLeftUpPos_ + Vec2{ nameWidthHeight_.x, nameWidthHeight_.y * (float)(count + 1) },//右下
+				cursorPos + Vec2{ 0, scrollValue_ },
+				cursorPos + Vec2{ 0, scrollValue_ }))
 			{
 				selectStageName_ = stageName;
-				selectStageIndex_ = count + 1;
+				selectStageIndex_ = count + 1;//countは0から始まるので1からにする
 				isSelected_ = true;
 
 				break;
@@ -77,15 +77,15 @@ void StageSelect::DrawSprite()
 	for (auto stageName : stageNames_)
 	{
 		//ステージ名表示
-		debugText_.Print(stageName.c_str(), namesLeftUpPos_.x, namesLeftUpPos_.y + nameWidthHeight_.y * count, 114514,
+		debugText_.Print(stageName.c_str(), namesLeftUpPos_.x, namesLeftUpPos_.y + nameWidthHeight_.y * count, DebugText::S_INVALID_TMP_,
 			TEXT_EXTEND_);
 
 		Vec2 cursorPos = MouseInput::GetInstance().GetCurcorPos();
 		//カーソルがあってたら赤く表示
-		if (CollisionBox(namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y* (float)count},//左上
-			namesLeftUpPos_ + Vec2{nameWidthHeight_.x, nameWidthHeight_.y* (float)(count + 1)},//右下
-			cursorPos + Vec2{0, scrollValue_},
-			cursorPos + Vec2{0, scrollValue_}))
+		if (CollisionBox(namesLeftUpPos_ + Vec2{ 0, nameWidthHeight_.y * (float)count },//左上
+			namesLeftUpPos_ + Vec2{ nameWidthHeight_.x, nameWidthHeight_.y * (float)(count + 1) },//右下
+			cursorPos + Vec2{ 0, scrollValue_ },
+			cursorPos + Vec2{ 0, scrollValue_ }))
 		{
 			selectBox_.SetTrans({ namesLeftUpPos_ + Vec2{0, nameWidthHeight_.y} *(float)count,0 });
 			selectBox_.SetScale({ nameWidthHeight_,1.0f });

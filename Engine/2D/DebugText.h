@@ -18,6 +18,9 @@ private://エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+public:
+	static const int32_t S_INVALID_TMP_ = 114514;
+
 private:
 	static const int32_t S_MAX_CHAR_COUNT_ = 256;
 	static const int32_t S_FONT_WIDTH_ = 9;

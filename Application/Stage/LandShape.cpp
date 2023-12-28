@@ -35,7 +35,7 @@ bool LandShape::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 	//分割数
 	SetTessFactor(TESS_FACTOR_MAX_);
 
-	SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	SetColor(COLOR_);
 
 	return true;
 }

@@ -15,6 +15,10 @@ private:
 	//ステージ名の拡大率
 	const float TEXT_EXTEND_ = 1.5f;
 
+public:
+	const float STAGE_NAME_LEFT_UP_RATE_ = 4.0f;
+	const Vec4 SELECT_BOX_COLOR_ = { 8.0f,0,0,1.0f };
+
 private:
 	const float nameFrameWidthExtend_ = 20.0f;
 	//選択済みか

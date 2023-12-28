@@ -77,7 +77,7 @@ void StageManager::Initialize(const std::string& stateName)
 void StageManager::ApproachLava()
 {
 	//位置
-	float slowParam = 1.0f - GameVelocityManager::GetInstance().GetVelocity();
+	float slowParam = GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_ - GameVelocityManager::GetInstance().GetVelocity();
 	if (ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player").size())
 	{
 		auto player = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player")[0];
@@ -90,7 +90,7 @@ void StageManager::ApproachLava()
 		CameraManager::GetInstance().GetCamera()->GetEye() + seaDistance_;
 	//強さも変える
 	float t = 1.0f - seaDistance_.y / SEA_DICTANCE_TMP_;
-	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = 1.2f * t;
+	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaTimerExtend = POST_SEA_TIME_EXTEND_RATE_ * t;
 
 	if (t >= 1.0f)
 	{

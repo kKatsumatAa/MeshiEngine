@@ -25,6 +25,12 @@ class StageState;
 
 class StageManager final
 {
+public:
+	//海
+	const float SEA_DICTANCE_TMP_ = 120.0f;
+	const float LAVA_APPROACH_TIME_ = 20.0f * 60.0f / SEA_DICTANCE_TMP_;
+	const float POST_SEA_TIME_EXTEND_RATE_ = 1.2f;
+
 private:
 	int32_t stageNum_ = 1;
 	std::unique_ptr<StageState> state_ = nullptr;
@@ -36,10 +42,6 @@ private:
 	//リプレイ
 	Replay* replay_ = nullptr;
 
-public:
-	//海からの初期距離
-	const float SEA_DICTANCE_TMP_ = 120.0f;
-	const float LAVA_APPROACH_TIME_ = 20.0f * 60.0f / SEA_DICTANCE_TMP_;
 private:
 	Vec3 seaDistance_ = { 0,SEA_DICTANCE_TMP_,0 };
 	//溶岩が最大まで来た後の残り時間
