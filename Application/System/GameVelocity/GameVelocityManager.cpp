@@ -12,12 +12,12 @@ GameVelocityManager& GameVelocityManager::GetInstance()
 
 void GameVelocityManager::Initialize()
 {
-	gameVelocity_ = 1.0f;
+	gameVelocity_ = GAME_VELOCITY_MAX_;
 	isInvalidAddGameVel_ = false;
 	isNormalTime_ = false;
 
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isRadialBlur = false;
-	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.color = { 1.0f,1.0f,1.0f,1.0f };
+	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.color = VEL_COLOR_MAX_;
 }
 
 void GameVelocityManager::AddGameVelocity(float velocity, std::string velName)
@@ -47,14 +47,15 @@ float GameVelocityManager::GetVelocity()
 void GameVelocityManager::Update()
 {
 	//スピードで徐々に色変える
-	Vec3 col = LerpVec3({ 1.0f,1.0f,1.0f }, VEL_COL_MIN_, EaseInOut(1.0f - gameVelocity_));
+	Vec3 col = LerpVec3({ VEL_COLOR_MAX_.x,VEL_COLOR_MAX_.y,VEL_COLOR_MAX_.z },
+		VEL_COLOR_MIN_, EaseInOut(1.0f - gameVelocity_));
 	PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.color = { col.x,col.y,col.z,1.0f };
 
 	//（三つ目に描画されたものを）スピードでラジアルブラーの強さ変える
-	if ((1.0f - gameVelocity_ / GAME_VELOCITY_MAX_) * 0.6f >= 0)
+	if ((1.0f - gameVelocity_ / GAME_VELOCITY_MAX_) * VEL_RADIAL_BLUR_RATE_ >= 0)
 	{
 		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.isRadialBlur = true;
-		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.radialPow = (1.0f - gameVelocity_ / GAME_VELOCITY_MAX_) * 0.6f;
+		PostEffectManager::GetInstance().GetPostEffect2()->effectFlags_.radialPow = (1.0f - gameVelocity_ / GAME_VELOCITY_MAX_) * VEL_RADIAL_BLUR_RATE_;
 	}
 	else
 	{
@@ -64,7 +65,7 @@ void GameVelocityManager::Update()
 	if (gameVelocity_ > GAME_VELOCITY_MIN_ && !isNormalTime_)
 	{
 		//減らしていく
-		gameVelocity_ *= 0.95f;
+		gameVelocity_ *= GAME_VEL_DECTREMENT_;
 		//最低スピードは保つ
 		gameVelocity_ = max(GAME_VELOCITY_MIN_, gameVelocity_);
 	}

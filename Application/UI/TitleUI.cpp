@@ -1,4 +1,4 @@
-﻿#include "TitleUI.h"
+#include "TitleUI.h"
 
 TitleUI& TitleUI::GetInstance()
 {
@@ -15,7 +15,7 @@ void TitleUI::Initialize()
 
 	//セット
 	titleSprite_.SetTexHandle(titleTex_);
-	titleSprite_.SetColor({ 3.0f,3.0f,3.0f,1.0f });
+	titleSprite_.SetColor(SPRITE_COLOR_);
 }
 
 void TitleUI::Update()
@@ -25,7 +25,7 @@ void TitleUI::Update()
 	{
 		t_ = (float)timer_ / (float)TITLE_TIME_MAX_;
 
-		titleScale_ = LerpVec3({ TITLE_SCALE_MAX_,0,0 }, { 1.0f,0,0 }, EaseOut(t_)).x;
+		titleScale_ = Lerp(TITLE_SCALE_MAX_, 1.0f, EaseOut(t_));
 
 		timer_++;
 	}
@@ -37,5 +37,5 @@ void TitleUI::DrawSprite()
 	titleSprite_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
 	titleSprite_.SetScale({ titleScale_,titleScale_ ,1.0f });
 	//描画
-	titleSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
+	titleSprite_.DrawBoxSprite(nullptr, SPRITE_ANCOR_UV_);
 }

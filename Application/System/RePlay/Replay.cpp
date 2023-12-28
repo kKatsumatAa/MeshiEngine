@@ -54,7 +54,6 @@ void Replay::UpdateWhile1Frame(std::function<void(const ReplayData& replay)>upda
 		}
 		else if (replayDataCount_ >= rePlayDatas_.size() - 1)
 		{
-			//replayDataCount_ = 0;
 			break;
 		}
 		//次のフレームデータに行く

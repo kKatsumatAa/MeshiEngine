@@ -6,17 +6,24 @@
 #pragma once
 #include<string>
 #include"Vec3.h"
+#include"Vec4.h"
 
 class GameVelocityManager final
 {
+public:
+	//ゆっくりな時の色
+	const Vec3 VEL_COLOR_MIN_ = { 0.4f,0.7f,0.9f };
+	const Vec4 VEL_COLOR_MAX_ = { 1.0f,1.0f,1.0f,1.0f };
+
+	const float VEL_RADIAL_BLUR_RATE_ = 0.6f;
+	const float GAME_VEL_DECTREMENT_ = 0.95f;
+
 private:
 	float gameVelocity_ = 0;
 	//ゲームスピードの加算無効
 	bool isInvalidAddGameVel_ = false;
 	//1.0f固定になる
 	bool isNormalTime_ = false;
-	//色
-	const Vec3 VEL_COL_MIN_ = { 0.4f,0.7f,0.9f };
 
 public:
 	const float GAME_VELOCITY_MAX_ = 1.0f;

@@ -9,6 +9,11 @@
 
 class CursorUI final
 {
+public:
+	const int8_t FLASHING_INTERVAL_ = 60;
+	const Vec3 SPRITE_COLOR_ = { 8.0f,0.2f,0.2f };
+	const Vec2 SPRITE_ANCOR_UV_ = { 0.5f,0.5f };
+
 private:
 	int32_t timer_ = 0;
 	float alpha_ = 1.0f;
@@ -24,7 +29,6 @@ private:
 public:
 	//カーソルのサイズ
 	static const  Vec2 cursorSize_;
-
 
 private:
 	//コンストラクタ

@@ -1,10 +1,11 @@
-﻿#include "CursorUI.h"
+#include "CursorUI.h"
 #include "MouseInput.h"
 
-
-const  Vec2 CursorUI::cursorSize_ = { WindowsApp::WINDOW_WIDTH_ * 0.01f,
+//---------------------------------------
+const Vec2 CursorUI::cursorSize_ = { WindowsApp::WINDOW_WIDTH_ * 0.01f,
 		WindowsApp::WINDOW_HEIGHT_ * 0.05f };
 
+//----------------------------------------
 CursorUI& CursorUI::GetInstance()
 {
 	static CursorUI sInst;
@@ -20,7 +21,7 @@ void CursorUI::Update()
 	timer_++;
 
 	//点滅させる
-	int32_t interval = timer_ % 60 % (60 / flashingNum_);
+	int32_t interval = timer_ % FLASHING_INTERVAL_ % (FLASHING_INTERVAL_ / flashingNum_);
 	if (interval >= 0
 		&& interval <= flashingIntervalWidth_)
 	{
@@ -33,7 +34,7 @@ void CursorUI::Update()
 
 	//カーソルの位置を画面内に収める
 	cursorPos_.x = Clamp(MouseInput::GetInstance().GetCurcorPos().x, cursorSize_.x * 2.0f, WindowsApp::WINDOW_WIDTH_ - cursorSize_.x * 2.0f);
-	cursorPos_.y = Clamp(MouseInput::GetInstance().GetCurcorPos().y, 0, WindowsApp::WINDOW_HEIGHT_ - cursorSize_.y );
+	cursorPos_.y = Clamp(MouseInput::GetInstance().GetCurcorPos().y, 0, WindowsApp::WINDOW_HEIGHT_ - cursorSize_.y);
 
 
 	//描画するときのカーソル位置
@@ -46,7 +47,7 @@ void CursorUI::Draw()
 	//位置などをセット
 	texSprite_.SetTrans({ drawPos_,0 });
 	texSprite_.SetScale({ cursorSize_.x,cursorSize_.y,1.0f });
-	texSprite_.SetColor({ 8.0f,0.2f,0.2f,alpha_ });
+	texSprite_.SetColor({ SPRITE_COLOR_.x,SPRITE_COLOR_.y,SPRITE_COLOR_.z,alpha_ });
 	//描画
-	texSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
+	texSprite_.DrawBoxSprite(nullptr, SPRITE_ANCOR_UV_);
 }

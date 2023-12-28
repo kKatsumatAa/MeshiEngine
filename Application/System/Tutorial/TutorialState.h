@@ -11,6 +11,10 @@ class Tutorial;
 
 class TutorialState
 {
+public:
+	const Vec3 SPRITE_COLOR_ = { 2.0f,2.0f,2.0f };
+	const Vec2 SPRITE_ANCOR_UV_ = { 0.5f,0.5f };
+
 protected:
 	Tutorial* tutorial_;
 
@@ -89,6 +93,9 @@ public:
 class TutorialStateOperation : public TutorialState
 {
 public:
+	const int32_t RATE_MAX_TMP_ = 50;
+
+public:
 	//初期化
 	void Initialize() override;
 	//更新
@@ -101,6 +108,9 @@ public:
 class TutorialStateGameSpeed : public TutorialState
 {
 public:
+	const int32_t RATE_MAX_TMP_ = 30;
+
+public:
 	//初期化
 	void Initialize() override;
 	//更新
@@ -112,6 +122,9 @@ public:
 //マウス操作説明
 class TutorialStateMouse : public TutorialState
 {
+public:
+	const int32_t RATE_MAX_TMP_ = 100;
+
 private:
 	bool isPushedLeftClick = false;
 	bool isPushedRightClick = false;

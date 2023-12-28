@@ -60,7 +60,7 @@ bool TutorialState::BeginingUpdate(const int32_t TIMER_MAX)
 {
 	t_ = min((float)beginingTimer_ / (float)TIMER_MAX, 1.0f);
 
-	scale_ = LerpVec3({ MAX_SCALE_,0,0 }, { 1.0f,0,0 }, EaseIn(t_)).x;
+	scale_ = Lerp(MAX_SCALE_, 1.0f, EaseIn(t_));
 
 	alpha_ = t_;
 
@@ -79,7 +79,7 @@ bool TutorialState::EndingUpdate(const int32_t TIMER_MAX)
 {
 	t_ = min((float)endingTimer_ / (float)TIMER_MAX, 1.0f);
 
-	scale_ = LerpVec3({ 1.0f,0,0 }, { MAX_SCALE_,0,0 }, EaseIn(t_)).x;
+	scale_ = Lerp(1.0f, MAX_SCALE_, EaseIn(t_));
 
 	alpha_ = 1.0f - t_;
 
@@ -98,9 +98,9 @@ void TutorialState::CommonSpriteDraw()
 {
 	texSprite_.SetTrans({ WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f ,0 });
 	texSprite_.SetScale({ scale_,scale_ ,1.0f });
-	texSprite_.SetColor({ 2.0f,2.0f,2.0f,alpha_ });
+	texSprite_.SetColor({ SPRITE_COLOR_.x,SPRITE_COLOR_.y,SPRITE_COLOR_.z,alpha_ });
 
-	texSprite_.DrawBoxSprite(nullptr, { 0.5f,0.5f });
+	texSprite_.DrawBoxSprite(nullptr, SPRITE_ANCOR_UV_);
 }
 
 //----------------------------------------------------------------------------
@@ -127,7 +127,7 @@ void TutorialStateOperation::Initialize()
 	texSprite_.SetTexHandle(texHandle_);
 
 	//ステートごとに最大値を変えている
-	rateMax_ = 50;
+	rateMax_ = RATE_MAX_TMP_;
 }
 
 void TutorialStateOperation::Update()
@@ -156,7 +156,7 @@ void TutorialStateGameSpeed::Initialize()
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial2.png");
 	texSprite_.SetTexHandle(texHandle_);
 
-	rateMax_ = 30;
+	rateMax_ = RATE_MAX_TMP_;
 }
 
 void TutorialStateGameSpeed::Update()
@@ -178,7 +178,7 @@ void TutorialStateMouse::Initialize()
 	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial3.png");
 	texSprite_.SetTexHandle(texHandle_);
 
-	rateMax_ = 100;
+	rateMax_ = RATE_MAX_TMP_;
 }
 
 void TutorialStateMouse::Update()

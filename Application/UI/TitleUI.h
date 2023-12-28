@@ -9,6 +9,10 @@
 
 class TitleUI final
 {
+public:
+	const Vec4 SPRITE_COLOR_ = { 3.0f,3.0f,3.0f,1.0f };
+	const Vec2 SPRITE_ANCOR_UV_ = { 0.5f,0.5f };
+
 private:
 	float t_ = 0;
 	int32_t timer_ = 0;
