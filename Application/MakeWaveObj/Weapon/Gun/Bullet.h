@@ -35,6 +35,7 @@ public:
 	const XMFLOAT4 DEAD_PARTICLE_COLOR_ = { 0,0,0,1.5f };
 public:
 	const Vec3 BALLISTICS_TEMP_FRONT_VEC_ = { 0,0,1.0f };
+	const float BALLISTICS_LENGTH_MAX_ = 10;
 
 private:
 	//生存時間
@@ -54,7 +55,6 @@ private:
 	//弾道
 	Object ballisticsObj_;
 	float ballisticsLength = 0;
-	const float BALLISTICS_LENGTH_MAX_ = 10;
 
 
 public:

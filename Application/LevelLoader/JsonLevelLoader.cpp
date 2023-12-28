@@ -4,8 +4,6 @@
 #include <fstream>
 #include <sstream>
 
-using namespace Constant;
-
 const std::string JsonLevelLoader::S_DEFAULT_BASE_DIRECTORY_ = "Resources/Level/levelData/";
 const std::string JsonLevelLoader::S_EXTENSION_ = ".json";
 
@@ -231,7 +229,7 @@ Vec3 JsonLevelLoader::GetRotDir(const nlohmann::json::iterator& object, bool isC
 
 	if (isCamera)
 	{
-		targetWorldMat.rot_ = { PI * HALF - targetWorldMat.rot_.z, targetWorldMat.rot_.y + PI * HALF, targetWorldMat.rot_.x };
+		targetWorldMat.rot_ = { CAMERA_TARGET_ADD_ROT_ - targetWorldMat.rot_.z, targetWorldMat.rot_.y + CAMERA_TARGET_ADD_ROT_, targetWorldMat.rot_.x };
 	}
 	else if (isLight)
 	{

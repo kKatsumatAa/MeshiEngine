@@ -17,13 +17,13 @@ public:
 	const float PUNCH_CAMERA_SHAKE_LENGTH_ = 1.05f;
 	const int8_t PUNCH_CAMERA_SHAKE_TIME_ = 5;
 
-private:
-	PlayerHand* handR_ = nullptr;
-	PlayerHand* handL_ = nullptr;
-
 	const std::string OBJ_GROUP_NAME_ = "playerHand";
 	const std::string HAND_R_NAME_ = "handR";
 	const std::string HAND_L_NAME_ = "handL";
+
+private:
+	PlayerHand* handR_ = nullptr;
+	PlayerHand* handL_ = nullptr;
 
 	Player* player_ = nullptr;
 

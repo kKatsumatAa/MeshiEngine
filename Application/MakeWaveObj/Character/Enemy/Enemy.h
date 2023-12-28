@@ -34,16 +34,22 @@ public:
 		Vec3 addRotEnd = { 0,0,0 };
 	};
 
+
+public:
+	static const float S_LENGTH_MAX_;
 public:
 	//武器
 	const Vec3 WEAPON_ROT_ = { PI / 2.0f,PI / 2.0f,0 };
 	const float SHOT_POS_EXTEND_ = 5.0f;
 	const float THROW_WEAPON_VEC_Y_ = 0.4f;
+	const float WEAPON_FALL_VEL_EXTEND_ = 1.5f;
 	//消費する弾
 	const int8_t CONSUM_BULLET_NUM_ = 0;
 	//ライト
 	const XMFLOAT3 POINT_LIGHT_ATTEN_ = { 0.977f,0.493f,0.458f };
 	const XMFLOAT3 POINT_LIGHT_COLOR_ = { 90.0f,-1.0f,-1.0f };
+	const XMFLOAT3 POINT_LIGHT_END_COLOR_ = { 0,0,0 };
+	const int32_t LIGHT_INDEX_INIT_ = -1;
 	//倍率
 	const float INIT_DISSOLVE_RATE_ = 1.0f;
 	const float WEAPON_SCALE_RATE_ = 2.0f;
@@ -57,8 +63,11 @@ public:
 	const float INIT_DAMAGE_COOL_TIME_ = 0;
 	//殴られたときなどに上に移動しないように
 	const float DIR_Y_TMP_ = 0;
+	const float DAMAGE_COOL_TIME_TMP_ = 20.0f;
 	//ダメージのクールタイムが終わる速度
 	const float END_VEL_OF_DAMAGE_COOL_ = 0;
+	//ダメージのクールタイムが終わる時間
+	const float DAMAGE_COOL_TIME_END_ = 0;
 	//回転の時に使う軸
 	const Vec3 USE_QUATERNION_AXIS_ = { 0,1.0f,0 };
 	//アニメーション
@@ -66,6 +75,17 @@ public:
 	//押し戻し
 	const float PUSH_BACK_VEL_RATE_ = 0.63f;
 	const float PUSH_BACK_LENGTH_RATE_ = 1.001f;
+	//地面に足がつく間隔
+	const float  WALK_MOVE_INTERVAL_ = 20.0f;
+	//HP
+	const int8_t HP_TMP_ = 3;
+	//何かしら衝撃を受けたとき
+	const float KNOCK_BACK_POW_ = 0.365f;
+	const float OBJ_DIST_VEC_Y_ = 0.0f;
+	//ディゾルブ
+	const float DISSOLVE_POW_ = 0.3f;
+	//プレイヤーとの距離
+	const float PLAYER_DISTANCE_EXTEND_ = 0.9f;
 public:
 	//パーティクル
 	const int16_t PARTICLE_LIFE_TIME_ = 20;
@@ -77,6 +97,8 @@ public:
 	const float PARTICLE_START_ROT_ = PI * 4.0f;
 	const float PARTICLE_END_ROT_ = -PI * 4.0f;
 	const int8_t PUNCHED_PARTICLE_NUM_ = 60;
+	const int8_t PUNCHED_PARTICLE_INTERVAL_ = 1;
+	const float PUNCHED_PARTICLE_VEC_POW_ = 1.0f;
 	const float PARTICLE_VEL_RATE_MIN_ = -0.1f;
 	const float PARTICLE_VEL_RATE_MAX_ = 1.0f;
 	//種類別
@@ -126,6 +148,7 @@ public://波紋
 	const int8_t STAGE_WAVE_NUM_ = 2;
 	const int8_t MY_WAVE_NUM_ = 3;
 private:
+	const float EMERGE_COOL_TIME_MIN_ = 0.0f;
 	const float PARTICLE_SIZE_EXTEND_ = 2.0f;
 	//被ダメージ時のよろめき時間
 	const float DAMAGED_MAX_TIME_ = 20.0f;
@@ -146,54 +169,28 @@ private:
 
 	//向きをプレイヤーに向けるためのクォータニオン
 	Quaternion directionQua_;
-	//回転の時間
-	float directionRotTime_ = 0;
-	const float DIRCTION_ROT_TIME_ = 60;
-
 	Vec3 directionVec_;
 
-	const float DAMAGE_COOL_TIME_TMP_ = 20.0f;
 	float damageCoolTime_ = 0;
 	float velocityLength_ = 0;
-
-	const int8_t HP_TMP_ = 3;
-
-	const float KNOCK_BACK_POW_ = 0.365f;
-
-	const float DISSOLVE_POW_ = 0.3f;
-
-	const float WEAPON_FALL_VEL_EXTEND_ = 1.5f;
-
-	const float PLAYER_DISTANCE_EXTEND_ = 0.9f;
-
 	//プレイヤーが視界にいるか
 	bool isAttacking_ = false;
-
 	//出現演出
-	const int32_t LIGHT_INDEX_INIT_ = -1;
 	int32_t lightIndexTmp_ = LIGHT_INDEX_INIT_;
 	DirectX::XMFLOAT3 EMERGE_COL_ = { 1.0f,0,0 };
-
 	//構えるときとかに徐々にアニメーションゆっくりにするため
 	float animeSpeedExtend_ = 1.0f;
-
 	//被攻撃時の加算角度
 	std::vector<DamagedNodeAddRot> damagedAddRots_;
-
 	//アニメーション中に地面にウェーブ出す
 	float walkWaveTimer_ = 0;
 	float beforeWalkTime_ = 0;
-	const float  WALK_MOVE_INTERVAL_ = 20.0f;
-
 	//ゲーム的に死亡したか
 	bool isDead_ = false;
 
 	//ステート
 	std::unique_ptr<EnemyState> state_ = nullptr;
 	std::unique_ptr<EnemyState> stanceState_ = nullptr;
-
-public:
-	static const float S_LENGTH_MAX_;
 
 
 public:

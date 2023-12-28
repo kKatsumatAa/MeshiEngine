@@ -35,9 +35,10 @@ public://ui系
 	const float RETICLE_SIZE_MAX_ = 1.5f;
 	const float RETICLE_LENGTH_MAX_ = 50.0f;
 	const float RAY_HIT_ENEMY_RETICLE_SIZE_MIN_ = 0.8f;
+	const float RETICLE_DIST_SCALE_RATIO_MAX_ = 1.0f;
 public://武器
 	const Vec3 THROW_WEAPON_VEC_ = { 0,0.2f,0 };
-
+	const int8_t DECREMENT_BULLET_NUM_ = 1;
 private:
 	const float DEAD_TIMER_MAX_ = 70.0f;
 	float const DEAD_MIN_POS_EXTEND_ = -4.0f;
@@ -45,6 +46,19 @@ private:
 	const float SCALE_EXTEND_ = 1.35f;
 
 	const float HEIGHT_FROM_GROUND_ = 4.5f;
+	const int8_t HP_TMP_ = 1;
+
+	const float VELOCITY_TMP_ = 0.6f;
+	//マウスでのカメラ回転減衰
+	const float MOUSE_GAME_VEL_ATTEN_ = 0.7f;
+	//攻撃が届く距離
+	const float ATTACK_LENGTH_ = 11.0f;
+
+	//マウスのカメラ移動スピード
+	const float MOUSE_VELOCITY_TMP_ = 0.0005f;
+	//移動によるゲームスピード加算の倍率
+	const float MOVE_ADD_VEL_EXTEND_ = 0.052f;
+	const float FALL_VEL_POW_ = 2.0f;
 
 private:
 	//リプレイのポインタ
@@ -53,11 +67,6 @@ private:
 	std::function<void()>replayStateF_ = NULL;
 
 private:
-	const int8_t HP_TMP_ = 1;
-
-	const float VELOCITY_TMP_ = 0.6f;
-	//マウスでのカメラ回転減衰
-	const float MOUSE_GAME_VEL_ATTEN_ = 0.7f;
 	Vec2 mouseVel_ = { 0,0 };
 
 	Vec3 cameraRot_ = { 0,0,0 };
@@ -76,13 +85,6 @@ private:
 	//右クリック
 	bool isClickRight_ = false;
 
-	//攻撃が届く距離
-	const float ATTACK_LENGTH_ = 11.0f;
-
-	//マウスのカメラ移動スピード
-	const float MOUSE_VELOCITY_TMP_ = 0.0005f;
-	//移動によるゲームスピード加算の倍率
-	const float MOVE_ADD_VEL_EXTEND_ = 0.052f;
 
 	//手のマネージャークラス
 	std::unique_ptr<PlayerHandManager> handManager_ = nullptr;
@@ -92,7 +94,7 @@ private:
 	//素手か武器を持っているか等のステート
 	std::unique_ptr<PlayerState>playerState_ = nullptr;
 
-	const float FALL_VEL_POW_ = 2.0f;
+
 
 public:
 	//デストラクタ

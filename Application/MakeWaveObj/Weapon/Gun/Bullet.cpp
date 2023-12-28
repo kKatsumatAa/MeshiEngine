@@ -127,7 +127,7 @@ void Bullet::BallisticsUpdate()
 void Bullet::Update()
 {
 	//ゲームスピードをかける
-	lifeTime_ -= 1.0f;
+	lifeTime_ -= GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_;
 
 	//移動もゲームスピードをかける
 	velocity_ = directionVec_ * GameVelocityManager::GetInstance().GetVelocity();

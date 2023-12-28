@@ -195,7 +195,7 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 	ray.start = { GetWorldTrans().x,GetWorldTrans().y, GetWorldTrans().z };
 	//上端
 	ray.start.m128_f32[1] += LengthY;
-	ray.dir = { ON_GROUND_RAY_VEC_ .x,ON_GROUND_RAY_VEC_.y ,ON_GROUND_RAY_VEC_.z };
+	ray.dir = { ON_GROUND_RAY_VEC_.x,ON_GROUND_RAY_VEC_.y ,ON_GROUND_RAY_VEC_.z };
 	RaycastHit info;
 
 	//接地状態
@@ -205,11 +205,11 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 		const float adsDistance = LengthY * ADS_DISTANCE_RATE_;
 		//接地を維持
 		if (CollisionManager::GetInstance()->Raycast(
-			ray, COLLISION_ATTR_LANDSHAPE, &info, LengthY * 2.0f + adsDistance))
+			ray, COLLISION_ATTR_LANDSHAPE, &info, LengthY * LENGTH_RATE_FROM_GROUND_ + adsDistance))
 		{
 			isOnGround_ = true;
 			//めり込み分上に
-			SetTrans(GetTrans() - Vec3(0, info.distance - LengthY * 2.0f, 0));
+			SetTrans(GetTrans() - Vec3(0, info.distance - LengthY * LENGTH_RATE_FROM_GROUND_, 0));
 			//行列更新
 			ObjectFBX::WorldMatColliderUpdate();
 		}
@@ -225,11 +225,11 @@ void Character::OnGroundAndWallUpdate(float LengthY, float velocityYPow, bool is
 	else if (fallVec_.y <= 0.0f)
 	{
 		if (CollisionManager::GetInstance()->Raycast(
-			ray, COLLISION_ATTR_LANDSHAPE, &info, LengthY * 2.0f))
+			ray, COLLISION_ATTR_LANDSHAPE, &info, LengthY * LENGTH_RATE_FROM_GROUND_))
 		{
 			//着地
 			isOnGround_ = true;
-			SetTrans(GetTrans() - Vec3(0, info.distance - LengthY * 2.0f, 0));
+			SetTrans(GetTrans() - Vec3(0, info.distance - LengthY * LENGTH_RATE_FROM_GROUND_, 0));
 			ObjectFBX::WorldMatColliderUpdate();
 		}
 	}
@@ -247,17 +247,21 @@ void Character::QueryCallBackUpdate()
 	class CharacterQueryCallBack :public QueryCallback
 	{
 	public:
+		//上方向
+		const Vec4 UP_VEC_ = { 0,1.0f,0,0 };
+
+	public:
 		CharacterQueryCallBack(Sphere* sphere) : sphere(sphere) {};
 
 		// 衝突時コールバック関数
 		bool OnQueryHit(const QueryHit& info)
 		{
 			//上方向
-			const XMVECTOR up = { 0,1.0f,0,0 };
+			const XMVECTOR UP_VEC = { UP_VEC_.x,UP_VEC_.y,UP_VEC_.z,UP_VEC_.z };
 			//排斥方向
 			XMVECTOR rejectDir = XMVector3Normalize(info.reject);
 			//上方向と排斥方向の角度差のコサイン値
-			float cos = XMVector3Dot(rejectDir, up).m128_f32[0];
+			float cos = XMVector3Dot(rejectDir, UP_VEC).m128_f32[0];
 
 			// 地面判定しきい値角度
 			const float threshold = cosf(XMConvertToRadians(IS_WALL_ROT_));

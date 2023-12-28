@@ -14,13 +14,15 @@
 //jsonで読み込んだレベルを管理する
 class LevelManager final
 {
-private://変数
+public://変数
+	//オブジェクトのグループ名
+	static const std::string S_OBJ_GROUP_NAME_;
+	const std::string FILE_NAME_ = "level";
+	const int8_t INIT_INDEX_ = -1;
+
+private:
 	//地形オブジェクトとして使うか
 	bool isLandShape_ = false;
-
-	const std::string FILE_NAME_ = "level";
-
-	const int8_t INIT_INDEX_ = -1;
 
 private:
 	LightManager* lightManager_ = nullptr;
@@ -30,11 +32,6 @@ private:
 	float DirlightDir_[3] = { 0,-1.0f,1.0f };
 
 	float pointPos_[3] = { 0,27.0f,-100.0f };
-
-
-public:
-	//オブジェクトのグループ名
-	static const std::string S_OBJ_GROUP_NAME_;
 
 
 private://関数

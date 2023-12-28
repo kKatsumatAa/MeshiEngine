@@ -150,9 +150,9 @@ void PlayerStateHaveWeapon::Update()
 			targetDir = player_->GetFrontTargetVec(COLLISION_ATTR_ALL ^ COLLISION_ATTR_ALLIES);
 
 			//攻撃
-			player_->GetWeapon()->Attack(targetDir, 1, player_, PARTICLE_SIZE_EXTEND_);
+			player_->GetWeapon()->Attack(targetDir, player_->DECREMENT_BULLET_NUM_, player_, PARTICLE_SIZE_EXTEND_);
 			//ゲームスピード加算
-			GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
+			GameVelocityManager::GetInstance().AddGameVelocity(GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_);
 		}
 		//右クリックで武器投げる
 		else if (player_->GetIsClickRight())
@@ -238,7 +238,7 @@ void PlayerStateDeadEffectPunched::Initialize()
 	player_->SetFrontVec(dir_);
 
 	CameraManager::GetInstance().GetCamera("playerCamera")->SetTarget(player_->GetPosOfEnemyAttack());
-	CameraManager::GetInstance().GetCamera("playerCamera")->CameraShake(10, 0.8f);
+	CameraManager::GetInstance().GetCamera("playerCamera")->CameraShake(PUNCHED_CAMERA_SHAKE_TIME_, PUNCHED_CAMERA_SHAKE_LENGTH_);
 }
 
 void PlayerStateDeadEffectPunched::Update()
@@ -259,7 +259,7 @@ void PlayerStateDeadEffectPunched::Update()
 	player_->SetTrans(LerpVec3(beginPos_, Vec3(beginPos_.x, -player_->GetScale().y, beginPos_.z) + Vec3(-dir_.x, 0, -dir_.z), EaseInOutBack(t_)));
 
 	//正面ベクトルを変更
-	player_->SetFrontVec((player_->GetFrontVec() + Vec3{ 0, 0.05f, 0 }).GetNormalized());
+	player_->SetFrontVec((player_->GetFrontVec() + PUNCHED_FRONT_ADD_VEC_).GetNormalized());
 	//仮で海用のカメラ角度
 	PostEffectManager::GetInstance().GetPostEffect1()->effectFlags_.seaDirRot = { player_->GetFrontVec().y,0,0 };
 	//正面ベクトルを回転、そのベクトルをカメラのターゲットに使う

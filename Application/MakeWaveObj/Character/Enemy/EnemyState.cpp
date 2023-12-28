@@ -117,7 +117,7 @@ void EnemyStateEmergeEffect::Update()
 
 	//ディゾルブ
 	float t = timer_ / EMERGE_TIMER_MAX_;
-	enemy_->SetDissolveRate(Lerp(IObject3D::DISSOLVE_RATE_MAX_, 0, EaseIn(t)));
+	enemy_->SetDissolveRatio(Lerp(IObject3D::DISSOLVE_RATE_MAX_, 0, EaseIn(t)));
 
 	//ライトの色
 	enemy_->SetEmergeLight(EaseIn(t));
@@ -218,14 +218,14 @@ void EnemyStateBareHandsAttackEnd::Update()
 {
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
 
-	t_ = min(timer_, TIME_) / TIME_;
+	timeRatio_ = min(timer_, TIME_MAX_) / TIME_MAX_;
 
 	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
 
 	//アニメーションをブレンド（殴る→歩き）
-	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::PUNCH, Enemy::AnimationNum::WALK, t_);
+	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::PUNCH, Enemy::AnimationNum::WALK, timeRatio_);
 
-	if (timer_ >= TIME_)
+	if (timer_ >= TIME_MAX_)
 	{
 		enemy_->SetIsBareAttack(false);
 
@@ -301,13 +301,14 @@ void EnemyStateHaveWeaponAndMove::Update()
 }
 
 //-------------------------------------------------------------------------------------------------------
+//Imguiの角度のドラッグスピード
 const float EnemyStateAttackStance::ANGLE_IMGUI_DRAG_SPEED_ = 0.05f;
 // 構え親クラス
 void EnemyStateAttackStance::Update()
 {
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
 
-	t_ = min(timer_ / TIMER_MAX_, 1.0f);
+	timeRatio_ = min(timer_ / TIMER_MAX_, TIME_RATIO_MAX_);
 }
 
 void EnemyStateAttackStance::DrawImgui()
@@ -338,13 +339,13 @@ void EnemyStateAttackStanceBegin::Update()
 	stanceEndRot_ = ANGLE_MAX_ - Vec3(nowNodeRot.x, nowNodeRot.y, nowNodeRot.z);
 
 	//角度を変える
-	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, t_));
+	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, timeRatio_));
 
 	//アニメーションスピード徐々に
-	enemy_->SetAnimeSpeedExtend(Lerp(ObjectFBX::NORMAL_ANIM_SPEED_, 0, EaseIn(t_)));
+	enemy_->SetAnimeSpeedExtend(Lerp(ObjectFBX::NORMAL_ANIM_SPEED_, 0, EaseIn(timeRatio_)));
 
 	//仮で構え終わったら攻撃
-	if (t_ >= 1.0f)
+	if (timeRatio_ >= TIME_RATIO_MAX_)
 	{
 		enemy_->CheckRayOfEyeHit(
 			(CameraManager::GetInstance().GetCamera("playerCamera")->GetEye() - enemy_->GetWorldTrans()).GetNormalized(),
@@ -374,10 +375,10 @@ void EnemyStateAttackStanceEnd::Update()
 	EnemyStateAttackStance::Update();
 
 	//アニメーションスピード徐々に
-	enemy_->SetAnimeSpeedExtend(Lerp(0, ObjectFBX::NORMAL_ANIM_SPEED_, EaseIn(t_)));
+	enemy_->SetAnimeSpeedExtend(Lerp(0, ObjectFBX::NORMAL_ANIM_SPEED_, EaseIn(timeRatio_)));
 
 	//角度を戻す
-	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, t_));
+	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, timeRatio_));
 }
 
 
@@ -392,7 +393,7 @@ void EnemyStateDamagedBegin::Update()
 {
 	//時間を加算して割合を得る
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
-	float t = min(timer_ / TIMER_MAX_, 1.0f);
+	float t = min(timer_ / TIMER_MAX_, TIME_RATIO_MAX_);
 
 	//殴ってる途中だったら歩かせない
 	if (enemy_->GetIsBareAttack())
@@ -414,7 +415,7 @@ void EnemyStateDamagedBegin::Update()
 
 	enemy_->HPUpdate(t);
 
-	if (t >= 1.0f)
+	if (t >= TIME_RATIO_MAX_)
 	{
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateDamagedEnd>());
 	}
@@ -452,7 +453,7 @@ void EnemyStateDamagedEnd::Update()
 
 	enemy_->HPUpdate(t);
 
-	if (t >= 1.0f)
+	if (t >= TIME_RATIO_MAX_)
 	{
 		ChangeState();
 	}
@@ -489,7 +490,7 @@ void EnemyStateDead::Update()
 	enemy_->DeadNodesParticle((uint64_t)(DEAD_PARTICLE_NUM_ * t), (uint64_t)(Lerp((float)PARTICLE_INTERVAL_ * TWICE, (float)PARTICLE_INTERVAL_, EaseIn(t))));
 
 	//終わったら生きてるフラグオフ
-	if (t >= 1.0f)
+	if (t >= TIME_RATIO_MAX_)
 	{
 		enemy_->SetIsAlive(false);
 	}

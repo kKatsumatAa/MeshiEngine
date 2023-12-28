@@ -17,10 +17,10 @@ void Weapon::NoParentMove()
 		//前回の位置
 		oldPos_ = GetTrans();
 
-		const float FRAME_VEL_EXTEND_REM = 1.0f - FRAME_VEL_EXTEND_;
+		const float FRAME_VEL_EXTEND_REM = FRAME_VEL_RATIO_MAX_ - FRAME_VEL_EXTEND_;
 
 		//ゲームスピードをかける
-		float frameVelExtend = powf(GameVelocityManager::GetInstance().GetVelocity(), 2.0f);
+		float frameVelExtend = powf(GameVelocityManager::GetInstance().GetVelocity(), GAME_VEL_POW_);
 		velocity_ = fallVec_ * frameVelExtend;
 
 		SetTrans(GetTrans() + velocity_);
@@ -28,14 +28,14 @@ void Weapon::NoParentMove()
 		SetRot(GetRot() + fallVec_ * frameVelExtend);
 
 		//だんだん弱く
-		fallVec_.x *= (FRAME_VEL_EXTEND_ + FRAME_VEL_EXTEND_REM * (1.0f - frameVelExtend));
+		fallVec_.x *= (FRAME_VEL_EXTEND_ + FRAME_VEL_EXTEND_REM * (FRAME_VEL_RATIO_MAX_ - frameVelExtend));
 
 		//重力
 		float gravity = GRAVITY_TMP_ * frameVelExtend;
 		fallVec_.y = max(fallVec_.y - gravity, -GRAVITY_MAX_);
 
 		//だんだん弱く
-		fallVec_.z *= (FRAME_VEL_EXTEND_ + FRAME_VEL_EXTEND_REM * (1.0f - frameVelExtend));
+		fallVec_.z *= (FRAME_VEL_EXTEND_ + FRAME_VEL_EXTEND_REM * (FRAME_VEL_RATIO_MAX_ - frameVelExtend));
 
 
 		//前回の位置から今の位置のベクトルをレイとして判定

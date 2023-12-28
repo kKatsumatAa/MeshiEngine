@@ -33,7 +33,7 @@ std::unique_ptr<Gun> Gun::Create(std::unique_ptr<WorldMat> worldMat, IModel* mod
 
 float Gun::GetAttackCoolTimeRatio()
 {
-	return 1.0f - min((float)max(attackCoolTime_, 0.0f) / (float)SHOT_COOL_TIME_MAX_, 1.0f);
+	return TIME_RATIO_MAX_ - min((float)max(attackCoolTime_, 0.0f) / (float)SHOT_COOL_TIME_MAX_, TIME_RATIO_MAX_);
 }
 
 bool Gun::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)

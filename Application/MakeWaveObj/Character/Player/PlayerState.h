@@ -104,11 +104,15 @@ class PlayerStateDeadEffectPunched :
 	public PlayerState,
 	public CharacterStateDead
 {
+public:
+	const int8_t PUNCHED_CAMERA_SHAKE_TIME_ = 10;
+	const float PUNCHED_CAMERA_SHAKE_LENGTH_ = 0.8f;
+	const Vec3 PUNCHED_FRONT_ADD_VEC_ = { 0, 0.05f, 0 };
+	const float endRotX_ = -PI / 2.0f;
+	const float LENGTH_MAX_ = 5.0f;
 private:
 	Vec3 beginRot_ = Vec3(0, 0, 0);
-	const float endRotX_ = -PI / 2.0f;
 	Vec3 beginPos_ = Vec3(0, 0, 0);
-	const float LENGTH_MAX_ = 5.0f;
 	Vec3 dir_;
 
 public:

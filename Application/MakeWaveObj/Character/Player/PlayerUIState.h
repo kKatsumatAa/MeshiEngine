@@ -13,6 +13,10 @@ class PlayerUIState
 {
 public:
 	const Vec2 SPRITE_ANCOR_UV_ = { 0.5f,0.5f };
+	const float TIME_RATIO_MAX_ = 1.0f;
+	const float TIMER_MAX_ = 10;
+	const float SCALE_MAX_ = 1.5f;
+	const float SCALE_NORMAL_ = 1.0f;
 
 protected:
 	//
@@ -24,8 +28,6 @@ protected:
 
 	//演出用
 	float timer_ = 0;
-	const float TIMER_MAX_ = 10;
-	const float SCALE_MAX_ = 1.5f;
 	Vec4 color_ = { 1.0f,1.0f,1.0f,1.0f };
 	float angle_ = 0;
 

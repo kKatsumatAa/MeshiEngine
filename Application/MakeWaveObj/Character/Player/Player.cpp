@@ -393,9 +393,9 @@ void Player::UpdateUI()
 		}
 	}
 
-	//距離でレティクルの大きさ
+	//距離が遠いほどレティクルが小さく
 	scale = min(Lerp(RETICLE_SIZE_MIN_, RETICLE_SIZE_MAX_,
-		max(1.0f - (targetDir.GetLength() / (GetScale().GetLength() * RETICLE_LENGTH_MAX_)), 0)) * scale,
+		max(RETICLE_DIST_SCALE_RATIO_MAX_ - (targetDir.GetLength() / (GetScale().GetLength() * RETICLE_LENGTH_MAX_)), 0)) * scale,
 		RETICLE_SIZE_MAX_);
 
 	//レイの先が敵だったら小さくなりすぎないように

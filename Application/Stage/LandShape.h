@@ -12,12 +12,12 @@ class LandShape : public TouchableObject
 {
 private:
 	const Vec4 COLOR_ = { 1.0f,1.0f,1.0f,1.0f };
+	//分割数
+	const float TESS_FACTOR_MAX_ = 71.0f;
 
 private:
 	std::unique_ptr<LandShapePapierMache>landShapePapierMache_ = nullptr;
 
-	//分割数
-	const float TESS_FACTOR_MAX_ = 71.0f;
 
 public:
 	//インスタンス生成

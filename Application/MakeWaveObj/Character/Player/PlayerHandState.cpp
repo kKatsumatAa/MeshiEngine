@@ -58,7 +58,7 @@ void PlayerHandStateDoing::Initialize()
 
 void PlayerHandStateDoing::Update()
 {
-	float t = min((float)timer_ / (float)TIMER_MAX_, 1.0f);
+	float t = min((float)timer_ / (float)TIMER_MAX_, TIME_RATIO_MAX_);
 
 	//経過時間で手を移動
 	Vec3 addTrans = LerpVec3({ 0,0,0 }, playerHand_->GetFrontVecTmp() * (playerHand_->GetInterLength() - playerHand_->GetScale().z / 2.0f), EaseOut(t));
@@ -71,13 +71,13 @@ void PlayerHandStateDoing::Update()
 	//スピードをセット(ベクトルをプレイヤー本体角度で回転させて)
 	Vec3 rotatedVec = addTrans;
 	playerHand_->GetPlayer()->GetWorldMat()->CalcRotMat();
-	playerHand_->SetVelocity(GetVec3xM4(addTrans, playerHand_->GetPlayer()->GetWorldMat()->GetRotMat(), 0));
+	playerHand_->SetVelocity(GetVec3xM4(addTrans, playerHand_->GetPlayer()->GetWorldMat()->GetRotMat(), false));
 
 	//時間経過もゲームスピードをかける
 	timer_ += GameVelocityManager::GetInstance().GetVelocity();
 
 	//ステート変更
-	if (t >= 1.0f)
+	if (t >= TIME_RATIO_MAX_)
 	{
 		//敵の被弾処理
 		enemyDamageFunc_(playerHand_);
@@ -113,10 +113,10 @@ void PlayerHandStateDoing2::Update()
 	playerHand_->SetRot(rot);
 
 	//時間経過もゲームスピードをかける
-	timer_ += 1.0f * GameVelocityManager::GetInstance().GetVelocity();
+	timer_ += GameVelocityManager::GetInstance().GetVelocity();
 
 	//ステート変更
-	if (t >= 1.0f)
+	if (t >= TIME_RATIO_MAX_)
 	{
 		playerHand_->SetIsAttacking(false);
 

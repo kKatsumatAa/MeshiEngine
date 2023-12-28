@@ -29,7 +29,7 @@ bool LandShapePapierMache::Initialize(WorldMat* worldMat, IModel* model)
 	//地形オブジェクト共通処理
 	//ディゾルブの画像
 	SetisDissolve(true);
-	SetDissolveRate(0);
+	SetDissolveRatio(0);
 	SetDissolveTexHandle(TextureManager::GetInstance().LoadGraph("dissolveMask.png"));
 
 	model->SetMaterialExtend(MODEL_MATERIAL_EXTEND_);

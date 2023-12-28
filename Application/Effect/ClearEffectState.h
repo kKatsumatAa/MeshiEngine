@@ -14,23 +14,24 @@ class ClearEffect;
 class ClearEffectState
 {
 protected:
-	const float RATE_MAX_ = 1.0f;
+	const float TIME_RATE_MAX_ = 1.0f;
 
 	const Vec4 SPRITE_COLOR_ = { 2.0f,2.0f,2.0f,1.0f };
 	const Vec3 SPRITE_TRANS_ = { WindowsApp::WINDOW_WIDTH_ * 0.5f,WindowsApp::WINDOW_HEIGHT_ * 0.5f ,0 };
 	const Vec2 SPRITE_ANCOR_UV_ = { 0.5f,0.5f };
+
+	const int32_t TIMER_MAX_ = 70;
+	const float MAX_SCALE_ = 1.5f;
+	const float NORMAL_SCALE_ = 1.0f;
 
 protected:
 	//状態を使うインスタンスポインタ
 	ClearEffect* clearEffect_ = nullptr;
 
 	int32_t timer_ = 0;
-	const int32_t TIMER_MAX_ = 70;
-	float t_ = 0;
+	float timerRatio_ = 0;
 
 	float scale_ = 0;
-	const float MAX_SCALE_ = 1.5f;
-	const float NORMAL_SCALE_ = 1.0f;
 
 	float alpha_ = 0.0f;
 

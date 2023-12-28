@@ -6,6 +6,7 @@ using namespace DirectX;
 
 //--------------------------------------------------------
 const float IObject3D::DISSOLVE_RATE_MAX_ = 1.0f;
+const float IObject3D::DISSOLVE_RATE_MIN_ = 0.0f;
 // 
 XMFLOAT4 IObject3D::sLightCameraParam_ = { 124.0f,91.0f,1.0f,183.0f };
 //シャドウマップ用の深度SRVの要素番号

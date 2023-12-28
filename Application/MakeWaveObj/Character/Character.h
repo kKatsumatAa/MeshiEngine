@@ -18,6 +18,18 @@ public:
 	const Vec3 WEAPON_FALL_VEC_ = { 0,-1.0f,0 };
 	const Vec3 ON_GROUND_RAY_VEC_ = { 0,-1.0f,0 };
 	const float ADS_DISTANCE_RATE_ = 0.2f;
+	//死亡判定のhp
+	const int8_t DEAD_HP_ = 0;
+	//地面からの距離
+	const float LENGTH_RATE_FROM_GROUND_ = 2.0f;
+	//下向き加速度
+	const float FALL_ACC_ = -0.15f;
+	const float FALL_V_Y_MIN_ = -3.5f;
+
+	const float JUMP_V_Y_FIST_ = 1.7f;//ジャンプ時上向き初速
+
+	//壁と認識する角度
+	static const float IS_WALL_ROT_;
 
 protected:
 	//武器
@@ -32,15 +44,8 @@ protected:
 	//地面と当たっているか
 	bool isOnGround_ = false;
 
-	//下向き加速度
-	const float FALL_ACC_ = -0.15f;
-	const float FALL_V_Y_MIN_ = -3.5f;
+
 	Vec3 fallVec_;
-
-	const float JUMP_V_Y_FIST_ = 1.7f;//ジャンプ時上向き初速
-
-	//壁と認識する角度
-	static const float IS_WALL_ROT_;
 
 	//ダメージ受けるかどうか(デバッグ用)
 	bool isValidDamage_ = true;

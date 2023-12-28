@@ -64,6 +64,7 @@ class PlayerHandStateDoing : public PlayerHandState
 {
 private:
 	const int32_t TIMER_MAX_ = 5;
+	const float TIME_RATIO_MAX_ = 1.0f;
 
 public:
 	//初期化
@@ -79,6 +80,7 @@ class PlayerHandStateDoing2 : public PlayerHandState
 {
 private:
 	const int32_t TIMER_MAX_ = 11;
+	const float TIME_RATIO_MAX_ = 1.0f;
 
 public:
 	//初期化

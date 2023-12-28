@@ -16,13 +16,18 @@ class Weapon :
 	public Object, public IMakeWaveObj
 {
 protected:
+	const float FALL_VEC_Y_MIN_ = -3.1f;
 	//フレームごとの倍率
 	const float FRAME_VEL_EXTEND_ = 0.97f;
+	const float FRAME_VEL_RATIO_MAX_ = 1.0f;
+	const float GAME_VEL_POW_ = 2.0f;
+	//重力
+	const float GRAVITY_TMP_ = 0.15f;
+	const float GRAVITY_MAX_ = 3.0f;
 
 protected:
 	//手を離れたときのベクトル
 	Vec3 fallVec_ = { 0,0,0 };
-	const float FALL_VEC_Y_MIN_ = -3.1f;
 	//ローカル座標
 	Vec3 localPos_ = { 0,0,0 };
 	//持ち主
@@ -37,9 +42,6 @@ protected:
 	//クールタイム
 	float attackCoolTime_ = 0;
 
-	//重力
-	const float GRAVITY_TMP_ = 0.15f;
-	const float GRAVITY_MAX_ = 3.0f;
 
 public:
 	Weapon() { ; }

@@ -4,17 +4,17 @@
 
 void ClearEffectState::SpriteUpdate(const std::string& soundName, const std::string& nextStateName)
 {
-	t_ = min((float)timer_ / (float)TIMER_MAX_, RATE_MAX_);
+	timerRatio_ = min((float)timer_ / (float)TIMER_MAX_, TIME_RATE_MAX_);
 
 	//線形補間
-	scale_ = Lerp(MAX_SCALE_, NORMAL_SCALE_, EaseIn(t_));
+	scale_ = Lerp(MAX_SCALE_, NORMAL_SCALE_, EaseIn(timerRatio_));
 
-	alpha_ = t_;
+	alpha_ = timerRatio_;
 
 	timer_ = min(timer_, TIMER_MAX_);
 
 	//制限時間過ぎて、音も終わったら
-	if (!Sound::GetInstance().CheckPlayingWave(soundName) && t_ >= RATE_MAX_)
+	if (!Sound::GetInstance().CheckPlayingWave(soundName) && timerRatio_ >= TIME_RATE_MAX_)
 	{
 		Sound::GetInstance().StopWave(soundName);
 		clearEffect_->ChangeState(std::move(GetState(nextStateName)));

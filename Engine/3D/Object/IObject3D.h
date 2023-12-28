@@ -64,6 +64,7 @@ protected:
 
 public:
 	static const float DISSOLVE_RATE_MAX_;
+	static const float DISSOLVE_RATE_MIN_;
 
 protected:
 	//モデルの有効フラグ
@@ -174,7 +175,7 @@ public:
 	//ディゾルブ画像ハンドル
 	void SetDissolveTexHandle(uint64_t dissolveTextureHandle) { dissolveTextureHandle_ = dissolveTextureHandle; }
 	//ディゾルブ割合セット
-	void SetDissolveRate(float t) { effectFlags_.dissolveT = t; }
+	void SetDissolveRatio(float t) { effectFlags_.dissolveT = t; }
 	//ディゾルブ割合取得
 	float GetDissolveT() { return effectFlags_.dissolveT; }
 	//ディゾルブするかセット

@@ -36,9 +36,9 @@ void PlayerUIState::Initialize()
 
 void PlayerUIState::Update()
 {
-	float t = min((float)timer_ / (float)TIMER_MAX_, 1.0f);
+	float t = min((float)timer_ / (float)TIMER_MAX_, TIME_RATIO_MAX_);
 
-	playerUI_->SetScale(LerpVec3({ SCALE_MAX_,0,0 }, { 1.0f,0,0 }, EaseInOutBack(t)).x);
+	playerUI_->SetScale(Lerp(SCALE_MAX_, SCALE_NORMAL_, EaseInOutBack(t)));
 
 	timer_++;
 }
@@ -46,7 +46,7 @@ void PlayerUIState::Update()
 void PlayerUIState::DrawSprite()
 {
 	reticleSprite_.SetTrans({ playerUI_->GetPos().x,playerUI_->GetPos().y,0 });
-	reticleSprite_.SetScale({ playerUI_->GetScale() * playerUI_->GetScaleRatio(), playerUI_->GetScale() * playerUI_->GetScaleRatio() ,1.0f });
+	reticleSprite_.SetScale({ playerUI_->GetScale() * playerUI_->GetScaleRatio(), playerUI_->GetScale() * playerUI_->GetScaleRatio() ,SCALE_NORMAL_ });
 	reticleSprite_.SetRot({ 0,0 ,angle_ });
 
 	reticleSprite_.DrawBoxSprite(nullptr, SPRITE_ANCOR_UV_);

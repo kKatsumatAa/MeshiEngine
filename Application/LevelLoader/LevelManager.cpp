@@ -67,8 +67,7 @@ void LevelManager::LoadLevelData(int32_t fileIndex)
 
 Weapon* LevelManager::GetChildWeapon(LevelData::ObjectData& objData)
 {
-	if (objData.childData == nullptr || (objData.childData->fileName != "gun" &&
-		objData.childData->fileName != "sword"))
+	if (objData.childData == nullptr || (objData.childData->fileName != "gun"))
 	{
 		return nullptr;
 	}
@@ -186,7 +185,7 @@ void LevelManager::SetParentNode(IObject3D* obj, const LevelData::ObjectData& ob
 void LevelManager::LoadObj(LevelData::ObjectData& objData)
 {
 	//親がいたらスキップ(登録済みならworldMatはmove()されて無いので)
-	if (/*objData.fileName == "gun" &&*/ !objData.worldMat)
+	if (!objData.worldMat)
 	{
 		return;
 	}

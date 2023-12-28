@@ -105,6 +105,8 @@ private:
 
 	const Vec3 FRONT_DIR_ = { 0,0,1.0f };
 
+	const float CAMERA_TARGET_ADD_ROT_ = PI * 0.5f;
+
 public:
 	//レベルデータ
 	std::unique_ptr<LevelData> levelData_ = nullptr;

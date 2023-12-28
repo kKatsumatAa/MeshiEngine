@@ -18,8 +18,15 @@ class Gun :
 {
 public:
 	const Vec3 MATERIAL_EXTEND_ = { 1.0f,100.0f,5000.0f };
+	const float TIME_RATIO_MAX_ = 1.0f;
+public:
 	const float BULLET_SCALE_RATE_ = 0.4f;
 	const int16_t BULLET_LIFE_TIME_ = 300;
+	//攻撃のクールタイム
+	const float SHOT_COOL_TIME_MAX_ = 70;
+	const float BULLET_VELOCITY_ = 1.8f;
+	//弾の残量
+	const int32_t BULLETS_TMP_ = 3;
 public:
 	const XMFLOAT4 SHOOT_PARTICLE_START_COLOR_ = { 4.0f,4.0f,4.0f,1.1f };
 	const XMFLOAT4 SHOOT_PARTICLE_END_COLOR_ = { 4.0f,4.0f,4.0f,0 };
@@ -52,13 +59,6 @@ public:
 	const XMFLOAT4 ON_STAGE_PARTICLE_END_COLOR_ = { 0.1f,0.1f,0.1f,1.0f };
 
 private:
-	//攻撃のクールタイム
-	const float SHOT_COOL_TIME_MAX_ = 70;
-
-	const float BULLET_VELOCITY_ = 1.8f;
-
-	//弾の残量
-	const int32_t BULLETS_TMP_ = 3;
 	int32_t remainingBullets_ = BULLETS_TMP_;
 
 	//発射位置

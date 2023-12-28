@@ -14,8 +14,6 @@
 #include "FbxLoader.h"
 
 using namespace DirectX;
-using namespace Constant;
-
 
 const float Enemy::S_LENGTH_MAX_ = 10000;
 
@@ -41,7 +39,7 @@ void Enemy::EmergeInitialize()
 
 	//ディゾルブ
 	SetisDissolve(true);
-	SetDissolveRate(INIT_DISSOLVE_RATE_);
+	SetDissolveRatio(INIT_DISSOLVE_RATE_);
 	//ディゾルブ画像
 	uint64_t handle;
 	handle = TextureManager::LoadGraph("dissolveMask.png");
@@ -308,17 +306,18 @@ void Enemy::HPUpdate(float t)
 {
 	//ディゾルブ強すぎると敵が見えなくなるので
 	float lDissolvePow = DISSOLVE_POW_;
-	if (hp_ <= 0)
+	if (hp_ <= DEAD_HP_)
 	{
-		lDissolvePow = Lerp(DISSOLVE_POW_, RATE_MAX_, EaseOut(t));
+		lDissolvePow = Lerp(DISSOLVE_POW_, IObject3D::DISSOLVE_RATE_MAX_, EaseOut(t));
 	}
 	//hpによってディゾルブ(減った後のhpとの線形補完)
-	IObject3D::SetDissolveRate((RATE_MAX_ - Lerp((float)oldHP_, (float)hp_, t) / (float)HP_TMP_) * lDissolvePow);
+	IObject3D::SetDissolveRatio((IObject3D::DISSOLVE_RATE_MAX_ - Lerp((float)oldHP_, (float)hp_, t) / (float)HP_TMP_) * lDissolvePow);
 
 	//ポリゴンごとに法線方向動くように
 	Mesh::PolygonOffset offsetData;
 	offsetData.interval = GetRand(MESH_OFFSET_INTERVAL_MIN_, MESH_OFFSET_INTERVAL_MAX_)
 		* (GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_ - GameVelocityManager::GetInstance().GetVelocity());
+	//長さや割合も
 	offsetData.length = GetRand(-IObject::GetScale().x, IObject::GetScale().x) * MESH_OFFSET_LENGTH_RATE_;
 	offsetData.ratio = (RATE_MAX_ - (float)hp_ / (float)HP_TMP_);
 	ObjectFBX::SetMeshPolygonOffsetData(offsetData);
@@ -371,7 +370,7 @@ void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 	if (info.object_->GetObjName().find("hand") != std::string::npos &&
 		info.collider_ == nullptr)
 	{
-		if (damageCoolTime_ > 0.0f)
+		if (damageCoolTime_ > DAMAGE_COOL_TIME_END_)
 		{
 			return;
 		}
@@ -388,7 +387,7 @@ void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 		BeginDamagedWave(info, PUNCHED_WAVE_RATE_);
 
 		//パーティクル
-		DamageParticle(PUNCHED_PARTICLE_NUM_, 1, 1.0f, &info);
+		DamageParticle(PUNCHED_PARTICLE_NUM_, PUNCHED_PARTICLE_INTERVAL_, PUNCHED_PARTICLE_VEC_POW_, &info);
 
 		//ノードの角度を加算するため
 		SetAllNodeAddRots(*nodeObj);
@@ -397,7 +396,7 @@ void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 
 void Enemy::DecrementEmergeCoolTime()
 {
-	emergeCoolTime_ = max(emergeCoolTime_ - GameVelocityManager::GetInstance().GetVelocity(), 0);
+	emergeCoolTime_ = max(emergeCoolTime_ - GameVelocityManager::GetInstance().GetVelocity(), EMERGE_COOL_TIME_MIN_);
 }
 
 void Enemy::InactiveEmergeLight()
@@ -414,7 +413,8 @@ void Enemy::SetEmergeLight(float rate)
 	LightManager* lightM = LevelManager::GetInstance().GetLightManager();
 	if (GetLightIndexTmp() != GetLightIndexInit())
 	{
-		Vec3 color = LerpVec3({ POINT_LIGHT_COLOR_.x,POINT_LIGHT_COLOR_.y,POINT_LIGHT_COLOR_.z }, { 0,0,0 }, rate);
+		Vec3 color = LerpVec3({ POINT_LIGHT_COLOR_.x,POINT_LIGHT_COLOR_.y,POINT_LIGHT_COLOR_.z },
+			{ POINT_LIGHT_END_COLOR_.x,POINT_LIGHT_END_COLOR_.y,POINT_LIGHT_END_COLOR_.z }, rate);
 
 		lightM->SetPointLightColor(GetLightIndexTmp(), { color.x,color.y ,color.z });
 	}
@@ -473,7 +473,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 {
 	//距離のベクトル
 	Vec3 distanceVec = -info.object_->GetVelocity();
-	distanceVec.y = 0;
+	distanceVec.y = OBJ_DIST_VEC_Y_;
 
 	//ダメージを受けるクールタイム
 	damageCoolTime_ = DAMAGE_COOL_TIME_TMP_;
@@ -541,10 +541,10 @@ void Enemy::DamageParticle(int32_t particleNum, uint64_t interval, float vecPow,
 			infoVec.z * GetRand(PARTICLE_VEL_RATE_MIN_, PARTICLE_VEL_RATE_MAX_) + GetRand(-ADD_VEC, ADD_VEC) * vecPow);
 
 		float scale = scaleTmp * PARTICLE_SCALE_RATE_;
-		float scale2 = 0;
+		float endScale = 0;
 
 		//パーティクル生成
-		ParticleManager::GetInstance()->Add(LIFE_TIME, posL, vel, PARTICLE_ACCEL_, scale, scale2,
+		ParticleManager::GetInstance()->Add(LIFE_TIME, posL, vel, PARTICLE_ACCEL_, scale, endScale,
 			PARTICLE_START_COLOR_, PARTICLE_END_COLOR_,
 			ParticleManager::BLEND_NUM::CRYSTAL,
 			PARTICLE_START_ROT_, PARTICLE_END_ROT_);
@@ -644,7 +644,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		//距離のベクトル
 		Vec3 distanceVec = obj->GetWorldTrans() - info.object_->GetTrans();
 		//仮
-		distanceVec.y = 0;
+		distanceVec.y = OBJ_DIST_VEC_Y_;
 		distanceVec.Normalized();
 		//位置セット(半径＋半径の長さをベクトルの方向を使って足す)
 		IObject::SetTrans(info.object_->GetTrans() + distanceVec * length * PUSH_BACK_LENGTH_RATE_);

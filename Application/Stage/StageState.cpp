@@ -98,7 +98,7 @@ void StageStateBegining::Update()
 	auto objs = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
 	for (auto obj : objs)
 	{
-		obj->SetDissolveRate(1.0f - t);
+		obj->SetDissolveRatio(IObject3D::DISSOLVE_RATE_MAX_ - t);
 	}
 
 	//時間超えたら
@@ -220,7 +220,7 @@ void StageStateDead::Update()
 	auto objs = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, COLLISION_ATTR_LANDSHAPE);
 	for (auto obj : objs)
 	{
-		obj->SetDissolveRate(t);
+		obj->SetDissolveRatio(t);
 	}
 
 	//一定時間たったらフラグ立てる

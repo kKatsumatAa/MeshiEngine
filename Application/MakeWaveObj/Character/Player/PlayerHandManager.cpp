@@ -66,8 +66,8 @@ void PlayerHandManager::HandAttack(PlayerHand* hand, const RaycastHit& info)
 		//敵の被弾処理セット
 		hand->GetAttackState()->SetEnemyDamageFunc(f);
 
-		//ゲームのスピード(仮)
-		GameVelocityManager::GetInstance().AddGameVelocity(1.0f);
+		//ゲームのスピード足す(仮)
+		GameVelocityManager::GetInstance().AddGameVelocity(GameVelocityManager::GetInstance().GAME_VELOCITY_MAX_);
 	}
 }
 

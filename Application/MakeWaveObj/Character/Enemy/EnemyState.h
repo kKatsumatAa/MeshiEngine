@@ -15,12 +15,11 @@ class EnemyState : public CharacterState
 {
 protected:
 	const float DAMAGED_ANIME_SPEED_RATE_ = 0.3f;
-
+	const uint16_t BARE_HANDS_ATTR_TMP_ = COLLISION_ATTR_ITEMS | COLLISION_ATTR_LANDSHAPE;
+	const uint16_t HAVE_WEAPON_ATTR_TMP_ = COLLISION_ATTR_ALLIES | COLLISION_ATTR_LANDSHAPE;
 protected:
 	Enemy* enemy_ = nullptr;
 
-	const uint16_t BARE_HANDS_ATTR_TMP_ = COLLISION_ATTR_ITEMS | COLLISION_ATTR_LANDSHAPE;
-	const uint16_t HAVE_WEAPON_ATTR_TMP_ = COLLISION_ATTR_ALLIES | COLLISION_ATTR_LANDSHAPE;
 
 public:
 	//デストラクタ
@@ -110,8 +109,8 @@ class EnemyStateBareHandsAttackEnd :
 	public EnemyState
 {
 private:
-	const float TIME_ = 20.0f;
-	float t_ = 0;
+	const float TIME_MAX_ = 20.0f;
+	float timeRatio_ = 0;
 
 public:
 	//初期化
@@ -160,15 +159,19 @@ public:
 class EnemyStateAttackStance :
 	public EnemyState
 {
+public:
+	const float TIME_RATIO_MAX_ = 1.0f;
+	//最大時間
+	const float TIMER_MAX_ = 40.0f;
+	const std::string MOVE_NODE_NAME_ = "RightArm";
+
 protected:
 	//imguiの角度のドラッグスピード
 	static const float ANGLE_IMGUI_DRAG_SPEED_;
-	//最大時間
-	const float TIMER_MAX_ = 40.0f;
-	float t_ = 0;
+
+	float timeRatio_ = 0;
 	//足す角度
 	static Vec3 ANGLE_MAX_;
-	const std::string MOVE_NODE_NAME_ = "RightArm";
 	//線形補間用の角度
 	Vec3 stanceEndRot_ = { 0,0,0 };
 	Vec3 stanceBeginRot_ = { 0,0,0 };
@@ -187,6 +190,9 @@ class EnemyStateAttackStanceBegin :
 	public EnemyStateAttackStance,
 	public CharacterStateAttackStanceBegin
 {
+public:
+	const float TIME_RATIO_MAX_ = 1.0f;
+
 public:
 	//初期化
 	void Initialize() override;
@@ -210,9 +216,11 @@ public:
 //被ダメージ始め
 class EnemyStateDamagedBegin : public EnemyState
 {
+public:
+	const float TIME_RATIO_MAX_ = 1.0f;
+	const float TIMER_MAX_ = 20.0f;
 private:
 	float timer_ = 0;
-	const float TIMER_MAX_ = 20.0f;
 
 public:
 	//初期化
@@ -224,9 +232,11 @@ public:
 //被ダメージ終わり
 class EnemyStateDamagedEnd : public EnemyState
 {
+public:
+	const float TIME_RATIO_MAX_ = 1.0f;
+	const float TIMER_MAX_ = 20.0f;
 private:
 	float timer_ = 0;
-	const float TIMER_MAX_ = 20.0f;
 
 public:
 	//初期化
@@ -240,10 +250,12 @@ class EnemyStateDead :
 	public EnemyState,
 	public CharacterStateDead
 {
-private:
-	float timer_ = 0;
+public:
+	const float TIME_RATIO_MAX_ = 1.0f;
 	const uint64_t PARTICLE_INTERVAL_ = 10;
 	const float DEAD_PARTICLE_NUM_ = 10.0f;
+private:
+	float timer_ = 0;
 
 public:
 	//初期化
