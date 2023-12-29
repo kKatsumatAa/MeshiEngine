@@ -249,9 +249,6 @@
     <ClCompile Include="Engine\2D\Sprite.cpp">
       <Filter>ソース ファイル\Engine\2D</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\2D\SpriteCommon.cpp">
-      <Filter>ソース ファイル\Engine\2D</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\2D\TextureManager.cpp">
       <Filter>ソース ファイル\Engine\2D</Filter>
     </ClCompile>

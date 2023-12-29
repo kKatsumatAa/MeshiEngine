@@ -255,12 +255,12 @@ void IObject::DrawImGui(std::function<void()>imguiF)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void IObject::SetRootPipe(RootPipe* pipelineSet, int32_t pipelineNum, ID3D12RootSignature* rootSignature)
+void IObject::SetRootPipe(const RootPipe& pipelineSet)
 {
 	// パイプラインステートとルートシグネチャの設定コマンド
-	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(pipelineSet[pipelineNum].pipelineState.Get());
+	DirectXWrapper::GetInstance().GetCommandList()->SetPipelineState(pipelineSet.pipelineState.Get());
 
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(rootSignature);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootSignature(pipelineSet.rootSignature.Get());
 }
 
 

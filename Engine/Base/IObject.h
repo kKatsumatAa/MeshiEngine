@@ -77,9 +77,17 @@ protected://継承先まで公開
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial_ = nullptr;
 
+public:
+	//描画先のレンダーターゲット数
+	static const int32_t S_RENDER_TARGET_NUM_ = 3;
+
 protected:
 	//ルートパラメータの設定
 	static D3D12_ROOT_PARAMETER rootParams_[RootParamNum::count];
+
+public:
+	//4つの頂点
+	const int8_t VERTEX_4_ = 4;
 
 protected:
 	//ワールド行列用のバッファなど
@@ -139,7 +147,7 @@ public:
 
 public:
 	//ルートシグネチャ系のコマンド(パイプラインステートとルートシグネチャ別のも組み合わせられる)
-	void SetRootPipe(RootPipe* pipelineSet, int32_t pipelineNum, ID3D12RootSignature* rootSignature);
+	void SetRootPipe(const RootPipe& pipelineSet);
 
 	//パイプラインの設定
 	static void PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPipe,

@@ -34,7 +34,7 @@ Sprite::Sprite()
 	uint32_t sizeVB;
 	D3D12_RESOURCE_DESC resDesc{}; D3D12_HEAP_PROPERTIES heapProp{};
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
-	sizeVB = static_cast<uint32_t>(sizeof(vertices_[0]) * 4.0);
+	sizeVB = static_cast<uint32_t>(sizeof(vertices_[0]) * (float)_countof(vertices_));
 	//頂点バッファの設定		//ヒープ設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD;		//GPUへの転送用
 
@@ -59,7 +59,7 @@ void Sprite::CommonInitialize()
 	PipeLineSetting(D3D12_FILL_MODE_SOLID, spritePipelineSet_,
 		"Resources/shaders/SpriteVS.hlsl", "Resources/shaders/SpritePS.hlsl",
 		"", "", "",
-		sInputLayoutSprite_, _countof(sInputLayoutSprite_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, 3, true);
+		sInputLayoutSprite_, _countof(sInputLayoutSprite_), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, S_RENDER_TARGET_NUM_, true);
 }
 
 void Sprite::Initialize(std::unique_ptr<WorldMat> worldMat)
@@ -78,7 +78,7 @@ void Sprite::Update()
 void Sprite::Draw()
 {
 	//ポリモーフィズムで呼び出されるとき用に
-	DrawBoxSprite(nullptr, { 0.5f,0.5f });
+	DrawBoxSprite(nullptr, TMP_ANCHOR_UV_);
 }
 
 void Sprite::SpriteDrawCommand()
@@ -86,7 +86,7 @@ void Sprite::SpriteDrawCommand()
 	HRESULT result = {};
 
 	//パイプラインなどセット
-	IObject::SetRootPipe(&spritePipelineSet_, 0, spritePipelineSet_.rootSignature.Get());
+	IObject::SetRootPipe(spritePipelineSet_);
 	//メッシュの構造
 	DirectXWrapper::GetInstance().GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
@@ -113,7 +113,7 @@ void Sprite::SpriteDrawCommand()
 	result = vertBuff_->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	// 全頂点に対して
-	for (int32_t i = 0; i < 4; i++) {
+	for (int32_t i = 0; i < _countof(vertices_); i++) {
 		vertMap[i] = vertices_[i]; // 座標をコピー
 	}
 	// 繋がりを解除
@@ -121,7 +121,7 @@ void Sprite::SpriteDrawCommand()
 
 	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &vbView_);
 
-	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
+	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(_countof(vertices_), 1, 0, 0);
 }
 
 void Sprite::DrawBoxSprite(Camera2D* camera,
@@ -147,7 +147,7 @@ void Sprite::DrawClippingBoxSprite(Camera2D* camera, const XMFLOAT2& UVleftTop, 
 
 //-------------------------------------------------------------------------------------
 void Sprite::DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
-	uint64_t textureHandle, const Vec2& ancorUV,
+	uint64_t textureHandle, const Vec2& anchorUV,
 	bool isReverseX, bool isReverseY, const Vec3& rotation,
 	ConstBuffTransform* cbt)
 {
@@ -165,18 +165,20 @@ void Sprite::DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetDescHeapP()->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
-	resDesc = TextureManager::GetTexBuff()[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetHeapDesc().Type)]->GetDesc();
+	resDesc = TextureManager::GetTexBuff()
+		[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetHeapDesc().Type)]
+		->GetDesc();
 
 	Vec2 length = { (float)resDesc.Width ,(float)resDesc.Height };
 
 	//反転
-	if (isReverseX)length.x *= -1;
-	if (isReverseY)length.y *= -1;
+	if (isReverseX)length.x = -length.x;
+	if (isReverseY)length.y = -length.y;
 
-	vertices_[0] = { {-(float)(length.x * scale.x * ancorUV.x),+(float)(length.y * scale.y * (1.0f - ancorUV.y)),0.0f},{0.0f,1.0f} };//左下
-	vertices_[1] = { {-(float)(length.x * scale.x * ancorUV.x),-(float)(length.y * scale.y * (ancorUV.y)),0.0f},{0.0f,0.0f} };//左上
-	vertices_[2] = { {+(float)(length.x * scale.x * (1.0f - ancorUV.x)),+(float)(length.y * scale.y * (1.0f - ancorUV.y)),0.0f},{1.0f,1.0f} };//右下
-	vertices_[3] = { {+(float)(length.x * scale.x * (1.0f - ancorUV.x)),-(float)(length.y * scale.y * (ancorUV.y)),0.0f},{1.0f,0.0f} };//右上
+	vertices_[0] = { {-(float)(length.x * scale.x * anchorUV.x),+(float)(length.y * scale.y * (ANCHOR_UV_MAX_ - anchorUV.y)),0.0f},{0.0f,ANCHOR_UV_MAX_} };//左下
+	vertices_[1] = { {-(float)(length.x * scale.x * anchorUV.x),-(float)(length.y * scale.y * (anchorUV.y)),0.0f},{0.0f,0.0f} };//左上
+	vertices_[2] = { {+(float)(length.x * scale.x * (ANCHOR_UV_MAX_ - anchorUV.x)),+(float)(length.y * scale.y * (ANCHOR_UV_MAX_ - anchorUV.y)),0.0f},{ANCHOR_UV_MAX_,ANCHOR_UV_MAX_} };//右下
+	vertices_[3] = { {+(float)(length.x * scale.x * (ANCHOR_UV_MAX_ - anchorUV.x)),-(float)(length.y * scale.y * (anchorUV.y)),0.0f},{ANCHOR_UV_MAX_,0.0f} };//右上
 
 	//ワールド行列
 	WorldMat worldMat;
@@ -184,7 +186,7 @@ void Sprite::DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 	worldMat.rot_.x = rotation.x;
 	worldMat.rot_.y = rotation.y;
 	worldMat.rot_.z = rotation.z;
-	worldMat.trans_ = { pos.x /*+ length.x * ancorUV.x * scale*/,pos.y/* + length.y * ancorUV.y * scale*/,0.0f };
+	worldMat.trans_ = { pos.x, pos.y, 0.0f };
 
 	//行列計算、セット
 	CalcAndSetMat(cbt, worldMat, camera);
@@ -233,10 +235,14 @@ void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& s
 	else
 	{
 		//切り抜いた後の画像の中心からの位置！！！！！！！！
-		vertices_[0] = { {-UVlength.x * length.x * scale.x / 2.0f,UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-		vertices_[1] = { {-UVlength.x * length.x * scale.x / 2.0f,-UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		vertices_[2] = { {UVlength.x * length.x * scale.x / 2.0f,UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices_[3] = { {UVlength.x * length.x * scale.x / 2.0f,-UVlength.y * length.y * scale.y / 2.0f,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		vertices_[0] = { {-UVlength.x * length.x * scale.x * TRANS_OFFSET_SCALE_RATE_,UVlength.y * length.y * scale.y * TRANS_OFFSET_SCALE_RATE_,0.0f},
+			{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		vertices_[1] = { {-UVlength.x * length.x * scale.x * TRANS_OFFSET_SCALE_RATE_,-UVlength.y * length.y * scale.y * TRANS_OFFSET_SCALE_RATE_,0.0f},
+			{UVleftTop.x,UVleftTop.y} };//左上
+		vertices_[2] = { {UVlength.x * length.x * scale.x * TRANS_OFFSET_SCALE_RATE_,UVlength.y * length.y * scale.y * TRANS_OFFSET_SCALE_RATE_,0.0f},
+			{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		vertices_[3] = { {UVlength.x * length.x * scale.x * TRANS_OFFSET_SCALE_RATE_,-UVlength.y * length.y * scale.y * TRANS_OFFSET_SCALE_RATE_,0.0f},
+			{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 
 	//ワールド行列
@@ -254,8 +260,8 @@ void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& s
 	else
 	{
 		//切り抜いた後の画像の中心を設定
-		worldMat.trans_ = { leftTop.x + texLeft + UVlength.x * (float)length.x * scale.x / 2.0f,
-			leftTop.y + texTop + UVlength.y * (float)length.y * scale.y / 2.0f,
+		worldMat.trans_ = { leftTop.x + texLeft + UVlength.x * (float)length.x * scale.x * TRANS_OFFSET_SCALE_RATE_,
+			leftTop.y + texTop + UVlength.y * (float)length.y * scale.y * TRANS_OFFSET_SCALE_RATE_,
 			0 };
 	}
 

@@ -1,4 +1,4 @@
-﻿#include "DrawIntNumImage.h"
+#include "DrawIntNumImage.h"
 #include <math.h>
 
 void DrawIntNumImage::Initialize(uint64_t texhandle)
@@ -12,7 +12,7 @@ void DrawIntNumImage::Initialize(uint64_t texhandle)
 
 	numCount_ = 0;
 
-	for (int32_t i = _countof(numImages_) - 1; i >= 0; i--)
+	for (int32_t i = (int32_t)ArraySizeMinusOne(numImages_); i >= 0; i--)
 	{
 		numImages_[i].isTrue = false;
 	}
@@ -29,20 +29,20 @@ void DrawIntNumImage::SetNum(int32_t num, const Vec2& pos, const Vec2& sizeUV, c
 	//数字の数をカウント
 	numCount_ = 0;
 
-	for (int32_t i = _countof(numImages_) - 1; i >= 0; i--)
+	for (int32_t i = (int32_t)ArraySizeMinusOne(numImages_); i >= 0; i--)
 	{
 		//その桁の数字を出す
-		numDigit_ = numRemainder_ / (int)std::pow(10, i);
+		numDigit_ = numRemainder_ / (int)std::pow(DIGIT_, i);
 		//余りを出して次の桁で使う
-		numRemainder_ = numRemainder_ % (int)std::pow(10, i);
+		numRemainder_ = numRemainder_ % (int)std::pow(DIGIT_, i);
 
 		//その桁があるか、前の桁があったら,0だったら、0一桁だったら
 		if (numDigit_ > 0 || isStartDigit_ == true ||
-			(numDigit_ == 0 && numRemainder_ == 0 && i == _countof(numImages_) - 1))
+			(numDigit_ == 0 && numRemainder_ == 0 && i == (int32_t)ArraySizeMinusOne(numImages_)))
 		{
 			isStartDigit_ = true;
 
-			if ((numDigit_ == 0 && numRemainder_ == 0 && i == _countof(numImages_) - 1))
+			if ((numDigit_ == 0 && numRemainder_ == 0 && i == (int32_t)ArraySizeMinusOne(numImages_)))
 			{
 				isStartDigit_ = false;
 			}
@@ -76,7 +76,7 @@ void DrawIntNumImage::Draw(Camera2D* camera)
 		if (numImages_[i].isTrue)
 		{
 			//桁の数も考慮して、左上座標
-			Vec2 pos = { numImages_[i].pos.x + numImages_[i].numImageSize.x * ((float)(numCount_) - (float)i)
+			Vec2 pos = { numImages_[i].pos.x + numImages_[i].numImageSize.x * ((float)(numCount_)-(float)i)
 				* numImages_[i].scale
 				,numImages_[i].pos.y };
 

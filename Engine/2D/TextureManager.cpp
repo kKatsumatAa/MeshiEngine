@@ -198,12 +198,9 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 		&uploadHeap,
 		D3D12_HEAP_FLAG_NONE,
 		&uploadResDesc,
-		D3D12_RESOURCE_STATE_GENERIC_READ,		//	CPUから書き込み可能、GPUは読み取り専用
+		D3D12_RESOURCE_STATE_GENERIC_READ,//	CPUから書き込み可能、GPUは読み取り専用
 		nullptr,
 		IID_PPV_ARGS(DirectXWrapper::GetInstance().GetTexUploadBuffPP()));
-
-
-
 
 	//	転送
 	uint8_t* mapforImg = nullptr;

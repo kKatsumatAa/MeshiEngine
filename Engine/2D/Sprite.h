@@ -49,6 +49,11 @@ private:
 	//テクスチャハンドル
 	uint64_t texHandle_ = NULL;
 
+public:
+	const Vec2 TMP_ANCHOR_UV_ = { 0.5f,0.5f };
+	const float ANCHOR_UV_MAX_ = 1.0f;
+	const float TRANS_OFFSET_SCALE_RATE_ = 0.5f;
+
 private:
 	VertexSprite vertices_[4] = {
 		{{0.0f,100.0f,0.0f},{0.0f,1.0f}},

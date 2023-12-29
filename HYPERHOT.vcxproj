@@ -154,7 +154,6 @@
     <ClCompile Include="Engine\2D\DebugText.cpp" />
     <ClCompile Include="Engine\2D\DrawIntNumImage.cpp" />
     <ClCompile Include="Engine\2D\Sprite.cpp" />
-    <ClCompile Include="Engine\2D\SpriteCommon.cpp" />
     <ClCompile Include="Engine\2D\TextureManager.cpp" />
     <ClCompile Include="Engine\3D\Camera\Camera.cpp" />
     <ClCompile Include="Engine\3D\Camera\CameraManager.cpp" />

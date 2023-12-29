@@ -31,6 +31,9 @@ private:
 		bool isTrue;
 	};
 
+public:
+	static const int8_t DIGIT_ = 10;
+
 private:
 	NumImage numImages_[6];
 	//余り

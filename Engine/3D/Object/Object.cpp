@@ -150,7 +150,7 @@ void Object::DrawModelInternal(int32_t pipelineNum)
 	bool isShadow = true;
 
 	//ラムダ式でコマンド関数
-	std::function<void()>SetRootPipeRM = [=]() {IObject::SetRootPipe(pipelineSetM_, pipelineNum, pipelineSetM_[pipelineNum].rootSignature.Get()); };
+	std::function<void()>SetRootPipeRM = [=]() {IObject::SetRootPipe(pipelineSetM_[pipelineNum]); };
 	std::function<void()>SetMaterialTexM = [=]() {
 		//行列
 		cbt_.DrawCommand(MATRIX);
@@ -226,8 +226,7 @@ void Object::DrawUpdate(int32_t indexNum, int32_t pipelineNum, uint64_t textureH
 	IObject3D::MatMap(lCamera, lLightCamera, model);
 
 	//ラムダ式でプリミティブのコマンド関数
-	std::function<void()>SetRootPipeR = [=]() {SetRootPipe(primitivePipeLineSet_, pipelineNum,
-		primitivePipeLineSet_[pipelineNum].rootSignature.Get()); };
+	std::function<void()>SetRootPipeR = [=]() {SetRootPipe(primitivePipeLineSet_[pipelineNum]); };
 	std::function<void()>SetMaterialTex = NULL;
 
 	//シャドウマップ用の前描画では必要ない

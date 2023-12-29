@@ -84,7 +84,7 @@ void ObjectFBX::DrawModelInternal(int32_t pipelineNum)
 
 	//モデル用
 	//ラムダ式でコマンド関数(ボーン行列もセット)
-	std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(pipelineSetM_, pipelineNum, pipelineSetM_[pipelineNum].rootSignature.Get()); };
+	std::function<void()>SetRootPipeRM = [=]() {SetRootPipe(pipelineSetM_[pipelineNum]); };
 	std::function<void()>SetMaterialTexM = [=]() {
 
 		DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(SKIN, constBuffSkin_->GetGPUVirtualAddress());

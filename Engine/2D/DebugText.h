@@ -20,6 +20,22 @@ private://エイリアス
 
 public:
 	static const int32_t S_INVALID_TMP_ = 114514;
+	static const int32_t S_FONT_INDEX_OFFSET_ = -32;
+	static const int32_t S_JUDGE_CHARACTER_ = 0x7f;
+	const float UV_TOP_OFFSET_ = -0.003f;
+	static const int32_t S_PRINT_NUMS_NUM_ = 6;
+	static const int32_t S_PRINT_FLOAT_NUMS_NUM_ = 13;
+	//一段飛ばしたときの数
+	static const int32_t S_STEP_LENGTH_ = 16;
+	//桁ごとの数字を得るための
+	static const int32_t S_FLOAT_DIGIT_RATE_ = 1000000;
+	static const int32_t S_DIGIT_RATE_1_ = 100000;
+	static const int32_t S_DIGIT_RATE_2_ = 10000;
+	static const int32_t S_DIGIT_RATE_3_ = 1000;
+	static const int32_t S_DIGIT_RATE_4_ = 100;
+	static const int32_t S_DIGIT_RATE_5_ = 10;
+	//小数点
+	static const int32_t DECIMAL_POINT_ = -2;
 
 private:
 	static const int32_t S_MAX_CHAR_COUNT_ = 256;

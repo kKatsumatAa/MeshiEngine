@@ -11,6 +11,13 @@
 //2D用のカメラ
 class Camera2D
 {
+public:
+	const float VISIABLE_AREA_SUB_RATE_ = 0.5f;
+	const float START_ZOOM_RATE_ = 0.5f;
+	const float ZOOM_TIMER_RATIO_MAX_ = 1.0f;
+	const float FOLLOW_RATIO_RATE_ = 1.0f / 9.0f;
+	const float FOLLOW_RATIO_MAX_ = 1.0f;
+
 private:
 	//位置
 	Vec2 pos_ = { WindowsApp::WINDOW_WIDTH_ / 2.0f,WindowsApp::WINDOW_HEIGHT_ / 2.0f };

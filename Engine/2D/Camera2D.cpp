@@ -1,4 +1,4 @@
-﻿#include "Camera2D.h"
+#include "Camera2D.h"
 #include "Util.h"
 
 using namespace DirectX;
@@ -25,8 +25,8 @@ void Camera2D::Update()
 
 void Camera2D::VisiableUpdate()
 {
-	visiableArea_.x = pos_.x - visiableArea_.z / 2.0f;
-	visiableArea_.y = pos_.y - visiableArea_.w / 2.0f;
+	visiableArea_.x = pos_.x - visiableArea_.z * VISIABLE_AREA_SUB_RATE_;
+	visiableArea_.y = pos_.y - visiableArea_.w * VISIABLE_AREA_SUB_RATE_;
 }
 
 void Camera2D::MatrixUpdate()
@@ -50,7 +50,7 @@ void Camera2D::FollowUpdate()
 		float length = fabsf((pos_ - oldPos_).GetLength());
 		Vec2 dir = (pos_ - oldPos_).GetNormalize();
 
-		followT_ = min(followT_ + length / followLengthMax_ / 9.0f, 1.0f);
+		followT_ = min(followT_ + length / followLengthMax_ * FOLLOW_RATIO_RATE_, FOLLOW_RATIO_MAX_);
 
 		Vec2 offset = LerpVec2({ 0,0 }, dir * followLengthMax_, EaseIn(followT_));
 
@@ -64,7 +64,6 @@ void Camera2D::FollowUpdate()
 			pos_ = oldPos_ + offset;
 		}
 		oldPos_ = pos_;
-		//followT_ += 1.0f / 10.0f;
 	}
 }
 
@@ -72,13 +71,13 @@ void Camera2D::ZoomUpdate()
 {
 	if (isZoom_)
 	{
-		float t = min((float)zoomTimer_ / (float)zoomTimerMax_, 1.0f);
+		float t = min((float)zoomTimer_ / (float)zoomTimerMax_, ZOOM_TIMER_RATIO_MAX_);
 
 		float lerpZoom = LerpVec2({ startZoomP_,0 }, { endZoomP_,0 }, EaseIn(t)).x;
 
 		zoom_ = { lerpZoom ,lerpZoom };
 
-		if (t >= 1.0f)
+		if (t >= ZOOM_TIMER_RATIO_MAX_)
 		{
 			isZoom_ = false;
 		}
@@ -114,7 +113,7 @@ void Camera2D::EndFollow()
 //-----------------------------------------------------------
 void Camera2D::BeginZoom(float endZoomPow, int32_t time)
 {
-	startZoomP_ = (zoom_.x + zoom_.y) / 2.0f;
+	startZoomP_ = (zoom_.x + zoom_.y) * START_ZOOM_RATE_;
 	endZoomP_ = endZoomPow;
 	zoomTimerMax_ = time;
 	zoomTimer_ = 0;

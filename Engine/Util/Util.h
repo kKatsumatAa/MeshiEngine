@@ -150,6 +150,13 @@ Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot);
 //フォルダ系
 bool GetFileNames(std::string folderPath, std::vector<std::string>& file_names);
 
+//-----------------------------------------------------------------------
+//配列のサイズを-1して返す
+template <typename T, std::size_t N>
+constexpr std::size_t ArraySizeMinusOne(const T(&arr)[N]) noexcept {
+	return _countof(arr) - 1;
+}
+
 //--------------------------------------------------------------------------------------------------
 //XMFLOAT4同士の足し算
 const DirectX::XMFLOAT4 operator+(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs);
