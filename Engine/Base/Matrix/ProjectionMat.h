@@ -17,6 +17,11 @@ private://エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
+	const float NEAR_POS_ = 0.1f;
+	const float FAR_POS_ = 10000.0f;
+	const float FOV_Y_ANGLE_ = 45.0f;
+
+public:
 	XMMATRIX matProjection_;
 	float nearPos_;
 	float farPos_;

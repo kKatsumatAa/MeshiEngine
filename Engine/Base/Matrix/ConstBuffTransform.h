@@ -32,6 +32,12 @@ private:
 		float pad;
 	};
 
+public:
+	const int8_t S_RESOURCE_DESC_HEIGHT_ = 1;
+	const int8_t S_DEPTH_ARRAY_SIZE_ = 1;
+	const int8_t S_MIP_LEVELS_ = 1;
+	const int8_t S_SAMPLE_DESC_COUNT_ = 1;
+
 private://描画用
 	//バッファ
 	ComPtr<ID3D12Resource> constBuffTransform_;

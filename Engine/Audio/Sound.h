@@ -20,6 +20,13 @@ private:
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 public:
+	const std::string RIFF_STR_ = "RIFF";
+	const std::string WAVE_STR_ = "WAVE";
+	const std::string FMT_STR_ = "fmt ";
+	const std::string JUNK_STR_ = "JUNK";
+	const std::string DATA_STR_ = "data";
+
+public:
 	//音
 	static IXAudio2MasteringVoice* sMasterVoice_;
 	//音

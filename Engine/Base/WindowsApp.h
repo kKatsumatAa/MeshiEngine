@@ -26,6 +26,9 @@ public:
 	static const float WINDOW_WIDTH_;
 	static const float WINDOW_HEIGHT_;
 
+	const float DEPTH_MAX_ = 1.0f;
+
+private:
 	// ビューポート設定コマンド
 	D3D12_VIEWPORT viewport_;
 
@@ -58,9 +61,12 @@ public:
 		UnregisterClass(wndclassEX_.lpszClassName, wndclassEX_.hInstance);
 	}
 
+public:
 	//WNDCLASSEXを取得
 	const WNDCLASSEX& GetWndclassEX() { return wndclassEX_; }
 	//hwnd取得
 	const HWND& Gethwnd() { return hwnd_; }
+	//ビューポート
+	D3D12_VIEWPORT* GetViewport() { return &viewport_; }
 };
 

@@ -143,16 +143,16 @@ void DirectXWrapper::InitializeDepthBuffer()
 		depthResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 		depthResourceDesc.Width = (uint16_t)WindowsApp::GetInstance().WINDOW_WIDTH_;//レンダーターゲットに合わせる
 		depthResourceDesc.Height = (uint32_t)WindowsApp::GetInstance().WINDOW_HEIGHT_;//レンダーターゲットに合わせる
-		depthResourceDesc.DepthOrArraySize = 1;
+		depthResourceDesc.DepthOrArraySize = S_DEPTH_BUFF_ARRAY_SIZE_;
 		depthResourceDesc.Format = DXGI_FORMAT_R32_TYPELESS;//深度値フォーマット(バッファーとしてのビット数は32だがビット数以外の扱いは最終的に決められる)
-		depthResourceDesc.SampleDesc.Count = 1;
+		depthResourceDesc.SampleDesc.Count = S_DEPTH_BUFF_SAMPLE_COUNT_;
 		depthResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;//デプスステンシル
 		//深度値ヒーププロパティ
 		D3D12_HEAP_PROPERTIES depthHeapProp{};
 		depthHeapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
 		//深度値クリア設定
 		D3D12_CLEAR_VALUE depthClearValue{};
-		depthClearValue.DepthStencil.Depth = 1.0f;//深度値1.0f(最大値)でクリア
+		depthClearValue.DepthStencil.Depth = DEPTH_RATIO_MAX_;//深度値1.0f(最大値)でクリア
 		depthClearValue.Format = DXGI_FORMAT_D32_FLOAT;//深度値フォーマット
 		//リソース生成
 		result_ = device_->CreateCommittedResource(
@@ -178,7 +178,7 @@ void DirectXWrapper::InitializeDepthBuffer()
 
 	//深度ビュー用デスクリプタヒープ作成------------------------------------
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
-	dsvHeapDesc.NumDescriptors = 2;//深度ビューは2つ
+	dsvHeapDesc.NumDescriptors = S_DEPTH_VIEW_NUM_;//深度ビューは2つ
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;//デプスステンシルビュー
 	result_ = device_->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(dsvHeap_.GetAddressOf()));
 	assert(SUCCEEDED(result_));
@@ -224,9 +224,9 @@ void DirectXWrapper::InitializeFixFPS()
 void DirectXWrapper::UpdateFixFPS()
 {
 	//1/60(s)ぴったりの時間
-	const std::chrono::microseconds MIN_TIME(uint64_t(1000000.0f / 60.0f));
+	const std::chrono::microseconds MIN_TIME(uint64_t(MILLION_ / FPS_));
 	//1/60(s)よりわずかに短い時間
-	const std::chrono::microseconds MIN_CHECK_TIME(uint64_t(1000000.0f / 65.0f));
+	const std::chrono::microseconds MIN_CHECK_TIME(uint64_t(MILLION_ / FPS_ADD_LITTLE_));
 
 	//現在時間を取得
 	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
@@ -402,7 +402,7 @@ void DirectXWrapper::PreShadowDraw()
 	//毎フレーム深度バッファの値が描画範囲で最も奥(1.0)にリセットされる
 
 	// ビューポート設定コマンドを、コマンドリストに積む
-	commandList_->RSSetViewports(1, &WindowsApp::GetInstance().viewport_);
+	commandList_->RSSetViewports(1, WindowsApp::GetInstance().GetViewport());
 
 	// シザー矩形
 	D3D12_RECT scissorRect{};
@@ -448,7 +448,7 @@ void DirectXWrapper::PreDraw()
 	commandList_->ClearRenderTargetView(rtvHandle_, clearColor_, 0, nullptr);
 
 	// ビューポート設定コマンドを、コマンドリストに積む
-	commandList_->RSSetViewports(1, &WindowsApp::GetInstance().viewport_);
+	commandList_->RSSetViewports(1, WindowsApp::GetInstance().GetViewport());
 
 	// シザー矩形
 	D3D12_RECT scissorRect{};
@@ -507,9 +507,9 @@ void DirectXWrapper::ResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RE
 	commandList_->ResourceBarrier(1, &barrierDesc);
 }
 
-void DirectXWrapper::SetClearColor(float clearColor[4])
+void DirectXWrapper::SetClearColor(float clearColor[S_CLEAR_COLOR_NUM_])
 {
-	for (int32_t i = 0; i < 4; i++)
+	for (int32_t i = 0; i < S_CLEAR_COLOR_NUM_; i++)
 	{
 		clearColor_[i] = clearColor[i];
 	}
@@ -519,7 +519,7 @@ void LoadPictureFromFile(const char* fileName, ComPtr<ID3D12Resource>& texBuff)
 {
 	HRESULT result = {};
 
-	wchar_t fileNameL[128];
+	wchar_t fileNameL[Constant::S_TRANS_W_CHAR_SIZE_];
 	ConstCharToWcharT(fileName, fileNameL);
 
 	// 04_03
@@ -666,10 +666,10 @@ void ResourceProperties(D3D12_RESOURCE_DESC& resDesc, uint32_t size)
 {
 	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 	resDesc.Width = size;						//頂点データ全体のサイズ
-	resDesc.Height = 1;
-	resDesc.DepthOrArraySize = 1;
-	resDesc.MipLevels = 1;
-	resDesc.SampleDesc.Count = 1;
+	resDesc.Height = DirectXWrapper::S_DEFAULT_RESOURCE_HEIGHT_;
+	resDesc.DepthOrArraySize = DirectXWrapper::S_DEFAULT_DEPTH_ARRAY_SIZE_;
+	resDesc.MipLevels = DirectXWrapper::S_DEFAULT_MIP_LEVELS_;
+	resDesc.SampleDesc.Count = DirectXWrapper::S_DEFAULT_SAMPLE_COUNT_;
 	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 }
 

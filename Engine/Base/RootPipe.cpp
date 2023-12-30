@@ -8,7 +8,7 @@ void RootPipe::CreateBlob(const char* vsName, const char* psName, const char* gs
 {
 	HRESULT result = {};
 
-	wchar_t vsNameL[128];
+	wchar_t vsNameL[Constant::S_TRANS_W_CHAR_SIZE_];
 	ConstCharToWcharT(vsName, vsNameL);
 
 	// 頂点シェーダの読み込みとコンパイル
@@ -37,7 +37,7 @@ void RootPipe::CreateBlob(const char* vsName, const char* psName, const char* gs
 	// ピクセルシェーダの読み込みとコンパイル
 	if (strlen(psName))
 	{
-		wchar_t psNameL[128];
+		wchar_t psNameL[Constant::S_TRANS_W_CHAR_SIZE_];
 		ConstCharToWcharT(psName, psNameL);
 		result = D3DCompileFromFile(
 			psNameL,	// シェーダファイル名
@@ -65,7 +65,7 @@ void RootPipe::CreateBlob(const char* vsName, const char* psName, const char* gs
 	//ジオメトリシェーダは基本読み込まない
 	if (gsName != nullptr && strlen(gsName))
 	{
-		wchar_t gsNameL[128];
+		wchar_t gsNameL[Constant::S_TRANS_W_CHAR_SIZE_];
 		ConstCharToWcharT(gsName, gsNameL);
 
 		// ジオメトリシェーダの読み込みとコンパイル
@@ -95,7 +95,7 @@ void RootPipe::CreateBlob(const char* vsName, const char* psName, const char* gs
 	//ハルシェーダは基本読み込まない
 	if (hsName != nullptr && strlen(hsName))
 	{
-		wchar_t hsNameL[128];
+		wchar_t hsNameL[Constant::S_TRANS_W_CHAR_SIZE_];
 		ConstCharToWcharT(hsName, hsNameL);
 
 		// ジオメトリシェーダの読み込みとコンパイル
@@ -125,7 +125,7 @@ void RootPipe::CreateBlob(const char* vsName, const char* psName, const char* gs
 	//ドメインシェーダは基本読み込まない
 	if (dsName != nullptr && strlen(dsName))
 	{
-		wchar_t dsNameL[128];
+		wchar_t dsNameL[Constant::S_TRANS_W_CHAR_SIZE_];
 		ConstCharToWcharT(dsName, dsNameL);
 
 		// ジオメトリシェーダの読み込みとコンパイル

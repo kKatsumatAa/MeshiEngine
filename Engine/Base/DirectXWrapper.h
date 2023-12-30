@@ -18,12 +18,27 @@ private://エイリアス
 public:
 	static const int32_t S_BUFFER_ALIGNMENT_ = 0xff;
 
-private:
-	const uint64_t SHADOW_DIFINITION_ = 1280;
-	bool isFirstFrame_ = true;
+	static const int8_t S_DEPTH_VIEW_NUM_ = 2;
+	static const int8_t S_DEPTH_BUFF_ARRAY_SIZE_ = 1;
+	static const int8_t S_DEPTH_BUFF_SAMPLE_COUNT_ = 1;
+	const float DEPTH_RATIO_MAX_ = 1.0f;
 
+	const uint64_t SHADOW_DIFINITION_ = 1280;
+
+	static const int8_t S_CLEAR_COLOR_NUM_ = 4;
+public:
+	static const int8_t S_DEFAULT_RESOURCE_HEIGHT_ = 1;
+	static const int8_t S_DEFAULT_DEPTH_ARRAY_SIZE_ = 1;
+	static const int8_t S_DEFAULT_MIP_LEVELS_ = 1;
+	static const int8_t S_DEFAULT_SAMPLE_COUNT_ = 1;
 public:
 	const float FPS_ = 60.0f;
+	const float FPS_ADD_LITTLE_ = 65.0f;
+	const float MILLION_ = 1000000.0f;
+
+
+private:
+	bool isFirstFrame_ = true;
 
 private:
 	//成果物系
@@ -67,7 +82,7 @@ private:
 	//記録時間（FPS固定
 	std::chrono::steady_clock::time_point reference_;
 
-	float clearColor_[4] = { 0,0,0,0 };
+	float clearColor_[S_CLEAR_COLOR_NUM_] = { 0,0,0,0 };
 
 	//
 	HRESULT result_;
@@ -173,7 +188,7 @@ public:
 	size_t GetBackBufferCount() const { return backBuffers_.size(); }
 
 	//クリアカラーセット
-	void SetClearColor(float clearColor[4]);
+	void SetClearColor(float clearColor[S_CLEAR_COLOR_NUM_]);
 };
 //画像のロード（引数にバッファ設定）
 void LoadPictureFromFile(const char* fileName, Microsoft::WRL::ComPtr<ID3D12Resource>& texBuff);

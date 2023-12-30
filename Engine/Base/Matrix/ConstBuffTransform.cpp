@@ -16,10 +16,10 @@ void ConstBuffTransform::Initialize()
 
 		cbResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 		cbResourceDesc.Width = (sizeof(ConstBufferDataTransform) + DirectXWrapper::S_BUFFER_ALIGNMENT_) & ~DirectXWrapper::S_BUFFER_ALIGNMENT_/*256バイトアライメント*/;
-		cbResourceDesc.Height = 1;
-		cbResourceDesc.DepthOrArraySize = 1;
-		cbResourceDesc.MipLevels = 1;
-		cbResourceDesc.SampleDesc.Count = 1;
+		cbResourceDesc.Height = S_RESOURCE_DESC_HEIGHT_;
+		cbResourceDesc.DepthOrArraySize = S_DEPTH_ARRAY_SIZE_;
+		cbResourceDesc.MipLevels = S_MIP_LEVELS_;
+		cbResourceDesc.SampleDesc.Count = S_SAMPLE_DESC_COUNT_;
 		cbResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 		result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(

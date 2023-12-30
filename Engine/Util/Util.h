@@ -21,6 +21,11 @@ namespace Constant
 	static const float TWICE = 2.0f;
 	//1.0f
 	static const float RATE_MAX_ = 1.0f;
+	//変換するwchar_tの要素数
+	static const uint8_t S_TRANS_W_CHAR_SIZE_ = 128;
+	static const Vec3 AXIS_X_ = { 1.0f,0,0 };
+	static const Vec3 AXIS_Y_ = { 0,1.0f,0 };
+	static const Vec3 AXIS_Z_ = { 0,0,1.0f };
 }
 
 //自作
@@ -114,10 +119,10 @@ int32_t AligmentSize(int32_t size, int32_t aligment);
 //-----------------------------------------------------------
 //文字変換系
 //char* を const wchar_t* に変換
-void ConstCharToWcharT(const char* string, wchar_t(&wString)[128]);
+void ConstCharToWcharT(const char* string, wchar_t(&wString)[Constant::S_TRANS_W_CHAR_SIZE_]);
 
 //const wchar_t* を char* に変換
-void ConstWCharTToChar(const wchar_t* wString, char(&string)[128]);
+void ConstWCharTToChar(const wchar_t* wString, char(&string)[Constant::S_TRANS_W_CHAR_SIZE_]);
 
 //文字列からfindChar以外を抜き取る(その文字から後ろのみ)
 std::string MySubstr(const std::string& str, char findChar);

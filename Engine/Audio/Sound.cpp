@@ -16,7 +16,7 @@ Sound::Sound()
 
 Sound::~Sound()
 {
-	//delete sMasterVoice_;
+	sMasterVoice_->DestroyVoice();
 
 	sXAudio2_.Reset();
 
@@ -68,12 +68,12 @@ void Sound::LoadWave(const std::string& filename, bool isConvert)
 	RiffHeader riff;
 	file.read((char*)&riff, sizeof(riff));
 	//fileがRiffかチェック(先頭四文字をチェック)
-	if (strncmp(riff.chunk.id, "RIFF", 4) != 0)
+	if (strncmp(riff.chunk.id, RIFF_STR_.c_str(), RIFF_STR_.size()) != 0)
 	{
 		assert(false);
 	}
 	//タイプがWAVEかチェック
-	if (strncmp(riff.type, "WAVE", 4) != 0)
+	if (strncmp(riff.type, WAVE_STR_.c_str(), WAVE_STR_.size()) != 0)
 	{
 		assert(false);
 	}
@@ -84,7 +84,7 @@ void Sound::LoadWave(const std::string& filename, bool isConvert)
 	FormatChunk format = {};
 	//チャンクヘッダーの確認
 	file.read((char*)&format, sizeof(ChunkHeader));
-	if (strncmp(format.chunk.id, "fmt ", 4) != 0)//"fmt "最後半角スペース！！！
+	if (strncmp(format.chunk.id, FMT_STR_.c_str(), FMT_STR_.size()) != 0)//"fmt "最後半角スペース！！！
 	{
 		assert(false);
 	}
@@ -113,7 +113,7 @@ void Sound::LoadWave(const std::string& filename, bool isConvert)
 	ChunkHeader data;
 	file.read((char*)&data, sizeof(data));
 	//junkチャンクを検出したら
-	if ((strncmp(data.id, "JUNK", 4) > 0) != isConvert)//引数によって変えられる
+	if ((strncmp(data.id, JUNK_STR_.c_str(), JUNK_STR_.size()) > 0) != isConvert)//引数によって変えられる
 	{
 		//junkチャンクの最後まで読み飛ばす(読み取りヘッドを動かす)
 		file.seekg(data.size, std::ios_base::cur);
@@ -121,7 +121,7 @@ void Sound::LoadWave(const std::string& filename, bool isConvert)
 		file.read((char*)&data, sizeof(data));
 	}
 	//本物のデータチャンク
-	if (strncmp(data.id, "data", 4 != 0))
+	if (strncmp(data.id, DATA_STR_.c_str(), DATA_STR_.size() != 0))
 	{
 		assert(false);
 	}
@@ -149,7 +149,6 @@ void Sound::UnLoad(SoundData* soundData)
 	//バッファのメモリ開放
 	soundData->pBuffer.clear();
 
-	//soundData->pBuffer = 0;
 	soundData->bufferSize = 0;
 	soundData->wfex = {};
 }

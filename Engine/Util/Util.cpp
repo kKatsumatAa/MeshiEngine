@@ -242,8 +242,8 @@ Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 		0,-WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f,0,0,
 		0,0,1,0,
 
-		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f + WindowsApp::GetInstance().viewport_.TopLeftX
-		,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f + WindowsApp::GetInstance().viewport_.TopLeftY,0,1
+		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f + WindowsApp::GetInstance().GetViewport()->TopLeftX
+		,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f + WindowsApp::GetInstance().GetViewport()->TopLeftY,0,1
 	};
 
 	XMMATRIX mVPVp = view * projection * viewPort;
@@ -266,8 +266,8 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 		0,-WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f,0,0,
 		0,0,1,0,
 
-		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f + WindowsApp::GetInstance().viewport_.TopLeftX
-		,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f + WindowsApp::GetInstance().viewport_.TopLeftY,0,1
+		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f + WindowsApp::GetInstance().GetViewport()->TopLeftX
+		,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f + WindowsApp::GetInstance().GetViewport()->TopLeftY,0,1
 	};
 
 	//合成行列
@@ -306,8 +306,8 @@ void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, 
 		0,-WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f,0,0,
 		0,0,1,0,
 
-		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f + WindowsApp::GetInstance().viewport_.TopLeftX
-		,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f + WindowsApp::GetInstance().viewport_.TopLeftY,0,1
+		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f + WindowsApp::GetInstance().GetViewport()->TopLeftX
+		,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f + WindowsApp::GetInstance().GetViewport()->TopLeftY,0,1
 	};
 
 	//合成行列
@@ -347,13 +347,13 @@ int32_t AligmentSize(int32_t size, int32_t aligment)
 	return size + aligment - size % aligment;
 }
 
-void ConstCharToWcharT(const char* string, wchar_t(&wString)[128])
+void ConstCharToWcharT(const char* string, wchar_t(&wString)[Constant::S_TRANS_W_CHAR_SIZE_])
 {
 	size_t size = _countof(wString);
 	mbstowcs_s(&size, wString, string, size);
 }
 
-void ConstWCharTToChar(const wchar_t* wString, char(&string)[128])
+void ConstWCharTToChar(const wchar_t* wString, char(&string)[Constant::S_TRANS_W_CHAR_SIZE_])
 {
 	size_t size = _countof(string);
 	wcstombs_s(&size, string, wString, size);

@@ -17,6 +17,11 @@ private://エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
+	const Vec3 EYE_ = { 0,0,-100.0f };
+	const Vec3 TARGET_ = { 0,0,0 };
+	const Vec3 UP_ = { 0,1.0f,0 };
+
+public:
 	XMMATRIX matView_;
 	Vec3 eye_;
 	Vec3 target_;

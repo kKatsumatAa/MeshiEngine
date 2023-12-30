@@ -7,7 +7,7 @@ using namespace DirectX;
 
 //ルートパラメータの設定
 D3D12_ROOT_PARAMETER IObject::rootParams_[RootParamNum::count] = {};
-D3D12_DESCRIPTOR_RANGE IObject::effectDescRange_[4] = {};
+D3D12_DESCRIPTOR_RANGE IObject::effectDescRange_[S_EFFECT_DESC_RANGE_NUM_] = {};
 
 //--------------------------------------------------------------------
 IObject::~IObject()
@@ -42,7 +42,7 @@ IObject::IObject()
 	assert(SUCCEEDED(result));
 
 	//色初期化
-	constMapMaterial_->color = { 1.0f,1.0f,1.0f,1.0f };
+	constMapMaterial_->color = INIT_COLOR_;
 
 	//アフィン
 	worldMat_ = std::make_unique<WorldMat>();
@@ -95,34 +95,18 @@ void IObject::CommonInitialize()
 	rootParams_[SKIN].Descriptor.ShaderRegister = 6;//定数バッファ番号(b6)
 	rootParams_[SKIN].Descriptor.RegisterSpace = 0;//デフォルト値
 	rootParams_[SKIN].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//テクスチャレジスタ1番（ディゾルブ用テクスチャ）
-	rootParams_[DISSOLVE].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	effectDescRange_[0] = *TextureManager::GetDescRange();//デスクリプタレンジ
-	effectDescRange_[0].BaseShaderRegister++;
-	rootParams_[DISSOLVE].DescriptorTable.pDescriptorRanges = &effectDescRange_[0];//デスクリプタレンジ
-	rootParams_[DISSOLVE].DescriptorTable.NumDescriptorRanges = 1;//〃数
-	rootParams_[DISSOLVE].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//テクスチャレジスタ2番（スペキュラマップ用テクスチャ）
-	rootParams_[SPECULAR_MAP].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	effectDescRange_[1] = *TextureManager::GetDescRange();//デスクリプタレンジ
-	effectDescRange_[1].BaseShaderRegister += 2;
-	rootParams_[SPECULAR_MAP].DescriptorTable.pDescriptorRanges = &effectDescRange_[1];//デスクリプタレンジ
-	rootParams_[SPECULAR_MAP].DescriptorTable.NumDescriptorRanges = 1;//〃数
-	rootParams_[SPECULAR_MAP].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//テクスチャレジスタ3番（ノーマルマップ用テクスチャ）
-	rootParams_[NORM_MAP].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	effectDescRange_[2] = *TextureManager::GetDescRange();//デスクリプタレンジ
-	effectDescRange_[2].BaseShaderRegister += 3;
-	rootParams_[NORM_MAP].DescriptorTable.pDescriptorRanges = &effectDescRange_[2];//デスクリプタレンジ
-	rootParams_[NORM_MAP].DescriptorTable.NumDescriptorRanges = 1;//〃数
-	rootParams_[NORM_MAP].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
-	//シャドウマップテクスチャ
-	rootParams_[SHADOW_TEX].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
-	effectDescRange_[3] = *TextureManager::GetDescRange();//デスクリプタレンジ
-	effectDescRange_[3].BaseShaderRegister += 4;
-	rootParams_[SHADOW_TEX].DescriptorTable.pDescriptorRanges = &effectDescRange_[3];//デスクリプタレンジ
-	rootParams_[SHADOW_TEX].DescriptorTable.NumDescriptorRanges = 1;//〃数
-	rootParams_[SHADOW_TEX].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	//ディゾルブ～シャドウマップテクスチャ
+	for (int8_t i = 0; i < (SHADOW_TEX - DISSOLVE + 1); i++)
+	{
+		int8_t index = DISSOLVE + i;
+		//ディゾルブ～シャドウマップテクスチャのバッファ
+		rootParams_[index].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//デスクリプタ
+		effectDescRange_[i] = *TextureManager::GetDescRange();//デスクリプタレンジ
+		effectDescRange_[i].BaseShaderRegister += (i + 1);
+		rootParams_[index].DescriptorTable.pDescriptorRanges = &effectDescRange_[i];//デスクリプタレンジ
+		rootParams_[index].DescriptorTable.NumDescriptorRanges = 1;//〃数
+		rootParams_[index].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
+	}
 	//定数バッファ7番（メッシュ分割のウェーブ用）
 	rootParams_[TESS_WAVE].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
 	rootParams_[TESS_WAVE].Descriptor.ShaderRegister = 7;//定数バッファ番号(b7)
@@ -332,7 +316,7 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 	// その他の設定
 	pipelineDesc.NumRenderTargets = numRTarget; // 描画対象は基本3つ（ポストエフェクトの一枚目の3つ）
 	//レンダーターゲットの数によって設定変えるため
-	for (int32_t i = 0; i < 3; i++)
+	for (int32_t i = 0; i < S_RENDER_TARGET_NUM_; i++)
 	{
 		if (numRTarget > 0)
 		{
@@ -343,11 +327,12 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 			pipelineDesc.RTVFormats[i] = DXGI_FORMAT_UNKNOWN;//レンダーターゲット必要なし
 		}
 	}
-	pipelineDesc.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
+
+	pipelineDesc.SampleDesc.Count = S_SAMPLE_DESC_COUNT_; // 1ピクセルにつき1回サンプリング
 
 	//04_02
 	//テクスチャサンプラーの設定
-	D3D12_STATIC_SAMPLER_DESC samplerDesc[2] = {};
+	D3D12_STATIC_SAMPLER_DESC samplerDesc[S_TEX_SAMPLER_NUM_] = {};
 	//通常テクスチャの設定
 	samplerDesc[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  //横繰り返し（タイリング）
 	samplerDesc[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  //縦繰り返し（タイリング）
@@ -366,9 +351,8 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 	//<=だったらtrue(1.0f),それ以外は0.0f
 	samplerDesc[1].ComparisonFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 	samplerDesc[1].Filter = D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;    //比較結果をバイリニア補間
-	samplerDesc[1].MaxAnisotropy = 1;    //深度傾斜を有効
-	samplerDesc[1].ShaderRegister = 1;
-	//samplerDesc[1].MipLODBias = 0.0f;
+	samplerDesc[1].MaxAnisotropy = S_SAMPLER_DESC_MAX_ANISOROPY_;    //深度傾斜を有効
+	samplerDesc[1].ShaderRegister = S_SAMPLER_DESC_SHADER_REGISTER_;
 	samplerDesc[1].MinLOD = -D3D12_FLOAT32_MAX;
 
 	// ルートシグネチャの設定
@@ -377,7 +361,7 @@ void IObject::PipeLineSetting(const D3D12_FILL_MODE& fillMode, RootPipe& rootPip
 	rootSignatureDesc.pParameters = rootParams_;//ルートパラメータの先頭アドレス
 	rootSignatureDesc.NumParameters = _countof(rootParams_);//ルートパラメータ数
 	rootSignatureDesc.pStaticSamplers = samplerDesc;
-	rootSignatureDesc.NumStaticSamplers = 2;
+	rootSignatureDesc.NumStaticSamplers = _countof(samplerDesc);
 	// ルートシグネチャのシリアライズ
 	ComPtr<ID3DBlob> rootSigBlob = nullptr;
 	result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,

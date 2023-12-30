@@ -12,7 +12,7 @@ ViewMat::ViewMat(float eyeX, float eyeY, float eyeZ,
 }
 
 ViewMat::ViewMat():
-	eye_({ 0,0,-100.0f }), target_({ 0,0,0 }), up_({ 0,1.f,0 })
+	eye_(EYE_), target_(TARGET_), up_(UP_)
 {
 	CalcMat();
 }

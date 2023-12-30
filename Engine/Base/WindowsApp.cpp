@@ -1,4 +1,4 @@
-﻿#include "WindowsApp.h"
+#include "WindowsApp.h"
 #include<imgui_impl_win32.h>
 
 #pragma comment(lib,"winmm.lib")
@@ -74,7 +74,7 @@ WindowsApp::WindowsApp()
 	//ウインドウを表示状態にする
 	ShowWindow(hwnd_, SW_SHOW);
 
-	viewport_ = { 0, 0, WINDOW_WIDTH_, WINDOW_HEIGHT_, 0.0f, 1.0f };
+	viewport_ = { 0, 0, WINDOW_WIDTH_, WINDOW_HEIGHT_, 0.0f, DEPTH_MAX_ };
 }
 
 WindowsApp& WindowsApp::GetInstance()

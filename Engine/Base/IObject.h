@@ -66,9 +66,22 @@ public:
 		THREE_D
 	};
 
+public:
+	//4つの頂点
+	static const int8_t S_VERTEX_4_ = 4;
+	//描画先のレンダーターゲット数
+	static const int8_t S_RENDER_TARGET_NUM_ = 3;
+	static const int8_t S_EFFECT_DESC_RANGE_NUM_ = 4;
+	static const int8_t S_TEX_SAMPLER_NUM_ = 2;
+	static const int8_t S_SAMPLER_DESC_MAX_ANISOROPY_ = 1;
+	static const int8_t S_SAMPLER_DESC_SHADER_REGISTER_ = 1;
+	static const int8_t S_SAMPLE_DESC_COUNT_ = 1;
+
+	const Vec4 INIT_COLOR_ = { 1.0f,1.0f,1.0f,1.0f };
+
 private:
 	//演出用デスクリプタレンジ
-	static D3D12_DESCRIPTOR_RANGE effectDescRange_[4];
+	static D3D12_DESCRIPTOR_RANGE effectDescRange_[S_EFFECT_DESC_RANGE_NUM_];
 
 protected://継承先まで公開
 	//定数バッファの生成
@@ -77,17 +90,9 @@ protected://継承先まで公開
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial_ = nullptr;
 
-public:
-	//描画先のレンダーターゲット数
-	static const int32_t S_RENDER_TARGET_NUM_ = 3;
-
 protected:
 	//ルートパラメータの設定
 	static D3D12_ROOT_PARAMETER rootParams_[RootParamNum::count];
-
-public:
-	//4つの頂点
-	const int8_t VERTEX_4_ = 4;
 
 protected:
 	//ワールド行列用のバッファなど
