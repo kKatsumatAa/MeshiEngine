@@ -214,7 +214,6 @@
     <ClCompile Include="Engine\PostEffect\GausianBuffer.cpp" />
     <ClCompile Include="Engine\PostEffect\PostEffectManager.cpp" />
     <ClCompile Include="Engine\PostEffect\PostPera.cpp" />
-    <ClCompile Include="Engine\Util\Counter.cpp" />
     <ClCompile Include="Engine\Util\Shake.cpp" />
     <ClCompile Include="Engine\Util\Util.cpp" />
     <ClCompile Include="Engine\Util\Wave.cpp" />

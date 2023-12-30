@@ -10,6 +10,11 @@
 //波
 class Wave
 {
+public:
+	const float NORMAL_SPEED_ = 1.0f;
+private:
+	const float TIME_RATIO_MAX_ = 1.0f;
+
 private:
 	Vec3 epicenter_ = { 0,0,0 };//震源地
 	Vec2 thickness_ = { 0,0 };//太さ

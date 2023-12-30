@@ -6,80 +6,91 @@ using namespace DirectX;
 
 void Vec4xM4(Vec4& v, const M4& m4)
 {
-	float v4[2][4] = {
+	const int8_t ANS_INDEX = 1;
+
+	float v4[][M4::S_MAT_WIDTH_] = {
 		{ v.x,v.y,v.z,v.w },
 		{0,0,0,0}
 	};
 
-	for (int32_t i = 0; i < 4; i++)
+	//掛け算
+	for (int32_t i = 0; i < M4::S_MAT_HEIGHT_; i++)
 	{
-		for (int32_t j = 0; j < 4; j++)
+		for (int32_t j = 0; j < M4::S_MAT_WIDTH_; j++)
 		{
-			v4[1][i] += v4[0][j] * (float)m4.m_[j][i];
+			v4[ANS_INDEX][i] += v4[0][j] * (float)m4.m_[j][i];
 		}
 	}
 
-	v = { v4[1][0],v4[1][1] ,v4[1][2] ,v4[1][3] };
+	v = { v4[ANS_INDEX][0],v4[ANS_INDEX][1] ,v4[ANS_INDEX][2] ,v4[ANS_INDEX][3] };
 }
 
 void Vec3xM4(Vec3& v, const M4& m4, bool w)
 {
-	double v4[2][4] = {
+	const int8_t ANS_INDEX = 1;
+
+	double v4[][4] = {
 		{ v.x,v.y,v.z,(double)w },
 		{0,0,0,0}
 	};
 
-	for (int32_t i = 0; i < 4; i++)
+	//掛け算
+	for (int32_t i = 0; i < M4::S_MAT_HEIGHT_; i++)
 	{
-		for (int32_t j = 0; j < 4; j++)
+		for (int32_t j = 0; j < M4::S_MAT_WIDTH_; j++)
 		{
-			v4[1][i] += v4[0][j] * m4.m_[j][i];
+			v4[ANS_INDEX][i] += v4[0][j] * m4.m_[j][i];
 		}
 	}
 
-	v = { (float)v4[1][0],(float)v4[1][1] ,(float)v4[1][2] };
+	v = { (float)v4[ANS_INDEX][0],(float)v4[ANS_INDEX][1] ,(float)v4[ANS_INDEX][2] };
 }
 
 Vec3 GetVec3xM4(const Vec3& v, const M4& m4, bool w)
 {
-	float v4[2][4] = {
+	const int8_t ANS_INDEX = 1;
+
+	float v4[][4] = {
 	{ v.x,v.y,v.z,(float)w },
 	{0,0,0,0}
 	};
 
-	for (int32_t i = 0; i < 4; i++)
+	//掛け算
+	for (int32_t i = 0; i < M4::S_MAT_HEIGHT_; i++)
 	{
-		for (int32_t j = 0; j < 4; j++)
+		for (int32_t j = 0; j < M4::S_MAT_WIDTH_; j++)
 		{
-			v4[1][i] += v4[0][j] * (float)m4.m_[j][i];
+			v4[ANS_INDEX][i] += v4[0][j] * (float)m4.m_[j][i];
 		}
 	}
 
-	return { v4[1][0],v4[1][1] ,v4[1][2] };
+	return { v4[ANS_INDEX][0],v4[ANS_INDEX][1] ,v4[ANS_INDEX][2] };
 }
 
 void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w)
 {
-	float v4[2][4] = {
+	const int8_t ANS_INDEX = 1;
+
+	float v4[][4] = {
 		{ v.x,v.y,v.z,(float)w },
 		{0,0,0,0}
 	};
 
 	//掛け算
-	for (int32_t i = 0; i < 4; i++)
+	for (int32_t i = 0; i < M4::S_MAT_HEIGHT_; i++)
 	{
-		for (int32_t j = 0; j < 4; j++)
+		for (int32_t j = 0; j < M4::S_MAT_WIDTH_; j++)
 		{
-			v4[1][i] += v4[0][j] * (float)m4.m_[j][i];
+			v4[ANS_INDEX][i] += v4[0][j] * (float)m4.m_[j][i];
 		}
 	}
 
-	v = { v4[1][0],v4[1][1] ,v4[1][2] };
+	v = { v4[ANS_INDEX][0],v4[ANS_INDEX][1] ,v4[ANS_INDEX][2] };
 
 	//ある数でベクトルを割る
-	if (w == true && v4[1][3] != 0)
+	if (w == true && v4[ANS_INDEX][3] != 0)
 	{
-		v /= v4[1][3];
+		v /= v4[ANS_INDEX][3];
 	}
 	else if (v.z != 0)
 	{
@@ -94,12 +105,12 @@ void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w)
 
 float AngletoRadi(float angle)
 {
-	return angle * PI / 180;
+	return angle * PI / DEGREE_180;
 }
 
 float RaditoAngle(float radian)
 {
-	return radian / PI * 180;
+	return radian / PI * DEGREE_180;
 }
 
 float GetRadianVec3(const Vec3& v1, const Vec3& v2)
@@ -136,8 +147,18 @@ Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t)
 
 Vec3 SplinePosition(const std::vector<Vec3>& points, int32_t startIndex, float t)
 {
+	const int8_t N_OFFSET = -2;
+	const float WEIGHT_0 = -1.0f;
+	const float WEIGHT_1 = 2.0f;
+	const float WEIGHT_2 = -5.0f;
+	const float WEIGHT_3 = 4.0f;
+	const float WEIGHT_4 = 3.0f;
+
+	const int8_t POW_0 = 2;
+	const int8_t POW_1 = 3;
+
 	//補完すべき点の数
-	size_t n = points.size() - 2;
+	size_t n = points.size() + N_OFFSET;
 
 	if (startIndex > n)return points[n];
 	if (startIndex < 1)return points[1];
@@ -148,12 +169,14 @@ Vec3 SplinePosition(const std::vector<Vec3>& points, int32_t startIndex, float t
 	Vec3 p2 = points[startIndex + 1];
 	Vec3 p3 = points[startIndex + 2];
 
+	const float NORMALIZER = 2.0f;
+
 	//catmull-rom
 	Vec3 position = (
-		2.0f * p1 + (-1.0f * p0 + p2) * t
-		+ (2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3) * powf(t, 2)
-		+ (-1.0f * p0 + 3.0f * p1 - 3.0f * p2 + p3) * powf(t, 3)
-		) / 2.0f;
+		WEIGHT_1 * p1 + (WEIGHT_0 * p0 + p2) * t
+		+ (WEIGHT_1 * p0 + WEIGHT_2 * p1 + WEIGHT_3 * p2 - p3) * powf(t, POW_0)
+		+ (WEIGHT_0 * p0 + WEIGHT_4 * p1 - WEIGHT_4 * p2 + p3) * powf(t, POW_1)
+		) / NORMALIZER;
 
 	return position;
 }
@@ -162,22 +185,24 @@ Vec3 SplinePosition(const std::vector<Vec3>& points, int32_t startIndex, float t
 //---------------------------------------------------------------------------------
 float EaseIn(float t)
 {
-	return 1 - cos((t * 3.14f) / 2.0f);
+	return 1 - cos((t * PI) / 2.0f);
 }
 
 float EaseOut(float t)
 {
-	return sin((t * 3.14f) / 2.0f);
+	return sin((t * PI) / 2.0f);
 }
 
 float EaseInOutBack(float t)
 {
-	const float c1 = 1.70158f;
-	const float c2 = c1 * 1.525f;
+	const float C1 = 1.70158f;
+	const float C2 = C1 * 1.525f;
+
+	const float RATIO_MAX = 1.0f;
 
 	return t < 0.5f
-		? (powf(2.0f * t, 2.0f) * ((c2 + 1.0f) * 2.0f * t - c2)) / 2.0f
-		: (powf(2.0f * t - 2.0f, 2.0f) * ((c2 + 1.0f) * (t * 2.0f - 2.0f) + c2) + 2.0f) / 2.0f;
+		? (powf(2.0f * t, 2.0f) * ((C2 + RATIO_MAX) * 2.0f * t - C2)) / 2.0f
+		: (powf(2.0f * t - 2.0f, 2.0f) * ((C2 + RATIO_MAX) * (t * 2.0f - 2.0f) + C2) + 2.0f) / 2.0f;
 }
 
 float EaseInOut(float t)
@@ -305,9 +330,11 @@ void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, 
 		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,0,0,0,
 		0,-WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f,0,0,
 		0,0,1,0,
-
-		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f + WindowsApp::GetInstance().GetViewport()->TopLeftX
-		,WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f + WindowsApp::GetInstance().GetViewport()->TopLeftY,0,1
+		//ここから下は一列（長くなるので改行）
+		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f + WindowsApp::GetInstance().GetViewport()->TopLeftX,
+		WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f + WindowsApp::GetInstance().GetViewport()->TopLeftY,
+		0,
+		1
 	};
 
 	//合成行列
@@ -333,11 +360,13 @@ void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, 
 
 float sign(float num)
 {
+	const float RATIO_MAX = 1.0f;
+
 	if (num < 0) {
-		return (-1.0f);
+		return (-RATIO_MAX);
 	}
 	if (num > 0) {
-		return (1.0f);
+		return (RATIO_MAX);
 	}
 	return 0.0f;
 }
@@ -396,13 +425,18 @@ std::string ExtractFileName(const std::string& path)
 
 float SmoothStep(float min, float max, float v)
 {
+	const int8_t BIT = 32;
+	const uint32_t MASK = 0x3F800000;
+	const float RATIO_MAX = 1.0f;
+	const float COEFFICIENT = 3.0f;
+
 	v = (v - min) / (max - min);
-	float d = v - 1.0f;
-	long  r = (*(long*)&v ^ 0x3F800000) & (*(long*)&d >> 31);
-	r ^= 0x3F800000;
-	r &= ~(r >> 31);
+	float d = v - RATIO_MAX;
+	long  r = (*(long*)&v ^ MASK) & (*(long*)&d >> (BIT - 1));
+	r ^= MASK;
+	r &= ~(r >> (BIT - 1));
 	float x = *(float*)&r;
-	return (x * x * (3.0f - (x + x)));
+	return (x * x * (COEFFICIENT - (x + x)));
 }
 
 float Clamp(float v, float min, float max)
@@ -440,8 +474,10 @@ Vec3 GetRotFromQuaternion(Quaternion q)
 	float wy = w * y;
 	float wz = w * z;
 
+	const float RATIO_MAX_ = 1.0f;
+
 	// 1 - 2y^2 - 2z^2
-	float m00 = 1.0f - (2.0f * y2) - (2.0f * z2);
+	float m00 = RATIO_MAX_ - (2.0f * y2) - (2.0f * z2);
 
 	// 2xy + 2wz
 	float m01 = (2.0f * xy) + (2.0f * wz);
@@ -450,7 +486,7 @@ Vec3 GetRotFromQuaternion(Quaternion q)
 	float m10 = (2.0f * xy) - (2.0f * wz);
 
 	// 1 - 2x^2 - 2z^2
-	float m11 = 1.0f - (2.0f * x2) - (2.0f * z2);
+	float m11 = RATIO_MAX_ - (2.0f * x2) - (2.0f * z2);
 
 	// 2xz + 2wy
 	float m20 = (2.0f * xz) + (2.0f * wy);
@@ -459,18 +495,18 @@ Vec3 GetRotFromQuaternion(Quaternion q)
 	float m21 = (2.0f * yz) - (2.0f * wx);
 
 	// 1 - 2x^2 - 2y^2
-	float m22 = 1.0f - (2.0f * x2) - (2.0f * y2);
+	float m22 = RATIO_MAX_ - (2.0f * x2) - (2.0f * y2);
 
 
 	float tx, ty, tz;
 
-	if (Approximately(m21, 1.0f))
+	if (Approximately(m21, RATIO_MAX_))
 	{
 		tx = PI / 2.0f;
 		ty = 0;
 		tz = atan2(m10, m00);
 	}
-	else if (Approximately(m21, -1.0f))
+	else if (Approximately(m21, -RATIO_MAX_))
 	{
 		tx = -PI / 2.0f;
 		ty = 0;
@@ -489,16 +525,17 @@ Vec3 GetRotFromQuaternion(Quaternion q)
 Vec3 GetRotFromMat(M4 m)
 {
 	double threshold = 0.001;
+	const double ADD = 1.0;
 
 	Vec3 ansRot = {};
 
-	if (abs(m.m_[2][1] - 1.0) < threshold) { // R(2,1) = sin(x) = 1の時
-		ansRot.x = PI / 2;
+	if (abs(m.m_[2][1] - ADD) < threshold) { // R(2,1) = sin(x) = 1の時
+		ansRot.x = PI / 2.0f;
 		ansRot.y = 0;
 		ansRot.z = (float)atan2(m.m_[1][0], m.m_[0][0]);
 	}
-	else if (abs(m.m_[2][1] + 1.0) < threshold) { // R(2,1) = sin(x) = -1の時
-		ansRot.x = -PI / 2;
+	else if (abs(m.m_[2][1] + ADD) < threshold) { // R(2,1) = sin(x) = -1の時
+		ansRot.x = -PI / 2.0f;
 		ansRot.y = 0;
 		ansRot.z = (float)atan2(m.m_[1][0], m.m_[0][0]);
 	}
@@ -513,14 +550,20 @@ Vec3 GetRotFromMat(M4 m)
 
 bool Approximately(float a, float b)
 {
-	return (fabs(a - b) <= 0.1f);
+	const float JUDGE_MIN = 0.1f;
+
+	return (fabs(a - b) <= JUDGE_MIN);
 }
 
 Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot)
 {
-	Quaternion qZ = Quaternion::MakeAxisAngle({ 0,0,1.0f }, rot.z);
-	Quaternion qX = Quaternion::MakeAxisAngle({ 1.0f,0,0 }, rot.x);
-	Quaternion qY = Quaternion::MakeAxisAngle({ 0,1.0f,0 }, rot.y);
+	const Vec3 AXIS_Z = { 0,0,1.0f };
+	const Vec3 AXIS_X = { 1.0f,0,0 };
+	const Vec3 AXIS_Y = { 0,1.0f,0 };
+
+	Quaternion qZ = Quaternion::MakeAxisAngle(AXIS_Z, rot.z);
+	Quaternion qX = Quaternion::MakeAxisAngle(AXIS_X, rot.x);
+	Quaternion qY = Quaternion::MakeAxisAngle(AXIS_Y, rot.y);
 
 	Vec3 ansFrontV = vec;
 	ansFrontV = qZ.GetRotateVector(ansFrontV);

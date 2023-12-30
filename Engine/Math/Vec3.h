@@ -10,6 +10,10 @@
 const float PI = 3.1415f;
 //2π
 const float PI_2 = PI * 2.0f;
+//180°
+const float DEGREE_180 = 180.0f;
+//360°
+const float DEGREE_360 = DEGREE_180 * 2.0f;
 
 class Vec3
 {
