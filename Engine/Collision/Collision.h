@@ -12,6 +12,10 @@
 class Collision
 {
 public:
+	static const float S_SPHERE_HIT_JUDGE_POW_RATE_;
+	static const float S_EPSILON_; //誤差吸収用の微小な値
+
+public:
 	/// <summary>
 	/// 球同士の当たり判定
 	/// </summary>

@@ -5,7 +5,7 @@ void RectangleCollider::Update()
 	// ワールド行列から座標を抽出
 	const M4& matWorld = object_->GetMatWorld();
 
-	// 矩形のメンバ変数を更新
+	// 矩形のメンバ変数を更新(座標のx,yのみ)
 	Vec2 center = {
 		(float)matWorld.m_[3][0],
 	(float)matWorld.m_[3][1],

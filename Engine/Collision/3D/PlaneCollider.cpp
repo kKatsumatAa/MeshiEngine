@@ -13,7 +13,7 @@ void PlaneCollider::Update()
 	worldNormal.rot_ = object_->GetRot();
 	worldNormal.CalcWorldMat();
 	//回転のみ
-	Vec3 normal = GetVec3xM4({ 0,0,-1.0f }, worldNormal.matWorld_, 1);
+	Vec3 normal = GetVec3xM4(ROT_VEC_TMP_, worldNormal.matWorld_, true);
 	normal.Normalized();
 	Plane::iNormal = { normal.x,normal.y,normal.z,1.0f };
 }

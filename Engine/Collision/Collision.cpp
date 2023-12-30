@@ -3,6 +3,11 @@
 
 using namespace DirectX;
 
+const float Collision::S_EPSILON_ = 1.0e-5f; //誤差吸収用の微小な値
+const float Collision::S_SPHERE_HIT_JUDGE_POW_RATE_ = 2.0f;
+
+
+//--------------
 bool Collision::CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2, DirectX::XMVECTOR* inter,
 	DirectX::XMVECTOR* reject)
 {
@@ -16,7 +21,7 @@ bool Collision::CheckSphere2Sphere(const Sphere& sphere, const Sphere& sphere2, 
 		*inter = XMVectorLerp(sphere.center, sphere2.center, t);
 	}
 
-	if (powf(vec.GetLength(), 2.0f) <= powf(sphere.iRadius + sphere2.iRadius, 2.0f))
+	if (powf(vec.GetLength(), S_SPHERE_HIT_JUDGE_POW_RATE_) <= powf(sphere.iRadius + sphere2.iRadius, S_SPHERE_HIT_JUDGE_POW_RATE_))
 	{
 		//押し出すベクトルを計算
 		if (reject)
@@ -162,11 +167,10 @@ bool Collision::CheckSphere2Triangle(const Sphere& sphere, const Triangle& trian
 
 bool Collision::CheckRay2Plane(const Ray& ray, const Plane& plane, float* distance, DirectX::XMVECTOR* inter)
 {
-	const float EPSILON = 1.0e-5f; //誤差吸収用の微小な値
 	//面法線とレイの方向ベクトルの内積
 	float d1 = XMVector3Dot(plane.iNormal, ray.dir).m128_f32[0];
 	//裏面には当たらない
-	if (d1 > -EPSILON) { return false; }
+	if (d1 > -S_EPSILON_) { return false; }
 	//始点と原点の距離（平面の法線方向）
 	//面法線と原点の始点座標（位置ベクトル）の内積
 	float d2 = XMVector3Dot(plane.iNormal, ray.start).m128_f32[0];

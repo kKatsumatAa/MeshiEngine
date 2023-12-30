@@ -92,7 +92,7 @@ bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR*
 bool MeshCollider::CheckCollisionRay(const Ray& ray, float* distance, DirectX::XMVECTOR* inter)
 {
 	//最短距離を保存する
-	float minDistance = 999999;
+	float minDistance = (float)S_INIT_MIN_DISTANCE_;
 	bool isReturn = false;
 
 	//ワールド座標

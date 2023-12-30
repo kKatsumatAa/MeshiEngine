@@ -8,7 +8,7 @@ void SphereCollider::Update()
 	// ワールド行列から座標を抽出
 	const M4& matWorld = object_->GetMatWorld();
 
-	// 球のメンバ変数を更新
+	// 球のメンバ変数を更新(位置のみ)
 	Sphere::center = {
 		(float)matWorld.m_[3][0] + offset_.m128_f32[0],
 	(float)matWorld.m_[3][1] + offset_.m128_f32[1],
@@ -18,5 +18,5 @@ void SphereCollider::Update()
 	//ワールド行列のスケールから半径
 	Vec3 scale = object_->GetWorldScale();
 	Sphere::iRadius =
-		(scale.x + scale.y + scale.z) / 3.0f;
+		(scale.x + scale.y + scale.z) / (float)S_MEAN_VALUE_NUM_;
 }

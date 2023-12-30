@@ -14,6 +14,9 @@
 class MeshCollider :
 	public BaseCollider
 {
+public:
+	static const uint32_t S_INIT_MIN_DISTANCE_ = 999999;
+
 private:
 	std::vector<Triangle> triangles_;
 	// ワールド行列の逆行列

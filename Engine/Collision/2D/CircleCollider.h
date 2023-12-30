@@ -17,6 +17,12 @@ class CircleCollider : public BaseCollider, public Circle
 private: // エイリアス
 	// DirectX::を省略
 	using XMVECTOR = DirectX::XMVECTOR;
+
+public:
+	const float SCALE_RATE_ = 0.5f;
+	//平均を求めるために使ってる数
+	static const uint8_t S_MEAN_VALUE_NUM_ = 2;
+
 public:
 	//コンストラクタ
 	CircleCollider(const Vec2 center = { 0,0 }, float radius = 1.0f)

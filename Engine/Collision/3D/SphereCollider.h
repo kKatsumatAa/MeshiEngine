@@ -16,6 +16,9 @@ private: // エイリアス
 	// DirectX::を省略
 	using XMVECTOR = DirectX::XMVECTOR;
 
+public:
+	static const int8_t S_MEAN_VALUE_NUM_ = 3;
+
 private:
 	// オブジェクト中心からのオフセット
 	XMVECTOR offset_;
