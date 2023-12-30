@@ -10,22 +10,19 @@ PostEffectManager& PostEffectManager::GetInstance()
 void PostEffectManager::Initialize(const char* normalTexHandle)
 {
 	//ポストエフェクト
-	postPera_[0] = std::make_unique<PostPera>();
-	postPera_[1] = std::make_unique<PostPera>();
-	postPera_[2] = std::make_unique<PostPera>();
-	postPera_[3] = std::make_unique<PostPera>();
-	postPera_[0]->Initialize(normalTexHandle);
-	postPera_[1]->Initialize(normalTexHandle);
-	postPera_[2]->Initialize(normalTexHandle);
-	postPera_[3]->Initialize(normalTexHandle);
+	for (int8_t i = 0; i < S_POST_PERA_NUM_; i++)
+	{
+		postPera_[i] = std::make_unique<PostPera>();
+		postPera_[i]->Initialize(normalTexHandle);
+	}
 }
 
 void PostEffectManager::Update()
 {
-	postPera_[0]->Update();
-	postPera_[1]->Update();
-	postPera_[2]->Update();
-	postPera_[3]->Update();
+	for (int8_t i = 0; i < S_POST_PERA_NUM_; i++)
+	{
+		postPera_[i]->Update();
+	}
 }
 
 void PostEffectManager::ImGuiUpdate()
@@ -33,10 +30,10 @@ void PostEffectManager::ImGuiUpdate()
 	ImGui::Begin("PostEffect");
 
 	//(imgui)
-	postPera_[0]->ImGuiUpdate(0);
-	postPera_[1]->ImGuiUpdate(1);
-	postPera_[2]->ImGuiUpdate(2);
-	postPera_[3]->ImGuiUpdate(2);
+	for (int8_t i = 0; i < S_POST_PERA_NUM_; i++)
+	{
+		postPera_[i]->ImGuiUpdate(i);
+	}
 
 	ImGui::End();
 }
@@ -44,13 +41,13 @@ void PostEffectManager::ImGuiUpdate()
 void PostEffectManager::PreBackGroundDraw()
 {
 	//0枚目に描画（海とか背景用）
-	postPera_[0]->DrawToPostpera(NULL);
+	postPera_[PERA_0]->DrawToPostpera(NULL);
 	//ぼかしテクスチャに描画
-	postPera_[0]->DrawToBlurAll();
+	postPera_[PERA_0]->DrawToBlurAll();
 	//ぼかし
-	postPera_[0]->DrawShrinkTextureForBlur();
+	postPera_[PERA_0]->DrawShrinkTextureForBlur();
 
-	backGroundF = [=]() {postPera_[0]->Draw2(); };
+	backGroundF = [=]() {postPera_[PERA_0]->Draw2(); };
 }
 
 void PostEffectManager::BeforeDraw(std::function<void()> drawSceneF, const std::function<void()>& drawSpriteF)
@@ -58,7 +55,7 @@ void PostEffectManager::BeforeDraw(std::function<void()> drawSceneF, const std::
 	auto f1 = [=]() {backGroundF(); drawSceneF(); };
 
 	//1枚目に描画
-	postPera_[1]->DrawToPostpera(f1, true);
+	postPera_[PERA_1]->DrawToPostpera(f1, true);
 
 	//深度バッファ
 	DirectXWrapper::GetInstance().ResourceBarrier(
@@ -67,39 +64,39 @@ void PostEffectManager::BeforeDraw(std::function<void()> drawSceneF, const std::
 		DirectXWrapper::GetInstance().GetDepthBuff());
 
 	//ぼかしテクスチャに描画
-	postPera_[1]->DrawToBlurAll();
+	postPera_[PERA_1]->DrawToBlurAll();
 	//ぼかし
-	postPera_[1]->DrawShrinkTextureForBlur();
+	postPera_[PERA_1]->DrawShrinkTextureForBlur();
 
 	//------------------------------------------------------------
 
 	//一枚目に描画結果、二枚目も描画する
-	std::function<void()>f2 = [=]() { postPera_[1]->Draw2();  };
+	std::function<void()>f2 = [=]() { postPera_[PERA_1]->Draw2();  };
 
-	postPera_[2]->DrawToPostpera(f2, false, drawSpriteF);
+	postPera_[PERA_2]->DrawToPostpera(f2, false, drawSpriteF);
 	//ブラー用に書き込み
-	postPera_[2]->DrawToBlurAll();
+	postPera_[PERA_2]->DrawToBlurAll();
 
 	//ブルーム用(ブラー)
-	postPera_[2]->DrawShrinkTextureForBlur();
+	postPera_[PERA_2]->DrawShrinkTextureForBlur();
 
 
 	//------------------------------------------------------------
 
 	//二枚目に描画結果、三枚目も描画する
-	std::function<void()>f3 = [=]() { postPera_[2]->Draw2();  };
+	std::function<void()>f3 = [=]() { postPera_[PERA_2]->Draw2();  };
 
-	postPera_[3]->DrawToPostpera(f3);
+	postPera_[PERA_3]->DrawToPostpera(f3);
 	//ブラー用に書き込み
-	postPera_[3]->DrawToBlurAll();
+	postPera_[PERA_3]->DrawToBlurAll();
 
 	//ブルーム用(ブラー)
-	postPera_[3]->DrawShrinkTextureForBlur();
+	postPera_[PERA_3]->DrawShrinkTextureForBlur();
 }
 
 void PostEffectManager::DrawDisplay()
 {
-	postPera_[3]->Draw2();
+	postPera_[PERA_3]->Draw2();
 
 	//深度バッファ
 	DirectXWrapper::GetInstance().ResourceBarrier(

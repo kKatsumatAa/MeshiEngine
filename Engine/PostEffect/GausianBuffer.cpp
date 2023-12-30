@@ -2,10 +2,15 @@
 #include "Util.h"
 #include<d3d12.h>
 
+
+const float GausianBuffer::S_GAUSSIAN_WEIGHT_EXP_RATE_ = -0.5f;
+const float GausianBuffer::S_GAUSSIAN_ADD_WEIGHT_ = 1.0f;
+const float GausianBuffer::S_GAUSSIAN_WEIGHT_RATE_ = 2.0f;
+
+
+//----------------------------------------------
 GausianBuffer::GausianBuffer()
 {
-
-
 }
 
 void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle, ID3D12Device& device,
@@ -21,7 +26,7 @@ void GausianBuffer::Initialize(D3D12_CPU_DESCRIPTOR_HANDLE& peraHandle, ID3D12De
 		//リソース設定
 		D3D12_RESOURCE_DESC cbResourceDesc{};
 
-		weights_ = std::move(GetGaussianWeights(8, 10.0f));
+		weights_ = std::move(GetGaussianWeights(S_GAUSSIAN_WEIGHT_COUNT_, GAUSSIAN_WEIGHT_SIGMA_));
 
 		//リソース設定
 		ResourceProperties(cbResourceDesc,
@@ -56,11 +61,11 @@ std::vector<float> GetGaussianWeights(int32_t count, float s)
 	float total = 0.0f;
 	for (auto& wgt : weights)
 	{
-		wgt = expf(-0.5f * (x * x) / s);
-		total += wgt * 2.0f;
-		x += 1.0f;
+		wgt = expf(GausianBuffer::S_GAUSSIAN_WEIGHT_EXP_RATE_ * (x * x) / s);
+		total += wgt * GausianBuffer::S_GAUSSIAN_WEIGHT_RATE_;
+		x += GausianBuffer::S_GAUSSIAN_ADD_WEIGHT_;
 	}
-	total = total * 2.0f - 1.0f;
+	total = total * GausianBuffer::S_GAUSSIAN_WEIGHT_RATE_ - GausianBuffer::S_GAUSSIAN_ADD_WEIGHT_;
 
 	// 足し て 1 に なる よう に する 
 	for (auto& wgt : weights)

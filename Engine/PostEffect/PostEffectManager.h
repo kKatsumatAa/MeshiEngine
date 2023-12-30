@@ -10,13 +10,22 @@
 class PostEffectManager final
 {
 public:
+	enum PostPeraNum
+	{
+		PERA_0,
+		PERA_1,
+		PERA_2,
+		PERA_3,
+	};
+
+public:
 	//演出用の画面の最低サイズ
 	const float DISPLAY_SIZE_MIN_ = 0.9f;
-	static const int32_t POST_PERA_NUM_ = 4;
+	static const int32_t S_POST_PERA_NUM_ = 4;
 
 private:
 	//ポストペラ
-	std::unique_ptr<PostPera> postPera_[POST_PERA_NUM_];
+	std::unique_ptr<PostPera> postPera_[S_POST_PERA_NUM_];
 
 private:
 	//背景用描画

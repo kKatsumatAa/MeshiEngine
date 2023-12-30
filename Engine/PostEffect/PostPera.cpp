@@ -6,6 +6,16 @@
 const float PostPera::S_BLOOM_POW_ = 9.0f;
 const float  PostPera::S_BLOOM_MAX_POW_ = 15.0f;
 const float  PostPera::S_RADIAL_MAX_POW_ = 1.0f;
+//グレースケール強さ
+const float PostPera::S_GRAY_SCALE_POW_MAX_ = 1.0f;
+//湾曲強さ
+const float PostPera::S_BARREL_POW_MAX_ = 1.0f;
+//RGBシフト強さ
+const float PostPera::S_RGB_SHIFT_POW_MAX_ = 0.05f;
+//ノイズ強さ
+const float PostPera::S_NOISE_POW_MAX_ = 1.0f;
+//被写界深度強さ
+const float PostPera::S_DEPTH_FIELD_POW_MAX_ = 2.0f;
 
 
 void PostPera::Initialize(const char* normalImageFileName)
@@ -99,7 +109,8 @@ void PostPera::InitializeBuffRTV(const char* normalImageFileName)
 	D3D12_HEAP_PROPERTIES heapProp = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 
 	//レンダリング時のクリア地と同じ値
-	float clsClr[4] = { DirectXWrapper::GetInstance().GetClearColor()[0],DirectXWrapper::GetInstance().GetClearColor()[1],
+	float clsClr[DirectXWrapper::S_CLEAR_COLOR_NUM_] = {
+		DirectXWrapper::GetInstance().GetClearColor()[0],DirectXWrapper::GetInstance().GetClearColor()[1],
 		DirectXWrapper::GetInstance().GetClearColor()[2],DirectXWrapper::GetInstance().GetClearColor()[3] };
 	D3D12_CLEAR_VALUE clearValue =
 		CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clsClr);
@@ -143,7 +154,7 @@ void PostPera::InitializeBuffRTV(const char* normalImageFileName)
 	//----------------------------------------------------------------------------------
 
 	// RTV 用 ヒープ を 作る 
-	heapDesc.NumDescriptors = 7;//3枚分(一枚目の3つ(通常、違う色、高輝度、）+ 1.5枚目の3つ（ぼかし、ぼかし２、 被写界深度用) + 二枚目の一つ)
+	heapDesc.NumDescriptors = S_RTV_NUM_;//3枚分(一枚目の3つ(通常、違う色、高輝度、）+ 1.5枚目の3つ（ぼかし、ぼかし２、 被写界深度用) + 二枚目の一つ)
 	result = DirectXWrapper::GetInstance().GetDevice()->CreateDescriptorHeap(
 		&heapDesc,
 		IID_PPV_ARGS(peraRTVHeap_.ReleaseAndGetAddressOf())
@@ -212,7 +223,7 @@ void PostPera::InitializeBuffRTV(const char* normalImageFileName)
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Format = rtvDesc.Format;
-	srvDesc.Texture2D.MipLevels = 1;
+	srvDesc.Texture2D.MipLevels = S_MIP_LEVEL_;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
 	// シェーダーリソースビュー（ SRV） を 作る 
@@ -257,7 +268,7 @@ void PostPera::InitializeBuffRTV(const char* normalImageFileName)
 
 void PostPera::GenerateRSPL()
 {
-	D3D12_INPUT_ELEMENT_DESC layout[2] =
+	D3D12_INPUT_ELEMENT_DESC layout[S_INPUT_LAYOUT_NUM_] =
 	{
 		{
 			"POSITION",
@@ -334,47 +345,43 @@ void PostPera::GenerateRSPL()
 	rsDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	//rootsig
-	D3D12_DESCRIPTOR_RANGE range[RootParamIndex::COUNT] = {};
+	D3D12_DESCRIPTOR_RANGE range[RootParamIndex::ROOT_PARAM_COUNT] = {};
 	//一枚目の1つ目(通常カラー)
 	range[RootParamIndex::COLOR].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[RootParamIndex::COLOR].BaseShaderRegister = 0;//0
+	range[RootParamIndex::COLOR].BaseShaderRegister = BaseShaderRegisterTexNum::R_COLOR;//0
 	range[RootParamIndex::COLOR].NumDescriptors = 1;
 	//一枚目の2つ目(違うカラー)
 	range[RootParamIndex::COLOR2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[RootParamIndex::COLOR2].BaseShaderRegister = 1;//1
+	range[RootParamIndex::COLOR2].BaseShaderRegister = BaseShaderRegisterTexNum::R_COLOR2;//1
 	range[RootParamIndex::COLOR2].NumDescriptors = 1;
 	//一枚目の3つ目(高輝度)
 	range[RootParamIndex::HIGH_LUMI].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[RootParamIndex::HIGH_LUMI].BaseShaderRegister = 2;//2
+	range[RootParamIndex::HIGH_LUMI].BaseShaderRegister = BaseShaderRegisterTexNum::R_HIGH_LUMI;//2
 	range[RootParamIndex::HIGH_LUMI].NumDescriptors = 1;
 	//1.5枚目の1つ目(縮小)
 	range[RootParamIndex::SHRINK].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[RootParamIndex::SHRINK].BaseShaderRegister = 3;//3
+	range[RootParamIndex::SHRINK].BaseShaderRegister = BaseShaderRegisterTexNum::R_SHRINK;//3
 	range[RootParamIndex::SHRINK].NumDescriptors = 1;
 	//1.5枚目の2つ目(縮小2)
 	range[RootParamIndex::SHRINK2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[RootParamIndex::SHRINK2].BaseShaderRegister = 4;//4
+	range[RootParamIndex::SHRINK2].BaseShaderRegister = BaseShaderRegisterTexNum::R_SHRINK2;//4
 	range[RootParamIndex::SHRINK2].NumDescriptors = 1;
 	//1.5枚目の3つ目（被写界深度用
 	range[RootParamIndex::DEPTH_FIELD].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[RootParamIndex::DEPTH_FIELD].BaseShaderRegister = 5;//5
+	range[RootParamIndex::DEPTH_FIELD].BaseShaderRegister = BaseShaderRegisterTexNum::R_DEPTH_FIELD;//5
 	range[RootParamIndex::DEPTH_FIELD].NumDescriptors = 1;
-	//ガウシアン定数
-	range[RootParamIndex::GAUSS_PARAM].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;//b
-	range[RootParamIndex::GAUSS_PARAM].BaseShaderRegister = 1;//フラグを送るのがb0なので1
-	range[RootParamIndex::GAUSS_PARAM].NumDescriptors = 1;
 	//ガラス
 	range[RootParamIndex::GLASS].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[RootParamIndex::GLASS].BaseShaderRegister = 6;//6
+	range[RootParamIndex::GLASS].BaseShaderRegister = BaseShaderRegisterTexNum::R_GLASS;//6
 	range[RootParamIndex::GLASS].NumDescriptors = 1;
 	//深度値テクスチャ用
 	range[RootParamIndex::DEPTH_TEX].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//t
-	range[RootParamIndex::DEPTH_TEX].BaseShaderRegister = 7;//7
+	range[RootParamIndex::DEPTH_TEX].BaseShaderRegister = BaseShaderRegisterTexNum::R_DEPTH_TEX;//7
 	range[RootParamIndex::DEPTH_TEX].NumDescriptors = 1;
 
 
 	//実際に使うルートパラメータ
-	D3D12_ROOT_PARAMETER rp[RootParamIndex::COUNT] = {};
+	D3D12_ROOT_PARAMETER rp[RootParamIndex::ROOT_PARAM_COUNT] = {};
 	//SRV(一枚目の1つ目(通常カラー))
 	rp[RootParamIndex::COLOR].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rp[RootParamIndex::COLOR].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -406,13 +413,13 @@ void PostPera::GenerateRSPL()
 	rp[RootParamIndex::DEPTH_FIELD].DescriptorTable.pDescriptorRanges = &range[DEPTH_FIELD];
 	rp[RootParamIndex::DEPTH_FIELD].DescriptorTable.NumDescriptorRanges = 1;
 	//ボケ定数用
-	rp[RootParamIndex::GAUSS_PARAM].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp[RootParamIndex::GAUSS_PARAM].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rp[RootParamIndex::GAUSS_PARAM].DescriptorTable.pDescriptorRanges = &range[GAUSS_PARAM];
-	rp[RootParamIndex::GAUSS_PARAM].DescriptorTable.NumDescriptorRanges = 1;
+	rp[RootParamIndex::GAUSS_PARAM].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
+	rp[RootParamIndex::GAUSS_PARAM].Descriptor.ShaderRegister = BaseShaderRegisterCBuffNum::R_GAUSS_PARAM;//定数バッファ番号(b0)
+	rp[RootParamIndex::GAUSS_PARAM].Descriptor.RegisterSpace = 0;//デフォルト値
+	rp[RootParamIndex::GAUSS_PARAM].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//ポストエフェクトのフラグ
 	rp[RootParamIndex::EFFECT_FLAG].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//定数バッファビュー
-	rp[RootParamIndex::EFFECT_FLAG].Descriptor.ShaderRegister = 0;//定数バッファ番号(b0)
+	rp[RootParamIndex::EFFECT_FLAG].Descriptor.ShaderRegister = BaseShaderRegisterCBuffNum::R_EFFECT_FLAG;//定数バッファ番号(b1)
 	rp[RootParamIndex::EFFECT_FLAG].Descriptor.RegisterSpace = 0;//デフォルト値
 	rp[RootParamIndex::EFFECT_FLAG].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;//全てのシェーダから見える
 	//ガラスフィルタ
@@ -536,7 +543,7 @@ bool PostPera::CreateBloomBuffer(const D3D12_RESOURCE_DESC& resDesc,
 		//ここでバッファのサイズ縮小(高輝度ぼかし、〃２だけサイズ小さくなる)
 		if (count == 0)
 		{
-			resDescL.Width >>= 1;
+			resDescL.Width >>= S_SHRINK_SHIFT_WIDTH_RATE_;
 		}
 		count++;
 	}
@@ -550,7 +557,7 @@ bool PostPera::CreateBloomBuffView()
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-	srvDesc.Texture2D.MipLevels = 1;
+	srvDesc.Texture2D.MipLevels = S_MIP_LEVEL_;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
 	//３枚作る（高輝度、ぼかし、ぼかし２）
@@ -574,7 +581,7 @@ bool PostPera::CreateDofBuffer(const D3D12_RESOURCE_DESC& resDesc,
 	D3D12_RESOURCE_DESC resDescL = resDesc;
 
 	//縮小バッファなので大きさ半分
-	resDescL.Width >>= 1;
+	resDescL.Width >>= S_SHRINK_SHIFT_WIDTH_RATE_;
 	//バッファー作成
 	HRESULT result = S_OK;
 	result = DirectXWrapper::GetInstance().GetDevice()->CreateCommittedResource(
@@ -595,7 +602,7 @@ bool PostPera::CreateDofSRV()
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-	srvDesc.Texture2D.MipLevels = 1;
+	srvDesc.Texture2D.MipLevels = S_MIP_LEVEL_;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
 	//作成
@@ -619,7 +626,7 @@ bool PostPera::CreateEffectBufferAndView(const char* fileName)
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-	srvDesc.Texture2D.MipLevels = 1;
+	srvDesc.Texture2D.MipLevels = S_MIP_LEVEL_;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
 	TextureManager::GetInstance().LoadGraph(fileName, &effectTexBuffer_, &srvDesc, &peraSRHandle_);
@@ -635,7 +642,7 @@ bool PostPera::CreateDepthTexBuffAndSRV()
 	//srv作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC resDesc = {};
 	resDesc.Format = DXGI_FORMAT_R32_FLOAT;
-	resDesc.Texture2D.MipLevels = 1;
+	resDesc.Texture2D.MipLevels = S_MIP_LEVEL_;
 	resDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	resDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 
@@ -651,7 +658,7 @@ void PostPera::Update()
 	effectFlags_.time++;
 	*mapEffectFlagsBuff_ = effectFlags_;
 	//強さで色を割るので小さい方が強くなる
-	mapEffectFlagsBuff_->bloomPow = (S_BLOOM_MAX_POW_ + 1.0f - effectFlags_.bloomPow);
+	mapEffectFlagsBuff_->bloomPow = (S_BLOOM_MAX_POW_ - effectFlags_.bloomPow);
 }
 
 void PostPera::ImGuiUpdate(int32_t num)
@@ -660,44 +667,44 @@ void PostPera::ImGuiUpdate(int32_t num)
 
 	if (ImGui::TreeNode(name.c_str()))
 	{
-		ImGui::SliderInt("MultiTex", (int*)&effectFlags_.isMultiTex, 0, 1);
-		ImGui::SliderInt("GrayScale", (int*)&effectFlags_.isGrayScale, 0, 1);
-		ImGui::SliderFloat("GrayScalePow", &effectFlags_.grayScalePow, 0, 1.0f);
-		ImGui::SliderInt("Emboss", (int*)&effectFlags_.isEmboss, 0, 1);
-		ImGui::SliderInt("Gaussian", (int*)&effectFlags_.isGaussian, 0, 1);
-		ImGui::SliderInt("Gaussian2", (int*)&effectFlags_.isGaussian2, 0, 1);
-		ImGui::SliderInt("RadialBlur", (int*)&effectFlags_.isRadialBlur, 0, 1);
+		ImGui::SliderInt("MultiTex", (int*)&effectFlags_.isMultiTex, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("GrayScale", (int*)&effectFlags_.isGrayScale, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderFloat("GrayScalePow", &effectFlags_.grayScalePow, 0, S_GRAY_SCALE_POW_MAX_);
+		ImGui::SliderInt("Emboss", (int*)&effectFlags_.isEmboss, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("Gaussian", (int*)&effectFlags_.isGaussian, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("Gaussian2", (int*)&effectFlags_.isGaussian2, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("RadialBlur", (int*)&effectFlags_.isRadialBlur, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
 		ImGui::SliderFloat("RadialPow", &effectFlags_.radialPow, 0.0f, S_RADIAL_MAX_POW_);
-		ImGui::SliderInt("GlassFilter", (int*)&effectFlags_.isGlassFilter, 0, 1);
-		ImGui::SliderInt("ScanningLine", (int*)&effectFlags_.isScanningLine, 0, 1);
-		ImGui::SliderInt("BarrelCurve", (int*)&effectFlags_.isBarrelCurve, 0, 1);
-		ImGui::SliderFloat("BarrelCurvePow", &effectFlags_.barrelCurvePow, 0, 1.0f);
-		ImGui::SliderInt("Gradation", (int*)&effectFlags_.isGradation, 0, 1);
-		ImGui::SliderInt("Outline", (int*)&effectFlags_.isOutLine, 0, 1);
-		ImGui::SliderInt("Sharpness", (int*)&effectFlags_.isSharpness, 0, 1);
-		ImGui::SliderInt("Vignette", (int*)&effectFlags_.isVignette, 0, 1);
-		ImGui::SliderInt("Mosaic", (int*)&effectFlags_.isMosaic, 0, 1);
-		ImGui::SliderInt("NegaPosi", (int*)&effectFlags_.isNega, 0, 1);
-		ImGui::SliderInt("RGBShift", (int*)&effectFlags_.isRGBShift, 0, 1);
-		ImGui::SliderFloat("RGBShiftPow", &effectFlags_.RGBShiftPow, 0.0f, 0.05f);
-		ImGui::SliderInt("Bloom", (int*)&effectFlags_.isBloom, 0, 1);
-		ImGui::SliderInt("CrossFilter", (int*)&effectFlags_.isCrossFilter, 0, 1);
-		ImGui::SliderFloat("BloomPow", &effectFlags_.bloomPow, 1.0f, S_BLOOM_MAX_POW_);
-		ImGui::SliderInt("Noise", (int*)&effectFlags_.isNoise, 0, 1);
-		ImGui::SliderFloat("NoisePow", &effectFlags_.noisePow, 0, 1.0f);
-		ImGui::SliderInt("DepthField", (int*)&effectFlags_.isDepthField, 0, 1);
-		ImGui::SliderFloat("FocusDepth", &effectFlags_.focusDepth, 0, 2.0f);
-		ImGui::SliderFloat("NFocusWidth", &effectFlags_.nFocusWidth, 0, 2.0f);
-		ImGui::SliderFloat("focusDiffPow", &effectFlags_.focusDiffPow, 0, 2.0f);
-		ImGui::SliderInt("Sea", (int*)&effectFlags_.isSea, 0, 1);
-		ImGui::SliderInt("SeaImageEffect", (int*)&effectFlags_.isSeaImageEffect, 0, 1);
+		ImGui::SliderInt("GlassFilter", (int*)&effectFlags_.isGlassFilter, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("ScanningLine", (int*)&effectFlags_.isScanningLine, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("BarrelCurve", (int*)&effectFlags_.isBarrelCurve, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderFloat("BarrelCurvePow", &effectFlags_.barrelCurvePow, 0, S_BARREL_POW_MAX_);
+		ImGui::SliderInt("Gradation", (int*)&effectFlags_.isGradation, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("Outline", (int*)&effectFlags_.isOutLine, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("Sharpness", (int*)&effectFlags_.isSharpness, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("Vignette", (int*)&effectFlags_.isVignette, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("Mosaic", (int*)&effectFlags_.isMosaic, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("NegaPosi", (int*)&effectFlags_.isNega, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("RGBShift", (int*)&effectFlags_.isRGBShift, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderFloat("RGBShiftPow", &effectFlags_.RGBShiftPow, 0.0f, S_RGB_SHIFT_POW_MAX_);
+		ImGui::SliderInt("Bloom", (int*)&effectFlags_.isBloom, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("CrossFilter", (int*)&effectFlags_.isCrossFilter, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderFloat("BloomPow", &effectFlags_.bloomPow, 0, S_BLOOM_MAX_POW_);
+		ImGui::SliderInt("Noise", (int*)&effectFlags_.isNoise, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderFloat("NoisePow", &effectFlags_.noisePow, 0, S_NOISE_POW_MAX_);
+		ImGui::SliderInt("DepthField", (int*)&effectFlags_.isDepthField, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderFloat("FocusDepth", &effectFlags_.focusDepth, 0, S_DEPTH_FIELD_POW_MAX_);
+		ImGui::SliderFloat("NFocusWidth", &effectFlags_.nFocusWidth, 0, S_DEPTH_FIELD_POW_MAX_);
+		ImGui::SliderFloat("focusDiffPow", &effectFlags_.focusDiffPow, 0, S_DEPTH_FIELD_POW_MAX_);
+		ImGui::SliderInt("Sea", (int*)&effectFlags_.isSea, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
+		ImGui::SliderInt("SeaImageEffect", (int*)&effectFlags_.isSeaImageEffect, S_IMGUI_SLIDER_FLAG_MIN_, S_IMGUI_SLIDER_FLAG_MAX_);
 		ImGui::DragFloat3("SeaCameraPos", &effectFlags_.seaCameraPos.x);
-		ImGui::DragFloat3("SeaDirRot", &effectFlags_.seaDirRot.x, 0.0001f);
-		ImGui::DragFloat("Resoulution", &effectFlags_.resoulution, 0.05f);
-		ImGui::DragFloat3("seaDirRotExt", &effectFlags_.seaDirRotExtend.x, 0.01f);
-		ImGui::DragFloat3("seaColor", &effectFlags_.seaCol.x, 0.05f);
+		ImGui::DragFloat3("SeaDirRot", &effectFlags_.seaDirRot.x, IMGUI_SEA_DIR_ROT_DRAG_SPEED_);
+		ImGui::DragFloat("Resoulution", &effectFlags_.resoulution, IMGUI_SEA_RESOULUTION_DRAG_SPEED_);
+		ImGui::DragFloat3("seaDirRotExt", &effectFlags_.seaDirRotExtend.x, IMGUI_SEA_DIR_ROT_EXTEND_DRAG_SPEED_);
+		ImGui::DragFloat3("seaColor", &effectFlags_.seaCol.x, IMGUI_SEA_COLOR_DRAG_SPEED_);
 		ImGui::ColorEdit3("skyColor", &effectFlags_.seaSkyCol.x);
-		ImGui::DragFloat("seaTimeExtend", &effectFlags_.seaTimerExtend, 0.05f);
+		ImGui::DragFloat("seaTimeExtend", &effectFlags_.seaTimerExtend, IMGUI_SEA_TIME_EXTEND_DRAG_SPEED_);
 		ImGui::ColorEdit4("color", &effectFlags_.color.x);
 
 		ImGui::TreePop();
@@ -722,7 +729,7 @@ void PostPera::Draw()
 		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &pera1VBV_);
 
-	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
+	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(S_VERTEX_COUNT_, 1, 0, 0);
 }
 
 //1.5枚目
@@ -743,7 +750,7 @@ void PostPera::DrawShrinkTextureForBlur()
 	D3D12_RESOURCE_BARRIER barrierDesc{};
 
 	//縮小バッファ,〃２はレンダーターゲットに([1],[2])
-	for (int32_t i = 1; i < 3; i++)
+	for (int32_t i = 1; i < S_SHRINK_BUFF_NUM_; i++)
 	{
 		DirectXWrapper::GetInstance().ResourceBarrier(
 			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
@@ -757,12 +764,12 @@ void PostPera::DrawShrinkTextureForBlur()
 		dofBuffer_.Get());
 
 	//rtvハンドル
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvs[3] = {};
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvs[S_SHRINK_BUFF_NUM_] = {};
 	D3D12_CPU_DESCRIPTOR_HANDLE baseHandle = peraRTVHeap_->GetCPUDescriptorHandleForHeapStart();
 	auto incSize = DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	//ぼかし、ぼかし２、通常ぼかし（被写界深度用）は4,5,6つ目
 	uint32_t offset = DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(
-		D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * 3;
+		D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * S_SHRINK_BUFF_NUM_;
 	for (auto& handle : rtvs)
 	{
 		handle.InitOffsetted(baseHandle, offset);
@@ -770,7 +777,7 @@ void PostPera::DrawShrinkTextureForBlur()
 	}
 	//レンダーターゲットセット
 	//ぼかし二つ+通常ぼかし（被写界深度用）
-	cmdList->OMSetRenderTargets(3, rtvs, false, nullptr);
+	cmdList->OMSetRenderTargets(S_SHRINK_BUFF_NUM_, rtvs, false, nullptr);
 
 	{
 		//パイプラインセット
@@ -791,8 +798,8 @@ void PostPera::DrawShrinkTextureForBlur()
 			D3D12_RECT sr = {};
 			vp.MaxDepth = 1.0f;
 			vp.MinDepth = 0.0f;
-			vp.Height = desc.Height / 2.0f;
-			vp.Width = desc.Width / 2.0f;
+			vp.Height = desc.Height * SHRINK_RATE_;
+			vp.Width = desc.Width * SHRINK_RATE_;
 			vp.TopLeftX = 0;
 			vp.TopLeftY = 0;
 			sr.top = 0;
@@ -800,24 +807,24 @@ void PostPera::DrawShrinkTextureForBlur()
 			sr.right = (long)vp.Width;
 			sr.bottom = (long)vp.Height;
 
-			for (int32_t i = 0; i < 8; ++i) {
+			for (int32_t i = 0; i < S_SHRINK_ROOP_NUM_; ++i) {
 				cmdList->RSSetViewports(1, &vp);
 				cmdList->RSSetScissorRects(1, &sr);
-				cmdList->DrawInstanced(4, 1, 0, 0);
+				cmdList->DrawInstanced(S_VERTEX_COUNT_, 1, 0, 0);
 				//書いたら下にずらして次を書く準備
 				sr.top += (long)vp.Height;
 				vp.TopLeftX = 0;
 				vp.TopLeftY = (float)sr.top;
 				//幅も高さも半分に
-				vp.Width /= 2.0f;
-				vp.Height /= 2.0f;
+				vp.Width *= SHRINK_RATE_;
+				vp.Height *= SHRINK_RATE_;
 				sr.bottom += (long)vp.Height;
 			}
 		}
 	}
 
 	//縮小バッファ,〃２はシェーダーリソースに
-	for (int32_t i = 1; i < 3; i++)
+	for (int32_t i = 1; i < S_SHRINK_BUFF_NUM_; i++)
 	{
 		DirectXWrapper::GetInstance().ResourceBarrier(
 			D3D12_RESOURCE_STATE_RENDER_TARGET,
@@ -848,7 +855,7 @@ void PostPera::Draw2()
 		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	DirectXWrapper::GetInstance().GetCommandList()->IASetVertexBuffers(0, 1, &pera2VBV_);
 
-	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(4, 1, 0, 0);
+	DirectXWrapper::GetInstance().GetCommandList()->DrawInstanced(S_VERTEX_COUNT_, 1, 0, 0);
 }
 
 
@@ -876,7 +883,7 @@ void PostPera::PreDraw(bool isFirstPostPera)
 
 	//レンダーターゲットビュー用ディスクリプタヒープのハンドルを取得
 	//一枚目の3つ(通常カラー、違うカラー、ブルーム用)
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvs[3] = {};
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvs[S_PERA_1_RTV_NUM_] = {};
 	D3D12_CPU_DESCRIPTOR_HANDLE baseHandle = peraRTVHeap_->GetCPUDescriptorHandleForHeapStart();
 	auto incSize = DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	uint32_t offset = 0;
@@ -890,18 +897,18 @@ void PostPera::PreDraw(bool isFirstPostPera)
 	if (!isFirstPostPera)
 	{
 		//レンダーターゲットをセット
-		DirectXWrapper::GetInstance().GetCommandList()->OMSetRenderTargets(3, rtvs, false, nullptr);
+		DirectXWrapper::GetInstance().GetCommandList()->OMSetRenderTargets(S_PERA_1_RTV_NUM_, rtvs, false, nullptr);
 	}
 	//一番最初のポストペラだったら深度
 	else
 	{
 		//レンダーターゲットをセット
-		DirectXWrapper::GetInstance().GetCommandList()->OMSetRenderTargets(3, rtvs, false, &dsvHandle);
+		DirectXWrapper::GetInstance().GetCommandList()->OMSetRenderTargets(S_PERA_1_RTV_NUM_, rtvs, false, &dsvHandle);
 	}
 
 	// 3.画面クリア R G B A
 	float* clearColor = DirectXWrapper::GetInstance().GetClearColor();
-	float clsClr[4] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
+	float clsClr[DirectXWrapper::S_CLEAR_COLOR_NUM_] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
 	for (auto& rt : rtvs)
 	{
 		DirectXWrapper::GetInstance().GetCommandList()->ClearRenderTargetView(rt, clsClr, 0, nullptr);
@@ -917,15 +924,15 @@ void PostPera::PreDraw(bool isFirstPostPera)
 	}
 
 	// ビューポート設定コマンドを、コマンドリストに積む
-	D3D12_VIEWPORT viewPorts[3];
+	D3D12_VIEWPORT viewPorts[S_PERA_1_RTV_NUM_];
 	viewPorts[0] = { 0, 0, WindowsApp::GetInstance().WINDOW_WIDTH_, WindowsApp::GetInstance().WINDOW_HEIGHT_, 0.0f, 1.0f };
 	viewPorts[1] = viewPorts[0];
 	viewPorts[2] = viewPorts[0];
 
-	DirectXWrapper::GetInstance().GetCommandList()->RSSetViewports(3, viewPorts);
+	DirectXWrapper::GetInstance().GetCommandList()->RSSetViewports(S_PERA_1_RTV_NUM_, viewPorts);
 
 
-	CD3DX12_RECT scissorRects[3];
+	CD3DX12_RECT scissorRects[S_PERA_1_RTV_NUM_];
 	scissorRects[0].left = 0; // 切り抜き座標左
 	scissorRects[0].right = (long)(scissorRects[0].left + WindowsApp::GetInstance().WINDOW_WIDTH_); // 切り抜き座標右
 	scissorRects[0].top = 0; // 切り抜き座標上
@@ -933,7 +940,7 @@ void PostPera::PreDraw(bool isFirstPostPera)
 	scissorRects[1] = scissorRects[0];
 	scissorRects[2] = scissorRects[0];
 	// シザー矩形設定コマンドを、コマンドリストに積む
-	DirectXWrapper::GetInstance().GetCommandList()->RSSetScissorRects(3, scissorRects);
+	DirectXWrapper::GetInstance().GetCommandList()->RSSetScissorRects(S_PERA_1_RTV_NUM_, scissorRects);
 }
 
 void PostPera::PostDraw()
@@ -972,11 +979,11 @@ void PostPera::PreDraw2()
 		bloomBuffers_[0].Get());
 
 
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[3] = {};
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[S_PERA_2_RTV_NUM_] = {};
 	D3D12_CPU_DESCRIPTOR_HANDLE baseH = peraRTVHeap_->GetCPUDescriptorHandleForHeapStart();
-	//二枚目（7つ目なので）
+	//二枚目（7つ目なので一枚目とぼかし用のRTV分飛ばす）
 	baseH.ptr += DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(
-		D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * 6;
+		D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * (S_PERA_1_RTV_NUM_ + S_SHRINK_BUFF_NUM_);
 	rtvHandle[0] = baseH;
 	//（一枚目の2つ目)なので進める
 	baseH = peraRTVHeap_->GetCPUDescriptorHandleForHeapStart();
@@ -988,28 +995,28 @@ void PostPera::PreDraw2()
 	rtvHandle[2] = baseH;
 	//レンダーターゲットセット
 	DirectXWrapper::GetInstance().GetCommandList()->OMSetRenderTargets(
-		3, rtvHandle, false, nullptr
+		S_PERA_2_RTV_NUM_, rtvHandle, false, nullptr
 	);
 
 
 	// 3.画面クリア R G B A
 	float* clearColor = DirectXWrapper::GetInstance().GetClearColor();
-	float clsClr[4] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
+	float clsClr[DirectXWrapper::S_CLEAR_COLOR_NUM_] = { clearColor[0],clearColor[1],clearColor[2],clearColor[3] };
 	for (auto& rt : rtvHandle)
 	{
 		DirectXWrapper::GetInstance().GetCommandList()->ClearRenderTargetView(rt, clsClr, 0, nullptr);
 	}
 
 	// ビューポート設定コマンドを、コマンドリストに積む
-	D3D12_VIEWPORT viewPorts[3];
+	D3D12_VIEWPORT viewPorts[S_PERA_2_RTV_NUM_];
 	viewPorts[0] = { 0, 0, WindowsApp::GetInstance().WINDOW_WIDTH_, WindowsApp::GetInstance().WINDOW_HEIGHT_, 0.0f, 1.0f };
 	viewPorts[1] = viewPorts[0];
 	viewPorts[2] = viewPorts[0];
 
-	DirectXWrapper::GetInstance().GetCommandList()->RSSetViewports(3, viewPorts);
+	DirectXWrapper::GetInstance().GetCommandList()->RSSetViewports(S_PERA_2_RTV_NUM_, viewPorts);
 
 
-	CD3DX12_RECT scissorRects[3];
+	CD3DX12_RECT scissorRects[S_PERA_2_RTV_NUM_];
 	scissorRects[0].left = 0; // 切り抜き座標左
 	scissorRects[0].right = (long)(scissorRects[0].left + WindowsApp::GetInstance().WINDOW_WIDTH_); // 切り抜き座標右
 	scissorRects[0].top = 0; // 切り抜き座標上
@@ -1017,7 +1024,7 @@ void PostPera::PreDraw2()
 	scissorRects[1] = scissorRects[0];
 	scissorRects[2] = scissorRects[0];
 	// シザー矩形設定コマンドを、コマンドリストに積む
-	DirectXWrapper::GetInstance().GetCommandList()->RSSetScissorRects(3, scissorRects);
+	DirectXWrapper::GetInstance().GetCommandList()->RSSetScissorRects(S_PERA_2_RTV_NUM_, scissorRects);
 }
 
 void PostPera::PostDraw2()
@@ -1099,7 +1106,7 @@ void PostPera::SetHeapAllBuffView(bool isPost2, bool isPost1)
 	//ボケ定数
 	peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(RootParamIndex::GAUSS_PARAM, peraHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(RootParamIndex::GAUSS_PARAM, gaussianBuff_.buff_->GetGPUVirtualAddress());
 
 	//ポストエフェクトの「フラグ」なのでrp[6]
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(RootParamIndex::EFFECT_FLAG, effectFlagsBuff_->GetGPUVirtualAddress());

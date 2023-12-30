@@ -1,6 +1,6 @@
 
 
-cbuffer ConstBufferEffectFlags : register(b0)
+cbuffer ConstBufferEffectFlags : register(b1)
 {
     //êF
     float4 color;
@@ -81,7 +81,7 @@ cbuffer ConstBufferEffectFlags : register(b0)
     uint time;
 }
 
-cbuffer PostEffect : register(b1)
+cbuffer PostEffect : register(b0)
 {
     float4 bkweights[2];
 }

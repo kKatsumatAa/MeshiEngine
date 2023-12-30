@@ -17,6 +17,15 @@
 
 class GausianBuffer
 {
+private:
+	static const int8_t S_GAUSSIAN_WEIGHT_COUNT_ = 8;
+	const float GAUSSIAN_WEIGHT_SIGMA_ = 10.0f;
+
+public:
+	static const float S_GAUSSIAN_WEIGHT_EXP_RATE_;
+	static const float S_GAUSSIAN_ADD_WEIGHT_;
+	static const float S_GAUSSIAN_WEIGHT_RATE_;
+
 public:
 	std::vector<float> weights_;
 

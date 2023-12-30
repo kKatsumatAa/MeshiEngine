@@ -21,6 +21,27 @@ struct PeraVertex
 class PostPera
 {
 private:
+	//SRV系のシェーダーレジスタ
+	enum BaseShaderRegisterTexNum
+	{
+		R_COLOR,
+		R_COLOR2,
+		R_HIGH_LUMI,
+		R_SHRINK,
+		R_SHRINK2,
+		R_DEPTH_FIELD,
+		R_GLASS,
+		R_DEPTH_TEX,
+
+		R_T_COUNT
+	};
+	//cBuff系のシェーダーレジスタ
+	enum BaseShaderRegisterCBuffNum
+	{
+		R_GAUSS_PARAM,
+		R_EFFECT_FLAG,
+	};
+
 	enum RootParamIndex
 	{
 		COLOR,
@@ -34,21 +55,52 @@ private:
 		GLASS,
 		DEPTH_TEX,
 
-		COUNT//要素数
+		ROOT_PARAM_COUNT//要素数
 	};
 
 private:
 	//Microsoft::WRL::を省略
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+private:
+	static const int8_t S_VERTEX_COUNT_ = 4;
+	static const int8_t S_SHRINK_BUFF_NUM_ = 3;
+	static const int8_t S_SHRINK_ROOP_NUM_ = 8;
+	static const int8_t S_PERA_1_RTV_NUM_ = 3;
+	static const int8_t S_PERA_2_RTV_NUM_ = 3;
+	const float SHRINK_RATE_ = 0.5f;
 public:
 	static const float S_BLOOM_POW_;
-
 	//ブルームの最大強さ
 	static const float S_BLOOM_MAX_POW_;
 	//ラジアルの最大強さ
 	static const float S_RADIAL_MAX_POW_;
+	//グレースケール強さ
+	static const float S_GRAY_SCALE_POW_MAX_;
+	//湾曲強さ
+	static const float S_BARREL_POW_MAX_;
+	//RGBシフト強さ
+	static const float S_RGB_SHIFT_POW_MAX_;
+	//ノイズ強さ
+	static const float S_NOISE_POW_MAX_;
+	//被写界深度強さ
+	static const float S_DEPTH_FIELD_POW_MAX_;
+private:
+	const float IMGUI_SEA_DIR_ROT_DRAG_SPEED_ = 0.0001f;
+	const float IMGUI_SEA_RESOULUTION_DRAG_SPEED_ = 0.05f;
+	const float IMGUI_SEA_DIR_ROT_EXTEND_DRAG_SPEED_ = 0.01f;
+	const float IMGUI_SEA_COLOR_DRAG_SPEED_ = 0.05f;
+	const float IMGUI_SEA_TIME_EXTEND_DRAG_SPEED_ = 0.05f;
+private:
+	static const int8_t S_RTV_NUM_ = 7;
+	static const int8_t S_MIP_LEVEL_ = 1;
+	static const int8_t S_INPUT_LAYOUT_NUM_ = 2;
+	static const int8_t S_SHRINK_SHIFT_WIDTH_RATE_ = 1;
 
+	const float BLOOM_RATIO_MAX_ = 1.0f;
+private:
+	static const int8_t S_IMGUI_SLIDER_FLAG_MIN_ = 0;
+	static const int8_t S_IMGUI_SLIDER_FLAG_MAX_ = 1;
 
 private:
 	//画面効果用のフラグ
@@ -150,21 +202,21 @@ private:
 	float peraGExtend_ = 1.0f;
 	float pera2Extend_ = 1.0f;
 	//一枚目の頂点
-	PeraVertex p1Vertices_[4] = {
+	PeraVertex p1Vertices_[S_VERTEX_COUNT_] = {
 			{{-1.0f, -1.0f,0},{0,1.0f}},//左下
 			{{-1.0f, +1.0f,0},{0,0}},//左上
 			{{+1.0f, -1.0f,0},{1.0f,1.0f}},//右下
 			{{+1.0f, +1.0f,0},{1.0f,0}}//右上
 	};
 	//ガウシアン用の頂点
-	PeraVertex pGVertices_[4] = {
+	PeraVertex pGVertices_[S_VERTEX_COUNT_] = {
 			{{-1.0f, -1.0f,0},{0,1.0f}},//左下
 			{{-1.0f, +1.0f,0},{0,0}},//左上
 			{{+1.0f, -1.0f,0},{1.0f,1.0f}},//右下
 			{{+1.0f, +1.0f,0},{1.0f,0}}//右上
 	};
 	//二枚目の頂点
-	PeraVertex p2Vertices_[4] = {
+	PeraVertex p2Vertices_[S_VERTEX_COUNT_] = {
 			{{-1.0f, -1.0f,0},{0,1.0f}},//左下
 			{{-1.0f, +1.0f,0},{0,0}},//左上
 			{{+1.0f, -1.0f,0},{1.0f,1.0f}},//右下
