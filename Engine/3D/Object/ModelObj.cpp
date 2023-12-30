@@ -120,7 +120,7 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 			line_stream >> position.y;
 			line_stream >> position.z;
 			//逆向きに読み込まれちゃうので
-			position.z *= -1.0f;
+			position.z *= VERTEX_Z_CHANGE_;
 			positions.emplace_back(position);
 		}
 		// 先頭文字列がvtならテクスチャ
@@ -131,7 +131,7 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 			line_stream >> texcoord.x;
 			line_stream >> texcoord.y;
 			// V方向反転
-			texcoord.y = 1.0f - texcoord.y;
+			texcoord.y = TEXCOORD_Y_MAX_ - texcoord.y;
 			// テクスチャ座標データに追加
 			texcoords.emplace_back(texcoord);
 		}
@@ -143,7 +143,7 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 			line_stream >> normal.y;
 			line_stream >> normal.z;
 			//逆向きに読み込まれちゃうので
-			normal.z *= -1.0f;
+			normal.z *= VERTEX_Z_CHANGE_;
 			// 法線ベクトルデータに追加
 			normals.emplace_back(normal);
 		}
@@ -186,7 +186,7 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 				vertex.pos = positions[indexPos - 1];
 				vertex.normal = normals[indexNormal - 1];
 				vertex.uv = texcoords[indexUV - 1];
-				vertex.boneWeight[0] = 1.0f;
+				vertex.boneWeight[0] = DEFAULT_BONE_WEIGHT_;
 				//メッシュを登録
 				mesh->AddVertex(vertex);
 
@@ -195,10 +195,10 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 					mesh->AddSmoothData(indexPos, (unsigned short)mesh->GetVertexCount() - 1);
 				}
 				//四角メッシュだったら[2,3,0]の順で入れる
-				if (indexNum >= 3) {
-					indices.emplace_back((unsigned short)(indexCount - 1));
+				if (indexNum >= S_MESH_VERTEX_NORMAL_NUM_) {
+					indices.emplace_back((unsigned short)(indexCount + S_INDEX_OFFSET_VERTEX_4_OF_2_));
 					indices.emplace_back((unsigned short)indexCount);
-					indices.emplace_back((unsigned short)(indexCount - 3));
+					indices.emplace_back((unsigned short)(indexCount + S_INDEX_OFFSET_VERTEX_4_OF_4_));
 				}
 				else
 				{
@@ -209,8 +209,9 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 			}
 			// インデックスデータの追加
 			//三角メッシュ
-			if (indices.size() == 3)
+			if (indices.size() == S_MESH_VERTEX_NORMAL_NUM_)
 			{
+				//DirectXの座標系用に並び替え
 				mesh->AddIndex(indices[0]);
 				mesh->AddIndex(indices[2]);
 				mesh->AddIndex(indices[1]);

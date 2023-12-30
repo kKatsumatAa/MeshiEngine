@@ -15,6 +15,11 @@ class FbxLoader final
 private://エイリアス
 	//std::を省略
 	using string = std::string;
+	// DirectX::を省略
+	using XMFLOAT2 = DirectX::XMFLOAT2;
+	using XMFLOAT3 = DirectX::XMFLOAT3;
+	using XMFLOAT4 = DirectX::XMFLOAT4;
+	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
 	//ボーン番号とスキンウェイとのペア
@@ -23,6 +28,19 @@ public:
 		uint32_t index;
 		float weight;
 	};
+
+
+public:
+	const int8_t DEFAULT_P_FILE_FORMAT_ = -1;
+	const float NODE_TRANS_W_ = 1.0f;
+	const float BONE_WEIGHT_RATIO_MAX_ = 1.0f;
+	const int8_t ANIMATION_P_SECOND_ = 1;
+	//マテリアル
+	const XMFLOAT3 DEFAULT_SPECULAR_ = { 0.3f,0.3f,0.3f };
+	const float DEFAULT_ALPHA_ = 1.0f;
+	//行
+	static const int8_t S_MAT_WIDTH_ = 4;
+	static const int8_t S_MAT_HEIGHT_ = 4;
 
 private://変数
 	//fbxマネージャー(sdkを使うのに必要)

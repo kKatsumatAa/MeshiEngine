@@ -23,9 +23,6 @@ private://エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
-	//球のインデックス用
-	static const int32_t S_SPHERE_INDEX_NUM_ = 66 * 3 + 6;
-
 	//頂点バッファの生成
 	ComPtr < ID3D12Resource> vertBuffTriangle_ = nullptr;
 	ComPtr < ID3D12Resource> vertBuffBox_ = nullptr;
@@ -57,6 +54,28 @@ public:
 	D3D12_INDEX_BUFFER_VIEW ibViewCube_{};
 	D3D12_INDEX_BUFFER_VIEW ibViewSphere_{};
 
+public:
+	static const int8_t S_BOX_INDICES_NUM_ = 6;
+	static const int8_t S_TRIANGLE_INDICES_NUM_ = 3;
+	static const int8_t S_CUBE_INDICES_NUM_ = 36;
+	static const int8_t S_CIRCLE_INDICES_NUM_ = 66;
+	static const int8_t S_LINE_INDICES_NUM_ = 2;
+	//球のインデックス用
+	static const uint32_t S_SPHERE_INDICES_NUM_ = (66 * 3 + 6);
+	static const uint32_t S_SPHERE_INDICES_NUM_RATE_ = 36;
+
+public:
+	const float TRIANGLE_ANGLE_1_ = PI * 2.0f + PI * 2.0f / 3.0f * 2.0f;
+	const float TRIANGLE_ANGLE_2_ = PI * 2.0f;
+	const float TRIANGLE_ANGLE_3_ = PI * 2.0f + PI * 2.0f / 3.0f;
+	const Vec2 TRIANGLE_UV_1_ = { 0.0f,1.0f };
+	const Vec2 TRIANGLE_UV_2_ = { 0.5f,0.0f };
+	const Vec2 TRIANGLE_UV_3_ = { 1.0f,1.0f };
+
+	static const int8_t S_MESH_VERTEX_NUM_NORMAL_ = 3;
+	static const int8_t S_CENTER_FIRST_VERTEX_NUM_ = 2;
+
+private:
 	//いろんな図形用
 	Vertex verticesTriangle_[3] = {
 		//手前
@@ -78,12 +97,12 @@ public:
 	Vertex verticesSphere_[2 + 34 * 36];
 
 private:
-	static uint16_t sIndicesBox_[6];
-	static uint16_t sIndicesTriangle_[3];
-	static uint16_t sIndicesCube_[36];
-	static uint16_t sIndicesCircle_[66];
-	static uint16_t sIndicesLine_[2];
-	static uint16_t sIndicesSphere_[Primitive::S_SPHERE_INDEX_NUM_ * 36];
+	static uint16_t sIndicesBox_[S_BOX_INDICES_NUM_];
+	static uint16_t sIndicesTriangle_[S_TRIANGLE_INDICES_NUM_];
+	static uint16_t sIndicesCube_[S_CUBE_INDICES_NUM_];
+	static uint16_t sIndicesCircle_[S_CIRCLE_INDICES_NUM_];
+	static uint16_t sIndicesLine_[S_LINE_INDICES_NUM_];
+	static uint16_t sIndicesSphere_[Primitive::S_SPHERE_INDICES_NUM_ * S_SPHERE_INDICES_NUM_RATE_];
 
 	static uint32_t sizeVB_;
 
@@ -108,7 +127,7 @@ public:
 	//Drawに必要なコマンド
 	void DrawCommandPrimitive(ID3D12Resource* vertBuff, int32_t vertexCount, Vertex* vertex, const D3D12_PRIMITIVE_TOPOLOGY& primitiveTopology,
 		const D3D12_VERTEX_BUFFER_VIEW& buffView, const D3D12_INDEX_BUFFER_VIEW& ibView, int32_t indicesCount,
-		const std::function<void()>& setRootParam,const std::function<void()>& setMaterialLightTex);
+		const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex);
 
 public:
 	//三角形描画

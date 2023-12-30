@@ -72,6 +72,10 @@ public://サブクラス
 	};
 
 
+public:
+	const float DEFAULT_SCALE_EXTEND_ = 0.01f;
+	const int32_t INVALID_ANIME_INDEX_ = -1;
+
 	//変数---------------------------------
 private:
 	std::vector<DirectX::XMMATRIX> offsetTransforms_;

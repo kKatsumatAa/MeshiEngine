@@ -14,7 +14,7 @@ int32_t IObject3D::sShadowSRVIndex_;
 //ライト
 LightManager* IObject3D::sLightManager_ = nullptr;
 //インプットレイアウト
-D3D12_INPUT_ELEMENT_DESC IObject3D::sInputLayoutM_[7] = {
+D3D12_INPUT_ELEMENT_DESC IObject3D::sInputLayoutM_[S_INPUT_LAYOUT_NUM_] = {
 	{//xyz座標
 	 "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 	 D3D12_APPEND_ALIGNED_ELEMENT,
@@ -83,7 +83,7 @@ IObject3D::IObject3D()
 		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
 		//リソース設定
 		ResourceProperties(cbResourceDesc,
-			((uint32_t)sizeof(EffectOConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
+			((uint32_t)sizeof(EffectOConstBuffer) + DirectXWrapper::S_BUFFER_ALIGNMENT_) & ~DirectXWrapper::S_BUFFER_ALIGNMENT_/*256バイトアライメント*/);
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &effectFlagsBuff_);
 		//定数バッファのマッピング
@@ -123,7 +123,7 @@ void IObject3D::CreateDepthSRV()
 	//設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC resDesc = {};
 	resDesc.Format = DXGI_FORMAT_R32_FLOAT;
-	resDesc.Texture2D.MipLevels = 1;
+	resDesc.Texture2D.MipLevels = S_DEPTH_SRV_MIP_LEVELS_;
 	resDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	resDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 
@@ -310,6 +310,7 @@ void IObject3D::MatMap(Camera* camera, Camera* lightCamera, IModel* model)
 			auto modelL = dynamic_cast<ObjectFBX*>(parentObj_);
 			bXM = modelL->GetNodes()[bIndex].globalTransform;
 			bM.PutInXMMATRIX(bXM);
+			//位置に
 			bM.m_[3][0] *= parentNodeModel_->GetScaleExtend() * pScale.x;
 			bM.m_[3][1] *= parentNodeModel_->GetScaleExtend() * pScale.y;
 			bM.m_[3][2] *= parentNodeModel_->GetScaleExtend() * pScale.z;
@@ -320,7 +321,9 @@ void IObject3D::MatMap(Camera* camera, Camera* lightCamera, IModel* model)
 		worldMat_->parent_->scale_ = pScale;
 
 		//ボーンワールド座標に入れて使えるようにしておく（仮）
-		boneWorldTrans_ = { matW.r[3].m128_f32[0],matW.r[3].m128_f32[1],matW.r[3].m128_f32[2] };
+		boneWorldTrans_ = { matW.r[3].m128_f32[0],
+			matW.r[3].m128_f32[1],
+			matW.r[3].m128_f32[2] };
 	}
 	else
 	{
@@ -333,9 +336,9 @@ void IObject3D::MatMap(Camera* camera, Camera* lightCamera, IModel* model)
 	//行列
 	cbt_.SetWorldMat(matW);
 	cbt_.SetViewProjMat(camera->GetViewMat() * camera->GetProjMat());
-	//ライトから見える範囲(左右:-20~20, 上下:-20~20, 奥行:1~100)
+	//ライトから見える範囲
 	cbt_.SetLightViewProjMat(lightCamera->GetViewMat()
-		* XMMatrixOrthographicLH(sLightCameraParam_.x + 0.1f, sLightCameraParam_.y + 0.1f, sLightCameraParam_.z, sLightCameraParam_.w));//全てのものが同じ大きさで計算するので平行投影
+		* XMMatrixOrthographicLH(sLightCameraParam_.x, sLightCameraParam_.y, sLightCameraParam_.z, sLightCameraParam_.w));//全てのものが同じ大きさで計算するので平行投影
 	cbt_.SetCameraPos(camera->GetEye());
 }
 
@@ -400,7 +403,7 @@ void IObject3D::DrawImGui(std::function<void()> imguiF)
 		if (ImGui::TreeNode("Effect")) {
 
 			ImGui::Checkbox("isDissolve", (bool*)&effectFlags_.isDissolve);
-			ImGui::SliderFloat("dissolveT", &effectFlags_.dissolveT, 0, 1.0f);
+			ImGui::SliderFloat("dissolveT", &effectFlags_.dissolveT, DISSOLVE_RATE_MIN_, DISSOLVE_RATE_MAX_);
 			ImGui::Checkbox("isFog", (bool*)&effectFlags_.isFog);
 			ImGui::Checkbox("isNormalMap", (bool*)&effectFlags_.isNormalMap);
 			ImGui::Checkbox("isRimLight", (bool*)&effectFlags_.isRimLight);

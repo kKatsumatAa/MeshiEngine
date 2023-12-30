@@ -53,6 +53,8 @@ public: // 静的メンバ関数
 	/// <returns>生成されたマテリアル</returns>
 	static std::unique_ptr<Material> Create();
 
+
+
 private: // 静的メンバ変数
 	// デバイス
 	static ID3D12Device* sDevice_;

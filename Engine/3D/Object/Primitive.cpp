@@ -4,16 +4,16 @@
 using namespace DirectX;
 
 
-uint16_t Primitive::sIndicesBox_[6] =
+uint16_t Primitive::sIndicesBox_[S_BOX_INDICES_NUM_] =
 {
 	0,1,2,//三角形1つ目
 	2,1,3,//三角形2つ目
 };
-uint16_t Primitive::sIndicesTriangle_[3] =
+uint16_t Primitive::sIndicesTriangle_[S_TRIANGLE_INDICES_NUM_] =
 {
 	0,1,2//三角形2つ目
 };
-uint16_t Primitive::sIndicesCube_[36] =
+uint16_t Primitive::sIndicesCube_[S_CUBE_INDICES_NUM_] =
 {
 	//前
 	0,1,2,//三角形1つ目
@@ -35,7 +35,7 @@ uint16_t Primitive::sIndicesCube_[36] =
 	23,21,22,//三角形2つ目
 };
 
-uint16_t Primitive::sIndicesCircle_[] =
+uint16_t Primitive::sIndicesCircle_[S_CIRCLE_INDICES_NUM_] =
 {
 	2,1,0,
 	3,2,0,
@@ -61,13 +61,12 @@ uint16_t Primitive::sIndicesCircle_[] =
 	23,22,0,
 };
 
-uint16_t Primitive::sIndicesLine_[2] =
+uint16_t Primitive::sIndicesLine_[S_LINE_INDICES_NUM_] =
 {
 	0,1//三角形2つ目
 };
 
-uint16_t Primitive::sIndicesSphere_[Primitive::S_SPHERE_INDEX_NUM_ * 36];
-
+uint16_t Primitive::sIndicesSphere_[S_SPHERE_INDICES_NUM_ * S_SPHERE_INDICES_NUM_RATE_];
 
 uint32_t Primitive::sizeVB_;
 
@@ -87,12 +86,12 @@ void Primitive::InitializeTriangle()
 {
 	HRESULT result = {};
 
-	float angle = PI * 2.0f + PI * 2.0f / 3.0f * 2.0f;
-	float angle2 = PI * 2.0f;
-	float angle3 = PI * 2.0f + PI * 2.0f / 3.0f;
+	float angle = TRIANGLE_ANGLE_1_;
+	float angle2 = TRIANGLE_ANGLE_2_;
+	float angle3 = TRIANGLE_ANGLE_3_;
 
-	verticesTriangle_[0] = { {sinf(angle),cosf(angle),0},{verticesTriangle_[0].normal},{0.0f,1.0f} ,{} };//左下
-	verticesTriangle_[1] = { {0,cosf(angle2),0},{verticesTriangle_[1].normal},{0.5f,0.0f} ,{} };//上
+	verticesTriangle_[0] = { {sinf(angle),cosf(angle),0},{verticesTriangle_[0].normal},  {0.0f,1.0f} ,{} };//左下
+	verticesTriangle_[1] = { {0,cosf(angle2),0},{verticesTriangle_[1].normal},           {0.5f,0.0f} ,{} };//上
 	verticesTriangle_[2] = { {sinf(angle3),cosf(angle3),0},{verticesTriangle_[2].normal},{1.0f,1.0f} ,{} };//右下
 
 
@@ -148,7 +147,7 @@ void Primitive::InitializeTriangle()
 
 	//06_03
 	{
-		for (int32_t i = 0; i < _countof(sIndicesTriangle_) / 3; i++)
+		for (int32_t i = 0; i < _countof(sIndicesTriangle_) / S_MESH_VERTEX_NUM_NORMAL_; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
 			uint16_t index0 = sIndicesTriangle_[i * 3 + 0];
@@ -256,11 +255,11 @@ void Primitive::InitializeCircle()
 
 	verticesCircle_[0].pos = { 0.0f,0.0f,0.0f };
 
-	static float sCount = _countof(verticesCircle_) - 2;//中心点と初期の点はカウントしない
+	static float sCount = _countof(verticesCircle_) - S_CENTER_FIRST_VERTEX_NUM_;//中心点と初期の点はカウントしない
 
 	for (int32_t i = 1; i < _countof(verticesCircle_); i++)
 	{
-		verticesCircle_[i].pos = { 1.0f * cosf(AngletoRadi(360 / sCount) * (i - 1)),1.0f * sinf(AngletoRadi(360 / sCount) * (i - 1)),0 };
+		verticesCircle_[i].pos = { cosf(AngletoRadi(PI2 / sCount) * (i - 1)), sinf(AngletoRadi(PI2 / sCount) * (i - 1)),0 };
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
@@ -569,12 +568,12 @@ void Primitive::InitializeSphere()
 		//インデックス
 		for (uint32_t i = 0; i < _countof(sIndicesSphere_); i++)
 		{
-			if (i % (S_SPHERE_INDEX_NUM_ * 35) == 0 && i != 0)//最後の縦の列
+			if (i % (S_SPHERE_INDICES_NUM_ * 35) == 0 && i != 0)//最後の縦の列
 			{
 				isLast = true;
 			}
 
-			if (i % S_SPHERE_INDEX_NUM_ == 0 || i % (S_SPHERE_INDEX_NUM_ * (count + 1) - 3) == 0)
+			if (i % S_SPHERE_INDICES_NUM_ == 0 || i % (S_SPHERE_INDICES_NUM_ * (count + 1) - 3) == 0)
 			{
 
 			}
@@ -625,9 +624,9 @@ void Primitive::InitializeSphere()
 
 				count2++;
 			}
-			if (i % S_SPHERE_INDEX_NUM_ == 0 || i % (S_SPHERE_INDEX_NUM_ * (count + 1) - 3) == 0)
+			if (i % S_SPHERE_INDICES_NUM_ == 0 || i % (S_SPHERE_INDICES_NUM_ * (count + 1) - 3) == 0)
 			{
-				if (i % S_SPHERE_INDEX_NUM_ == 0)//一番下の三角形
+				if (i % S_SPHERE_INDICES_NUM_ == 0)//一番下の三角形
 				{
 					if (isLast)
 					{
@@ -646,7 +645,7 @@ void Primitive::InitializeSphere()
 						i += 2;
 					}
 				}
-				else if (i % (S_SPHERE_INDEX_NUM_ * (count + 1) - 3) == 0)//一番上の三角形
+				else if (i % (S_SPHERE_INDICES_NUM_ * (count + 1) - 3) == 0)//一番上の三角形
 				{
 					if (isLast)
 					{

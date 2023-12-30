@@ -59,7 +59,7 @@ void ObjectManager::DebugUpdate()
 
 		RaycastHit info;
 		//何かあったら
-		if (CollisionManager::GetInstance()->Raycast(ray, &info, 1000))
+		if (CollisionManager::GetInstance()->Raycast(ray, &info, DEBUG_RAY_LENGTH_))
 		{
 			//シルエット解除で選択してないように見せる
 			if (selectObj_)

@@ -119,6 +119,14 @@ public:
 private: // 定数
 	static const int32_t S_VERTEX_COUNT_ALL_ = 65536;		// 頂点数
 	static const int32_t S_VERTEX_COUNT_ = S_VERTEX_COUNT_ALL_ / BLEND_NUM::NUM_COUNT;		// パーティクル種類ごとの頂点数
+	static const int8_t INIT_PIPELINE_INDEX_ = -1;		// パーティクル種類ごとの頂点数
+	//角度
+	const float PARTICLE_ROT_RAND_MIN_ = -2.0f;
+	const float PARTICLE_ROT_RAND_MAX_ = 2.0f;
+	const float PARTICLE_VEL_RAND_RATE_ = 0.5f;
+	const float PARTICLE_ACCEL_POW_RATE_ = 0.05f;
+
+private:
 	//マテリアル
 	std::unique_ptr<Material> material_ = nullptr;
 	//ライトマネージャ

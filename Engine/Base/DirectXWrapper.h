@@ -15,6 +15,9 @@ private://エイリアス
 	//Microsoft::WRL::を省略
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+public:
+	static const int32_t S_BUFFER_ALIGNMENT_ = 0xff;
+
 private:
 	const uint64_t SHADOW_DIFINITION_ = 1280;
 	bool isFirstFrame_ = true;

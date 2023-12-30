@@ -90,7 +90,7 @@ std::string FbxLoader::GetFullPath(const std::string& name)
 void FbxLoader::FbxSceneImport(const std::string& fbxFullPath, FbxScene* fbxScene)
 {
 	//ファイル名を指定してfbxファイルを読み込む
-	if (!fbxImporter_->Initialize(fbxFullPath.c_str(), -1, fbxManager_->GetIOSettings()))
+	if (!fbxImporter_->Initialize(fbxFullPath.c_str(), DEFAULT_P_FILE_FORMAT_, fbxManager_->GetIOSettings()))
 	{
 		assert(false);
 	}
@@ -109,7 +109,7 @@ void FbxLoader::CalcGlobalTransform(const FbxNode& fbxNode, Node& node, Node* pa
 	//形式変換して代入
 	node.rotation = { (float)rotation[0],(float)rotation[1],(float)rotation[2],0.0f };
 	node.scaling = { ((float)scaling[0]) * scaleExtend,((float)scaling[1]) * scaleExtend,((float)scaling[2]) * scaleExtend,0.0f };
-	node.translation = { (float)translation[0],(float)translation[1],(float)translation[2],1.0f };
+	node.translation = { (float)translation[0],(float)translation[1],(float)translation[2],NODE_TRANS_W_ };
 
 	//回転角をDegree（度）からラジアンに変換
 	node.rotation.x = XMConvertToRadians(node.rotation.x);
@@ -313,7 +313,7 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 					weight += controlPoint[i].boneWeight[j];
 				}
 				//合計で1.0f(100%)になるように調整
-				controlPoint[i].boneWeight[0] = 1.0f - weight;
+				controlPoint[i].boneWeight[0] = BONE_WEIGHT_RATIO_MAX_ - weight;
 				break;
 			}
 		}
@@ -400,7 +400,7 @@ void FbxLoader::LoadAnimation(ModelFBX* model, FbxScene* fbxScene)
 		}
 		//一秒で進む
 		FbxTime oneSecond;
-		oneSecond.SetTime(0, 0, 1, 0, 0, timeMode);
+		oneSecond.SetTime(0, 0, ANIMATION_P_SECOND_, 0, 0, timeMode);
 		//fpsをdoubleに変換
 		animationData.frameRate = static_cast<double>(oneSecond.GetFrameRate(timeMode));
 
@@ -485,7 +485,7 @@ void FbxLoader::ParseMeshFaces(FbxMesh* fbxMesh, Mesh* mesh)
 	{
 		//面を構成する頂点の数を取得（3なら三角形ポリゴン,4なら四角形）
 		const int32_t POLYGON_SIZE = fbxMesh->GetPolygonSize(i);
-		assert(POLYGON_SIZE <= 4);
+		assert(POLYGON_SIZE <= ModelFBX::S_MESH_VERTEX_NUM_MAX_);
 
 		//1頂点ずつ処理
 		for (int32_t j = 0; j < POLYGON_SIZE; j++)
@@ -539,7 +539,7 @@ void FbxLoader::ParseMeshFaces(FbxMesh* fbxMesh, Mesh* mesh)
 
 			//インデックス配列に頂点インデックス追加
 			//3頂点までなら
-			if (j < 3)
+			if (j < ModelFBX::S_MESH_VERTEX_NUM_NORMAL_)
 			{
 				//1点追加し、ほかの2点と三角形を構築する
 				indices.push_back(vertexCount);
@@ -548,12 +548,9 @@ void FbxLoader::ParseMeshFaces(FbxMesh* fbxMesh, Mesh* mesh)
 			else
 			{
 				//3点追加し、四角形の 0,1,2,3 のうち 2,3,0 で三角形を構築する
-				int16_t index2 = indices[indices.size() - 1];
-				int16_t index3 = vertexCount;
-				int16_t index0 = indices[indices.size() - 3];
-				indices.push_back(index2);
-				indices.push_back(index3);
-				indices.push_back(index0);
+				indices.push_back(indices[indices.size() + ModelFBX::S_INDEX_OFFSET_VERTEX_4_OF_2_]);
+				indices.push_back(vertexCount);
+				indices.push_back(indices[indices.size() + ModelFBX::S_INDEX_OFFSET_VERTEX_4_OF_4_]);
 			}
 
 			vertexCount++;
@@ -623,10 +620,10 @@ void FbxLoader::ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode)
 				materialM->diffuse_.z = (float)diffuse.Get()[2];
 
 				//alpha
-				materialM->alpha_ = 1.0f;
+				materialM->alpha_ = DEFAULT_ALPHA_;
 
 				//specular
-				materialM->specular_ = XMFLOAT3{ 0.3f,0.3f,0.3f };
+				materialM->specular_ = DEFAULT_SPECULAR_;
 			}
 
 			//ディフューズテクスチャを取り出す
@@ -664,10 +661,10 @@ void FbxLoader::ParseMaterial(ModelFBX* model, Mesh* mesh, FbxNode* fbxNode)
 void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src)
 {
 	//行
-	for (int32_t i = 0; i < 4; i++)
+	for (int32_t i = 0; i < S_MAT_WIDTH_; i++)
 	{
 		//列
-		for (int32_t j = 0; j < 4; j++)
+		for (int32_t j = 0; j < S_MAT_HEIGHT_; j++)
 		{
 			//1要素コピー
 			dst->r[i].m128_f32[j] = (float)src.Get(i, j);

@@ -51,7 +51,8 @@ uint32_t ModelFBX::GetAnimIndex(const std::string& animName)
 		count++;
 	}
 
-	return (uint32_t) - 1;
+	//最後までなければ使えないインデックス
+	return (uint32_t) INVALID_ANIME_INDEX_;
 }
 
 void ModelFBX::Initialize()
@@ -60,7 +61,7 @@ void ModelFBX::Initialize()
 
 	IModel::Initialize();
 
-	scaleExtend_ = 0.01f;
+	scaleExtend_ = DEFAULT_SCALE_EXTEND_;
 }
 
 void ModelFBX::LoadTextures()

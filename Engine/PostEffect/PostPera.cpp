@@ -25,7 +25,7 @@ void PostPera::Initialize(const char* normalImageFileName)
 		cbHeapProp.Type = D3D12_HEAP_TYPE_UPLOAD;//GPUへの転送用
 		//リソース設定
 		ResourceProperties(cbResourceDesc,
-			((uint32_t)sizeof(EffectConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
+			((uint32_t)sizeof(EffectConstBuffer) + DirectXWrapper::S_BUFFER_ALIGNMENT_) & ~DirectXWrapper::S_BUFFER_ALIGNMENT_/*256バイトアライメント*/);
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &effectFlagsBuff_);
 		//定数バッファのマッピング

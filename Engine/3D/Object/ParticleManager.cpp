@@ -35,7 +35,7 @@ void ParticleManager::Initialize()
 		//リソース設定
 		D3D12_RESOURCE_DESC cbResourceDesc{};
 		ResourceProperties(cbResourceDesc,
-			((uint32_t)sizeof(ViewBillConstBuffer) + 0xff) & ~0xff/*256バイトアライメント*/);
+			((uint32_t)sizeof(ViewBillConstBuffer) + DirectXWrapper::S_BUFFER_ALIGNMENT_) & ~DirectXWrapper::S_BUFFER_ALIGNMENT_/*256バイトアライメント*/);
 		//定数バッファの生成
 		BuffProperties(cbHeapProp, cbResourceDesc, &viewBillConstBuff_);
 	}
@@ -173,7 +173,7 @@ void ParticleManager::Draw(uint64_t texHandle)
 	}
 
 	//パイプラインの要素番号
-	int32_t num = -1;
+	int32_t num = INIT_PIPELINE_INDEX_;
 
 	//パーティクルの種類ごとに
 	for (auto& particles : particlesArray_)
@@ -238,12 +238,12 @@ void ParticleManager::Add(int32_t life, const Vec3& position, const Vec3& veloci
 	p.sColor_ = start_color;
 	p.eColor_ = end_color;
 
-	p.sRotation_.x = start_rot * GetRand(-2.0f, 2.0f);
-	p.sRotation_.y = start_rot * GetRand(-2.0f, 2.0f);
-	p.sRotation_.z = start_rot * GetRand(-2.0f, 2.0f);
-	p.eRotation_.x = end_rot * GetRand(-2.0f, 2.0f);
-	p.eRotation_.y = end_rot * GetRand(-2.0f, 2.0f);
-	p.eRotation_.z = end_rot * GetRand(-2.0f, 2.0f);
+	p.sRotation_.x = start_rot * GetRand(PARTICLE_ROT_RAND_MIN_, PARTICLE_ROT_RAND_MAX_);
+	p.sRotation_.y = start_rot * GetRand(PARTICLE_ROT_RAND_MIN_, PARTICLE_ROT_RAND_MAX_);
+	p.sRotation_.z = start_rot * GetRand(PARTICLE_ROT_RAND_MIN_, PARTICLE_ROT_RAND_MAX_);
+	p.eRotation_.x = end_rot * GetRand(PARTICLE_ROT_RAND_MIN_, PARTICLE_ROT_RAND_MAX_);
+	p.eRotation_.y = end_rot * GetRand(PARTICLE_ROT_RAND_MIN_, PARTICLE_ROT_RAND_MAX_);
+	p.eRotation_.z = end_rot * GetRand(PARTICLE_ROT_RAND_MIN_, PARTICLE_ROT_RAND_MAX_);
 }
 
 void ParticleManager::InitializeGraphicsPipeline()
@@ -461,13 +461,13 @@ void ParticleManager::GenerateRandomParticle(int32_t num, int32_t lifeTime, floa
 
 		const float MD_VEL = vecPower;
 		Vec3 vel{};
-		vel.x = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.y = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
-		vel.z = (float)rand() / RAND_MAX * MD_VEL - MD_VEL / 2.0f;
+		vel.x = (float)rand() / RAND_MAX * MD_VEL - MD_VEL * PARTICLE_VEL_RAND_RATE_;
+		vel.y = (float)rand() / RAND_MAX * MD_VEL - MD_VEL * PARTICLE_VEL_RAND_RATE_;
+		vel.z = (float)rand() / RAND_MAX * MD_VEL - MD_VEL * PARTICLE_VEL_RAND_RATE_;
 
 		//重力に見立ててYのみ[-0.001f~0]でランダムに
 		Vec3 acc{};
-		const float MD_ACC = vecPower * 0.05f;
+		const float MD_ACC = vecPower * PARTICLE_ACCEL_POW_RATE_;
 		acc.y = -(float)rand() / RAND_MAX * MD_ACC;
 
 		ParticleManager::GetInstance()->Add(lifeTime, { pos.x,pos.y,pos.z }, vel, acc, start_scale, end_scale

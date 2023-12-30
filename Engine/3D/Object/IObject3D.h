@@ -55,8 +55,11 @@ private:
 	static XMFLOAT4 sLightCameraParam_;
 
 protected:
+	static const int8_t S_INPUT_LAYOUT_NUM_ = 7;
+	static const uint8_t S_DEPTH_SRV_MIP_LEVELS_ = 1;
+protected:
 	// 頂点レイアウト
-	static D3D12_INPUT_ELEMENT_DESC sInputLayoutM_[7];
+	static D3D12_INPUT_ELEMENT_DESC sInputLayoutM_[S_INPUT_LAYOUT_NUM_];
 
 protected:
 	//シャドウマップ用の深度SRVの要素番号

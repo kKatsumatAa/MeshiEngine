@@ -43,7 +43,7 @@ void Material::CreateConstantBuffer()
 	//リソース設定
 	D3D12_RESOURCE_DESC cbResourceDesc{};
 	ResourceProperties(cbResourceDesc,
-		((uint32_t)sizeof(Material::ConstBufferDataMaterial2) + 0xff) & ~0xff/*256バイトアライメント*/);
+		((uint32_t)sizeof(Material::ConstBufferDataMaterial2) + DirectXWrapper::S_BUFFER_ALIGNMENT_) & ~DirectXWrapper::S_BUFFER_ALIGNMENT_/*256バイトアライメント*/);
 	//定数バッファの生成
 	BuffProperties(cbHeapProp, cbResourceDesc, &constBuff_);
 }

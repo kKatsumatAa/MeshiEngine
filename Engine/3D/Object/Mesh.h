@@ -60,7 +60,8 @@ private: // エイリアス
 
 public://定数
 	//ボーンインデックス（影響を受けるボーン）の最大数
-	static const int32_t S_MAX_BONE_INDICES_ = 4;//hlslのfloat4に対応するため"4"
+	static const int8_t S_MAX_BONE_INDICES_ = 4;//hlslのfloat4に対応するため"4"
+	static const int8_t S_CALC_TANG_MESH_VERTEX_NUM_ = 3;
 
 public://サブクラス
 	//頂点データ構造体

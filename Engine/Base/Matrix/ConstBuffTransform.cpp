@@ -15,7 +15,7 @@ void ConstBuffTransform::Initialize()
 		D3D12_RESOURCE_DESC cbResourceDesc{};
 
 		cbResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		cbResourceDesc.Width = (sizeof(ConstBufferDataTransform) + 0xff) & ~0xff/*256バイトアライメント*/;
+		cbResourceDesc.Width = (sizeof(ConstBufferDataTransform) + DirectXWrapper::S_BUFFER_ALIGNMENT_) & ~DirectXWrapper::S_BUFFER_ALIGNMENT_/*256バイトアライメント*/;
 		cbResourceDesc.Height = 1;
 		cbResourceDesc.DepthOrArraySize = 1;
 		cbResourceDesc.MipLevels = 1;

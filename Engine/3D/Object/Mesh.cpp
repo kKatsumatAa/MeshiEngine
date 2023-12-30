@@ -94,7 +94,7 @@ void Mesh::CalculateSmoothedVertexNormals()
 
 void Mesh::CalculateTangent()
 {
-	for (int32_t i = 0; i < indices_.size() / 3; i++)
+	for (int32_t i = 0; i < indices_.size() / S_CALC_TANG_MESH_VERTEX_NUM_; i++)
 	{//三角形一つごとに計算
 		//三角形のインデックスを取り出して、一時的な変数に入れる
 		uint16_t index0 = indices_[i * 3 + 0];

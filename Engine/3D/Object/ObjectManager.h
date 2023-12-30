@@ -10,6 +10,9 @@
 //今は3Dのみの管理
 class ObjectManager final
 {
+public:
+	const float DEBUG_RAY_LENGTH_ = 1000.0f;
+
 private:
 	//選択中のオブジェクト
 	IObject3D* selectObj_ = nullptr;

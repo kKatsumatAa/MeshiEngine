@@ -35,6 +35,19 @@ public://定数
 	//参照先のパス
 	static const std::string S_BASE_DIRECTORY_;
 
+public:
+	const float IMGUI_SCALE_EXTEND_MAX_ = 10.0f;
+	const float IMGUI_SCALE_EXTEND_MIN_ = 0.0f;
+	const float IMGUI_MATERIAL_EXTEND_DRAG_SPEED_ = 1.0f;
+	const float IMGUI_MATERIAL_EXTEND_MAX_ = 100.0f;
+	const float IMGUI_MATERIAL_EXTEND_MIN_ = 0;
+
+public:
+	static const int8_t S_MESH_VERTEX_NORMAL_NUM_ = 3;
+	static const int8_t S_INDEX_OFFSET_VERTEX_4_OF_2_ = -1;
+	static const int8_t S_INDEX_OFFSET_VERTEX_4_OF_4_ = -3;
+	static const int8_t S_MESH_VERTEX_NUM_MAX_ = 4;
+	static const int8_t S_MESH_VERTEX_NUM_NORMAL_ = 3;
 
 protected:
 	// 名前
