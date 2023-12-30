@@ -1099,7 +1099,7 @@ void PostPera::SetHeapAllBuffView(bool isPost2, bool isPost1)
 	//ボケ定数
 	peraHandle.ptr += DirectXWrapper::GetInstance().GetDevice()->
 		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootDescriptorTable(RootParamIndex::GAUSS_PARAM, peraHandle);
+	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(RootParamIndex::GAUSS_PARAM, peraHandle);
 
 	//ポストエフェクトの「フラグ」なのでrp[6]
 	DirectXWrapper::GetInstance().GetCommandList()->SetGraphicsRootConstantBufferView(RootParamIndex::EFFECT_FLAG, effectFlagsBuff_->GetGPUVirtualAddress());
