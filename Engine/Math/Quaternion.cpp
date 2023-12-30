@@ -1,6 +1,12 @@
 #include "Quaternion.h"
 #include <math.h>
 
+
+const float Quaternion::MAKE_AXIS_ANGLE_RATE_ = 0.5f;
+const float Quaternion::SLERP_RATIO_MAX_ = 1.0f;
+const float Quaternion::MAKE_ROTATE_MAT_RATE_ = 2.0f;
+
+//--------------------------------------------------------------------
 Quaternion Quaternion::GetMultiply(const Quaternion& rhs) const
 {
 	Quaternion ans;
@@ -70,11 +76,11 @@ Quaternion Quaternion::MakeAxisAngle(const Vec3& axis, float angle, const Vec3& 
 	axis_ = { axis_.x * useAxis.x,axis_.y * useAxis.y, axis_.z * useAxis.z };
 	axis_.Normalized();
 
-	float rad = sinf(angle / 2);
+	float rad = sinf(angle * MAKE_AXIS_ANGLE_RATE_);
 	ans.x = axis_.x * rad;
 	ans.y = axis_.y * rad;
 	ans.z = axis_.z * rad;
-	ans.w = cosf(angle / 2);
+	ans.w = cosf(angle * MAKE_AXIS_ANGLE_RATE_);
 
 	ans = ans.GetNormalize();
 
@@ -114,17 +120,17 @@ M4 Quaternion::MakeRotateMatrix() const
 
 	M4 ans = {
 		q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z,
-		2.0f * (q.x * q.y + q.w * q.z),
-		2.0f * (q.x * q.z - q.w * q.y),
+		MAKE_ROTATE_MAT_RATE_ * (q.x * q.y + q.w * q.z),
+		MAKE_ROTATE_MAT_RATE_ * (q.x * q.z - q.w * q.y),
 		0,
 
-		2.0f * (q.x * q.y - q.w * q.z),
+		MAKE_ROTATE_MAT_RATE_ * (q.x * q.y - q.w * q.z),
 		q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z,
-		2.0f * (q.y * q.z + q.w * q.x),
+		MAKE_ROTATE_MAT_RATE_ * (q.y * q.z + q.w * q.x),
 		0,
 
-		2.0f * (q.x * q.z + q.w * q.y),
-		2.0f * (q.y * q.z - q.w * q.x),
+		MAKE_ROTATE_MAT_RATE_ * (q.x * q.z + q.w * q.y),
+		MAKE_ROTATE_MAT_RATE_ * (q.y * q.z - q.w * q.x),
 		q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z,
 		0,
 
@@ -296,13 +302,13 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
 	float theta = acosf(dot);
 
 	//thetaとsinを使って補間係数scale0,scale1を求める
-	float scale0 = sinf((1 - t) * theta) / sinf(theta);
+	float scale0 = sinf((Quaternion::SLERP_RATIO_MAX_ - t) * theta) / sinf(theta);
 	float scale1 = sinf(t * theta) / sinf(theta);
 
 	//0除算にならない改良版
-	if (dot >= 1.0f - FLT_EPSILON)
+	if (dot >= Quaternion::SLERP_RATIO_MAX_ - FLT_EPSILON)
 	{
-		return (1.0f - t) * q02 + t * q1;
+		return (Quaternion::SLERP_RATIO_MAX_ - t) * q02 + t * q1;
 	}
 
 	//それぞれの補間係数を利用して補間後のQuaternionを求める

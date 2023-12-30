@@ -94,8 +94,6 @@ void MouseInput::DeleteDevice()
 MouseInput::MouseInput()
 {
 	result_ = {};
-	//Initialize();
-
 }
 
 void MouseInput::Finalize()

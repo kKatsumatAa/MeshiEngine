@@ -102,8 +102,6 @@ void PadInput::PadConnectSearch()
 PadInput::PadInput()
 {
 	result_ = {};
-	//Initialize();
-
 }
 
 void PadInput::Finalize()
@@ -138,7 +136,6 @@ void PadInput::Update()
 		gamePad_->Poll();
 		//全キーの入力情報を取得
 		result_ = gamePad_->GetDeviceState(sizeof(padData_), &padData_);
-		//assert(SUCCEEDED(result));
 	}
 }
 
@@ -163,7 +160,7 @@ Vec2 PadInput::GetLeftStickTilt()
 	{
 		// スティックの方向判定
 	// 無反応範囲
-		long unresponsive_range = (long)(STICK_RANGE_ / 5.0f);
+		long unresponsive_range = (long)(STICK_RANGE_ * STICK_RANGE_RATE_);
 
 		if (padData_.lX< -unresponsive_range || padData_.lX > unresponsive_range
 			|| padData_.lY < -unresponsive_range || padData_.lY > unresponsive_range)
@@ -187,7 +184,7 @@ Vec2 PadInput::GetRightStickTilt()
 	if (gamePad_ != NULL)
 	{
 		// 無反応範囲
-		long unresponsive_range = (long)(STICK_R_RANGE_ / 5.0f);
+		long unresponsive_range = (long)(STICK_R_RANGE_ * STICK_RANGE_RATE_);
 
 		if (padData_.lRx - STICK_R_RANGE_<-unresponsive_range || padData_.lRx - STICK_R_RANGE_ > unresponsive_range
 			|| padData_.lRy - STICK_R_RANGE_<-unresponsive_range || padData_.lRy - STICK_R_RANGE_ > unresponsive_range)

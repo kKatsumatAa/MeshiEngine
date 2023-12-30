@@ -1,8 +1,8 @@
-﻿#include "M4.h"
+#include "M4.h"
 
 using namespace DirectX;
 
-const float M4::NORMAL_M[4][4] = {
+const float M4::NORMAL_M[S_MAT_HEIGHT_][S_MAT_WIDTH_] = {
 	   {1,0,0,0},
 	   {0,1,0,0},
 	   {0,0,1,0},
@@ -11,14 +11,14 @@ const float M4::NORMAL_M[4][4] = {
 
 void M4::CalcInvMat(M4& mat)
 {
-	double inv[16], det;
-	double m[16];
+	double inv[S_MAT_NUM_], det;
+	double m[S_MAT_NUM_];
 
-	for (int32_t i = 0; i < 4; i++)
+	for (int32_t i = 0; i < S_MAT_HEIGHT_; i++)
 	{
-		for (int32_t j = 0; j < 4; j++)
+		for (int32_t j = 0; j < S_MAT_WIDTH_; j++)
 		{
-			m[i * 4 + j] = mat.m_[i][j];
+			m[i * S_MAT_HEIGHT_ + j] = mat.m_[i][j];
 		}
 	}
 
@@ -141,20 +141,20 @@ void M4::CalcInvMat(M4& mat)
 
 	det = 1.0 / det;
 
-	for (int32_t i = 0; i < 4; i++)
+	for (int32_t i = 0; i < S_MAT_HEIGHT_; i++)
 	{
-		for (int32_t j = 0; j < 4; j++)
+		for (int32_t j = 0; j < S_MAT_WIDTH_; j++)
 		{
-			mat.m_[i][j] = inv[i * 4 + j] * det;
+			mat.m_[i][j] = inv[i * S_MAT_HEIGHT_ + j] * det;
 		}
 	}
 }
 
 M4::M4()
 {
-	for (int32_t i = 0; i < 4; i++)
+	for (int32_t i = 0; i < S_MAT_HEIGHT_; i++)
 	{
-		for (int32_t j = 0; j < 4; j++)
+		for (int32_t j = 0; j < S_MAT_WIDTH_; j++)
 		{
 			m_[i][j] = 0;
 		}
@@ -166,6 +166,7 @@ M4::M4(float m00, float m01, float m02, float m03,
 	float m20, float m21, float m22, float m23,
 	float m30, float m31, float m32, float m33)
 {
+	//順に入れる
 	m_[0][0] = m00;
 	m_[0][1] = m01;
 	m_[0][2] = m02;
@@ -184,11 +185,11 @@ M4::M4(float m00, float m01, float m02, float m03,
 	m_[3][3] = m33;
 }
 
-M4::M4(const float(*other)[4])
+M4::M4(const float(*other)[S_MAT_WIDTH_])
 {
-	for (int32_t i = 0; i < 4; i++)
+	for (int32_t i = 0; i < S_MAT_HEIGHT_; i++)
 	{
-		for (int32_t j = 0; j < 4; j++)
+		for (int32_t j = 0; j < S_MAT_WIDTH_; j++)
 		{
 			m_[i][j] = other[i][j];
 		}
@@ -202,9 +203,9 @@ void M4::TransposeM4()
 {
 	M4 M = *this;
 
-	for (int32_t i = 0; i < 4; i++)
+	for (int32_t i = 0; i < S_MAT_HEIGHT_; i++)
 	{
-		for (int32_t j = 0; j < 4; j++)
+		for (int32_t j = 0; j < S_MAT_WIDTH_; j++)
 		{
 			m_[i][j] = M.m_[j][i];
 		}
@@ -286,11 +287,11 @@ M4 M4::operator*(const M4& other)const
 {
 	M4 m4;
 
-	for (int32_t ic = 0; ic < 4; ic++)
+	for (int32_t ic = 0; ic < S_MAT_HEIGHT_; ic++)
 	{
-		for (int32_t i = 0; i < 4; i++)
+		for (int32_t i = 0; i < S_MAT_HEIGHT_; i++)
 		{
-			for (int32_t j = 0; j < 4; j++)
+			for (int32_t j = 0; j < S_MAT_WIDTH_; j++)
 			{
 				m4.m_[ic][i] += m_[ic][j] * other.m_[j][i];
 			}
@@ -304,11 +305,11 @@ M4& M4::operator*=(const M4& other)
 {
 	M4 m4;
 
-	for (int32_t ic = 0; ic < 4; ic++)
+	for (int32_t ic = 0; ic < S_MAT_HEIGHT_; ic++)
 	{
-		for (int32_t i = 0; i < 4; i++)
+		for (int32_t i = 0; i < S_MAT_HEIGHT_; i++)
 		{
-			for (int32_t j = 0; j < 4; j++)
+			for (int32_t j = 0; j < S_MAT_WIDTH_; j++)
 			{
 				m4.m_[ic][i] += m_[ic][j] * other.m_[j][i];
 			}
@@ -337,10 +338,6 @@ void M4::MatIntoXMMATRIX(XMMATRIX& xM)const
 				 (float)m_[3][0],(float)m_[3][1],(float)m_[3][2],(float)m_[3][3] };
 
 }
-
-//void M4::Normalize()
-//{
-//}
 
 const Vec3 operator*(const Vec3& v, const M4& m2)
 {

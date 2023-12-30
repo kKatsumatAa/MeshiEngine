@@ -41,6 +41,7 @@ private:
 
 	const float STICK_RANGE_ = 1000;
 	const float STICK_R_RANGE_ = 65535 / 2.0f;
+	const float STICK_RANGE_RATE_ = 1.0f / 5.0f;
 
 	const int32_t SEARCH_COUNT_MAX_ = 120;
 	int32_t searchCount_ = 0;

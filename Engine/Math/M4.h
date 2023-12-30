@@ -18,10 +18,15 @@ private://エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
-	//行列
-	double m_[4][4];
+	static const uint8_t S_MAT_HEIGHT_ = 4;
+	static const uint8_t S_MAT_WIDTH_ = 4;
+	static const uint8_t S_MAT_NUM_ = S_MAT_HEIGHT_ * S_MAT_WIDTH_;
 
-	static const float NORMAL_M[4][4];
+public:
+	//行列
+	double m_[S_MAT_HEIGHT_][S_MAT_WIDTH_];
+
+	static const float NORMAL_M[S_MAT_HEIGHT_][S_MAT_WIDTH_];
 
 public:
 	//逆行列計算
@@ -36,7 +41,7 @@ public:
 		float m20, float m21, float m22, float m23,
 		float m30, float m31, float m32, float m33);
 	//コンストラクタ(引数が配列)
-	M4(const float(*other)[4]);
+	M4(const float(*other)[S_MAT_WIDTH_]);
 
 public:
 	//行列を転置

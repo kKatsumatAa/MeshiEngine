@@ -9,6 +9,12 @@
 //クォータニオン
 class Quaternion
 {
+private:
+	static const float MAKE_AXIS_ANGLE_RATE_;
+	static const float MAKE_ROTATE_MAT_RATE_;
+public:
+	static const float SLERP_RATIO_MAX_;
+
 public://変数
 	//v
 	float x;
