@@ -5,14 +5,12 @@
 
 #pragma once
 #include<DirectXMath.h>
-#include <wrl.h>
+#include "Vec3.h"
 
 
 class DirLight
 {
 private://エイリアス
-	//Microsoft::WRL::を省略
-	template<class T> using Comptr = Microsoft::WRL::ComPtr<T>;
 	//DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
@@ -20,38 +18,40 @@ private://エイリアス
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-
-private://メンバ変数
-	//ライト光線方向
-	XMVECTOR lightdir_ = { 1,0,0,0 };
-	//ライト色
-	XMFLOAT3 lightColor_ = { 1,1,1 };
-	// 有効フラグ
-	bool active_ = false;
-
-
 public://サブクラス
 	//定数バッファ用データ構造体
 	struct ConstBufferData
 	{
-		XMVECTOR lightv;     //ライトの方向を表すベクトル
+		XMVECTOR lightdir;     //ライトの方向を表すベクトル
 		XMFLOAT3 lightColor; //ライトの色
 		uint32_t active; //有効か
 	};
 
 
 public:
+	const float IMGUI_LIGHT_DIR_MIN_ = -1.0f;
+	const float IMGUI_LIGHT_DIR_MAX_ = 1.0f;
+
+private://メンバ変数
+	//ライト方向
+	Vec3 lightdir_ = { 1.0f,0,0 };
+	//ライト色
+	XMFLOAT3 lightColor_ = { 1,1,1 };
+	// 有効フラグ
+	bool active_ = false;
+
+public:
 	/// <summary>
 	/// ライト方向をセット
 	/// </summary>
 	/// <param name="lightdir_">ライト方向</param>
-	inline void SetLightDir(const XMVECTOR& lightdir) { lightdir_ = DirectX::XMVector3Normalize(lightdir); }
+	void SetLightDir(const XMVECTOR& lightdir);
 
 	/// <summary>
 	/// ライト方向を取得
 	/// </summary>
 	/// <returns>ライト方向</returns>
-	inline const XMVECTOR& GetLightDir() { return lightdir_; }
+	XMVECTOR GetLightDir();
 
 	/// <summary>
 	/// ライト色をセット

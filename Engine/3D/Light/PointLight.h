@@ -32,6 +32,10 @@ public://サブクラス
 		uint32_t active;
 	};
 
+public:
+	const float IMGUI_LIGHT_ATTEN_MIN_ = 0;
+	const float IMGUI_LIGHT_ATTEN_MAX_ = 3.0f;
+
 private://メンバ変数
 	//ライト座標（ワールド座標系）
 	XMFLOAT3 lightpos_ = { 0,0,0 };

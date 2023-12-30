@@ -11,6 +11,13 @@
 
 class CameraManager
 {
+public:
+	const float DEBUG_CAMERA_ROT_RATE_ = 0.01f;
+	const float DEBUG_CAMERA_ROT_RIMIT_ = PI * 0.5f;
+	const float DEBUG_CAMERA_WHEEL_SPEED_RATE_ = 0.02f;
+	const float DEBUG_CAMERA_POS_MAX_ = -1.0f;
+	const float DEBUG_CAMERA_POS_MIN_ = -1000.0f;
+
 private:
 	//デバッグ用
 	WorldMat debugWorldMat_;

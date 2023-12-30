@@ -39,6 +39,7 @@ public://ui系
 public://武器
 	const Vec3 THROW_WEAPON_VEC_ = { 0,0.2f,0 };
 	const int8_t DECREMENT_BULLET_NUM_ = 1;
+	const float THROW_WEAPON_ADD_GAME_VEL_ = 0.9f;
 private:
 	const float DEAD_TIMER_MAX_ = 70.0f;
 	float const DEAD_MIN_POS_EXTEND_ = -4.0f;

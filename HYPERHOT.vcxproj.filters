@@ -252,9 +252,6 @@
     <ClCompile Include="Engine\2D\TextureManager.cpp">
       <Filter>ソース ファイル\Engine\2D</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\3D\Light\CircleShadow.cpp">
-      <Filter>ソース ファイル\Engine\3D\Light</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3D\Light\DirLight.cpp">
       <Filter>ソース ファイル\Engine\3D\Light</Filter>
     </ClCompile>

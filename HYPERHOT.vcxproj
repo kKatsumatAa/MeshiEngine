@@ -157,7 +157,6 @@
     <ClCompile Include="Engine\2D\TextureManager.cpp" />
     <ClCompile Include="Engine\3D\Camera\Camera.cpp" />
     <ClCompile Include="Engine\3D\Camera\CameraManager.cpp" />
-    <ClCompile Include="Engine\3D\Light\CircleShadow.cpp" />
     <ClCompile Include="Engine\3D\Light\DirLight.cpp" />
     <ClCompile Include="Engine\3D\Light\LightManager.cpp" />
     <ClCompile Include="Engine\3D\Light\PointLight.cpp" />

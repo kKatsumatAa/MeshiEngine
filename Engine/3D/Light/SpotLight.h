@@ -33,8 +33,14 @@ public://サブクラス
 		float pad4;
 	};
 
+public:
+	const float IMGUI_LIGHT_ATTEN_MIN_ = 0;
+	const float IMGUI_LIGHT_ATTEN_MAX_ = 3.0f;
+	const float IMGUI_LIGHT_DIR_MIN_ = -1.0f;
+	const float IMGUI_LIGHT_DIR_MAX_ = 1.0f;
+
 private://メンバ変数
-	//ライト方向
+	//ライトの方向
 	XMVECTOR lightdir_ = { 1.0f,0,0 };
 	//ライト座標（ワールド座標系）
 	XMFLOAT3 lightpos_ = { 0,0,0 };

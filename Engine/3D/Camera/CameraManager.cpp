@@ -94,19 +94,23 @@ void CameraManager::Update()
 
 				//回転
 				Vec3 rotMove = {
-					vel.y * 0.01f,
-					vel.x * 0.01f,
+					vel.y * DEBUG_CAMERA_ROT_RATE_,
+					vel.x * DEBUG_CAMERA_ROT_RATE_,
 					0
 				};
 
 				debugWorldMat_.rot_ += rotMove;
-				debugWorldMat_.rot_.x = min(debugWorldMat_.rot_.x, PI / 2.0f);
-				debugWorldMat_.rot_.x = max(debugWorldMat_.rot_.x, -PI / 2.0f);
+				debugWorldMat_.rot_.x = min(debugWorldMat_.rot_.x, DEBUG_CAMERA_ROT_RIMIT_);
+				debugWorldMat_.rot_.x = max(debugWorldMat_.rot_.x, -DEBUG_CAMERA_ROT_RIMIT_);
 			}
 
-			cameraPos_.z = min(cameraPos_.z + (float)MouseInput::GetInstance().GetWheelAmountOfRot() * 0.02f, -1.0f);
-			cameraPos_.z = max(cameraPos_.z + (float)MouseInput::GetInstance().GetWheelAmountOfRot() * 0.02f, -1000.0f);
+			//上限下限
+			cameraPos_.z = min(cameraPos_.z + (float)MouseInput::GetInstance().GetWheelAmountOfRot() * DEBUG_CAMERA_WHEEL_SPEED_RATE_,
+				DEBUG_CAMERA_POS_MAX_);
+			cameraPos_.z = max(cameraPos_.z + (float)MouseInput::GetInstance().GetWheelAmountOfRot() * DEBUG_CAMERA_WHEEL_SPEED_RATE_,
+				DEBUG_CAMERA_POS_MIN_);
 
+			//ベクトル回転させてカメラ位置
 			debugWorldMat_.CalcWorldMat();
 			Vec3 pos = cameraPos_;
 			Vec3xM4(pos, debugWorldMat_.matWorld_, 0);

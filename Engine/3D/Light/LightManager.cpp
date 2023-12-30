@@ -71,13 +71,13 @@ void LightManager::TransferConstBuffer()
 			//平行光源
 			// ライトが有効なら設定を転送
 			if (dirLights_[i].GetActive()) {
-				constMap->dirLights[i].active = 1;
-				constMap->dirLights[i].lightv = -dirLights_[i].GetLightDir();
+				constMap->dirLights[i].active = true;
+				constMap->dirLights[i].lightdir = -dirLights_[i].GetLightDir();
 				constMap->dirLights[i].lightColor = dirLights_[i].GetLightColor();
 			}
-			// ライトが無効ならライト色を0に
+			// ライトが無効なら
 			else {
-				constMap->dirLights[i].active = 0;
+				constMap->dirLights[i].active = false;
 			}
 		}
 		for (int32_t i = 0; i < S_POINT_LIGHT_NUM_; i++) {
@@ -85,17 +85,17 @@ void LightManager::TransferConstBuffer()
 			//ライトが有効なら設定を転送
 			if (pointLights_[i].GetActive())
 			{
-				constMap->pointLights[i].active = 1;
+				constMap->pointLights[i].active = true;
 				constMap->pointLights[i].lightpos = pointLights_[i].GetLightPos();
 				constMap->pointLights[i].lightcolor =
 					pointLights_[i].GetLightColor();
 				constMap->pointLights[i].lightatten =
 					pointLights_[i].GetLightAtten();
 			}
-			//ライトが無効ならライト色を0に
+			//ライトが無効なら
 			else
 			{
-				constMap->pointLights[i].active = 0;
+				constMap->pointLights[i].active = false;
 			}
 		}
 		//スポットライト
@@ -104,7 +104,7 @@ void LightManager::TransferConstBuffer()
 			//ライトが有効なら設定を転送
 			if (spotLights_[i].GetActive())
 			{
-				constMap->spotLights[i].active = 1;
+				constMap->spotLights[i].active = true;
 				constMap->spotLights[i].lightv = -spotLights_[i].GetLightDir();
 				constMap->spotLights[i].lightpos = spotLights_[i].GetLightPos();
 				constMap->spotLights[i].lightcolor =
@@ -114,10 +114,10 @@ void LightManager::TransferConstBuffer()
 				constMap->spotLights[i].lightfactoranglecos =
 					spotLights_[i].GetLightFactorAngleCos();
 			}
-			//ライトが無効ならライト色を0に
+			//ライトが無効なら
 			else
 			{
-				constMap->spotLights[i].active = 0;
+				constMap->spotLights[i].active = false;
 			}
 		}
 		//丸影
@@ -126,7 +126,7 @@ void LightManager::TransferConstBuffer()
 			//ライトが有効なら設定を転送
 			if (circleShadows_[i].GetLightActive())
 			{
-				constMap->circleShadows[i].active = 1;
+				constMap->circleShadows[i].active = true;
 				constMap->circleShadows[i].dir = -circleShadows_[i].GetDir();
 				constMap->circleShadows[i].casterPos = circleShadows_[i].GetCasterPos();
 				constMap->circleShadows[i].distanceCasterLight =
@@ -136,30 +136,15 @@ void LightManager::TransferConstBuffer()
 				constMap->circleShadows[i].factorAngleCos =
 					circleShadows_[i].GetFactorAngleCos();
 			}
-			//ライトが無効ならライト色を0に
+			//ライトが無効なら
 			else
 			{
-				constMap->circleShadows[i].active = 0;
+				constMap->circleShadows[i].active = false;
 			}
 		}
 
 		constBuff_->Unmap(0, nullptr);
 	}
-}
-
-void LightManager::DefaultLightSetting()
-{
-	dirLights_[0].SetActive(true);
-	dirLights_[0].SetLightColor({ 1.0f, 1.0f, 1.0f });
-	dirLights_[0].SetLightDir({ 0.0f, -1.0f, 0.0f, 0 });
-
-	dirLights_[1].SetActive(true);
-	dirLights_[1].SetLightColor({ 1.0f, 1.0f, 1.0f });
-	dirLights_[1].SetLightDir({ +0.5f, +0.1f, +0.2f, 0 });
-
-	dirLights_[2].SetActive(true);
-	dirLights_[2].SetLightColor({ 1.0f, 1.0f, 1.0f });
-	dirLights_[2].SetLightDir({ -0.5f, +0.1f, -0.2f, 0 });
 }
 
 void LightManager::SetAmbientColor(const XMFLOAT3& color)

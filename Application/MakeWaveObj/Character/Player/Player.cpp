@@ -424,7 +424,7 @@ void Player::ThrowWeapon()
 		nullptr, false);
 
 	//ゲームスピード加算
-	GameVelocityManager::GetInstance().AddGameVelocity(0.9f);
+	GameVelocityManager::GetInstance().AddGameVelocity(THROW_WEAPON_ADD_GAME_VEL_);
 
 	//ステート変更(素手)
 	ChangePlayerState(std::make_unique<PlayerStateBareHands>());

@@ -116,11 +116,7 @@ public:
 	//ImGuiの描画
 	void DrawImGui();
 
-	/// <summary>
-	/// 標準のライト設定
-	/// </summary>
-	void DefaultLightSetting();
-
+public:
 	/// <summary>
 	/// 環境光のライト色をセット
 	/// </summary>
