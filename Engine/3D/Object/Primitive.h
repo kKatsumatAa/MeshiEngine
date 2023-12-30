@@ -61,13 +61,19 @@ public:
 	static const int8_t S_CIRCLE_INDICES_NUM_ = 66;
 	static const int8_t S_LINE_INDICES_NUM_ = 2;
 	//球のインデックス用
-	static const uint32_t S_SPHERE_INDICES_NUM_ = (66 * 3 + 6);
-	static const uint32_t S_SPHERE_INDICES_NUM_RATE_ = 36;
+	static const uint8_t S_SPHERE_INDICES_NUM_ = (66 * 3 + 6);
+	static const uint8_t S_SPHERE_WIDTH_ = 36;
+	static const uint8_t S_SPHERE_HEIGHT_ = 34;
+	//球の同じ列の頂点のペア
+	static const uint8_t S_SAME_COLUMN_PAIR_NUM_ = S_SPHERE_WIDTH_ - 1;
+	static const uint8_t PAIR_ = 2;
+
+	const float NORMAL_RADIUS_ = 1.0f;
 
 public:
-	const float TRIANGLE_ANGLE_1_ = PI * 2.0f + PI * 2.0f / 3.0f * 2.0f;
+	const float TRIANGLE_ANGLE_1_ = PI * 2.0f + PI * 2.0f / (float)IModel::S_MESH_VERTEX_NORMAL_NUM_ * 2.0f;
 	const float TRIANGLE_ANGLE_2_ = PI * 2.0f;
-	const float TRIANGLE_ANGLE_3_ = PI * 2.0f + PI * 2.0f / 3.0f;
+	const float TRIANGLE_ANGLE_3_ = PI * 2.0f + PI * 2.0f / (float)IModel::S_MESH_VERTEX_NORMAL_NUM_;
 	const Vec2 TRIANGLE_UV_1_ = { 0.0f,1.0f };
 	const Vec2 TRIANGLE_UV_2_ = { 0.5f,0.0f };
 	const Vec2 TRIANGLE_UV_3_ = { 1.0f,1.0f };
@@ -102,7 +108,7 @@ private:
 	static uint16_t sIndicesCube_[S_CUBE_INDICES_NUM_];
 	static uint16_t sIndicesCircle_[S_CIRCLE_INDICES_NUM_];
 	static uint16_t sIndicesLine_[S_LINE_INDICES_NUM_];
-	static uint16_t sIndicesSphere_[Primitive::S_SPHERE_INDICES_NUM_ * S_SPHERE_INDICES_NUM_RATE_];
+	static uint16_t sIndicesSphere_[Primitive::S_SPHERE_INDICES_NUM_ * S_SPHERE_WIDTH_];
 
 	static uint32_t sizeVB_;
 

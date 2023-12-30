@@ -62,13 +62,13 @@ void WorldMat::CalcQuaternionRotMat()
 		matRot_ = M4::NORMAL_M;
 
 		//z
-		Quaternion qZ = Quaternion::MakeAxisAngle(Constant::AXIS_Z_, rot_.z);
+		Quaternion qZ = Quaternion::MakeAxisAngle(Constant::AXIS_Z, rot_.z);
 		matRot_ *= qZ.MakeRotateMatrix();
 		//x
-		Quaternion qX = Quaternion::MakeAxisAngle(Constant::AXIS_X_, rot_.x);
+		Quaternion qX = Quaternion::MakeAxisAngle(Constant::AXIS_X, rot_.x);
 		matRot_ *= qX.MakeRotateMatrix();
 		//y
-		Quaternion qY = Quaternion::MakeAxisAngle(Constant::AXIS_Y_, rot_.y);
+		Quaternion qY = Quaternion::MakeAxisAngle(Constant::AXIS_Y, rot_.y);
 		matRot_ *= qY.MakeRotateMatrix();
 
 		matWorld_ *= matRot_;
@@ -153,11 +153,11 @@ void WorldMat::CalcWorldMat()
 Quaternion WorldMat::GetQuaternion()
 {
 	//z
-	Quaternion qZ = Quaternion::MakeAxisAngle(Constant::AXIS_Z_, rot_.z);
+	Quaternion qZ = Quaternion::MakeAxisAngle(Constant::AXIS_Z, rot_.z);
 	//x
-	Quaternion qX = Quaternion::MakeAxisAngle(Constant::AXIS_X_, rot_.x);
+	Quaternion qX = Quaternion::MakeAxisAngle(Constant::AXIS_X, rot_.x);
 	//y
-	Quaternion qY = Quaternion::MakeAxisAngle(Constant::AXIS_Y_, rot_.y);
+	Quaternion qY = Quaternion::MakeAxisAngle(Constant::AXIS_Y, rot_.y);
 
 	//合成(あってるかわからない)
 	qZ = qZ * qY * qX;

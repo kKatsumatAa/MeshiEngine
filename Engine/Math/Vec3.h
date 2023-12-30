@@ -9,7 +9,7 @@
 //π
 const float PI = 3.1415f;
 //2π
-const float PI2 = PI * 2.0f;
+const float PI_2 = PI * 2.0f;
 
 class Vec3
 {

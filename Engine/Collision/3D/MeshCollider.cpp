@@ -20,16 +20,16 @@ void MeshCollider::ConstructTriangles(IModel* model)
 		const std::vector<unsigned short>& indices = mesh->GetIndices();
 
 		//インデックスは三角形の数*3あるので、そこからメッシュ内の三角形の数を逆算
-		size_t triangleNum = indices.size() / 3;
+		size_t triangleNum = indices.size() / IModel::S_MESH_VERTEX_NORMAL_NUM_;
 		//現在のメッシュの三角形の数だけ三角形リストにスペースを追加
 		triangles_.resize(triangles_.size() + triangleNum);
 		//全三角形について順に処理
 		for (int i = 0; i < triangleNum; i++) {
 			//今から計算する三角形の参照
 			Triangle& tri = triangles_[start + i];
-			int idx0 = indices[i * 3 + 0];
-			int idx1 = indices[i * 3 + 1];
-			int idx2 = indices[i * 3 + 2];
+			int idx0 = indices[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
+			int idx1 = indices[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
+			int idx2 = indices[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
 
 			//三角形の三頂点の座標を代入
 			tri.iP0 = {

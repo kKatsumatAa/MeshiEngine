@@ -2,6 +2,7 @@
 #include "Util.h"
 
 using namespace DirectX;
+using namespace Constant;
 
 
 uint16_t Primitive::sIndicesBox_[S_BOX_INDICES_NUM_] =
@@ -63,14 +64,14 @@ uint16_t Primitive::sIndicesCircle_[S_CIRCLE_INDICES_NUM_] =
 
 uint16_t Primitive::sIndicesLine_[S_LINE_INDICES_NUM_] =
 {
-	0,1//三角形2つ目
+	0,1
 };
 
-uint16_t Primitive::sIndicesSphere_[S_SPHERE_INDICES_NUM_ * S_SPHERE_INDICES_NUM_RATE_];
+uint16_t Primitive::sIndicesSphere_[S_SPHERE_INDICES_NUM_ * S_SPHERE_WIDTH_];
 
 uint32_t Primitive::sizeVB_;
 
-//---------------------------------------------
+//------------------------------------------------------------------------------------------------------
 
 void Primitive::Initialize()
 {
@@ -90,9 +91,9 @@ void Primitive::InitializeTriangle()
 	float angle2 = TRIANGLE_ANGLE_2_;
 	float angle3 = TRIANGLE_ANGLE_3_;
 
-	verticesTriangle_[0] = { {sinf(angle),cosf(angle),0},{verticesTriangle_[0].normal},  {0.0f,1.0f} ,{} };//左下
-	verticesTriangle_[1] = { {0,cosf(angle2),0},{verticesTriangle_[1].normal},           {0.5f,0.0f} ,{} };//上
-	verticesTriangle_[2] = { {sinf(angle3),cosf(angle3),0},{verticesTriangle_[2].normal},{1.0f,1.0f} ,{} };//右下
+	verticesTriangle_[0] = { {sinf(angle),cosf(angle),0},{verticesTriangle_[0].normal},  {0.0f,UV_MAX} ,{} };//左下
+	verticesTriangle_[1] = { {0,cosf(angle2),0},{verticesTriangle_[1].normal},           {UV_HALF,0.0f} ,{} };//上
+	verticesTriangle_[2] = { {sinf(angle3),cosf(angle3),0},{verticesTriangle_[2].normal},{UV_MAX,UV_MAX} ,{} };//右下
 
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
@@ -150,9 +151,9 @@ void Primitive::InitializeTriangle()
 		for (int32_t i = 0; i < _countof(sIndicesTriangle_) / S_MESH_VERTEX_NUM_NORMAL_; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = sIndicesTriangle_[i * 3 + 0];
-			uint16_t index1 = sIndicesTriangle_[i * 3 + 1];
-			uint16_t index2 = sIndicesTriangle_[i * 3 + 2];
+			uint16_t index0 = sIndicesTriangle_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
+			uint16_t index1 = sIndicesTriangle_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
+			uint16_t index2 = sIndicesTriangle_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesTriangle_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesTriangle_[index1].pos);
@@ -226,12 +227,12 @@ void Primitive::InitializeBox()
 
 	//06_03
 	{
-		for (int32_t i = 0; i < _countof(sIndicesBox_) / 3; i++)
+		for (int32_t i = 0; i < _countof(sIndicesBox_) / IModel::S_MESH_VERTEX_NORMAL_NUM_; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = sIndicesBox_[i * 3 + 0];
-			uint16_t index1 = sIndicesBox_[i * 3 + 1];
-			uint16_t index2 = sIndicesBox_[i * 3 + 2];
+			uint16_t index0 = sIndicesBox_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
+			uint16_t index1 = sIndicesBox_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
+			uint16_t index2 = sIndicesBox_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesBox_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesBox_[index1].pos);
@@ -259,7 +260,7 @@ void Primitive::InitializeCircle()
 
 	for (int32_t i = 1; i < _countof(verticesCircle_); i++)
 	{
-		verticesCircle_[i].pos = { cosf(AngletoRadi(PI2 / sCount) * (i - 1)), sinf(AngletoRadi(PI2 / sCount) * (i - 1)),0 };
+		verticesCircle_[i].pos = { cosf(AngletoRadi(PI_2 / sCount) * (i - 1)), sinf(AngletoRadi(PI_2 / sCount) * (i - 1)),0 };
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
@@ -314,12 +315,12 @@ void Primitive::InitializeCircle()
 
 	//06_03
 	{
-		for (int32_t i = 0; i < _countof(sIndicesCircle_) / 3; i++)
+		for (int32_t i = 0; i < _countof(sIndicesCircle_) / IModel::S_MESH_VERTEX_NORMAL_NUM_; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = sIndicesCircle_[i * 3 + 0];
-			uint16_t index1 = sIndicesCircle_[i * 3 + 1];
-			uint16_t index2 = sIndicesCircle_[i * 3 + 2];
+			uint16_t index0 = sIndicesCircle_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
+			uint16_t index1 = sIndicesCircle_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
+			uint16_t index2 = sIndicesCircle_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesCircle_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesCircle_[index1].pos);
@@ -343,35 +344,35 @@ void Primitive::InitializeCube()
 
 	{
 		//手前
-		verticesCube_[0] = { {-1.0f,-1.0f,-1.0f},{verticesCube_[0].normal},{0.0f,1.0f} ,{} };//左下
-		verticesCube_[1] = { {-1.0f,1.0f, -1.0f},{verticesCube_[1].normal},{0.0f,0.0f} ,{} };//左上
-		verticesCube_[2] = { {1.0f,-1.0f, -1.0f},{verticesCube_[2].normal},{1.0f,1.0f} ,{} };//右下
-		verticesCube_[3] = { {1.0f,1.0f,  -1.0f},{verticesCube_[3].normal},{1.0f,0.0f} ,{} };//右上
+		verticesCube_[0] = { {-NORMAL_RADIUS_,-NORMAL_RADIUS_,-NORMAL_RADIUS_},{verticesCube_[0].normal},{0.0f,UV_MAX} ,{} };//左下
+		verticesCube_[1] = { {-NORMAL_RADIUS_,NORMAL_RADIUS_, -NORMAL_RADIUS_},{verticesCube_[1].normal},{0.0f,0.0f} ,{} };//左上
+		verticesCube_[2] = { {NORMAL_RADIUS_,-NORMAL_RADIUS_, -NORMAL_RADIUS_},{verticesCube_[2].normal},{UV_MAX,UV_MAX} ,{} };//右下
+		verticesCube_[3] = { {NORMAL_RADIUS_,NORMAL_RADIUS_,  -NORMAL_RADIUS_},{verticesCube_[3].normal},{UV_MAX,0.0f} ,{} };//右上
 
-		verticesCube_[4] = { {-1.0f,-1.0f,1.0f},{verticesCube_[4].normal},{0.0f,1.0f} ,{} };//左下
-		verticesCube_[5] = { {-1.0f,1.0f, 1.0f},{verticesCube_[5].normal},{0.0f,0.0f} ,{} };//左上
-		verticesCube_[6] = { {1.0f,-1.0f, 1.0f},{verticesCube_[6].normal},{1.0f,1.0f} ,{} };//右下
-		verticesCube_[7] = { {1.0f,1.0f,  1.0f},{verticesCube_[7].normal},{1.0f,0.0f} ,{} };//右上
+		verticesCube_[4] = { {-NORMAL_RADIUS_,-NORMAL_RADIUS_,NORMAL_RADIUS_},{verticesCube_[4].normal},{0.0f,UV_MAX} ,{} };//左下
+		verticesCube_[5] = { {-NORMAL_RADIUS_,NORMAL_RADIUS_, NORMAL_RADIUS_},{verticesCube_[5].normal},{0.0f,0.0f} ,{} };//左上
+		verticesCube_[6] = { {NORMAL_RADIUS_,-NORMAL_RADIUS_, NORMAL_RADIUS_},{verticesCube_[6].normal},{UV_MAX,UV_MAX} ,{} };//右下
+		verticesCube_[7] = { {NORMAL_RADIUS_,NORMAL_RADIUS_,  NORMAL_RADIUS_},{verticesCube_[7].normal},{UV_MAX,0.0f} ,{} };//右上
 		//上
-		verticesCube_[8] = { {1.0f,1.0f,-1.0f},{verticesCube_[8].normal},{0.0f,1.0f} ,{} };//左下
-		verticesCube_[9] = { {1.0f,1.0f, 1.0f},{verticesCube_[9].normal},{0.0f,0.0f} ,{} };//左上
-		verticesCube_[10] = { {-1.0f,1.0f, -1.0f},{verticesCube_[10].normal},{1.0f,1.0f} ,{} };//右下
-		verticesCube_[11] = { {-1.0f,1.0f, 1.0f},{verticesCube_[11].normal},{1.0f,0.0f} ,{} };//右上
+		verticesCube_[8] = { {NORMAL_RADIUS_,NORMAL_RADIUS_,-NORMAL_RADIUS_},{verticesCube_[8].normal},{0.0f,UV_MAX} ,{} };//左下
+		verticesCube_[9] = { {NORMAL_RADIUS_,NORMAL_RADIUS_, NORMAL_RADIUS_},{verticesCube_[9].normal},{0.0f,0.0f} ,{} };//左上
+		verticesCube_[10] = { {-NORMAL_RADIUS_,NORMAL_RADIUS_, -NORMAL_RADIUS_},{verticesCube_[10].normal},{UV_MAX,UV_MAX} ,{} };//右下
+		verticesCube_[11] = { {-NORMAL_RADIUS_,NORMAL_RADIUS_, NORMAL_RADIUS_},{verticesCube_[11].normal},{UV_MAX,0.0f} ,{} };//右上
 
-		verticesCube_[12] = { {1.0f,-1.0f,-1.0f},{verticesCube_[12].normal},{0.0f,1.0f} ,{} };//左下
-		verticesCube_[13] = { {1.0f,-1.0f, 1.0f},{verticesCube_[13].normal},{0.0f,0.0f} ,{} };//左上
-		verticesCube_[14] = { {-1.0f,-1.0f, -1.0f},{verticesCube_[14].normal},{1.0f,1.0f} ,{} };//右下
-		verticesCube_[15] = { {-1.0f,-1.0f, 1.0f},{verticesCube_[15].normal},{1.0f,0.0f} ,{} };//右上
+		verticesCube_[12] = { {NORMAL_RADIUS_,-NORMAL_RADIUS_,-NORMAL_RADIUS_},{verticesCube_[12].normal},{0.0f,UV_MAX} ,{} };//左下
+		verticesCube_[13] = { {NORMAL_RADIUS_,-NORMAL_RADIUS_, NORMAL_RADIUS_},{verticesCube_[13].normal},{0.0f,0.0f} ,{} };//左上
+		verticesCube_[14] = { {-NORMAL_RADIUS_,-NORMAL_RADIUS_, -NORMAL_RADIUS_},{verticesCube_[14].normal},{UV_MAX,UV_MAX} ,{} };//右下
+		verticesCube_[15] = { {-NORMAL_RADIUS_,-NORMAL_RADIUS_, NORMAL_RADIUS_},{verticesCube_[15].normal},{UV_MAX,0.0f} ,{} };//右上
 
-		verticesCube_[16] = { {-1.0f,-1.0f,-1.0f},{verticesCube_[16].normal},{0.0f,1.0f} ,{} };//左下
-		verticesCube_[17] = { {-1.0f,-1.0f, 1.0f},{verticesCube_[17].normal},{0.0f,0.0f} ,{} };//左上
-		verticesCube_[18] = { {-1.0f,1.0f, -1.0f},{verticesCube_[18].normal},{1.0f,1.0f} ,{} };//右下
-		verticesCube_[19] = { {-1.0f,1.0f,  1.0f},{verticesCube_[19].normal},{1.0f,0.0f} ,{} };//右上
+		verticesCube_[16] = { {-NORMAL_RADIUS_,-NORMAL_RADIUS_,-NORMAL_RADIUS_},{verticesCube_[16].normal},{0.0f,UV_MAX} ,{} };//左下
+		verticesCube_[17] = { {-NORMAL_RADIUS_,-NORMAL_RADIUS_, NORMAL_RADIUS_},{verticesCube_[17].normal},{0.0f,0.0f} ,{} };//左上
+		verticesCube_[18] = { {-NORMAL_RADIUS_,NORMAL_RADIUS_, -NORMAL_RADIUS_},{verticesCube_[18].normal},{UV_MAX,UV_MAX} ,{} };//右下
+		verticesCube_[19] = { {-NORMAL_RADIUS_,NORMAL_RADIUS_,  NORMAL_RADIUS_},{verticesCube_[19].normal},{UV_MAX,0.0f} ,{} };//右上
 
-		verticesCube_[20] = { {1.0f,-1.0f,-1.0f},{verticesCube_[20].normal},{0.0f,1.0f} ,{} };//左下
-		verticesCube_[21] = { {1.0f,-1.0f, 1.0f},{verticesCube_[21].normal},{0.0f,0.0f} ,{} };//左上
-		verticesCube_[22] = { {1.0f,1.0f, -1.0f},{verticesCube_[22].normal},{1.0f,1.0f} ,{} };//右下
-		verticesCube_[23] = { {1.0f,1.0f,  1.0f},{verticesCube_[23].normal},{1.0f,0.0f} ,{} };//右上;//左下
+		verticesCube_[20] = { {NORMAL_RADIUS_,-NORMAL_RADIUS_,-NORMAL_RADIUS_},{verticesCube_[20].normal},{0.0f,UV_MAX} ,{} };//左下
+		verticesCube_[21] = { {NORMAL_RADIUS_,-NORMAL_RADIUS_, NORMAL_RADIUS_},{verticesCube_[21].normal},{0.0f,0.0f} ,{} };//左上
+		verticesCube_[22] = { {NORMAL_RADIUS_,NORMAL_RADIUS_, -NORMAL_RADIUS_},{verticesCube_[22].normal},{UV_MAX,UV_MAX} ,{} };//右下
+		verticesCube_[23] = { {NORMAL_RADIUS_,NORMAL_RADIUS_,  NORMAL_RADIUS_},{verticesCube_[23].normal},{UV_MAX,0.0f} ,{} };//右上;//左下
 	}
 
 	// 頂点データ全体のサイズ = 頂点データ1つ分のサイズ * 頂点データの要素数
@@ -426,14 +427,13 @@ void Primitive::InitializeCube()
 
 
 	//06_03
-		/*if (indexNum == SPHERE)*/
 	{
-		for (int32_t i = 0; i < _countof(sIndicesCube_) / 3; i++)
+		for (int32_t i = 0; i < _countof(sIndicesCube_) / IModel::S_MESH_VERTEX_NORMAL_NUM_; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = sIndicesCube_[i * 3 + 0];
-			uint16_t index1 = sIndicesCube_[i * 3 + 1];
-			uint16_t index2 = sIndicesCube_[i * 3 + 2];
+			uint16_t index0 = sIndicesCube_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
+			uint16_t index1 = sIndicesCube_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
+			uint16_t index2 = sIndicesCube_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesCube_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesCube_[index1].pos);
@@ -455,8 +455,8 @@ void Primitive::InitializeLine()
 {
 	HRESULT result = {};
 
-	verticesLine_[0] = { {-1.0,0,0},{verticesLine_[0].normal},{0.0f,1.0f} ,{} };//左下
-	verticesLine_[1] = { {1.0,0,0},  {verticesLine_[1].normal},{0.5f,0.0f} ,{} };//上
+	verticesLine_[0] = { {-NORMAL_RADIUS_,0,0},{verticesLine_[0].normal},{0.0f,UV_MAX} ,{} };//左下
+	verticesLine_[1] = { {NORMAL_RADIUS_,0,0},  {verticesLine_[1].normal},{UV_HALF,0.0f} ,{} };//上
 
 	{
 		//03_04
@@ -537,26 +537,27 @@ void Primitive::InitializeSphere()
 
 
 		WorldMat worldMat;
-		Vec3 vec = { 0,-1.0f,0 };
+		Vec3 vec = { 0,-NORMAL_RADIUS_,0 };
 
 		//頂点二つ
-		verticesSphere_[0] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} ,{} };//下
-		verticesSphere_[1] = { {vec.x,-vec.y,vec.z},{},{1.0f,0.0f} ,{} };//上
+		verticesSphere_[0] = { {vec.x,vec.y,vec.z},{},{UV_MAX,0.0f} ,{} };//下
+		verticesSphere_[1] = { {vec.x,-vec.y,vec.z},{},{UV_MAX,0.0f} ,{} };//上
 
-		for (int32_t i = 0; i < 36; i++)//横
+		for (int32_t i = 0; i < S_SPHERE_WIDTH_; i++)//横
 		{
-			worldMat.rot_.y = (float)i * AngletoRadi(360.0f / 35.0f);
+			//頂点間の角度
+			worldMat.rot_.y = (float)i * PI_2 / (float)(S_SAME_COLUMN_PAIR_NUM_);
 
 
-			for (int32_t j = 0; j < 34; j++)//縦
+			for (int32_t j = 0; j < S_SPHERE_HEIGHT_; j++)//縦
 			{
-				worldMat.rot_.x = ((float)(j + 1) * (PI / 35.0f));
+				worldMat.rot_.x = ((float)(j + 1) * PI_2 / (float)(S_SAME_COLUMN_PAIR_NUM_));
 				worldMat.CalcWorldMat();
-				vec = { 0,-1.0f,0 };
+				vec = { 0,-NORMAL_RADIUS_,0 };
 				Vec3xM4(vec, worldMat.matWorld_, false);
 
-				int32_t p = i * 34 + j;
-				verticesSphere_[(2) + p] = { {vec.x,vec.y,vec.z},{},{1.0f,0.0f} ,{} };
+				int32_t p = i * S_SPHERE_HEIGHT_ + j;
+				verticesSphere_[PAIR_ + p] = { {vec.x,vec.y,vec.z},{},{UV_MAX,0.0f} ,{} };
 			}
 		}
 
@@ -568,92 +569,89 @@ void Primitive::InitializeSphere()
 		//インデックス
 		for (uint32_t i = 0; i < _countof(sIndicesSphere_); i++)
 		{
-			if (i % (S_SPHERE_INDICES_NUM_ * 35) == 0 && i != 0)//最後の縦の列
+			if (i % (S_SPHERE_INDICES_NUM_ * (S_SAME_COLUMN_PAIR_NUM_)) == 0 && i != 0)//最後の縦の列
 			{
 				isLast = true;
 			}
 
-			if (i % S_SPHERE_INDICES_NUM_ == 0 || i % (S_SPHERE_INDICES_NUM_ * (count + 1) - 3) == 0)
+			//一番下か上じゃなければ
+			if (!(i % S_SPHERE_INDICES_NUM_ == 0 || i % (S_SPHERE_INDICES_NUM_ * (count + 1) - IModel::S_MESH_VERTEX_NORMAL_NUM_) == 0))
 			{
-
-			}
-			else if (1)//一番下か上じゃなければ
-			{
-				if (count2 % 2 == 0)
+				if (count2 % PAIR_ == 0)
 				{
 					if (isLast)
 					{
-						sIndicesSphere_[i] = 2 + 34 * count + (count3);
-						sIndicesSphere_[i + 1] = 2 + 0 + (count3);//一周してきたので一番最初の列を使う
-						sIndicesSphere_[i + 2] = 2 + 34 * count + (count3 + 1);
+						sIndicesSphere_[i] = PAIR_ + S_SPHERE_HEIGHT_ * count + (count3);
+						sIndicesSphere_[i + 1] = PAIR_ + 0 + (count3);//一周してきたので一番最初の列を使う
+						sIndicesSphere_[i + 2] = PAIR_ + S_SPHERE_HEIGHT_ * count + (count3 + 1);
 
 						count3++;
-						i += 2;
+						i += PAIR_;
 					}
 					else
 					{
-						sIndicesSphere_[i] = 2 + 34 * count + (count3);
-						sIndicesSphere_[i + 1] = 2 + 34 * (count + 1) + (count3);
-						sIndicesSphere_[i + 2] = 2 + 34 * count + (count3 + 1);
+						sIndicesSphere_[i] = PAIR_ + S_SPHERE_HEIGHT_ * count + (count3);
+						sIndicesSphere_[i + 1] = PAIR_ + S_SPHERE_HEIGHT_ * (count + 1) + (count3);
+						sIndicesSphere_[i + 2] = PAIR_ + S_SPHERE_HEIGHT_ * count + (count3 + 1);
 
 						count3++;
-						i += 2;
+						i += PAIR_;
 					}
 				}
-				else if (count2 % 2 == 1)
+				else if (count2 % PAIR_ == 1)
 				{
 					if (isLast)
 					{
-						sIndicesSphere_[i] = 2 + 0 + (count4 + 1);//一周してきたので一番最初の列を使う
-						sIndicesSphere_[i + 1] = 2 + 34 * count + (count4 + 1);
-						sIndicesSphere_[i + 2] = 2 + 0 + (count4);//一周してきたので一番最初の列を使う
+						sIndicesSphere_[i] = PAIR_ + 0 + (count4 + 1);//一周してきたので一番最初の列を使う
+						sIndicesSphere_[i + 1] = PAIR_ + S_SPHERE_HEIGHT_ * count + (count4 + 1);
+						sIndicesSphere_[i + 2] = PAIR_ + 0 + (count4);//一周してきたので一番最初の列を使う
 
 						count4++;
-						i += 2;
+						i += PAIR_;
 					}
 					else
 					{
-						sIndicesSphere_[i] = 2 + 34 * (count + 1) + (count4 + 1);
-						sIndicesSphere_[i + 1] = 2 + 34 * count + (count4 + 1);
-						sIndicesSphere_[i + 2] = 2 + 34 * (count + 1) + (count4);
+						sIndicesSphere_[i] = PAIR_ + S_SPHERE_HEIGHT_ * (count + 1) + (count4 + 1);
+						sIndicesSphere_[i + 1] = PAIR_ + S_SPHERE_HEIGHT_ * count + (count4 + 1);
+						sIndicesSphere_[i + 2] = PAIR_ + S_SPHERE_HEIGHT_ * (count + 1) + (count4);
 
 						count4++;
-						i += 2;
+						i += PAIR_;
 					}
 				}
 
 				count2++;
 			}
-			if (i % S_SPHERE_INDICES_NUM_ == 0 || i % (S_SPHERE_INDICES_NUM_ * (count + 1) - 3) == 0)
+			if (i % S_SPHERE_INDICES_NUM_ == 0 || i % (S_SPHERE_INDICES_NUM_ * (count + 1) - IModel::S_MESH_VERTEX_NORMAL_NUM_) == 0)
 			{
 				if (i % S_SPHERE_INDICES_NUM_ == 0)//一番下の三角形
 				{
 					if (isLast)
 					{
 						sIndicesSphere_[i] = 0;
-						sIndicesSphere_[i + 1] = 2 + 0;
-						sIndicesSphere_[i + 2] = 2 + 34 * count;
+						sIndicesSphere_[i + 1] = PAIR_ + 0;
+						sIndicesSphere_[i + 2] = PAIR_ + S_SPHERE_HEIGHT_ * count;
 
-						i += 2;
+						i += PAIR_;
 					}
 					else
 					{
-						sIndicesSphere_[i] = 2 + 34 * (count + 1);
-						sIndicesSphere_[i + 1] = 2 + 34 * count;
+						sIndicesSphere_[i] = PAIR_ + S_SPHERE_HEIGHT_ * (count + 1);
+						sIndicesSphere_[i + 1] = PAIR_ + S_SPHERE_HEIGHT_ * count;
 						sIndicesSphere_[i + 2] = 0;
 
-						i += 2;
+						i += PAIR_;
 					}
 				}
-				else if (i % (S_SPHERE_INDICES_NUM_ * (count + 1) - 3) == 0)//一番上の三角形
+				else if (i % (S_SPHERE_INDICES_NUM_ * (count + 1) - IModel::S_MESH_VERTEX_NORMAL_NUM_) == 0)//一番上の三角形
 				{
 					if (isLast)
 					{
-						sIndicesSphere_[i] = 1 + 34 * (count + 1);
-						sIndicesSphere_[i + 1] = 35;
+						sIndicesSphere_[i] = 1 + S_SPHERE_HEIGHT_ * (count + 1);
+						sIndicesSphere_[i + 1] = S_SAME_COLUMN_PAIR_NUM_;
 						sIndicesSphere_[i + 2] = 1;
 
-						i += 2;
+						i += PAIR_;
 
 						count++;
 						count2 = 0;
@@ -662,11 +660,11 @@ void Primitive::InitializeSphere()
 					}
 					else
 					{
-						sIndicesSphere_[i] = 1 + 34 * (count + 1);
-						sIndicesSphere_[i + 1] = 1 + 34 * (count + 2);
+						sIndicesSphere_[i] = 1 + S_SPHERE_HEIGHT_ * (count + 1);
+						sIndicesSphere_[i + 1] = 1 + S_SPHERE_HEIGHT_ * (count + 2);
 						sIndicesSphere_[i + 2] = 1;
 
-						i += 2;
+						i += PAIR_;
 
 						count++;
 						count2 = 0;
@@ -705,12 +703,12 @@ void Primitive::InitializeSphere()
 		//06_03
 		/*if (indexNum == SPHERE)*/
 		{
-			for (int32_t i = 0; i < _countof(sIndicesSphere_) / 3; i++)
+			for (int32_t i = 0; i < _countof(sIndicesSphere_) / IModel::S_MESH_VERTEX_NORMAL_NUM_; i++)
 			{//三角形一つごとに計算
 				//三角形のインデックスを取り出して、一時的な変数に入れる
-				uint16_t index0 = sIndicesSphere_[i * 3 + 0];
-				uint16_t index1 = sIndicesSphere_[i * 3 + 1];
-				uint16_t index2 = sIndicesSphere_[i * 3 + 2];
+				uint16_t index0 = sIndicesSphere_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
+				uint16_t index1 = sIndicesSphere_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
+				uint16_t index2 = sIndicesSphere_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
 				//三角形を構成する頂点座標をベクトルに代入
 				XMVECTOR p0 = XMLoadFloat3(&verticesSphere_[index0].pos);
 				XMVECTOR p1 = XMLoadFloat3(&verticesSphere_[index1].pos);

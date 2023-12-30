@@ -97,9 +97,9 @@ void Mesh::CalculateTangent()
 	for (int32_t i = 0; i < indices_.size() / S_CALC_TANG_MESH_VERTEX_NUM_; i++)
 	{//三角形一つごとに計算
 		//三角形のインデックスを取り出して、一時的な変数に入れる
-		uint16_t index0 = indices_[i * 3 + 0];
-		uint16_t index1 = indices_[i * 3 + 1];
-		uint16_t index2 = indices_[i * 3 + 2];
+		uint16_t index0 = indices_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
+		uint16_t index1 = indices_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
+		uint16_t index2 = indices_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
 
 		// Shortcuts for vertices
 		Vec3& v0 = vertices_[index0].pos;

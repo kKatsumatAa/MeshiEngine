@@ -20,12 +20,15 @@ namespace Constant
 	//2.0
 	static const float TWICE = 2.0f;
 	//1.0f
-	static const float RATE_MAX_ = 1.0f;
+	static const float RATE_MAX = 1.0f;
 	//変換するwchar_tの要素数
 	static const uint8_t S_TRANS_W_CHAR_SIZE_ = 128;
-	static const Vec3 AXIS_X_ = { 1.0f,0,0 };
-	static const Vec3 AXIS_Y_ = { 0,1.0f,0 };
-	static const Vec3 AXIS_Z_ = { 0,0,1.0f };
+	static const Vec3 AXIS_X = { 1.0f,0,0 };
+	static const Vec3 AXIS_Y = { 0,1.0f,0 };
+	static const Vec3 AXIS_Z = { 0,0,1.0f };
+	//uv
+	static const float UV_MAX = 1.0f;
+	static const float UV_HALF = 0.5f;
 }
 
 //自作
