@@ -117,9 +117,9 @@ public://ノード
 	const float HIT_WEAPON_NODE_ADD_ROT_RATE_ = 0.7f;
 public:
 	//メッシュのオフセット
-	const float MESH_OFFSET_INTERVAL_MIN_ = 20.0f;
-	const float MESH_OFFSET_INTERVAL_MAX_ = 45.0f;
-	const float MESH_OFFSET_LENGTH_RATE_ = 1.3f;
+	const float MESH_OFFSET_INTERVAL_MIN_ = 95.0f;
+	const float MESH_OFFSET_INTERVAL_MAX_ = 125.0f;
+	const float MESH_OFFSET_LENGTH_RATE_ = 0.007f;
 public://波紋
 	//ステージの波紋
 	const float STAGE_WAVE_WIDTH_RATE_ = 0.5f;

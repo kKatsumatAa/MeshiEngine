@@ -252,6 +252,10 @@ void Mesh::SendingVetices()
 			//ポリゴンを法線方向にランダムで動かす
 			float extend = GetRand(0.1f, 1.0f);
 			Vec3 offset = GetPolygonNormal(pIndex) * (polygonOffsetData_.length * extend);
+			if (offset.GetLength() >= 2.0f)
+			{
+				offset = offset;
+			}
 			offsetVertices_[pIndex * 3 + 0].pos += offset;
 			offsetVertices_[pIndex * 3 + 1].pos += offset;
 			offsetVertices_[pIndex * 3 + 2].pos += offset;

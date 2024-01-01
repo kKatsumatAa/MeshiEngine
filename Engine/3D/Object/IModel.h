@@ -116,6 +116,8 @@ public:
 	//fbxモデルか
 	bool GetIsFbx() { return isFbx_; }
 
+	//スケールの倍率セット
+	void SetScaleExtend(float extend) { scaleExtend_ = extend; }
 	//スケールの倍率取得
 	float GetScaleExtend()const { return scaleExtend_; }
 	//マテリアルの倍率取得

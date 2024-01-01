@@ -355,7 +355,7 @@ void IObject3D::ParentFbxNode(IObject* obj, IModel* model, const std::string& no
 		return;
 	}
 
-	assert(false);
+	//assert(false);
 }
 
 void IObject3D::ResetParentFbxNode()
