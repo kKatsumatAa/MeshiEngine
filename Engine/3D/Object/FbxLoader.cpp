@@ -190,9 +190,11 @@ void FbxLoader::ParseMesh(ModelFBX* model, FbxNode* fbxNode, Mesh* mesh)
 	//ノードのメッシュを取得
 	FbxMesh* fbxMesh = fbxNode->GetMesh();
 
+	//メッシュの名前
+	mesh->SetName(fbxMesh->GetName());
+
 	//コントロールポイント用配列
 	myControlPoints_.clear();
-
 
 	//頂点座標(コントロールポイント)読み取り
 	ParseMeshControlPointsPos(fbxMesh);
@@ -319,7 +321,6 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 		}
 	}
 
-
 	//全てのボーンについて行列を追加
 	model->boneNodeIndices_.resize(clusterCount);
 	model->offsetTransforms_.resize(clusterCount);
@@ -340,7 +341,6 @@ void FbxLoader::PerseSkin(ModelFBX* model, FbxMesh* fbxMesh)
 				break;
 			}
 		}
-
 
 		//fbxから初期姿勢行列を取得
 		FbxAMatrix initMat;
