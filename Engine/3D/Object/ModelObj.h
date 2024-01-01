@@ -48,6 +48,10 @@ public://静的メンバ関数
 	//OBJファイルから3Dモデルを読み込む
 	//"フォルダ名のみ"を指定すればmtl,obj,textuerを読みこむ（すべて同じ名前であれば）
 	static std::unique_ptr<ModelObj> LoadFromOBJ(const std::string& folderName, bool smoothing = false);
+
+public:
+	//モデル内のメッシュから新しいモデルを作る
+	static std::unique_ptr<ModelObj>CreateModelFromModelMesh(IModel& model, const std::string& meshName);
 };
 
 

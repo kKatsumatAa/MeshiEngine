@@ -302,4 +302,7 @@ public:
 	void SetAnimeSpeedExtend(float animeSpeedExtend) { animeSpeedExtend_ = animeSpeedExtend; }
 	//構えるときとかに徐々にゆっくりにするための変数取得
 	float GetAnimeSpeedExtend() { return animeSpeedExtend_; }
+
+private:
+	void DetachPart(const std::string& partName, const Vec3& dirVec);
 };

@@ -84,11 +84,6 @@ protected:
 	virtual void Initialize();
 
 public:
-	/// <summary>
-	/// マテリアル登録
-	/// </summary>
-	void AddMaterial(std::unique_ptr<Material> material);
-
 	//テクスチャ読み込み
 	virtual void LoadTextures() = 0;
 
@@ -112,18 +107,41 @@ public:
 	/// <returns></returns>
 	inline const std::vector<std::unique_ptr<Mesh>>& GetMeshes() { return meshes_; }
 
+	//名前でメッシュのポインタ取得
+	Mesh* GetMesh(const std::string& name);
+	//名前で1つのメッシュの所有権を譲渡(こちらからは消える)
+	std::unique_ptr<Mesh>MoveUniqueMesh(const std::string& name);
+	//名前でメッシュ削除
+	void DeleteMesh(const std::string& name);
+	//メッシュを追加
+	void AddMesh(std::unique_ptr<Mesh> mesh);
+
 public:
-	//fbxモデルか
-	bool GetIsFbx() { return isFbx_; }
+	//メッシュのマテリアルで1つのマテリアルの所有権を譲渡(こちらからは消える)
+	std::unique_ptr<Material>MoveUniqueMaterial(Mesh* mesh);
+	/// <summary>
+	/// マテリアル登録
+	/// </summary>
+	void AddMaterial(std::unique_ptr<Material> material);
+
+public:
+	//fbxモデルかセット
+	void SetIsFbx(bool isFbx) { isFbx_ = isFbx; }
+	//fbxモデルか取得
+	bool GetIsFbx()const { return isFbx_; }
 
 	//スケールの倍率セット
 	void SetScaleExtend(float extend) { scaleExtend_ = extend; }
 	//スケールの倍率取得
 	float GetScaleExtend()const { return scaleExtend_; }
 	//マテリアルの倍率取得
-	Vec3 GetMaterialExtend() { return materialExtend_; }
+	const Vec3& GetMaterialExtend()const { return materialExtend_; }
 	//マテリアルの倍率セット
 	void SetMaterialExtend(const Vec3& materialExtend) { materialExtend_ = materialExtend; }
 	//ポリゴンの座標に加算する座標を計算するための情報をセット
 	void SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData);
+
+public:
+	//uniqueでないパラメータをコピー(scaleExtend以外)
+	void CopyUnUniqueParams(const IModel& model);
 };

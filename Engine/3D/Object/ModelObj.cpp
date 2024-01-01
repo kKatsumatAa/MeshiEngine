@@ -23,6 +23,24 @@ std::unique_ptr<ModelObj> ModelObj::LoadFromOBJ(const std::string& folderName, b
 	return std::move(model);
 }
 
+std::unique_ptr<ModelObj> ModelObj::CreateModelFromModelMesh(IModel& model, const std::string& meshName)
+{
+	std::unique_ptr<ModelObj>lModel = std::make_unique<ModelObj>();
+
+	//メッシュを元のモデルから譲渡（元のモデルからは削除）
+	auto lMesh = model.MoveUniqueMesh(meshName);
+
+	//マテリアルも譲渡
+	lModel->AddMaterial(model.MoveUniqueMaterial(lMesh.get()));
+	//メッシュ追加
+	lModel->AddMesh(std::move(lMesh));
+
+	//その他のパラメータもコピー
+	lModel->CopyUnUniqueParams(model);
+
+	return std::move(lModel);
+}
+
 void ModelObj::InitializeInternal(const std::string& folderName, bool smoothing)
 {
 	//モデル読み込み

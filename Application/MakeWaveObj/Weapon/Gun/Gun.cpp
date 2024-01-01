@@ -113,17 +113,6 @@ void Gun::Update()
 	Weapon::Update();
 }
 
-void Gun::DrawShadow()
-{
-	Object::DrawModel(nullptr, nullptr, nullptr, Object::PipelineStateNumObj::SHADOW_OBJ);
-}
-
-void Gun::Draw()
-{
-	Object::DrawModel(nullptr);
-}
-
-
 //----------------------------------------------------------------------------------------------------------------
 void Gun::ParticleGenerate(const XMFLOAT4& sColor, const XMFLOAT4& eColor, float particleSize, ParticleManager::BLEND_NUM blendNum)
 {
@@ -180,7 +169,7 @@ void Gun::OnCollision(const CollisionInfo& info)
 		if (owner_)
 		{
 			Character* character = dynamic_cast<Character*>(owner_);
-			character->FallWeapon({ 0,0,0 });
+			character->FallHaveWeapon({ 0,0,0 });
 		}
 	}
 }

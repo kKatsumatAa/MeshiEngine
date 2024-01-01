@@ -31,7 +31,7 @@ Character::~Character()
 {
 	//死んだら武器落とす
 	//（unique_ptrでobjectManagerで管理してるので、worldMat_のparent_がおかしなことになるため）
-	FallWeapon({ 0,0,0 }, nullptr, false);
+	FallHaveWeapon({ 0,0,0 }, nullptr, false);
 }
 
 void Character::Update()
@@ -48,7 +48,7 @@ void Character::Update()
 		if (!GetIsAlive())
 		{
 			GetWeapon()->SetIsAlive(false);
-			FallWeapon(WEAPON_FALL_VEC_);
+			FallHaveWeapon(WEAPON_FALL_VEC_);
 		}
 	}
 
@@ -123,38 +123,47 @@ void Character::PickUpWeapon(Weapon* weapon, Vec3* localPos)
 	weapon_->ChangeOwner(this);
 }
 
-void Character::FallWeapon(const Vec3& directionVec, Vec3* localPos, bool isUpdatePos)
+void Character::FallHaveWeapon(const Vec3& directionVec, Vec3* localPos, bool isUpdatePos)
 {
 	//武器持ってたら
 	if (weapon_)
 	{
+		FallWeapon(weapon_, directionVec, localPos, isUpdatePos);
+
+		//武器なくす
+		SetWeapon(nullptr);
+	}
+}
+
+void Character::FallWeapon(Weapon* weapon, const Vec3& directionVec, Vec3* localPos, bool isUpdatePos)
+{
+	if (weapon)
+	{
 		if (localPos)
 		{
-			GetWeapon()->SetLocalPos(*localPos);
+			weapon->SetLocalPos(*localPos);
 		}
 
 		//移動
 		if (isUpdatePos)
 		{
-			GetWeapon()->SetTrans(GetWeapon()->GetTrans() + directionVec);
+			weapon->SetTrans(weapon->GetTrans() + directionVec);
 		}
 		//親ノードをなくす
-		weapon_->ResetParentFbxNode();
+		weapon->ResetParentFbxNode();
 		//親などをnull
-		GetWeapon()->ChangeOwner(nullptr);
+		weapon->ChangeOwner(nullptr);
 		//仮で手から離れたらアイテムの属性にする
-		weapon_->SetAttribute(COLLISION_ATTR_ITEMS);
-		weapon_->SetIsThrowing(true);
+		weapon->SetAttribute(COLLISION_ATTR_ITEMS);
+		weapon->SetIsThrowing(true);
 
 		//更新
-		GetWeapon()->SetFallVec(directionVec);
+		weapon->SetFallVec(directionVec);
 		if (isUpdatePos)
 		{
-			weapon_->OldPosUpdate();
-			weapon_->Update();
+			weapon->OldPosUpdate();
+			weapon->Update();
 		}
-
-		SetWeapon(nullptr);
 	}
 }
 

@@ -72,13 +72,6 @@ void IModel::LoadTexturesInternal(const std::string& directoryPath)
 	}
 }
 
-void IModel::AddMaterial(std::unique_ptr<Material> material)
-{
-	// コンテナに登録
-	materials_.insert(std::make_pair(material->name_, std::move(material)));
-}
-
-
 void IModel::Draw(const D3D_PRIMITIVE_TOPOLOGY& topology, const std::function<void()>& setRootParam, const std::function<void()>& setMaterialLightTex
 	, const ConstBuffTransform& cbt, bool isShadow)
 {
@@ -100,11 +93,58 @@ void IModel::DrawImGui()
 	if (ImGui::TreeNode("model"))
 	{
 		ImGui::SliderFloat("scaleExtend", &scaleExtend_, IMGUI_SCALE_EXTEND_MIN_, IMGUI_SCALE_EXTEND_MAX_);
-		ImGui::DragFloat3("materialExtend", &materialExtend_.x, IMGUI_MATERIAL_EXTEND_DRAG_SPEED_, 
+		ImGui::DragFloat3("materialExtend", &materialExtend_.x, IMGUI_MATERIAL_EXTEND_DRAG_SPEED_,
 			IMGUI_MATERIAL_EXTEND_MIN_, IMGUI_MATERIAL_EXTEND_MAX_);
 
 		ImGui::TreePop();
 	}
+}
+
+Mesh* IModel::GetMesh(const std::string& name)
+{
+	for (auto& mesh : meshes_)
+	{
+		if (mesh->GetName() == name)
+		{
+			return mesh.get();
+		}
+	}
+
+	return nullptr;
+}
+
+std::unique_ptr<Mesh> IModel::MoveUniqueMesh(const std::string& name)
+{
+	for (auto itr = meshes_.begin(); itr != meshes_.end(); itr++)
+	{
+		if (itr->get()->GetName() == name)
+		{
+			//名前が一致したら譲渡、配列から削除
+			std::unique_ptr<Mesh> retMesh = std::move(*itr);
+			meshes_.erase(itr);
+			return std::move(retMesh);
+		}
+	}
+
+	return nullptr;
+}
+
+void IModel::DeleteMesh(const std::string& name)
+{
+	for (auto itr = meshes_.begin(); itr != meshes_.end(); itr++)
+	{
+		if (itr->get()->GetName() == name)
+		{
+			//名前が一致したら削除
+			meshes_.erase(itr);
+			break;
+		}
+	}
+}
+
+void IModel::AddMesh(std::unique_ptr<Mesh> mesh)
+{
+	meshes_.push_back(std::move(mesh));
 }
 
 void IModel::SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData)
@@ -114,4 +154,33 @@ void IModel::SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData)
 	{
 		mesh->SetPolygonOffsetData(polygonOffsetData);
 	}
+}
+
+void IModel::CopyUnUniqueParams(const IModel& model)
+{
+	isFbx_ = model.GetIsFbx();
+	materialExtend_ = model.GetMaterialExtend();
+}
+
+//----------------------------------------------------------
+void IModel::AddMaterial(std::unique_ptr<Material> material)
+{
+	// コンテナに登録
+	materials_.insert(std::make_pair(material->name_, std::move(material)));
+}
+
+std::unique_ptr<Material> IModel::MoveUniqueMaterial(Mesh* mesh)
+{
+	for (auto itr = materials_.begin(); itr != materials_.end(); itr++)
+	{
+		if (itr->second.get() == mesh->GetMaterial())
+		{
+			//マテリアルのポインタが一致したら譲渡、配列から削除
+			std::unique_ptr<Material> retMaterial = std::move(itr->second);
+			materials_.erase(itr);
+			return std::move(retMaterial);
+		}
+	}
+
+	return nullptr;
 }

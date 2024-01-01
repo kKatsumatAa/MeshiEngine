@@ -66,7 +66,7 @@ public:
 	virtual void ChangeOwner(IObject3D* parent);
 
 	//判定属性
-	void SetAttribute(uint16_t attribute) { GetCollider()->SetAttribute(attribute); }
+	void SetAttribute(uint16_t attribute);
 
 public:
 	//
@@ -88,11 +88,17 @@ public:
 	virtual float GetAttackCoolTimeRatio() = 0;
 
 public:
-
+	//初期化
 	virtual bool Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model) override = 0;
-
+	//更新
 	virtual void Update();
 
+	//影用の深度描画
+	void DrawShadow() override;
+	//描画
+	void Draw() override;
+
+	//衝突時の処理
 	virtual void OnCollision(const CollisionInfo& info) override = 0;
 
 public:

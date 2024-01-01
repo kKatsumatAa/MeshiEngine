@@ -12,6 +12,7 @@
 #include "ObjectManager.h"
 #include "Util.h"
 #include "FbxLoader.h"
+#include "EnemyPart.h"
 
 using namespace DirectX;
 
@@ -375,6 +376,9 @@ void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 			return;
 		}
 
+		//部位(仮)
+		DetachPart("RightHand", (GetTrans() - info.object_->GetTrans()).GetNormalized());
+
 		//ノックバック
 		KnockBack(info);
 
@@ -417,6 +421,29 @@ void Enemy::SetEmergeLight(float rate)
 			{ POINT_LIGHT_END_COLOR_.x,POINT_LIGHT_END_COLOR_.y,POINT_LIGHT_END_COLOR_.z }, rate);
 
 		lightM->SetPointLightColor(GetLightIndexTmp(), { color.x,color.y ,color.z });
+	}
+}
+
+void Enemy::DetachPart(const std::string& partName, const Vec3& dirVec)
+{
+	//メッシュからモデル生成
+	auto partModel = ModelObj::CreateModelFromModelMesh(*model_, partName);
+
+	if (partModel)
+	{
+		//オブジェクト生成
+		auto enemyPart = EnemyPart::Create(*worldMat_.get(), partModel.get());
+		//色
+		enemyPart->SetColor(GetColor());
+
+		//投げる
+		Vec3 fallPos = enemyPart->GetTrans();
+		FallWeapon(enemyPart.get(), dirVec, &fallPos);
+
+		//オブジェクトを追加
+		ObjectManager::GetInstance().AddObject(LevelManager::S_OBJ_GROUP_NAME_, std::move(enemyPart));
+		//モデルも追加
+		ModelManager::GetInstance().AddModelObj(std::move(partModel), partName);
 	}
 }
 
@@ -486,7 +513,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	{
 		distanceVec.Normalized();
 		distanceVec.y += THROW_WEAPON_VEC_Y_;
-		FallWeapon(Vec3(distanceVec.x, distanceVec.y, distanceVec.z) * WEAPON_FALL_VEL_EXTEND_);
+		FallHaveWeapon(Vec3(distanceVec.x, distanceVec.y, distanceVec.z) * WEAPON_FALL_VEL_EXTEND_);
 	}
 }
 

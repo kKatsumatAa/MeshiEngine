@@ -75,9 +75,27 @@ void Weapon::ChangeOwner(IObject3D* parent)
 	fallVec_.y = 0;
 }
 
+void Weapon::SetAttribute(uint16_t attribute)
+{
+	if (collider_)
+	{
+		GetCollider()->SetAttribute(attribute);
+	}
+}
+
 void Weapon::Update()
 {
 	Object::Update();
+}
+
+void Weapon::DrawShadow()
+{
+	Object::DrawModel(nullptr, nullptr, nullptr, Object::PipelineStateNumObj::SHADOW_OBJ);
+}
+
+void Weapon::Draw()
+{
+	Object::DrawModel(nullptr);
 }
 
 void Weapon::TerminateParent()
@@ -86,6 +104,6 @@ void Weapon::TerminateParent()
 	{
 		Character* chara = dynamic_cast<Character*>(owner_);
 		owner_ = nullptr;
-		chara->FallWeapon({ 0,0,0 });
+		chara->FallHaveWeapon({ 0,0,0 });
 	}
 }

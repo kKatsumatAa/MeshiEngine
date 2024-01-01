@@ -54,6 +54,11 @@ IModel* ModelManager::LoadModel(const std::string& fileName, bool smoothing, boo
 	return LoadModelObj(modelName, smoothing, sameNameOtherModel);
 }
 
+void ModelManager::AddModelObj(std::unique_ptr<ModelObj> model, const std::string& name)
+{
+	nameAndModels_.insert(std::make_pair(name, std::move(model)));
+}
+
 ModelObj* ModelManager::LoadModelObj(const std::string& fileName, bool smoothing, bool sameNameOtherModel)
 {
 	//ファイル名から探す

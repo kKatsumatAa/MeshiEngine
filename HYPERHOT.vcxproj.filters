@@ -229,6 +229,12 @@
     <Filter Include="ヘッダー ファイル\Engine\Scene">
       <UniqueIdentifier>{e0d5b687-27ba-4bdd-bd69-2d193fc74d99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Application\MakeWaveObj\Weapon\EnemyPart">
+      <UniqueIdentifier>{ace86d58-0122-44d0-8920-58fc94b77158}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Application\MakeWaveObj\Weapon\EnemyPart">
+      <UniqueIdentifier>{4a98be27-444d-401c-9a43-5b443366ed24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -450,9 +456,6 @@
     <ClCompile Include="Engine\3D\Object\FBXNodeColliders.cpp">
       <Filter>ソース ファイル\Engine\3D\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Util\Counter.cpp">
-      <Filter>ソース ファイル\Engine\Util</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Util\Wave.cpp">
       <Filter>ソース ファイル\Engine\Util</Filter>
     </ClCompile>
@@ -548,6 +551,9 @@
     </ClCompile>
     <ClCompile Include="Application\Base\MyGame.cpp">
       <Filter>ソース ファイル\Application\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Weapon\EnemyPart\EnemyPart.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Weapon\EnemyPart</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -895,6 +901,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Scene\AbstractSceneFactory.h">
       <Filter>ヘッダー ファイル\Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Weapon\EnemyPart\EnemyPart.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Weapon\EnemyPart</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

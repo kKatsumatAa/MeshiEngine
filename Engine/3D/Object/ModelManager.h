@@ -54,4 +54,8 @@ public:
 	/// <param name="otherSameNameModel">同じ名前の別のインスタンス</param>
 	/// <returns>モデルのポインタ</returns>
 	IModel* LoadModel(const std::string& fileName, bool smoothing = false, bool sameNameOtherModel = false);
+
+public:
+	//objモデルの追加
+	void AddModelObj(std::unique_ptr<ModelObj> model, const std::string& name);
 };

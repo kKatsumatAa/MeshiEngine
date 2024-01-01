@@ -30,7 +30,7 @@ Player::~Player()
 		//落とすときの角度
 		weapon_->SetRot({ 0,PI,0 });
 	}
-	FallWeapon(DEAD_WEAPON_FALL_VEC_, nullptr, false);
+	FallHaveWeapon(DEAD_WEAPON_FALL_VEC_, nullptr, false);
 }
 
 std::unique_ptr<Player> Player::Create(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
@@ -420,7 +420,7 @@ void Player::UpdatePlayerActionFromMouse()
 void Player::ThrowWeapon()
 {
 	//武器投げる
-	FallWeapon(GetFrontTargetVec(COLLISION_ATTR_ENEMYS).GetNormalized() * FALL_VEL_POW_ + THROW_WEAPON_VEC_,
+	FallHaveWeapon(GetFrontTargetVec(COLLISION_ATTR_ENEMYS).GetNormalized() * FALL_VEL_POW_ + THROW_WEAPON_VEC_,
 		nullptr, false);
 
 	//ゲームスピード加算

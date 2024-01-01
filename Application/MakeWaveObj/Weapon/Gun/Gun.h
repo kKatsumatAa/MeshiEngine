@@ -104,10 +104,6 @@ public:
 	bool Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model) override;
 	//更新
 	void Update() override;
-	//影用の深度描画
-	void DrawShadow() override;
-	//描画
-	void Draw() override;
 
 	//衝突時の処理
 	void OnCollision(const CollisionInfo& info) override;
