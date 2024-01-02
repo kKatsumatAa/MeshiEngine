@@ -304,5 +304,8 @@ public:
 	float GetAnimeSpeedExtend() { return animeSpeedExtend_; }
 
 private:
-	void DetachPart(const std::string& partName, const Vec3& dirVec);
+	//部位を分離する
+	void DetachPart(const std::string& partName, const CollisionInfo& info);
+	//攻撃を受けたボーンでそのボーンがある部位の名前取得
+	std::string GetPartName(const std::string& boneName);
 };

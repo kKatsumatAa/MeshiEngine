@@ -1,4 +1,5 @@
 #include "EnemyPart.h"
+#include "MeshCollider.h"
 
 std::unique_ptr<EnemyPart> EnemyPart::Create(const WorldMat& worldMat, IModel* model)
 {
@@ -37,6 +38,11 @@ bool EnemyPart::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 
 	//モデル
 	SetModel(model);
+
+	// メッシュコライダーの追加
+	std::unique_ptr<MeshCollider> collider = std::make_unique<MeshCollider>();
+	collider->ConstructTriangles(model);
+	SetCollider(std::move(collider));
 
 	return true;
 }

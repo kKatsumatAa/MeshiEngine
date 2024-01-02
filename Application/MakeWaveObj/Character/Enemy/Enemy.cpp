@@ -220,7 +220,7 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj, float angleExtend)
 	Vec3 addRot = INIT_NODE_ADD_ROT_;
 	//Spine2(仮)からの距離で回転方向を決めるため(回転の逆行列をかけて元の位置関係に戻したうえで)
 	Vec3 localPosFromSpine2 = nodeObj.GetLocalTrans() * GetWorldMat()->GetRotMat().GetInverseMatrix()
-		- ObjectFBX::GetNodeColliderObj("Spine2")->GetLocalTrans() * GetWorldMat()->GetRotMat().GetInverseMatrix();
+		- ObjectFBX::GetNodeColliderObj(BonePartName::SPINE_2)->GetLocalTrans() * GetWorldMat()->GetRotMat().GetInverseMatrix();
 
 	addRot.x = max(min(-localPosFromSpine2.y, PI * NODE_ADD_ROT_RATE_), -PI * NODE_ADD_ROT_RATE_) * angleExtend;
 	addRot.y = max(min(-localPosFromSpine2.x, PI * NODE_ADD_ROT_RATE_), -PI * NODE_ADD_ROT_RATE_) * angleExtend;
@@ -237,9 +237,9 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj, float angleExtend)
 	}
 
 	//足に攻撃されたら
-	if (nodeObj.GetObjName().find("Toe") != std::string::npos ||
-		nodeObj.GetObjName().find("Foot") != std::string::npos ||
-		nodeObj.GetObjName().find("Leg") != std::string::npos)
+	if (nodeObj.GetObjName().find(BonePartName::TOE) != std::string::npos ||
+		nodeObj.GetObjName().find(BonePartName::FOOT) != std::string::npos ||
+		nodeObj.GetObjName().find(BonePartName::LEG) != std::string::npos)
 	{
 		//Spine2(仮)からの距離で回転方向を決めるため
 		Vec3 localPosFromLeg = nodeObj.GetLocalTrans() - ObjectFBX::GetNodeColliderObj("UpLeg")->GetLocalTrans();
@@ -248,10 +248,10 @@ void Enemy::SetAllNodeAddRots(const IObject& nodeObj, float angleExtend)
 		addRotLeg.x = max(min(localPosFromLeg.y, PI * LEG_ADD_ROT_RATE_), -PI * LEG_ADD_ROT_RATE_) * angleExtend;
 		addRotLeg.y = max(min(-localPosFromLeg.x, PI * LEG_ADD_ROT_RATE_), -PI * LEG_ADD_ROT_RATE_) * angleExtend;
 
-		damagedAddRots_.push_back({ leftOrRightStr + "Leg", INIT_NODE_ADD_ROT_, addRotLeg });
+		damagedAddRots_.push_back({ leftOrRightStr + BonePartName::LEG, INIT_NODE_ADD_ROT_, addRotLeg });
 	}
 
-	damagedAddRots_.push_back({ "Spine2", INIT_NODE_ADD_ROT_, addRot });
+	damagedAddRots_.push_back({ BonePartName::SPINE_2, INIT_NODE_ADD_ROT_, addRot });
 }
 
 void Enemy::WalkWaveUpdate()
@@ -377,7 +377,7 @@ void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 		}
 
 		//部位(仮)
-		DetachPart("RightHand", (GetTrans() - info.object_->GetTrans()).GetNormalized());
+		DetachPart(GetPartName(nodeObj->GetObjName()), info);
 
 		//ノックバック
 		KnockBack(info);
@@ -424,27 +424,80 @@ void Enemy::SetEmergeLight(float rate)
 	}
 }
 
-void Enemy::DetachPart(const std::string& partName, const Vec3& dirVec)
+void Enemy::DetachPart(const std::string& partName, const CollisionInfo& info)
 {
 	//メッシュからモデル生成
 	auto partModel = ModelObj::CreateModelFromModelMesh(*model_, partName);
 
 	if (partModel)
 	{
+		//投げるための位置や方向
+		Vec3 fallPos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
+		Vec3 dir = info.object_->GetTrans() - fallPos;
+		dir.Normalized();
+		dir.y = THROW_WEAPON_VEC_Y_ * 2.0f;
+
 		//オブジェクト生成
 		auto enemyPart = EnemyPart::Create(*worldMat_.get(), partModel.get());
 		//色
 		enemyPart->SetColor(GetColor());
+		//位置
+		enemyPart->SetTrans(fallPos);
 
 		//投げる
-		Vec3 fallPos = enemyPart->GetTrans();
-		FallWeapon(enemyPart.get(), dirVec, &fallPos);
+		FallWeapon(enemyPart.get(), dir, nullptr, false);
 
 		//オブジェクトを追加
 		ObjectManager::GetInstance().AddObject(LevelManager::S_OBJ_GROUP_NAME_, std::move(enemyPart));
 		//モデルも追加
 		ModelManager::GetInstance().AddModelObj(std::move(partModel), partName);
 	}
+}
+
+std::string Enemy::GetPartName(const std::string& boneName)
+{
+	std::string partName = "";
+
+	//右半身
+	if (boneName.find("Right") != std::string::npos)
+	{
+		if (boneName.find(BonePartName::SHOULDER) != std::string::npos ||
+			boneName.find(BonePartName::ARM) != std::string::npos ||
+			boneName.find(BonePartName::HAND) != std::string::npos)
+		{
+			partName = PartName::RIGHT_HAND;
+		}
+		else
+		{
+			partName = PartName::RIGHT_LEG;
+		}
+	}
+	//左半身
+	else if (boneName.find("Left") != std::string::npos)
+	{
+		if (boneName.find(BonePartName::SHOULDER) != std::string::npos ||
+			boneName.find(BonePartName::ARM) != std::string::npos ||
+			boneName.find(BonePartName::HAND) != std::string::npos)
+		{
+			partName = PartName::LEFT_HAND;
+		}
+		else
+		{
+			partName = PartName::LEFT_LEG;
+		}
+	}
+	//頭
+	else if (boneName.find(BonePartName::HEAD) != std::string::npos)
+	{
+		partName = PartName::HEAD;
+	}
+	//胴体
+	else
+	{
+		partName = PartName::BODY;
+	}
+
+	return partName;
 }
 
 //----------------------------------------------------------------
@@ -611,6 +664,9 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 
 		//ノックバック
 		KnockBack(info);
+
+		//部位(仮)
+		DetachPart(GetPartName(obj->GetObjName()), info);
 
 		//今のhp分ダメージ受けて倒れる
 		auto stateChangeF = [=]() { Dead(); };

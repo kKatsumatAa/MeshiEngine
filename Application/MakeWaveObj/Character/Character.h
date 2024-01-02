@@ -12,6 +12,29 @@
 #include "MakeWaveObj.h"
 
 
+namespace BonePartName
+{
+	static const std::string HEAD = "Head";
+	static const std::string SHOULDER = "Shoulder";
+	static const std::string ARM = "Arm";
+	static const std::string HAND = "Hand";
+	static const std::string SPINE = "Spine";
+	static const std::string SPINE_2 = "Spine2";
+	static const std::string LEG = "Leg";
+	static const std::string FOOT = "Foot";
+	static const std::string TOE = "Toe";
+}
+
+namespace PartName
+{
+	static const std::string HEAD = "Head";
+	static const std::string BODY = "Body";
+	static const std::string RIGHT_HAND = "RightHand";
+	static const std::string LEFT_HAND = "LeftHand";
+	static const std::string RIGHT_LEG = "RightLeg";
+	static const std::string LEFT_LEG = "LeftLeg";
+}
+
 class Character : public ObjectFBX, public IMakeWaveObj
 {
 public:
