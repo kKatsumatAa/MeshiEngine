@@ -431,6 +431,9 @@ void Enemy::DetachPart(const std::string& partName, const CollisionInfo& info)
 
 	if (partModel)
 	{
+		//部位のメッシュを中心に移動させる
+		partModel->MoveMeshToCenter(partName);
+
 		//投げるための位置や方向
 		Vec3 fallPos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
 		Vec3 dir = info.object_->GetTrans() - fallPos;
@@ -445,7 +448,7 @@ void Enemy::DetachPart(const std::string& partName, const CollisionInfo& info)
 		enemyPart->SetTrans(fallPos);
 
 		//投げる
-		FallWeapon(enemyPart.get(), dir, nullptr, false);
+		FallWeapon(enemyPart.get(), dir, &fallPos, false);
 
 		//オブジェクトを追加
 		ObjectManager::GetInstance().AddObject(LevelManager::S_OBJ_GROUP_NAME_, std::move(enemyPart));

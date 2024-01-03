@@ -259,4 +259,8 @@ public:
 
 	//メッシュのオフセットデータをセット
 	void SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData);
+
+public:
+	//メッシュ内の頂点を全て中心にずらす
+	void MoveVerticesToCenter();
 };

@@ -162,6 +162,19 @@ void IModel::CopyUnUniqueParams(const IModel& model)
 	materialExtend_ = model.GetMaterialExtend();
 }
 
+void IModel::MoveMeshToCenter(const std::string& meshName)
+{
+	for (auto& mesh : meshes_)
+	{
+		//名前が一致しているか、メッシュが一つだけならメッシュを中心に
+		if (mesh->GetName() == meshName ||
+			(meshName.size() == 0 && meshes_.size() == 1))
+		{
+			mesh->MoveVerticesToCenter();
+		}
+	}
+}
+
 //----------------------------------------------------------
 void IModel::AddMaterial(std::unique_ptr<Material> material)
 {

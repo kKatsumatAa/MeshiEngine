@@ -144,4 +144,6 @@ public:
 public:
 	//uniqueでないパラメータをコピー(scaleExtend以外)
 	void CopyUnUniqueParams(const IModel& model);
+	//メッシュを中心に移動させる
+	void MoveMeshToCenter(const std::string& meshName);
 };
