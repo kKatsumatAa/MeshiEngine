@@ -166,13 +166,26 @@ void IModel::MoveMeshToCenter(const std::string& meshName)
 {
 	for (auto& mesh : meshes_)
 	{
-		//名前が一致しているか、メッシュが一つだけならメッシュを中心に
-		if (mesh->GetName() == meshName ||
-			(meshName.size() == 0 && meshes_.size() == 1))
+		//名前が一致していたらメッシュを中心に
+		if (mesh->GetName() == meshName)
 		{
 			mesh->MoveVerticesToCenter();
 		}
 	}
+}
+
+Vec3 IModel::GetMeshCentroid(const std::string& meshName)
+{
+	for (auto& mesh : meshes_)
+	{
+		//名前が一致していたら重心を得る
+		if (mesh->GetName() == meshName)
+		{
+			return mesh->GetVerticesCentroid();
+		}
+	}
+
+	return Vec3(0,0,0);
 }
 
 //----------------------------------------------------------

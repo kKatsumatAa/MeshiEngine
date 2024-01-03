@@ -486,9 +486,6 @@ void EnemyStateDead::Update()
 
 	enemy_->HPUpdate(t);
 
-	//ノードの位置からパーティクルだす(徐々に数減らしたり)
-	enemy_->DeadNodesParticle((uint64_t)(DEAD_PARTICLE_NUM_ * t), (uint64_t)(Lerp((float)PARTICLE_INTERVAL_ * TWICE, (float)PARTICLE_INTERVAL_, EaseIn(t))));
-
 	//終わったら生きてるフラグオフ
 	if (t >= TIME_RATIO_MAX_)
 	{

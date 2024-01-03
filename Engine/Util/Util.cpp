@@ -48,23 +48,11 @@ void Vec3xM4(Vec3& v, const M4& m4, bool w)
 
 Vec3 GetVec3xM4(const Vec3& v, const M4& m4, bool w)
 {
-	const int8_t ANS_INDEX = 1;
+	Vec3 ans = v;
 
-	float v4[][4] = {
-	{ v.x,v.y,v.z,(float)w },
-	{0,0,0,0}
-	};
+	Vec3xM4(ans, m4, w);
 
-	//掛け算
-	for (int32_t i = 0; i < M4::S_MAT_HEIGHT_; i++)
-	{
-		for (int32_t j = 0; j < M4::S_MAT_WIDTH_; j++)
-		{
-			v4[ANS_INDEX][i] += v4[0][j] * (float)m4.m_[j][i];
-		}
-	}
-
-	return { v4[ANS_INDEX][0],v4[ANS_INDEX][1] ,v4[ANS_INDEX][2] };
+	return ans;
 }
 
 void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w)
@@ -98,6 +86,15 @@ void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w)
 
 		v /= W;
 	}
+}
+
+Vec3 GetVec3xM4andDivisionW(const Vec3& v, const M4& m4, bool w)
+{
+	Vec3 ans = v;
+
+	Vec3xM4andDivisionW(ans, m4, w);
+
+	return ans;
 }
 
 
@@ -614,6 +611,17 @@ float GetRand(float min, float max)
 	std::mt19937_64 eng(rd());
 	std::uniform_real_distribution<float> distr(min, max);
 	return distr(eng);
+}
+
+Vec3 GetRandVec3(float min, float max)
+{
+	std::random_device rd;
+	std::mt19937_64 eng(rd());
+	std::uniform_real_distribution<float> distr(min, max);
+
+	Vec3 randVec3 = { distr(eng),distr(eng) ,distr(eng) };
+
+	return randVec3;
 }
 
 const DirectX::XMFLOAT4 operator+(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs)

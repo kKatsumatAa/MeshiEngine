@@ -57,5 +57,5 @@ public:
 
 public:
 	//objモデルの追加
-	void AddModelObj(std::unique_ptr<ModelObj> model, const std::string& name);
+	void AddModelObj(std::unique_ptr<ModelObj> model, const std::string& name, bool sameNameOtherModel = false);
 };

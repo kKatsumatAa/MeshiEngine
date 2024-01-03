@@ -273,6 +273,9 @@ void Enemy::WalkWaveUpdate()
 
 void Enemy::Dead()
 {
+	//部位分離(仮)
+	DetachAllPart();
+
 	ChangeEnemyState(std::make_unique<EnemyStateDead>());
 }
 
@@ -376,8 +379,11 @@ void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 			return;
 		}
 
-		//部位(仮)
-		DetachPart(GetPartName(nodeObj->GetObjName()), info);
+		//部位分離(仮)
+		Vec3 detachPos = Vec3(info.inter_.m128_f32[0], info.inter_.m128_f32[1], info.inter_.m128_f32[2]);
+		Vec3 throwVec = detachPos - GetTrans()
+			+ Vec3{ 0, THROW_WEAPON_VEC_Y_,0 };
+		DetachPart(GetPartName(nodeObj->GetObjName()), throwVec.GetNormalized(), &detachPos);
 
 		//ノックバック
 		KnockBack(info);
@@ -424,21 +430,30 @@ void Enemy::SetEmergeLight(float rate)
 	}
 }
 
-void Enemy::DetachPart(const std::string& partName, const CollisionInfo& info)
+void Enemy::DetachPart(const std::string& partName, const Vec3& throwDir, Vec3* partGeneratePos)
 {
 	//メッシュからモデル生成
 	auto partModel = ModelObj::CreateModelFromModelMesh(*model_, partName);
 
 	if (partModel)
 	{
+		//投げるための位置
+		Vec3 offset = partModel->GetMeshCentroid(partName);
+		//DirectXの軸に変えてスケールも適用
+		offset = Vec3(offset.x * GetScale().x, offset.z * GetScale().y, offset.y * GetScale().z);
+		//向きで回転
+		offset = GetVec3xM4(Vec3(offset.x * GetScale().x, offset.z * GetScale().y, offset.y * GetScale().z),
+			GetWorldMat()->GetRotMat(), false);
+		Vec3 fallPos = GetTrans() + offset;
+		if (partGeneratePos)
+		{
+			fallPos = *partGeneratePos;
+		}
+		//投げる方向
+		Vec3 dir = throwDir;
+
 		//部位のメッシュを中心に移動させる
 		partModel->MoveMeshToCenter(partName);
-
-		//投げるための位置や方向
-		Vec3 fallPos = { info.inter_.m128_f32[0],info.inter_.m128_f32[1],info.inter_.m128_f32[2] };
-		Vec3 dir = info.object_->GetTrans() - fallPos;
-		dir.Normalized();
-		dir.y = THROW_WEAPON_VEC_Y_ * 2.0f;
 
 		//オブジェクト生成
 		auto enemyPart = EnemyPart::Create(*worldMat_.get(), partModel.get());
@@ -453,8 +468,18 @@ void Enemy::DetachPart(const std::string& partName, const CollisionInfo& info)
 		//オブジェクトを追加
 		ObjectManager::GetInstance().AddObject(LevelManager::S_OBJ_GROUP_NAME_, std::move(enemyPart));
 		//モデルも追加
-		ModelManager::GetInstance().AddModelObj(std::move(partModel), partName);
+		ModelManager::GetInstance().AddModelObj(std::move(partModel), partName, true);
 	}
+}
+
+void Enemy::DetachAllPart()
+{
+	DetachPart(PartName::BODY, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	DetachPart(PartName::HEAD, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	DetachPart(PartName::LEFT_HAND, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	DetachPart(PartName::LEFT_LEG, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	DetachPart(PartName::RIGHT_HAND, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	DetachPart(PartName::RIGHT_LEG, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
 }
 
 std::string Enemy::GetPartName(const std::string& boneName)
@@ -668,8 +693,8 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		//ノックバック
 		KnockBack(info);
 
-		//部位(仮)
-		DetachPart(GetPartName(obj->GetObjName()), info);
+		//弾が当たった部位のメッシュ削除
+		model_->DeleteMesh(GetPartName(obj->GetObjName()));
 
 		//今のhp分ダメージ受けて倒れる
 		auto stateChangeF = [=]() { Dead(); };

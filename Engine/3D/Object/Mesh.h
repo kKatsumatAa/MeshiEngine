@@ -263,4 +263,6 @@ public:
 public:
 	//メッシュ内の頂点を全て中心にずらす
 	void MoveVerticesToCenter();
+	//メッシュの重心を得る
+	Vec3 GetVerticesCentroid();
 };

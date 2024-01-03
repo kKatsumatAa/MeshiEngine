@@ -54,9 +54,16 @@ IModel* ModelManager::LoadModel(const std::string& fileName, bool smoothing, boo
 	return LoadModelObj(modelName, smoothing, sameNameOtherModel);
 }
 
-void ModelManager::AddModelObj(std::unique_ptr<ModelObj> model, const std::string& name)
+void ModelManager::AddModelObj(std::unique_ptr<ModelObj> model, const std::string& name, bool sameNameOtherModel)
 {
-	nameAndModels_.insert(std::make_pair(name, std::move(model)));
+	if (sameNameOtherModel)
+	{
+		sameNameOtherModels_.push_back(std::move(model));
+	}
+	else
+	{
+		nameAndModels_.insert(std::make_pair(name, std::move(model)));
+	}
 }
 
 ModelObj* ModelManager::LoadModelObj(const std::string& fileName, bool smoothing, bool sameNameOtherModel)

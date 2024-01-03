@@ -327,20 +327,8 @@ void Mesh::SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData)
 
 void Mesh::MoveVerticesToCenter()
 {
-	//合計
-	Vec3 totalLegnthVec = { 0,0,0 };
-	//重心
-	Vec3 centroidVec = { 0,0,0 };
-
-	for (const auto& vert : vertices_)
-	{
-		totalLegnthVec.x += vert.pos.x;
-		totalLegnthVec.y += vert.pos.y;
-		totalLegnthVec.z += vert.pos.z;
-	}
-
 	//合計距離を数で割って重心出す
-	centroidVec = totalLegnthVec / (float)vertices_.size();
+	Vec3 centroidVec = GetVerticesCentroid();
 
 	//重心で引いて中心に移動させる
 	for (auto& vert : vertices_)
@@ -349,4 +337,22 @@ void Mesh::MoveVerticesToCenter()
 		vert.pos.y -= centroidVec.y;
 		vert.pos.z -= centroidVec.z;
 	}
+}
+
+Vec3 Mesh::GetVerticesCentroid()
+{
+	//合計
+	Vec3 totalLengthVec = { 0,0,0 };
+
+	for (const auto& vert : vertices_)
+	{
+		totalLengthVec.x += vert.pos.x;
+		totalLengthVec.y += vert.pos.y;
+		totalLengthVec.z += vert.pos.z;
+	}
+
+	//合計距離を数で割って重心出す
+	Vec3 centroidVec = totalLengthVec / (float)vertices_.size();
+
+	return centroidVec;
 }

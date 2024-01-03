@@ -1,5 +1,6 @@
 #include "EnemyPart.h"
 #include "MeshCollider.h"
+#include "GameVelocityManager.h"
 
 
 const std::string EnemyPart::S_OBJ_NAME_ = "enemyPart";
@@ -58,6 +59,13 @@ bool EnemyPart::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 void EnemyPart::Update()
 {
 	NoParentMove();
+
+	timer_ += GameVelocityManager::GetInstance().GetVelocity();
+	//死亡
+	if (timer_ >= LIFE_TIME_MAX_)
+	{
+		SetIsAlive(false);
+	}
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------

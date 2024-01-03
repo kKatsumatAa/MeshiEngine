@@ -113,7 +113,7 @@ void CameraManager::Update()
 			//ベクトル回転させてカメラ位置
 			debugWorldMat_.CalcWorldMat();
 			Vec3 pos = cameraPos_;
-			Vec3xM4(pos, debugWorldMat_.matWorld_, 0);
+			Vec3xM4(pos, debugWorldMat_.matWorld_, false);
 			debugCamera->SetEye(debugCamera->GetTarget() + pos);
 
 			debugCamera->UpdateViewMatrix();

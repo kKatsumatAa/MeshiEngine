@@ -146,4 +146,6 @@ public:
 	void CopyUnUniqueParams(const IModel& model);
 	//メッシュを中心に移動させる
 	void MoveMeshToCenter(const std::string& meshName);
+	//メッシュの重心を得る(ローカル)
+	Vec3 GetMeshCentroid(const std::string& meshName);
 };

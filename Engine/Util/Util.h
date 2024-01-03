@@ -38,8 +38,10 @@ void Vec4xM4(Vec4& v, const M4& m4);
 void Vec3xM4(Vec3& v, const M4& m4, bool w);
 //vec3とm4の掛け算
 Vec3 GetVec3xM4(const Vec3& v, const M4& m4, bool w);
-//vec3とm4の掛け算をして、出たベクトルを割る
+//vec3とm4の掛け算をして、出たベクトルを割って代入
 void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w);
+//vec3とm4の掛け算をして、出たベクトルを割る
+Vec3 GetVec3xM4andDivisionW(const Vec3& v, const M4& m4, bool w);
 
 //--------------------------------------------------------------------------------------------------
 //ラジアン系
@@ -142,6 +144,7 @@ float Clamp(float v, float min, float max);
 
 //ランダム
 float GetRand(float min, float max);
+Vec3 GetRandVec3(float min, float max);
 
 //------------------------------------------------------------------------
 //回転行列から角度を求める（クォータニオンから）

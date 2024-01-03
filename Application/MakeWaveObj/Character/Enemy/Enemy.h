@@ -142,7 +142,7 @@ public://波紋
 	const float DAMAGE_MY_WAVE_TIME_RATE_MAX_ = 2.0f;
 	//種類別倍率
 	const float PUNCHED_WAVE_RATE_ = 1.4f;
-	const float SHOOTED_WAVE_RATE_ = 0.9f;
+	const float SHOOTED_WAVE_RATE_ = 0.65f;
 	const float HIT_WEAPON_WAVE_RATE_ = 0.35f;
 	//波紋数
 	const int8_t STAGE_WAVE_NUM_ = 2;
@@ -156,6 +156,9 @@ private:
 	const float DEAD_TIMER_MAX_ = 60.0f;
 	//分割数
 	const float TESS_FACTOR_MAX_ = 20.0f;
+public:
+	const float DEAD_BODY_PART_VEC_MIN_ = -0.55f;
+	const float DEAD_BODY_PART_VEC_MAX_ = 0.55f;
 
 private:
 	Vec3 velocity_ = { 0,0,0 };
@@ -305,7 +308,9 @@ public:
 
 private:
 	//部位を分離する
-	void DetachPart(const std::string& partName, const CollisionInfo& info);
+	void DetachPart(const std::string& partName, const Vec3& throwDir, Vec3* partGeneratePos = nullptr);
+	//部位を全て分離
+	void DetachAllPart();
 	//攻撃を受けたボーンでそのボーンがある部位の名前取得
 	std::string GetPartName(const std::string& boneName);
 };

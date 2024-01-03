@@ -11,6 +11,9 @@ class EnemyPart : public Weapon
 {
 public:
 	static const std::string S_OBJ_NAME_;
+private:
+	float timer_ = 0;
+	const float LIFE_TIME_MAX_ = 120.0f;
 
 
 protected:
