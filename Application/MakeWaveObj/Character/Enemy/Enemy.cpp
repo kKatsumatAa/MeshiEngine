@@ -442,8 +442,7 @@ void Enemy::DetachPart(const std::string& partName, const Vec3& throwDir, Vec3* 
 		//DirectXの軸に変えてスケールも適用
 		offset = Vec3(offset.x * GetScale().x, offset.z * GetScale().y, offset.y * GetScale().z);
 		//向きで回転
-		offset = GetVec3xM4(Vec3(offset.x * GetScale().x, offset.z * GetScale().y, offset.y * GetScale().z),
-			GetWorldMat()->GetRotMat(), false);
+		offset = GetVec3xM4(offset, GetWorldMat()->GetRotMat(), false);
 		Vec3 fallPos = GetTrans() + offset;
 		if (partGeneratePos)
 		{

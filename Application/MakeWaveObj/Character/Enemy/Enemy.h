@@ -157,8 +157,8 @@ private:
 	//分割数
 	const float TESS_FACTOR_MAX_ = 20.0f;
 public:
-	const float DEAD_BODY_PART_VEC_MIN_ = -0.55f;
-	const float DEAD_BODY_PART_VEC_MAX_ = 0.55f;
+	const float DEAD_BODY_PART_VEC_MIN_ = -0.35f;
+	const float DEAD_BODY_PART_VEC_MAX_ = 0.35f;
 
 private:
 	Vec3 velocity_ = { 0,0,0 };

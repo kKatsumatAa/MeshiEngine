@@ -62,7 +62,7 @@ public:
 	//回転行列セット
 	void SetRotMat(const M4& m) { matRot_ = m; }
 	//回転行列取得
-	const M4& GetRotMat() { return matRot_; }
+	const M4& GetRotMat()const { return matRot_; }
 
 	//行列をそのままセット
 	void SetLocalParentMat(const M4& mat) { localParentMat_ = mat; }

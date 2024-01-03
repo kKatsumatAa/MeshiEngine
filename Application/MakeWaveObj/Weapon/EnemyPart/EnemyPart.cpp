@@ -18,7 +18,6 @@ std::unique_ptr<EnemyPart> EnemyPart::Create(const WorldMat& worldMat, IModel* m
 	auto lWorld = std::make_unique<WorldMat>();
 	lWorld->trans_ = worldMat.trans_;
 	lWorld->scale_ = worldMat.scale_;
-	lWorld->rot_ = worldMat.rot_;
 
 	//初期化
 	if (!instance->Initialize(std::move(lWorld), model))
