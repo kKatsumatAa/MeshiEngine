@@ -7,11 +7,10 @@
 #pragma once
 #include"Weapon.h"
 
-
 class EnemyPart : public Weapon
 {
-private:
-
+public:
+	static const std::string S_OBJ_NAME_;
 
 
 protected:

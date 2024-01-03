@@ -1,6 +1,10 @@
 #include "EnemyPart.h"
 #include "MeshCollider.h"
 
+
+const std::string EnemyPart::S_OBJ_NAME_ = "S_OBJ_NAME";
+
+//---------------------------------
 std::unique_ptr<EnemyPart> EnemyPart::Create(const WorldMat& worldMat, IModel* model)
 {
 	std::unique_ptr<EnemyPart> instance = std::make_unique<EnemyPart>();
@@ -38,6 +42,9 @@ bool EnemyPart::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 
 	//モデル
 	SetModel(model);
+
+	//名前
+	SetObjName(S_OBJ_NAME_);
 
 	// メッシュコライダーの追加
 	std::unique_ptr<MeshCollider> collider = std::make_unique<MeshCollider>();
