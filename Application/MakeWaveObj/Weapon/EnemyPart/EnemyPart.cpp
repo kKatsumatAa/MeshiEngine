@@ -2,7 +2,7 @@
 #include "MeshCollider.h"
 
 
-const std::string EnemyPart::S_OBJ_NAME_ = "S_OBJ_NAME";
+const std::string EnemyPart::S_OBJ_NAME_ = "enemyPart";
 
 //---------------------------------
 std::unique_ptr<EnemyPart> EnemyPart::Create(const WorldMat& worldMat, IModel* model)
