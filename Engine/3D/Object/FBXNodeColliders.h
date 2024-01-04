@@ -68,4 +68,6 @@ public:
 public:
 	//ノードの配列の一つ一つのコライダーをセットする
 	void CreateNodeColliders(uint16_t attribute);
+	//名前が含まれているコライダー無効に
+	void InvalidContainingStrColliders(const std::string& leftRight, const std::string& partName);
 };

@@ -437,6 +437,9 @@ void Enemy::DetachPart(const std::string& partName, const Vec3& throwDir, Vec3* 
 
 	if (partModel)
 	{
+		//部位の当たり判定なくす
+		InvalidPartNodeColliders(partName);
+
 		//投げるための位置
 		Vec3 offset = partModel->GetMeshCentroid(partName);
 		//DirectXの軸に変えてスケールも適用
@@ -777,7 +780,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 	{
 		//キャラクターのvirtual関数で死亡処理
 		auto player = dynamic_cast<Character*>(info.object_);
-		if (!player->GetIsDead())
+		if (!player->GetIsDead() && GetPartName(obj->GetObjName()) == PartName::RIGHT_HAND)
 		{
 			CollisionInfo linfo = CollisionInfo(this, GetCollider(), info.inter_);
 			player->Punched(linfo);

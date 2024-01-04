@@ -322,3 +322,48 @@ bool Character::CheckRayOfEyeHit(const Vec3& dir, float length, uint16_t attr, R
 
 	return isRayHit;
 }
+
+void Character::InvalidPartNodeColliders(const std::string& partName)
+{
+	std::string leftRight = "";
+
+	//部位によってボーンごとの判定無効に
+	if (partName == PartName::HEAD)
+	{
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::HEAD);
+	}
+	else if (partName == PartName::LEFT_HAND)
+	{
+		leftRight = "Left";
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::HAND);
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::ARM);
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::SHOULDER);
+	}
+	else if (partName == PartName::RIGHT_HAND)
+	{
+		leftRight = "Right";
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::HAND);
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::ARM);
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::SHOULDER);
+	}
+	else if (partName == PartName::LEFT_LEG)
+	{
+		leftRight = "Left";
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::TOE);
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::FOOT);
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::LEG);
+	}
+	else if (partName == PartName::RIGHT_LEG)
+	{
+		leftRight = "Right";
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::TOE);
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::FOOT);
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::LEG);
+	}
+	//胴体
+	else
+	{
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::SPINE);
+		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::NECK);
+	}
+}

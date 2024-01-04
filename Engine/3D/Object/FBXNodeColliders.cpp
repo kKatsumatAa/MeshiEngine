@@ -59,6 +59,20 @@ void FBXNodeColliders::CreateNodeColliders(uint16_t attribute)
 	}
 }
 
+void FBXNodeColliders::InvalidContainingStrColliders(const std::string& leftRight, const std::string& partName)
+{
+	for (auto itr = colliderObjs_.begin(); itr != colliderObjs_.end(); itr++)
+	{
+		//名前が含まれている判定用オブジェクトがあれば
+		if (itr->get()->GetObjName().find(leftRight) != std::string::npos &&
+			itr->get()->GetObjName().find(partName) != std::string::npos)
+		{
+			//無効
+			itr->get()->SetColliderIsValid(false);
+		}
+	}
+}
+
 //---------------------------------
 void FBXNodeColliders::Update(WorldMat* worldMat)
 {
@@ -87,7 +101,8 @@ void FBXNodeColliders::Update(WorldMat* worldMat)
 	for (uint16_t i = 0; i < (uint16_t)nodes_->size(); i++)
 	{
 		//ノードがボーンなら
-		if ((*nodes_)[i].attribute == FbxNodeAttribute::eSkeleton)
+		if ((*nodes_)[i].attribute == FbxNodeAttribute::eSkeleton &&
+			colliderObjs_[count]->GetIsValidUpdate())
 		{
 			Node node = (*nodes_)[i];
 
@@ -123,7 +138,7 @@ void FBXNodeColliders::Draw()
 	for (auto collObj = colliderObjs_.begin(); collObj != colliderObjs_.end();
 		collObj++)
 	{
-		if (collObj->get())
+		if (collObj->get() && collObj->get()->GetIsValidDraw())
 		{
 			collObj->get()->DrawSphere();
 		}

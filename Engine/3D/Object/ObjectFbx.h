@@ -61,7 +61,7 @@ protected:
 	ComPtr<ID3D12Resource> constBuffSkin_ = nullptr;
 	ConstBufferDataSkin* constMapSkin_ = nullptr;
 
-private:
+protected:
 	//ノードごとの当たり判定
 	FBXNodeColliders nodeColliders_;
 	//ノードごとの当たり判定を描画するかどうか

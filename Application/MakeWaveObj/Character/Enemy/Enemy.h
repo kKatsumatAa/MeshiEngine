@@ -34,7 +34,6 @@ public:
 		Vec3 addRotEnd = { 0,0,0 };
 	};
 
-
 public:
 	static const float S_LENGTH_MAX_;
 public:
@@ -163,17 +162,14 @@ public:
 private:
 	Vec3 velocity_ = { 0,0,0 };
 	bool isCantMove = false;
-
 	//ウェーブ番号
 	int32_t waveNum_ = -1;
-
 	//出現時のクールタイム
 	float emergeCoolTime_ = 0;
-
 	//向きをプレイヤーに向けるためのクォータニオン
 	Quaternion directionQua_;
 	Vec3 directionVec_;
-
+	//ダメージクールタイム
 	float damageCoolTime_ = 0;
 	float velocityLength_ = 0;
 	//プレイヤーが視界にいるか
