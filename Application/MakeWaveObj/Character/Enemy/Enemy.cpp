@@ -430,8 +430,15 @@ void Enemy::SetEmergeLight(float rate)
 	}
 }
 
+//-------------------------------------------------------------------------------------------------------
 void Enemy::DetachPart(const std::string& partName, const Vec3& throwDir, Vec3* partGeneratePos)
 {
+	//胴体は飛ばない
+	if (partName == PartName::BODY && hp_ > 0)
+	{
+		return;
+	}
+
 	//メッシュからモデル生成
 	auto partModel = ModelObj::CreateModelFromModelMesh(*model_, partName);
 
