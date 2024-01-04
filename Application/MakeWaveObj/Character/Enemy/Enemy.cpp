@@ -739,12 +739,12 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 			return;
 		}
 
-		//ノックバック
-		KnockBack(info, true);
-
 		//投げられているときのみ
 		if (weapon->GetIsThrowing() && weapon->GetFallVelocity().GetLength() != 0)
 		{
+			//ノックバック
+			KnockBack(info, true);
+
 			//ノードの角度を加算するため
 			SetAllNodeAddRots(*obj, HIT_WEAPON_NODE_ADD_ROT_RATE_);
 			//ダメージステートにする

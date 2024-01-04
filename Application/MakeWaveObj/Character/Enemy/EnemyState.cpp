@@ -80,15 +80,15 @@ bool EnemyState::GetPlayerVisually()
 
 void EnemyState::ChangeState()
 {
+	//銃があれば
+	if (enemy_->GetWeapon())
+	{
+		enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeapon>());
+	}
 	//素手で殴ってたら素手殴りの終わりに遷移
-	if (enemy_->GetIsBareAttack())
+	else if (enemy_->GetIsBareAttack())
 	{
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHandsAttackEnd>());
-	}
-	//銃があれば
-	else if (enemy_->GetWeapon())
-	{
-		enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeaponAndMove>());
 	}
 	else
 	{
@@ -399,6 +399,7 @@ void EnemyStateDamagedBegin::Initialize()
 {
 	//殴るアニメの停止
 	enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::PUNCH);
+	enemy_->SetIsAttacking(false);
 }
 
 void EnemyStateDamagedBegin::Update()
