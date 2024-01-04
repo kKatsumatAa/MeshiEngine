@@ -163,7 +163,7 @@ public:
 	const float TIME_RATIO_MAX_ = 1.0f;
 	//最大時間
 	const float TIMER_MAX_ = 40.0f;
-	const std::string MOVE_NODE_NAME_ = "RightArm";
+	const std::string MOVE_NODE_NAME_ = "Arm";
 
 protected:
 	//imguiの角度のドラッグスピード
@@ -183,6 +183,9 @@ public:
 	virtual void Update() override;
 	//ImGui描画
 	static void DrawImgui();
+protected:
+	//武器を持ってるのが右か左か
+	std::string GetHaveWeaponLeftRight();
 };
 
 //攻撃構え始め

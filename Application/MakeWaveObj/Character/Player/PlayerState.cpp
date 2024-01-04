@@ -8,6 +8,7 @@
 #include "ObjectManager.h"
 #include "CameraManager.h"
 #include "LevelManager.h"
+#include "EnemyPart.h"
 
 
 
@@ -60,7 +61,7 @@ void PlayerStateBareHands::Update()
 		player_->SetIsTarget(true);
 
 		//武器を持ってなくて持ち主がいない武器に照準があってたら
-		if ((info_.object->GetObjName() == "gun" || info_.object->GetObjName() == "sword")
+		if ((info_.object->GetObjName() == "gun" || info_.object->GetObjName() == EnemyPart::S_OBJ_NAME_)
 			&& player_->GetWeapon() == nullptr && info_.object->GetParent() == nullptr)
 		{
 			//ui変更
@@ -134,7 +135,7 @@ void PlayerStateHaveWeapon::Update()
 		//クリックで攻撃
 		if (player_->GetIsClickLeft())
 		{
-			//弾がもうなければ投げる
+			//銃で弾がもうないなら投げる
 			if (player_->GetWeapon()->GetObjName() == "gun")
 			{
 				Gun* gun = dynamic_cast<Gun*>(player_->GetWeapon());
@@ -143,6 +144,12 @@ void PlayerStateHaveWeapon::Update()
 					player_->ThrowWeapon();
 					return;
 				}
+			}
+			//敵の部位なら投げる
+			else if (player_->GetWeapon()->GetObjName() == EnemyPart::S_OBJ_NAME_)
+			{
+				player_->ThrowWeapon();
+				return;
 			}
 
 			Vec3 targetDir = player_->GetFrontVec();

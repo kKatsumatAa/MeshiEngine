@@ -226,7 +226,7 @@
                             -7.152557373046875e-07
                         ],
                         "rotation": [
-                            -90.00000762939453,
+                            90.00000762939453,
                             -89.99999237060547,
                             0.0
                         ],
@@ -253,7 +253,7 @@
                     },
                     "parent_node": {
                         "parent_name": "enemy2.fbx",
-                        "node_name": "RightHand"
+                        "node_name": "LeftHand"
                     }
                 }
             ]
@@ -580,7 +580,7 @@
                             -7.152557373046875e-07
                         ],
                         "rotation": [
-                            -90.00000762939453,
+                            90.00000762939453,
                             -89.99999237060547,
                             0.0
                         ],
@@ -607,7 +607,7 @@
                     },
                     "parent_node": {
                         "parent_name": "enemy2.fbx",
-                        "node_name": "RightHand"
+                        "node_name": "LeftHand"
                     }
                 }
             ]

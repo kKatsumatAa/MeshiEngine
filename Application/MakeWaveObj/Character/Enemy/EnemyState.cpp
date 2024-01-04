@@ -9,7 +9,7 @@
 using namespace Constant;
 
 //---------------
-Vec3 EnemyStateAttackStance::ANGLE_MAX_ = { 0.25f,0.37f,-0.55f };
+Vec3 EnemyStateAttackStance::ANGLE_MAX_ = { 0.55f,-0.52f,0.3f };
 
 
 bool EnemyState::CheckEyeRayHit()
@@ -321,11 +321,23 @@ void EnemyStateAttackStance::DrawImgui()
 	}
 }
 
+std::string EnemyStateAttackStance::GetHaveWeaponLeftRight()
+{
+	std::string leftRight = "Right";
+
+	if (enemy_->WEAPON_PARENT_NODE_NAME_.find("Left") != std::string::npos)
+	{
+		leftRight = "Left";
+	}
+
+	return std::string(leftRight);
+}
+
 //------------------------
 //攻撃構え始め
 void EnemyStateAttackStanceBegin::Initialize()
 {
-	auto nowAddRot = enemy_->GetNode(MOVE_NODE_NAME_)->addRot;
+	auto nowAddRot = enemy_->GetNode(GetHaveWeaponLeftRight() + MOVE_NODE_NAME_)->addRot;
 	stanceBeginRot_ = Vec3(nowAddRot.x, nowAddRot.y, nowAddRot.z);
 }
 
@@ -335,11 +347,11 @@ void EnemyStateAttackStanceBegin::Update()
 	EnemyStateAttackStance::Update();
 
 	//今の角度から構えの角度を出す
-	auto nowNodeRot = enemy_->GetNode(MOVE_NODE_NAME_)->rotation;
+	auto nowNodeRot = enemy_->GetNode(GetHaveWeaponLeftRight() + MOVE_NODE_NAME_)->rotation;
 	stanceEndRot_ = ANGLE_MAX_ - Vec3(nowNodeRot.x, nowNodeRot.y, nowNodeRot.z);
 
 	//角度を変える
-	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, timeRatio_));
+	enemy_->SetNodeAddRot(GetHaveWeaponLeftRight() + MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, timeRatio_));
 
 	//アニメーションスピード徐々に
 	enemy_->SetAnimeSpeedExtend(Lerp(ObjectFBX::NORMAL_ANIM_SPEED_, 0, EaseIn(timeRatio_)));
@@ -363,7 +375,7 @@ void EnemyStateAttackStanceBegin::Update()
 //攻撃構え終わり
 void EnemyStateAttackStanceEnd::Initialize()
 {
-	auto nowRot = enemy_->GetNode(MOVE_NODE_NAME_)->addRot;
+	auto nowRot = enemy_->GetNode(GetHaveWeaponLeftRight() + MOVE_NODE_NAME_)->addRot;
 
 	stanceBeginRot_ = { nowRot.x ,nowRot.y,nowRot.z };
 	stanceEndRot_ = { 0,0,0 };
@@ -378,7 +390,7 @@ void EnemyStateAttackStanceEnd::Update()
 	enemy_->SetAnimeSpeedExtend(Lerp(0, ObjectFBX::NORMAL_ANIM_SPEED_, EaseIn(timeRatio_)));
 
 	//角度を戻す
-	enemy_->SetNodeAddRot(MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, timeRatio_));
+	enemy_->SetNodeAddRot(GetHaveWeaponLeftRight() + MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, timeRatio_));
 }
 
 

@@ -385,8 +385,9 @@ void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 			+ Vec3{ 0, THROW_WEAPON_VEC_Y_,0 };
 		DetachPart(GetPartName(nodeObj->GetObjName()), throwVec.GetNormalized(), &detachPos);
 
+		//武器持ってる部位なら武器落とす
 		//ノックバック
-		KnockBack(info);
+		KnockBack(info, GetNodeIsHavingWeaponPart(nodeObj->GetObjName()));
 
 		//hp減らす
 		auto stateChangeF = [=]() { Dead(); };
@@ -537,6 +538,16 @@ std::string Enemy::GetPartName(const std::string& boneName)
 	return partName;
 }
 
+bool Enemy::GetNodeIsHavingWeaponPart(const std::string& nodeName)
+{
+	if (GetPartName(nodeName) == WEAPON_PARENT_NODE_NAME_)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 //----------------------------------------------------------------
 void Enemy::Update()
 {
@@ -586,7 +597,7 @@ void Enemy::Draw()
 
 
 //----------------------------------------------------------------------------------
-void Enemy::KnockBack(const CollisionInfo& info)
+void Enemy::KnockBack(const CollisionInfo& info, bool IsfallingWeapon)
 {
 	//距離のベクトル
 	Vec3 distanceVec = -info.object_->GetVelocity();
@@ -599,7 +610,7 @@ void Enemy::KnockBack(const CollisionInfo& info)
 	ChangeEnemyStanceState(std::make_unique<EnemyStateAttackStanceEnd>());
 
 	//武器持っていたら落とす
-	if (weapon_)
+	if (weapon_ && IsfallingWeapon)
 	{
 		distanceVec.Normalized();
 		distanceVec.y += THROW_WEAPON_VEC_Y_;
@@ -700,7 +711,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		}
 
 		//ノックバック
-		KnockBack(info);
+		KnockBack(info, true);
 
 		//弾が当たった部位のメッシュ削除
 		model_->DeleteMesh(GetPartName(obj->GetObjName()));
@@ -718,21 +729,21 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		//パーティクル
 		DamageParticle(SHOOTED_PARTICLE_NUM_, 1, SHOOTED_PARTICLE_VEL_RATE_, &info, obj, nullptr);
 	}
-	//銃に当たったら
-	else if (info.object_->GetObjName() == "gun")
+	//武器に当たったら
+	else if (info.object_->GetObjName() == "gun" || info.object_->GetObjName() == EnemyPart::S_OBJ_NAME_)
 	{
-		Gun* gun = dynamic_cast<Gun*>(info.object_);
+		Weapon* weapon = dynamic_cast<Weapon*>(info.object_);
 
-		if (!(gun != nullptr && gun->GetParent() == nullptr))
+		if (!(weapon != nullptr && weapon->GetParent() == nullptr))
 		{
 			return;
 		}
 
 		//ノックバック
-		KnockBack(info);
+		KnockBack(info, true);
 
 		//投げられているときのみ
-		if (gun->GetIsThrowing() && gun->GetFallVelocity().GetLength() != 0)
+		if (weapon->GetIsThrowing() && weapon->GetFallVelocity().GetLength() != 0)
 		{
 			//ノードの角度を加算するため
 			SetAllNodeAddRots(*obj, HIT_WEAPON_NODE_ADD_ROT_RATE_);
@@ -748,10 +759,10 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		{
 			//武器拾う
 			Vec3 lPos = { 0,0,0 };
-			gun->SetRot(WEAPON_ROT_);
-			PickUpWeapon(gun, &lPos);
+			weapon->SetRot(WEAPON_ROT_);
+			PickUpWeapon(weapon, &lPos);
 			//武器の親ノード設定
-			gun->ParentFbxNode(this, model_, WEAPON_PARENT_NODE_NAME_);
+			weapon->ParentFbxNode(this, model_, WEAPON_PARENT_NODE_NAME_);
 
 			state_->ChangeState();
 		}

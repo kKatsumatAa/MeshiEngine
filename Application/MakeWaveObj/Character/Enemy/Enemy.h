@@ -38,10 +38,11 @@ public:
 	static const float S_LENGTH_MAX_;
 public:
 	//武器
-	const Vec3 WEAPON_ROT_ = { PI / 2.0f,PI / 2.0f,0 };
+	const Vec3 WEAPON_ROT_ = { PI / 2.0f,-PI / 2.0f,0 };
 	const float SHOT_POS_EXTEND_ = 5.0f;
 	const float THROW_WEAPON_VEC_Y_ = 0.4f;
 	const float WEAPON_FALL_VEL_EXTEND_ = 1.5f;
+	const std::string WEAPON_PARENT_NODE_NAME_ = PartName::LEFT_HAND;
 	//消費する弾
 	const int8_t CONSUM_BULLET_NUM_ = 0;
 	//ライト
@@ -105,7 +106,6 @@ public:
 	const float SHOOTED_PARTICLE_VEL_RATE_ = 1.3f;
 	const float DEAD_PARTICLE_VEL_RATE_ = 0.35f;
 public://ノード
-	const std::string WEAPON_PARENT_NODE_NAME_ = "RightHand";
 	const float NODE_COLLIDER_SCALE_ = 14.0f;
 	const Vec3 INIT_NODE_ADD_ROT_ = { 0,0,0 };
 	const float NODE_ADD_ROT_RATE_ = 1.0f / 6.0f;
@@ -203,7 +203,7 @@ public:
 
 private:
 	//銃をノックバックして落とす
-	void KnockBack(const CollisionInfo& info);
+	void KnockBack(const CollisionInfo& info, bool IsfallingWeapon);
 	//ターゲットに向かって動く処理のみ
 	void WalkToTarget(const Vec3& targetPos, bool isWave = true);
 	//攻撃された部位ごとにノードに加算する角度を決める
@@ -309,4 +309,6 @@ private:
 	void DetachAllPart();
 	//攻撃を受けたボーンでそのボーンがある部位の名前取得
 	std::string GetPartName(const std::string& boneName);
+	//武器持っている部位か
+	bool GetNodeIsHavingWeaponPart(const std::string& nodeName);
 };
