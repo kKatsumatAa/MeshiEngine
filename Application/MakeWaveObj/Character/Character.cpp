@@ -323,6 +323,67 @@ bool Character::CheckRayOfEyeHit(const Vec3& dir, float length, uint16_t attr, R
 	return isRayHit;
 }
 
+
+//----------------------------------------------------------------------
+std::string Character::GetPartName(const std::string& boneName)
+{
+	std::string partName = "";
+
+	//右半身
+	if (boneName.find("Right") != std::string::npos)
+	{
+		if (boneName.find(BonePartName::SHOULDER) != std::string::npos ||
+			boneName.find(BonePartName::ARM) != std::string::npos ||
+			boneName.find(BonePartName::HAND) != std::string::npos)
+		{
+			partName = PartName::RIGHT_HAND;
+		}
+		else
+		{
+			partName = PartName::RIGHT_LEG;
+		}
+	}
+	//左半身
+	else if (boneName.find("Left") != std::string::npos)
+	{
+		if (boneName.find(BonePartName::SHOULDER) != std::string::npos ||
+			boneName.find(BonePartName::ARM) != std::string::npos ||
+			boneName.find(BonePartName::HAND) != std::string::npos)
+		{
+			partName = PartName::LEFT_HAND;
+		}
+		else
+		{
+			partName = PartName::LEFT_LEG;
+		}
+	}
+	//頭
+	else if (boneName.find(BonePartName::HEAD) != std::string::npos)
+	{
+		partName = PartName::HEAD;
+	}
+	//胴体
+	else
+	{
+		partName = PartName::BODY;
+	}
+
+	return partName;
+}
+
+bool Character::GetIsStillPartStillAttached(const std::string& partName)
+{
+	for (auto& mesh : model_->GetMeshes())
+	{
+		if (mesh->GetName() == partName)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void Character::InvalidPartNodeColliders(const std::string& partName)
 {
 	std::string leftRight = "";

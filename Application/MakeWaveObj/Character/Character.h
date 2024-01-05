@@ -167,4 +167,9 @@ public:
 public:
 	//部位によってボーンごとの判定を無効に
 	void InvalidPartNodeColliders(const std::string& partName);
+protected:
+	//攻撃を受けたボーンでそのボーンがある部位の名前取得
+	std::string GetPartName(const std::string& boneName);
+	//まだ部位のメッシュが残ってるか
+	bool GetIsStillPartStillAttached(const std::string& partName);
 };

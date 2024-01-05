@@ -307,8 +307,6 @@ private:
 	void DetachPart(const std::string& partName, const Vec3& throwDir, Vec3* partGeneratePos = nullptr);
 	//部位を全て分離
 	void DetachAllPart();
-	//攻撃を受けたボーンでそのボーンがある部位の名前取得
-	std::string GetPartName(const std::string& boneName);
 	//武器持っている部位か
 	bool GetNodeIsHavingWeaponPart(const std::string& nodeName);
 };

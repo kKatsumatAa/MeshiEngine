@@ -493,52 +493,6 @@ void Enemy::DetachAllPart()
 	DetachPart(PartName::RIGHT_LEG, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
 }
 
-std::string Enemy::GetPartName(const std::string& boneName)
-{
-	std::string partName = "";
-
-	//右半身
-	if (boneName.find("Right") != std::string::npos)
-	{
-		if (boneName.find(BonePartName::SHOULDER) != std::string::npos ||
-			boneName.find(BonePartName::ARM) != std::string::npos ||
-			boneName.find(BonePartName::HAND) != std::string::npos)
-		{
-			partName = PartName::RIGHT_HAND;
-		}
-		else
-		{
-			partName = PartName::RIGHT_LEG;
-		}
-	}
-	//左半身
-	else if (boneName.find("Left") != std::string::npos)
-	{
-		if (boneName.find(BonePartName::SHOULDER) != std::string::npos ||
-			boneName.find(BonePartName::ARM) != std::string::npos ||
-			boneName.find(BonePartName::HAND) != std::string::npos)
-		{
-			partName = PartName::LEFT_HAND;
-		}
-		else
-		{
-			partName = PartName::LEFT_LEG;
-		}
-	}
-	//頭
-	else if (boneName.find(BonePartName::HEAD) != std::string::npos)
-	{
-		partName = PartName::HEAD;
-	}
-	//胴体
-	else
-	{
-		partName = PartName::BODY;
-	}
-
-	return partName;
-}
-
 bool Enemy::GetNodeIsHavingWeaponPart(const std::string& nodeName)
 {
 	if (GetPartName(nodeName) == WEAPON_PARENT_NODE_NAME_)
@@ -756,7 +710,8 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 			//メッシュの波
 			BeginDamagedWave(info, HIT_WEAPON_WAVE_RATE_);
 		}
-		else
+		//武器を持つ部位が残っていれば
+		else if(GetIsStillPartStillAttached(WEAPON_PARENT_NODE_NAME_))
 		{
 			//武器拾う
 			Vec3 lPos = { 0,0,0 };
