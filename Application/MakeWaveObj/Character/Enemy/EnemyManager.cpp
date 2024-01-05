@@ -1,5 +1,6 @@
 #include "EnemyManager.h"
 #include "EnemyState.h"
+#include "EnemyStanceState.h"
 #include "ObjectManager.h"
 #include "LevelManager.h"
 

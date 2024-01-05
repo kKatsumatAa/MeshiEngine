@@ -555,6 +555,9 @@
     <ClCompile Include="Application\MakeWaveObj\Weapon\EnemyPart\EnemyPart.cpp">
       <Filter>ソース ファイル\Application\MakeWaveObj\Weapon\EnemyPart</Filter>
     </ClCompile>
+    <ClCompile Include="Application\MakeWaveObj\Character\Enemy\EnemyStanceState.cpp">
+      <Filter>ソース ファイル\Application\MakeWaveObj\Character\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Util\Shake.h">
@@ -904,6 +907,9 @@
     </ClInclude>
     <ClInclude Include="Application\MakeWaveObj\Weapon\EnemyPart\EnemyPart.h">
       <Filter>ヘッダー ファイル\Application\MakeWaveObj\Weapon\EnemyPart</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\MakeWaveObj\Character\Enemy\EnemyStanceState.h">
+      <Filter>ヘッダー ファイル\Application\MakeWaveObj\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

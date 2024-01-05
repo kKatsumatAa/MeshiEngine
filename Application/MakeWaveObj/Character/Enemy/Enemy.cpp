@@ -7,6 +7,7 @@
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
 #include "EnemyState.h"
+#include "EnemyStanceState.h"
 #include "LevelManager.h"
 #include "Bullet.h"
 #include "ObjectManager.h"
