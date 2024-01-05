@@ -85,11 +85,6 @@ void EnemyState::ChangeState()
 	{
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeapon>());
 	}
-	//素手で殴ってたら素手殴りの終わりに遷移
-	else if (enemy_->GetIsBareAttack())
-	{
-		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHandsAttackEnd>());
-	}
 	else
 	{
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
@@ -141,98 +136,24 @@ void EnemyStateEmergeEffect::Update()
 //素手状態-----------------------------------------------------------------------
 void EnemyStateBareHands::Initialize()
 {
-	//歩き
-	enemy_->PlayAnimation(true, Enemy::AnimationNum::WALK, false);
 }
 
 void EnemyStateBareHands::Update()
 {
-	enemy_->AllMove(GetRayHitGunOrPlayerPos());
+	//素手攻撃中は動かないように
+	if (!enemy_->GetIsBareAttack())
+	{
+		enemy_->AllMove(GetRayHitGunOrPlayerPos());
+	}
 
 	EnemyState::Update();
 
 	//素手で一定範囲にplayerがいたら
-	if (enemy_->GetPlayerIsWithinRange())
+	if (enemy_->GetPlayerIsWithinRange() && !enemy_->GetIsBareAttack())
 	{
-		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHandsAttackBegin>());
+		enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateBareHandsAttackBegin>());
 	}
 }
-
-//------------------------------------------------
-//素手攻撃始め
-void EnemyStateBareHandsAttackBegin::Initialize()
-{
-	//素手殴りフラグ
-	enemy_->SetIsBareAttack(true);
-
-	//歩くのをやめる
-	enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::WALK);
-}
-
-void EnemyStateBareHandsAttackBegin::Update()
-{
-	timer_ += GameVelocityManager::GetInstance().GetVelocity();
-
-	t_ = min(timer_, TIME_) / TIME_;
-
-	//アニメーションをブレンド（歩き→殴る）
-	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::WALK, Enemy::AnimationNum::PUNCH, t_);
-
-	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
-
-	if (timer_ >= TIME_)
-	{
-		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHandsAttack>());
-	}
-}
-
-//------------------------------------------------
-//素手で攻撃中
-void EnemyStateBareHandsAttack::Initialize()
-{
-	//殴るの開始
-	enemy_->PlayAnimation(false, Enemy::AnimationNum::PUNCH);
-}
-
-void EnemyStateBareHandsAttack::Update()
-{
-	timer_ += enemy_->GetAnimeSpeedExtend();
-
-	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
-
-	if (!enemy_->GetAnimData(Enemy::AnimationNum::PUNCH).isPlay_)
-	{
-		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHandsAttackEnd>());
-	}
-}
-
-//-------------------------------------------------
-//素手で攻撃終わり
-void EnemyStateBareHandsAttackEnd::Initialize()
-{
-	//殴るのおわり
-	enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::PUNCH);
-}
-
-void EnemyStateBareHandsAttackEnd::Update()
-{
-	timer_ += GameVelocityManager::GetInstance().GetVelocity();
-
-	timeRatio_ = min(timer_, TIME_MAX_) / TIME_MAX_;
-
-	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
-
-	//アニメーションをブレンド（殴る→歩き）
-	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::PUNCH, Enemy::AnimationNum::WALK, timeRatio_);
-
-	if (timer_ >= TIME_MAX_)
-	{
-		enemy_->SetIsBareAttack(false);
-
-		enemy_->ChangeEnemyState(std::make_unique<EnemyStateBareHands>());
-	}
-}
-
 
 //---------------------------------------------------------------------------------------------
 //武器持ってる状態の親ステート
@@ -334,7 +255,7 @@ std::string EnemyStateAttackStance::GetHaveWeaponLeftRight()
 }
 
 //------------------------
-//攻撃構え始め
+//銃の攻撃構え始め
 void EnemyStateAttackStanceBegin::Initialize()
 {
 	auto nowAddRot = enemy_->GetNode(GetHaveWeaponLeftRight() + MOVE_NODE_NAME_)->addRot;
@@ -372,7 +293,7 @@ void EnemyStateAttackStanceBegin::Update()
 }
 
 //------------------------
-//攻撃構え終わり
+//銃の攻撃構え終わり
 void EnemyStateAttackStanceEnd::Initialize()
 {
 	auto nowRot = enemy_->GetNode(GetHaveWeaponLeftRight() + MOVE_NODE_NAME_)->addRot;
@@ -393,6 +314,91 @@ void EnemyStateAttackStanceEnd::Update()
 	enemy_->SetNodeAddRot(GetHaveWeaponLeftRight() + MOVE_NODE_NAME_, LerpVec3(stanceBeginRot_, stanceEndRot_, timeRatio_));
 }
 
+//------------------------------------------------
+//素手攻撃何もない
+void EnemyStateBareHandsAttackNone::Initialize()
+{
+	enemy_->SetIsBareAttack(false);
+	//歩き
+	enemy_->PlayAnimation(true, Enemy::AnimationNum::WALK, false);
+}
+
+void EnemyStateBareHandsAttackNone::Update()
+{
+}
+
+//素手攻撃始め
+void EnemyStateBareHandsAttackBegin::Initialize()
+{
+	//素手殴りフラグ
+	enemy_->SetIsBareAttack(true);
+
+	//歩くのをやめる
+	enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::WALK);
+}
+
+void EnemyStateBareHandsAttackBegin::Update()
+{
+	timer_ += GameVelocityManager::GetInstance().GetVelocity();
+
+	t_ = min(timer_, TIME_) / TIME_;
+
+	//アニメーションをブレンド（歩き→殴る）
+	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::WALK, Enemy::AnimationNum::PUNCH, t_);
+
+	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
+
+	if (timer_ >= TIME_)
+	{
+		enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateBareHandsAttack>());
+	}
+}
+
+//------------
+//素手で攻撃中
+void EnemyStateBareHandsAttack::Initialize()
+{
+	//殴るの開始
+	enemy_->PlayAnimation(false, Enemy::AnimationNum::PUNCH);
+}
+
+void EnemyStateBareHandsAttack::Update()
+{
+	timer_ += enemy_->GetAnimeSpeedExtend();
+
+	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
+
+	if (!enemy_->GetAnimData(Enemy::AnimationNum::PUNCH).isPlay_)
+	{
+		enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateBareHandsAttackEnd>());
+	}
+}
+
+//---------------
+//素手の攻撃終わり
+void EnemyStateBareHandsAttackEnd::Initialize()
+{
+	//殴るのおわり
+	enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::PUNCH);
+}
+
+void EnemyStateBareHandsAttackEnd::Update()
+{
+	timer_ += GameVelocityManager::GetInstance().GetVelocity();
+
+	timeRatio_ = min(timer_, TIME_MAX_) / TIME_MAX_;
+
+	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
+
+	//アニメーションをブレンド（殴る→歩き）
+	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::PUNCH, Enemy::AnimationNum::WALK, timeRatio_);
+
+	if (timer_ >= TIME_MAX_)
+	{
+		enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateBareHandsAttackNone>());
+	}
+}
+
 
 //被ダメージ始め---------------------------------------------------------------------------
 void EnemyStateDamagedBegin::Initialize()
@@ -400,6 +406,10 @@ void EnemyStateDamagedBegin::Initialize()
 	//殴るアニメの停止
 	enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::PUNCH);
 	enemy_->SetIsAttacking(false);
+	if (enemy_->GetIsBareAttack())
+	{
+		enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateBareHandsAttackEnd>());
+	}
 }
 
 void EnemyStateDamagedBegin::Update()

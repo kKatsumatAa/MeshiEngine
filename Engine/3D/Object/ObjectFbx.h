@@ -132,6 +132,8 @@ public:
 	void PlayAnimation(bool isLoop, int32_t animeIndex = 0, bool isResetCurrentTime = true);
 	//反転アニメーション開始
 	void PlayReverseAnimation(bool isLoop, int32_t animeIndex = 0, bool isResetCurrentTime = true);
+	//アニメーションリセット
+	void AnimationReset(int32_t animeIndex);
 	//アニメーションフラグセット
 	void SetIsPlayAnimation(bool isPlay, int32_t animeIndex = 0) { animeDatas_[animeIndex].isPlay_ = isPlay; }
 	//ループアニメーションフラグセット
@@ -169,9 +171,6 @@ private:
 	//アニメーション開始
 	void PlayAnimationInternal(int32_t animeIndex,
 		bool isLoop = false, bool isReverse = false, bool isResetCurrentTime = true);
-	//アニメーションリセット
-	void AnimationReset(int32_t animeIndex);
-
 	//アニメーションで変化したノードやボーンの処理
 	void CalcNodeMatBoneMatInternal(ModelFBX* model);
 	//ボーンの行列を計算

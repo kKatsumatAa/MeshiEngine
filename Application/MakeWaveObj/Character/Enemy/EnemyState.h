@@ -70,55 +70,6 @@ public:
 	void Update() override;
 };
 
-//素手攻撃状態始め
-class EnemyStateBareHandsAttackBegin :
-	public CharacterStateBareHands,
-	public EnemyState
-{
-private:
-	const float TIME_ = 20.0f;
-	float t_ = 0;
-
-public:
-	//初期化
-	void Initialize() override;
-	//更新
-	void Update() override;
-};
-
-
-//素手攻撃状態
-class EnemyStateBareHandsAttack :
-	public CharacterStateBareHands,
-	public EnemyState
-{
-private:
-	const float ATTACK_TIME_ = 45.0f;
-	float t_ = 0;
-
-public:
-	//初期化
-	void Initialize() override;
-	//更新
-	void Update() override;
-};
-
-//素手攻撃おわり
-class EnemyStateBareHandsAttackEnd :
-	public CharacterStateBareHands,
-	public EnemyState
-{
-private:
-	const float TIME_MAX_ = 20.0f;
-	float timeRatio_ = 0;
-
-public:
-	//初期化
-	void Initialize() override;
-	//更新
-	void Update() override;
-};
-
 //銃持ってる-------------------------------------------
 class EnemyStateHaveWeapon :
 	public CharacterStateHaveWeapon,
@@ -188,7 +139,7 @@ protected:
 	std::string GetHaveWeaponLeftRight();
 };
 
-//攻撃構え始め
+//銃の攻撃構え始め
 class EnemyStateAttackStanceBegin :
 	public EnemyStateAttackStance,
 	public CharacterStateAttackStanceBegin
@@ -203,7 +154,7 @@ public:
 	void Update() override;
 };
 
-//攻撃構え終わり
+//銃の攻撃構え終わり
 class EnemyStateAttackStanceEnd :
 	public EnemyStateAttackStance,
 	public CharacterStateAttackStanceEnd
@@ -215,7 +166,73 @@ public:
 	void Update() override;
 };
 
-//----------------
+//----------------------
+//素手攻撃何もなし
+class EnemyStateBareHandsAttackNone :
+	public EnemyStateAttackStance,
+	public CharacterStateAttackStanceEnd
+{
+private:
+	const float TIME_ = 20.0f;
+	float t_ = 0;
+
+public:
+	//初期化
+	void Initialize() override;
+	//更新
+	void Update() override;
+};
+
+//素手攻撃状態始め
+class EnemyStateBareHandsAttackBegin :
+	public EnemyStateAttackStance,
+	public CharacterStateAttackStanceEnd
+{
+private:
+	const float TIME_ = 20.0f;
+	float t_ = 0;
+
+public:
+	//初期化
+	void Initialize() override;
+	//更新
+	void Update() override;
+};
+
+
+//素手攻撃状態
+class EnemyStateBareHandsAttack :
+	public EnemyStateAttackStance,
+	public CharacterStateAttackStanceEnd
+{
+private:
+	const float ATTACK_TIME_ = 45.0f;
+	float t_ = 0;
+
+public:
+	//初期化
+	void Initialize() override;
+	//更新
+	void Update() override;
+};
+
+//素手攻撃おわり
+class EnemyStateBareHandsAttackEnd :
+	public EnemyStateAttackStance,
+	public CharacterStateAttackStanceEnd
+{
+private:
+	const float TIME_MAX_ = 20.0f;
+	float timeRatio_ = 0;
+
+public:
+	//初期化
+	void Initialize() override;
+	//更新
+	void Update() override;
+};
+
+//-----------------------------------------------
 //被ダメージ始め
 class EnemyStateDamagedBegin : public EnemyState
 {
