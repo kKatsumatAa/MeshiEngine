@@ -330,8 +330,10 @@ void Player::Draw()
 	handManager_->Draw();
 }
 
-void Player::Dead()
+void Player::Dead(const CollisionInfo& info)
 {
+	//警告除け
+	info;
 	//hpが0になったら
 	isDead_ = true;
 
@@ -380,7 +382,7 @@ void Player::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 	{
 		SetPosOfEnemyAttack(info.object_->GetWorldTrans());
 		SetIsPunched(true);
-		Damaged(HP_TMP_, [=]() {Dead(); });
+		Damaged(HP_TMP_, [=]() {Dead(info); });
 	}
 }
 
@@ -448,11 +450,10 @@ void Player::OnCollision(const CollisionInfo& info)
 		//演出用に弾撃った敵の位置保存
 		posOfEnemyAttack_ = bullet->GetOwnerPos();
 		//ダメージ
-		Damaged(hp_, [=]() { Dead(); });
+		Damaged(hp_, [=]() { Dead(info); });
 	}
 	//敵に当たったら
-	else if (info.collider_->GetAttribute() & COLLISION_ATTR_ENEMYS &&
-		!isDead_)
+	else if (info.collider_->GetAttribute() & COLLISION_ATTR_ENEMYS && !isDead_)
 	{
 		//長さ
 		float length = (info.object_->GetWorldScale().GetLength() + GetScale().GetLength()) / 2.0f;

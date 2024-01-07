@@ -273,10 +273,10 @@ void Enemy::WalkWaveUpdate()
 	}
 }
 
-void Enemy::Dead()
+void Enemy::Dead(const CollisionInfo& info)
 {
 	//部位分離(仮)
-	DetachAllPart();
+	DetachAllPart(info);
 
 	ChangeEnemyState(std::make_unique<EnemyStateDead>());
 }
@@ -392,7 +392,7 @@ void Enemy::Punched(const CollisionInfo& info, IObject3D* nodeObj)
 		KnockBack(info, GetNodeIsHavingWeaponPart(nodeObj->GetObjName()));
 
 		//hp減らす
-		auto stateChangeF = [=]() { Dead(); };
+		auto stateChangeF = [=]() { Dead(info); };
 		auto stateChangeF2 = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDamagedBegin>()); };
 		Damaged(1, stateChangeF, stateChangeF2);
 
@@ -492,14 +492,21 @@ void Enemy::DetachPart(const std::string& partName, const Vec3& throwDir, Vec3* 
 	}
 }
 
-void Enemy::DetachAllPart()
+void Enemy::DetachAllPart(const CollisionInfo& info)
 {
-	DetachPart(PartName::BODY, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
-	DetachPart(PartName::HEAD, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
-	DetachPart(PartName::LEFT_HAND, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
-	DetachPart(PartName::LEFT_LEG, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
-	DetachPart(PartName::RIGHT_HAND, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
-	DetachPart(PartName::RIGHT_LEG, GetRandVec3(DEAD_BODY_PART_VEC_MIN_, DEAD_BODY_PART_VEC_MAX_) + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	//敵の中心位置からのローカルな距離
+	Vec3 interLocalPos = Vec3(info.inter_.m128_f32[0], info.inter_.m128_f32[1], info.inter_.m128_f32[2]) - GetTrans();
+	interLocalPos /= GetScale().GetLength();
+	//回転行列
+	M4 rotMat = GetWorldMat()->GetRotMat();
+
+	//各部位の分離
+	DetachPart(PartName::BODY, GetVec3xM4(model_->GetMeshCentroid(PartName::BODY), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	DetachPart(PartName::HEAD, GetVec3xM4(model_->GetMeshCentroid(PartName::HEAD), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	DetachPart(PartName::LEFT_HAND, GetVec3xM4(model_->GetMeshCentroid(PartName::LEFT_HAND), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	DetachPart(PartName::LEFT_LEG, GetVec3xM4(model_->GetMeshCentroid(PartName::LEFT_LEG), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	DetachPart(PartName::RIGHT_HAND, GetVec3xM4(model_->GetMeshCentroid(PartName::RIGHT_HAND), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	DetachPart(PartName::RIGHT_LEG, GetVec3xM4(model_->GetMeshCentroid(PartName::RIGHT_LEG), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
 }
 
 bool Enemy::GetNodeIsHavingWeaponPart(const std::string& nodeName)
@@ -681,7 +688,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		model_->DeleteMesh(GetPartName(obj->GetObjName()));
 
 		//今のhp分ダメージ受けて倒れる
-		auto stateChangeF = [=]() { Dead(); };
+		auto stateChangeF = [=]() { Dead(info); };
 		Damaged(hp_, stateChangeF);
 
 		//ノードの角度を加算するため
@@ -712,7 +719,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 			//ノードの角度を加算するため
 			SetAllNodeAddRots(*obj, HIT_WEAPON_NODE_ADD_ROT_RATE_);
 			//ダメージステートにする
-			auto stateChangeF = [=]() { Dead(); };
+			auto stateChangeF = [=]() { Dead(info); };
 			auto stateChangeF2 = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDamagedBegin>()); };
 			Damaged(0, stateChangeF, stateChangeF2);
 

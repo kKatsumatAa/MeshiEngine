@@ -109,7 +109,7 @@ public:
 
 private:
 	//倒されたあとに呼び出す
-	void Dead()override;
+	void Dead(const CollisionInfo& info)override;
 	//溶岩で死んだか
 	void UpdateLavaDead();
 	//溶岩で死んだら

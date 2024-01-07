@@ -153,7 +153,7 @@ public:
 
 public:
 	//倒されたあとに呼び出す
-	virtual void Dead() = 0;
+	virtual void Dead(const CollisionInfo& info) = 0;
 	//殴られた時の処理
 	virtual void Punched(const CollisionInfo& info, IObject3D* nodeObj = nullptr) = 0;
 public:

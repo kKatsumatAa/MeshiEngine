@@ -221,7 +221,7 @@ private:
 	void WalkWaveUpdate();
 
 	//倒されたあとに呼び出す
-	void Dead()override;
+	void Dead(const CollisionInfo& info)override;
 
 private:
 	//被弾時のパーティクル
@@ -316,7 +316,7 @@ private:
 	//部位を分離する
 	void DetachPart(const std::string& partName, const Vec3& throwDir, Vec3* partGeneratePos = nullptr);
 	//部位を全て分離
-	void DetachAllPart();
+	void DetachAllPart(const CollisionInfo& info);
 	//武器持っている部位か
 	bool GetNodeIsHavingWeaponPart(const std::string& nodeName);
 };
