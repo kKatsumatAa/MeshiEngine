@@ -22,7 +22,8 @@ public:
 	enum AnimationNum
 	{
 		WALK,
-		PUNCH
+		CRAWL,
+		PUNCH,
 	};
 
 public:
@@ -76,7 +77,7 @@ public:
 	const float PUSH_BACK_VEL_RATE_ = 0.63f;
 	const float PUSH_BACK_LENGTH_RATE_ = 1.001f;
 	//地面に足がつく間隔
-	const float  WALK_MOVE_INTERVAL_ = 20.0f;
+	const float  WALK_MOVE_INTERVAL_ = DirectXWrapper::GetInstance().FPS_ / 4.0f;
 	//HP
 	const int8_t HP_TMP_ = 3;
 	//何かしら衝撃を受けたとき
@@ -85,7 +86,7 @@ public:
 	//ディゾルブ
 	const float DISSOLVE_POW_ = 0.3f;
 	//プレイヤーとの距離
-	const float PLAYER_DISTANCE_EXTEND_ = 0.9f;
+	const float PLAYER_DISTANCE_EXTEND_ = 0.87f;
 public:
 	//パーティクル
 	const int16_t PARTICLE_LIFE_TIME_ = 20;
@@ -186,6 +187,8 @@ private:
 	float beforeWalkTime_ = 0;
 	//ゲーム的に死亡したか
 	bool isDead_ = false;
+	//現在の歩きの番号
+	AnimationNum walkAnimNum_ = AnimationNum::WALK;
 
 	//ステート
 	std::unique_ptr<EnemyState> state_ = nullptr;
@@ -301,6 +304,8 @@ public:
 	void SetAnimeSpeedExtend(float animeSpeedExtend) { animeSpeedExtend_ = animeSpeedExtend; }
 	//構えるときとかに徐々にゆっくりにするための変数取得
 	float GetAnimeSpeedExtend() { return animeSpeedExtend_; }
+	//現在の歩きのアニメ―ション番号
+	AnimationNum GetWalkAnimNum() { return walkAnimNum_; }
 
 private:
 	//部位を分離する

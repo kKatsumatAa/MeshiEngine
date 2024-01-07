@@ -132,6 +132,7 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, floa
 
 	//アニメーション追加
 	auto modelFbx = dynamic_cast<ModelFBX*>(model);
+	FbxLoader::GetInstance()->AddAnimationModel(modelFbx, "crawl");
 	FbxLoader::GetInstance()->AddAnimationModel(modelFbx, "punch");
 
 	//モデル
@@ -177,7 +178,7 @@ void Enemy::WalkToTarget(const Vec3& targetPos, bool isWave)
 	directionVec_.Normalized();
 
 	//現在のスピードに方向ベクトル足し、ゲームスピードをかける
-	velocity_ = GetVelocity() + directionVec_ * VELOCITY_RATE_ * GameVelocityManager::GetInstance().GetVelocity();
+	velocity_ = (GetVelocity() + directionVec_ * VELOCITY_RATE_ * GameVelocityManager::GetInstance().GetVelocity()) * walkSpeedRate_;
 	//スピードの上限は超えないように
 	float length = velocity_.GetLength();
 	//スピードがプラスになってたら
@@ -284,7 +285,7 @@ void Enemy::Dead()
 void Enemy::CollisionWallAndFloor()
 {
 	//地面と壁との判定
-	OnGroundAndWallUpdate(IObject::GetScale().y, GameVelocityManager::GetInstance().GetVelocity());
+	OnGroundAndWallUpdate(IObject::GetScale().y * bodyLength_, GameVelocityManager::GetInstance().GetVelocity());
 }
 
 void Enemy::DirectionUpdate(const Vec3& targetPos)
@@ -480,6 +481,14 @@ void Enemy::DetachPart(const std::string& partName, const Vec3& throwDir, Vec3* 
 		ObjectManager::GetInstance().AddObject(LevelManager::S_OBJ_GROUP_NAME_, std::move(enemyPart));
 		//モデルも追加
 		ModelManager::GetInstance().AddModelObj(std::move(partModel), partName, true);
+	}
+
+	//両足なくなったら地面との判定用の長さ半分など
+	if (!GetIsHavingBottomBody())
+	{
+		bodyLength_ = BODY_LENGTH_TMP_ * BUST_LENGTH_RATE_;
+		walkSpeedRate_ = BUST_ONLY_WALK_SPEED_;
+		walkAnimNum_ = AnimationNum::CRAWL;//アニメーション変更
 	}
 }
 
@@ -711,7 +720,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 			BeginDamagedWave(info, HIT_WEAPON_WAVE_RATE_);
 		}
 		//武器を持つ部位が残っていれば
-		else if(GetIsStillPartStillAttached(WEAPON_PARENT_NODE_NAME_))
+		else if (GetIsStillPartStillAttached(WEAPON_PARENT_NODE_NAME_))
 		{
 			//武器拾う
 			Vec3 lPos = { 0,0,0 };

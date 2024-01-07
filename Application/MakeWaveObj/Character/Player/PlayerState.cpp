@@ -259,7 +259,10 @@ void PlayerStateDeadEffectPunched::Update()
 	for (auto& enemy : enemies)
 	{
 		auto enemyl = dynamic_cast<Character*>(enemy);
-		enemyl->SetAnimationSpeed(GameVelocityManager::GetInstance().GAME_VELOCITY_MIN_);
+		if (enemyl)
+		{
+			enemyl->SetAnimationSpeed(GameVelocityManager::GetInstance().GAME_VELOCITY_MIN_);
+		}
 	}
 
 	//位置

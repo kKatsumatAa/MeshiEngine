@@ -445,8 +445,8 @@ void Player::OnCollision(const CollisionInfo& info)
 	else if (info.collider_->GetAttribute() & COLLISION_ATTR_ENEMYS &&
 		!isDead_)
 	{
-		////長さ
-		float length = (info.object_->GetWorldScale().GetLength() + GetScale().GetLength());
+		//長さ
+		float length = (info.object_->GetWorldScale().GetLength() + GetScale().GetLength()) / 2.0f;
 		//距離のベクトル
 		Vec3 infoPos = info.object_->GetWorldTrans();
 		Vec3 distanceVec = IObject3D::GetWorldTrans() - infoPos;

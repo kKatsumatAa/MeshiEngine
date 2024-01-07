@@ -49,11 +49,14 @@ public:
 	//下向き加速度
 	const float FALL_ACC_ = -0.15f;
 	const float FALL_V_Y_MIN_ = -3.5f;
-
 	const float JUMP_V_Y_FIST_ = 1.7f;//ジャンプ時上向き初速
-
 	//壁と認識する角度
 	static const float IS_WALL_ROT_;
+	//上半身の長さの倍率
+	const float BUST_LENGTH_RATE_ = 0.4f;
+	const float BODY_LENGTH_TMP_ = 1.0f;
+	const float BUST_ONLY_WALK_SPEED_ = 0.25f;
+	const float HALF_LEG_WALK_SPEED_ = 0.5f;
 
 protected:
 	//武器
@@ -61,34 +64,28 @@ protected:
 	//hp
 	int8_t hp_ = 0;
 	int8_t oldHP_ = 0;
-
-	//殴ってる途中か
+	//殴ってる途中
 	bool isBareAttack_ = false;
-
 	//地面と当たっているか
 	bool isOnGround_ = false;
-
-
 	Vec3 fallVec_;
-
 	//ダメージ受けるかどうか(デバッグ用)
 	bool isValidDamage_ = true;
-
 	//死亡演出のタイマー上限
 	float deadEffectTimerMax_ = 0;
-
 	//ゲーム上で死亡したか（演出用）
 	bool isDead_ = false;
 	//殴られたか
 	bool isPunched_ = false;
-
 	//カウンター
 	Counter counter_;
-
 	//攻撃してきた敵の位置
 	Vec3 posOfEnemyAttack_ = { 0,0,0 };
-
 	float shotPosExtend_ = 0;
+	//体の長さ
+	float bodyLength_ = 1.0f;
+	//歩く速度
+	float walkSpeedRate_ = 1.0f;
 
 public:
 	/// <summary>
@@ -172,4 +169,6 @@ protected:
 	std::string GetPartName(const std::string& boneName);
 	//まだ部位のメッシュが残ってるか
 	bool GetIsStillPartStillAttached(const std::string& partName);
+	//下半身あるか
+	bool GetIsHavingBottomBody();
 };

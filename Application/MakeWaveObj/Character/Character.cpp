@@ -384,6 +384,18 @@ bool Character::GetIsStillPartStillAttached(const std::string& partName)
 	return false;
 }
 
+bool Character::GetIsHavingBottomBody()
+{
+	//両足あれば
+	if (GetIsStillPartStillAttached(PartName::LEFT_LEG) ||
+		GetIsStillPartStillAttached(PartName::RIGHT_LEG))
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void Character::InvalidPartNodeColliders(const std::string& partName)
 {
 	std::string leftRight = "";

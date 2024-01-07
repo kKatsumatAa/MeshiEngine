@@ -104,7 +104,7 @@ void EnemyStateBareHandsAttackNone::Initialize()
 {
 	enemy_->SetIsBareAttack(false);
 	//歩き
-	enemy_->PlayAnimation(true, Enemy::AnimationNum::WALK, false);
+	enemy_->PlayAnimation(true, enemy_->GetWalkAnimNum(), false);
 }
 
 void EnemyStateBareHandsAttackNone::Update()
@@ -118,7 +118,7 @@ void EnemyStateBareHandsAttackBegin::Initialize()
 	enemy_->SetIsBareAttack(true);
 
 	//歩くのをやめる
-	enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::WALK);
+	enemy_->SetIsPlayAnimation(false, enemy_->GetWalkAnimNum());
 }
 
 void EnemyStateBareHandsAttackBegin::Update()
@@ -128,7 +128,7 @@ void EnemyStateBareHandsAttackBegin::Update()
 	t_ = min(timer_, TIME_) / TIME_;
 
 	//アニメーションをブレンド（歩き→殴る）
-	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::WALK, Enemy::AnimationNum::PUNCH, t_);
+	enemy_->BlendAnimationUpdate(enemy_->GetWalkAnimNum(), Enemy::AnimationNum::PUNCH, t_);
 
 	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
 
@@ -175,7 +175,7 @@ void EnemyStateBareHandsAttackEnd::Update()
 	enemy_->DirectionUpdate(GetRayHitGunOrPlayerPos());
 
 	//アニメーションをブレンド（殴る→歩き）
-	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::PUNCH, Enemy::AnimationNum::WALK, timeRatio_);
+	enemy_->BlendAnimationUpdate(Enemy::AnimationNum::PUNCH, enemy_->GetWalkAnimNum(), timeRatio_);
 
 	if (timer_ >= TIME_MAX_)
 	{

@@ -226,11 +226,16 @@ void EnemyStateHaveWeaponAndMove::Update()
 void EnemyStateDamagedBegin::Initialize()
 {
 	//殴るアニメの停止
-	enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::PUNCH);
-	enemy_->SetIsAttacking(false);
 	if (enemy_->GetIsBareAttack())
 	{
+		enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::PUNCH);
+		enemy_->SetIsAttacking(false);
 		enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateBareHandsAttackEnd>());
+	}
+	else
+	{
+		//歩きのアニメーション(crawlと切り替える)
+		enemy_->PlayAnimation(true, enemy_->GetWalkAnimNum(), false);
 	}
 }
 
