@@ -52,11 +52,6 @@ public:
 	const float JUMP_V_Y_FIST_ = 1.7f;//ジャンプ時上向き初速
 	//壁と認識する角度
 	static const float IS_WALL_ROT_;
-	//上半身の長さの倍率
-	const float BUST_LENGTH_RATE_ = 0.4f;
-	const float BODY_LENGTH_TMP_ = 1.0f;
-	const float BUST_ONLY_WALK_SPEED_ = 0.25f;
-	const float HALF_LEG_WALK_SPEED_ = 0.5f;
 
 protected:
 	//武器

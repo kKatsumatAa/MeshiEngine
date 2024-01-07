@@ -159,6 +159,11 @@ private:
 public:
 	const float DEAD_BODY_PART_VEC_MIN_ = -0.35f;
 	const float DEAD_BODY_PART_VEC_MAX_ = 0.35f;
+	//上半身の長さの倍率
+	const float BUST_LENGTH_RATE_ = 0.4f;
+	const float BODY_LENGTH_TMP_ = 1.0f;
+	const float BUST_ONLY_WALK_SPEED_ = 0.25f;
+	const float HALF_LEG_WALK_SPEED_ = 0.5f;
 
 private:
 	Vec3 velocity_ = { 0,0,0 };

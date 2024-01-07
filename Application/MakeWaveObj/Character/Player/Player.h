@@ -63,7 +63,7 @@ private:
 
 private:
 	//リプレイのポインタ
-	Replay* replay_ = nullptr;
+	std::unique_ptr<Replay> replay_ = nullptr;
 	//リプレイのステートによって変わる処理の関数
 	std::function<void()>replayStateF_ = NULL;
 
@@ -127,7 +127,7 @@ private:
 
 public:
 	//セットされたリプレイのポインタ
-	Replay* GetReplay() { return replay_; }
+	Replay* GetReplay() { return replay_.get(); }
 
 public:
 	//攻撃中かセット
@@ -147,8 +147,6 @@ public:
 	//手のマネージャー取得
 	PlayerHandManager* GetHandManager() { return handManager_.get(); }
 
-	//リプレイポインタセット
-	void SetReplay(Replay* replay) { replay_ = replay; }
 	//リプレイのステートの初期化
 	void InitializeReplayState();
 

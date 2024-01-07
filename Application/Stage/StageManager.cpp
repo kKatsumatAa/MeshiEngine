@@ -62,13 +62,6 @@ void StageManager::Initialize(const std::string& stateName)
 	//ステート
 	ChangeState(stateName);
 
-	//プレイヤー
-	auto players = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player");
-	auto player = dynamic_cast<Player*>(players[0]);
-	//リプレイをセットしたり
-	player->SetReplay(replay_);
-	player->InitializeReplayState();
-
 	//更新
 	Update();
 }

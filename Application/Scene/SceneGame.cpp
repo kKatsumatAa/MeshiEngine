@@ -13,10 +13,6 @@ void SceneGame::Finalize()
 //---------------------------------------------------------------------------------------
 void SceneGame::Initialize()
 {
-	//リプレイ
-	replay_ = std::make_unique<Replay>();
-	replay_->Initialize();
-
 	//ステージ読み込み
 	StageManager::GetInstance().LoadStage(StageSelect::GetInstance().GetSelectStageIndex(),replay_.get());
 

@@ -229,6 +229,7 @@ void EnemyStateDamagedBegin::Initialize()
 	if (enemy_->GetIsBareAttack())
 	{
 		enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::PUNCH);
+		enemy_->AnimationReset(Enemy::AnimationNum::PUNCH);
 		enemy_->SetIsAttacking(false);
 		enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateBareHandsAttackEnd>());
 	}

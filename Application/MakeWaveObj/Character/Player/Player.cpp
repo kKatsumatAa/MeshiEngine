@@ -94,8 +94,9 @@ bool Player::Initialize(std::unique_ptr<WorldMat> worldMat, Weapon* weapon)
 	{
 		ChangePlayerState(std::make_unique<PlayerStateHaveWeapon>());
 	}
-	//リプレイのステート
-	ChangePlayerReplayState(std::make_unique<PlayerReplayStateSavingData>());
+
+	//リプレイ
+	InitializeReplayState();
 
 	return true;
 }
@@ -111,6 +112,11 @@ void Player::ChangePlayerReplayState(std::unique_ptr<PlayerReplayState> state)
 
 void Player::InitializeReplayState()
 {
+	replay_ = std::make_unique<Replay>();
+	replay_->Initialize();
+
+	//リプレイのステート
+	ChangePlayerReplayState(std::make_unique<PlayerReplayStateSavingData>());
 	replayState_->Initialize();
 
 	//リプレイのステートの更新処理をセット
