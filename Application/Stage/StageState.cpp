@@ -260,11 +260,10 @@ void StageStateClear::Initialize()
 	ClearEffect::GetInstance().BeginClearEffect();
 
 	//リプレイ始める(ステートはクリア後のままにするためステート名はなし)
-	StageManager::GetInstance().LoadStage(StageManager::GetInstance().GetReplay(), "");
+	StageManager::GetInstance().LoadStage("");
 	auto players = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "player");
 	auto player = dynamic_cast<Player*>(players[0]);
 	player->ChangeToReplayingState();
-	player->InitializeReplayState();
 
 	StageManager::GetInstance().GetReplay()->ResetReplayDataCount();
 }

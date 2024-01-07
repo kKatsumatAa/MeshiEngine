@@ -62,8 +62,6 @@ private:
 	const float FALL_VEL_POW_ = 2.0f;
 
 private:
-	//リプレイのポインタ
-	std::unique_ptr<Replay> replay_ = nullptr;
 	//リプレイのステートによって変わる処理の関数
 	std::function<void()>replayStateF_ = NULL;
 
@@ -124,10 +122,6 @@ private:
 	void UpdateUI();
 	//マウスのクリックでプレイヤーのアクションをするかどうかをセット
 	void UpdatePlayerActionFromMouse();
-
-public:
-	//セットされたリプレイのポインタ
-	Replay* GetReplay() { return replay_.get(); }
 
 public:
 	//攻撃中かセット

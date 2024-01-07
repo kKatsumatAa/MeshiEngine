@@ -14,7 +14,8 @@ void SceneGame::Finalize()
 void SceneGame::Initialize()
 {
 	//ステージ読み込み
-	StageManager::GetInstance().LoadStage(StageSelect::GetInstance().GetSelectStageIndex(),replay_.get());
+	StageManager::GetInstance().InitializeReplay();
+	StageManager::GetInstance().LoadStage(StageSelect::GetInstance().GetSelectStageIndex());
 
 	//クリア演出初期化
 	ClearEffect::GetInstance().Initialize();

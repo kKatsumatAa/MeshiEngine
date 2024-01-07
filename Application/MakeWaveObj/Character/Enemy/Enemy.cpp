@@ -720,7 +720,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 			BeginDamagedWave(info, HIT_WEAPON_WAVE_RATE_);
 		}
 		//武器を持つ部位が残っていれば
-		else if (GetIsStillPartStillAttached(WEAPON_PARENT_NODE_NAME_))
+		else if (GetIsPartStillAttached(WEAPON_PARENT_NODE_NAME_))
 		{
 			//武器拾う
 			Vec3 lPos = { 0,0,0 };

@@ -10,8 +10,10 @@ StageManager& StageManager::GetInstance()
 	return sInst;
 }
 
-void StageManager::LoadStage(int32_t stageIndex, Replay* replay, const std::string& stateName)
+void StageManager::LoadStage(int32_t stageIndex, const std::string& stateName)
 {
+	stageNum_ = stageIndex;
+
 	//プレイヤーui
 	PlayerUI::GetInstance().Initialize();
 
@@ -20,21 +22,16 @@ void StageManager::LoadStage(int32_t stageIndex, Replay* replay, const std::stri
 	//レベルマネージャー
 	LevelManager::GetInstance().LoadLevelData(stageIndex);
 
-	stageNum_ = stageIndex;
-
 	//チュートリアルも読み込み
 	Tutorial::GetInstance().LoadTutorialData(stageIndex);
-
-	//リプレイ
-	replay_ = replay;
 
 	//初期化
 	StageManager::Initialize(stateName);
 }
 
-void StageManager::LoadStage(Replay* replay, const std::string& stateName)
+void StageManager::LoadStage(const std::string& stateName)
 {
-	LoadStage(stageNum_, replay, stateName);
+	LoadStage(stageNum_, stateName);
 }
 
 void StageManager::Initialize(const std::string& stateName)
@@ -64,6 +61,13 @@ void StageManager::Initialize(const std::string& stateName)
 
 	//更新
 	Update();
+}
+
+void StageManager::InitializeReplay()
+{
+	//リプレイ
+	replay_ = std::make_unique<Replay>();
+	replay_->Initialize();
 }
 
 

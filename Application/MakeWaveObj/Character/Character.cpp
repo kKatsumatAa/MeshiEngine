@@ -371,7 +371,7 @@ std::string Character::GetPartName(const std::string& boneName)
 	return partName;
 }
 
-bool Character::GetIsStillPartStillAttached(const std::string& partName)
+bool Character::GetIsPartStillAttached(const std::string& partName)
 {
 	for (auto& mesh : model_->GetMeshes())
 	{
@@ -387,8 +387,18 @@ bool Character::GetIsStillPartStillAttached(const std::string& partName)
 bool Character::GetIsHavingBottomBody()
 {
 	//両足あれば
-	if (GetIsStillPartStillAttached(PartName::LEFT_LEG) ||
-		GetIsStillPartStillAttached(PartName::RIGHT_LEG))
+	if (GetIsPartStillAttached(PartName::LEFT_LEG) ||
+		GetIsPartStillAttached(PartName::RIGHT_LEG))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Character::GetIsHavingHead()
+{
+	if (GetIsPartStillAttached(PartName::HEAD))
 	{
 		return true;
 	}

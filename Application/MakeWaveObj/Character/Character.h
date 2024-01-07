@@ -163,7 +163,10 @@ protected:
 	//攻撃を受けたボーンでそのボーンがある部位の名前取得
 	std::string GetPartName(const std::string& boneName);
 	//まだ部位のメッシュが残ってるか
-	bool GetIsStillPartStillAttached(const std::string& partName);
+	bool GetIsPartStillAttached(const std::string& partName);
+public:
 	//下半身あるか
 	bool GetIsHavingBottomBody();
+	//頭あるか
+	bool GetIsHavingHead();
 };

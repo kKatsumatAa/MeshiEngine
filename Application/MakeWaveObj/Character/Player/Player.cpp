@@ -16,7 +16,8 @@
 #include "LevelManager.h"
 #include "Replay.h"
 #include "PlayerReplayState.h"
-
+#include "StageManager.h"
+#include "StageState.h"
 
 using namespace DirectX;
 
@@ -112,9 +113,6 @@ void Player::ChangePlayerReplayState(std::unique_ptr<PlayerReplayState> state)
 
 void Player::InitializeReplayState()
 {
-	replay_ = std::make_unique<Replay>();
-	replay_->Initialize();
-
 	//リプレイのステート
 	ChangePlayerReplayState(std::make_unique<PlayerReplayStateSavingData>());
 	replayState_->Initialize();
@@ -126,6 +124,11 @@ void Player::InitializeReplayState()
 void Player::ChangeToReplayingState()
 {
 	ChangePlayerReplayState(std::make_unique<PlayerReplayStateReplaying>());
+
+	replayState_->Initialize();
+
+	//リプレイのステートの更新処理をセット
+	playerState_->SetCommonUpdateF(replayStateF_);
 }
 
 void Player::ChangePlayerState(std::unique_ptr<PlayerState> state)
@@ -147,7 +150,7 @@ void Player::DirectionUpdate()
 	DirectionUpdateCalcPart(MouseInput::GetInstance().GetCursorVelocity());
 
 	//リプレイのデータ保存
-	replay_->SetMouseCursorVel(MouseInput::GetInstance().GetCursorVelocity());
+	StageManager::GetInstance().GetReplay()->SetMouseCursorVel(MouseInput::GetInstance().GetCursorVelocity());
 }
 
 void Player::DirectionUpdateCalcPart(const Vec2& mouseVec)
@@ -235,11 +238,11 @@ void Player::Move()
 	MoveCalcPart(leftKey, rightKey, upKey, downKey, spaceKey, GameVelocityManager::GetInstance().GetVelocity());
 
 	//リプレイのデータ保存
-	replay_->SetLeftKey(leftKey);
-	replay_->SetRightKey(rightKey);
-	replay_->SetUpKey(upKey);
-	replay_->SetDownKey(downKey);
-	replay_->SetSpaceKey(spaceKey);
+	StageManager::GetInstance().GetReplay()->SetLeftKey(leftKey);
+	StageManager::GetInstance().GetReplay()->SetRightKey(rightKey);
+	StageManager::GetInstance().GetReplay()->SetUpKey(upKey);
+	StageManager::GetInstance().GetReplay()->SetDownKey(downKey);
+	StageManager::GetInstance().GetReplay()->SetSpaceKey(spaceKey);
 }
 
 void Player::MoveCalcPart(bool leftKey, bool rightKey, bool upKey, bool downKey, bool spaceKey, float moveVelRatio)
@@ -419,8 +422,8 @@ void Player::UpdatePlayerActionFromMouse()
 	isClickRight_ = (MouseInput::GetInstance().GetTriggerClick(CLICK_RIGHT));
 
 	//リプレイのデータ
-	replay_->SetIsLeftClickTrigger(isClickLeft_);
-	replay_->SetIsRightClickTrigger(isClickRight_);
+	StageManager::GetInstance().GetReplay()->SetIsLeftClickTrigger(isClickLeft_);
+	StageManager::GetInstance().GetReplay()->SetIsRightClickTrigger(isClickRight_);
 }
 
 void Player::ThrowWeapon()

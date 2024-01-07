@@ -2,6 +2,8 @@
 #include "Player.h"
 #include "Replay.h"
 #include "GameVelocityManager.h"
+#include "StageManager.h"
+#include "StageState.h"
 
 
 void PlayerReplayState::Initialize()
@@ -21,7 +23,7 @@ void PlayerReplayState::Initialize()
 void PlayerReplayStateSavingData::Unique()
 {
 	//ゲームのスピード保存
-	player_->GetReplay()->SetGameVel(GameVelocityManager::GetInstance().GetVelocity());
+	StageManager::GetInstance().GetReplay()->SetGameVel(GameVelocityManager::GetInstance().GetVelocity());
 
 	//カメラの向き変更
 	player_->DirectionUpdate();
@@ -30,13 +32,13 @@ void PlayerReplayStateSavingData::Unique()
 	player_->Move();
 
 	//リプレイの保存フレームを次に
-	player_->GetReplay()->NextFrame();
+	StageManager::GetInstance().GetReplay()->NextFrame();
 }
 
 void PlayerReplayStateSavingData::Initialize()
 {
 	//リプレイの保存フレームを次に
-	player_->GetReplay()->NextFrame();
+	StageManager::GetInstance().GetReplay()->NextFrame();
 
 	PlayerReplayState::Initialize();
 }
@@ -48,7 +50,7 @@ void PlayerReplayStateSavingData::Initialize()
 void PlayerReplayStateReplaying::Unique()
 {
 	//リプレイデータ
-	Replay* replay = player_->GetReplay();
+	Replay* replay = StageManager::GetInstance().GetReplay();
 
 	ReplayData data = replay->GetNormalTimeTotalData();
 
@@ -67,7 +69,5 @@ void PlayerReplayStateReplaying::Unique()
 
 void PlayerReplayStateReplaying::Initialize()
 {
-
-
 	PlayerReplayState::Initialize();
 }

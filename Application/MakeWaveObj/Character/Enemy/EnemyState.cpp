@@ -81,8 +81,8 @@ bool EnemyState::GetPlayerVisually()
 
 void EnemyState::ChangeState()
 {
-	//銃があれば
-	if (enemy_->GetWeapon())
+	//銃、頭があれば
+	if (enemy_->GetWeapon() && enemy_->GetIsHavingHead())
 	{
 		enemy_->ChangeEnemyState(std::make_unique<EnemyStateHaveWeapon>());
 	}
@@ -149,8 +149,8 @@ void EnemyStateBareHands::Update()
 
 	EnemyState::Update();
 
-	//素手で一定範囲にplayerがいたら
-	if (enemy_->GetPlayerIsWithinRange() && !enemy_->GetIsBareAttack())
+	//素手で一定範囲にplayerがいて、頭があれば
+	if (enemy_->GetPlayerIsWithinRange() && !enemy_->GetIsBareAttack() && enemy_->GetIsHavingHead())
 	{
 		enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateBareHandsAttackBegin>());
 	}

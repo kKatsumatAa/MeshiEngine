@@ -45,7 +45,7 @@ private:
 	bool isGameOver_ = false;
 
 	//リプレイ
-	Replay* replay_ = nullptr;
+	std::unique_ptr<Replay> replay_ = nullptr;
 
 private:
 	Vec3 seaDistance_ = { 0,SEA_DICTANCE_TMP_,0 };
@@ -68,13 +68,17 @@ public:
 	static StageManager& GetInstance();
 
 private:
+	//初期化
 	void Initialize(const std::string& stateName);
+public:
+	//リプレイ初期化
+	void InitializeReplay();
 
 public:
 	//ステージ読み込み
-	void LoadStage(int32_t stageIndex, Replay* replay, const std::string& stateName = "BEGINING");
+	void LoadStage(int32_t stageIndex, const std::string& stateName = "BEGINING");
 	//ステージ読み込み(現在のステージを再読み込み)
-	void LoadStage(Replay* replay, const std::string& stateName = "BEGINING");
+	void LoadStage(const std::string& stateName = "BEGINING");
 
 	//ステージ番号セット
 	void SetStageNum(int32_t stageNum) { stageNum_ = stageNum; }
@@ -91,6 +95,9 @@ public:
 	//ステージゲームオーバーか取得
 	bool GetIsGameOver() { return isGameOver_; }
 
+	//リプレイ取得
+	Replay* GetReplay() { return replay_.get(); }
+
 public:
 	//海までの距離取得
 	const Vec3& GetSeaDistance() { return seaDistance_; }
@@ -102,10 +109,6 @@ public:
 	void ApproachLava();
 	//溶岩が最大まで来てその後のカウントダウン
 	void AfterLavaMaxUpdate();
-
-public:
-	//リプレイのポインタ取得
-	Replay* GetReplay() { return replay_; }
 
 public:
 	//ステート変更
