@@ -96,13 +96,13 @@ public:
 	const XMFLOAT4 PARTICLE_END_COLOR_ = { 3.0f,0.02f,0.02f,0.95f };
 	const float PARTICLE_START_ROT_ = PI * 4.0f;
 	const float PARTICLE_END_ROT_ = -PI * 4.0f;
-	const int8_t PUNCHED_PARTICLE_NUM_ = 60;
+	const uint8_t PUNCHED_PARTICLE_NUM_ = 100;
 	const int8_t PUNCHED_PARTICLE_INTERVAL_ = 1;
 	const float PUNCHED_PARTICLE_VEC_POW_ = 1.0f;
 	const float PARTICLE_VEL_RATE_MIN_ = -0.1f;
 	const float PARTICLE_VEL_RATE_MAX_ = 1.0f;
 	//種類別
-	const int8_t SHOOTED_PARTICLE_NUM_ = 100;
+	const uint8_t SHOOTED_PARTICLE_NUM_ = 150;
 	const float SHOOTED_PARTICLE_VEL_RATE_ = 1.3f;
 	const float DEAD_PARTICLE_VEL_RATE_ = 0.35f;
 public://ノード

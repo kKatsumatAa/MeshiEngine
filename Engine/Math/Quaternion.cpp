@@ -71,20 +71,20 @@ Quaternion Quaternion::GetInverse() const
 //----------
 Quaternion Quaternion::MakeAxisAngle(const Vec3& axis, float angle, const Vec3& useAxis)
 {
-	Quaternion ans;
-	Vec3 axis_ = axis;
-	axis_ = { axis_.x * useAxis.x,axis_.y * useAxis.y, axis_.z * useAxis.z };
-	axis_.Normalized();
+	Vec3 axisL = axis.GetNormalized();
+	Vec3 useAxisL = useAxis.GetNormalized();
+	axisL = { axisL.x * useAxisL.x,axisL.y * useAxisL.y, axisL.z * useAxisL.z };
+	axisL.Normalized();
 
 	float rad = sinf(angle * MAKE_AXIS_ANGLE_RATE_);
-	ans.x = axis_.x * rad;
-	ans.y = axis_.y * rad;
-	ans.z = axis_.z * rad;
+
+	Quaternion ans;
+	ans.x = axisL.x * rad;
+	ans.y = axisL.y * rad;
+	ans.z = axisL.z * rad;
 	ans.w = cosf(angle * MAKE_AXIS_ANGLE_RATE_);
 
-	ans = ans.GetNormalize();
-
-	return Quaternion(ans);
+	return ans;
 }
 
 Quaternion Quaternion::DirectionToDirection(const Vec3& u, const Vec3& v, const Vec3& useAxis)
