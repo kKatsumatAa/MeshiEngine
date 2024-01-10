@@ -230,7 +230,6 @@ void EnemyStateDamagedBegin::Initialize()
 	{
 		enemy_->SetIsPlayAnimation(false, Enemy::AnimationNum::PUNCH);
 		enemy_->AnimationReset(Enemy::AnimationNum::PUNCH);
-		enemy_->SetIsAttacking(false);
 		enemy_->ChangeEnemyStanceState(std::make_unique<EnemyStateBareHandsAttackEnd>());
 	}
 	else
@@ -238,6 +237,8 @@ void EnemyStateDamagedBegin::Initialize()
 		//歩きのアニメーション(crawlと切り替える)
 		enemy_->PlayAnimation(true, enemy_->GetWalkAnimNum(), false);
 	}
+	//攻撃フラグオフ
+	enemy_->SetIsAttacking(false);
 }
 
 void EnemyStateDamagedBegin::Update()
