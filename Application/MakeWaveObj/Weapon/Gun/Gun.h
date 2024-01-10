@@ -17,7 +17,7 @@ class Gun :
 	public Weapon
 {
 public:
-	const Vec3 MATERIAL_EXTEND_ = { 1.0f,100.0f,5000.0f };
+	const Vec3 MATERIAL_EXTEND_ = { 2.0f,100.0f,5000.0f };
 	const float TIME_RATIO_MAX_ = 1.0f;
 public:
 	const float BULLET_SCALE_RATE_ = 0.4f;

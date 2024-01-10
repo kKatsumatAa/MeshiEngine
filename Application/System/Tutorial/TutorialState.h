@@ -144,7 +144,7 @@ public:
 class TutorialStatePart : public TutorialState
 {
 public:
-	const int32_t RATE_MAX_TMP_ = 20;
+	const int32_t RATE_MAX_TMP_ = 13;
 
 public:
 	//初期化
