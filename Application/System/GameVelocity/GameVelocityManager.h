@@ -12,7 +12,7 @@ class GameVelocityManager final
 {
 public:
 	//ゆっくりな時の色
-	const Vec3 VEL_COLOR_MIN_ = { 0.4f,0.7f,0.9f };
+	const Vec3 VEL_COLOR_MIN_ = { 0.5f,0.8f,1.0f };
 	const Vec4 VEL_COLOR_MAX_ = { 1.0f,1.0f,1.0f,1.0f };
 
 	const float VEL_RADIAL_BLUR_RATE_ = 0.6f;

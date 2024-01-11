@@ -54,11 +54,11 @@ public:
 	//倍率
 	const float INIT_DISSOLVE_RATE_ = 1.0f;
 	const float WEAPON_SCALE_RATE_ = 2.0f;
-	const Vec3 MODEL_MATERIAL_RATE_ = { 0.03f,0.1f,50.0f };
+	const Vec3 MODEL_MATERIAL_RATE_ = { 1.0f,0.1f,100.0f };
 	const float VELOCITY_RATE_ = 0.45f / 1.5f;
 	const float RATE_MAX_ = 1.0f;
 	//色
-	const Vec4 COLOR_ = { 3.0f,0,0,1.0f };
+	const Vec4 COLOR_ = { 1.0f,0,0,1.0f };
 	//初期値
 	const Vec3 INIT_VELOCITY_ = { 0,0,0 };
 	const float INIT_DAMAGE_COOL_TIME_ = 0;

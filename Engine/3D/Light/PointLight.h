@@ -34,7 +34,7 @@ public://サブクラス
 
 public:
 	const float IMGUI_LIGHT_ATTEN_MIN_ = 0;
-	const float IMGUI_LIGHT_ATTEN_MAX_ = 3.0f;
+	const float IMGUI_LIGHT_ATTEN_MAX_ = 10.0f;
 
 private://メンバ変数
 	//ライト座標（ワールド座標系）

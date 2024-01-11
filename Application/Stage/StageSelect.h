@@ -16,7 +16,7 @@ private:
 	const float TEXT_EXTEND_ = 1.5f;
 
 public:
-	const float STAGE_NAME_LEFT_UP_RATE_ = 4.0f;
+	const float STAGE_NAME_LEFT_UP_RATE_ = 3.0f;
 	const Vec4 SELECT_BOX_COLOR_ = { 8.0f,0,0,1.0f };
 
 private:

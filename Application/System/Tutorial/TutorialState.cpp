@@ -28,6 +28,10 @@ std::unique_ptr<TutorialState> TutorialState::GetState(const std::string& name)
 	{
 		state = std::make_unique<TutorialStatePart>();
 	}
+	else if (name == "PART2")
+	{
+		state = std::make_unique<TutorialStatePart2>();
+	}
 	else
 	{
 		state = std::make_unique<TutorialStateNone>();
@@ -213,6 +217,28 @@ void TutorialStatePart::Update()
 }
 
 void TutorialStatePart::Draw()
+{
+	CommonSpriteDraw();
+}
+
+//--------------------------------------------------------------------------
+//部位説明2
+void TutorialStatePart2::Initialize()
+{
+	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial5.png");
+	texSprite_.SetTexHandle(texHandle_);
+
+	rateMax_ = RATE_MAX_TMP_;
+}
+
+void TutorialStatePart2::Update()
+{
+	rate_ += GameVelocityManager::GetInstance().GetVelocity();
+
+	CommonUpdate();
+}
+
+void TutorialStatePart2::Draw()
 {
 	CommonSpriteDraw();
 }

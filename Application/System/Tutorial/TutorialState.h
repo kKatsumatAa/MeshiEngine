@@ -144,6 +144,21 @@ public:
 class TutorialStatePart : public TutorialState
 {
 public:
+	const int32_t RATE_MAX_TMP_ = 15;
+
+public:
+	//初期化
+	void Initialize() override;
+	//更新
+	void Update() override;
+	//描画
+	void Draw() override;
+};
+
+//部位操作説明2
+class TutorialStatePart2 : public TutorialState
+{
+public:
 	const int32_t RATE_MAX_TMP_ = 13;
 
 public:

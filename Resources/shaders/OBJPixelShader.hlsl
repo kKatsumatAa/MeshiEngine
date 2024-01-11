@@ -70,7 +70,8 @@ PSOutput main(VSOutput input)
             }
 
 			// ŠgŽU”½ŽËŒõ
-            float3 diffuse = dotlightnormal * m_diffuse * diffuseColor;
+            float3 diffuse = max(0.0, dotlightnormal) * 0.5 + 0.5;
+            diffuse *= diffuseColor;
 			// ‹¾–Ê”½ŽËŒõ
             specular = specular * m_specular * specularColor;
 
@@ -117,7 +118,8 @@ PSOutput main(VSOutput input)
             }
 
 			// ŠgŽU”½ŽËŒõ
-            float3 diffuse = dotlightnormal * m_diffuse * diffuseColor;
+            float3 diffuse = max(0.0, dotlightnormal) * 0.5 + 0.5;
+            diffuse *= diffuseColor;
 			// ‹¾–Ê”½ŽËŒõ
             specular = specular * m_specular * specularColor;
             
@@ -169,7 +171,8 @@ PSOutput main(VSOutput input)
             }
 
 			// ŠgŽU”½ŽËŒõ
-            float3 diffuse = dotlightnormal * m_diffuse * diffuseColor;
+            float3 diffuse = max(0.0, dotlightnormal) * 0.5 + 0.5;
+            diffuse *= diffuseColor;
 			// ‹¾–Ê”½ŽËŒõ
             specular = specular * m_specular * specularColor;
 			//‘S‚Ä‰ÁŽZ‚·‚é
