@@ -449,6 +449,8 @@ void Enemy::DetachPart(const std::string& partName, const Vec3& throwDir, Vec3* 
 	{
 		//部位の当たり判定なくす
 		InvalidPartNodeColliders(partName);
+		//メッシュの色倍率
+		partModel->SetMeshColorRate({ 1.0f,1.0f,1.0f,1.0f });
 
 		//投げるための位置
 		Vec3 offset = partModel->GetMeshCentroid(partName);
@@ -669,111 +671,122 @@ void Enemy::OnCollision(const CollisionInfo& info)
 
 void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 {
-	//殴られたら
-	Punched(info, obj);
-
-	//弾に当たったら
-	if (info.object_->GetObjName() == "bullet")
+	//プレイヤーの視線が当たった時
+	if (info.object_ == nullptr)
 	{
-		//弾を撃った本人だったら
-		if (this == dynamic_cast<Bullet*>(info.object_)->GetOwner())
+		if (info.objName_ && *info.objName_ == "PlayerRay")
 		{
-			return;
+			model_->SetMeshColorRate(GetPartName(obj->GetObjName()), PLAYER_RAY_HIT_MESH_COLOR_RATE_);
 		}
-
-		//ノックバック
-		KnockBack(info, true);
-
-		//弾が当たった部位のメッシュ削除
-		model_->DeleteMesh(GetPartName(obj->GetObjName()));
-
-		//今のhp分ダメージ受けて倒れる
-		auto stateChangeF = [=]() { Dead(info); };
-		Damaged(hp_, stateChangeF);
-
-		//ノードの角度を加算するため
-		SetAllNodeAddRots(*obj, SHOOTED_NODE_ADD_ROT_RATE_);
-
-		//メッシュの波
-		BeginDamagedWave(info, SHOOTED_WAVE_RATE_);
-
-		//パーティクル
-		DamageParticle(SHOOTED_PARTICLE_NUM_, 1, SHOOTED_PARTICLE_VEL_RATE_, &info, obj, nullptr);
 	}
-	//武器に当たったら
-	else if (info.object_->GetObjName() == "gun" || info.object_->GetObjName() == EnemyPart::S_OBJ_NAME_)
+	else
 	{
-		Weapon* weapon = dynamic_cast<Weapon*>(info.object_);
+		//殴られたら
+		Punched(info, obj);
 
-		if (!(weapon != nullptr && weapon->GetParent() == nullptr))
+		//弾に当たったら
+		if (info.object_->GetObjName() == "bullet")
 		{
-			return;
-		}
+			//弾を撃った本人だったら
+			if (this == dynamic_cast<Bullet*>(info.object_)->GetOwner())
+			{
+				return;
+			}
 
-		//投げられているときのみ
-		if (weapon->GetIsThrowing() && weapon->GetFallVelocity().GetLength() != 0)
-		{
 			//ノックバック
 			KnockBack(info, true);
 
-			//ノードの角度を加算するため
-			SetAllNodeAddRots(*obj, HIT_WEAPON_NODE_ADD_ROT_RATE_);
-			//ダメージステートにする
+			//弾が当たった部位のメッシュ削除
+			model_->DeleteMesh(GetPartName(obj->GetObjName()));
+
+			//今のhp分ダメージ受けて倒れる
 			auto stateChangeF = [=]() { Dead(info); };
-			auto stateChangeF2 = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDamagedBegin>()); };
-			Damaged(0, stateChangeF, stateChangeF2);
+			Damaged(hp_, stateChangeF);
+
+			//ノードの角度を加算するため
+			SetAllNodeAddRots(*obj, SHOOTED_NODE_ADD_ROT_RATE_);
 
 			//メッシュの波
-			BeginDamagedWave(info, HIT_WEAPON_WAVE_RATE_);
+			BeginDamagedWave(info, SHOOTED_WAVE_RATE_);
+
+			//パーティクル
+			DamageParticle(SHOOTED_PARTICLE_NUM_, 1, SHOOTED_PARTICLE_VEL_RATE_, &info, obj, nullptr);
 		}
-		//武器を持つ部位が残っていれば
-		else if (GetIsPartStillAttached(WEAPON_PARENT_NODE_NAME_))
+		//武器に当たったら
+		else if (info.object_->GetObjName() == "gun" || info.object_->GetObjName() == EnemyPart::S_OBJ_NAME_)
 		{
-			//武器拾う
-			Vec3 lPos = { 0,0,0 };
-			weapon->SetRot(WEAPON_ROT_);
-			PickUpWeapon(weapon, &lPos);
-			//武器の親ノード設定
-			weapon->ParentFbxNode(this, model_, WEAPON_PARENT_NODE_NAME_);
+			Weapon* weapon = dynamic_cast<Weapon*>(info.object_);
 
-			state_->ChangeState();
+			if (!(weapon != nullptr && weapon->GetParent() == nullptr))
+			{
+				return;
+			}
+
+			//投げられているときのみ
+			if (weapon->GetIsThrowing() && weapon->GetFallVelocity().GetLength() != 0)
+			{
+				//ノックバック
+				KnockBack(info, true);
+
+				//ノードの角度を加算するため
+				SetAllNodeAddRots(*obj, HIT_WEAPON_NODE_ADD_ROT_RATE_);
+				//ダメージステートにする
+				auto stateChangeF = [=]() { Dead(info); };
+				auto stateChangeF2 = [=]() { ChangeEnemyState(std::make_unique<EnemyStateDamagedBegin>()); };
+				Damaged(0, stateChangeF, stateChangeF2);
+
+				//メッシュの波
+				BeginDamagedWave(info, HIT_WEAPON_WAVE_RATE_);
+			}
+			//武器を持つ部位が残っていれば
+			else if (GetIsPartStillAttached(WEAPON_PARENT_NODE_NAME_))
+			{
+				//武器拾う
+				Vec3 lPos = { 0,0,0 };
+				weapon->SetRot(WEAPON_ROT_);
+				PickUpWeapon(weapon, &lPos);
+				//武器の親ノード設定
+				weapon->ParentFbxNode(this, model_, WEAPON_PARENT_NODE_NAME_);
+
+				state_->ChangeState();
+			}
 		}
-	}
-	//敵同士で当たったらめり込まないようにする
-	else if (info.object_->GetObjName().find("enemy") != std::string::npos)
-	{
-		//長さ
-		float length = (info.object_->GetScale().x + obj->GetWorldScale().x);
-		//距離のベクトル
-		Vec3 distanceVec = obj->GetWorldTrans() - info.object_->GetTrans();
-		//仮
-		distanceVec.y = OBJ_DIST_VEC_Y_;
-		distanceVec.Normalized();
-		//位置セット(半径＋半径の長さをベクトルの方向を使って足す)
-		IObject::SetTrans(info.object_->GetTrans() + distanceVec * length * PUSH_BACK_LENGTH_RATE_);
-
-		//ｙは動かないようにする
-		IObject::SetVelocity({ IObject::GetVelocity().x,0,IObject::GetVelocity().z });
-		info.object_->SetVelocity({ info.object_->GetVelocity().x,0,info.object_->GetVelocity().z });
-		//二つのベクトルの合計の長さ
-		float addLength = GetVelocity().GetLength() + info.object_->GetVelocity().GetLength();
-		//自分のスピードのベクトルの長さの割合（合計の長さで割る（0～1.0f））
-		float myLengthRatio = GetVelocity().GetLength() / addLength;
-
-		//衝突後の自分のスピードベクトルは[現在のスピードベクトル]+[相手から自分へのベクトル]*[相手の長さの割合]
-		SetVelocity((GetVelocity() + distanceVec.GetNormalized() * addLength * (1.0f - myLengthRatio)) * PUSH_BACK_VEL_RATE_);
-		//衝突後の相手のスピードベクトルは[現在のスピードベクトル]+[このインスタンスから相手へのベクトル]*[このインスタンスの長さの割合]
-		info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * PUSH_BACK_VEL_RATE_);
-	}
-	//素手攻撃中にプレイヤーに当たったら
-	else if (GetAnimData(AnimationNum::PUNCH).isPlay_ && info.object_->GetObjName() == "player")
-	{
-		//キャラクターのvirtual関数で死亡処理
-		auto player = dynamic_cast<Character*>(info.object_);
-		if (!player->GetIsDead() && GetPartName(obj->GetObjName()) == PartName::RIGHT_HAND)
+		//敵同士で当たったらめり込まないようにする
+		else if (info.object_->GetObjName().find("enemy") != std::string::npos)
 		{
-			CollisionInfo linfo = CollisionInfo(this, GetCollider(), info.inter_);
-			player->Punched(linfo);
+			//長さ
+			float length = (info.object_->GetScale().x + obj->GetWorldScale().x);
+			//距離のベクトル
+			Vec3 distanceVec = obj->GetWorldTrans() - info.object_->GetTrans();
+			//仮
+			distanceVec.y = OBJ_DIST_VEC_Y_;
+			distanceVec.Normalized();
+			//位置セット(半径＋半径の長さをベクトルの方向を使って足す)
+			IObject::SetTrans(info.object_->GetTrans() + distanceVec * length * PUSH_BACK_LENGTH_RATE_);
+
+			//ｙは動かないようにする
+			IObject::SetVelocity({ IObject::GetVelocity().x,0,IObject::GetVelocity().z });
+			info.object_->SetVelocity({ info.object_->GetVelocity().x,0,info.object_->GetVelocity().z });
+			//二つのベクトルの合計の長さ
+			float addLength = GetVelocity().GetLength() + info.object_->GetVelocity().GetLength();
+			//自分のスピードのベクトルの長さの割合（合計の長さで割る（0～1.0f））
+			float myLengthRatio = GetVelocity().GetLength() / addLength;
+
+			//衝突後の自分のスピードベクトルは[現在のスピードベクトル]+[相手から自分へのベクトル]*[相手の長さの割合]
+			SetVelocity((GetVelocity() + distanceVec.GetNormalized() * addLength * (1.0f - myLengthRatio)) * PUSH_BACK_VEL_RATE_);
+			//衝突後の相手のスピードベクトルは[現在のスピードベクトル]+[このインスタンスから相手へのベクトル]*[このインスタンスの長さの割合]
+			info.object_->SetVelocity((info.object_->GetVelocity() - distanceVec.GetNormalized() * addLength * (myLengthRatio)) * PUSH_BACK_VEL_RATE_);
+		}
+		//素手攻撃中にプレイヤーに当たったら
+		else if (GetAnimData(AnimationNum::PUNCH).isPlay_ && info.object_->GetObjName() == "player")
+		{
+			//キャラクターのvirtual関数で死亡処理
+			auto player = dynamic_cast<Character*>(info.object_);
+			if (!player->GetIsDead() && GetPartName(obj->GetObjName()) == PartName::RIGHT_HAND)
+			{
+				CollisionInfo linfo = CollisionInfo(this, GetCollider(), info.inter_);
+				player->Punched(linfo);
+			}
 		}
 	}
 }

@@ -151,9 +151,9 @@ void Primitive::InitializeTriangle()
 		for (int32_t i = 0; i < _countof(sIndicesTriangle_) / S_MESH_VERTEX_NUM_NORMAL_; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = sIndicesTriangle_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
-			uint16_t index1 = sIndicesTriangle_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
-			uint16_t index2 = sIndicesTriangle_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
+			uint16_t index0 = sIndicesTriangle_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 0];
+			uint16_t index1 = sIndicesTriangle_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 1];
+			uint16_t index2 = sIndicesTriangle_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesTriangle_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesTriangle_[index1].pos);
@@ -227,12 +227,12 @@ void Primitive::InitializeBox()
 
 	//06_03
 	{
-		for (int32_t i = 0; i < _countof(sIndicesBox_) / IModel::S_MESH_VERTEX_NORMAL_NUM_; i++)
+		for (int32_t i = 0; i < _countof(sIndicesBox_) / Mesh::S_MESH_VERTEX_NUM_NORMAL_; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = sIndicesBox_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
-			uint16_t index1 = sIndicesBox_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
-			uint16_t index2 = sIndicesBox_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
+			uint16_t index0 = sIndicesBox_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 0];
+			uint16_t index1 = sIndicesBox_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 1];
+			uint16_t index2 = sIndicesBox_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesBox_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesBox_[index1].pos);
@@ -315,12 +315,12 @@ void Primitive::InitializeCircle()
 
 	//06_03
 	{
-		for (int32_t i = 0; i < _countof(sIndicesCircle_) / IModel::S_MESH_VERTEX_NORMAL_NUM_; i++)
+		for (int32_t i = 0; i < _countof(sIndicesCircle_) / Mesh::S_MESH_VERTEX_NUM_NORMAL_; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = sIndicesCircle_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
-			uint16_t index1 = sIndicesCircle_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
-			uint16_t index2 = sIndicesCircle_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
+			uint16_t index0 = sIndicesCircle_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 0];
+			uint16_t index1 = sIndicesCircle_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 1];
+			uint16_t index2 = sIndicesCircle_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesCircle_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesCircle_[index1].pos);
@@ -428,12 +428,12 @@ void Primitive::InitializeCube()
 
 	//06_03
 	{
-		for (int32_t i = 0; i < _countof(sIndicesCube_) / IModel::S_MESH_VERTEX_NORMAL_NUM_; i++)
+		for (int32_t i = 0; i < _countof(sIndicesCube_) / Mesh::S_MESH_VERTEX_NUM_NORMAL_; i++)
 		{//三角形一つごとに計算
 			//三角形のインデックスを取り出して、一時的な変数に入れる
-			uint16_t index0 = sIndicesCube_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
-			uint16_t index1 = sIndicesCube_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
-			uint16_t index2 = sIndicesCube_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
+			uint16_t index0 = sIndicesCube_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 0];
+			uint16_t index1 = sIndicesCube_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 1];
+			uint16_t index2 = sIndicesCube_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 2];
 			//三角形を構成する頂点座標をベクトルに代入
 			XMVECTOR p0 = XMLoadFloat3(&verticesCube_[index0].pos);
 			XMVECTOR p1 = XMLoadFloat3(&verticesCube_[index1].pos);
@@ -575,7 +575,7 @@ void Primitive::InitializeSphere()
 			}
 
 			//一番下か上じゃなければ
-			if (!(i % S_SPHERE_INDICES_NUM_ == 0 || i % (S_SPHERE_INDICES_NUM_ * (count + 1) - IModel::S_MESH_VERTEX_NORMAL_NUM_) == 0))
+			if (!(i % S_SPHERE_INDICES_NUM_ == 0 || i % (S_SPHERE_INDICES_NUM_ * (count + 1) - Mesh::S_MESH_VERTEX_NUM_NORMAL_) == 0))
 			{
 				if (count2 % PAIR_ == 0)
 				{
@@ -622,7 +622,7 @@ void Primitive::InitializeSphere()
 
 				count2++;
 			}
-			if (i % S_SPHERE_INDICES_NUM_ == 0 || i % (S_SPHERE_INDICES_NUM_ * (count + 1) - IModel::S_MESH_VERTEX_NORMAL_NUM_) == 0)
+			if (i % S_SPHERE_INDICES_NUM_ == 0 || i % (S_SPHERE_INDICES_NUM_ * (count + 1) - Mesh::S_MESH_VERTEX_NUM_NORMAL_) == 0)
 			{
 				if (i % S_SPHERE_INDICES_NUM_ == 0)//一番下の三角形
 				{
@@ -643,7 +643,7 @@ void Primitive::InitializeSphere()
 						i += PAIR_;
 					}
 				}
-				else if (i % (S_SPHERE_INDICES_NUM_ * (count + 1) - IModel::S_MESH_VERTEX_NORMAL_NUM_) == 0)//一番上の三角形
+				else if (i % (S_SPHERE_INDICES_NUM_ * (count + 1) - Mesh::S_MESH_VERTEX_NUM_NORMAL_) == 0)//一番上の三角形
 				{
 					if (isLast)
 					{
@@ -703,12 +703,12 @@ void Primitive::InitializeSphere()
 		//06_03
 		/*if (indexNum == SPHERE)*/
 		{
-			for (int32_t i = 0; i < _countof(sIndicesSphere_) / IModel::S_MESH_VERTEX_NORMAL_NUM_; i++)
+			for (int32_t i = 0; i < _countof(sIndicesSphere_) / Mesh::S_MESH_VERTEX_NUM_NORMAL_; i++)
 			{//三角形一つごとに計算
 				//三角形のインデックスを取り出して、一時的な変数に入れる
-				uint16_t index0 = sIndicesSphere_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
-				uint16_t index1 = sIndicesSphere_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
-				uint16_t index2 = sIndicesSphere_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
+				uint16_t index0 = sIndicesSphere_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 0];
+				uint16_t index1 = sIndicesSphere_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 1];
+				uint16_t index2 = sIndicesSphere_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 2];
 				//三角形を構成する頂点座標をベクトルに代入
 				XMVECTOR p0 = XMLoadFloat3(&verticesSphere_[index0].pos);
 				XMVECTOR p1 = XMLoadFloat3(&verticesSphere_[index1].pos);

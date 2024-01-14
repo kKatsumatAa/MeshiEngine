@@ -97,9 +97,9 @@ void Mesh::CalculateTangent()
 	for (int32_t i = 0; i < indices_.size() / S_CALC_TANG_MESH_VERTEX_NUM_; i++)
 	{//三角形一つごとに計算
 		//三角形のインデックスを取り出して、一時的な変数に入れる
-		uint16_t index0 = indices_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 0];
-		uint16_t index1 = indices_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 1];
-		uint16_t index2 = indices_[i * IModel::S_MESH_VERTEX_NORMAL_NUM_ + 2];
+		uint16_t index0 = indices_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 0];
+		uint16_t index1 = indices_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 1];
+		uint16_t index2 = indices_[i * Mesh::S_MESH_VERTEX_NUM_NORMAL_ + 2];
 
 		// Shortcuts for vertices
 		Vec3& v0 = vertices_[index0].pos;
@@ -207,11 +207,13 @@ void Mesh::SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt)
 
 	//マテリアル
 	XMFLOAT3 amb = material_->ambient_;
-	material_->ambient_ = material_->ambient_ * materialExtend.x;
+	material_->ambient_ = XMFLOAT3{ material_->ambient_.x * colorRate_.x,material_->ambient_.y * colorRate_.y,material_->ambient_.z * colorRate_.z } * materialExtend.x;
 	XMFLOAT3 diff = material_->diffuse_;
-	material_->diffuse_ = material_->diffuse_ * materialExtend.y;
+	material_->diffuse_ = XMFLOAT3{ material_->diffuse_.x * colorRate_.x,material_->diffuse_.y * colorRate_.y,material_->diffuse_.z * colorRate_.z } * materialExtend.y;
 	XMFLOAT3 spe = material_->specular_;
-	material_->specular_ = material_->specular_ * materialExtend.z;
+	material_->specular_ = XMFLOAT3{ material_->specular_.x * colorRate_.x,material_->specular_.y * colorRate_.y,material_->specular_.z * colorRate_.z } * materialExtend.z;
+	float alph = material_->alpha_;
+	material_->alpha_ = material_->alpha_ * colorRate_.w;
 	//更新
 	material_->Update();
 
@@ -219,6 +221,7 @@ void Mesh::SendingMat(Vec3 materialExtend, const ConstBuffTransform& cbt)
 	material_->ambient_ = amb;
 	material_->diffuse_ = diff;
 	material_->specular_ = spe;
+	material_->alpha_ = alph;
 
 	//頂点情報
 	SendingVetices();

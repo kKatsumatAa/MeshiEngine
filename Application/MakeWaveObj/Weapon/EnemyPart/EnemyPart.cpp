@@ -93,5 +93,8 @@ float EnemyPart::GetAttackCoolTimeRatio()
 
 void EnemyPart::OnCollision(const CollisionInfo& info)
 {
-	info;
+	if (info.object_ == nullptr)
+	{
+		return;
+	}
 }

@@ -218,7 +218,7 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 					mesh->AddSmoothData(indexPos, (unsigned short)mesh->GetVertexCount() - 1);
 				}
 				//四角メッシュだったら[2,3,0]の順で入れる
-				if (indexNum >= S_MESH_VERTEX_NORMAL_NUM_) {
+				if (indexNum >= Mesh::S_MESH_VERTEX_NUM_NORMAL_) {
 					indices.emplace_back((unsigned short)(indexCount + S_INDEX_OFFSET_VERTEX_4_OF_2_));
 					indices.emplace_back((unsigned short)indexCount);
 					indices.emplace_back((unsigned short)(indexCount + S_INDEX_OFFSET_VERTEX_4_OF_4_));
@@ -232,7 +232,7 @@ void ModelObj::LoadFromOBJInternal(const std::string& folderName, bool smoothing
 			}
 			// インデックスデータの追加
 			//三角メッシュ
-			if (indices.size() == S_MESH_VERTEX_NORMAL_NUM_)
+			if (indices.size() == Mesh::S_MESH_VERTEX_NUM_NORMAL_)
 			{
 				//DirectXの座標系用に並び替え
 				mesh->AddIndex(indices[0]);

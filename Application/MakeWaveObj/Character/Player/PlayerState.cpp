@@ -24,12 +24,24 @@ bool PlayerState::CheckEyeRayHit()
 	{
 		obj->SetIsSilhouette(false);
 	}
+	//敵メッシュの色の倍率オフ
+	auto enemies = ObjectManager::GetInstance().GetObjs(LevelManager::S_OBJ_GROUP_NAME_, "enemy2.fbx");
+	for (auto enemy : enemies)
+	{
+		enemy->GetModel()->SetMeshColorRate({ 1.0f,1.0f,1.0f,1.0f });
+	}
 
-	//シルエット
 	if (isRayHit)
 	{
+		//シルエット
 		info_.object->SetIsSilhouette(true);
 		info_.object->EffectUpdate();
+		
+		//相手の当たり判定処理呼ぶ
+		CollisionInfo infoL;
+		std::string colInfoObjName = "PlayerRay";
+		infoL.objName_ = &colInfoObjName;
+		info_.object->OnCollision(infoL);
 	}
 
 	return isRayHit;

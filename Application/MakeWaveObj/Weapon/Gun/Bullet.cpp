@@ -185,7 +185,7 @@ void Bullet::Draw()
 void Bullet::OnCollision(const CollisionInfo& info)
 {
 	//撃った本人には当たらないように
-	if (owner_ != info.object_ && info.object_->GetObjName().find("enemy") == std::string::npos)
+	if (info.object_ && owner_ != info.object_ && info.object_->GetObjName().find("enemy") == std::string::npos)
 	{
 		Dead(info);
 	}

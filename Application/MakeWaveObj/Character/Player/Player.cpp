@@ -443,6 +443,11 @@ void Player::ThrowWeapon()
 
 void Player::OnCollision(const CollisionInfo& info)
 {
+	if (info.object_ == nullptr)
+	{
+		return;
+	}
+
 	//弾に当たったらダメージ
 	if (info.object_->GetObjName() == "bullet")
 	{

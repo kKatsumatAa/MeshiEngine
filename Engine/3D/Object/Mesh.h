@@ -62,6 +62,8 @@ public://定数
 	//ボーンインデックス（影響を受けるボーン）の最大数
 	static const int8_t S_MAX_BONE_INDICES_ = 4;//hlslのfloat4に対応するため"4"
 	static const int8_t S_CALC_TANG_MESH_VERTEX_NUM_ = 3;
+	static const int8_t S_MESH_VERTEX_NUM_MAX_ = 4;
+	static const int8_t S_MESH_VERTEX_NUM_NORMAL_ = 3;
 
 public://サブクラス
 	//頂点データ構造体
@@ -108,7 +110,8 @@ private: // メンバ変数
 	std::unordered_map<uint16_t, std::vector<uint16_t>> smoothData_;
 	// マテリアル
 	Material* material_ = nullptr;
-
+	//色の倍率
+	Vec4 colorRate_ = { 1.0f,1.0f,1.0f,1.0f };
 	//メッシュを持つノード(fbx)
 	Node* meshNode_ = nullptr;
 	//
@@ -241,24 +244,23 @@ public:
 	void Draw(Vec3 materialExtend, const ConstBuffTransform& cbt, bool isShadow);
 
 public:
-	//getter
+	//getter------------------
+	//ポリゴン数を取得
+	int32_t GetPolygonCount() { return (int32_t)indices_.size() / S_MESH_VERTEX_NUM_NORMAL_; }
+	//ポリゴンの法線取得
+	Vec3 GetPolygonNormal(int32_t index);
 	//モデルの変形行列を取得
 	const XMMATRIX& GetMeshFBXTransform() { return meshNode_->globalTransform; }
 	//メッシュノードのポインタ取得
 	const Node& GetMeshNode() { return *meshNode_; }
 
-	//setter
+	//setter------------------
 	//メッシュノードのポインタセット
 	void SetMeshNode(Node* node) { meshNode_ = node; }
-
-	//getter
-	//ポリゴン数を取得
-	int32_t GetPolygonCount() { return (int32_t)indices_.size() / 3; }
-	//ポリゴンの法線取得
-	Vec3 GetPolygonNormal(int32_t index);
-
 	//メッシュのオフセットデータをセット
 	void SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData);
+	//色の倍率セット
+	void SetColorRate(const Vec4& colorRate) { colorRate_ = colorRate; }
 
 public:
 	//メッシュ内の頂点を全て中心にずらす

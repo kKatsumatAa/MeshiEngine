@@ -270,7 +270,7 @@ void ObjectManager::AddObjAndGroup(std::unique_ptr<IObject3D> obj, const std::st
 //---------------------------------------------------------------------------------------
 bool ObjectManager::GetSameAttribute(IObject3D* obj, uint16_t attribute)
 {
-	if (obj->GetCollider() && obj->GetCollider()->GetAttribute() & attribute)
+	if (obj->GetCollider() && (obj->GetCollider()->GetAttribute() & attribute))
 	{
 		return true;
 	}

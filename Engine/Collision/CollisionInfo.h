@@ -5,6 +5,7 @@
 
 #pragma once
 #include "CollisionAttribute.h"
+#include <string>
 
 #pragma warning(push)
 //c5267警告を無視
@@ -27,6 +28,8 @@ public:
 	BaseCollider* collider_ = nullptr;
 	// 衝突点
 	DirectX::XMVECTOR inter_;
+	//相手の名前
+	std::string* objName_;
 
 public:
 	//コンストラクタ

@@ -156,6 +156,26 @@ void IModel::SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData)
 	}
 }
 
+void IModel::SetMeshColorRate(const std::string& meshName, const Vec4& colorRate)
+{
+	for (auto& mesh : meshes_)
+	{
+		//名前が一致していたら色の倍率セット
+		if (mesh->GetName() == meshName)
+		{
+			mesh->SetColorRate(colorRate);
+		}
+	}
+}
+
+void IModel::SetMeshColorRate(const Vec4& colorRate)
+{
+	for (auto& mesh : meshes_)
+	{
+		mesh->SetColorRate(colorRate);
+	}
+}
+
 void IModel::CopyUnUniqueParams(const IModel& model)
 {
 	isFbx_ = model.GetIsFbx();
@@ -185,7 +205,7 @@ Vec3 IModel::GetMeshCentroid(const std::string& meshName)
 		}
 	}
 
-	return Vec3(0,0,0);
+	return Vec3(0, 0, 0);
 }
 
 //----------------------------------------------------------

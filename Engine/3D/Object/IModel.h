@@ -43,11 +43,8 @@ public:
 	const float IMGUI_MATERIAL_EXTEND_MIN_ = 0;
 
 public:
-	static const int8_t S_MESH_VERTEX_NORMAL_NUM_ = 3;
 	static const int8_t S_INDEX_OFFSET_VERTEX_4_OF_2_ = -1;
 	static const int8_t S_INDEX_OFFSET_VERTEX_4_OF_4_ = -3;
-	static const int8_t S_MESH_VERTEX_NUM_MAX_ = 4;
-	static const int8_t S_MESH_VERTEX_NUM_NORMAL_ = 3;
 
 protected:
 	// 名前
@@ -140,6 +137,10 @@ public:
 	void SetMaterialExtend(const Vec3& materialExtend) { materialExtend_ = materialExtend; }
 	//ポリゴンの座標に加算する座標を計算するための情報をセット
 	void SetPolygonOffsetData(const Mesh::PolygonOffset& polygonOffsetData);
+	//メッシュの色の倍率セット
+	void SetMeshColorRate(const std::string& meshName, const Vec4& colorRate);
+	//全てのメッシュに色の倍率
+	void SetMeshColorRate(const Vec4& colorRate);
 
 public:
 	//uniqueでないパラメータをコピー(scaleExtend以外)

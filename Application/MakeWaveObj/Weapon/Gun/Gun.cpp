@@ -160,7 +160,7 @@ void Gun::OnLandShape(const Vec3& interPos)
 
 void Gun::OnCollision(const CollisionInfo& info)
 {
-	if (info.object_->GetObjName() == "bullet")
+	if (info.object_ && info.object_->GetObjName() == "bullet")
 	{
 		//パーティクルと死亡フラグ
 		OnLandShape({ info.inter_.m128_f32[0],info.inter_.m128_f32[1] ,info.inter_.m128_f32[2] });

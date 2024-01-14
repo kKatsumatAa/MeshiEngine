@@ -164,6 +164,8 @@ public:
 	const float BODY_LENGTH_TMP_ = 1.0f;
 	const float BUST_ONLY_WALK_SPEED_ = 0.25f;
 	const float HALF_LEG_WALK_SPEED_ = 0.5f;
+	//メッシュの色倍率
+	const Vec4 PLAYER_RAY_HIT_MESH_COLOR_RATE_ = { 500.0f,50.0f ,50.0f ,50.0f };
 
 private:
 	Vec3 velocity_ = { 0,0,0 };

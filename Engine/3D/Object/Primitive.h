@@ -71,9 +71,9 @@ public:
 	const float NORMAL_RADIUS_ = 1.0f;
 
 public:
-	const float TRIANGLE_ANGLE_1_ = PI * 2.0f + PI * 2.0f / (float)IModel::S_MESH_VERTEX_NORMAL_NUM_ * 2.0f;
+	const float TRIANGLE_ANGLE_1_ = PI * 2.0f + PI * 2.0f / (float)Mesh::S_MESH_VERTEX_NUM_NORMAL_ * 2.0f;
 	const float TRIANGLE_ANGLE_2_ = PI * 2.0f;
-	const float TRIANGLE_ANGLE_3_ = PI * 2.0f + PI * 2.0f / (float)IModel::S_MESH_VERTEX_NORMAL_NUM_;
+	const float TRIANGLE_ANGLE_3_ = PI * 2.0f + PI * 2.0f / (float)Mesh::S_MESH_VERTEX_NUM_NORMAL_;
 	const Vec2 TRIANGLE_UV_1_ = { 0.0f,1.0f };
 	const Vec2 TRIANGLE_UV_2_ = { 0.5f,0.0f };
 	const Vec2 TRIANGLE_UV_3_ = { 1.0f,1.0f };
