@@ -132,6 +132,39 @@ void JsonLevelLoader::LoadRecursiveChildrenData(const nlohmann::json::iterator& 
 		objectData->parentNodeData.nodeName = parent_node["node_name"];
 	}
 
+	//使用するノード
+	if (object->contains("use_part"))
+	{
+		nlohmann::json use_part = (*object)["use_part"];
+		std::string allUsePartName = use_part["part_name"];
+
+		//部位のチェック外れてたらフラグもオフ
+		if (allUsePartName.find("Head") == std::string::npos)
+		{
+			objectData->usePart.head = false;
+		}
+		if (allUsePartName.find("Body") == std::string::npos)
+		{
+			objectData->usePart.body = false;
+		}
+		if (allUsePartName.find("LeftHand") == std::string::npos)
+		{
+			objectData->usePart.leftHand = false;
+		}
+		if (allUsePartName.find("RightHand") == std::string::npos)
+		{
+			objectData->usePart.rightHand = false;
+		}
+		if (allUsePartName.find("LeftLeg") == std::string::npos)
+		{
+			objectData->usePart.leftLeg = false;
+		}
+		if (allUsePartName.find("RightLeg") == std::string::npos)
+		{
+			objectData->usePart.rightLeg = false;
+		}
+	}
+
 	//当たり判定データ
 	//トランスフォームのパラメータ読み込み
 	nlohmann::json collider = (*object)["collider"];

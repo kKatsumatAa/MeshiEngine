@@ -58,6 +58,9 @@ void Enemy::EmergeInitialize()
 	auto onCollF = [=](IObject3D* obj, const CollisionInfo& info) {OnCollision(obj, info); };
 	SetNodeCollidersOnCollision(onCollF);
 
+	//初期の部位
+	InitializeLevelPart(initUsePart_);
+
 	//ステート変更
 	ChangeEnemyState(std::make_unique<EnemyStateEmergeEffect>());
 }
@@ -80,7 +83,7 @@ void Enemy::ChangeEnemyStanceState(std::unique_ptr<EnemyState> state)
 
 
 //--------------------------------------------------------------------------------------------------------------------------
-std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, Weapon* weapon, IModel* model)
+std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, LevelData::UsePart usePart, Weapon* weapon, IModel* model)
 {
 	std::unique_ptr<Enemy> instance = std::make_unique<Enemy>();
 	if (instance.get() == nullptr)
@@ -89,7 +92,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t
 	}
 
 	//初期化
-	if (!instance->Initialize(std::move(worldMat), waveNum, coolTime, weapon, model))
+	if (!instance->Initialize(std::move(worldMat), waveNum, coolTime, usePart, weapon, model))
 	{
 		assert(false);
 	}
@@ -97,7 +100,7 @@ std::unique_ptr<Enemy> Enemy::Create(std::unique_ptr<WorldMat> worldMat, int32_t
 	return std::move(instance);
 }
 
-bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, Weapon* weapon, IModel* model)
+bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, LevelData::UsePart usePart, Weapon* weapon, IModel* model)
 {
 	if (!ObjectFBX::Initialize(std::move(worldMat)))
 	{
@@ -143,6 +146,9 @@ bool Enemy::Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, floa
 
 	//分割数
 	SetTessFactor(TESS_FACTOR_MAX_);
+
+	//初期の部位
+	initUsePart_ = usePart;
 
 	return true;
 }
@@ -488,10 +494,26 @@ void Enemy::DetachPart(const std::string& partName, const Vec3& throwDir, Vec3* 
 	//両足なくなったら地面との判定用の長さ半分など
 	if (!GetIsHavingBottomBody())
 	{
-		bodyLength_ = BODY_LENGTH_TMP_ * BUST_LENGTH_RATE_;
-		walkSpeedRate_ = BUST_ONLY_WALK_SPEED_;
-		walkAnimNum_ = AnimationNum::CRAWL;//アニメーション変更
+		NoneLegs();
 	}
+}
+
+void Enemy::NoneLegs()
+{
+	bodyLength_ = BODY_LENGTH_TMP_ * BUST_LENGTH_RATE_;
+	walkSpeedRate_ = BUST_ONLY_WALK_SPEED_;
+	walkAnimNum_ = AnimationNum::CRAWL;//アニメーション変更
+}
+
+void Enemy::DeletePart(const std::string& partName)
+{
+	//hp減らす
+	hp_--;
+
+	//部位の当たり判定なくす
+	InvalidPartNodeColliders(partName);
+	//部位のメッシュ削除
+	model_->DeleteMesh(partName);
 }
 
 void Enemy::DetachAllPart(const CollisionInfo& info)
@@ -505,9 +527,9 @@ void Enemy::DetachAllPart(const CollisionInfo& info)
 	//各部位の分離
 	DetachPart(PartName::BODY, GetVec3xM4(model_->GetMeshCentroid(PartName::BODY), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
 	DetachPart(PartName::HEAD, GetVec3xM4(model_->GetMeshCentroid(PartName::HEAD), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
-	DetachPart(PartName::LEFT_HAND, GetVec3xM4(model_->GetMeshCentroid(PartName::LEFT_HAND), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	DetachPart(PartName::LEFT_ARM, GetVec3xM4(model_->GetMeshCentroid(PartName::LEFT_ARM), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
 	DetachPart(PartName::LEFT_LEG, GetVec3xM4(model_->GetMeshCentroid(PartName::LEFT_LEG), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
-	DetachPart(PartName::RIGHT_HAND, GetVec3xM4(model_->GetMeshCentroid(PartName::RIGHT_HAND), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
+	DetachPart(PartName::RIGHT_ARM, GetVec3xM4(model_->GetMeshCentroid(PartName::RIGHT_ARM), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
 	DetachPart(PartName::RIGHT_LEG, GetVec3xM4(model_->GetMeshCentroid(PartName::RIGHT_LEG), rotMat, false) - interLocalPos + Vec3(0, THROW_WEAPON_VEC_Y_, 0));
 }
 
@@ -519,6 +541,42 @@ bool Enemy::GetNodeIsHavingWeaponPart(const std::string& nodeName)
 	}
 
 	return false;
+}
+
+void Enemy::InitializeLevelPart(LevelData::UsePart usePart)
+{
+	if (usePart.head == false)
+	{
+		DeletePart(PartName::HEAD);
+	}
+	if (usePart.body == false)
+	{
+		DeletePart(PartName::BODY);
+	}
+	if (usePart.leftHand == false)
+	{
+		DeletePart(PartName::LEFT_ARM);
+	}
+	if (usePart.rightHand == false)
+	{
+		DeletePart(PartName::RIGHT_ARM);
+	}
+	if (usePart.leftLeg == false)
+	{
+		DeletePart(PartName::LEFT_LEG);
+	}
+	if (usePart.rightLeg == false)
+	{
+		DeletePart(PartName::RIGHT_LEG);
+	}
+
+	//両足なくなったら地面との判定用の長さ半分など
+	if (!GetIsHavingBottomBody())
+	{
+		NoneLegs();
+		//歩きアニメ
+		PlayAnimation(true, walkAnimNum_);
+	}
 }
 
 //----------------------------------------------------------------
@@ -782,7 +840,7 @@ void Enemy::OnCollision(IObject3D* obj, const CollisionInfo& info)
 		{
 			//キャラクターのvirtual関数で死亡処理
 			auto player = dynamic_cast<Character*>(info.object_);
-			if (!player->GetIsDead() && GetPartName(obj->GetObjName()) == PartName::RIGHT_HAND)
+			if (!player->GetIsDead() && GetPartName(obj->GetObjName()) == PartName::RIGHT_ARM)
 			{
 				CollisionInfo linfo = CollisionInfo(this, GetCollider(), info.inter_);
 				player->Punched(linfo);

@@ -39,6 +39,17 @@ struct LevelData
 		std::string nodeName;
 	};
 
+	//使う部位
+	struct UsePart
+	{
+		bool head = true;
+		bool body = true;
+		bool leftHand = true;
+		bool rightHand = true;
+		bool leftLeg = true;
+		bool rightLeg = true;
+	};
+
 	//オブジェクト一個分のデータ
 	struct ObjectData
 	{
@@ -56,6 +67,8 @@ struct LevelData
 		float coolTime = 0;
 		//親ノード名
 		ParentNodeData parentNodeData;
+		//使う部位
+		UsePart usePart;
 	};
 
 	//カメラのデータ
@@ -154,7 +167,7 @@ public:
 	/// <param name="object">jsonオブジェクトイテレータ</param>
 	/// <param name="parent">親ワールド行列のポインタ</param>
 	void LoadRecursiveChildrenData(const nlohmann::json::iterator& object, WorldMat* parent = nullptr);
-	
+
 	/// <summary>
 	/// カメラデータ読み込み
 	/// </summary>

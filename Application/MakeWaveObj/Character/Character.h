@@ -30,8 +30,8 @@ namespace PartName
 {
 	static const std::string HEAD = "Head";
 	static const std::string BODY = "Body";
-	static const std::string RIGHT_HAND = "RightHand";
-	static const std::string LEFT_HAND = "LeftHand";
+	static const std::string RIGHT_ARM = "RightArm";
+	static const std::string LEFT_ARM = "LeftArm";
 	static const std::string RIGHT_LEG = "RightLeg";
 	static const std::string LEFT_LEG = "LeftLeg";
 }

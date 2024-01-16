@@ -336,7 +336,7 @@ std::string Character::GetPartName(const std::string& boneName)
 			boneName.find(BonePartName::ARM) != std::string::npos ||
 			boneName.find(BonePartName::HAND) != std::string::npos)
 		{
-			partName = PartName::RIGHT_HAND;
+			partName = PartName::RIGHT_ARM;
 		}
 		else
 		{
@@ -350,7 +350,7 @@ std::string Character::GetPartName(const std::string& boneName)
 			boneName.find(BonePartName::ARM) != std::string::npos ||
 			boneName.find(BonePartName::HAND) != std::string::npos)
 		{
-			partName = PartName::LEFT_HAND;
+			partName = PartName::LEFT_ARM;
 		}
 		else
 		{
@@ -415,14 +415,14 @@ void Character::InvalidPartNodeColliders(const std::string& partName)
 	{
 		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::HEAD);
 	}
-	else if (partName == PartName::LEFT_HAND)
+	else if (partName == PartName::LEFT_ARM)
 	{
 		leftRight = "Left";
 		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::HAND);
 		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::ARM);
 		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::SHOULDER);
 	}
-	else if (partName == PartName::RIGHT_HAND)
+	else if (partName == PartName::RIGHT_ARM)
 	{
 		leftRight = "Right";
 		nodeColliders_.InvalidContainingStrColliders(leftRight, BonePartName::HAND);

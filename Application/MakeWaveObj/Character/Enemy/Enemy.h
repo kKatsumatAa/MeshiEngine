@@ -10,6 +10,7 @@
 #include "PlaneCollider.h"
 #include "Gun.h"
 #include "Character.h"
+#include "JsonLevelLoader.h"
 
 
 class EnemyState;
@@ -43,7 +44,7 @@ public:
 	const float SHOT_POS_EXTEND_ = 5.0f;
 	const float THROW_WEAPON_VEC_Y_ = 0.4f;
 	const float WEAPON_FALL_VEL_EXTEND_ = 1.5f;
-	const std::string WEAPON_PARENT_NODE_NAME_ = PartName::LEFT_HAND;
+	const std::string WEAPON_PARENT_NODE_NAME_ = PartName::LEFT_ARM;
 	//消費する弾
 	const int8_t CONSUM_BULLET_NUM_ = 0;
 	//ライト
@@ -196,6 +197,8 @@ private:
 	bool isDead_ = false;
 	//現在の歩きの番号
 	AnimationNum walkAnimNum_ = AnimationNum::WALK;
+	//初期部位
+	LevelData::UsePart initUsePart_;
 
 	//ステート
 	std::unique_ptr<EnemyState> state_ = nullptr;
@@ -208,7 +211,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <returns></returns>
-	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, Weapon* weapon,
+	static std::unique_ptr<Enemy> Create(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, LevelData::UsePart usePart, Weapon* weapon,
 		IModel* model);
 
 private:
@@ -240,7 +243,7 @@ public:
 
 public:
 	//初期化
-	bool Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, Weapon* weapon, IModel* model);
+	bool Initialize(std::unique_ptr<WorldMat> worldMat, int32_t waveNum, float coolTime, LevelData::UsePart usePart, Weapon* weapon, IModel* model);
 	//出現時の初期化処理
 	void EmergeInitialize();
 	//更新
@@ -317,8 +320,16 @@ public:
 private:
 	//部位を分離する
 	void DetachPart(const std::string& partName, const Vec3& throwDir, Vec3* partGeneratePos = nullptr);
+	//両足なくなった時の処理
+	void NoneLegs();
+	//部位を削除
+	void DeletePart(const std::string& partName);
 	//部位を全て分離
 	void DetachAllPart(const CollisionInfo& info);
 	//武器持っている部位か
 	bool GetNodeIsHavingWeaponPart(const std::string& nodeName);
+
+private:
+	//初期の分離する部位設定
+	void InitializeLevelPart(LevelData::UsePart usePart);
 };

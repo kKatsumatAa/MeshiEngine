@@ -332,6 +332,10 @@
                     2.941483736038208,
                     2.941483736038208
                 ]
+            },
+            "use_part": {
+                "use_part_name": "0",
+                "part_name": "LeftHand,RightHand,LeftLeg,RightLeg,"
             }
         },
         {
@@ -370,6 +374,10 @@
                     2.941483736038208,
                     2.941483736038208
                 ]
+            },
+            "use_part": {
+                "use_part_name": "0",
+                "part_name": "Head,LeftHand,RightHand,LeftLeg,RightLeg,"
             },
             "children": [
                 {
@@ -472,6 +480,10 @@
                     2.941483736038208,
                     2.941483736038208
                 ]
+            },
+            "use_part": {
+                "use_part_name": "0",
+                "part_name": "Body,LeftHand,RightHand,LeftLeg,RightLeg,"
             }
         },
         {
@@ -510,6 +522,10 @@
                     2.941483736038208,
                     2.941483736038208
                 ]
+            },
+            "use_part": {
+                "use_part_name": "0",
+                "part_name": "Head,Body,LeftHand,RightHand,"
             }
         },
         {
@@ -548,6 +564,10 @@
                     2.941483736038208,
                     2.941483736038208
                 ]
+            },
+            "use_part": {
+                "use_part_name": "0",
+                "part_name": "Head,Body,RightHand,LeftLeg,"
             }
         }
     ]
