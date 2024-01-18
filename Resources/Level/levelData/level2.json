@@ -335,7 +335,7 @@
             },
             "use_part": {
                 "use_part_name": "0",
-                "part_name": "LeftHand,RightHand,LeftLeg,RightLeg,"
+                "part_name": "Head,Body,LeftHand,LeftLeg,RightLeg,"
             }
         },
         {
@@ -377,7 +377,7 @@
             },
             "use_part": {
                 "use_part_name": "0",
-                "part_name": "Head,LeftHand,RightHand,LeftLeg,RightLeg,"
+                "part_name": "Head,Body,LeftHand,LeftLeg,RightLeg,"
             },
             "children": [
                 {
@@ -567,7 +567,49 @@
             },
             "use_part": {
                 "use_part_name": "0",
-                "part_name": "Head,Body,RightHand,LeftLeg,"
+                "part_name": "Head,Body,LeftHand,RightHand,LeftLeg,RightLeg,"
+            }
+        },
+        {
+            "type": "LIGHT",
+            "name": "Light",
+            "transform": {
+                "translation": [
+                    4.076245307922363,
+                    1.0054539442062378,
+                    5.903861999511719
+                ],
+                "rotation": [
+                    37.26105880737305,
+                    3.163703441619873,
+                    106.93634033203125
+                ],
+                "scaling": [
+                    1.0,
+                    0.9999998807907104,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "LIGHT",
+            "name": "Light.001",
+            "transform": {
+                "translation": [
+                    4.076245307922363,
+                    1.0054539442062378,
+                    5.903861999511719
+                ],
+                "rotation": [
+                    37.26105880737305,
+                    3.16369891166687,
+                    106.93634796142578
+                ],
+                "scaling": [
+                    0.9999999403953552,
+                    0.9999998211860657,
+                    1.0
+                ]
             }
         }
     ]
