@@ -1,6 +1,8 @@
 #include "ClearEffectState.h"
 #include "ClearEffect.h"
 
+using namespace Util;
+
 
 void ClearEffectState::SpriteUpdate(const std::string& soundName, const std::string& nextStateName)
 {

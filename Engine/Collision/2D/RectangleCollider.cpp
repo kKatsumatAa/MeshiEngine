@@ -1,5 +1,8 @@
 #include "RectangleCollider.h"
 
+using namespace Util;
+
+
 void RectangleCollider::Update()
 {
 	// ワールド行列から座標を抽出

@@ -1,6 +1,9 @@
 #include "WorldMat.h"
 #include "Util.h"
 
+using namespace Util;
+
+
 WorldMat::WorldMat()
 {
 	matWorld_ = M4::NORMAL_M;

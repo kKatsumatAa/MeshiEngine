@@ -12,6 +12,7 @@
 #include "LevelManager.h"
 
 using namespace DirectX;
+using namespace Util;
 
 
 std::unique_ptr<Gun> Gun::Create(std::unique_ptr<WorldMat> worldMat, IModel* model)

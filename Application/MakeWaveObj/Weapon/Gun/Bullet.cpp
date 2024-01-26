@@ -12,6 +12,7 @@
 #include "LevelManager.h"
 
 using namespace DirectX;
+using namespace Util;
 
 
 std::unique_ptr<Bullet> Bullet::Create(const Vec3& pos, const Vec3& directionVec, float scale, float lifeTime, IObject* owner)

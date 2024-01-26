@@ -20,6 +20,7 @@
 #include "StageState.h"
 
 using namespace DirectX;
+using namespace Util;
 
 
 Player::~Player()

@@ -1,5 +1,8 @@
 #include "TitleUI.h"
 
+using namespace Util;
+
+
 TitleUI& TitleUI::GetInstance()
 {
 	static TitleUI sInst;

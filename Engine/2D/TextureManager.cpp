@@ -4,33 +4,27 @@
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
-
+using namespace Util;
 
 //格納先
 const std::string TextureManager::sDirectoryPath_ = "Resources/image/";
-
 const std::string TextureManager::S_DEFAULT_TEX_FILE_NAME_ = "white.png";
-
 int32_t TextureManager::sSRVCount_ = 0;
 //リソース設定
 D3D12_RESOURCE_DESC TextureManager::sResDesc_;
 //設定をもとにSRV用デスクリプタヒープを生成
 ComPtr < ID3D12DescriptorHeap> TextureManager::sSrvHeap_;
 D3D12_CPU_DESCRIPTOR_HANDLE TextureManager::sSrvHandle_;
-
 ComPtr<ID3D12Resource> TextureManager::sTexBuff_[S_SRV_COUNT_];
-
 //SRVの最大個数
 const int32_t TextureManager::S_K_MAX_SRV_COUNT_ = 2056 * 2 * 2 * 2 * 2;
 //デスクリプタヒープの設定
 D3D12_DESCRIPTOR_HEAP_DESC TextureManager::sSrvHeapDesc_;
-
 D3D12_DESCRIPTOR_RANGE TextureManager::sDescriptorRange_;
-
 uint64_t TextureManager::sWhiteTexHandle_ = 114514;
-
 std::map < std::string, uint64_t> TextureManager::sTextureDatas_;
 
+//--------------------------------------------------------------------------
 TextureManager::TextureManager()
 {
 

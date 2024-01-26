@@ -3,6 +3,7 @@
 #include"Enemy.h"
 #include"GameVelocityManager.h"
 
+using namespace Util;
 
 //Imguiの角度のドラッグスピード
 const float EnemyStateAttackStance::ANGLE_IMGUI_DRAG_SPEED_ = 0.05f;

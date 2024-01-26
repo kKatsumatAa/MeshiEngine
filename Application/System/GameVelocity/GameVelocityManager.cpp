@@ -3,6 +3,7 @@
 #include "ImGuiManager.h"
 #include "PostEffectManager.h"
 
+using namespace Util;
 
 GameVelocityManager& GameVelocityManager::GetInstance()
 {

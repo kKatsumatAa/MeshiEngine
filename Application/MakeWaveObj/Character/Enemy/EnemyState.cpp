@@ -8,6 +8,7 @@
 #include "LevelManager.h"
 
 using namespace Constant;
+using namespace Util;
 
 //---------------
 Vec3 EnemyStateAttackStance::ANGLE_MAX_ = { 0.55f,-0.42f,0.25f };

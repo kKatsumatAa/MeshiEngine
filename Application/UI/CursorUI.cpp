@@ -1,9 +1,11 @@
 #include "CursorUI.h"
 #include "MouseInput.h"
 
-//---------------------------------------
+using namespace Util;
+
 const Vec2 CursorUI::cursorSize_ = { WindowsApp::WINDOW_WIDTH_ * 0.01f,
 		WindowsApp::WINDOW_HEIGHT_ * 0.05f };
+
 
 //----------------------------------------
 CursorUI& CursorUI::GetInstance()

@@ -2,6 +2,8 @@
 #include "Util.h"
 
 using namespace DirectX;
+using namespace Util;
+
 
 void Camera2D::Initialize()
 {

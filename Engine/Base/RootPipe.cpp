@@ -1,6 +1,9 @@
 #include "RootPipe.h"
 #include "Util.h"
 
+using namespace Util;
+
+
 void RootPipe::CreateBlob(const char* vsName, const char* psName, const char* gsName,
 	const char* hsName, const char* dsName,
 	std::string vEPName, std::string pEPName, std::string gEPName

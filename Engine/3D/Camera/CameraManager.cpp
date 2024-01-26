@@ -2,6 +2,9 @@
 #include "MouseInput.h"
 #include "ImGuiManager.h"
 
+using namespace Util;
+
+
 CameraManager::CameraManager()
 {
 }

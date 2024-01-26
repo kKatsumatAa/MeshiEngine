@@ -3,6 +3,7 @@
 #include"BaseCollider.h"
 
 using namespace DirectX;
+using namespace Util;
 
 //--------------------------------------------------------
 const float IObject3D::DISSOLVE_RATE_MAX_ = 1.0f;

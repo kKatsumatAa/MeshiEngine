@@ -2,6 +2,8 @@
 #include "SceneTransitionManager.h"
 #include "Util.h"
 
+using namespace Util;
+
 
 void SceneTransitionEffectState::SetSceneTransitionEffect(SceneTransitionManager* sceneTransitionEffect,
 	const std::function<void()>& loadFunc)

@@ -5,6 +5,7 @@
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
+using namespace Util;
 
 
 void DirectXWrapper::InitializeDevice()

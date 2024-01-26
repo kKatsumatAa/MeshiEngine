@@ -6,6 +6,7 @@
 #include <set>
 
 using namespace DirectX;
+using namespace Util;
 
 /// <summary>
 /// 静的メンバ変数の実体

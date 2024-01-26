@@ -1,7 +1,8 @@
 #include "PlaneCollider.h"
 
-
+using namespace Util;
 using namespace DirectX;
+
 
 void PlaneCollider::Update()
 {

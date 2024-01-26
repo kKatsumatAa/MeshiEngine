@@ -3,6 +3,8 @@
 #include "PostEffectManager.h"
 #include "Player.h"
 
+using namespace Util;
+
 
 StageManager& StageManager::GetInstance()
 {

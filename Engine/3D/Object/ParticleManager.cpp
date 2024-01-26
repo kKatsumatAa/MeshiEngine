@@ -3,7 +3,7 @@
 #include "CameraManager.h"
 
 using namespace DirectX;
-
+using namespace Util;
 
 ParticleManager* ParticleManager::GetInstance()
 {

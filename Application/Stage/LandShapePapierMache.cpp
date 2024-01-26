@@ -1,6 +1,8 @@
 #include "LandShapePapierMache.h"
 #include "GameVelocityManager.h"
 
+using namespace Util;
+
 
 std::unique_ptr<LandShapePapierMache> LandShapePapierMache::Create(WorldMat* worldMat, IModel* model)
 {

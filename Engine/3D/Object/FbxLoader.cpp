@@ -3,6 +3,7 @@
 #include"Util.h"
 
 using namespace DirectX;
+using namespace Util;
 
 
 /// <summary>

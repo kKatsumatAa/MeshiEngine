@@ -1,6 +1,8 @@
 #include "DrawIntNumImage.h"
 #include <math.h>
 
+using namespace Util;
+
 void DrawIntNumImage::Initialize(uint64_t texhandle)
 {
 	//余り

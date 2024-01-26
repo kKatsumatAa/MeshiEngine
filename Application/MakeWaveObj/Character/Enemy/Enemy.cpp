@@ -16,6 +16,7 @@
 #include "EnemyPart.h"
 
 using namespace DirectX;
+using namespace Util;
 
 const float Enemy::S_LENGTH_MAX_ = 10000;
 

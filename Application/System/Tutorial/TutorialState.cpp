@@ -6,6 +6,7 @@
 #include "LevelManager.h"
 #include "Player.h"
 
+using namespace Util;
 
 
 std::unique_ptr<TutorialState> TutorialState::GetState(const std::string& name)

@@ -4,7 +4,7 @@
 
 using namespace DirectX;
 
-void Vec4xM4(Vec4& v, const M4& m4)
+void Util::Vec4xM4(Vec4& v, const M4& m4)
 {
 	const int8_t ANS_INDEX = 1;
 
@@ -25,7 +25,7 @@ void Vec4xM4(Vec4& v, const M4& m4)
 	v = { v4[ANS_INDEX][0],v4[ANS_INDEX][1] ,v4[ANS_INDEX][2] ,v4[ANS_INDEX][3] };
 }
 
-void Vec3xM4(Vec3& v, const M4& m4, bool w)
+void Util::Vec3xM4(Vec3& v, const M4& m4, bool w)
 {
 	const int8_t ANS_INDEX = 1;
 
@@ -46,7 +46,7 @@ void Vec3xM4(Vec3& v, const M4& m4, bool w)
 	v = { (float)v4[ANS_INDEX][0],(float)v4[ANS_INDEX][1] ,(float)v4[ANS_INDEX][2] };
 }
 
-Vec3 GetVec3xM4(const Vec3& v, const M4& m4, bool w)
+Vec3 Util::GetVec3xM4(const Vec3& v, const M4& m4, bool w)
 {
 	Vec3 ans = v;
 
@@ -55,7 +55,7 @@ Vec3 GetVec3xM4(const Vec3& v, const M4& m4, bool w)
 	return ans;
 }
 
-void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w)
+void Util::Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w)
 {
 	const int8_t ANS_INDEX = 1;
 
@@ -88,7 +88,7 @@ void Vec3xM4andDivisionW(Vec3& v, const M4& m4, bool w)
 	}
 }
 
-Vec3 GetVec3xM4andDivisionW(const Vec3& v, const M4& m4, bool w)
+Vec3 Util::GetVec3xM4andDivisionW(const Vec3& v, const M4& m4, bool w)
 {
 	Vec3 ans = v;
 
@@ -100,38 +100,38 @@ Vec3 GetVec3xM4andDivisionW(const Vec3& v, const M4& m4, bool w)
 
 //---------------------------------------------
 
-float AngletoRadi(float angle)
+float Util::AngletoRadi(float angle)
 {
 	return angle * PI / DEGREE_180;
 }
 
-float RaditoAngle(float radian)
+float Util::RaditoAngle(float radian)
 {
 	return radian / PI * DEGREE_180;
 }
 
-float GetRadianVec3(const Vec3& v1, const Vec3& v2)
+float Util::GetRadianVec3(const Vec3& v1, const Vec3& v2)
 {
 	return acos(v1.Dot(v2) / (v1.GetLength() * v2.GetLength()));
 }
 
 //----------------------------------------------------------------------
-Vec3 LerpVec3(const Vec3& v1, const Vec3& v2, float t)
+Vec3 Util::LerpVec3(const Vec3& v1, const Vec3& v2, float t)
 {
 	return v1 + t * (v2 - v1);
 }
 
-float Lerp(float v1, float v2, float t)
+float Util::Lerp(float v1, float v2, float t)
 {
 	return v1 + t * (v2 - v1);
 }
 
-Vec2 LerpVec2(const Vec2& v1, const Vec2& v2, float t)
+Vec2 Util::LerpVec2(const Vec2& v1, const Vec2& v2, float t)
 {
 	return v1 + t * (v2 - v1);
 }
 
-Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t)
+Vec3 Util::SlerpVec3(const Vec3& v1, const Vec3& v2, float t)
 {
 	float radian = GetRadianVec3(v1, v2);
 
@@ -142,7 +142,7 @@ Vec3 SlerpVec3(const Vec3& v1, const Vec3& v2, float t)
 }
 
 
-Vec3 SplinePosition(const std::vector<Vec3>& points, int32_t startIndex, float t)
+Vec3 Util::SplinePosition(const std::vector<Vec3>& points, int32_t startIndex, float t)
 {
 	const int8_t N_OFFSET = -2;
 	const float WEIGHT_0 = -1.0f;
@@ -180,17 +180,17 @@ Vec3 SplinePosition(const std::vector<Vec3>& points, int32_t startIndex, float t
 
 
 //---------------------------------------------------------------------------------
-float EaseIn(float t)
+float Util::EaseIn(float t)
 {
 	return 1 - cos((t * PI) / 2.0f);
 }
 
-float EaseOut(float t)
+float Util::EaseOut(float t)
 {
 	return sin((t * PI) / 2.0f);
 }
 
-float EaseInOutBack(float t)
+float Util::EaseInOutBack(float t)
 {
 	const float C1 = 1.70158f;
 	const float C2 = C1 * 1.525f;
@@ -202,7 +202,7 @@ float EaseInOutBack(float t)
 		: (powf(2.0f * t - 2.0f, 2.0f) * ((C2 + RATIO_MAX) * (t * 2.0f - 2.0f) + C2) + 2.0f) / 2.0f;
 }
 
-float EaseInOut(float t)
+float Util::EaseInOut(float t)
 {
 	return t == 0.0f
 		? 0.0f
@@ -214,7 +214,7 @@ float EaseInOut(float t)
 
 
 //-----------------------------------------------------------------------------------
-bool CollisionCircleCircle(const Vec3& pos1, float r1, const Vec3& pos2, float r2)
+bool Util::CollisionCircleCircle(const Vec3& pos1, float r1, const Vec3& pos2, float r2)
 {
 	if (pow(pos2.x - pos1.x, 2) + pow(pos2.y - pos1.y, 2) + pow(pos2.z - pos1.z, 2)
 		<= pow(r1 + r2, 2))
@@ -225,7 +225,7 @@ bool CollisionCircleCircle(const Vec3& pos1, float r1, const Vec3& pos2, float r
 	return false;
 }
 
-bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, float r, const Vec3& pos, float r2)
+bool Util::CollisionRayCircle(const Vec3& sv, const Vec3& ev, float r, const Vec3& pos, float r2)
 {
 	//レイとの当たり判定
 	Vec3 rayLength = ev - sv;
@@ -244,19 +244,19 @@ bool CollisionRayCircle(const Vec3& sv, const Vec3& ev, float r, const Vec3& pos
 	}
 }
 
-bool CollisionBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t r1, int32_t r2)
+bool Util::CollisionBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t r1, int32_t r2)
 {
 	return x1 - r1 < x2 + r2 && x2 - r2 < x1 + r1 &&
 		y1 - r1 < y2 + r2 && y2 - r2 < y1 + r1;
 }
 
-bool CollisionBox(Vec2 leftUp1, Vec2 rightBottom1, Vec2 leftUp2, Vec2 rightBottom2)
+bool Util::CollisionBox(Vec2 leftUp1, Vec2 rightBottom1, Vec2 leftUp2, Vec2 rightBottom2)
 {
 	return leftUp1.x < rightBottom2.x && leftUp2.x < rightBottom1.x &&
 		leftUp1.y < rightBottom2.y && leftUp2.y < rightBottom1.y;
 }
 
-Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
+Vec2 Util::Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 {
 	//view,projection,viewport行列を掛ける
 	XMMATRIX viewPort = {
@@ -281,7 +281,7 @@ Vec2 Vec3toVec2(const Vec3& v, const XMMATRIX& view, const XMMATRIX& projection)
 	return Vec2(vec3.x, vec3.y);
 }
 
-Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection, float distance)
+Vec3 Util::Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection, float distance)
 {
 	XMMATRIX viewPort = {
 		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,0,0,0,
@@ -321,7 +321,7 @@ Vec3 Vec2toVec3(const Vec2& v, const XMMATRIX& view, const XMMATRIX& projection,
 	return Vec3(pos);
 }
 
-void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, const XMMATRIX& view, const XMMATRIX& projection)
+void Util::Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, const XMMATRIX& view, const XMMATRIX& projection)
 {
 	XMMATRIX viewPort = {
 		WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f,0,0,0,
@@ -355,7 +355,7 @@ void Vec2toNearFarPos(const Vec2& pos, Vec3& returnNearPos, Vec3& returnFarPos, 
 	returnFarPos = posFar;
 }
 
-float sign(float num)
+float Util::sign(float num)
 {
 	const float RATIO_MAX = 1.0f;
 
@@ -368,24 +368,24 @@ float sign(float num)
 	return 0.0f;
 }
 
-int32_t AligmentSize(int32_t size, int32_t aligment)
+int32_t Util::AligmentSize(int32_t size, int32_t aligment)
 {
 	return size + aligment - size % aligment;
 }
 
-void ConstCharToWcharT(const char* string, wchar_t(&wString)[Constant::S_TRANS_W_CHAR_SIZE_])
+void Util::ConstCharToWcharT(const char* string, wchar_t(&wString)[Constant::S_TRANS_W_CHAR_SIZE_])
 {
 	size_t size = _countof(wString);
 	mbstowcs_s(&size, wString, string, size);
 }
 
-void ConstWCharTToChar(const wchar_t* wString, char(&string)[Constant::S_TRANS_W_CHAR_SIZE_])
+void Util::ConstWCharTToChar(const wchar_t* wString, char(&string)[Constant::S_TRANS_W_CHAR_SIZE_])
 {
 	size_t size = _countof(string);
 	wcstombs_s(&size, string, wString, size);
 }
 
-std::string MySubstr(const std::string& str, char findChar)
+std::string Util::MySubstr(const std::string& str, char findChar)
 {
 	// フルパスからファイル名を取り出す
 	size_t pos1;
@@ -399,7 +399,7 @@ std::string MySubstr(const std::string& str, char findChar)
 	return str;
 }
 
-std::string ExtractFileName(const std::string& path)
+std::string Util::ExtractFileName(const std::string& path)
 {
 	//区切り文字が出てくる一番最後の一つ後ろからの文字列を返す（Resources'/'[***.png]みたいな）
 
@@ -420,7 +420,7 @@ std::string ExtractFileName(const std::string& path)
 	return path;
 }
 
-float SmoothStep(float min, float max, float v)
+float Util::SmoothStep(float min, float max, float v)
 {
 	const int8_t BIT = 32;
 	const uint32_t MASK = 0x3F800000;
@@ -436,7 +436,7 @@ float SmoothStep(float min, float max, float v)
 	return (x * x * (COEFFICIENT - (x + x)));
 }
 
-float Clamp(float v, float min, float max)
+float Util::Clamp(float v, float min, float max)
 {
 	if (v > max)
 	{
@@ -450,11 +450,10 @@ float Clamp(float v, float min, float max)
 	return v;
 }
 
-Vec3 GetRotFromQuaternion(Quaternion q)
+Vec3 Util::GetRotFromQuaternion(Quaternion q)
 {
 	Vec3 retRotVec = {};
 
-	//Quaternion r = transform.rotation;
 	float x = q.x;
 	float y = q.y;
 	float z = q.z;
@@ -519,7 +518,7 @@ Vec3 GetRotFromQuaternion(Quaternion q)
 	return Vec3(tx, ty, tz);
 }
 
-Vec3 GetRotFromMat(M4 m)
+Vec3 Util::GetRotFromMat(M4 m)
 {
 	double threshold = 0.001;
 	const double ADD = 1.0;
@@ -545,14 +544,14 @@ Vec3 GetRotFromMat(M4 m)
 	return ansRot;
 }
 
-bool Approximately(float a, float b)
+bool Util::Approximately(float a, float b)
 {
 	const float JUDGE_MIN = 0.1f;
 
 	return (fabs(a - b) <= JUDGE_MIN);
 }
 
-Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot)
+Vec3 Util::GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot)
 {
 	const Vec3 AXIS_Z = { 0,0,1.0f };
 	const Vec3 AXIS_X = { 1.0f,0,0 };
@@ -570,7 +569,7 @@ Vec3 GetTurnVec3UseQuaternionAndRot(const Vec3& vec, const Vec3& rot)
 	return ansFrontV;
 }
 
-bool GetFileNames(std::string folderPath, std::vector<std::string>& file_names)
+bool Util::GetFileNames(std::string folderPath, std::vector<std::string>& file_names)
 {
 	HANDLE hFind;
 	WIN32_FIND_DATA win32fd;
@@ -605,7 +604,7 @@ bool GetFileNames(std::string folderPath, std::vector<std::string>& file_names)
 	return true;
 }
 
-float GetRand(float min, float max)
+float Util::GetRand(float min, float max)
 {
 	std::random_device rd;
 	std::mt19937_64 eng(rd());
@@ -613,7 +612,7 @@ float GetRand(float min, float max)
 	return distr(eng);
 }
 
-Vec3 GetRandVec3(float min, float max)
+Vec3 Util::GetRandVec3(float min, float max)
 {
 	std::random_device rd;
 	std::mt19937_64 eng(rd());
@@ -624,7 +623,7 @@ Vec3 GetRandVec3(float min, float max)
 	return randVec3;
 }
 
-const DirectX::XMFLOAT4 operator+(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs)
+const DirectX::XMFLOAT4 Util::operator+(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs)
 {
 	DirectX::XMFLOAT4 result;
 	result.x = lhs.x + rhs.x;
@@ -634,7 +633,7 @@ const DirectX::XMFLOAT4 operator+(const DirectX::XMFLOAT4& lhs, const DirectX::X
 	return result;
 }
 
-const DirectX::XMFLOAT4 operator-(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs)
+const DirectX::XMFLOAT4 Util::operator-(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs)
 {
 	DirectX::XMFLOAT4 result;
 	result.x = lhs.x - rhs.x;
@@ -644,7 +643,7 @@ const DirectX::XMFLOAT4 operator-(const DirectX::XMFLOAT4& lhs, const DirectX::X
 	return result;
 }
 
-const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
+const DirectX::XMFLOAT3 Util::operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
 {
 	DirectX::XMFLOAT3 result;
 	result.x = lhs.x + rhs.x;
@@ -653,7 +652,7 @@ const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::X
 	return result;
 }
 
-const DirectX::XMFLOAT3 operator-(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
+const DirectX::XMFLOAT3 Util::operator-(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
 {
 	DirectX::XMFLOAT3 result;
 	result.x = lhs.x - rhs.x;
@@ -662,7 +661,7 @@ const DirectX::XMFLOAT3 operator-(const DirectX::XMFLOAT3& lhs, const DirectX::X
 	return result;
 }
 
-const DirectX::XMFLOAT2 operator+(const DirectX::XMFLOAT2& lhs, const DirectX::XMFLOAT2& rhs)
+const DirectX::XMFLOAT2 Util::operator+(const DirectX::XMFLOAT2& lhs, const DirectX::XMFLOAT2& rhs)
 {
 	DirectX::XMFLOAT2 result;
 	result.x = lhs.x + rhs.x;
@@ -670,7 +669,7 @@ const DirectX::XMFLOAT2 operator+(const DirectX::XMFLOAT2& lhs, const DirectX::X
 	return result;
 }
 
-const DirectX::XMFLOAT2 operator-(const DirectX::XMFLOAT2& lhs, const DirectX::XMFLOAT2& rhs)
+const DirectX::XMFLOAT2 Util::operator-(const DirectX::XMFLOAT2& lhs, const DirectX::XMFLOAT2& rhs)
 {
 	DirectX::XMFLOAT2 result;
 	result.x = lhs.x - rhs.x;
@@ -678,7 +677,7 @@ const DirectX::XMFLOAT2 operator-(const DirectX::XMFLOAT2& lhs, const DirectX::X
 	return result;
 }
 
-const DirectX::XMFLOAT4 operator/(const DirectX::XMFLOAT4& lhs, float RHS)
+const DirectX::XMFLOAT4 Util::operator/(const DirectX::XMFLOAT4& lhs, float RHS)
 {
 	DirectX::XMFLOAT4 result;
 	result.x = lhs.x / RHS;
@@ -688,7 +687,7 @@ const DirectX::XMFLOAT4 operator/(const DirectX::XMFLOAT4& lhs, float RHS)
 	return result;
 }
 
-const DirectX::XMFLOAT3 operator*(const DirectX::XMFLOAT3& lhs, float rhs)
+const DirectX::XMFLOAT3 Util::operator*(const DirectX::XMFLOAT3& lhs, float rhs)
 {
 	DirectX::XMFLOAT3 result;
 	result.x = lhs.x * rhs;
@@ -697,7 +696,7 @@ const DirectX::XMFLOAT3 operator*(const DirectX::XMFLOAT3& lhs, float rhs)
 	return result;
 }
 
-const DirectX::XMFLOAT2 operator*(const DirectX::XMFLOAT2& lhs, float rhs)
+const DirectX::XMFLOAT2 Util::operator*(const DirectX::XMFLOAT2& lhs, float rhs)
 {
 	DirectX::XMFLOAT2 result;
 	result.x = lhs.x * rhs;

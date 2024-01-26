@@ -1,6 +1,8 @@
 #include "TriangleCollider.h"
 
 using namespace DirectX;
+using namespace Util;
+
 
 void TriangleCollider::Update()
 {

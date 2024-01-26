@@ -1,6 +1,8 @@
 #include "Wave.h"
 #include "Util.h"
 
+using namespace Util;
+
 void Wave::BeginWave(const Vec3& epicenter, const Vec2& thickness, float distanceMax, float timer)
 {
 	timer_ = 0;

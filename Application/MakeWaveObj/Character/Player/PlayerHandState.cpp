@@ -5,6 +5,8 @@
 #include "MouseInput.h"
 #include "GameVelocityManager.h"
 
+using namespace Util;
+
 Vec3 PlayerHandState::rotTmp_ = { 0,0,0 };
 
 

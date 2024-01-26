@@ -10,6 +10,7 @@
 #include "LevelManager.h"
 #include "EnemyPart.h"
 
+using namespace Util;
 
 
 bool PlayerState::CheckEyeRayHit()

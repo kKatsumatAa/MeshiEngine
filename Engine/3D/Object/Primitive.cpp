@@ -3,7 +3,7 @@
 
 using namespace DirectX;
 using namespace Constant;
-
+using namespace Util;
 
 uint16_t Primitive::sIndicesBox_[S_BOX_INDICES_NUM_] =
 {

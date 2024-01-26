@@ -2,6 +2,7 @@
 #include "Util.h"
 #include<d3d12.h>
 
+using namespace Util;
 
 const float GausianBuffer::S_GAUSSIAN_WEIGHT_EXP_RATE_ = -0.5f;
 const float GausianBuffer::S_GAUSSIAN_ADD_WEIGHT_ = 1.0f;

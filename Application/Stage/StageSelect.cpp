@@ -2,6 +2,8 @@
 #include "MouseInput.h"
 #include "CursorUI.h"
 
+using namespace Util;
+
 
 StageSelect& StageSelect::GetInstance()
 {

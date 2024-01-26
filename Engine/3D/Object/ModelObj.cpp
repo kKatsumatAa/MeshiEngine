@@ -7,7 +7,7 @@
 #include <algorithm>
 
 using namespace DirectX;
-
+using namespace Util;
 
 //参照先のパス一部（objかfbxか）
 const std::string ModelObj::S_TYPE_DIRECTORY_ = ".obj/";

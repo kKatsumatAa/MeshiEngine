@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 
+using namespace Util;
+
 const std::string JsonLevelLoader::S_DEFAULT_BASE_DIRECTORY_ = "Resources/Level/levelData/";
 const std::string JsonLevelLoader::S_EXTENSION_ = ".json";
 
