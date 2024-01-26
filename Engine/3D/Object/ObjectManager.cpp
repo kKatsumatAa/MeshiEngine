@@ -19,9 +19,11 @@ void ObjectManager::Initialize()
 void ObjectManager::Update()
 {
 	//アップデート
+	//グループごと
 	for (std::map<std::string, std::vector<std::unique_ptr<IObject3D>>>::iterator itM = objsGroups_.begin();
 		itM != objsGroups_.end(); itM++)
 	{
+		//オブジェクトごと
 		for (std::vector<std::unique_ptr<IObject3D>>::iterator itG = itM->second.begin();
 			itG != itM->second.end(); itG++)
 		{

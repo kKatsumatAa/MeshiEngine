@@ -42,14 +42,15 @@ public:
 	//インスタンス取得
 	static WindowsApp& GetInstance();
 
-public:
-	//ウインドウプロシージャ(const &にするとエラー出る)
-	static LRESULT WindowProc(HWND hwnd, uint32_t msg, WPARAM wparam, LPARAM lparam);
-
+private:
 	//コンストラクタ
 	WindowsApp();
 	//デストラクタ
 	~WindowsApp() { ; }
+
+public:
+	//ウインドウプロシージャ(const &にするとエラー出る)
+	static LRESULT WindowProc(HWND hwnd, uint32_t msg, WPARAM wparam, LPARAM lparam);
 
 public:
 	//(const &にするとエラー出る)
