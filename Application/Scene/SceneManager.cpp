@@ -78,7 +78,7 @@ void SceneManager::Initialize()
 {
 	TextureManager::Initialize();
 
-	TextureManager::LoadGraph("effect1.png");
+	TextureManager::LoadGraph("effect1.dds");
 
 	//インスタンス生成
 	lightManager_ = std::move(LightManager::Create());

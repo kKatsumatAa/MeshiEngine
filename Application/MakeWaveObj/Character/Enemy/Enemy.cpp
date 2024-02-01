@@ -45,7 +45,7 @@ void Enemy::EmergeInitialize()
 	SetDissolveRatio(INIT_DISSOLVE_RATE_);
 	//ディゾルブ画像
 	uint64_t handle;
-	handle = TextureManager::LoadGraph("dissolveMask.png");
+	handle = TextureManager::LoadGraph("dissolveMask.dds");
 	SetDissolveTexHandle(handle);
 
 	//演出更新

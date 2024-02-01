@@ -59,7 +59,7 @@ void PlayerUIState::DrawSprite()
 //通常
 void PlayerUIStateNomal::Initialize()
 {
-	reticleTexHandle_ = TextureManager::LoadGraph("normalReticle.png");
+	reticleTexHandle_ = TextureManager::LoadGraph("normalReticle.dds");
 	reticleSprite_.SetTexHandle(reticleTexHandle_);
 }
 
@@ -78,7 +78,7 @@ void PlayerUIStateNomal::DrawSprite()
 //殴れる
 void PlayerUIStatePunch::Initialize()
 {
-	reticleTexHandle_ = TextureManager::LoadGraph("punchReticle.png");
+	reticleTexHandle_ = TextureManager::LoadGraph("punchReticle.dds");
 	reticleSprite_.SetTexHandle(reticleTexHandle_);
 }
 
@@ -97,7 +97,7 @@ void PlayerUIStatePunch::DrawSprite()
 //銃
 void PlayerUIStateGun::Initialize()
 {
-	reticleTexHandle_ = TextureManager::LoadGraph("gunReticle.png");
+	reticleTexHandle_ = TextureManager::LoadGraph("gunReticle.dds");
 	reticleSprite_.SetTexHandle(reticleTexHandle_);
 }
 
@@ -115,7 +115,7 @@ void PlayerUIStateGun::DrawSprite()
 //拾える
 void PlayerUIStatePickUp::Initialize()
 {
-	reticleTexHandle_ = TextureManager::LoadGraph("pickUpReticle.png");
+	reticleTexHandle_ = TextureManager::LoadGraph("pickUpReticle.dds");
 	reticleSprite_.SetTexHandle(reticleTexHandle_);
 }
 

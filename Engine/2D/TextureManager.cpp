@@ -8,7 +8,7 @@ using namespace Util;
 
 //格納先
 const std::string TextureManager::sDirectoryPath_ = "Resources/image/";
-const std::string TextureManager::S_DEFAULT_TEX_FILE_NAME_ = "white.png";
+const std::string TextureManager::S_DEFAULT_TEX_FILE_NAME_ = "white.dds";
 int32_t TextureManager::sSRVCount_ = 0;
 //リソース設定
 D3D12_RESOURCE_DESC TextureManager::sResDesc_;
@@ -23,6 +23,14 @@ D3D12_DESCRIPTOR_HEAP_DESC TextureManager::sSrvHeapDesc_;
 D3D12_DESCRIPTOR_RANGE TextureManager::sDescriptorRange_;
 uint64_t TextureManager::sWhiteTexHandle_ = 114514;
 std::map < std::string, uint64_t> TextureManager::sTextureDatas_;
+//画像の情報
+DirectX::TexMetadata TextureManager::sMetadata_;
+//画像イメージのコンテナ
+DirectX::ScratchImage TextureManager::sScratchImage_;
+//ファイル名
+std::string TextureManager::sFileName_;
+//ファイル拡張子
+std::string TextureManager::sFileExt_;
 
 //--------------------------------------------------------------------------
 TextureManager::TextureManager()
@@ -66,7 +74,7 @@ void TextureManager::InitializeDescriptorHeap()
 void TextureManager::Initialize()
 {
 	//白い画像
-	TextureManager::GetInstance().sWhiteTexHandle_ = TextureManager::LoadGraph("white.png");
+	TextureManager::GetInstance().sWhiteTexHandle_ = TextureManager::LoadGraph("white.dds");
 }
 
 
@@ -93,10 +101,6 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 		fileName = sDirectoryPath_ + fileName;
 	}
 
-	//wchar_tに戻す
-	wchar_t nameWc[128] = {};
-	ConstCharToWcharT(fileName.c_str(), nameWc);
-
 	//srvHandleが指定されていたら新たにsrv作る前提なのでhandleは別のものにするため
 	if (texBuff == nullptr && srvDesc == nullptr && srvHandle == nullptr)
 	{
@@ -109,37 +113,45 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 		}
 	}
 
-	// 04_03
-	TexMetadata metadata{};
-	ScratchImage scratchImg{};
-	//WICのテクスチャのロード
-	result = LoadFromWICFile(
-		nameWc,
-		WIC_FLAGS_NONE,
-		&metadata, scratchImg
-	);
+	//ファイル拡張子を取得
+	AcquisitionExt(fileName);
+
+	if (sFileExt_ != "dds")
+	{
+		//区切り文字'.'が出てくる一番最後の部分を検索
+		size_t pos1 = fileName.rfind('.');
+		fileName = fileName.substr(0, pos1) + ".dds";
+		sFileExt_ = "dds";
+	}
+
+	//wchar_tに戻す
+	wchar_t nameWc[128] = {};
+	ConstCharToWcharT(fileName.c_str(), nameWc);
+
+	//画像ロード
+	result = LoadFile(nameWc);
 
 	//失敗したら白い画像読み込ませて抜ける
-	if (!SUCCEEDED(result))
+	if (!SUCCEEDED(result) || result == S_FALSE)
 	{
 		return LoadGraph(S_DEFAULT_TEX_FILE_NAME_.c_str());
 	}
 
 	ScratchImage mipChain{};
-	//mipmap生成
-	result = GenerateMipMaps(
-		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
-		TEX_FILTER_DEFAULT, 0, mipChain);
-	if (SUCCEEDED(result))
-	{
-		scratchImg = std::move(mipChain);
-		metadata = scratchImg.GetMetadata();
-	}
+	////mipmap生成
+	//result = GenerateMipMaps(
+	//	sScratchImage_.GetImages(), sScratchImage_.GetImageCount(), sScratchImage_.GetMetadata(),
+	//	TEX_FILTER_DEFAULT, 0, mipChain);
+	//if (SUCCEEDED(result))
+	//{
+	//	sScratchImage_ = std::move(mipChain);
+	//	sMetadata_ = sScratchImage_.GetMetadata();
+	//}
 	//読み込んだディフューズテクスチャをSRGBとして扱う
-	metadata.format = MakeSRGB(metadata.format);
+	sMetadata_.format = MakeSRGB(sMetadata_.format);
 
 
-	//コピー先用
+	//コピー先用-------------------------------------------------------------
 	// ヒープの設定
 	CD3DX12_HEAP_PROPERTIES textureHeapProp =
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
@@ -147,11 +159,11 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	// リソース設定
 	CD3DX12_RESOURCE_DESC textureResourceDesc =
 		CD3DX12_RESOURCE_DESC::Tex2D(
-			metadata.format,
-			(uint64_t)metadata.width,
-			(uint32_t)metadata.height,
-			(uint16_t)metadata.arraySize,
-			(uint16_t)metadata.mipLevels,
+			sMetadata_.format,
+			(uint64_t)sMetadata_.width,
+			(uint32_t)sMetadata_.height,
+			(uint16_t)sMetadata_.arraySize,
+			(uint16_t)sMetadata_.mipLevels,
 			1);
 
 	// テクスチャバッファの生成
@@ -160,7 +172,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 			&textureHeapProp,
 			D3D12_HEAP_FLAG_NONE,
 			&textureResourceDesc,
-			D3D12_RESOURCE_STATE_COPY_DEST,
+			D3D12_RESOURCE_STATE_COPY_DEST,//コピー先用
 			nullptr,
 			IID_PPV_ARGS(texBuffL));
 	assert(SUCCEEDED(result));
@@ -171,7 +183,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	DirectXWrapper::GetInstance().GetDevice()->GetCopyableFootprints(
 		&textureResourceDesc, 0, 1, 0, &footprint, nullptr, nullptr, &total_bytes);
 
-	// Upload
+	// Upload(コピー元)-----------------------------------------------------------------------
 	D3D12_RESOURCE_DESC uploadResDesc{};
 
 	//テクスチャをアップロードするバッファのリストに先に積んでおく
@@ -196,25 +208,42 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 		nullptr,
 		IID_PPV_ARGS(DirectXWrapper::GetInstance().GetTexUploadBuffPP()));
 
-	//	転送
+	//転送
 	uint8_t* mapforImg = nullptr;
 	result = DirectXWrapper::GetInstance().GetTexUploadBuffP()->Map(0, nullptr, (void**)&mapforImg);//マッピング
 
-	const Image* img = scratchImg.GetImage(0, 0, 0);
-	uint8_t* uploadStart = mapforImg + footprint.Offset;
+	const Image* img = sScratchImage_.GetImage(0, 0, 0);
+	uint8_t* uploadStart = mapforImg;
 	uint8_t* sourceStart = img->pixels;
-	uint32_t sourcePitch = ((uint32_t)img->width * sizeof(uint32_t));
+	//uint32_t sourcePitch = ((uint32_t)img->width * sizeof(uint32_t));
 
-	//	画像の高さ(ピクセル)分コピーする
-	for (uint32_t i = 0; i < footprint.Footprint.Height; i++)
-	{
-		memcpy(
-			uploadStart + i * footprint.Footprint.RowPitch,
-			sourceStart + i * sourcePitch,
-			sourcePitch
-		);
-	}
+	////	画像の高さ(ピクセル)分コピーする
+	//for (uint32_t i = 0; i < footprint.Footprint.Height; i++)
+	//{
+	//	memcpy(
+	//		uploadStart + i * footprint.Footprint.RowPitch,
+	//		sourceStart + i * sourcePitch,
+	//		sourcePitch
+	//	);
+	//}
+
+	memcpy(reinterpret_cast<unsigned char*>(uploadStart) + footprint.Offset, sourceStart, (uint64_t)img->width * (uint32_t)img->height);
+
 	DirectXWrapper::GetInstance().GetTexUploadBuffP()->Unmap(0, nullptr);	//	unmap
+
+	//for (size_t i = 0; i < sMetadata_.mipLevels; i++)
+	//{
+	//	const Image* img = sScratchImage_.GetImage(i, 0, 0);
+	//	result = (*texBuffL)->WriteToSubresource(
+	//		(UINT)i,
+	//		nullptr,
+	//		img->pixels,
+	//		(UINT)img->rowPitch,
+	//		(UINT)img->slicePitch
+	//		);
+	//}
+
+
 
 	// CopyCommand
 		//	グラフィックボード上のコピー先アドレス
@@ -295,7 +324,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 		}
 
 		//元データ解放
-		scratchImg.Release();
+		sScratchImage_.Release();
 	}
 
 	return textureHandle;
@@ -306,5 +335,40 @@ void TextureManager::CheckTexHandle(uint64_t& texHandle)
 	if (texHandle == NULL)
 	{
 		texHandle = sWhiteTexHandle_;
+	}
+}
+
+HRESULT TextureManager::LoadFile(wchar_t* nameWc)
+{
+	HRESULT result = S_FALSE;
+
+	//ddsなら
+	if (sFileExt_ == "dds")
+	{
+		//DDSのテクスチャのロード
+		result = LoadFromDDSFile(
+			nameWc,
+			DDS_FLAGS_NONE,
+			&sMetadata_, sScratchImage_
+		);
+	}
+
+	return result;
+}
+
+void TextureManager::AcquisitionExt(const std::string& fileName)
+{
+	//拡張子とそれ以外を分ける----------------------
+	//区切り文字'.'が出てくる一番最後の部分を検索
+	size_t pos1 = fileName.rfind('.');
+	//検索がヒットしたら
+	if (pos1 != std::wstring::npos)
+	{
+		//区切り文字の後ろをファイル拡張子として保存
+		sFileExt_ = fileName.substr(pos1 + 1, fileName.size() - pos1 - 1);
+	}
+	else
+	{
+		sFileExt_ = "";
 	}
 }

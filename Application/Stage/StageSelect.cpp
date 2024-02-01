@@ -20,7 +20,7 @@ void StageSelect::LoadStageNames()
 void StageSelect::Initialize()
 {
 	//画像
-	debugTextHandle_ = TextureManager::LoadGraph("ascii.png");
+	debugTextHandle_ = TextureManager::LoadGraph("ascii.dds");
 
 	//リセット
 	stageNames_.clear();

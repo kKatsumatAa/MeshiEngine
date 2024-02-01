@@ -59,7 +59,7 @@ void ClearEffectStateHyper::Initialize()
 	//ループをオンにしないと止まったかどうかの関数使えない
 	Sound::GetInstance().PlayWave(SOUND_NAME_, VOLUME_TMP_);
 
-	texHandle_ = TextureManager::GetInstance().LoadGraph("hyper.png");
+	texHandle_ = TextureManager::GetInstance().LoadGraph("hyper.dds");
 
 	//セット
 	texSprite_.SetTexHandle(texHandle_);
@@ -84,7 +84,7 @@ void ClearEffectStateHot::Initialize()
 	//ループをオンにしないと止まったかどうかの関数使えない
 	Sound::GetInstance().PlayWave(SOUND_NAME_, VOLUME_TMP);
 
-	texHandle_ = TextureManager::LoadGraph("hot.png");
+	texHandle_ = TextureManager::LoadGraph("hot.dds");
 
 	//セット
 	texSprite_.SetTexHandle(texHandle_);

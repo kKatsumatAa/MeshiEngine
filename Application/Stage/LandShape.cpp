@@ -30,7 +30,7 @@ bool LandShape::Initialize(std::unique_ptr<WorldMat> worldMat, IModel* model)
 	//ディゾルブの画像
 	SetisDissolve(true);
 	SetDissolveRatio(0);
-	SetDissolveTexHandle(TextureManager::GetInstance().LoadGraph("dissolveMask.png"));
+	SetDissolveTexHandle(TextureManager::GetInstance().LoadGraph("dissolveMask.dds"));
 
 	//分割数
 	SetTessFactor(TESS_FACTOR_MAX_);

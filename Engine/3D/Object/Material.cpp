@@ -59,7 +59,7 @@ void Material::LoadTexture(const std::string& directoryPath)
 	string filepath = directoryPath + textureFilename_;
 	// テクスチャなし
 	if (textureFilename_.size() == 0) {
-		filepath = "white.png";
+		filepath = "white.dds";
 	}
 
 	textureHandle_ = TextureManager::LoadGraph(filepath.c_str());

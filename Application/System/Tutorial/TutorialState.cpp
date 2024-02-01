@@ -132,7 +132,7 @@ void TutorialStateNone::Draw()
 void TutorialStateOperation::Initialize()
 {
 	//テクスチャハンドルセット
-	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial1.png");
+	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial1.dds");
 	texSprite_.SetTexHandle(texHandle_);
 
 	//ステートごとに最大値を変えている
@@ -162,7 +162,7 @@ void TutorialStateOperation::Draw()
 //ゲームスピード説明
 void TutorialStateGameSpeed::Initialize()
 {
-	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial2.png");
+	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial2.dds");
 	texSprite_.SetTexHandle(texHandle_);
 
 	rateMax_ = RATE_MAX_TMP_;
@@ -184,7 +184,7 @@ void TutorialStateGameSpeed::Draw()
 //マウス説明
 void TutorialStateMouse::Initialize()
 {
-	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial3.png");
+	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial3.dds");
 	texSprite_.SetTexHandle(texHandle_);
 
 	rateMax_ = RATE_MAX_TMP_;
@@ -204,7 +204,7 @@ void TutorialStateMouse::Draw()
 //部位説明
 void TutorialStatePart::Initialize()
 {
-	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial4.png");
+	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial4.dds");
 	texSprite_.SetTexHandle(texHandle_);
 
 	rateMax_ = RATE_MAX_TMP_;
@@ -226,7 +226,7 @@ void TutorialStatePart::Draw()
 //部位説明2
 void TutorialStatePart2::Initialize()
 {
-	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial5.png");
+	texHandle_ = TextureManager::GetInstance().LoadGraph("tutorial5.dds");
 	texSprite_.SetTexHandle(texHandle_);
 
 	rateMax_ = RATE_MAX_TMP_;

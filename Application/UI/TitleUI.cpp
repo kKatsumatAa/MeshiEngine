@@ -11,7 +11,7 @@ TitleUI& TitleUI::GetInstance()
 
 void TitleUI::Initialize()
 {
-	titleTex_ =  TextureManager::LoadGraph("title.png");
+	titleTex_ =  TextureManager::LoadGraph("title.dds");
 	timer_ = 0;
 	t_ = 0;
 	titleScale_ = TITLE_SCALE_MAX_;

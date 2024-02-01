@@ -1,4 +1,4 @@
-﻿#include "Tutorial.h"
+#include "Tutorial.h"
 #include "TutorialState.h"
 #include <fstream>
 #include <sstream>
@@ -75,9 +75,9 @@ void Tutorial::LoadTutorialData(int32_t fileIndex)
 //-------------------------------------------------------------------------------------
 void Tutorial::Initialize()
 {
-	TextureManager::GetInstance().LoadGraph("tutorial1.png");
-	TextureManager::GetInstance().LoadGraph("tutorial2.png");
-	TextureManager::GetInstance().LoadGraph("tutorial3.png");
+	TextureManager::GetInstance().LoadGraph("tutorial1.dds");
+	TextureManager::GetInstance().LoadGraph("tutorial2.dds");
+	TextureManager::GetInstance().LoadGraph("tutorial3.dds");
 
 	//一番目のステートに
 	ToNextState();

@@ -40,8 +40,8 @@ void ClearEffect::Initialize()
 
 	isEffect_ = false;
 
-	TextureManager::LoadGraph("hyper.png");
-	TextureManager::LoadGraph("hot.png");
+	TextureManager::LoadGraph("hyper.dds");
+	TextureManager::LoadGraph("hot.dds");
 }
 
 void ClearEffect::Update()

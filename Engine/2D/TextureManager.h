@@ -52,6 +52,17 @@ private:
 	//デスクリプタレンジの設定
 	static D3D12_DESCRIPTOR_RANGE sDescriptorRange_;
 
+private:
+	//画像の情報
+	static DirectX::TexMetadata sMetadata_;
+	//画像イメージのコンテナ
+	static DirectX::ScratchImage sScratchImage_;
+private:
+	//ファイル名
+	static std::string sFileName_;
+	//ファイル拡張子
+	static std::string sFileExt_;
+
 public:
 	//コピーコンストラクタを無効
 	TextureManager(const TextureManager& obj) = delete;
@@ -96,5 +107,11 @@ public:
 	static int32_t GetSRVCount() { return sSRVCount_; }
 	//SRVのカウントを加算
 	static void AddSRVHandleCount() { sSRVCount_++; }
+
+private:
+	//ddsかwic読み込み
+	static HRESULT LoadFile(wchar_t* nameWc);
+	//ファイル拡張子を取得
+	static void AcquisitionExt(const std::string& fileName);
 };
 

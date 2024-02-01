@@ -26,10 +26,10 @@ void PlayerUI::ChangeState(const std::string& name)
 
 void PlayerUI::Initialize()
 {
-	TextureManager::LoadGraph("normalReticle.png");
-	TextureManager::LoadGraph("punchReticle.png");
-	TextureManager::LoadGraph("gunReticle.png");
-	TextureManager::LoadGraph("pickUpReticle.png");
+	TextureManager::LoadGraph("normalReticle.dds");
+	TextureManager::LoadGraph("punchReticle.dds");
+	TextureManager::LoadGraph("gunReticle.dds");
+	TextureManager::LoadGraph("pickUpReticle.dds");
 
 	pos_ = { WindowsApp::GetInstance().WINDOW_WIDTH_ / 2.0f, WindowsApp::GetInstance().WINDOW_HEIGHT_ / 2.0f };
 
