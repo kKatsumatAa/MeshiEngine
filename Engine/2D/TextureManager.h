@@ -14,10 +14,18 @@ private:
 	//Microsoft::WRL::を省略
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-private:
+public:
 	//格納先
-	static const std::string sDirectoryPath_;
+	static const std::string S_DIRECTORY_PATH_;
+	//テクスチャがない場合の標準テクスチャファイル名
+	static const std::string S_DEFAULT_TEX_FILE_NAME_;
+	//テクスチャがない場合の標準テクスチャファイル名フルパス
+	static const std::string S_DEFAULT_TEX_FILE_FULL_PATH_;
 
+	//DDSに変換前の画像のサイズ
+	static const uint8_t S_SIZE_MULTIPLE_BEFORE_CONVERSION_ = 4;
+
+private:
 	//srvのカウント
 	static int32_t sSRVCount_;
 
@@ -30,9 +38,6 @@ private:
 
 
 private:
-	//テクスチャがない場合の標準テクスチャファイル名
-	static const std::string S_DEFAULT_TEX_FILE_NAME_;
-
 	static uint64_t sWhiteTexHandle_;
 
 	//リソース設定
@@ -85,6 +90,9 @@ public:
 
 	//テクスチャハンドルが何も入ってなかったら白い画像のハンドル入れる
 	static void CheckTexHandle(uint64_t& texHandle);
+
+	//ハンドルのテクスチャの名前取得
+	static std::string GetTextureName(uint64_t texHandle);
 
 public:
 	//デスクリプタヒープのポインタのポインタ取得

@@ -163,6 +163,14 @@ void Sprite::DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 		textureHandle_ = textureHandle;
 	}
 
+	Vec2 scaleL = scale;
+	//画像の圧縮の関係で画像の最低サイズが増えてる可能性があるので
+	std::string texName = TextureManager::GetTextureName(textureHandle_);
+	if (texName == TextureManager::S_DEFAULT_TEX_FILE_FULL_PATH_)
+	{
+		scaleL /= TextureManager::S_SIZE_MULTIPLE_BEFORE_CONVERSION_;
+	}
+
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetDescHeapP()->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
 	resDesc = TextureManager::GetTexBuff()
@@ -175,10 +183,10 @@ void Sprite::DrawUpdate(Camera2D* camera, const Vec2& pos, const Vec2& scale,
 	if (isReverseX)length.x = -length.x;
 	if (isReverseY)length.y = -length.y;
 
-	vertices_[0] = { {-(float)(length.x * scale.x * anchorUV.x),+(float)(length.y * scale.y * (ANCHOR_UV_MAX_ - anchorUV.y)),0.0f},{0.0f,ANCHOR_UV_MAX_} };//左下
-	vertices_[1] = { {-(float)(length.x * scale.x * anchorUV.x),-(float)(length.y * scale.y * (anchorUV.y)),0.0f},{0.0f,0.0f} };//左上
-	vertices_[2] = { {+(float)(length.x * scale.x * (ANCHOR_UV_MAX_ - anchorUV.x)),+(float)(length.y * scale.y * (ANCHOR_UV_MAX_ - anchorUV.y)),0.0f},{ANCHOR_UV_MAX_,ANCHOR_UV_MAX_} };//右下
-	vertices_[3] = { {+(float)(length.x * scale.x * (ANCHOR_UV_MAX_ - anchorUV.x)),-(float)(length.y * scale.y * (anchorUV.y)),0.0f},{ANCHOR_UV_MAX_,0.0f} };//右上
+	vertices_[0] = { {-(float)(length.x * scaleL.x * anchorUV.x),+(float)(length.y * scaleL.y * (ANCHOR_UV_MAX_ - anchorUV.y)),0.0f},{0.0f,ANCHOR_UV_MAX_} };//左下
+	vertices_[1] = { {-(float)(length.x * scaleL.x * anchorUV.x),-(float)(length.y * scaleL.y * (anchorUV.y)),0.0f},{0.0f,0.0f} };//左上
+	vertices_[2] = { {+(float)(length.x * scaleL.x * (ANCHOR_UV_MAX_ - anchorUV.x)),+(float)(length.y * scaleL.y * (ANCHOR_UV_MAX_ - anchorUV.y)),0.0f},{ANCHOR_UV_MAX_,ANCHOR_UV_MAX_} };//右下
+	vertices_[3] = { {+(float)(length.x * scaleL.x * (ANCHOR_UV_MAX_ - anchorUV.x)),-(float)(length.y * scaleL.y * (anchorUV.y)),0.0f},{ANCHOR_UV_MAX_,0.0f} };//右上
 
 	//ワールド行列
 	WorldMat worldMat;
@@ -211,6 +219,14 @@ void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& s
 		textureHandle_ = textureHandle;
 	}
 
+	Vec2 scaleL = scale;
+	//画像の圧縮の関係で画像の最低サイズが増えてる可能性があるので
+	std::string texName = TextureManager::GetTextureName(textureHandle_);
+	if (texName == TextureManager::S_DEFAULT_TEX_FILE_FULL_PATH_)
+	{
+		scaleL /= TextureManager::S_SIZE_MULTIPLE_BEFORE_CONVERSION_;
+	}
+
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = TextureManager::GetDescHeapP()->GetGPUDescriptorHandleForHeapStart();
 	D3D12_RESOURCE_DESC resDesc{};
 	resDesc = TextureManager::GetInstance().GetTexBuff()[(textureHandle_ - srvGpuHandle.ptr) / DirectXWrapper::GetInstance().GetDevice()->GetDescriptorHandleIncrementSize(TextureManager::GetHeapDesc().Type)]->GetDesc();
@@ -221,27 +237,27 @@ void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& s
 	if (isReverseX)length.x *= -1;
 	if (isReverseY)length.y *= -1;
 
-	float texLeft = UVleftTop.x * +(float)length.x * scale.x;
-	float texTop = UVleftTop.y * +(float)length.y * scale.y;
+	float texLeft = UVleftTop.x * +(float)length.x * scaleL.x;
+	float texTop = UVleftTop.y * +(float)length.y * scaleL.y;
 
 	if (isPosLeftTop)
 	{
 		//左上からの座標
-		vertices_[0] = { {0,UVlength.y * length.y * scale.y,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
+		vertices_[0] = { {0,UVlength.y * length.y * scaleL.y,0.0f},{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
 		vertices_[1] = { {0,0,0.0f},{UVleftTop.x,UVleftTop.y} };//左上
-		vertices_[2] = { {UVlength.x * length.x * scale.x,UVlength.y * length.y * scale.y,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices_[3] = { {UVlength.x * length.x * scale.x,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
+		vertices_[2] = { {UVlength.x * length.x * scaleL.x,UVlength.y * length.y * scaleL.y,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
+		vertices_[3] = { {UVlength.x * length.x * scaleL.x,0,0.0f},{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 	else
 	{
 		//切り抜いた後の画像の中心からの位置！！！！！！！！
-		vertices_[0] = { {-UVlength.x * length.x * scale.x * TRANS_OFFSET_SCALE_RATE_,UVlength.y * length.y * scale.y * TRANS_OFFSET_SCALE_RATE_,0.0f},
+		vertices_[0] = { {-UVlength.x * length.x * scaleL.x * TRANS_OFFSET_SCALE_RATE_,UVlength.y * length.y * scaleL.y * TRANS_OFFSET_SCALE_RATE_,0.0f},
 			{UVleftTop.x,UVleftTop.y + UVlength.y} };//左下
-		vertices_[1] = { {-UVlength.x * length.x * scale.x * TRANS_OFFSET_SCALE_RATE_,-UVlength.y * length.y * scale.y * TRANS_OFFSET_SCALE_RATE_,0.0f},
+		vertices_[1] = { {-UVlength.x * length.x * scaleL.x * TRANS_OFFSET_SCALE_RATE_,-UVlength.y * length.y * scaleL.y * TRANS_OFFSET_SCALE_RATE_,0.0f},
 			{UVleftTop.x,UVleftTop.y} };//左上
-		vertices_[2] = { {UVlength.x * length.x * scale.x * TRANS_OFFSET_SCALE_RATE_,UVlength.y * length.y * scale.y * TRANS_OFFSET_SCALE_RATE_,0.0f},
+		vertices_[2] = { {UVlength.x * length.x * scaleL.x * TRANS_OFFSET_SCALE_RATE_,UVlength.y * length.y * scaleL.y * TRANS_OFFSET_SCALE_RATE_,0.0f},
 			{UVleftTop.x + UVlength.x,UVleftTop.y + UVlength.y} };//右下
-		vertices_[3] = { {UVlength.x * length.x * scale.x * TRANS_OFFSET_SCALE_RATE_,-UVlength.y * length.y * scale.y * TRANS_OFFSET_SCALE_RATE_,0.0f},
+		vertices_[3] = { {UVlength.x * length.x * scaleL.x * TRANS_OFFSET_SCALE_RATE_,-UVlength.y * length.y * scaleL.y * TRANS_OFFSET_SCALE_RATE_,0.0f},
 			{UVleftTop.x + UVlength.x,UVleftTop.y} };//右上
 	}
 
@@ -260,8 +276,8 @@ void Sprite::UpdateClipping(Camera2D* camera, const Vec2& leftTop, const Vec2& s
 	else
 	{
 		//切り抜いた後の画像の中心を設定
-		worldMat.trans_ = { leftTop.x + texLeft + UVlength.x * (float)length.x * scale.x * TRANS_OFFSET_SCALE_RATE_,
-			leftTop.y + texTop + UVlength.y * (float)length.y * scale.y * TRANS_OFFSET_SCALE_RATE_,
+		worldMat.trans_ = { leftTop.x + texLeft + UVlength.x * (float)length.x * scaleL.x * TRANS_OFFSET_SCALE_RATE_,
+			leftTop.y + texTop + UVlength.y * (float)length.y * scaleL.y * TRANS_OFFSET_SCALE_RATE_,
 			0 };
 	}
 

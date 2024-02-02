@@ -7,8 +7,9 @@ using namespace Microsoft::WRL;
 using namespace Util;
 
 //格納先
-const std::string TextureManager::sDirectoryPath_ = "Resources/image/";
+const std::string TextureManager::S_DIRECTORY_PATH_ = "Resources/image/";
 const std::string TextureManager::S_DEFAULT_TEX_FILE_NAME_ = "white.dds";
+const std::string TextureManager::S_DEFAULT_TEX_FILE_FULL_PATH_ = TextureManager::S_DIRECTORY_PATH_ + TextureManager::S_DEFAULT_TEX_FILE_NAME_;
 int32_t TextureManager::sSRVCount_ = 0;
 //リソース設定
 D3D12_RESOURCE_DESC TextureManager::sResDesc_;
@@ -98,7 +99,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	//格納先が指定されてなければimage内にあるので
 	if (fileName.find("Resources") == std::string::npos)
 	{
-		fileName = sDirectoryPath_ + fileName;
+		fileName = S_DIRECTORY_PATH_ + fileName;
 	}
 
 	//srvHandleが指定されていたら新たにsrv作る前提なのでhandleは別のものにするため
@@ -137,16 +138,6 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 		return LoadGraph(S_DEFAULT_TEX_FILE_NAME_.c_str());
 	}
 
-	ScratchImage mipChain{};
-	////mipmap生成
-	//result = GenerateMipMaps(
-	//	sScratchImage_.GetImages(), sScratchImage_.GetImageCount(), sScratchImage_.GetMetadata(),
-	//	TEX_FILTER_DEFAULT, 0, mipChain);
-	//if (SUCCEEDED(result))
-	//{
-	//	sScratchImage_ = std::move(mipChain);
-	//	sMetadata_ = sScratchImage_.GetMetadata();
-	//}
 	//読み込んだディフューズテクスチャをSRGBとして扱う
 	sMetadata_.format = MakeSRGB(sMetadata_.format);
 
@@ -215,34 +206,9 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	const Image* img = sScratchImage_.GetImage(0, 0, 0);
 	uint8_t* uploadStart = mapforImg;
 	uint8_t* sourceStart = img->pixels;
-	//uint32_t sourcePitch = ((uint32_t)img->width * sizeof(uint32_t));
 
-	////	画像の高さ(ピクセル)分コピーする
-	//for (uint32_t i = 0; i < footprint.Footprint.Height; i++)
-	//{
-	//	memcpy(
-	//		uploadStart + i * footprint.Footprint.RowPitch,
-	//		sourceStart + i * sourcePitch,
-	//		sourcePitch
-	//	);
-	//}
-
+	//バッファにコピー
 	memcpy(reinterpret_cast<unsigned char*>(uploadStart) + footprint.Offset, sourceStart, (uint64_t)img->width * (uint32_t)img->height);
-
-	DirectXWrapper::GetInstance().GetTexUploadBuffP()->Unmap(0, nullptr);	//	unmap
-
-	//for (size_t i = 0; i < sMetadata_.mipLevels; i++)
-	//{
-	//	const Image* img = sScratchImage_.GetImage(i, 0, 0);
-	//	result = (*texBuffL)->WriteToSubresource(
-	//		(UINT)i,
-	//		nullptr,
-	//		img->pixels,
-	//		(UINT)img->rowPitch,
-	//		(UINT)img->slicePitch
-	//		);
-	//}
-
 
 
 	// CopyCommand
@@ -336,6 +302,19 @@ void TextureManager::CheckTexHandle(uint64_t& texHandle)
 	{
 		texHandle = sWhiteTexHandle_;
 	}
+}
+
+std::string TextureManager::GetTextureName(uint64_t texHandle)
+{
+	for (auto& texData : sTextureDatas_)
+	{
+		if (texData.second == texHandle)
+		{
+			return texData.first;
+		}
+	}
+
+	return S_DEFAULT_TEX_FILE_NAME_;
 }
 
 HRESULT TextureManager::LoadFile(wchar_t* nameWc)
