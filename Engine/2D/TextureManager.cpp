@@ -78,6 +78,182 @@ void TextureManager::Initialize()
 	TextureManager::GetInstance().sWhiteTexHandle_ = TextureManager::LoadGraph("white.dds");
 }
 
+//{
+//
+//	void afWriteBuffer(const ComPtr<ID3D12Resource> res, const void* buf, int size)
+//	{
+//		void* p;
+//		D3D12_RANGE readRange = {};
+//		res->Map(0, &readRange, &p);
+//		memcpy(p, buf, size);
+//		D3D12_RANGE wroteRange = { 0, (SIZE_T)size };
+//		id->Unmap(0, &wroteRange);
+//	}
+//
+//	ComPtr<ID3D12Resource> afCreateBuffer(int size, const void* buf)
+//	{
+//		D3D12_HEAP_PROPERTIES prop = { D3D12_HEAP_TYPE_UPLOAD, D3D12_CPU_PAGE_PROPERTY_UNKNOWN, D3D12_MEMORY_POOL_UNKNOWN, 1, 1 };
+//		D3D12_RESOURCE_DESC desc = { D3D12_RESOURCE_DIMENSION_BUFFER, 0, (UINT64)size, 1, 1, 1, DXGI_FORMAT_UNKNOWN, { 1, 0 }, D3D12_TEXTURE_LAYOUT_ROW_MAJOR, D3D12_RESOURCE_FLAG_NONE };
+//		UBOID o;
+//		deviceMan.GetDevice()->CreateCommittedResource(&prop, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&o));
+//		afWriteBuffer(o, buf, size);
+//		return o;
+//	}
+//
+//	void UploadTexture(ComPtr<ID3D12Resource> tex, const void* buf)
+//	{
+//		D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint;
+//		UINT64 uploadSize, rowSizeInBytes;
+//		const D3D12_RESOURCE_DESC destDesc = tex->GetDesc();
+//		deviceMan.GetDevice()->GetCopyableFootprints(&destDesc, 0, 1, 0, &footprint, nullptr, &rowSizeInBytes, &uploadSize);
+//
+//		assert(rowSizeInBytes == footprint.Footprint.RowPitch); // It is safe in most case!
+//
+//		ComPtr<ID3D12Resource> uploadBuf = afCreateBuffer((int)uploadSize, buf);
+//		D3D12_TEXTURE_COPY_LOCATION uploadBufLocation = { uploadBuf.Get(), D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT, footprint }, nativeBufLocation = { tex.Get(), D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX, 0 };
+//		ID3D12GraphicsCommandList* list = deviceMan.GetCommandList();
+//
+//		D3D12_RESOURCE_BARRIER transition1 = { D3D12_RESOURCE_BARRIER_TYPE_TRANSITION, D3D12_RESOURCE_BARRIER_FLAG_NONE, { tex.Get(), 0, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_COPY_DEST } };
+//		list->ResourceBarrier(1, &transition1);
+//		list->CopyTextureRegion(&nativeBufLocation, 0, 0, 0, &uploadBufLocation, nullptr);
+//		D3D12_RESOURCE_BARRIER transition2 = { D3D12_RESOURCE_BARRIER_TYPE_TRANSITION, D3D12_RESOURCE_BARRIER_FLAG_NONE, { tex.Get(), 0, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE } };
+//		list->ResourceBarrier(1, &transition2);
+//
+//		deviceMan.AddIntermediateCommandlistDependentResource(uploadBuf); // keep until the command queue has been flushed
+//	}
+//
+//	//------------------------------------------------------------------------------------------------------------------------------------------------------------
+//	struct DDSHeader {
+//		uint32_t h3[3];
+//		int h, w;
+//		uint32_t h2[2];
+//		int mipCnt;
+//		uint32_t h13[13];
+//		uint32_t fourcc, bitsPerPixel, rMask, gMask, bMask, aMask, caps1, caps2;
+//		bool IsCubeMap() const { return caps2 == 0xFE00; }
+//		int GetArraySize() const { return IsCubeMap() ? 6 : 1; }
+//		int GetMipCnt() const { return std::max(mipCnt, 1); }
+//	};
+//
+//	struct TexDesc {
+//		IVec2 size;
+//		int arraySize = 1;
+//		bool isCubeMap = false;
+//	};
+//
+//	struct AFTexSubresourceData
+//	{
+//		const void* ptr;
+//		uint32_t pitch;
+//		uint32_t pitchSlice;
+//	};
+//
+//	static ComPtr<ID3D12Resource> LoadDDSTexture(const char* name, TexDesc& texDesc)
+//	{
+//		int size;
+//		void* img = LoadFile(name, &size);
+//		if (!img) {
+//			aflog("LoadDDSTexture failed! %s", name);
+//			return nullptr;
+//		}
+//		const DDSHeader* hdr = (DDSHeader*)img;
+//
+//		AFDTFormat format = AFDT_INVALID;
+//		int(*pitchCalcurator)(int, int) = nullptr;
+//		switch (hdr->fourcc) {
+//		case 0x31545844: //'1TXD':
+//			format = AFDT_BC1_UNORM;
+//			pitchCalcurator = [](int w, int h) { return ((w + 3) / 4) * ((h + 3) / 4) * 8; };
+//			break;
+//		case 0x33545844: //'3TXD':
+//			format = AFDT_BC2_UNORM;
+//			pitchCalcurator = [](int w, int h) { return ((w + 3) / 4) * ((h + 3) / 4) * 16; };
+//			break;
+//		case 0x35545844: //'5TXD':
+//			format = AFDT_BC3_UNORM;
+//			pitchCalcurator = [](int w, int h) { return ((w + 3) / 4) * ((h + 3) / 4) * 16; };
+//			break;
+//		default:
+//			ArrangeRawDDS(img, size);
+//			format = AFDT_R8G8B8A8_UNORM;
+//			pitchCalcurator = [](int w, int h) { return w * h * 4; };
+//			break;
+//		}
+//		texDesc.size.x = hdr->w;
+//		texDesc.size.y = hdr->h;
+//		texDesc.arraySize = hdr->GetArraySize();
+//		texDesc.isCubeMap = hdr->IsCubeMap();
+//
+//		int arraySize = hdr->GetArraySize();
+//		int mipCnt = hdr->GetMipCnt();
+//		std::vector<AFTexSubresourceData> r;
+//		int offset = 128;
+//		for (int a = 0; a < arraySize; a++) {
+//			for (int m = 0; m < mipCnt; m++) {
+//				int w = std::max(1, hdr->w >> m);
+//				int h = std::max(1, hdr->h >> m);
+//				int size = pitchCalcurator(w, h);
+//				r.push_back({ (char*)img + offset, (uint32_t)pitchCalcurator(w, 1), (uint32_t)size });
+//				offset += size;
+//			}
+//		}
+//
+//		ComPtr<ID3D12Resource> tex = afCreateTexture2D(format, texDesc, mipCnt, &r[0]);
+//		assert(tex);
+//		free(img);
+//		return tex;
+//	}
+//
+//	static const D3D12_HEAP_PROPERTIES defaultHeapProperties = { D3D12_HEAP_TYPE_DEFAULT, D3D12_CPU_PAGE_PROPERTY_UNKNOWN, D3D12_MEMORY_POOL_UNKNOWN, 1, 1 };
+//
+//	ComPtr<ID3D12Resource> afCreateTexture2D(AFDTFormat format, const struct TexDesc& desc, int mipCount, const AFTexSubresourceData datas[])
+//	{
+//		D3D12_RESOURCE_DESC resourceDesc = { D3D12_RESOURCE_DIMENSION_TEXTURE2D, 0, (UINT64)desc.size.x, (UINT)desc.size.y, (UINT16)desc.arraySize, (UINT16)mipCount, format, {1, 0} };
+//		ComPtr<ID3D12Resource> tex;
+//		HRESULT hr = deviceMan.GetDevice()->CreateCommittedResource(&defaultHeapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, nullptr, IID_PPV_ARGS(&tex));
+//		afWriteTexture(tex, desc, mipCount, datas);
+//		return tex;
+//	}
+//
+//	void afWriteTexture(ComPtr<ID3D12Resource> tex, const TexDesc& desc, int mipCount, const AFTexSubresourceData datas[])
+//	{
+//		const int maxSubresources = 100;
+//		const UINT subResources = mipCount * desc.arraySize;
+//		assert(subResources <= maxSubresources);
+//		D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprints[maxSubresources];
+//		UINT64 rowSizeInBytes[maxSubresources], uploadSize;
+//		UINT numRows[maxSubresources];
+//		D3D12_RESOURCE_BARRIER transitions1[maxSubresources], transitions2[maxSubresources];
+//		deviceMan.GetDevice()->GetCopyableFootprints(&tex->GetDesc(), 0, subResources, 0, footprints, numRows, rowSizeInBytes, &uploadSize);
+//		ComPtr<ID3D12Resource> uploadBuf = afCreateBuffer((int)uploadSize);
+//		assert(uploadBuf);
+//		uploadBuf->SetName(__FUNCTIONW__ L" intermediate buffer");
+//		D3D12_RANGE readRange = {};
+//		BYTE* ptr;
+//		HRESULT hr = uploadBuf->Map(0, &readRange, (void**)&ptr);
+//		assert(ptr);
+//		for (UINT i = 0; i < subResources; i++)
+//		{
+//			transitions1[i] = { D3D12_RESOURCE_BARRIER_TYPE_TRANSITION, D3D12_RESOURCE_BARRIER_FLAG_NONE,{ tex.Get(), i, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_COPY_DEST } };
+//			transitions2[i] = { D3D12_RESOURCE_BARRIER_TYPE_TRANSITION, D3D12_RESOURCE_BARRIER_FLAG_NONE,{ tex.Get(), i, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE } };
+//		}
+//		ID3D12GraphicsCommandList* list = deviceMan.GetCommandList();
+//		list->ResourceBarrier(subResources, transitions1);
+//		for (UINT i = 0; i < subResources; i++)
+//		{
+//			for (UINT row = 0; row < numRows[i]; row++) {
+//				memcpy(ptr + footprints[i].Offset + footprints[i].Footprint.RowPitch * row, (BYTE*)datas[i].ptr + datas[i].pitch * row, datas[i].pitch);
+//			}
+//			D3D12_TEXTURE_COPY_LOCATION uploadBufLocation = { uploadBuf.Get(), D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT, footprints[i] };
+//			D3D12_TEXTURE_COPY_LOCATION nativeBufLocation = { tex.Get(), D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX, i };
+//			list->CopyTextureRegion(&nativeBufLocation, 0, 0, 0, &uploadBufLocation, nullptr);
+//		}
+//		list->ResourceBarrier(subResources, transitions2);
+//		uploadBuf->Unmap(0, nullptr);
+//		deviceMan.AddIntermediateCommandlistDependentResource(uploadBuf);
+//		deviceMan.AddIntermediateCommandlistDependentResource(tex);
+//	}
+//}
 
 uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	D3D12_SHADER_RESOURCE_VIEW_DESC* srvDesc, D3D12_CPU_DESCRIPTOR_HANDLE* srvHandle)
@@ -139,7 +315,7 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	}
 
 	//読み込んだディフューズテクスチャをSRGBとして扱う
-	sMetadata_.format = MakeSRGB(sMetadata_.format);
+	//sMetadata_.format = MakeSRGB(sMetadata_.format);
 
 
 	//コピー先用-------------------------------------------------------------
@@ -171,8 +347,9 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 	//	FootPrint取得
 	D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint;
 	UINT64 total_bytes = 0;
+	UINT numRows[100];
 	DirectXWrapper::GetInstance().GetDevice()->GetCopyableFootprints(
-		&textureResourceDesc, 0, 1, 0, &footprint, nullptr, nullptr, &total_bytes);
+		&textureResourceDesc, 0, 1, 0, &footprint, &numRows[0], nullptr, &total_bytes);
 
 	// Upload(コピー元)-----------------------------------------------------------------------
 	D3D12_RESOURCE_DESC uploadResDesc{};
@@ -199,16 +376,58 @@ uint64_t TextureManager::LoadGraph(const char* name, ID3D12Resource** texBuff,
 		nullptr,
 		IID_PPV_ARGS(DirectXWrapper::GetInstance().GetTexUploadBuffPP()));
 
-	//転送
+
+	/*//	転送
 	uint8_t* mapforImg = nullptr;
 	result = DirectXWrapper::GetInstance().GetTexUploadBuffP()->Map(0, nullptr, (void**)&mapforImg);//マッピング
 
-	const Image* img = sScratchImage_.GetImage(0, 0, 0);
-	uint8_t* uploadStart = mapforImg;
+	const Image* img = scratchImg.GetImage(0, 0, 0);
+	uint8_t* uploadStart = mapforImg + footprint.Offset;
 	uint8_t* sourceStart = img->pixels;
+	uint32_t sourcePitch = ((uint32_t)img->width * sizeof(uint32_t));
 
-	//バッファにコピー
-	memcpy(reinterpret_cast<unsigned char*>(uploadStart) + footprint.Offset, sourceStart, (uint64_t)img->width * (uint32_t)img->height);
+	//	画像の高さ(ピクセル)分コピーする
+	for (uint32_t i = 0; i < footprint.Footprint.Height; i++)
+	{
+		memcpy(
+			uploadStart + i * footprint.Footprint.RowPitch,
+			sourceStart + i * sourcePitch,
+			sourcePitch
+		);
+	}
+	DirectXWrapper::GetInstance().GetTexUploadBuffP()->Unmap(0, nullptr);	//	unmap*/
+
+
+	//転送----------------------------------------
+	BYTE* ptr;
+	DirectXWrapper::GetInstance().GetTexUploadBuffP()->Map(0, nullptr, (void**)&ptr);
+	//uint32_t imgCount = (uint32_t)sScratchImage_.GetImageCount();
+
+	//uint32_t uploadPtrAdd = 0;
+
+	////イメージごとの処理
+	//for (uint32_t i = 0; i < imgCount; i++)
+	//{
+	//	auto img = sScratchImage_.GetImage(i, 0, 0);
+
+	//	//イメージごとに高さ分コピー
+	//	for (uint32_t h = 0; h < footprint.Footprint.Height; h++)
+	//	{
+	//		UINT8* pScan = ptr + footprint.Offset + uploadPtrAdd;
+
+	//		//コピー
+	//		auto copySize = sizeof(uint32_t) * img->width;
+	//		memcpy(pScan, img->pixels + h * sizeof(uint32_t) * img->width, copySize);
+
+	//		uploadPtrAdd += footprint.Footprint.RowPitch;
+	//	}
+	//}
+
+	auto img = sScratchImage_.GetImage(0, 0, 0);
+
+	memcpy(ptr, img->pixels, img->slicePitch);
+
+	DirectXWrapper::GetInstance().GetTexUploadBuffP()->Unmap(0, nullptr);
 
 
 	// CopyCommand
